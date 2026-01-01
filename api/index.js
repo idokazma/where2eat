@@ -45,6 +45,694 @@ app.get('/api/restaurants', async (req, res) => {
   }
 })
 
+// UNIFIED SEARCH API ENDPOINT - Advanced filtering and analytics
+app.get('/api/restaurants/search', async (req, res) => {
+  try {
+    const {
+      location,
+      cuisine,
+      price_range,
+      status,
+      host_opinion,
+      date_start,
+      date_end,
+      episode_id,
+      sort_by = 'analysis_date',
+      sort_direction = 'desc',
+      page = 1,
+      limit = 20
+    } = req.query;
+
+    await fs.ensureDir(dataDir)
+    const files = await fs.readdir(dataDir)
+    const jsonFiles = files.filter(file => file.endsWith('.json'))
+    
+    const restaurants = []
+    for (const file of jsonFiles) {
+      try {
+        const filePath = path.join(dataDir, file)
+        const data = await fs.readJson(filePath)
+        restaurants.push(data)
+      } catch (err) {
+        console.warn(`Warning: Failed to read ${file}:`, err.message)
+      }
+    }
+
+    // Apply filters
+    let filteredRestaurants = restaurants.filter(restaurant => {
+      // Location filtering
+      if (location && restaurant.location?.city) {
+        if (!restaurant.location.city.toLowerCase().includes(location.toLowerCase())) {
+          return false;
+        }
+      }
+
+      // Cuisine filtering
+      if (cuisine) {
+        const cuisines = Array.isArray(cuisine) ? cuisine : [cuisine];
+        if (!cuisines.some(c => restaurant.cuisine_type?.toLowerCase().includes(c.toLowerCase()))) {
+          return false;
+        }
+      }
+
+      // Price range filtering
+      if (price_range) {
+        const priceRanges = Array.isArray(price_range) ? price_range : [price_range];
+        if (!priceRanges.includes(restaurant.price_range)) {
+          return false;
+        }
+      }
+
+      // Status filtering
+      if (status) {
+        const statuses = Array.isArray(status) ? status : [status];
+        if (!statuses.includes(restaurant.status)) {
+          return false;
+        }
+      }
+
+      // Host opinion filtering
+      if (host_opinion) {
+        const opinions = Array.isArray(host_opinion) ? host_opinion : [host_opinion];
+        if (!opinions.includes(restaurant.host_opinion)) {
+          return false;
+        }
+      }
+
+      // Episode filtering
+      if (episode_id) {
+        const episodeIds = Array.isArray(episode_id) ? episode_id : [episode_id];
+        if (!episodeIds.includes(restaurant.episode_info?.video_id)) {
+          return false;
+        }
+      }
+
+      // Date range filtering
+      if (date_start || date_end) {
+        const analysisDate = restaurant.episode_info?.analysis_date;
+        if (analysisDate) {
+          const restaurantDate = new Date(analysisDate);
+          if (date_start && restaurantDate < new Date(date_start)) return false;
+          if (date_end && restaurantDate > new Date(date_end)) return false;
+        }
+      }
+
+      return true;
+    });
+
+    // Generate analytics before sorting/pagination
+    const analytics = {
+      filterCounts: {
+        cuisine: {},
+        location: {},
+        price_range: {},
+        host_opinion: {}
+      },
+      dateDistribution: {}
+    };
+
+    filteredRestaurants.forEach(restaurant => {
+      // Count cuisines
+      if (restaurant.cuisine_type) {
+        analytics.filterCounts.cuisine[restaurant.cuisine_type] = 
+          (analytics.filterCounts.cuisine[restaurant.cuisine_type] || 0) + 1;
+      }
+
+      // Count locations
+      if (restaurant.location?.city) {
+        analytics.filterCounts.location[restaurant.location.city] = 
+          (analytics.filterCounts.location[restaurant.location.city] || 0) + 1;
+      }
+
+      // Count price ranges
+      if (restaurant.price_range) {
+        analytics.filterCounts.price_range[restaurant.price_range] = 
+          (analytics.filterCounts.price_range[restaurant.price_range] || 0) + 1;
+      }
+
+      // Count host opinions
+      if (restaurant.host_opinion) {
+        analytics.filterCounts.host_opinion[restaurant.host_opinion] = 
+          (analytics.filterCounts.host_opinion[restaurant.host_opinion] || 0) + 1;
+      }
+
+      // Count by date
+      if (restaurant.episode_info?.analysis_date) {
+        const dateKey = new Date(restaurant.episode_info.analysis_date).toISOString().split('T')[0];
+        analytics.dateDistribution[dateKey] = (analytics.dateDistribution[dateKey] || 0) + 1;
+      }
+    });
+
+    // Apply sorting
+    filteredRestaurants.sort((a, b) => {
+      let aValue, bValue;
+
+      switch (sort_by) {
+        case 'name':
+          aValue = a.name_hebrew || '';
+          bValue = b.name_hebrew || '';
+          break;
+        case 'location':
+          aValue = a.location?.city || '';
+          bValue = b.location?.city || '';
+          break;
+        case 'cuisine':
+          aValue = a.cuisine_type || '';
+          bValue = b.cuisine_type || '';
+          break;
+        case 'rating':
+          aValue = a.rating?.google_rating || 0;
+          bValue = b.rating?.google_rating || 0;
+          break;
+        case 'analysis_date':
+        default:
+          aValue = a.episode_info?.analysis_date || '';
+          bValue = b.episode_info?.analysis_date || '';
+          break;
+      }
+
+      if (sort_direction === 'desc') {
+        return bValue > aValue ? 1 : -1;
+      }
+      return aValue > bValue ? 1 : -1;
+    });
+
+    // Apply pagination
+    const pageNum = parseInt(page);
+    const limitNum = parseInt(limit);
+    const startIndex = (pageNum - 1) * limitNum;
+    const paginatedRestaurants = filteredRestaurants.slice(startIndex, startIndex + limitNum);
+
+    // Generate timeline data for included restaurants
+    const timelineData = [];
+    const dateGroups = {};
+
+    paginatedRestaurants.forEach(restaurant => {
+      if (restaurant.episode_info?.analysis_date) {
+        const dateKey = new Date(restaurant.episode_info.analysis_date).toISOString().split('T')[0];
+        if (!dateGroups[dateKey]) {
+          dateGroups[dateKey] = [];
+        }
+        dateGroups[dateKey].push({
+          name_hebrew: restaurant.name_hebrew,
+          name_english: restaurant.name_english,
+          cuisine_type: restaurant.cuisine_type,
+          location: restaurant.location,
+          host_opinion: restaurant.host_opinion,
+          episode_id: restaurant.episode_info.video_id
+        });
+      }
+    });
+
+    Object.entries(dateGroups).forEach(([date, restaurants]) => {
+      timelineData.push({
+        date,
+        restaurants,
+        count: restaurants.length
+      });
+    });
+
+    timelineData.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    console.log(`🔍 Unified search: ${filteredRestaurants.length} restaurants found, returning ${paginatedRestaurants.length}`);
+
+    res.json({
+      restaurants: paginatedRestaurants,
+      timeline_data: timelineData,
+      analytics: {
+        total_count: filteredRestaurants.length,
+        page: pageNum,
+        limit: limitNum,
+        total_pages: Math.ceil(filteredRestaurants.length / limitNum),
+        filter_counts: analytics.filterCounts,
+        date_distribution: analytics.dateDistribution
+      }
+    });
+
+  } catch (error) {
+    console.error('Error in unified search:', error);
+    res.status(500).json({ error: 'Failed to search restaurants' });
+  }
+});
+
+// EPISODES SEARCH API ENDPOINT - For podcast review tracking
+app.get('/api/episodes/search', async (req, res) => {
+  try {
+    const {
+      date_start,
+      date_end,
+      cuisine_filter,
+      location_filter,
+      min_restaurants = 1,
+      sort_by = 'analysis_date',
+      sort_direction = 'desc',
+      page = 1,
+      limit = 20
+    } = req.query;
+
+    await fs.ensureDir(dataDir)
+    const files = await fs.readdir(dataDir)
+    const jsonFiles = files.filter(file => file.endsWith('.json'))
+    
+    const restaurants = []
+    for (const file of jsonFiles) {
+      try {
+        const filePath = path.join(dataDir, file)
+        const data = await fs.readJson(filePath)
+        restaurants.push(data)
+      } catch (err) {
+        console.warn(`Warning: Failed to read ${file}:`, err.message)
+      }
+    }
+
+    // Group restaurants by episode
+    const episodeGroups = {};
+    restaurants.forEach(restaurant => {
+      if (restaurant.episode_info?.video_id) {
+        const videoId = restaurant.episode_info.video_id;
+        if (!episodeGroups[videoId]) {
+          episodeGroups[videoId] = {
+            episode_info: restaurant.episode_info,
+            restaurants: [],
+            food_trends: [],
+            episode_summary: ''
+          };
+        }
+        episodeGroups[videoId].restaurants.push(restaurant);
+      }
+    });
+
+    // Convert to episodes array and apply filters
+    let episodes = Object.values(episodeGroups).filter(episode => {
+      // Date filtering
+      if (date_start || date_end) {
+        const analysisDate = episode.episode_info?.analysis_date;
+        if (analysisDate) {
+          const episodeDate = new Date(analysisDate);
+          if (date_start && episodeDate < new Date(date_start)) return false;
+          if (date_end && episodeDate > new Date(date_end)) return false;
+        }
+      }
+
+      // Cuisine filtering
+      if (cuisine_filter) {
+        const hasMatchingCuisine = episode.restaurants.some(r => 
+          r.cuisine_type?.toLowerCase().includes(cuisine_filter.toLowerCase())
+        );
+        if (!hasMatchingCuisine) return false;
+      }
+
+      // Location filtering
+      if (location_filter) {
+        const hasMatchingLocation = episode.restaurants.some(r => 
+          r.location?.city?.toLowerCase().includes(location_filter.toLowerCase())
+        );
+        if (!hasMatchingLocation) return false;
+      }
+
+      // Minimum restaurants filter
+      if (episode.restaurants.length < parseInt(min_restaurants)) return false;
+
+      return true;
+    });
+
+    // Add matching restaurants count
+    episodes = episodes.map(episode => ({
+      ...episode,
+      matching_restaurants: episode.restaurants.length
+    }));
+
+    // Apply sorting
+    episodes.sort((a, b) => {
+      let aValue, bValue;
+      
+      switch (sort_by) {
+        case 'restaurant_count':
+          aValue = a.restaurants.length;
+          bValue = b.restaurants.length;
+          break;
+        case 'analysis_date':
+        default:
+          aValue = a.episode_info?.analysis_date || '';
+          bValue = b.episode_info?.analysis_date || '';
+          break;
+      }
+
+      if (sort_direction === 'desc') {
+        return bValue > aValue ? 1 : -1;
+      }
+      return aValue > bValue ? 1 : -1;
+    });
+
+    // Apply pagination
+    const pageNum = parseInt(page);
+    const limitNum = parseInt(limit);
+    const startIndex = (pageNum - 1) * limitNum;
+    const paginatedEpisodes = episodes.slice(startIndex, startIndex + limitNum);
+
+    // Calculate total restaurants across episodes
+    const totalRestaurants = episodes.reduce((sum, episode) => sum + episode.restaurants.length, 0);
+
+    console.log(`📺 Episodes search: ${episodes.length} episodes found, ${totalRestaurants} total restaurants`);
+
+    res.json({
+      episodes: paginatedEpisodes,
+      count: episodes.length,
+      total_restaurants: totalRestaurants
+    });
+
+  } catch (error) {
+    console.error('Error in episodes search:', error);
+    res.status(500).json({ error: 'Failed to search episodes' });
+  }
+});
+
+// TIMELINE ANALYTICS API ENDPOINT
+app.get('/api/analytics/timeline', async (req, res) => {
+  try {
+    const {
+      date_start,
+      date_end,
+      granularity = 'day', // day, week, month
+      cuisine_filter,
+      location_filter
+    } = req.query;
+
+    await fs.ensureDir(dataDir)
+    const files = await fs.readdir(dataDir)
+    const jsonFiles = files.filter(file => file.endsWith('.json'))
+    
+    const restaurants = []
+    for (const file of jsonFiles) {
+      try {
+        const filePath = path.join(dataDir, file)
+        const data = await fs.readJson(filePath)
+        restaurants.push(data)
+      } catch (err) {
+        console.warn(`Warning: Failed to read ${file}:`, err.message)
+      }
+    }
+
+    // Apply filters
+    let filteredRestaurants = restaurants.filter(restaurant => {
+      if (cuisine_filter && !restaurant.cuisine_type?.toLowerCase().includes(cuisine_filter.toLowerCase())) {
+        return false;
+      }
+      if (location_filter && !restaurant.location?.city?.toLowerCase().includes(location_filter.toLowerCase())) {
+        return false;
+      }
+      if (date_start || date_end) {
+        const analysisDate = restaurant.episode_info?.analysis_date;
+        if (analysisDate) {
+          const restaurantDate = new Date(analysisDate);
+          if (date_start && restaurantDate < new Date(date_start)) return false;
+          if (date_end && restaurantDate > new Date(date_end)) return false;
+        }
+      }
+      return true;
+    });
+
+    // Group by time period
+    const timelineGroups = {};
+    filteredRestaurants.forEach(restaurant => {
+      if (restaurant.episode_info?.analysis_date) {
+        const date = new Date(restaurant.episode_info.analysis_date);
+        let dateKey;
+        
+        switch (granularity) {
+          case 'week':
+            const startOfWeek = new Date(date);
+            startOfWeek.setDate(date.getDate() - date.getDay());
+            dateKey = startOfWeek.toISOString().split('T')[0];
+            break;
+          case 'month':
+            dateKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+            break;
+          case 'day':
+          default:
+            dateKey = date.toISOString().split('T')[0];
+            break;
+        }
+
+        if (!timelineGroups[dateKey]) {
+          timelineGroups[dateKey] = [];
+        }
+        timelineGroups[dateKey].push({
+          name_hebrew: restaurant.name_hebrew,
+          name_english: restaurant.name_english,
+          cuisine_type: restaurant.cuisine_type,
+          location: restaurant.location,
+          host_opinion: restaurant.host_opinion,
+          episode_id: restaurant.episode_info.video_id
+        });
+      }
+    });
+
+    // Convert to timeline array
+    const timeline = Object.entries(timelineGroups).map(([date, restaurants]) => ({
+      date,
+      restaurants,
+      count: restaurants.length
+    }));
+
+    timeline.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    // Generate comprehensive analytics
+    const analytics = {
+      cuisine_distribution: {},
+      location_distribution: {},
+      opinion_distribution: {},
+      price_distribution: {},
+      monthly_discoveries: {},
+      top_episodes: []
+    };
+
+    // Count distributions
+    filteredRestaurants.forEach(restaurant => {
+      if (restaurant.cuisine_type) {
+        analytics.cuisine_distribution[restaurant.cuisine_type] = 
+          (analytics.cuisine_distribution[restaurant.cuisine_type] || 0) + 1;
+      }
+      if (restaurant.location?.city) {
+        analytics.location_distribution[restaurant.location.city] = 
+          (analytics.location_distribution[restaurant.location.city] || 0) + 1;
+      }
+      if (restaurant.host_opinion) {
+        analytics.opinion_distribution[restaurant.host_opinion] = 
+          (analytics.opinion_distribution[restaurant.host_opinion] || 0) + 1;
+      }
+      if (restaurant.price_range) {
+        analytics.price_distribution[restaurant.price_range] = 
+          (analytics.price_distribution[restaurant.price_range] || 0) + 1;
+      }
+    });
+
+    // Top episodes by restaurant count
+    const episodeGroups = {};
+    filteredRestaurants.forEach(restaurant => {
+      if (restaurant.episode_info?.video_id) {
+        const videoId = restaurant.episode_info.video_id;
+        if (!episodeGroups[videoId]) {
+          episodeGroups[videoId] = {
+            video_id: videoId,
+            video_url: restaurant.episode_info.video_url,
+            count: 0,
+            restaurants: []
+          };
+        }
+        episodeGroups[videoId].count++;
+        episodeGroups[videoId].restaurants.push(restaurant.name_hebrew);
+      }
+    });
+
+    analytics.top_episodes = Object.values(episodeGroups)
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 10);
+
+    const dateRange = {
+      start: Math.min(...filteredRestaurants.map(r => new Date(r.episode_info?.analysis_date || 0).getTime())),
+      end: Math.max(...filteredRestaurants.map(r => new Date(r.episode_info?.analysis_date || 0).getTime()))
+    };
+
+    console.log(`📊 Timeline analytics: ${timeline.length} periods, ${filteredRestaurants.length} restaurants`);
+
+    res.json({
+      timeline,
+      analytics,
+      summary: {
+        total_restaurants: filteredRestaurants.length,
+        unique_episodes: Object.keys(episodeGroups).length,
+        date_range: dateRange
+      }
+    });
+
+  } catch (error) {
+    console.error('Error in timeline analytics:', error);
+    res.status(500).json({ error: 'Failed to generate timeline analytics' });
+  }
+});
+
+// TRENDS ANALYTICS API ENDPOINT
+app.get('/api/analytics/trends', async (req, res) => {
+  try {
+    const {
+      period = '3months', // 1month, 3months, 6months, 1year
+      trending_threshold = 3
+    } = req.query;
+
+    await fs.ensureDir(dataDir)
+    const files = await fs.readdir(dataDir)
+    const jsonFiles = files.filter(file => file.endsWith('.json'))
+    
+    const restaurants = []
+    for (const file of jsonFiles) {
+      try {
+        const filePath = path.join(dataDir, file)
+        const data = await fs.readJson(filePath)
+        restaurants.push(data)
+      } catch (err) {
+        console.warn(`Warning: Failed to read ${file}:`, err.message)
+      }
+    }
+
+    // Calculate period start date
+    const now = new Date();
+    const periodStartDate = new Date();
+    switch (period) {
+      case '1month':
+        periodStartDate.setMonth(now.getMonth() - 1);
+        break;
+      case '6months':
+        periodStartDate.setMonth(now.getMonth() - 6);
+        break;
+      case '1year':
+        periodStartDate.setFullYear(now.getFullYear() - 1);
+        break;
+      case '3months':
+      default:
+        periodStartDate.setMonth(now.getMonth() - 3);
+        break;
+    }
+
+    // Filter restaurants within period
+    const periodRestaurants = restaurants.filter(restaurant => {
+      if (restaurant.episode_info?.analysis_date) {
+        const restaurantDate = new Date(restaurant.episode_info.analysis_date);
+        return restaurantDate >= periodStartDate;
+      }
+      return false;
+    });
+
+    // Identify trending restaurants (multiple mentions or highly rated)
+    const restaurantGroups = {};
+    periodRestaurants.forEach(restaurant => {
+      const name = restaurant.name_hebrew;
+      if (!restaurantGroups[name]) {
+        restaurantGroups[name] = [];
+      }
+      restaurantGroups[name].push(restaurant);
+    });
+
+    const trendingRestaurants = Object.entries(restaurantGroups)
+      .filter(([name, mentions]) => mentions.length >= parseInt(trending_threshold))
+      .map(([name, mentions]) => mentions[0]) // Take first mention as representative
+      .slice(0, 10);
+
+    // Regional patterns
+    const regionalGroups = {
+      'North': { cities: {}, total: 0, cuisines: {}, ratings: [] },
+      'Center': { cities: {}, total: 0, cuisines: {}, ratings: [] },
+      'South': { cities: {}, total: 0, cuisines: {}, ratings: [] }
+    };
+
+    periodRestaurants.forEach(restaurant => {
+      const region = restaurant.location?.region || 'Center'; // Default to Center
+      const city = restaurant.location?.city;
+      const cuisine = restaurant.cuisine_type;
+      const rating = restaurant.rating?.google_rating;
+
+      if (regionalGroups[region]) {
+        regionalGroups[region].total++;
+        
+        if (city) {
+          regionalGroups[region].cities[city] = (regionalGroups[region].cities[city] || 0) + 1;
+        }
+        if (cuisine) {
+          regionalGroups[region].cuisines[cuisine] = (regionalGroups[region].cuisines[cuisine] || 0) + 1;
+        }
+        if (rating) {
+          regionalGroups[region].ratings.push(rating);
+        }
+      }
+    });
+
+    const regional_patterns = Object.entries(regionalGroups).map(([region, data]) => ({
+      region,
+      cities: data.cities,
+      total: data.total,
+      cuisines: data.cuisines,
+      average_rating: data.ratings.length > 0 ? 
+        data.ratings.reduce((sum, r) => sum + r, 0) / data.ratings.length : 0,
+      total_ratings: data.ratings.length,
+      top_city: Object.entries(data.cities).sort((a, b) => b[1] - a[1])[0]?.[0] || '',
+      top_cuisine: Object.entries(data.cuisines).sort((a, b) => b[1] - a[1])[0]?.[0] || ''
+    }));
+
+    // Cuisine trends by month
+    const cuisineTrends = {};
+    periodRestaurants.forEach(restaurant => {
+      const cuisine = restaurant.cuisine_type;
+      const date = new Date(restaurant.episode_info.analysis_date);
+      const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+
+      if (!cuisineTrends[cuisine]) {
+        cuisineTrends[cuisine] = {
+          cuisine,
+          monthly_counts: {},
+          total: 0,
+          recent_mentions: 0
+        };
+      }
+
+      cuisineTrends[cuisine].total++;
+      cuisineTrends[cuisine].monthly_counts[monthKey] = 
+        (cuisineTrends[cuisine].monthly_counts[monthKey] || 0) + 1;
+
+      // Count recent mentions (last month)
+      const lastMonth = new Date();
+      lastMonth.setMonth(lastMonth.getMonth() - 1);
+      if (date >= lastMonth) {
+        cuisineTrends[cuisine].recent_mentions++;
+      }
+    });
+
+    const cuisine_trends = Object.values(cuisineTrends)
+      .sort((a, b) => b.total - a.total)
+      .slice(0, 10);
+
+    // Find most active region
+    const most_active_region = regional_patterns
+      .sort((a, b) => b.total - a.total)[0]?.region || '';
+
+    console.log(`📈 Trends analysis: ${trendingRestaurants.length} trending, ${periodRestaurants.length} total in ${period}`);
+
+    res.json({
+      trending_restaurants: trendingRestaurants,
+      regional_patterns,
+      cuisine_trends,
+      period_summary: {
+        period,
+        restaurants_discovered: periodRestaurants.length,
+        most_active_region
+      }
+    });
+
+  } catch (error) {
+    console.error('Error in trends analytics:', error);
+    res.status(500).json({ error: 'Failed to generate trends analytics' });
+  }
+});
+
 app.get('/api/restaurants/:id', async (req, res) => {
   try {
     const { id } = req.params
