@@ -130,7 +130,7 @@ export function RestaurantMap({ restaurants, selectedRestaurant, onRestaurantSel
       for (const restaurant of restaurants) {
         try {
           const placeDetails = await searchRestaurantPlace(restaurant)
-          enriched.push({ ...restaurant, placeDetails })
+          enriched.push({ ...restaurant, placeDetails: placeDetails || undefined })
 
           if (placeDetails) {
             const marker = new window.google.maps.Marker({

@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge"
 import { 
   LayoutDashboard, 
   Search, 
-  Timeline, 
+  Clock, 
   Map, 
   TrendingUp, 
   Heart, 
@@ -139,36 +139,36 @@ export function MasterDashboard() {
     const totalRestaurants = restaurants.length
     const totalEpisodes = new Set(restaurants.map(r => r.episode_info?.video_id).filter(Boolean)).size
     
-    const cuisineCount = new Map<string, number>()
-    const locationCount = new Map<string, number>()
-    const opinionCount = new Map<string, number>()
+    const cuisineCount: Record<string, number> = {}
+    const locationCount: Record<string, number> = {}
+    const opinionCount: Record<string, number> = {}
     
     restaurants.forEach(restaurant => {
       // Count cuisines
       if (restaurant.cuisine_type) {
-        cuisineCount.set(restaurant.cuisine_type, (cuisineCount.get(restaurant.cuisine_type) || 0) + 1)
+        cuisineCount[restaurant.cuisine_type] = (cuisineCount[restaurant.cuisine_type] || 0) + 1
       }
       
       // Count locations
       if (restaurant.location.city) {
-        locationCount.set(restaurant.location.city, (locationCount.get(restaurant.location.city) || 0) + 1)
+        locationCount[restaurant.location.city] = (locationCount[restaurant.location.city] || 0) + 1
       }
       
       // Count opinions
       if (restaurant.host_opinion) {
-        opinionCount.set(restaurant.host_opinion, (opinionCount.get(restaurant.host_opinion) || 0) + 1)
+        opinionCount[restaurant.host_opinion] = (opinionCount[restaurant.host_opinion] || 0) + 1
       }
     })
 
-    const topCuisines = Array.from(cuisineCount.entries()).sort((a, b) => b[1] - a[1]).slice(0, 5)
-    const topLocations = Array.from(locationCount.entries()).sort((a, b) => b[1] - a[1]).slice(0, 5)
+    const topCuisines = Object.entries(cuisineCount).sort((a, b) => b[1] - a[1]).slice(0, 5)
+    const topLocations = Object.entries(locationCount).sort((a, b) => b[1] - a[1]).slice(0, 5)
 
     return {
       totalRestaurants,
       totalEpisodes,
       topCuisines,
       topLocations,
-      opinionDistribution: Object.fromEntries(opinionCount.entries())
+      opinionDistribution: opinionCount
     }
   }, [displayRestaurants])
 
@@ -251,7 +251,7 @@ export function MasterDashboard() {
                   value="timeline" 
                   className="flex items-center gap-2 data-[state=active]:bg-purple-500 data-[state=active]:text-white"
                 >
-                  <Timeline className="size-4" />
+                  <Clock className="size-4" />
                   ציר זמן
                 </TabsTrigger>
                 <TabsTrigger 
