@@ -32,6 +32,11 @@ export interface Restaurant {
   contact_info: ContactInfo;
   business_news: string | null;
   mention_context: 'new_opening' | 'review' | 'news' | 'recommendation' | 'comparison' | 'business_news';
+  episode_info?: EpisodeInfo;
+  mention_timestamps?: MentionTimestamp[];
+  google_places?: GooglePlacesInfo;
+  rating?: Rating;
+  food_trends?: string[];
 }
 
 export interface EpisodeInfo {
@@ -39,6 +44,29 @@ export interface EpisodeInfo {
   video_url: string;
   language: string;
   analysis_date: string;
+  total_restaurants_found?: number;
+  processing_method?: string;
+}
+
+export interface MentionTimestamp {
+  timestamp: string;
+  duration?: string;
+  context: string;
+  mention_type: 'introduction' | 'review' | 'recommendation' | 'comparison' | 'closing';
+  key_points?: string[];
+}
+
+export interface GooglePlacesInfo {
+  place_id?: string;
+  google_name?: string;
+  google_url?: string;
+  enriched_at?: string;
+}
+
+export interface Rating {
+  google_rating?: number;
+  total_reviews?: number;
+  price_level?: number;
 }
 
 export interface PodcastData {
