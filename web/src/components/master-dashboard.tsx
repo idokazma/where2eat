@@ -25,6 +25,7 @@ import { LocationFilter } from "./location-filter"
 import { CuisineFilter } from "./cuisine-filter"
 import { PriceFilter } from "./price-filter"
 import { useFavorites } from "@/contexts/favorites-context"
+import { TrendingAnalytics } from "./trending-analytics"
 
 interface SearchResults {
   restaurants: Restaurant[]
@@ -449,47 +450,24 @@ export function MasterDashboard() {
 
           {/* Analytics Tab */}
           <TabsContent value="analytics" className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Top Cuisines */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>המטבחים הפופולריים</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
-                    {dashboardAnalytics.topCuisines.map(([cuisine, count], index) => (
-                      <div key={cuisine} className="flex items-center justify-between p-3 bg-orange-50 rounded-lg">
-                        <div className="flex items-center gap-3">
-                          <span className="font-bold text-orange-600">#{index + 1}</span>
-                          <span className="font-medium">{cuisine}</span>
-                        </div>
-                        <Badge className="bg-orange-500 text-white">{count} מסעדות</Badge>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Top Locations */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>המיקומים הפופולריים</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
-                    {dashboardAnalytics.topLocations.map(([location, count], index) => (
-                      <div key={location} className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
-                        <div className="flex items-center gap-3">
-                          <span className="font-bold text-green-600">#{index + 1}</span>
-                          <span className="font-medium">{location}</span>
-                        </div>
-                        <Badge className="bg-green-500 text-white">{count} מסעדות</Badge>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+            <TrendingAnalytics 
+              restaurants={displayRestaurants}
+              onRestaurantFilter={(filterType, value) => {
+                // Apply filter based on type
+                if (filterType === 'cuisine') {
+                  setClassicFilters(prev => ({ 
+                    ...prev, 
+                    selectedCuisines: prev.selectedCuisines.includes(value) 
+                      ? prev.selectedCuisines.filter(c => c !== value)
+                      : [...prev.selectedCuisines, value]
+                  }))
+                } else if (filterType === 'location') {
+                  setClassicFilters(prev => ({ ...prev, selectedCity: value }))
+                }
+                // Switch to overview tab to see results
+                setActiveTab('overview')
+              }}
+            />
           </TabsContent>
         </Tabs>
       </div>
