@@ -64,7 +64,8 @@ class YouTubeTranscriptCollector:
             return None
 
         try:
-            transcript_list = YouTubeTranscriptApi.list_transcripts(video_id)
+            api = YouTubeTranscriptApi()
+            transcript_list = api.list(video_id)
             available = []
 
             for transcript in transcript_list:
@@ -108,19 +109,20 @@ class YouTubeTranscriptCollector:
 
         # If no common language works, try to get any available transcript
         try:
-            transcript_list = YouTubeTranscriptApi.list_transcripts(video_id)
+            api = YouTubeTranscriptApi()
+            transcript_list = api.list(video_id)
             for transcript in transcript_list:
                 try:
                     data = transcript.fetch()
-                    full_text = ' '.join([entry['text'] for entry in data])
+                    full_text = ' '.join([snippet.text for snippet in data.snippets])
 
                     return {
                         'video_id': video_id,
                         'video_url': f'https://www.youtube.com/watch?v={video_id}',
                         'transcript': full_text,
-                        'segments': data,
+                        'segments': [{'text': snippet.text, 'start': snippet.start, 'duration': snippet.duration} for snippet in data.snippets],
                         'language': transcript.language_code,
-                        'segment_count': len(data)
+                        'segment_count': len(data.snippets)
                     }
                 except Exception:
                     continue
@@ -154,21 +156,22 @@ class YouTubeTranscriptCollector:
 
         try:
             # Fetch transcript
-            transcript_list = YouTubeTranscriptApi.get_transcript(
+            api = YouTubeTranscriptApi()
+            transcript_data = api.fetch(
                 video_id,
                 languages=languages
             )
 
             # Combine all transcript segments into full text
-            full_text = ' '.join([entry['text'] for entry in transcript_list])
+            full_text = ' '.join([snippet.text for snippet in transcript_data.snippets])
 
             return {
                 'video_id': video_id,
                 'video_url': f'https://www.youtube.com/watch?v={video_id}',
                 'transcript': full_text,
-                'segments': transcript_list,
+                'segments': [{'text': snippet.text, 'start': snippet.start, 'duration': snippet.duration} for snippet in transcript_data.snippets],
                 'language': languages[0] if languages else 'en',
-                'segment_count': len(transcript_list)
+                'segment_count': len(transcript_data.snippets)
             }
 
         except TranscriptsDisabled:

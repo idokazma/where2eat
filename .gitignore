@@ -4,9 +4,6 @@ __pycache__/
 *$py.class
 *.so
 .Python
-env/
-venv/
-ENV/
 build/
 develop-eggs/
 dist/
@@ -19,9 +16,41 @@ parts/
 sdist/
 var/
 wheels/
+pip-wheel-metadata/
+share/python-wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+MANIFEST
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# Virtual environments
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
 
 # IDE
 .vscode/
@@ -30,10 +59,94 @@ wheels/
 *.swo
 *~
 
-# OS
+# macOS
 .DS_Store
-Thumbs.db
+.AppleDouble
+.LSOverride
 
-# Environment
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Environment variables
 .env
 .env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# API Keys and secrets
+config/secrets.json
+*.key
+*.pem
+
+# Generated data directories (keep structure, ignore content)
+data/restaurants/*.json
+data/transcripts/*.json
+data/transcripts/*.txt
+data/analyses/*.md
+data/analyses/*.txt
+
+# Generated search requests (temporary files)
+restaurant_images/search_requests/*.txt
+restaurant_locations/search_requests/*.txt
+restaurant_images/results/*.json
+restaurant_locations/results/*.json
+restaurant_locations/map_data/*.json
+
+# Map integration outputs
+map_integration/
+restaurant_images/batch_*.txt
+restaurant_locations/batch_*.txt
+
+# Logs
+logs/
+*.log
+log_*.txt
+
+# Temporary files
+*.tmp
+*.temp
+temp/
+tmp/
+
+# Node.js (for web frontend)
+web/node_modules/
+web/.next/
+web/out/
+web/build/
+
+# Package manager
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# Next.js
+web/.next/
+web/out/
+
+# Production build
+web/dist/
+web/build/
+
+# TypeScript
+*.tsbuildinfo
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Keep directory structure but ignore generated files
+!data/restaurants/.gitkeep
+!data/transcripts/.gitkeep
+!data/analyses/.gitkeep
+!restaurant_images/search_requests/.gitkeep
+!restaurant_images/results/.gitkeep
+!restaurant_locations/search_requests/.gitkeep
+!restaurant_locations/results/.gitkeep
+!restaurant_locations/map_data/.gitkeep
