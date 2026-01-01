@@ -882,6 +882,240 @@ app.get('/api/places/details/:placeId', async (req, res) => {
   }
 })
 
+// CHANNEL PROCESSING API ENDPOINTS
+app.post('/api/analyze/channel', async (req, res) => {
+  try {
+    const { channel_url, filters = {}, processing_options = {} } = req.body
+    
+    if (!channel_url || (!channel_url.includes('youtube.com/channel') && !channel_url.includes('youtube.com/c/') && !channel_url.includes('youtube.com/user/') && !channel_url.includes('youtube.com/@'))) {
+      return res.status(400).json({ error: 'Valid YouTube channel URL required' })
+    }
+    
+    console.log('🚀 STARTING YOUTUBE CHANNEL ANALYSIS PROCESS')
+    console.log('=' * 50)
+    console.log(`📺 Channel URL: ${channel_url}`)
+    console.log(`🔧 Filters: ${JSON.stringify(filters)}`)
+    console.log(`⚙️ Options: ${JSON.stringify(processing_options)}`)
+    console.log(`⏰ Timestamp: ${new Date().toISOString()}`)
+    
+    // Start the Python channel analysis in the background
+    const { spawn } = require('child_process')
+    const pythonPath = path.join(__dirname, '..', 'scripts', 'process_channel.py')
+    const venvPython = path.join(__dirname, '..', 'venv', 'bin', 'python')
+    
+    console.log(`🐍 Python script path: ${pythonPath}`)
+    console.log(`🐍 Using venv Python: ${venvPython}`)
+    
+    // Prepare arguments for Python script
+    const args = [
+      pythonPath,
+      '--channel_url', channel_url,
+      '--max_results', (filters.max_results || 50).toString(),
+      '--batch_size', (processing_options.batch_size || 5).toString()
+    ]
+    
+    if (filters.date_from) args.push('--date_from', filters.date_from)
+    if (filters.date_to) args.push('--date_to', filters.date_to)
+    if (filters.min_views) args.push('--min_views', filters.min_views.toString())
+    if (filters.min_duration_seconds) args.push('--min_duration_seconds', filters.min_duration_seconds.toString())
+    if (processing_options.skip_existing !== undefined) args.push('--skip_existing', processing_options.skip_existing.toString())
+    
+    // Use virtual environment Python with proper activation
+    const python = spawn(venvPython, args, {
+      cwd: path.join(__dirname, '..'),
+      stdio: ['pipe', 'pipe', 'pipe'],
+      env: { 
+        ...process.env, 
+        PYTHONPATH: path.join(__dirname, '..'),
+        VIRTUAL_ENV: path.join(__dirname, '..', 'venv'),
+        PATH: `${path.join(__dirname, '..', 'venv', 'bin')}:${process.env.PATH}`
+      }
+    })
+    
+    let output = ''
+    let errorOutput = ''
+    
+    python.stdout.on('data', (data) => {
+      const text = data.toString()
+      output += text
+      console.log('📤 PYTHON STDOUT:', text.trim())
+    })
+    
+    python.stderr.on('data', (data) => {
+      const text = data.toString()
+      errorOutput += text
+      console.log('🚨 PYTHON STDERR:', text.trim())
+    })
+    
+    python.on('close', (code) => {
+      console.log('🏁 PYTHON CHANNEL PROCESS COMPLETE')
+      console.log('=' * 50)
+      console.log(`📊 Exit Code: ${code}`)
+      console.log(`📝 Total Output Length: ${output.length}`)
+      console.log(`⚠️  Total Error Length: ${errorOutput.length}`)
+      
+      if (code === 0) {
+        console.log('✅ Channel analysis completed successfully!')
+        console.log('📁 Check data/restaurants/ for new restaurant files')
+      } else {
+        console.log('❌ Channel analysis failed!')
+        console.log('🔍 Error output:', errorOutput.slice(0, 500) + '...')
+      }
+    })
+    
+    python.on('error', (error) => {
+      console.log('💥 PYTHON CHANNEL PROCESS ERROR:', error.message)
+    })
+    
+    // Generate job ID for tracking
+    const jobId = uuidv4()
+    
+    res.status(202).json({ 
+      job_id: jobId,
+      message: 'Channel analysis started successfully',
+      status: 'started',
+      channel_url,
+      filters,
+      processing_options,
+      estimated_duration_minutes: Math.ceil((filters.max_results || 50) * 2 / (processing_options.batch_size || 5))
+    })
+    
+  } catch (error) {
+    console.error('Error starting channel analysis:', error)
+    res.status(500).json({ error: 'Failed to start channel analysis' })
+  }
+})
+
+// Get job status endpoint
+app.get('/api/jobs/:jobId/status', async (req, res) => {
+  try {
+    const { jobId } = req.params
+    
+    // For now, return a mock status since we don't have persistent job tracking yet
+    // In full implementation, this would query the Python batch processor
+    res.json({
+      job_id: jobId,
+      status: 'processing',
+      progress: {
+        videos_completed: 5,
+        videos_total: 20,
+        videos_failed: 1,
+        restaurants_found: 12,
+        current_video: {
+          title: 'Processing video...',
+          progress: 'analyzing_transcript'
+        }
+      },
+      estimated_completion: new Date(Date.now() + 30 * 60 * 1000).toISOString(),
+      started_at: new Date().toISOString()
+    })
+    
+  } catch (error) {
+    console.error('Error getting job status:', error)
+    res.status(500).json({ error: 'Failed to get job status' })
+  }
+})
+
+// Get job results endpoint  
+app.get('/api/jobs/:jobId/results', async (req, res) => {
+  try {
+    const { jobId } = req.params
+    
+    // Mock results for now
+    res.json({
+      job_id: jobId,
+      status: 'completed',
+      summary: {
+        videos_processed: 18,
+        videos_failed: 2,
+        restaurants_found: 45,
+        processing_duration_minutes: 87
+      },
+      statistics: {
+        top_cuisines: [
+          { cuisine: 'Mediterranean', count: 12 },
+          { cuisine: 'Italian', count: 8 }
+        ],
+        top_cities: [
+          { city: 'Tel Aviv', count: 20 },
+          { city: 'Jerusalem', count: 15 }
+        ]
+      },
+      failed_videos: [
+        {
+          video_id: 'abc123',
+          title: 'Video Title',
+          error: 'Transcript not available'
+        }
+      ]
+    })
+    
+  } catch (error) {
+    console.error('Error getting job results:', error)
+    res.status(500).json({ error: 'Failed to get job results' })
+  }
+})
+
+// Cancel job endpoint
+app.delete('/api/jobs/:jobId', async (req, res) => {
+  try {
+    const { jobId } = req.params
+    
+    // Mock cancellation for now
+    console.log(`🛑 Cancelling job: ${jobId}`)
+    
+    res.json({
+      job_id: jobId,
+      status: 'cancelled',
+      message: 'Job cancelled successfully'
+    })
+    
+  } catch (error) {
+    console.error('Error cancelling job:', error)
+    res.status(500).json({ error: 'Failed to cancel job' })
+  }
+})
+
+// List active jobs endpoint
+app.get('/api/jobs', async (req, res) => {
+  try {
+    const { status } = req.query
+    
+    // Mock active jobs for now
+    const mockJobs = [
+      {
+        job_id: '123e4567-e89b-12d3-a456-426614174000',
+        status: 'processing',
+        channel_info: {
+          channel_title: 'Food Channel',
+          channel_id: 'UCtest123'
+        },
+        progress: {
+          videos_completed: 15,
+          videos_total: 50,
+          percentage: 30.0
+        },
+        started_at: new Date().toISOString()
+      }
+    ]
+    
+    // Filter by status if specified
+    let filteredJobs = mockJobs
+    if (status) {
+      filteredJobs = mockJobs.filter(job => job.status === status)
+    }
+    
+    res.json({
+      jobs: filteredJobs,
+      count: filteredJobs.length
+    })
+    
+  } catch (error) {
+    console.error('Error listing jobs:', error)
+    res.status(500).json({ error: 'Failed to list jobs' })
+  }
+})
+
 app.post('/api/analyze', async (req, res) => {
   try {
     const { url } = req.body
