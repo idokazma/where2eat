@@ -11,6 +11,7 @@ Intelligent web scraping system using autonomous agents to discover trending res
 - **📍 Map Integration**: Ready-to-use map visualizations (Google Maps, Leaflet)
 - **🔍 Search Capabilities**: Advanced restaurant search and discovery
 - **🌐 Web Interface**: Modern React dashboard for browsing results
+- **🧪 Test-Driven Development**: 100% TDD compliance for all new features
 
 ## 📁 Project Structure
 
@@ -171,30 +172,76 @@ Precise coordinates and Google Business info:
 
 ## 🛠️ Development
 
+### 🧪 Test-Driven Development (TDD)
+
+**🚨 MANDATORY: All development must follow TDD principles**
+
+#### TDD Workflow (Red-Green-Refactor):
+1. **🔴 Red**: Write a failing test that describes desired functionality
+2. **🟢 Green**: Write minimal code to make the test pass  
+3. **🔵 Refactor**: Improve code while keeping all tests passing
+
+#### TDD Requirements:
+- **Write tests FIRST** for all new features and bug fixes
+- **No code without tests** - commits rejected without corresponding tests
+- **Maintain >90% test coverage** for all new code
+- **Test edge cases and error conditions** comprehensively
+
+#### TDD Example:
+```python
+# Step 1: Write failing test first
+def test_validate_restaurant_name_rejects_empty():
+    validator = RestaurantValidator()
+    with pytest.raises(ValueError):
+        validator.validate_name("")
+
+# Step 2: Make test pass
+class RestaurantValidator:
+    def validate_name(self, name: str) -> bool:
+        if not name:
+            raise ValueError("Name cannot be empty")
+        return True
+
+# Step 3: Refactor while tests pass
+```
+
 ### Running Tests
 
 ```bash
 # Run all tests
 python -m pytest tests/
 
-# Run with coverage
-python -m pytest tests/ --cov=src --cov-report=html
+# Run with coverage (minimum 90%)
+python -m pytest tests/ --cov=src --cov-report=html --cov-fail-under=90
+
+# TDD watch mode (re-run tests on file changes)
+python -m pytest tests/ --looponfail
 ```
 
 ### Code Style
 
 The project follows PEP 8 and uses:
+- **TDD**: Test-Driven Development (mandatory)
 - **Formatting**: Black
 - **Linting**: Ruff
 - **Type hints**: Required for all functions
+- **Test Coverage**: >90% for all new code
 
-### Adding New Features
+### Adding New Features (TDD Process)
 
-1. Create feature branch: `git checkout -b feature/your-feature`
-2. Add code to appropriate `src/` module
-3. Write tests in `tests/` directory
-4. Update documentation
-5. Submit pull request
+1. **Create feature branch**: `git checkout -b feature/your-feature`
+2. **Write failing tests first**: Follow Red-Green-Refactor cycle
+3. **Implement minimal code**: Make tests pass
+4. **Refactor**: Improve code while maintaining test coverage
+5. **Verify TDD compliance**: All tests pass, >90% coverage
+6. **Update documentation**: Include TDD examples
+7. **Submit pull request**: Evidence of TDD process required
+
+### Documentation
+
+- **📚 [TDD Guidelines](docs/TDD_GUIDELINES.md)**: Comprehensive TDD requirements
+- **🏗️ [Development Plan](docs/DEVELOPMENT_PLAN.md)**: Sprint structure and TDD mandate
+- **🧪 [Testing Strategy](docs/TESTING_STRATEGY.md)**: Testing principles and TDD enforcement
 
 ## 🏗️ Architecture
 

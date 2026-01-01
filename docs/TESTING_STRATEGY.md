@@ -17,17 +17,35 @@ This document outlines the comprehensive testing strategy for Restaurant Trend S
 ## Testing Principles
 
 ### Core Principles
-1. **Test Early, Test Often**: Write tests alongside code
-2. **Automation First**: Automated tests over manual where possible
-3. **Test Pyramid**: More unit tests, fewer E2E tests
-4. **Shift Left**: Catch bugs early in development
-5. **Continuous Testing**: Tests run on every commit
-6. **Quality Gates**: No deploy without passing tests
+1. **Test-Driven Development (TDD)**: Write tests BEFORE implementing features
+2. **Red-Green-Refactor**: Follow TDD cycle religiously  
+3. **Test Early, Test Often**: Tests drive development process
+4. **Automation First**: Automated tests over manual where possible
+5. **Test Pyramid**: More unit tests, fewer E2E tests
+6. **Shift Left**: Catch bugs early in development
+7. **Continuous Testing**: Tests run on every commit
+8. **Quality Gates**: No deploy without passing tests
+
+### TDD Mandate (Effective Immediately)
+
+**ALL development must follow Test-Driven Development principles:**
+
+#### TDD Workflow:
+1. **🔴 Red**: Write a failing test that describes desired functionality
+2. **🟢 Green**: Write minimal code to make the test pass
+3. **🔵 Refactor**: Improve code while keeping all tests passing
+
+#### TDD Enforcement:
+- **No code commits** without corresponding tests written first
+- **Pull requests rejected** if TDD process not followed
+- **Tests must fail initially** to prove they test the right thing
+- **Code reviews verify** TDD process was followed
 
 ### Quality Targets
-- **Code Coverage**: >80% backend, >70% frontend
+- **Code Coverage**: >90% backend, >85% frontend (increased due to TDD)
 - **Test Success Rate**: >99% (on main branch)
 - **Test Execution Time**: <5 minutes (unit + integration)
+- **TDD Compliance**: 100% for all new features and bug fixes
 - **Flaky Test Rate**: <1%
 - **Bug Escape Rate**: <5% (bugs found in production)
 

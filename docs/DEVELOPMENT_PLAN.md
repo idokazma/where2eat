@@ -27,14 +27,31 @@ This document outlines the development methodology, sprint structure, team organ
 
 ### Definition of Done
 A story is complete when:
-1. ✅ Code written and follows style guide
-2. ✅ Unit tests written (>80% coverage)
-3. ✅ Integration tests passing
-4. ✅ Code reviewed and approved
-5. ✅ Documentation updated
-6. ✅ Deployed to staging
-7. ✅ Acceptance criteria met
-8. ✅ No critical bugs
+1. ✅ **TDD followed** - Tests written BEFORE implementation
+2. ✅ Code written and follows style guide
+3. ✅ Unit tests written (>90% coverage)
+4. ✅ Integration tests passing
+5. ✅ Code reviewed and approved
+6. ✅ Documentation updated
+7. ✅ Deployed to staging
+8. ✅ Acceptance criteria met
+9. ✅ No critical bugs
+
+### Test-Driven Development (TDD) Mandate
+
+**EFFECTIVE IMMEDIATELY**: All development must follow TDD principles.
+
+#### TDD Workflow (Red-Green-Refactor):
+1. **🔴 Red Phase**: Write a failing test that describes desired functionality
+2. **🟢 Green Phase**: Write minimal code to make the test pass
+3. **🔵 Refactor Phase**: Improve code while keeping all tests passing
+
+#### TDD Requirements:
+- **Write tests first** for ALL new features and bug fixes
+- **No code without tests** - commits without corresponding tests will be rejected
+- **Maintain >90% test coverage** for all new code
+- **Test edge cases and error conditions** comprehensively
+- **Use descriptive test names** that explain expected behavior
 
 ### Version Control
 - **Branching Strategy**: Git Flow

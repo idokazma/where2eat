@@ -227,11 +227,51 @@ No external dependencies required.
 
 When contributing to the restaurant search agent:
 
-1. **Follow PEP 8** style guidelines
-2. **Add type hints** for all function parameters and returns
-3. **Include docstrings** using Google style
-4. **Write tests** for new functionality
-5. **Update logging** with appropriate levels
+1. **Follow TDD (Test-Driven Development)** - Write tests BEFORE implementing features
+2. **Follow PEP 8** style guidelines
+3. **Add type hints** for all function parameters and returns
+4. **Include docstrings** using Google style
+5. **Write comprehensive tests** for all functionality
+6. **Update logging** with appropriate levels
+
+### Test-Driven Development (TDD) Workflow
+
+**ALL future development must follow TDD principles:**
+
+1. **Red Phase**: Write a failing test that describes the desired functionality
+2. **Green Phase**: Write the minimal code to make the test pass
+3. **Refactor Phase**: Improve the code while keeping tests passing
+
+#### TDD Example Workflow:
+```python
+# Step 1: Write failing test first
+def test_validate_restaurant_name(self):
+    agent = RestaurantSearchAgent()
+    
+    # Should raise ValueError for invalid names
+    with self.assertRaises(ValueError):
+        agent.validate_restaurant_name("")
+    
+    # Should return True for valid names
+    self.assertTrue(agent.validate_restaurant_name("Valid Restaurant"))
+
+# Step 2: Run test (should fail)
+# Step 3: Implement minimal code to pass
+def validate_restaurant_name(self, name: str) -> bool:
+    if not name or not name.strip():
+        raise ValueError("Restaurant name cannot be empty")
+    return True
+
+# Step 4: Run test (should pass)
+# Step 5: Refactor if needed
+```
+
+#### TDD Requirements:
+- **Write tests first** for all new features and bug fixes
+- **Maintain >90% test coverage** for all new code
+- **Test all edge cases** and error conditions
+- **Use descriptive test names** that explain the behavior
+- **Test one thing per test** - keep tests focused and atomic
 
 ### Code Style
 
