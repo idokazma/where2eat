@@ -9,6 +9,7 @@ from youtube_transcript_api._errors import (
     NoTranscriptFound,
     VideoUnavailable
 )
+from youtube_transcript_api import TranscriptList
 from typing import List, Dict, Optional
 import re
 
@@ -43,6 +44,89 @@ class YouTubeTranscriptCollector:
             match = re.search(pattern, url)
             if match:
                 return match.group(1)
+
+        return None
+
+    def list_available_transcripts(self, video_url: str) -> Optional[List[Dict]]:
+        """
+        List all available transcript languages for a video.
+
+        Args:
+            video_url: YouTube URL or video ID
+
+        Returns:
+            List of available transcript info or None if unavailable
+        """
+        video_id = self.extract_video_id(video_url)
+
+        if not video_id:
+            print(f"Error: Could not extract video ID from: {video_url}")
+            return None
+
+        try:
+            transcript_list = YouTubeTranscriptApi.list_transcripts(video_id)
+            available = []
+
+            for transcript in transcript_list:
+                available.append({
+                    'language': transcript.language,
+                    'language_code': transcript.language_code,
+                    'is_generated': transcript.is_generated,
+                    'is_translatable': transcript.is_translatable
+                })
+
+            return available
+
+        except Exception as e:
+            print(f"Error listing transcripts for {video_id}: {str(e)}")
+            return None
+
+    def get_transcript_auto(self, video_url: str) -> Optional[Dict]:
+        """
+        Automatically fetch transcript in any available language.
+        Tries common languages first, then falls back to any available.
+
+        Args:
+            video_url: YouTube URL or video ID
+
+        Returns:
+            Dictionary containing transcript data or None
+        """
+        video_id = self.extract_video_id(video_url)
+
+        if not video_id:
+            print(f"Error: Could not extract video ID from: {video_url}")
+            return None
+
+        # Try common languages in order of preference
+        common_languages = ['en', 'he', 'iw', 'es', 'fr', 'de', 'it', 'pt', 'ru', 'ar']
+
+        for lang in common_languages:
+            result = self.get_transcript(video_url, languages=[lang])
+            if result:
+                return result
+
+        # If no common language works, try to get any available transcript
+        try:
+            transcript_list = YouTubeTranscriptApi.list_transcripts(video_id)
+            for transcript in transcript_list:
+                try:
+                    data = transcript.fetch()
+                    full_text = ' '.join([entry['text'] for entry in data])
+
+                    return {
+                        'video_id': video_id,
+                        'video_url': f'https://www.youtube.com/watch?v={video_id}',
+                        'transcript': full_text,
+                        'segments': data,
+                        'language': transcript.language_code,
+                        'segment_count': len(data)
+                    }
+                except Exception:
+                    continue
+
+        except Exception as e:
+            print(f"Error: Could not fetch any transcript for {video_id}: {str(e)}")
 
         return None
 

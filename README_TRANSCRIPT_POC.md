@@ -5,7 +5,9 @@ This is a proof of concept for collecting transcripts from YouTube videos to hel
 ## Features
 
 - Extract transcripts from YouTube videos using various URL formats
-- Support for multiple languages
+- **Full multi-language support** (Hebrew, English, Spanish, Arabic, and more)
+- **Auto-detect available languages** and fetch in any language
+- **List all available transcript languages** for any video
 - Batch processing of multiple videos
 - Keyword search within transcripts
 - Timestamp support for all transcript segments
@@ -47,6 +49,24 @@ video_urls = [
 
 results = collector.get_transcripts_batch(video_urls)
 print(f"Successfully fetched {len(results)} transcripts")
+```
+
+### Multi-Language Support
+
+```python
+# Fetch Hebrew transcript
+result = collector.get_transcript(
+    'https://www.youtube.com/watch?v=VIDEO_ID',
+    languages=['he', 'iw']  # Hebrew language codes
+)
+
+# Auto-detect and fetch any available language
+result = collector.get_transcript_auto('https://www.youtube.com/watch?v=VIDEO_ID')
+
+# List all available languages for a video
+available = collector.list_available_transcripts('https://www.youtube.com/watch?v=VIDEO_ID')
+for transcript in available:
+    print(f"{transcript['language']} ({transcript['language_code']})")
 ```
 
 ### Keyword Search
@@ -95,7 +115,24 @@ This will walk you through:
 - Parameters:
   - `video_url` (str): YouTube URL or video ID
   - `languages` (list): Preferred language codes (default: ['en'])
+    - Hebrew: `['he', 'iw']`
+    - English: `['en']`
+    - Spanish: `['es']`
+    - Arabic: `['ar']`
 - Returns: Dictionary with transcript data or None
+
+**get_transcript_auto(video_url)**
+- Automatically fetch transcript in any available language
+- Tries common languages first (Hebrew, English, Spanish, etc.)
+- Parameters:
+  - `video_url` (str): YouTube URL or video ID
+- Returns: Dictionary with transcript data or None
+
+**list_available_transcripts(video_url)**
+- List all available transcript languages for a video
+- Parameters:
+  - `video_url` (str): YouTube URL or video ID
+- Returns: List of available transcript info with language codes
 
 **get_transcripts_batch(video_urls, languages=['en'])**
 - Fetch transcripts for multiple videos

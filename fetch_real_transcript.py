@@ -12,13 +12,28 @@ def main():
     print("FETCHING REAL TRANSCRIPT FROM YOUTUBE")
     print("=" * 80)
     print(f"\nVideo URL: {video_url}")
-    print("\nAttempting to fetch transcript...\n")
+    print("\nStep 1: Checking available languages...\n")
 
     # Initialize collector
     collector = YouTubeTranscriptCollector()
 
-    # Fetch the transcript
-    result = collector.get_transcript(video_url)
+    # First, list available transcripts
+    available = collector.list_available_transcripts(video_url)
+    if available:
+        print("Available transcript languages:")
+        for transcript in available:
+            generated = " (auto-generated)" if transcript['is_generated'] else ""
+            print(f"  • {transcript['language']} ({transcript['language_code']}){generated}")
+        print()
+
+    # Try Hebrew first (since user mentioned it's in Hebrew)
+    print("Step 2: Attempting to fetch Hebrew transcript...\n")
+    result = collector.get_transcript(video_url, languages=['he', 'iw'])
+
+    # If Hebrew doesn't work, try auto-detect
+    if not result:
+        print("Hebrew not found. Trying auto-detect...\n")
+        result = collector.get_transcript_auto(video_url)
 
     if result:
         print("✓ SUCCESS!\n")
