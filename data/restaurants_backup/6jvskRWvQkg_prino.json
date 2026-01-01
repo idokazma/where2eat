@@ -1,0 +1,97 @@
+{
+  "name_hebrew": "פרינו",
+  "name_english": "Prino",
+  "location": {
+    "city": "אשדוד",
+    "neighborhood": "",
+    "address": "",
+    "region": "דרום",
+    "coordinates": {
+      "latitude": 31.7924336,
+      "longitude": 34.6384844
+    },
+    "full_address": "סי מול, הגדוד העברי 6, אשדוד, Israel"
+  },
+  "cuisine_type": "איטלקי",
+  "status": "פתוח",
+  "price_range": "בינוני",
+  "host_opinion": "חיובית מאוד",
+  "host_comments": "פיצריה נפוליטנית מעולה וטירמיסו",
+  "menu_items": [
+    "פיצה",
+    "פוקצ'ה",
+    "טירמיסו"
+  ],
+  "special_features": [
+    "אמן בצק",
+    "נפוליטני"
+  ],
+  "contact_info": {
+    "phone": "08-868-6292",
+    "website": "https://www.rest.co.il/rest/80002803/",
+    "social_media": ""
+  },
+  "business_news": null,
+  "mention_context": "הפיצריה הנפוליטנית של פרינו באשדוד",
+  "episode_info": {
+    "video_id": "6jvskRWvQkg",
+    "video_url": "https://www.youtube.com/watch?v=6jvskRWvQkg",
+    "language": "he",
+    "analysis_date": "2026-01-01",
+    "total_restaurants_found": 11,
+    "processing_method": "claude_chunked"
+  },
+  "food_trends": [
+    "פרסי פופולרי",
+    "מסעדות בקיסריה",
+    "אמריקאי פופולרי",
+    "תאילנדי פופולרי",
+    "מסעדות בחיפה"
+  ],
+  "episode_summary": "ניתוח מבוסס Claude של 11 מסעדות מהסרטון 6jvskRWvQkg",
+  "google_places": {
+    "place_id": "ChIJOWX-QosP-hQRhFK4ijrpLig",
+    "google_name": "פרי מור בעיר",
+    "google_url": "https://maps.google.com/?cid=2895508048090518148",
+    "enriched_at": "2026-01-01 22:03:35"
+  },
+  "rating": {
+    "google_rating": 4.1,
+    "total_reviews": 426,
+    "price_level": 2
+  },
+  "photos": [
+    {
+      "photo_reference": "AZLasHpxWFJd-n6q7oXqmp9RAmDOd-s0sIO4dbforo09CaMJIsRNjB9dntkpI2g3v_qyNPpkYUXY6KbKs-kaljy4A3Psj84xy9Cek0RMT8vYONjBk9iGEic_fyvwvkS5E0TcPpG1ie_hkI8V4pPQp7HSgR0o-Q7gLfveqEYg2L3WDy1W2-wdxMCaGWpG6MyvbEBEGYPqt6nc0u-q8aJ9Bf-naCoTnYbqhKXqB3hOpyDMn_D9Q2hnGGhuNloNIyhZNC9xw4EdQawpkUDEjJQ3zWR7italIwIcbatAr6f_7NAoSps",
+      "photo_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AZLasHpxWFJd-n6q7oXqmp9RAmDOd-s0sIO4dbforo09CaMJIsRNjB9dntkpI2g3v_qyNPpkYUXY6KbKs-kaljy4A3Psj84xy9Cek0RMT8vYONjBk9iGEic_fyvwvkS5E0TcPpG1ie_hkI8V4pPQp7HSgR0o-Q7gLfveqEYg2L3WDy1W2-wdxMCaGWpG6MyvbEBEGYPqt6nc0u-q8aJ9Bf-naCoTnYbqhKXqB3hOpyDMn_D9Q2hnGGhuNloNIyhZNC9xw4EdQawpkUDEjJQ3zWR7italIwIcbatAr6f_7NAoSps&key=AIzaSyCo7o6jQghstjLaPIdPIJUB7pL8j_e8lcQ",
+      "width": 3024,
+      "height": 4032
+    },
+    {
+      "photo_reference": "AZLasHorL93_Kyrpovq6cyQlm-2oi3YsPRvuJ8nMU4kXDJ6sRvy7sIdKyu3hhmzA2yASen9ruDJesBKHgb6vm0H44SCMGL7JQBeMXgaOSOIa6KOEMTDBtcJnXzxPLN2an3kuybeb-fLolVqMhDuqEfJcGotjJp20mfmrj-iRjwnoTcabn-iWUDWSWkoD3oKONJUp_6NtmB3zT6H3pPULkziJ027L-sPmfJbZlozv-YtMSDE537mrK-NsmgeM8n6qLaB0vMdgPWuNnjo17AGglbHYpUD6egexyzbFj907RTgxNYU",
+      "photo_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AZLasHorL93_Kyrpovq6cyQlm-2oi3YsPRvuJ8nMU4kXDJ6sRvy7sIdKyu3hhmzA2yASen9ruDJesBKHgb6vm0H44SCMGL7JQBeMXgaOSOIa6KOEMTDBtcJnXzxPLN2an3kuybeb-fLolVqMhDuqEfJcGotjJp20mfmrj-iRjwnoTcabn-iWUDWSWkoD3oKONJUp_6NtmB3zT6H3pPULkziJ027L-sPmfJbZlozv-YtMSDE537mrK-NsmgeM8n6qLaB0vMdgPWuNnjo17AGglbHYpUD6egexyzbFj907RTgxNYU&key=AIzaSyCo7o6jQghstjLaPIdPIJUB7pL8j_e8lcQ",
+      "width": 3600,
+      "height": 4800
+    },
+    {
+      "photo_reference": "AZLasHonf18ID5d68DicvHY6xSJapHF_6oouYfbs1D-qVKTDc75UOWPIEmVJiCMP7fLUK4pJzE1CLR1NlZm5x0F7Qb5mkWCiRHVGC81nfx_brmYMorjofnyPUG3r9AppoWlNOwJ-GSCZ8uEQFue0rggaY4N5cReA9C2qHzGSoujjleH4yvJQw4H6Si7qoEUHK8Ke_sGFyqs4q_OPWTDmxIorbmtCwmbipJdOjcVPo09Cz-HanqCxopp34A1MMG_guq6Ajv83XOaRYmT8OZcwdDH2-PK1drMs4CGDe9cs4BmGu7JktZr_-FRDwZzYIZhLquzZw4VGpYOV_65ITIE3ilHMZw8qsk8itS-KOAeMTRrt4al9M_P3nPyZ6gwuoDHl3bHDA4Ll0MhGcCSHVcAY7NQV4ZXZb_TS5mx-BQ9RQ6XllAvELyAr",
+      "photo_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AZLasHonf18ID5d68DicvHY6xSJapHF_6oouYfbs1D-qVKTDc75UOWPIEmVJiCMP7fLUK4pJzE1CLR1NlZm5x0F7Qb5mkWCiRHVGC81nfx_brmYMorjofnyPUG3r9AppoWlNOwJ-GSCZ8uEQFue0rggaY4N5cReA9C2qHzGSoujjleH4yvJQw4H6Si7qoEUHK8Ke_sGFyqs4q_OPWTDmxIorbmtCwmbipJdOjcVPo09Cz-HanqCxopp34A1MMG_guq6Ajv83XOaRYmT8OZcwdDH2-PK1drMs4CGDe9cs4BmGu7JktZr_-FRDwZzYIZhLquzZw4VGpYOV_65ITIE3ilHMZw8qsk8itS-KOAeMTRrt4al9M_P3nPyZ6gwuoDHl3bHDA4Ll0MhGcCSHVcAY7NQV4ZXZb_TS5mx-BQ9RQ6XllAvELyAr&key=AIzaSyCo7o6jQghstjLaPIdPIJUB7pL8j_e8lcQ",
+      "width": 3024,
+      "height": 4032
+    }
+  ],
+  "business_hours": {
+    "open_now": true,
+    "weekday_text": [
+      "Monday: 9:00 AM – 11:00 PM",
+      "Tuesday: 9:00 AM – 11:00 PM",
+      "Wednesday: 9:00 AM – 11:00 PM",
+      "Thursday: 9:00 AM – 11:00 PM",
+      "Friday: 9:00 AM – 1:30 PM",
+      "Saturday: 7:00 PM – 12:00 AM",
+      "Sunday: 9:00 AM – 11:00 PM"
+    ]
+  },
+  "google_places_enriched": true,
+  "google_places_attempted": true
+}

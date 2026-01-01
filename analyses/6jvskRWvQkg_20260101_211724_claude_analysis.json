@@ -1,0 +1,330 @@
+{
+  "episode_info": {
+    "video_id": "6jvskRWvQkg",
+    "video_url": "https://www.youtube.com/watch?v=6jvskRWvQkg",
+    "language": "he",
+    "analysis_date": "2026-01-01",
+    "total_restaurants_found": 11,
+    "processing_method": "claude_chunked"
+  },
+  "restaurants": [
+    {
+      "name_hebrew": "מרי פוסה",
+      "name_english": "Mari Posa",
+      "location": {
+        "city": "קיסריה",
+        "neighborhood": "",
+        "address": "",
+        "region": "מרכז"
+      },
+      "cuisine_type": "תאילנדי",
+      "status": "פתוח",
+      "price_range": "בינוני-יקר",
+      "host_opinion": "חיובית",
+      "host_comments": "חמוסטה התאילנדית מעולה",
+      "menu_items": [
+        "חמוסטה תאילנדי"
+      ],
+      "special_features": [
+        "מקום בקיסריה"
+      ],
+      "contact_info": {
+        "phone": "",
+        "website": "",
+        "social_media": ""
+      },
+      "business_news": null,
+      "mention_context": "חמוסטה התאילנדית במסעדת מרי פוסה בקיסריה"
+    },
+    {
+      "name_hebrew": "מיז'נה",
+      "name_english": "Mijena",
+      "location": {
+        "city": "הר",
+        "neighborhood": "",
+        "address": "",
+        "region": "צפון"
+      },
+      "cuisine_type": "ערבי מודרני",
+      "status": "פתוח",
+      "price_range": "יקר",
+      "host_opinion": "חיובית",
+      "host_comments": "קובות מתוגנות מעולות",
+      "menu_items": [
+        "קובות מתוגנות"
+      ],
+      "special_features": [
+        "מסעדה ערבית מודרנית"
+      ],
+      "contact_info": {
+        "phone": "",
+        "website": "",
+        "social_media": ""
+      },
+      "business_news": null,
+      "mention_context": "מיז'נה המסעדה הערבית המודרנית בהר"
+    },
+    {
+      "name_hebrew": "אלקבר",
+      "name_english": "Al-Kaber",
+      "location": {
+        "city": "עין זיוון",
+        "neighborhood": "רמת הגולן",
+        "address": "",
+        "region": "צפון"
+      },
+      "cuisine_type": "אמריקאי",
+      "status": "פתוח",
+      "price_range": "בינוני",
+      "host_opinion": "חיובית",
+      "host_comments": "בייגל קריספי צ'יקן מעולה",
+      "menu_items": [
+        "בייגל קריספי צ'יקן"
+      ],
+      "special_features": [
+        "עגלת קפה",
+        "פוד טרק"
+      ],
+      "contact_info": {
+        "phone": "",
+        "website": "",
+        "social_media": ""
+      },
+      "business_news": null,
+      "mention_context": "אלקבר ספק עגלת קפה ספק פוד טרק בכניסה לעין זיוון ברמת הגולן"
+    },
+    {
+      "name_hebrew": "צ'קולי",
+      "name_english": "Chakoli",
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "נמל",
+        "address": "",
+        "region": "מרכז"
+      },
+      "cuisine_type": "ספרדי ים תיכוני",
+      "status": "פתוח",
+      "price_range": "יקר",
+      "host_opinion": "חיובית מאוד",
+      "host_comments": "מסעדת השנה, מקום עם נוף לים",
+      "menu_items": [
+        "דגים",
+        "פירות ים"
+      ],
+      "special_features": [
+        "נוף לים",
+        "טיילת"
+      ],
+      "contact_info": {
+        "phone": "",
+        "website": "",
+        "social_media": ""
+      },
+      "business_news": null,
+      "mention_context": "צ'קולי מסעדת השנה עם נוף לים בתל אביב"
+    },
+    {
+      "name_hebrew": "הסתקיה",
+      "name_english": "Hastakia",
+      "location": {
+        "city": "ירושלים",
+        "neighborhood": "",
+        "address": "",
+        "region": "ירושלים"
+      },
+      "cuisine_type": "ישראלי מודרני",
+      "status": "פתוח",
+      "price_range": "יקר",
+      "host_opinion": "חיובית",
+      "host_comments": "חומוס חשויה מעולה",
+      "menu_items": [
+        "חומוס חשויה"
+      ],
+      "special_features": [
+        "של אסף גרנית"
+      ],
+      "contact_info": {
+        "phone": "",
+        "website": "",
+        "social_media": ""
+      },
+      "business_news": null,
+      "mention_context": "הסתקיה בירושלים של אסף גרנית ומחנה יהודה"
+    },
+    {
+      "name_hebrew": "גורמי סבזי",
+      "name_english": "Gourmet Sabzi",
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "שוק לוינסקי",
+        "address": "",
+        "region": "מרכז"
+      },
+      "cuisine_type": "פרסי",
+      "status": "פתוח",
+      "price_range": "בינוני",
+      "host_opinion": "חיובית",
+      "host_comments": "גונדי הטוב ביותר",
+      "menu_items": [
+        "גונדי"
+      ],
+      "special_features": [
+        "אותנטי פרסי"
+      ],
+      "contact_info": {
+        "phone": "",
+        "website": "",
+        "social_media": ""
+      },
+      "business_news": null,
+      "mention_context": "גורמי סבזי בשוק לוינסקי - גונדי האחד והיחיד"
+    },
+    {
+      "name_hebrew": "סטודיו גורשה",
+      "name_english": "Studio Gorosha",
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "",
+        "address": "",
+        "region": "מרכז"
+      },
+      "cuisine_type": "גסטרונומי",
+      "status": "פתוח",
+      "price_range": "יוקרתי",
+      "host_opinion": "חיובית מאוד",
+      "host_comments": "מסעדת השנה, משהו אחר ומשמעותי",
+      "menu_items": [],
+      "special_features": [
+        "חדשני",
+        "יוצא דופן"
+      ],
+      "contact_info": {
+        "phone": "",
+        "website": "",
+        "social_media": ""
+      },
+      "business_news": null,
+      "mention_context": "סטודיו גורשה של אלעזר - מסעדת השנה"
+    },
+    {
+      "name_hebrew": "פרינו",
+      "name_english": "Prino",
+      "location": {
+        "city": "אשדוד",
+        "neighborhood": "",
+        "address": "",
+        "region": "דרום"
+      },
+      "cuisine_type": "איטלקי",
+      "status": "פתוח",
+      "price_range": "בינוני",
+      "host_opinion": "חיובית מאוד",
+      "host_comments": "פיצריה נפוליטנית מעולה וטירמיסו",
+      "menu_items": [
+        "פיצה",
+        "פוקצ'ה",
+        "טירמיסו"
+      ],
+      "special_features": [
+        "אמן בצק",
+        "נפוליטני"
+      ],
+      "contact_info": {
+        "phone": "",
+        "website": "",
+        "social_media": ""
+      },
+      "business_news": null,
+      "mention_context": "הפיצריה הנפוליטנית של פרינו באשדוד"
+    },
+    {
+      "name_hebrew": "צפרירים",
+      "name_english": "Tsfrirím",
+      "location": {
+        "city": "חיפה",
+        "neighborhood": "",
+        "address": "",
+        "region": "צפון"
+      },
+      "cuisine_type": "ישראלי",
+      "status": "פתוח",
+      "price_range": "בינוני",
+      "host_opinion": "חיובית",
+      "host_comments": "שוארמה מעולה",
+      "menu_items": [
+        "שוארמה"
+      ],
+      "special_features": [
+        "ביסטרו ותיק"
+      ],
+      "contact_info": {
+        "phone": "",
+        "website": "",
+        "social_media": ""
+      },
+      "business_news": null,
+      "mention_context": "שוארמה של צפרירים בחיפה ביסטרו ותיק"
+    },
+    {
+      "name_hebrew": "הלנסן",
+      "name_english": "Hallansan",
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "",
+        "address": "",
+        "region": "מרכז"
+      },
+      "cuisine_type": "איטלקי",
+      "status": "פתוח",
+      "price_range": "יקר",
+      "host_opinion": "חיובית",
+      "host_comments": "פיצ'יקו פפה מעולה",
+      "menu_items": [
+        "פיצ'יקו פפה"
+      ],
+      "special_features": [],
+      "contact_info": {
+        "phone": "",
+        "website": "",
+        "social_media": ""
+      },
+      "business_news": null,
+      "mention_context": "הפיצ'יקו פפה של הלנסן"
+    },
+    {
+      "name_hebrew": "מושיק",
+      "name_english": "Moshik",
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "",
+        "address": "",
+        "region": "מרכז"
+      },
+      "cuisine_type": "גורמה",
+      "status": "פתוח",
+      "price_range": "יוקרתי",
+      "host_opinion": "חיובית מאוד",
+      "host_comments": "ארוחת טעימות מושלמת",
+      "menu_items": [],
+      "special_features": [
+        "טעימות",
+        "גורמה"
+      ],
+      "contact_info": {
+        "phone": "",
+        "website": "",
+        "social_media": ""
+      },
+      "business_news": null,
+      "mention_context": "חזרתי למושיק בפעם השנייה - ארוחה גובלת בשלמות"
+    }
+  ],
+  "food_trends": [
+    "פרסי פופולרי",
+    "מסעדות בקיסריה",
+    "אמריקאי פופולרי",
+    "תאילנדי פופולרי",
+    "מסעדות בחיפה"
+  ],
+  "episode_summary": "ניתוח מבוסס Claude של 11 מסעדות מהסרטון 6jvskRWvQkg"
+}

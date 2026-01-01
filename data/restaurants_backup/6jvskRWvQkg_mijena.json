@@ -1,0 +1,94 @@
+{
+  "name_hebrew": "מיז'נה",
+  "name_english": "Mijena",
+  "location": {
+    "city": "הר",
+    "neighborhood": "",
+    "address": "",
+    "region": "צפון",
+    "coordinates": {
+      "latitude": 32.5008736,
+      "longitude": 35.088152
+    },
+    "full_address": "כביש ראשי ערערה, Ar'ara, 30026, Israel"
+  },
+  "cuisine_type": "ערבי מודרני",
+  "status": "פתוח",
+  "price_range": "יקר",
+  "host_opinion": "חיובית",
+  "host_comments": "קובות מתוגנות מעולות",
+  "menu_items": [
+    "קובות מתוגנות"
+  ],
+  "special_features": [
+    "מסעדה ערבית מודרנית"
+  ],
+  "contact_info": {
+    "phone": "04-901-4777",
+    "website": "https://ontopo.com/he/il/page/21445092?source=google",
+    "social_media": ""
+  },
+  "business_news": null,
+  "mention_context": "מיז'נה המסעדה הערבית המודרנית בהר",
+  "episode_info": {
+    "video_id": "6jvskRWvQkg",
+    "video_url": "https://www.youtube.com/watch?v=6jvskRWvQkg",
+    "language": "he",
+    "analysis_date": "2026-01-01",
+    "total_restaurants_found": 11,
+    "processing_method": "claude_chunked"
+  },
+  "food_trends": [
+    "פרסי פופולרי",
+    "מסעדות בקיסריה",
+    "אמריקאי פופולרי",
+    "תאילנדי פופולרי",
+    "מסעדות בחיפה"
+  ],
+  "episode_summary": "ניתוח מבוסס Claude של 11 מסעדות מהסרטון 6jvskRWvQkg",
+  "google_places": {
+    "place_id": "ChIJM_AKuVoHHRUR6lnZ6kqTPYY",
+    "google_name": "מיג'אנה - מסעדת שף | ميجانا | Mijana",
+    "google_url": "https://maps.google.com/?cid=9673049524638669290",
+    "enriched_at": "2026-01-01 22:03:51"
+  },
+  "rating": {
+    "google_rating": 4.8,
+    "total_reviews": 557,
+    "price_level": 2
+  },
+  "photos": [
+    {
+      "photo_reference": "AZLasHofExY21ZTXEnTTfVRvkcTvWyLCj5K58CLnVfHZpOSq5WOJvqtmmkI2yOlYYEUwkxWuM7_QyzzlBc0zERJyRYKmImd4KPNzzVe59u77tbGpoShGkWAT5PqwfWy6lzTJ-LDz--MrY-21LXuRYYzhR1a1EbZ0QLv9pqhr_pc1ylFevT1o2-AY6Xbo7hjIXdWxs3tqqa5gLuO7aO0MZ1Fcc4p6apU4Y0XAj_hFqBZGYKH3cqxyc7f7o7sUJUzRsywDZl8ikCz8kCiKxXwZAZJHcOh7omA-L6RYHTtEpbdAJ4mnsg",
+      "photo_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AZLasHofExY21ZTXEnTTfVRvkcTvWyLCj5K58CLnVfHZpOSq5WOJvqtmmkI2yOlYYEUwkxWuM7_QyzzlBc0zERJyRYKmImd4KPNzzVe59u77tbGpoShGkWAT5PqwfWy6lzTJ-LDz--MrY-21LXuRYYzhR1a1EbZ0QLv9pqhr_pc1ylFevT1o2-AY6Xbo7hjIXdWxs3tqqa5gLuO7aO0MZ1Fcc4p6apU4Y0XAj_hFqBZGYKH3cqxyc7f7o7sUJUzRsywDZl8ikCz8kCiKxXwZAZJHcOh7omA-L6RYHTtEpbdAJ4mnsg&key=AIzaSyCo7o6jQghstjLaPIdPIJUB7pL8j_e8lcQ",
+      "width": 1024,
+      "height": 681
+    },
+    {
+      "photo_reference": "AZLasHryrnL-UnszEwlXetQ8U2JuiWCXnLCoPEnYMrvajohYg9lm6A5S742_F9WzhvDYTVGXfw5YfK7gw-AkTzVldl50NAn7xZ9hLbh-X68aS4NrGgfktLrVIfCtzzVn1hrr8N8p6UGjazn8a9TGXAI6hgRFAYMxFRhCLAQKcTJlDA_ty7WVajj5aWlRy4pKE9iVdudZPwNpoS66bkPCATMYKb0-EiOM8q2QfC7ozTHi3qyPA8ncI94qeG__HgBA_UFPvAwzhIJXewQZWY99lHhQcLzSQv-jlcynxY6s3kVHp4KAHw",
+      "photo_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AZLasHryrnL-UnszEwlXetQ8U2JuiWCXnLCoPEnYMrvajohYg9lm6A5S742_F9WzhvDYTVGXfw5YfK7gw-AkTzVldl50NAn7xZ9hLbh-X68aS4NrGgfktLrVIfCtzzVn1hrr8N8p6UGjazn8a9TGXAI6hgRFAYMxFRhCLAQKcTJlDA_ty7WVajj5aWlRy4pKE9iVdudZPwNpoS66bkPCATMYKb0-EiOM8q2QfC7ozTHi3qyPA8ncI94qeG__HgBA_UFPvAwzhIJXewQZWY99lHhQcLzSQv-jlcynxY6s3kVHp4KAHw&key=AIzaSyCo7o6jQghstjLaPIdPIJUB7pL8j_e8lcQ",
+      "width": 1080,
+      "height": 1080
+    },
+    {
+      "photo_reference": "AZLasHqRk_-vpTiKVUTx2H_iZ1rcl1GBtCMnWb40OcNsmDkmjLps3pKMvxDlBOzYJvLdcE2j6r30t7TJo_0iHSnwep-iVYIm2ajk6s-jK9AdS3baMmEFJxiXajTIqgnm_2zSzQLA44bmwMYR2bGbx1bhY7AWgOOIsKacB-O5pOFb54-xlCUI4jkzBBrZvH21zyr0TS0ykyPCTg5XZyw9blMGufMLrA5PhEvtiJrozbltH4r2FWbb9H_8sTiJ4Yu087EzPaCK1NE6dxkDYln2jq9c2JdkKA-Tt4tGsz1qHDO2pmmnDg",
+      "photo_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AZLasHqRk_-vpTiKVUTx2H_iZ1rcl1GBtCMnWb40OcNsmDkmjLps3pKMvxDlBOzYJvLdcE2j6r30t7TJo_0iHSnwep-iVYIm2ajk6s-jK9AdS3baMmEFJxiXajTIqgnm_2zSzQLA44bmwMYR2bGbx1bhY7AWgOOIsKacB-O5pOFb54-xlCUI4jkzBBrZvH21zyr0TS0ykyPCTg5XZyw9blMGufMLrA5PhEvtiJrozbltH4r2FWbb9H_8sTiJ4Yu087EzPaCK1NE6dxkDYln2jq9c2JdkKA-Tt4tGsz1qHDO2pmmnDg&key=AIzaSyCo7o6jQghstjLaPIdPIJUB7pL8j_e8lcQ",
+      "width": 1024,
+      "height": 682
+    }
+  ],
+  "business_hours": {
+    "open_now": true,
+    "weekday_text": [
+      "Monday: 11:30 AM – 11:00 PM",
+      "Tuesday: 11:30 AM – 11:00 PM",
+      "Wednesday: 11:30 AM – 11:00 PM",
+      "Thursday: 11:30 AM – 11:00 PM",
+      "Friday: 11:30 AM – 11:00 PM",
+      "Saturday: 11:30 AM – 11:00 PM",
+      "Sunday: Closed"
+    ]
+  },
+  "google_places_enriched": true,
+  "google_places_attempted": true
+}

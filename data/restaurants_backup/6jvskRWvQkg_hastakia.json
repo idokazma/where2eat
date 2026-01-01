@@ -1,0 +1,94 @@
+{
+  "name_hebrew": "הסתקיה",
+  "name_english": "Hastakia",
+  "location": {
+    "city": "ירושלים",
+    "neighborhood": "",
+    "address": "",
+    "region": "ירושלים",
+    "coordinates": {
+      "latitude": 31.7852785,
+      "longitude": 35.2113499
+    },
+    "full_address": "Ha-Dekel St 1, Jerusalem, Israel"
+  },
+  "cuisine_type": "ישראלי מודרני",
+  "status": "פתוח",
+  "price_range": "יקר",
+  "host_opinion": "חיובית",
+  "host_comments": "חומוס חשויה מעולה",
+  "menu_items": [
+    "חומוס חשויה"
+  ],
+  "special_features": [
+    "של אסף גרנית"
+  ],
+  "contact_info": {
+    "phone": "02-533-3444",
+    "website": "",
+    "social_media": ""
+  },
+  "business_news": null,
+  "mention_context": "הסתקיה בירושלים של אסף גרנית ומחנה יהודה",
+  "episode_info": {
+    "video_id": "6jvskRWvQkg",
+    "video_url": "https://www.youtube.com/watch?v=6jvskRWvQkg",
+    "language": "he",
+    "analysis_date": "2026-01-01",
+    "total_restaurants_found": 11,
+    "processing_method": "claude_chunked"
+  },
+  "food_trends": [
+    "פרסי פופולרי",
+    "מסעדות בקיסריה",
+    "אמריקאי פופולרי",
+    "תאילנדי פופולרי",
+    "מסעדות בחיפה"
+  ],
+  "episode_summary": "ניתוח מבוסס Claude של 11 מסעדות מהסרטון 6jvskRWvQkg",
+  "google_places": {
+    "place_id": "ChIJf6EM_LvXAhURgDIqJLgFhBI",
+    "google_name": "Tsemach",
+    "google_url": "https://maps.google.com/?cid=1334197678047376000",
+    "enriched_at": "2026-01-01 22:03:56"
+  },
+  "rating": {
+    "google_rating": 4.3,
+    "total_reviews": 1185,
+    "price_level": 3
+  },
+  "photos": [
+    {
+      "photo_reference": "AZLasHrRhXzJsGUnWt_6lgKyrDBghLDw1uIGJNgbHwIiR3yNjsOa9CsNYcEiQEbxtVJhNSjh_LHbBiMqoIHBRk3Q7kvdyxGaxJaTbbpPO59DmYXrQ_W-y7H301qLxQL-phuD-Qp4nSQAROTH5Bk_Q-HXZ1LyRkFJEPSIhLvyHW_y7_iEqQAF1Nq6hu7L8d8622HpMHqlP0Xk0agTgZTNe-0rItgBMaBArsO7gF8mlg8vqSg5eQ3o4soFGZ0_02l0SFNaB4U1stvmFJTuZOWZoXbt61PWObAXdXsWbFj65fkrHylNlB1lHLQJPOoNogSNjPGB1QS3Oynx9r1Fq1_GThglr_UNN5brbALyNRT5qPzGqcCm3XgiBO9iv5vIrVG5J4uPPb8SRwkRi2ulzFpV7MKHQ9Bho23FN-aHYujF2QvG48gAHw",
+      "photo_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AZLasHrRhXzJsGUnWt_6lgKyrDBghLDw1uIGJNgbHwIiR3yNjsOa9CsNYcEiQEbxtVJhNSjh_LHbBiMqoIHBRk3Q7kvdyxGaxJaTbbpPO59DmYXrQ_W-y7H301qLxQL-phuD-Qp4nSQAROTH5Bk_Q-HXZ1LyRkFJEPSIhLvyHW_y7_iEqQAF1Nq6hu7L8d8622HpMHqlP0Xk0agTgZTNe-0rItgBMaBArsO7gF8mlg8vqSg5eQ3o4soFGZ0_02l0SFNaB4U1stvmFJTuZOWZoXbt61PWObAXdXsWbFj65fkrHylNlB1lHLQJPOoNogSNjPGB1QS3Oynx9r1Fq1_GThglr_UNN5brbALyNRT5qPzGqcCm3XgiBO9iv5vIrVG5J4uPPb8SRwkRi2ulzFpV7MKHQ9Bho23FN-aHYujF2QvG48gAHw&key=AIzaSyCo7o6jQghstjLaPIdPIJUB7pL8j_e8lcQ",
+      "width": 4032,
+      "height": 3024
+    },
+    {
+      "photo_reference": "AZLasHqKVzERx6bEslXFZmDn4Klj2WFVNGkHESlt9IgXtEhdfKgszPlvSXzeQkrhTAJZM8vlZ-cuoM91ncYTjL-9gB6IQXNKI6DxrkSiwIdW2tCtpXqfv4Kd7syHsGKXbf-6-djM5JNFvY1dugpUEo6TGf3w55YNH5iC81HpQInkDboxfILpbaxJRdMV3WA2JQnpFU1Phkas5TVoqi2TfXz93UXKvfQ0N1eanv2CsYwaFHeVTTgywjwb13Nf2BQGsltKP5WIFzaSTBnGQNRnRXtNdgHnrFhe3XCAUli4y2Ls3SsgRQ",
+      "photo_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AZLasHqKVzERx6bEslXFZmDn4Klj2WFVNGkHESlt9IgXtEhdfKgszPlvSXzeQkrhTAJZM8vlZ-cuoM91ncYTjL-9gB6IQXNKI6DxrkSiwIdW2tCtpXqfv4Kd7syHsGKXbf-6-djM5JNFvY1dugpUEo6TGf3w55YNH5iC81HpQInkDboxfILpbaxJRdMV3WA2JQnpFU1Phkas5TVoqi2TfXz93UXKvfQ0N1eanv2CsYwaFHeVTTgywjwb13Nf2BQGsltKP5WIFzaSTBnGQNRnRXtNdgHnrFhe3XCAUli4y2Ls3SsgRQ&key=AIzaSyCo7o6jQghstjLaPIdPIJUB7pL8j_e8lcQ",
+      "width": 3600,
+      "height": 4800
+    },
+    {
+      "photo_reference": "AZLasHqNC6bxU8NvAHEfqUJuWMF8VmKO6nTNvqpJNztq75quY6N5sdzb2jYz_gSiYxWdEoZnxD45sqMBFrr2BfoNLAtR62DACSnWnmtC1gK2L1lX0t73uMXVPXJs1hPppBK2j6x0xAFulm6lf5BGuoH4u3Wf1Ua_nISNWuwzqBPWz-Jgk50v1e31-GHYd-Zo9ccISJu9xzGyAyO8kY-j2dJDPw7_aUkH7mpP3nNtf9LEwWIuqs0DcQMsLb6jgnuRNlS-tT6-1UrTIG8hPYyj9SFlyHeaAMuZoF1pPph5imS5nNdeNgHL2KaGozW3UEsusUPLGvI6d4iQGcQ01gluri8TiOS26ct1r3ThvHNifdlHaApVLaLdCV3Aw1LE_HVS_7mHi8jgZuBCJnV70B0N1aOOVvXnPrk-6M8n5AduaOdhIQMx8uw",
+      "photo_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AZLasHqNC6bxU8NvAHEfqUJuWMF8VmKO6nTNvqpJNztq75quY6N5sdzb2jYz_gSiYxWdEoZnxD45sqMBFrr2BfoNLAtR62DACSnWnmtC1gK2L1lX0t73uMXVPXJs1hPppBK2j6x0xAFulm6lf5BGuoH4u3Wf1Ua_nISNWuwzqBPWz-Jgk50v1e31-GHYd-Zo9ccISJu9xzGyAyO8kY-j2dJDPw7_aUkH7mpP3nNtf9LEwWIuqs0DcQMsLb6jgnuRNlS-tT6-1UrTIG8hPYyj9SFlyHeaAMuZoF1pPph5imS5nNdeNgHL2KaGozW3UEsusUPLGvI6d4iQGcQ01gluri8TiOS26ct1r3ThvHNifdlHaApVLaLdCV3Aw1LE_HVS_7mHi8jgZuBCJnV70B0N1aOOVvXnPrk-6M8n5AduaOdhIQMx8uw&key=AIzaSyCo7o6jQghstjLaPIdPIJUB7pL8j_e8lcQ",
+      "width": 720,
+      "height": 540
+    }
+  ],
+  "business_hours": {
+    "open_now": true,
+    "weekday_text": [
+      "Monday: 12:00 – 11:00 PM",
+      "Tuesday: 12:00 – 11:00 PM",
+      "Wednesday: 12:00 – 11:00 PM",
+      "Thursday: 12:00 – 11:00 PM",
+      "Friday: Closed",
+      "Saturday: Closed",
+      "Sunday: 12:00 – 11:00 PM"
+    ]
+  },
+  "google_places_enriched": true,
+  "google_places_attempted": true
+}

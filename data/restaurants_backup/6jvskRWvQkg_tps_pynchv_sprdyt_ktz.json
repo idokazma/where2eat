@@ -1,0 +1,87 @@
+{
+  "name_hebrew": "טפס פינצ'ו ספרדית קצ",
+  "name_english": "Tps Pynchv Sprdyt Ktz",
+  "location": {
+    "city": "לא צוין",
+    "neighborhood": "לא צוין",
+    "address": "לא צוין",
+    "region": "לא צוין",
+    "coordinates": {
+      "latitude": 32.6088566,
+      "longitude": 35.2916611
+    },
+    "full_address": "Shprinzak St 5, Afula, Israel"
+  },
+  "cuisine_type": "לא צוין",
+  "status": "לא צוין",
+  "price_range": "לא צוין",
+  "host_opinion": "לא צוין",
+  "host_comments": "לא צוין",
+  "menu_items": [],
+  "special_features": [],
+  "contact_info": {
+    "phone": "04-652-6516",
+    "website": "https://tbit.be/xIqFWO",
+    "social_media": "לא צוין"
+  },
+  "business_news": null,
+  "mention_context": "הוזכר בהקשר: טפס פינצ'ו ספרדית קצ",
+  "episode_info": {
+    "video_id": "6jvskRWvQkg",
+    "video_url": "https://www.youtube.com/watch?v=6jvskRWvQkg",
+    "language": "he",
+    "analysis_date": "2026-01-01",
+    "total_restaurants_found": 25,
+    "processing_method": "claude_chunked"
+  },
+  "food_trends": [
+    "מסעדות בלא צוין",
+    "לא צוין פופולרי"
+  ],
+  "episode_summary": "ניתוח מבוסס Claude של 25 מסעדות מהסרטון 6jvskRWvQkg",
+  "google_places": {
+    "place_id": "ChIJOfWNq9xTHBURh4SLvp3mucM",
+    "google_name": "The Little French",
+    "google_url": "https://maps.google.com/?cid=14103557273268487303",
+    "enriched_at": "2026-01-01 22:04:10"
+  },
+  "rating": {
+    "google_rating": 4.6,
+    "total_reviews": 2820,
+    "price_level": 2
+  },
+  "photos": [
+    {
+      "photo_reference": "AZLasHqlytRDtJnC6T1cmaMBw1KacclFxDszIhtdtsbeNYD-5ULEldjrXi0trCbGXhFjDex0jm6kpyqF-moZXJNGKs2s3cJrreV5jYL3bV-vxMiXAJGma41N4Y6nr9NHkeRF059YkSD2jT3ovxalMzWA9s1GZizEmmFQPLNSzyy9imfI71KuwlKUUnaoxFOENQak4BFWJbG9MWmvMhhlQY2DJ_xvLSMiTAyiL18-2nTV5F2ooOZT9HJksuq9zGMoTjsxE7LVq1T9WMtsYTduzX9fHNE9Zuonjf54htTswSFTmN4gQg",
+      "photo_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AZLasHqlytRDtJnC6T1cmaMBw1KacclFxDszIhtdtsbeNYD-5ULEldjrXi0trCbGXhFjDex0jm6kpyqF-moZXJNGKs2s3cJrreV5jYL3bV-vxMiXAJGma41N4Y6nr9NHkeRF059YkSD2jT3ovxalMzWA9s1GZizEmmFQPLNSzyy9imfI71KuwlKUUnaoxFOENQak4BFWJbG9MWmvMhhlQY2DJ_xvLSMiTAyiL18-2nTV5F2ooOZT9HJksuq9zGMoTjsxE7LVq1T9WMtsYTduzX9fHNE9Zuonjf54htTswSFTmN4gQg&key=AIzaSyCo7o6jQghstjLaPIdPIJUB7pL8j_e8lcQ",
+      "width": 600,
+      "height": 450
+    },
+    {
+      "photo_reference": "AZLasHr3P7-NSnukUPjFD45rNu85lTbW5TPl6OoVHXm3fQwUWCnUIOktf81hWF0Sp8Hx9qK7YDkTbO87lB4wkPVzZDpWxETg1yaFXQyc_QXXLaCQgXVzX-7N9QvCBz5d9l5GwlOr6oL_6yAfgQbnijUm4mbVSAw0QyTSM_EFS6lkwu4GcTdui0w2TqH2xqHt58CFDhGMcCB9ycT-PRMObEXG796HVsVJ5l7iVxjb6g3Mgj8gIeueuJ8Xvr7ReoOUpIiwCXtWpxAjpO48eO2PXuxf6S67WnzjLReZF4G6fXzzLrbjTA",
+      "photo_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AZLasHr3P7-NSnukUPjFD45rNu85lTbW5TPl6OoVHXm3fQwUWCnUIOktf81hWF0Sp8Hx9qK7YDkTbO87lB4wkPVzZDpWxETg1yaFXQyc_QXXLaCQgXVzX-7N9QvCBz5d9l5GwlOr6oL_6yAfgQbnijUm4mbVSAw0QyTSM_EFS6lkwu4GcTdui0w2TqH2xqHt58CFDhGMcCB9ycT-PRMObEXG796HVsVJ5l7iVxjb6g3Mgj8gIeueuJ8Xvr7ReoOUpIiwCXtWpxAjpO48eO2PXuxf6S67WnzjLReZF4G6fXzzLrbjTA&key=AIzaSyCo7o6jQghstjLaPIdPIJUB7pL8j_e8lcQ",
+      "width": 1600,
+      "height": 1200
+    },
+    {
+      "photo_reference": "AZLasHrkHyGOOoN4s_xY7owdfh3oNVdkGoJzX32FY92NQcY-Hp7lkE78Kz3G3Zvx3YfDq1jgIhjFRtsPhZIhtqcfcWjm-yOJGGXLNhvL-1PKxgR7S4F5vCrxiGiVIauZXC_apgHFGR1t0ME3yX65uiVUCS6Id94C8Eehxt2nuofL1170kYW-fkq_sVDiIX6TmJVYE7P86I10qr2GNsKFKNd4USw1zlhaVimtXBVyg1R3llzN20REub45rv0n1K0l70Xf7_0olBusl1PnYIEVJWY2nIAOXVLkJvJA-A6P_y3sEaN3CGXM77NNAU6YsmaXBzJUVB-OER81KBG6b0DnxV5L_6mDXlGmjejMBjLmx7frqjzJtANUhhVRSL4RMeTAFx1NsvJ77-1MbmrcWBgRI280ZP4hG7QHSZeumfF_kDExfZ37jw",
+      "photo_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AZLasHrkHyGOOoN4s_xY7owdfh3oNVdkGoJzX32FY92NQcY-Hp7lkE78Kz3G3Zvx3YfDq1jgIhjFRtsPhZIhtqcfcWjm-yOJGGXLNhvL-1PKxgR7S4F5vCrxiGiVIauZXC_apgHFGR1t0ME3yX65uiVUCS6Id94C8Eehxt2nuofL1170kYW-fkq_sVDiIX6TmJVYE7P86I10qr2GNsKFKNd4USw1zlhaVimtXBVyg1R3llzN20REub45rv0n1K0l70Xf7_0olBusl1PnYIEVJWY2nIAOXVLkJvJA-A6P_y3sEaN3CGXM77NNAU6YsmaXBzJUVB-OER81KBG6b0DnxV5L_6mDXlGmjejMBjLmx7frqjzJtANUhhVRSL4RMeTAFx1NsvJ77-1MbmrcWBgRI280ZP4hG7QHSZeumfF_kDExfZ37jw&key=AIzaSyCo7o6jQghstjLaPIdPIJUB7pL8j_e8lcQ",
+      "width": 3000,
+      "height": 4000
+    }
+  ],
+  "business_hours": {
+    "open_now": false,
+    "weekday_text": [
+      "Monday: 8:00 AM – 9:00 PM",
+      "Tuesday: 8:00 AM – 9:00 PM",
+      "Wednesday: 8:00 AM – 9:00 PM",
+      "Thursday: 8:00 AM – 9:00 PM",
+      "Friday: 8:00 AM – 2:00 PM",
+      "Saturday: Closed",
+      "Sunday: 8:00 AM – 9:00 PM"
+    ]
+  },
+  "google_places_enriched": true,
+  "google_places_attempted": true
+}

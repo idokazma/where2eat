@@ -1,0 +1,87 @@
+{
+  "name_hebrew": "שוק",
+  "name_english": "Shvk",
+  "location": {
+    "city": "לא צוין",
+    "neighborhood": "לא צוין",
+    "address": "לא צוין",
+    "region": "לא צוין",
+    "coordinates": {
+      "latitude": 32.6066955,
+      "longitude": 35.293289
+    },
+    "full_address": "HaShuk St 34, Afula, Israel"
+  },
+  "cuisine_type": "לא צוין",
+  "status": "לא צוין",
+  "price_range": "לא צוין",
+  "host_opinion": "לא צוין",
+  "host_comments": "לא צוין",
+  "menu_items": [],
+  "special_features": [],
+  "contact_info": {
+    "phone": "052-632-3233",
+    "website": "https://facebook.com/100063954099218/",
+    "social_media": "לא צוין"
+  },
+  "business_news": null,
+  "mention_context": "הוזכר בהקשר: שוק",
+  "episode_info": {
+    "video_id": "6jvskRWvQkg",
+    "video_url": "https://www.youtube.com/watch?v=6jvskRWvQkg",
+    "language": "he",
+    "analysis_date": "2026-01-01",
+    "total_restaurants_found": 25,
+    "processing_method": "claude_chunked"
+  },
+  "food_trends": [
+    "מסעדות בלא צוין",
+    "לא צוין פופולרי"
+  ],
+  "episode_summary": "ניתוח מבוסס Claude של 25 מסעדות מהסרטון 6jvskRWvQkg",
+  "google_places": {
+    "place_id": "ChIJU4Ch2jpTHBUReaYjIVEL06A",
+    "google_name": "HaShuk 34",
+    "google_url": "https://maps.google.com/?cid=11588618709230659193",
+    "enriched_at": "2026-01-01 22:03:38"
+  },
+  "rating": {
+    "google_rating": 4.5,
+    "total_reviews": 1125,
+    "price_level": 2
+  },
+  "photos": [
+    {
+      "photo_reference": "AZLasHr1HCYynXAGyr0V_6E0BAdve5fdrZ9TYLszxyCcYGHkfDUmBXvOK6qhe_3kdHE6OGluMk62IlVeAJeHZxStghXhqxkkY0X2uN2ot82sSJSgHgAwEfPtbIoFC0MXYwpm2BKMpNcYvc7fq0nVIjAUzO8g-QSZzakusPre7Wb6vQ71krXZ_1SjPwj-Ymzib2ylPGZxI_hqHVDuogXFGSnuCWqSdfOih0nhOOpOR2UExf7wR54q3c8S-fVp61kY7GGPMhvfZW1ZqkHlVKsuEgvqGX3QctCWqtE4L6ldFgHPo1hDLfAc4izb5M83O9TLZBdr-zJ-a3VMQmpcvST8one-YU9Ne-Spu-63jzqUjMcP0L66CU4xMXAeAScpzWzHuipar_ke5xsfzG3jG6B1tB_QkXpb4yzjBR1ylo912dZi5qI5IA",
+      "photo_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AZLasHr1HCYynXAGyr0V_6E0BAdve5fdrZ9TYLszxyCcYGHkfDUmBXvOK6qhe_3kdHE6OGluMk62IlVeAJeHZxStghXhqxkkY0X2uN2ot82sSJSgHgAwEfPtbIoFC0MXYwpm2BKMpNcYvc7fq0nVIjAUzO8g-QSZzakusPre7Wb6vQ71krXZ_1SjPwj-Ymzib2ylPGZxI_hqHVDuogXFGSnuCWqSdfOih0nhOOpOR2UExf7wR54q3c8S-fVp61kY7GGPMhvfZW1ZqkHlVKsuEgvqGX3QctCWqtE4L6ldFgHPo1hDLfAc4izb5M83O9TLZBdr-zJ-a3VMQmpcvST8one-YU9Ne-Spu-63jzqUjMcP0L66CU4xMXAeAScpzWzHuipar_ke5xsfzG3jG6B1tB_QkXpb4yzjBR1ylo912dZi5qI5IA&key=AIzaSyCo7o6jQghstjLaPIdPIJUB7pL8j_e8lcQ",
+      "width": 4032,
+      "height": 3024
+    },
+    {
+      "photo_reference": "AZLasHqn_69G1scACO5sC7DhZPRB6_ZkbLhdwcsHdqpsyeav0cyW2-vGxi8mOI3v97vaNvyGEWGyN7fwKhdN9WtF3BlojlZcsgyI-R1FcLzDzwSCOYabG-aUOlJhknJWh6jty7Qbq5UIDqsqKCi6cEtJaYpm6rpLnrFjdIkguQY-RanKrs4FjqOwHBgTq4BS2voEbbw9adv2fNAGqEaHs7Nm5mhtC_FeaKgvbr1Dqm2cckyTu_uzyoEB1zl9js04S_FAitjCkDw8LEjA88nBvBvlB2N9s8DC2JdzRmXraTKU-S-IQMyY4Qdz0xg93YmPxk2MRwUY6EVHNB7a0U3tTqKHmxmLpU2Az3py9dHwaz4iz-Lq7D6DvJUcGbdzKxl6yyxXOE7HzUDhj0b_ye3AgcTztEhRY6cg7I8UC_SLFgnwyr-mZA",
+      "photo_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AZLasHqn_69G1scACO5sC7DhZPRB6_ZkbLhdwcsHdqpsyeav0cyW2-vGxi8mOI3v97vaNvyGEWGyN7fwKhdN9WtF3BlojlZcsgyI-R1FcLzDzwSCOYabG-aUOlJhknJWh6jty7Qbq5UIDqsqKCi6cEtJaYpm6rpLnrFjdIkguQY-RanKrs4FjqOwHBgTq4BS2voEbbw9adv2fNAGqEaHs7Nm5mhtC_FeaKgvbr1Dqm2cckyTu_uzyoEB1zl9js04S_FAitjCkDw8LEjA88nBvBvlB2N9s8DC2JdzRmXraTKU-S-IQMyY4Qdz0xg93YmPxk2MRwUY6EVHNB7a0U3tTqKHmxmLpU2Az3py9dHwaz4iz-Lq7D6DvJUcGbdzKxl6yyxXOE7HzUDhj0b_ye3AgcTztEhRY6cg7I8UC_SLFgnwyr-mZA&key=AIzaSyCo7o6jQghstjLaPIdPIJUB7pL8j_e8lcQ",
+      "width": 4032,
+      "height": 2268
+    },
+    {
+      "photo_reference": "AZLasHpnlkQdb_cXu9pXEvcNyI4WNIMvH8yvu85vTV4Z_xJ43QnGtJHaQNVK_TooXAQKff_eBrYEcDknY6qeYhNIG45XAG8N8HsYwUsoOx8-2_ELSCaSJ7UT_knWc8eq08mrGjKY-NvXt_ZtUQsBEdsXSkqERhG6HslMXtWzwBOeCuj6I5iLfxanYWKZmpby_LvEcztSenJVDc5-_sWNVuRvHUtlwPoMGSO9ZN4cMjCnOF-oinl4xHTwOsiCBXgDwmWn13uZpO8QdRH8o_CFeE2RuA7Uhwyb6nzYn6Mp9z_MzTs5bcEJAOVrWtCQnr9LzpXTOm7X15-I07pfKLVkIyjzu4EdzCYqdOBRSmYMsR6eAbe24I-h684IuYA5a3BmCWRHlxUcH39eEP0UGy_FZwj9j74_MfOByhxFCiFxti4ifWzJBhWB",
+      "photo_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AZLasHpnlkQdb_cXu9pXEvcNyI4WNIMvH8yvu85vTV4Z_xJ43QnGtJHaQNVK_TooXAQKff_eBrYEcDknY6qeYhNIG45XAG8N8HsYwUsoOx8-2_ELSCaSJ7UT_knWc8eq08mrGjKY-NvXt_ZtUQsBEdsXSkqERhG6HslMXtWzwBOeCuj6I5iLfxanYWKZmpby_LvEcztSenJVDc5-_sWNVuRvHUtlwPoMGSO9ZN4cMjCnOF-oinl4xHTwOsiCBXgDwmWn13uZpO8QdRH8o_CFeE2RuA7Uhwyb6nzYn6Mp9z_MzTs5bcEJAOVrWtCQnr9LzpXTOm7X15-I07pfKLVkIyjzu4EdzCYqdOBRSmYMsR6eAbe24I-h684IuYA5a3BmCWRHlxUcH39eEP0UGy_FZwj9j74_MfOByhxFCiFxti4ifWzJBhWB&key=AIzaSyCo7o6jQghstjLaPIdPIJUB7pL8j_e8lcQ",
+      "width": 4032,
+      "height": 3024
+    }
+  ],
+  "business_hours": {
+    "open_now": true,
+    "weekday_text": [
+      "Monday: 11:00 AM – 11:00 PM",
+      "Tuesday: 11:00 AM – 11:00 PM",
+      "Wednesday: 11:00 AM – 11:00 PM",
+      "Thursday: 11:00 AM – 12:00 AM",
+      "Friday: 10:00 AM – 2:30 PM",
+      "Saturday: 8:00 – 11:30 PM",
+      "Sunday: Closed"
+    ]
+  },
+  "google_places_enriched": true,
+  "google_places_attempted": true
+}

@@ -1,0 +1,87 @@
+{
+  "name_hebrew": "קיסריה א שזו",
+  "name_english": "Kysryh A Shzv",
+  "location": {
+    "city": "לא צוין",
+    "neighborhood": "לא צוין",
+    "address": "לא צוין",
+    "region": "לא צוין",
+    "coordinates": {
+      "latitude": 32.0771141,
+      "longitude": 34.7935943
+    },
+    "full_address": "Menakhem Begin Rd 144, Tel Aviv-Yafo, 4692102, Israel"
+  },
+  "cuisine_type": "לא צוין",
+  "status": "לא צוין",
+  "price_range": "לא צוין",
+  "host_opinion": "לא צוין",
+  "host_comments": "לא צוין",
+  "menu_items": [],
+  "special_features": [],
+  "contact_info": {
+    "phone": "052-385-2387",
+    "website": "https://www.hibatlv.co.il/",
+    "social_media": "לא צוין"
+  },
+  "business_news": null,
+  "mention_context": "הוזכר בהקשר: קיסריה א שזו",
+  "episode_info": {
+    "video_id": "6jvskRWvQkg",
+    "video_url": "https://www.youtube.com/watch?v=6jvskRWvQkg",
+    "language": "he",
+    "analysis_date": "2026-01-01",
+    "total_restaurants_found": 25,
+    "processing_method": "claude_chunked"
+  },
+  "food_trends": [
+    "מסעדות בלא צוין",
+    "לא צוין פופולרי"
+  ],
+  "episode_summary": "ניתוח מבוסס Claude של 25 מסעדות מהסרטון 6jvskRWvQkg",
+  "google_places": {
+    "place_id": "ChIJ0_0kufVLHRURbEnQPFPvfXI",
+    "google_name": "HIBA Restaurant",
+    "google_url": "https://maps.google.com/?cid=8250013233194223980",
+    "enriched_at": "2026-01-01 22:03:39"
+  },
+  "rating": {
+    "google_rating": 4.6,
+    "total_reviews": 998,
+    "price_level": 4
+  },
+  "photos": [
+    {
+      "photo_reference": "AZLasHrcJ8feKXbEIP_hBh5zCyySUIMc9a6Evahu2tPqvrZd_nm02fHfNM5fcr8DlIE_-9V_PsDmEry5TTlMsaX3y81t6sDoJbsYk7d9VnxielHq0B592vS8aNS2GYDetIDnakBgF3j7B3LqmDtvk5Sg9OezcvVgGE5-muTn0PIWJ8yavmoZi30NjB7o_71-o_w9cW5G07o0upBSXqQBAkTjYOtcIb4hdz6cQehxN2uNKMcU0Mx1B_GmHbe6z2EOxRwkH7uKCQlmR6DeJ_qTlIiwofzRz4womgLzE7nNGIcnN-3xsa4CBbKQibFLPfXPVtYpvmAxH9puHMgC7UxCehI260I25srLUf4lSUC4K4bFirMB08IfGsSiq9D16WYYUVmS3yraxLlknqce4YMdoRuQsdKSdbNyhSnUD8CFOia1Dcg",
+      "photo_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AZLasHrcJ8feKXbEIP_hBh5zCyySUIMc9a6Evahu2tPqvrZd_nm02fHfNM5fcr8DlIE_-9V_PsDmEry5TTlMsaX3y81t6sDoJbsYk7d9VnxielHq0B592vS8aNS2GYDetIDnakBgF3j7B3LqmDtvk5Sg9OezcvVgGE5-muTn0PIWJ8yavmoZi30NjB7o_71-o_w9cW5G07o0upBSXqQBAkTjYOtcIb4hdz6cQehxN2uNKMcU0Mx1B_GmHbe6z2EOxRwkH7uKCQlmR6DeJ_qTlIiwofzRz4womgLzE7nNGIcnN-3xsa4CBbKQibFLPfXPVtYpvmAxH9puHMgC7UxCehI260I25srLUf4lSUC4K4bFirMB08IfGsSiq9D16WYYUVmS3yraxLlknqce4YMdoRuQsdKSdbNyhSnUD8CFOia1Dcg&key=AIzaSyCo7o6jQghstjLaPIdPIJUB7pL8j_e8lcQ",
+      "width": 4032,
+      "height": 3024
+    },
+    {
+      "photo_reference": "AZLasHpNCsZhIC8bz7NNlNjnmlLpA9gIzKyZspyhybja7E3rka5Rfk8dfuwmWyjuHIf5H5xRp57-n77uK56WNnvX3Ennov17Pxt25FE8CJw8fUAWrb4VbMZBf-LFN2S-i8zRXEtLedNQ9VW6GzrXbRzKkds7XBIzw9UgYufMe-ny4p1y5yrZVKofDE0yLnVRJxesdHH8Goy9ZrrNejFStCd2WAdfte8857DLw-BSKGb-P8l0ie4dYjAOLYFKTdXvUHW8hx6vGPzba7-60IGu-69mbWYLgiTyjO5DjFmvkGIA3ggJ9HXEA9607IIZhrWa7m7G5BVr-RmbVOufvUzjHP0LCJyW97Mi3Mmmk_Cpm188RfPAbT64K0oJtkcH8ObkW-8JpI01wKS8ajUKsIoR5ODoeMSpztuwXf2fkvdmtiWsWih1UQ",
+      "photo_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AZLasHpNCsZhIC8bz7NNlNjnmlLpA9gIzKyZspyhybja7E3rka5Rfk8dfuwmWyjuHIf5H5xRp57-n77uK56WNnvX3Ennov17Pxt25FE8CJw8fUAWrb4VbMZBf-LFN2S-i8zRXEtLedNQ9VW6GzrXbRzKkds7XBIzw9UgYufMe-ny4p1y5yrZVKofDE0yLnVRJxesdHH8Goy9ZrrNejFStCd2WAdfte8857DLw-BSKGb-P8l0ie4dYjAOLYFKTdXvUHW8hx6vGPzba7-60IGu-69mbWYLgiTyjO5DjFmvkGIA3ggJ9HXEA9607IIZhrWa7m7G5BVr-RmbVOufvUzjHP0LCJyW97Mi3Mmmk_Cpm188RfPAbT64K0oJtkcH8ObkW-8JpI01wKS8ajUKsIoR5ODoeMSpztuwXf2fkvdmtiWsWih1UQ&key=AIzaSyCo7o6jQghstjLaPIdPIJUB7pL8j_e8lcQ",
+      "width": 4800,
+      "height": 3201
+    },
+    {
+      "photo_reference": "AZLasHo5WP0p7wr72PIUthUluMQZ6vJLTBX216WDss4qjw3_Ep_9w0hhDpSLckco5FyQGFABrrZZG0o9ACemrYlSvO5MZjbhlw31k-ISPCkL1CjLNdGs1aaUyGBvL2715CR6oAazqmRHFe2aylSTVOFA7bINsf8shVFZ8gGe3gezJmYmAHb5Nth_izG2h2BbzewJkc5JvtrsKIF24adB9DStgmkES_scJdF7zifZC35gLIVzHhv_xphEtGaSG3C2-UlL3GuMDjnC2oQgeJJddYaI6aQ30BEF5-M-MGecWzfbd3kvMwjYUProPYvIDpSBK-0zvHtod-l5vX27JnN744TqSyyGKx0fV7nyviMC6ByxmHWkav7_6SHbBVi20uydkHcM6xXhUg98QqmQ4VFrHD6bmRTYDHrLUV7p-85_0TVnh3vx92yB",
+      "photo_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AZLasHo5WP0p7wr72PIUthUluMQZ6vJLTBX216WDss4qjw3_Ep_9w0hhDpSLckco5FyQGFABrrZZG0o9ACemrYlSvO5MZjbhlw31k-ISPCkL1CjLNdGs1aaUyGBvL2715CR6oAazqmRHFe2aylSTVOFA7bINsf8shVFZ8gGe3gezJmYmAHb5Nth_izG2h2BbzewJkc5JvtrsKIF24adB9DStgmkES_scJdF7zifZC35gLIVzHhv_xphEtGaSG3C2-UlL3GuMDjnC2oQgeJJddYaI6aQ30BEF5-M-MGecWzfbd3kvMwjYUProPYvIDpSBK-0zvHtod-l5vX27JnN744TqSyyGKx0fV7nyviMC6ByxmHWkav7_6SHbBVi20uydkHcM6xXhUg98QqmQ4VFrHD6bmRTYDHrLUV7p-85_0TVnh3vx92yB&key=AIzaSyCo7o6jQghstjLaPIdPIJUB7pL8j_e8lcQ",
+      "width": 4032,
+      "height": 3024
+    }
+  ],
+  "business_hours": {
+    "open_now": true,
+    "weekday_text": [
+      "Monday: 6:00 – 11:30 PM",
+      "Tuesday: 6:00 – 11:30 PM",
+      "Wednesday: 6:00 – 11:30 PM",
+      "Thursday: 6:00 – 11:30 PM",
+      "Friday: 6:00 – 11:30 PM",
+      "Saturday: Closed",
+      "Sunday: Closed"
+    ]
+  },
+  "google_places_enriched": true,
+  "google_places_attempted": true
+}

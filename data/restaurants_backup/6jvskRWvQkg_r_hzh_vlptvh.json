@@ -1,0 +1,87 @@
+{
+  "name_hebrew": "ר הזה ולפתוח",
+  "name_english": "R Hzh Vlptvh",
+  "location": {
+    "city": "לא צוין",
+    "neighborhood": "לא צוין",
+    "address": "לא צוין",
+    "region": "לא צוין",
+    "coordinates": {
+      "latitude": 32.6066955,
+      "longitude": 35.293289
+    },
+    "full_address": "HaShuk St 34, Afula, Israel"
+  },
+  "cuisine_type": "לא צוין",
+  "status": "לא צוין",
+  "price_range": "לא צוין",
+  "host_opinion": "לא צוין",
+  "host_comments": "לא צוין",
+  "menu_items": [],
+  "special_features": [],
+  "contact_info": {
+    "phone": "052-632-3233",
+    "website": "https://facebook.com/100063954099218/",
+    "social_media": "לא צוין"
+  },
+  "business_news": null,
+  "mention_context": "הוזכר בהקשר: ר הזה ולפתוח",
+  "episode_info": {
+    "video_id": "6jvskRWvQkg",
+    "video_url": "https://www.youtube.com/watch?v=6jvskRWvQkg",
+    "language": "he",
+    "analysis_date": "2026-01-01",
+    "total_restaurants_found": 25,
+    "processing_method": "claude_chunked"
+  },
+  "food_trends": [
+    "מסעדות בלא צוין",
+    "לא צוין פופולרי"
+  ],
+  "episode_summary": "ניתוח מבוסס Claude של 25 מסעדות מהסרטון 6jvskRWvQkg",
+  "google_places": {
+    "place_id": "ChIJU4Ch2jpTHBUReaYjIVEL06A",
+    "google_name": "HaShuk 34",
+    "google_url": "https://maps.google.com/?cid=11588618709230659193",
+    "enriched_at": "2026-01-01 22:04:09"
+  },
+  "rating": {
+    "google_rating": 4.5,
+    "total_reviews": 1125,
+    "price_level": 2
+  },
+  "photos": [
+    {
+      "photo_reference": "AZLasHrIP1Niq6DA-idhHt8hmVv6Zk9FB5Op4l0oMUGVc1XRDlrcPpuNqxemB1G3yNEm4q3UkP-CFq77cB3JFr3siRXuvnn-vv8TNJYSmuts59IRgJWtMn4G36VF2sflm9Fa2Gibsfar5baNI9wRlvMj4SzrCv0DWKi9wbUrt7-Zi_tOVXdKemI9A51tEfVYvGDSFJ1vxBp4kW4OLQ95ybtXHnHTLREIKNtXVqXBFAbTyp0FU0cZioISob7fr_lwhFEkL_xIPd5ZZ55blsI5LuFdFC9sVfCrNPUN8ecCPfnXmyMVdaY-5S37gt5jAg1gA1XDt3llEeaM0YFKQptVWRi5nXSwlVG0emsc4YvWdbUkmEAi_eR1GeWLrA9TaZAm4SaQc5tKkjd2DA5B2hFupaNNndMeu_GdVGFgCj9XwUOkx80nDw",
+      "photo_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AZLasHrIP1Niq6DA-idhHt8hmVv6Zk9FB5Op4l0oMUGVc1XRDlrcPpuNqxemB1G3yNEm4q3UkP-CFq77cB3JFr3siRXuvnn-vv8TNJYSmuts59IRgJWtMn4G36VF2sflm9Fa2Gibsfar5baNI9wRlvMj4SzrCv0DWKi9wbUrt7-Zi_tOVXdKemI9A51tEfVYvGDSFJ1vxBp4kW4OLQ95ybtXHnHTLREIKNtXVqXBFAbTyp0FU0cZioISob7fr_lwhFEkL_xIPd5ZZ55blsI5LuFdFC9sVfCrNPUN8ecCPfnXmyMVdaY-5S37gt5jAg1gA1XDt3llEeaM0YFKQptVWRi5nXSwlVG0emsc4YvWdbUkmEAi_eR1GeWLrA9TaZAm4SaQc5tKkjd2DA5B2hFupaNNndMeu_GdVGFgCj9XwUOkx80nDw&key=AIzaSyCo7o6jQghstjLaPIdPIJUB7pL8j_e8lcQ",
+      "width": 4032,
+      "height": 3024
+    },
+    {
+      "photo_reference": "AZLasHpBTfTu0pRUoxIWjY9J_e75LeoMG6UDj8bGXIpWMEihT6OUzvUmJ2m9hYL7ZWRRCFFalrNiWI9hZwaRWU9j-bTnn2kMv8kW74DYNNeP3hihf4w5tKvYdgqFpwoYiKErYhaHZw0GSyUATPzrLAuV17xkG2EYvCqGxJp1DnTX-Ir_ITsP8LqjyK1VZwupa9Z3Gz0y4_3KMTAt3S3FKhIEakENKrKav7gPqTw1btafPwMrA17s7kCI4Ky0kit1DAVFRgbKcMo13tnkQvNscZsfMkfoz0M6ZrnftleFxU5l3xQlHYvbxt4AMiwxGXqTk3mfzL_exAXu44EbEDDgh01bemdaH-YTjCSjQ3Qc6gC6am8oK1RQ9wRvx1MC3Jd2K9IFtggKYmtpZOWbBWjMuGxRXbzB74U5yp4Wek3HvgUSxepc-A",
+      "photo_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AZLasHpBTfTu0pRUoxIWjY9J_e75LeoMG6UDj8bGXIpWMEihT6OUzvUmJ2m9hYL7ZWRRCFFalrNiWI9hZwaRWU9j-bTnn2kMv8kW74DYNNeP3hihf4w5tKvYdgqFpwoYiKErYhaHZw0GSyUATPzrLAuV17xkG2EYvCqGxJp1DnTX-Ir_ITsP8LqjyK1VZwupa9Z3Gz0y4_3KMTAt3S3FKhIEakENKrKav7gPqTw1btafPwMrA17s7kCI4Ky0kit1DAVFRgbKcMo13tnkQvNscZsfMkfoz0M6ZrnftleFxU5l3xQlHYvbxt4AMiwxGXqTk3mfzL_exAXu44EbEDDgh01bemdaH-YTjCSjQ3Qc6gC6am8oK1RQ9wRvx1MC3Jd2K9IFtggKYmtpZOWbBWjMuGxRXbzB74U5yp4Wek3HvgUSxepc-A&key=AIzaSyCo7o6jQghstjLaPIdPIJUB7pL8j_e8lcQ",
+      "width": 4032,
+      "height": 2268
+    },
+    {
+      "photo_reference": "AZLasHou5-JHzKxcbtw2L3QRp-8LkByqVSbdxucNGfEBfjr9wj4mv_-3eID7BS_aL0rPZDLw20630mtTYnLHhvv2Fbbtl9PA_oQYwWDtOmTCb7ibMHn37_YitfPTlsHo3eJq-0gjzTIFl7_x2JH29kedJZCz5uQaVZ7XPElJJHpnT3dzDCcsM2sWLfQ4iCBNu-EgJC1YlJ_Mf41GuLXtCBjxkfHaWMrwPa6D-DiAJfg0deXPSPJo1o1U-pOe3wiWjgMy_xYg7aTQisDLxqHFyiiwNmQtb0QD6F5wJJz6VZSrMMEIzYsitZ-0o1hU9tpcfZ6W2rmzIUK5WKonol_nOtmN-zaW1XivTel85nr_t8wFmr4Abk4w58h0WL81JZpzHEH4BUfFYw0cgLNE6qX2-4qlbjxGe57a1VByyUoxIdMLReCwk-D0",
+      "photo_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AZLasHou5-JHzKxcbtw2L3QRp-8LkByqVSbdxucNGfEBfjr9wj4mv_-3eID7BS_aL0rPZDLw20630mtTYnLHhvv2Fbbtl9PA_oQYwWDtOmTCb7ibMHn37_YitfPTlsHo3eJq-0gjzTIFl7_x2JH29kedJZCz5uQaVZ7XPElJJHpnT3dzDCcsM2sWLfQ4iCBNu-EgJC1YlJ_Mf41GuLXtCBjxkfHaWMrwPa6D-DiAJfg0deXPSPJo1o1U-pOe3wiWjgMy_xYg7aTQisDLxqHFyiiwNmQtb0QD6F5wJJz6VZSrMMEIzYsitZ-0o1hU9tpcfZ6W2rmzIUK5WKonol_nOtmN-zaW1XivTel85nr_t8wFmr4Abk4w58h0WL81JZpzHEH4BUfFYw0cgLNE6qX2-4qlbjxGe57a1VByyUoxIdMLReCwk-D0&key=AIzaSyCo7o6jQghstjLaPIdPIJUB7pL8j_e8lcQ",
+      "width": 4032,
+      "height": 3024
+    }
+  ],
+  "business_hours": {
+    "open_now": true,
+    "weekday_text": [
+      "Monday: 11:00 AM – 11:00 PM",
+      "Tuesday: 11:00 AM – 11:00 PM",
+      "Wednesday: 11:00 AM – 11:00 PM",
+      "Thursday: 11:00 AM – 12:00 AM",
+      "Friday: 10:00 AM – 2:30 PM",
+      "Saturday: 8:00 – 11:30 PM",
+      "Sunday: Closed"
+    ]
+  },
+  "google_places_enriched": true,
+  "google_places_attempted": true
+}

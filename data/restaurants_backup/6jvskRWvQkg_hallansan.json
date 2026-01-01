@@ -1,0 +1,92 @@
+{
+  "name_hebrew": "הלנסן",
+  "name_english": "Hallansan",
+  "location": {
+    "city": "תל אביב",
+    "neighborhood": "",
+    "address": "",
+    "region": "מרכז",
+    "coordinates": {
+      "latitude": 32.0732386,
+      "longitude": 34.8002498
+    },
+    "full_address": "Ma'avar Yabok 8, Tel Aviv-Jaffa, Israel"
+  },
+  "cuisine_type": "איטלקי",
+  "status": "פתוח",
+  "price_range": "יקר",
+  "host_opinion": "חיובית",
+  "host_comments": "פיצ'יקו פפה מעולה",
+  "menu_items": [
+    "פיצ'יקו פפה"
+  ],
+  "special_features": [],
+  "contact_info": {
+    "phone": "052-703-5888",
+    "website": "http://ontopo.com/he/il/page/12618300?source=google",
+    "social_media": ""
+  },
+  "business_news": null,
+  "mention_context": "הפיצ'יקו פפה של הלנסן",
+  "episode_info": {
+    "video_id": "6jvskRWvQkg",
+    "video_url": "https://www.youtube.com/watch?v=6jvskRWvQkg",
+    "language": "he",
+    "analysis_date": "2026-01-01",
+    "total_restaurants_found": 11,
+    "processing_method": "claude_chunked"
+  },
+  "food_trends": [
+    "פרסי פופולרי",
+    "מסעדות בקיסריה",
+    "אמריקאי פופולרי",
+    "תאילנדי פופולרי",
+    "מסעדות בחיפה"
+  ],
+  "episode_summary": "ניתוח מבוסס Claude של 11 מסעדות מהסרטון 6jvskRWvQkg",
+  "google_places": {
+    "place_id": "ChIJT1hbDaNLHRURWxHp_sCfxoE",
+    "google_name": "HaSalon by Chef Eyal Shani",
+    "google_url": "https://maps.google.com/?cid=9351337327540638043",
+    "enriched_at": "2026-01-01 22:03:55"
+  },
+  "rating": {
+    "google_rating": 3.8,
+    "total_reviews": 780,
+    "price_level": null
+  },
+  "photos": [
+    {
+      "photo_reference": "AZLasHpG1nLYKgGKGRZh4Qo8TXlxoD39kTXjDM3FFixFPAqEgXaRvbsad2sEyP6XUgy1a3J2mHOB8n73Tz-pIn0dgQ7lbk0WJH4bUikw53QVCWZI38LWYuA-0iQRuJsRE6AEp1xj7H4QzONUGG5eEJisfpIKkz3NezYq06cdPtmfMs57uCBEWJiyXt_z3O6-9_QXKB7I3wRtH7NPpF3sbsUjHuOqOpZv2I8vs4YUSBrN8H83__c2vVipZj7nU_iNDizxeSNdanx4T9a1h3KS22pU1qUuOWZO2yBqdGvAYxEFV-aOKQ",
+      "photo_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AZLasHpG1nLYKgGKGRZh4Qo8TXlxoD39kTXjDM3FFixFPAqEgXaRvbsad2sEyP6XUgy1a3J2mHOB8n73Tz-pIn0dgQ7lbk0WJH4bUikw53QVCWZI38LWYuA-0iQRuJsRE6AEp1xj7H4QzONUGG5eEJisfpIKkz3NezYq06cdPtmfMs57uCBEWJiyXt_z3O6-9_QXKB7I3wRtH7NPpF3sbsUjHuOqOpZv2I8vs4YUSBrN8H83__c2vVipZj7nU_iNDizxeSNdanx4T9a1h3KS22pU1qUuOWZO2yBqdGvAYxEFV-aOKQ&key=AIzaSyCo7o6jQghstjLaPIdPIJUB7pL8j_e8lcQ",
+      "width": 2048,
+      "height": 1365
+    },
+    {
+      "photo_reference": "AZLasHo_DU6zIew1Gm7yoKX6F90hNcx4wclty0X37hp3z8O2FwC89CPJvUvVNUH1KZMEjMD7G6c7R_8fOHl2LsEGttMVJa4Yen8WoVKp0T9te8lXceSgSxETY2FHFepsvfTs-T4aYDD_-EltCOn7_TLVa3mMEUpfYVK5WLRRPWLsJQIJV8jX3hLQIG_NycmIPFEtlKAfQt-6GOk2_Snn1ops7TeCyEwC0I4PMNzm8_utHRFJaF2FG7apwDQShLVrUhcP0PmAz4DvGPXRHNCLcrwvz5EpQqxt8dfwcrOuLFdQWwhWRA",
+      "photo_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AZLasHo_DU6zIew1Gm7yoKX6F90hNcx4wclty0X37hp3z8O2FwC89CPJvUvVNUH1KZMEjMD7G6c7R_8fOHl2LsEGttMVJa4Yen8WoVKp0T9te8lXceSgSxETY2FHFepsvfTs-T4aYDD_-EltCOn7_TLVa3mMEUpfYVK5WLRRPWLsJQIJV8jX3hLQIG_NycmIPFEtlKAfQt-6GOk2_Snn1ops7TeCyEwC0I4PMNzm8_utHRFJaF2FG7apwDQShLVrUhcP0PmAz4DvGPXRHNCLcrwvz5EpQqxt8dfwcrOuLFdQWwhWRA&key=AIzaSyCo7o6jQghstjLaPIdPIJUB7pL8j_e8lcQ",
+      "width": 1600,
+      "height": 1067
+    },
+    {
+      "photo_reference": "AZLasHrDRTpySl59t0tZczJ72CxSMyJQu-3VBS5UTHyG3ZVbY7-0ewuAqaX8QCSOb9mpZLB2c5OZA5N8SQ6za0lNw51K9RnebeWUvzA5l_0SuOrpLhISLANZLpCzbHC1cU7WMMnfFY0pP1AOBjlFKQxTjXYYjzgK3XspvAeRb04gbrRFiWzPiSCQ6Jls-OlyjNMbHPuX9er804Nn21Pek8GLu59qAsBFVtIAXEoL70kNu4bbrDeg7WM5LpdrDGg08ACnN7L1FwrUcA9HEvH88LRZc-N_K6zn4lATTwOdedl36-Rt9SFFATl9uiHDdGB5ctx94BkUG9UrzHvaUdT3e7GFSPipOJnMLRFvvKdOyQeWKTP8agXj39eRHnO9Q1aUmDtPByRHeyun9uEZmNwcnXPRh29FFb506xJxz8_rJ_TKZANVcY19",
+      "photo_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AZLasHrDRTpySl59t0tZczJ72CxSMyJQu-3VBS5UTHyG3ZVbY7-0ewuAqaX8QCSOb9mpZLB2c5OZA5N8SQ6za0lNw51K9RnebeWUvzA5l_0SuOrpLhISLANZLpCzbHC1cU7WMMnfFY0pP1AOBjlFKQxTjXYYjzgK3XspvAeRb04gbrRFiWzPiSCQ6Jls-OlyjNMbHPuX9er804Nn21Pek8GLu59qAsBFVtIAXEoL70kNu4bbrDeg7WM5LpdrDGg08ACnN7L1FwrUcA9HEvH88LRZc-N_K6zn4lATTwOdedl36-Rt9SFFATl9uiHDdGB5ctx94BkUG9UrzHvaUdT3e7GFSPipOJnMLRFvvKdOyQeWKTP8agXj39eRHnO9Q1aUmDtPByRHeyun9uEZmNwcnXPRh29FFb506xJxz8_rJ_TKZANVcY19&key=AIzaSyCo7o6jQghstjLaPIdPIJUB7pL8j_e8lcQ",
+      "width": 3705,
+      "height": 2194
+    }
+  ],
+  "business_hours": {
+    "open_now": true,
+    "weekday_text": [
+      "Monday: Closed",
+      "Tuesday: Closed",
+      "Wednesday: 6:30 – 11:30 PM",
+      "Thursday: 6:30 – 11:30 PM",
+      "Friday: 6:30 – 11:30 PM",
+      "Saturday: Closed",
+      "Sunday: Closed"
+    ]
+  },
+  "google_places_enriched": true,
+  "google_places_attempted": true
+}

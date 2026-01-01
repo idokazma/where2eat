@@ -1,0 +1,96 @@
+{
+  "name_hebrew": "צ'קולי",
+  "name_english": "Chakoli",
+  "location": {
+    "city": "תל אביב",
+    "neighborhood": "נמל",
+    "address": "",
+    "region": "מרכז",
+    "coordinates": {
+      "latitude": 32.0678001,
+      "longitude": 34.7622449
+    },
+    "full_address": "Retsif Herbert Samuel St 3, Tel Aviv-Yafo, Israel"
+  },
+  "cuisine_type": "ספרדי ים תיכוני",
+  "status": "פתוח",
+  "price_range": "יקר",
+  "host_opinion": "חיובית מאוד",
+  "host_comments": "מסעדת השנה, מקום עם נוף לים",
+  "menu_items": [
+    "דגים",
+    "פירות ים"
+  ],
+  "special_features": [
+    "נוף לים",
+    "טיילת"
+  ],
+  "contact_info": {
+    "phone": "03-656-4740",
+    "website": "",
+    "social_media": ""
+  },
+  "business_news": null,
+  "mention_context": "צ'קולי מסעדת השנה עם נוף לים בתל אביב",
+  "episode_info": {
+    "video_id": "6jvskRWvQkg",
+    "video_url": "https://www.youtube.com/watch?v=6jvskRWvQkg",
+    "language": "he",
+    "analysis_date": "2026-01-01",
+    "total_restaurants_found": 11,
+    "processing_method": "claude_chunked"
+  },
+  "food_trends": [
+    "פרסי פופולרי",
+    "מסעדות בקיסריה",
+    "אמריקאי פופולרי",
+    "תאילנדי פופולרי",
+    "מסעדות בחיפה"
+  ],
+  "episode_summary": "ניתוח מבוסס Claude של 11 מסעדות מהסרטון 6jvskRWvQkg",
+  "google_places": {
+    "place_id": "ChIJzR-iXgBNHRUR92oIpgbfTek",
+    "google_name": "Chacoli",
+    "google_url": "https://maps.google.com/?cid=16811338203692296951",
+    "enriched_at": "2026-01-01 22:03:50"
+  },
+  "rating": {
+    "google_rating": 4.1,
+    "total_reviews": 490,
+    "price_level": null
+  },
+  "photos": [
+    {
+      "photo_reference": "AZLasHolV5PWBks0wfW9z8YxaSvMfH3gsamh-xFlqIWkPwJ7IKWCzdpLwOMVI4x3BbgtKw9vEUHiJ3lu1SN_MVBGHJeYaIk_lwMhwOaQb_cOv9EeM13R0m-sxhYgfK9VtKTa5lnx55uwhAesxd6TjN5Bk_Mbpxip_L0Snt7vg15fqNrg1EvD0EKZLHn4bCgqe2GD9SdM7_BGyqJ6PUZPenSUPk3cYcN3I0DboqlrBBNVCaDmO7JcZbSINKze4_Jots6aA7pNE5HirHdAGmRQhCPOxmrdh-ZzF5Vj9eqas4V_uOHJzA",
+      "photo_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AZLasHolV5PWBks0wfW9z8YxaSvMfH3gsamh-xFlqIWkPwJ7IKWCzdpLwOMVI4x3BbgtKw9vEUHiJ3lu1SN_MVBGHJeYaIk_lwMhwOaQb_cOv9EeM13R0m-sxhYgfK9VtKTa5lnx55uwhAesxd6TjN5Bk_Mbpxip_L0Snt7vg15fqNrg1EvD0EKZLHn4bCgqe2GD9SdM7_BGyqJ6PUZPenSUPk3cYcN3I0DboqlrBBNVCaDmO7JcZbSINKze4_Jots6aA7pNE5HirHdAGmRQhCPOxmrdh-ZzF5Vj9eqas4V_uOHJzA&key=AIzaSyCo7o6jQghstjLaPIdPIJUB7pL8j_e8lcQ",
+      "width": 3201,
+      "height": 4800
+    },
+    {
+      "photo_reference": "AZLasHoCIiUcVjBCmY7KPaHbR-ExnJVqyTTQqkGX-jafPFQvXiLByBw3763DNb7xdHpkclhgr6dlriDrCLY2HxrBCqDcP2JdEOaprZSd3NlbnYxDFh4ZOTh-AwZV6LnXRLJfaIe2QF0-QRbx8yCbXcPhIkWHKcN0iDp0dtnnNvgf0TKYr0szmpajwM6E3rltl2-8BCLOjqW73fNsPA2uBdi4gXShOQrTdBaTGaVX6fopr9KdciCTexgB5Grw6wcG3UFxhbCZOBZwVjetH9omeYUJUX8Cb6BMbmfiNm1CWailYKaHNA",
+      "photo_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AZLasHoCIiUcVjBCmY7KPaHbR-ExnJVqyTTQqkGX-jafPFQvXiLByBw3763DNb7xdHpkclhgr6dlriDrCLY2HxrBCqDcP2JdEOaprZSd3NlbnYxDFh4ZOTh-AwZV6LnXRLJfaIe2QF0-QRbx8yCbXcPhIkWHKcN0iDp0dtnnNvgf0TKYr0szmpajwM6E3rltl2-8BCLOjqW73fNsPA2uBdi4gXShOQrTdBaTGaVX6fopr9KdciCTexgB5Grw6wcG3UFxhbCZOBZwVjetH9omeYUJUX8Cb6BMbmfiNm1CWailYKaHNA&key=AIzaSyCo7o6jQghstjLaPIdPIJUB7pL8j_e8lcQ",
+      "width": 4800,
+      "height": 3201
+    },
+    {
+      "photo_reference": "AZLasHrRh9uXO4irQ-inpkggAWdNqQyFY-tLNx8_flTn6wNbMXUhk_7CK025vXUuBtjWC_XCVwFnvOVbKcsf4STrD5H1rc9G0Ev1Eu6AdTf5QB2DBdcGwcrS-wDWZmL6-JYE4-JqrRfyBL0Ofl1kueT5rFUOlMmCZWNuXNhV1r2Hcw4cSqD_W5kAIf4M877b5ye7QICAo7PkCxno9gFeShWNTCpxnPC7uUOMAkmF03ah8gt1MefdRPZCFDmeKqW_lx8xnKnwJ1CizDXV1tbnOV2WU22B_aEvgwKCh7uFIwk88WEpEA",
+      "photo_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AZLasHrRh9uXO4irQ-inpkggAWdNqQyFY-tLNx8_flTn6wNbMXUhk_7CK025vXUuBtjWC_XCVwFnvOVbKcsf4STrD5H1rc9G0Ev1Eu6AdTf5QB2DBdcGwcrS-wDWZmL6-JYE4-JqrRfyBL0Ofl1kueT5rFUOlMmCZWNuXNhV1r2Hcw4cSqD_W5kAIf4M877b5ye7QICAo7PkCxno9gFeShWNTCpxnPC7uUOMAkmF03ah8gt1MefdRPZCFDmeKqW_lx8xnKnwJ1CizDXV1tbnOV2WU22B_aEvgwKCh7uFIwk88WEpEA&key=AIzaSyCo7o6jQghstjLaPIdPIJUB7pL8j_e8lcQ",
+      "width": 3201,
+      "height": 4800
+    }
+  ],
+  "business_hours": {
+    "open_now": true,
+    "weekday_text": [
+      "Monday: 12:00 – 4:00 PM, 6:00 – 11:00 PM",
+      "Tuesday: 12:00 – 4:00 PM, 6:00 – 11:00 PM",
+      "Wednesday: 12:00 – 4:00 PM, 6:00 – 11:00 PM",
+      "Thursday: 12:00 – 4:00 PM, 6:00 – 11:00 PM",
+      "Friday: 12:00 – 11:00 PM",
+      "Saturday: 12:00 – 11:00 PM",
+      "Sunday: 6:00 – 11:00 PM"
+    ]
+  },
+  "google_places_enriched": true,
+  "google_places_attempted": true
+}

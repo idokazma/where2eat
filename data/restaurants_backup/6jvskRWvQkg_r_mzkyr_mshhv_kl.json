@@ -1,0 +1,87 @@
+{
+  "name_hebrew": "ר מזכיר משהו כל",
+  "name_english": "R Mzkyr Mshhv Kl",
+  "location": {
+    "city": "לא צוין",
+    "neighborhood": "לא צוין",
+    "address": "לא צוין",
+    "region": "לא צוין",
+    "coordinates": {
+      "latitude": 32.5340016,
+      "longitude": 35.357243
+    },
+    "full_address": "חוות התבלינים בגלבוע, כביש 667, Israel"
+  },
+  "cuisine_type": "לא צוין",
+  "status": "לא צוין",
+  "price_range": "לא צוין",
+  "host_opinion": "לא צוין",
+  "host_comments": "לא צוין",
+  "menu_items": [],
+  "special_features": [],
+  "contact_info": {
+    "phone": "04-653-1093",
+    "website": "http://www.herb-farm.co.il/",
+    "social_media": "לא צוין"
+  },
+  "business_news": null,
+  "mention_context": "הוזכר בהקשר: ר מזכיר משהו כל",
+  "episode_info": {
+    "video_id": "6jvskRWvQkg",
+    "video_url": "https://www.youtube.com/watch?v=6jvskRWvQkg",
+    "language": "he",
+    "analysis_date": "2026-01-01",
+    "total_restaurants_found": 25,
+    "processing_method": "claude_chunked"
+  },
+  "food_trends": [
+    "מסעדות בלא צוין",
+    "לא צוין פופולרי"
+  ],
+  "episode_summary": "ניתוח מבוסס Claude של 25 מסעדות מהסרטון 6jvskRWvQkg",
+  "google_places": {
+    "place_id": "ChIJ29W9ARBXHBURZAPAqVecSio",
+    "google_name": "Herb Farm Restaurant",
+    "google_url": "https://maps.google.com/?cid=3047419998193582948",
+    "enriched_at": "2026-01-01 22:04:13"
+  },
+  "rating": {
+    "google_rating": 4.2,
+    "total_reviews": 2777,
+    "price_level": 3
+  },
+  "photos": [
+    {
+      "photo_reference": "AZLasHpB2Ux63ia6HMwO6BXFm7nL0Nce3P5gV9V_vnXC6fgO5N9MBqyTSxO_QlJ9JwFHptIeOag3uTf4fDaPu8FVZvgJ7eGmF320Wuonkt25ivxGPM0-5-9oq1vjnXJ8TspPDA02oAe4CjX8HZdYb9d6bTCzIvEriQD1ibtnvMofuSNZodZmY75B2y2sJx37V13Jw7U1ewLVU8Kdi-mCdgc5vPj79QxAJ8EsOqeJIpbYQ_GiWEZVGT9gJVF83Y1aP9zXu0QJVOoXBuUk1u2DJjgbs89-g5OWwO4-Y0bjrrTYA3jFfrfjV1pWk9B1cTvy4Hftn1jNT-iNY4noKan3emlozBTYw3tch5sYkluWTmb4JgGvBq_0e5q30yJSXWGVYgLOqGWuPZo37xQFp00E5BKdhmqhlVDS4iHHdv_V09AUcQQUCw",
+      "photo_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AZLasHpB2Ux63ia6HMwO6BXFm7nL0Nce3P5gV9V_vnXC6fgO5N9MBqyTSxO_QlJ9JwFHptIeOag3uTf4fDaPu8FVZvgJ7eGmF320Wuonkt25ivxGPM0-5-9oq1vjnXJ8TspPDA02oAe4CjX8HZdYb9d6bTCzIvEriQD1ibtnvMofuSNZodZmY75B2y2sJx37V13Jw7U1ewLVU8Kdi-mCdgc5vPj79QxAJ8EsOqeJIpbYQ_GiWEZVGT9gJVF83Y1aP9zXu0QJVOoXBuUk1u2DJjgbs89-g5OWwO4-Y0bjrrTYA3jFfrfjV1pWk9B1cTvy4Hftn1jNT-iNY4noKan3emlozBTYw3tch5sYkluWTmb4JgGvBq_0e5q30yJSXWGVYgLOqGWuPZo37xQFp00E5BKdhmqhlVDS4iHHdv_V09AUcQQUCw&key=AIzaSyCo7o6jQghstjLaPIdPIJUB7pL8j_e8lcQ",
+      "width": 4032,
+      "height": 2268
+    },
+    {
+      "photo_reference": "AZLasHqQ4WacYrTRj8IqpaGZ0g-nSNSJ0kzYQxBNxg5kuL36VcXOXF3GB1PLoAxmCazQx0a985gxoUp9LmjxD75r3QijbLINkeb9_-gK5RXlw__7JI48QacosBmdm750B1Klrr2YJhbVpjpEPq2WqggAwFxaR29vhKpuXcBVos2VnHj8aX_WdMdkZ7bsNVi3YwxagKRF2Z2Uxr8X6q1YYjkXv43URY2QRuCPstAq8mip8gW8-HMjlDvb8xAShX1heSR1oq75vqDuJUxxazKBY-8eX5wkLezJimusOMGTW02RZWZ3jg",
+      "photo_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AZLasHqQ4WacYrTRj8IqpaGZ0g-nSNSJ0kzYQxBNxg5kuL36VcXOXF3GB1PLoAxmCazQx0a985gxoUp9LmjxD75r3QijbLINkeb9_-gK5RXlw__7JI48QacosBmdm750B1Klrr2YJhbVpjpEPq2WqggAwFxaR29vhKpuXcBVos2VnHj8aX_WdMdkZ7bsNVi3YwxagKRF2Z2Uxr8X6q1YYjkXv43URY2QRuCPstAq8mip8gW8-HMjlDvb8xAShX1heSR1oq75vqDuJUxxazKBY-8eX5wkLezJimusOMGTW02RZWZ3jg&key=AIzaSyCo7o6jQghstjLaPIdPIJUB7pL8j_e8lcQ",
+      "width": 3200,
+      "height": 4800
+    },
+    {
+      "photo_reference": "AZLasHr4wpko_PpwPA95Lq8PdYq0GQ04tYyuzBhHn-or1yYD4PMd7ILN2LbRpG0tTq8tsscSvpfYPhBSLG40QxGMbbGGy5KZARWL3VyZmvvoiZg1MOmNkxMPyYedTKbkW2EaYwO7uG-IFU__76Lyw3LG2AE50JIYxS5YQOXmrDsU74NtjE55EmwQYkU2ke0mLp5m9ARXw-SsmqkZiAcSj8dJvhDuIdMQZd9zixwH4WI687dy5ZligitOty9Fvles5P8K4-7C2Ll97M6FavS1-ZsMTv71VEHNYclQjGPeKW_pCaXHYQ",
+      "photo_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AZLasHr4wpko_PpwPA95Lq8PdYq0GQ04tYyuzBhHn-or1yYD4PMd7ILN2LbRpG0tTq8tsscSvpfYPhBSLG40QxGMbbGGy5KZARWL3VyZmvvoiZg1MOmNkxMPyYedTKbkW2EaYwO7uG-IFU__76Lyw3LG2AE50JIYxS5YQOXmrDsU74NtjE55EmwQYkU2ke0mLp5m9ARXw-SsmqkZiAcSj8dJvhDuIdMQZd9zixwH4WI687dy5ZligitOty9Fvles5P8K4-7C2Ll97M6FavS1-ZsMTv71VEHNYclQjGPeKW_pCaXHYQ&key=AIzaSyCo7o6jQghstjLaPIdPIJUB7pL8j_e8lcQ",
+      "width": 3024,
+      "height": 1702
+    }
+  ],
+  "business_hours": {
+    "open_now": false,
+    "weekday_text": [
+      "Monday: 12:00 – 9:00 PM",
+      "Tuesday: 12:00 – 9:00 PM",
+      "Wednesday: 12:00 – 9:00 PM",
+      "Thursday: 12:00 – 9:30 PM",
+      "Friday: 12:00 – 9:30 PM",
+      "Saturday: 12:00 – 9:00 PM",
+      "Sunday: Closed"
+    ]
+  },
+  "google_places_enriched": true,
+  "google_places_attempted": true
+}

@@ -1,0 +1,87 @@
+{
+  "name_hebrew": "כל",
+  "name_english": "Kl",
+  "location": {
+    "city": "לא צוין",
+    "neighborhood": "לא צוין",
+    "address": "לא צוין",
+    "region": "לא צוין",
+    "coordinates": {
+      "latitude": 32.0823022,
+      "longitude": 34.7676759
+    },
+    "full_address": "Retsif Herbert Samuel St 131, Tel Aviv-Yafo, Israel"
+  },
+  "cuisine_type": "לא צוין",
+  "status": "לא צוין",
+  "price_range": "לא צוין",
+  "host_opinion": "לא צוין",
+  "host_comments": "לא צוין",
+  "menu_items": [],
+  "special_features": [],
+  "contact_info": {
+    "phone": "03-529-3303",
+    "website": "לא צוין",
+    "social_media": "לא צוין"
+  },
+  "business_news": null,
+  "mention_context": "הוזכר בהקשר: כל",
+  "episode_info": {
+    "video_id": "6jvskRWvQkg",
+    "video_url": "https://www.youtube.com/watch?v=6jvskRWvQkg",
+    "language": "he",
+    "analysis_date": "2026-01-01",
+    "total_restaurants_found": 25,
+    "processing_method": "claude_chunked"
+  },
+  "food_trends": [
+    "מסעדות בלא צוין",
+    "לא צוין פופולרי"
+  ],
+  "episode_summary": "ניתוח מבוסס Claude של 25 מסעדות מהסרטון 6jvskRWvQkg",
+  "google_places": {
+    "place_id": "ChIJTUVZz3tMHRUR2FeKmg41Xlg",
+    "google_name": "Lala Land",
+    "google_url": "https://maps.google.com/?cid=6367585259987032024",
+    "enriched_at": "2026-01-01 22:04:08"
+  },
+  "rating": {
+    "google_rating": 3.9,
+    "total_reviews": 2179,
+    "price_level": 2
+  },
+  "photos": [
+    {
+      "photo_reference": "AZLasHqd1pF36jpSf_mNnvC2J61btY5MPFFQjcc6NhBGxlzoc7XKPMarnGbNMMbsGKblijB3MmwbezRAUvD9JwlHCqkaWwapM4rgyMjYvtxbIka-wuKNsYXKnT1JyFnOuP3lUofEAvmo1kAE_ec_-P1cdJFUVg9_2zvtL6QUIyL7453ixAi0xnDxg_MbYUK7oulnOu1QViFziq6wDrRM2jhdbBd9m7NFiw4oy71QgKw5vnHMvKYc1TOnerkB4PfkIU8T6e4KjycHGkmV-AWPDQCrRX9r1jG94OVwxTEkGRs6LagssQ",
+      "photo_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AZLasHqd1pF36jpSf_mNnvC2J61btY5MPFFQjcc6NhBGxlzoc7XKPMarnGbNMMbsGKblijB3MmwbezRAUvD9JwlHCqkaWwapM4rgyMjYvtxbIka-wuKNsYXKnT1JyFnOuP3lUofEAvmo1kAE_ec_-P1cdJFUVg9_2zvtL6QUIyL7453ixAi0xnDxg_MbYUK7oulnOu1QViFziq6wDrRM2jhdbBd9m7NFiw4oy71QgKw5vnHMvKYc1TOnerkB4PfkIU8T6e4KjycHGkmV-AWPDQCrRX9r1jG94OVwxTEkGRs6LagssQ&key=AIzaSyCo7o6jQghstjLaPIdPIJUB7pL8j_e8lcQ",
+      "width": 4000,
+      "height": 3000
+    },
+    {
+      "photo_reference": "AZLasHqgG1uamLkh55VPh5srCTM_iExVtqDZV2epyo_54BLOVD5HZgkV0u-ktFaFDyQVRLy_-8mca_up0tJ8eYOL0FzlDPj8f85lWRnUACP6ENO3dPMO8iqHPrvy_AuSzHAIC5w4qrpA0rbcB4wPyM_YIMlJt71k4WXLavxiVqOK2e4zmMKNxCZwrmPgFYmP7A8wGd_ffoB1qSAcMEBfwKR87y4eal3BxfROv79JDwM3TccAOyJBCu9uGzSIzrRsxqPnL5IqNLSK37pal9cNx3lzflASXqCyWLlXO2dcMTNVc2je3Q",
+      "photo_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AZLasHqgG1uamLkh55VPh5srCTM_iExVtqDZV2epyo_54BLOVD5HZgkV0u-ktFaFDyQVRLy_-8mca_up0tJ8eYOL0FzlDPj8f85lWRnUACP6ENO3dPMO8iqHPrvy_AuSzHAIC5w4qrpA0rbcB4wPyM_YIMlJt71k4WXLavxiVqOK2e4zmMKNxCZwrmPgFYmP7A8wGd_ffoB1qSAcMEBfwKR87y4eal3BxfROv79JDwM3TccAOyJBCu9uGzSIzrRsxqPnL5IqNLSK37pal9cNx3lzflASXqCyWLlXO2dcMTNVc2je3Q&key=AIzaSyCo7o6jQghstjLaPIdPIJUB7pL8j_e8lcQ",
+      "width": 3405,
+      "height": 3405
+    },
+    {
+      "photo_reference": "AZLasHoV7dadEr0zLht6FcemwdIQND73wBPLG9bNnUnDDU0flvHnHpKY71zhufQ8SgDpTnzEXwshZiCAJnTaIBf3Jddrj4Ll0a-LHPKWq-Rfba48_PRVsx__57NGXAjwyGOmGaLVcwVDINXsK_PkTYQAovZa7Nf7N23Cj9Nrbzo6xSSqbU-kyw1nIL1sINlG2_u6zSoXZhxyIIV9lx1zj8nomkrPcaCxTrPg2PPh7DZom41lLVdcQExaD1SuRVbls75K7CwMID0dDx_NxrPC9-JTRQ7cWFFrm9oy8QG4I6upnrg38_WLkpAYeCLJQUqOrXZ05auEz9qM-oShkOKJgfp0hfCGGMWd9ZhkdvI_CFa73xruIE0TLeTBX94PVkTwkwqqFMjSZ16xPk4Eb1NFro9rFk9FAhyF_Qkv-A-YYhiDluL7znDG",
+      "photo_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AZLasHoV7dadEr0zLht6FcemwdIQND73wBPLG9bNnUnDDU0flvHnHpKY71zhufQ8SgDpTnzEXwshZiCAJnTaIBf3Jddrj4Ll0a-LHPKWq-Rfba48_PRVsx__57NGXAjwyGOmGaLVcwVDINXsK_PkTYQAovZa7Nf7N23Cj9Nrbzo6xSSqbU-kyw1nIL1sINlG2_u6zSoXZhxyIIV9lx1zj8nomkrPcaCxTrPg2PPh7DZom41lLVdcQExaD1SuRVbls75K7CwMID0dDx_NxrPC9-JTRQ7cWFFrm9oy8QG4I6upnrg38_WLkpAYeCLJQUqOrXZ05auEz9qM-oShkOKJgfp0hfCGGMWd9ZhkdvI_CFa73xruIE0TLeTBX94PVkTwkwqqFMjSZ16xPk4Eb1NFro9rFk9FAhyF_Qkv-A-YYhiDluL7znDG&key=AIzaSyCo7o6jQghstjLaPIdPIJUB7pL8j_e8lcQ",
+      "width": 4000,
+      "height": 3000
+    }
+  ],
+  "business_hours": {
+    "open_now": false,
+    "weekday_text": [
+      "Monday: 7:00 AM – 6:00 PM",
+      "Tuesday: 7:00 AM – 6:00 PM",
+      "Wednesday: 7:00 AM – 6:00 PM",
+      "Thursday: 7:00 AM – 6:00 PM",
+      "Friday: 7:00 AM – 6:00 PM",
+      "Saturday: 7:00 AM – 6:00 PM",
+      "Sunday: 7:00 AM – 6:00 PM"
+    ]
+  },
+  "google_places_enriched": true,
+  "google_places_attempted": true
+}

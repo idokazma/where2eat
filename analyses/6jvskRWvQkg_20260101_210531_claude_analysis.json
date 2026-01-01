@@ -1,0 +1,617 @@
+{
+  "episode_info": {
+    "video_id": "6jvskRWvQkg",
+    "video_url": "https://www.youtube.com/watch?v=6jvskRWvQkg",
+    "language": "he",
+    "analysis_date": "2026-01-01",
+    "total_restaurants_found": 25,
+    "processing_method": "claude_chunked"
+  },
+  "restaurants": [
+    {
+      "name_hebrew": "מרי פוסה בקיסריה א ש",
+      "name_english": "Mry Pvsh Bkysryh A Sh",
+      "location": {
+        "city": "לא צוין",
+        "neighborhood": "לא צוין",
+        "address": "לא צוין",
+        "region": "לא צוין"
+      },
+      "cuisine_type": "לא צוין",
+      "status": "לא צוין",
+      "price_range": "לא צוין",
+      "host_opinion": "לא צוין",
+      "host_comments": "לא צוין",
+      "menu_items": [],
+      "special_features": [],
+      "contact_info": {
+        "phone": "לא צוין",
+        "website": "לא צוין",
+        "social_media": "לא צוין"
+      },
+      "business_news": null,
+      "mention_context": "הוזכר בהקשר: מרי פוסה בקיסריה א ש"
+    },
+    {
+      "name_hebrew": "ספרירים בחיפה ביסטרו",
+      "name_english": "Spryryם Bhyph Bystrv",
+      "location": {
+        "city": "לא צוין",
+        "neighborhood": "לא צוין",
+        "address": "לא צוין",
+        "region": "לא צוין"
+      },
+      "cuisine_type": "לא צוין",
+      "status": "לא צוין",
+      "price_range": "לא צוין",
+      "host_opinion": "לא צוין",
+      "host_comments": "לא צוין",
+      "menu_items": [],
+      "special_features": [],
+      "contact_info": {
+        "phone": "לא צוין",
+        "website": "לא צוין",
+        "social_media": "לא צוין"
+      },
+      "business_news": null,
+      "mention_context": "הוזכר בהקשר: ספרירים בחיפה ביסטרו"
+    },
+    {
+      "name_hebrew": "השנה שלי שהיא מסעדה",
+      "name_english": "Hshnh Shly Shhya Msadh",
+      "location": {
+        "city": "לא צוין",
+        "neighborhood": "לא צוין",
+        "address": "לא צוין",
+        "region": "לא צוין"
+      },
+      "cuisine_type": "לא צוין",
+      "status": "לא צוין",
+      "price_range": "לא צוין",
+      "host_opinion": "לא צוין",
+      "host_comments": "לא צוין",
+      "menu_items": [],
+      "special_features": [],
+      "contact_info": {
+        "phone": "לא צוין",
+        "website": "לא צוין",
+        "social_media": "לא צוין"
+      },
+      "business_news": null,
+      "mention_context": "הוזכר בהקשר: השנה שלי שהיא מסעדה"
+    },
+    {
+      "name_hebrew": "טפס פינצ'ו ספרדית קצ",
+      "name_english": "Tps Pynchv Sprdyt Ktz",
+      "location": {
+        "city": "לא צוין",
+        "neighborhood": "לא צוין",
+        "address": "לא צוין",
+        "region": "לא צוין"
+      },
+      "cuisine_type": "לא צוין",
+      "status": "לא צוין",
+      "price_range": "לא צוין",
+      "host_opinion": "לא צוין",
+      "host_comments": "לא צוין",
+      "menu_items": [],
+      "special_features": [],
+      "contact_info": {
+        "phone": "לא צוין",
+        "website": "לא צוין",
+        "social_media": "לא צוין"
+      },
+      "business_news": null,
+      "mention_context": "הוזכר בהקשר: טפס פינצ'ו ספרדית קצ"
+    },
+    {
+      "name_hebrew": "החצי שנה הפכה למסעדת",
+      "name_english": "Hhtzy Shnh Hpkh Lmsadt",
+      "location": {
+        "city": "לא צוין",
+        "neighborhood": "לא צוין",
+        "address": "לא צוין",
+        "region": "לא צוין"
+      },
+      "cuisine_type": "לא צוין",
+      "status": "לא צוין",
+      "price_range": "לא צוין",
+      "host_opinion": "לא צוין",
+      "host_comments": "לא צוין",
+      "menu_items": [],
+      "special_features": [],
+      "contact_info": {
+        "phone": "לא צוין",
+        "website": "לא צוין",
+        "social_media": "לא צוין"
+      },
+      "business_news": null,
+      "mention_context": "הוזכר בהקשר: החצי שנה הפכה למסעדת"
+    },
+    {
+      "name_hebrew": "השנה שלי היא גם לא ב",
+      "name_english": "Hshnh Shly Hya Gם La B",
+      "location": {
+        "city": "לא צוין",
+        "neighborhood": "לא צוין",
+        "address": "לא צוין",
+        "region": "לא צוין"
+      },
+      "cuisine_type": "לא צוין",
+      "status": "לא צוין",
+      "price_range": "לא צוין",
+      "host_opinion": "לא צוין",
+      "host_comments": "לא צוין",
+      "menu_items": [],
+      "special_features": [],
+      "contact_info": {
+        "phone": "לא צוין",
+        "website": "לא צוין",
+        "social_media": "לא צוין"
+      },
+      "business_news": null,
+      "mention_context": "הוזכר בהקשר: השנה שלי היא גם לא ב"
+    },
+    {
+      "name_hebrew": "שנה יותר קונבנציונלי",
+      "name_english": "Shnh Yvtr Kvnbntzyvnly",
+      "location": {
+        "city": "לא צוין",
+        "neighborhood": "לא צוין",
+        "address": "לא צוין",
+        "region": "לא צוין"
+      },
+      "cuisine_type": "לא צוין",
+      "status": "לא צוין",
+      "price_range": "לא צוין",
+      "host_opinion": "לא צוין",
+      "host_comments": "לא צוין",
+      "menu_items": [],
+      "special_features": [],
+      "contact_info": {
+        "phone": "לא צוין",
+        "website": "לא צוין",
+        "social_media": "לא צוין"
+      },
+      "business_news": null,
+      "mention_context": "הוזכר בהקשר: שנה יותר קונבנציונלי"
+    },
+    {
+      "name_hebrew": "השנה ולא בדיוק שף הש",
+      "name_english": "Hshnh Vla Bdyvk Shף Hsh",
+      "location": {
+        "city": "לא צוין",
+        "neighborhood": "לא צוין",
+        "address": "לא צוין",
+        "region": "לא צוין"
+      },
+      "cuisine_type": "לא צוין",
+      "status": "לא צוין",
+      "price_range": "לא צוין",
+      "host_opinion": "לא צוין",
+      "host_comments": "לא צוין",
+      "menu_items": [],
+      "special_features": [],
+      "contact_info": {
+        "phone": "לא צוין",
+        "website": "לא צוין",
+        "social_media": "לא צוין"
+      },
+      "business_news": null,
+      "mention_context": "הוזכר בהקשר: השנה ולא בדיוק שף הש"
+    },
+    {
+      "name_hebrew": "קיסריה א שזו",
+      "name_english": "Kysryh A Shzv",
+      "location": {
+        "city": "לא צוין",
+        "neighborhood": "לא צוין",
+        "address": "לא צוין",
+        "region": "לא צוין"
+      },
+      "cuisine_type": "לא צוין",
+      "status": "לא צוין",
+      "price_range": "לא צוין",
+      "host_opinion": "לא צוין",
+      "host_comments": "לא צוין",
+      "menu_items": [],
+      "special_features": [],
+      "contact_info": {
+        "phone": "לא צוין",
+        "website": "לא צוין",
+        "social_media": "לא צוין"
+      },
+      "business_news": null,
+      "mention_context": "הוזכר בהקשר: קיסריה א שזו"
+    },
+    {
+      "name_hebrew": "כלל",
+      "name_english": "Kll",
+      "location": {
+        "city": "לא צוין",
+        "neighborhood": "לא צוין",
+        "address": "לא צוין",
+        "region": "לא צוין"
+      },
+      "cuisine_type": "לא צוין",
+      "status": "לא צוין",
+      "price_range": "לא צוין",
+      "host_opinion": "לא צוין",
+      "host_comments": "לא צוין",
+      "menu_items": [],
+      "special_features": [],
+      "contact_info": {
+        "phone": "לא צוין",
+        "website": "לא צוין",
+        "social_media": "לא צוין"
+      },
+      "business_news": null,
+      "mention_context": "הוזכר בהקשר: כלל"
+    },
+    {
+      "name_hebrew": "חיפה",
+      "name_english": "Hyph",
+      "location": {
+        "city": "לא צוין",
+        "neighborhood": "לא צוין",
+        "address": "לא צוין",
+        "region": "לא צוין"
+      },
+      "cuisine_type": "לא צוין",
+      "status": "לא צוין",
+      "price_range": "לא צוין",
+      "host_opinion": "לא צוין",
+      "host_comments": "לא צוין",
+      "menu_items": [],
+      "special_features": [],
+      "contact_info": {
+        "phone": "לא צוין",
+        "website": "לא צוין",
+        "social_media": "לא צוין"
+      },
+      "business_news": null,
+      "mention_context": "הוזכר בהקשר: חיפה"
+    },
+    {
+      "name_hebrew": "וד לכל",
+      "name_english": "Vd Lkl",
+      "location": {
+        "city": "לא צוין",
+        "neighborhood": "לא צוין",
+        "address": "לא צוין",
+        "region": "לא צוין"
+      },
+      "cuisine_type": "לא צוין",
+      "status": "לא צוין",
+      "price_range": "לא צוין",
+      "host_opinion": "לא צוין",
+      "host_comments": "לא צוין",
+      "menu_items": [],
+      "special_features": [],
+      "contact_info": {
+        "phone": "לא צוין",
+        "website": "לא צוין",
+        "social_media": "לא צוין"
+      },
+      "business_news": null,
+      "mention_context": "הוזכר בהקשר: וד לכל"
+    },
+    {
+      "name_hebrew": "ר מזכיר משהו כל",
+      "name_english": "R Mzkyr Mshhv Kl",
+      "location": {
+        "city": "לא צוין",
+        "neighborhood": "לא צוין",
+        "address": "לא צוין",
+        "region": "לא צוין"
+      },
+      "cuisine_type": "לא צוין",
+      "status": "לא צוין",
+      "price_range": "לא צוין",
+      "host_opinion": "לא צוין",
+      "host_comments": "לא צוין",
+      "menu_items": [],
+      "special_features": [],
+      "contact_info": {
+        "phone": "לא צוין",
+        "website": "לא צוין",
+        "social_media": "לא צוין"
+      },
+      "business_news": null,
+      "mention_context": "הוזכר בהקשר: ר מזכיר משהו כל"
+    },
+    {
+      "name_hebrew": "דיוק",
+      "name_english": "Dyvk",
+      "location": {
+        "city": "לא צוין",
+        "neighborhood": "לא צוין",
+        "address": "לא צוין",
+        "region": "לא צוין"
+      },
+      "cuisine_type": "לא צוין",
+      "status": "לא צוין",
+      "price_range": "לא צוין",
+      "host_opinion": "לא צוין",
+      "host_comments": "לא צוין",
+      "menu_items": [],
+      "special_features": [],
+      "contact_info": {
+        "phone": "לא צוין",
+        "website": "לא צוין",
+        "social_media": "לא צוין"
+      },
+      "business_news": null,
+      "mention_context": "הוזכר בהקשר: דיוק"
+    },
+    {
+      "name_hebrew": "רים וזה",
+      "name_english": "Ryם Vzh",
+      "location": {
+        "city": "לא צוין",
+        "neighborhood": "לא צוין",
+        "address": "לא צוין",
+        "region": "לא צוין"
+      },
+      "cuisine_type": "לא צוין",
+      "status": "לא צוין",
+      "price_range": "לא צוין",
+      "host_opinion": "לא צוין",
+      "host_comments": "לא צוין",
+      "menu_items": [],
+      "special_features": [],
+      "contact_info": {
+        "phone": "לא צוין",
+        "website": "לא צוין",
+        "social_media": "לא צוין"
+      },
+      "business_news": null,
+      "mention_context": "הוזכר בהקשר: רים וזה"
+    },
+    {
+      "name_hebrew": "ר הזה ולפתוח",
+      "name_english": "R Hzh Vlptvh",
+      "location": {
+        "city": "לא צוין",
+        "neighborhood": "לא צוין",
+        "address": "לא צוין",
+        "region": "לא צוין"
+      },
+      "cuisine_type": "לא צוין",
+      "status": "לא צוין",
+      "price_range": "לא צוין",
+      "host_opinion": "לא צוין",
+      "host_comments": "לא צוין",
+      "menu_items": [],
+      "special_features": [],
+      "contact_info": {
+        "phone": "לא צוין",
+        "website": "לא צוין",
+        "social_media": "לא צוין"
+      },
+      "business_news": null,
+      "mention_context": "הוזכר בהקשר: ר הזה ולפתוח"
+    },
+    {
+      "name_hebrew": "השוארמות",
+      "name_english": "Hshvarmvt",
+      "location": {
+        "city": "לא צוין",
+        "neighborhood": "לא צוין",
+        "address": "לא צוין",
+        "region": "לא צוין"
+      },
+      "cuisine_type": "לא צוין",
+      "status": "לא צוין",
+      "price_range": "לא צוין",
+      "host_opinion": "לא צוין",
+      "host_comments": "לא צוין",
+      "menu_items": [],
+      "special_features": [],
+      "contact_info": {
+        "phone": "לא צוין",
+        "website": "לא צוין",
+        "social_media": "לא צוין"
+      },
+      "business_news": null,
+      "mention_context": "הוזכר בהקשר: השוארמות"
+    },
+    {
+      "name_hebrew": "יאן ארוש",
+      "name_english": "Yaן Arvsh",
+      "location": {
+        "city": "לא צוין",
+        "neighborhood": "לא צוין",
+        "address": "לא צוין",
+        "region": "לא צוין"
+      },
+      "cuisine_type": "לא צוין",
+      "status": "לא צוין",
+      "price_range": "לא צוין",
+      "host_opinion": "לא צוין",
+      "host_comments": "לא צוין",
+      "menu_items": [],
+      "special_features": [],
+      "contact_info": {
+        "phone": "לא צוין",
+        "website": "לא צוין",
+        "social_media": "לא צוין"
+      },
+      "business_news": null,
+      "mention_context": "הוזכר בהקשר: יאן ארוש"
+    },
+    {
+      "name_hebrew": "מקומון",
+      "name_english": "Mkvmvן",
+      "location": {
+        "city": "לא צוין",
+        "neighborhood": "לא צוין",
+        "address": "לא צוין",
+        "region": "לא צוין"
+      },
+      "cuisine_type": "לא צוין",
+      "status": "לא צוין",
+      "price_range": "לא צוין",
+      "host_opinion": "לא צוין",
+      "host_comments": "לא צוין",
+      "menu_items": [],
+      "special_features": [],
+      "contact_info": {
+        "phone": "לא צוין",
+        "website": "לא צוין",
+        "social_media": "לא צוין"
+      },
+      "business_news": null,
+      "mention_context": "הוזכר בהקשר: מקומון"
+    },
+    {
+      "name_hebrew": "שוק",
+      "name_english": "Shvk",
+      "location": {
+        "city": "לא צוין",
+        "neighborhood": "לא צוין",
+        "address": "לא צוין",
+        "region": "לא צוין"
+      },
+      "cuisine_type": "לא צוין",
+      "status": "לא צוין",
+      "price_range": "לא צוין",
+      "host_opinion": "לא צוין",
+      "host_comments": "לא צוין",
+      "menu_items": [],
+      "special_features": [],
+      "contact_info": {
+        "phone": "לא צוין",
+        "website": "לא צוין",
+        "social_media": "לא צוין"
+      },
+      "business_news": null,
+      "mention_context": "הוזכר בהקשר: שוק"
+    },
+    {
+      "name_hebrew": "וד נוכל לפתוח",
+      "name_english": "Vd Nvkl Lptvh",
+      "location": {
+        "city": "לא צוין",
+        "neighborhood": "לא צוין",
+        "address": "לא צוין",
+        "region": "לא צוין"
+      },
+      "cuisine_type": "לא צוין",
+      "status": "לא צוין",
+      "price_range": "לא צוין",
+      "host_opinion": "לא צוין",
+      "host_comments": "לא צוין",
+      "menu_items": [],
+      "special_features": [],
+      "contact_info": {
+        "phone": "לא צוין",
+        "website": "לא צוין",
+        "social_media": "לא צוין"
+      },
+      "business_news": null,
+      "mention_context": "הוזכר בהקשר: וד נוכל לפתוח"
+    },
+    {
+      "name_hebrew": "יע על",
+      "name_english": "Ya Al",
+      "location": {
+        "city": "לא צוין",
+        "neighborhood": "לא צוין",
+        "address": "לא צוין",
+        "region": "לא צוין"
+      },
+      "cuisine_type": "לא צוין",
+      "status": "לא צוין",
+      "price_range": "לא צוין",
+      "host_opinion": "לא צוין",
+      "host_comments": "לא צוין",
+      "menu_items": [],
+      "special_features": [],
+      "contact_info": {
+        "phone": "לא צוין",
+        "website": "לא צוין",
+        "social_media": "לא צוין"
+      },
+      "business_news": null,
+      "mention_context": "הוזכר בהקשר: יע על"
+    },
+    {
+      "name_hebrew": "עצם הייתה לך",
+      "name_english": "Atzם Hyyth Lך",
+      "location": {
+        "city": "לא צוין",
+        "neighborhood": "לא צוין",
+        "address": "לא צוין",
+        "region": "לא צוין"
+      },
+      "cuisine_type": "לא צוין",
+      "status": "לא צוין",
+      "price_range": "לא צוין",
+      "host_opinion": "לא צוין",
+      "host_comments": "לא צוין",
+      "menu_items": [],
+      "special_features": [],
+      "contact_info": {
+        "phone": "לא צוין",
+        "website": "לא צוין",
+        "social_media": "לא צוין"
+      },
+      "business_news": null,
+      "mention_context": "הוזכר בהקשר: עצם הייתה לך"
+    },
+    {
+      "name_hebrew": "תור",
+      "name_english": "Tvr",
+      "location": {
+        "city": "לא צוין",
+        "neighborhood": "לא צוין",
+        "address": "לא צוין",
+        "region": "לא צוין"
+      },
+      "cuisine_type": "לא צוין",
+      "status": "לא צוין",
+      "price_range": "לא צוין",
+      "host_opinion": "לא צוין",
+      "host_comments": "לא צוין",
+      "menu_items": [],
+      "special_features": [],
+      "contact_info": {
+        "phone": "לא צוין",
+        "website": "לא צוין",
+        "social_media": "לא צוין"
+      },
+      "business_news": null,
+      "mention_context": "הוזכר בהקשר: תור"
+    },
+    {
+      "name_hebrew": "כל",
+      "name_english": "Kl",
+      "location": {
+        "city": "לא צוין",
+        "neighborhood": "לא צוין",
+        "address": "לא צוין",
+        "region": "לא צוין"
+      },
+      "cuisine_type": "לא צוין",
+      "status": "לא צוין",
+      "price_range": "לא צוין",
+      "host_opinion": "לא צוין",
+      "host_comments": "לא צוין",
+      "menu_items": [],
+      "special_features": [],
+      "contact_info": {
+        "phone": "לא צוין",
+        "website": "לא צוין",
+        "social_media": "לא צוין"
+      },
+      "business_news": null,
+      "mention_context": "הוזכר בהקשר: כל"
+    }
+  ],
+  "food_trends": [
+    "מסעדות בלא צוין",
+    "לא צוין פופולרי"
+  ],
+  "episode_summary": "ניתוח מבוסס Claude של 25 מסעדות מהסרטון 6jvskRWvQkg"
+}

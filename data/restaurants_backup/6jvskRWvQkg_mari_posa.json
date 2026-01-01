@@ -1,0 +1,94 @@
+{
+  "name_hebrew": "מרי פוסה",
+  "name_english": "Mari Posa",
+  "location": {
+    "city": "קיסריה",
+    "neighborhood": "",
+    "address": "",
+    "region": "מרכז",
+    "coordinates": {
+      "latitude": 32.5016639,
+      "longitude": 34.907233
+    },
+    "full_address": "מגרש הגולף, Caesarea, Israel"
+  },
+  "cuisine_type": "תאילנדי",
+  "status": "פתוח",
+  "price_range": "בינוני-יקר",
+  "host_opinion": "חיובית",
+  "host_comments": "חמוסטה התאילנדית מעולה",
+  "menu_items": [
+    "חמוסטה תאילנדי"
+  ],
+  "special_features": [
+    "מקום בקיסריה"
+  ],
+  "contact_info": {
+    "phone": "04-626-5000",
+    "website": "https://www.mariposa.co.il/",
+    "social_media": ""
+  },
+  "business_news": null,
+  "mention_context": "חמוסטה התאילנדית במסעדת מרי פוסה בקיסריה",
+  "episode_info": {
+    "video_id": "6jvskRWvQkg",
+    "video_url": "https://www.youtube.com/watch?v=6jvskRWvQkg",
+    "language": "he",
+    "analysis_date": "2026-01-01",
+    "total_restaurants_found": 11,
+    "processing_method": "claude_chunked"
+  },
+  "food_trends": [
+    "פרסי פופולרי",
+    "מסעדות בקיסריה",
+    "אמריקאי פופולרי",
+    "תאילנדי פופולרי",
+    "מסעדות בחיפה"
+  ],
+  "episode_summary": "ניתוח מבוסס Claude של 11 מסעדות מהסרטון 6jvskRWvQkg",
+  "google_places": {
+    "place_id": "ChIJV9hVLagNHRURQDNbTYDDB4Q",
+    "google_name": "Mariposa",
+    "google_url": "https://maps.google.com/?cid=9513787693664514880",
+    "enriched_at": "2026-01-01 22:03:59"
+  },
+  "rating": {
+    "google_rating": 4.5,
+    "total_reviews": 2256,
+    "price_level": 3
+  },
+  "photos": [
+    {
+      "photo_reference": "AZLasHqhQcycQY9E2CYd5CNr2neUu2QBl2orjBkQzdzuHfN-2DzJ2RfCU2oBmlDs8TX_OXv4as_sTsUub0Rv3iGkwaIpoIHZpqsI_1YsR5h2cIZ7gtA14Plx9Tdxg3ncQH52jmhNQh4gpjrv7BXYlYUVRjQSvO472iCnJPyzbqre0QX0Yes-ZccjTktW7Inequ52Ttn4Tqnq4sZSYnz26rJeLlQUTK6zEFxrfrl9VHDzCVYzqNTDTkJCzxRy9D_8ve49eb6JbUQS5Lk6HGYUf2bniDRGL7Sm5cFszcmgV5p4q7lxqQ",
+      "photo_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AZLasHqhQcycQY9E2CYd5CNr2neUu2QBl2orjBkQzdzuHfN-2DzJ2RfCU2oBmlDs8TX_OXv4as_sTsUub0Rv3iGkwaIpoIHZpqsI_1YsR5h2cIZ7gtA14Plx9Tdxg3ncQH52jmhNQh4gpjrv7BXYlYUVRjQSvO472iCnJPyzbqre0QX0Yes-ZccjTktW7Inequ52Ttn4Tqnq4sZSYnz26rJeLlQUTK6zEFxrfrl9VHDzCVYzqNTDTkJCzxRy9D_8ve49eb6JbUQS5Lk6HGYUf2bniDRGL7Sm5cFszcmgV5p4q7lxqQ&key=AIzaSyCo7o6jQghstjLaPIdPIJUB7pL8j_e8lcQ",
+      "width": 2048,
+      "height": 1365
+    },
+    {
+      "photo_reference": "AZLasHqarhreY9rbJTe8d2WJE15-XzFhUUEQ_9NwPoztxPtx-fHRntzlE-dvjlHwgrwq_eZVpd0rRJz2FFP6cwcIPEhEZ8ChXpMy3TDpO8RhqxcM_MQZujbdVAYg0sxdnLGZONgWxj1aZjLVMVQ63YhCOGE1u1Ck139skCxBAA71ZXgIEbftDku_7kBY1Ulisyd95n73knp4JsHjbS_lBPVk0YLcrfrsTll2saw9ZeJcIMScQZUmeencfFO-nJ5l0k9IAkwYzRPNXPg71RUkoFQdO2DA5C9tBNsaSXLyo590E3CCYg",
+      "photo_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AZLasHqarhreY9rbJTe8d2WJE15-XzFhUUEQ_9NwPoztxPtx-fHRntzlE-dvjlHwgrwq_eZVpd0rRJz2FFP6cwcIPEhEZ8ChXpMy3TDpO8RhqxcM_MQZujbdVAYg0sxdnLGZONgWxj1aZjLVMVQ63YhCOGE1u1Ck139skCxBAA71ZXgIEbftDku_7kBY1Ulisyd95n73knp4JsHjbS_lBPVk0YLcrfrsTll2saw9ZeJcIMScQZUmeencfFO-nJ5l0k9IAkwYzRPNXPg71RUkoFQdO2DA5C9tBNsaSXLyo590E3CCYg&key=AIzaSyCo7o6jQghstjLaPIdPIJUB7pL8j_e8lcQ",
+      "width": 3024,
+      "height": 4032
+    },
+    {
+      "photo_reference": "AZLasHrkWe0WWD3oxx_4tXT4FLqRH9DGYIAwA5WOrhKQdvyNcQAPQBF_Fx9PC-fJ9T2wd8kvg79ehExaHypQAh3bZxiEzWBObVqH4biEbwTLCZspb2PM4L7AKYttaCf7tcZ3ekbiN0s6ZUiUTqUf3c5wmYzYIiTR56rsVLS8q77CiPTUc9-G9ChyaANL6iH3-qUueQpSOX8jH91Q1Aboqzx0KEycRMEgCvyWodp7wPlM2pZX82EfhFDgukhu8lq70SouLmzCdclpmVCsSeVPt4B6X7AEhy5GBLSNDXE7f4fdA1Isam0LbobHRTNEzUQKSPdm6Gbb176PlW0rYhUpMjt1LkNKLHxXiDVPmaiYJCAzI2Ospix2zNxJcekzqn13uC7ET4Um3k3VQvr3eRpUkfTFrl63HtUaOR56t_TfPXN893-q8AX7",
+      "photo_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AZLasHrkWe0WWD3oxx_4tXT4FLqRH9DGYIAwA5WOrhKQdvyNcQAPQBF_Fx9PC-fJ9T2wd8kvg79ehExaHypQAh3bZxiEzWBObVqH4biEbwTLCZspb2PM4L7AKYttaCf7tcZ3ekbiN0s6ZUiUTqUf3c5wmYzYIiTR56rsVLS8q77CiPTUc9-G9ChyaANL6iH3-qUueQpSOX8jH91Q1Aboqzx0KEycRMEgCvyWodp7wPlM2pZX82EfhFDgukhu8lq70SouLmzCdclpmVCsSeVPt4B6X7AEhy5GBLSNDXE7f4fdA1Isam0LbobHRTNEzUQKSPdm6Gbb176PlW0rYhUpMjt1LkNKLHxXiDVPmaiYJCAzI2Ospix2zNxJcekzqn13uC7ET4Um3k3VQvr3eRpUkfTFrl63HtUaOR56t_TfPXN893-q8AX7&key=AIzaSyCo7o6jQghstjLaPIdPIJUB7pL8j_e8lcQ",
+      "width": 768,
+      "height": 1024
+    }
+  ],
+  "business_hours": {
+    "open_now": true,
+    "weekday_text": [
+      "Monday: 12:00 – 10:00 PM",
+      "Tuesday: 12:00 – 10:00 PM",
+      "Wednesday: 12:00 – 10:00 PM",
+      "Thursday: 12:00 – 11:00 PM",
+      "Friday: Closed",
+      "Saturday: Closed",
+      "Sunday: 12:00 – 10:00 PM"
+    ]
+  },
+  "google_places_enriched": true,
+  "google_places_attempted": true
+}

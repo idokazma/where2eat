@@ -1,0 +1,162 @@
+{
+  "episode_info": {
+    "video_id": "6jvskRWvQkg",
+    "video_url": "https://www.youtube.com/watch?v=6jvskRWvQkg",
+    "language": "he",
+    "analysis_date": "2026-01-01",
+    "total_restaurants_found": 5,
+    "processing_method": "claude_chunked"
+  },
+  "restaurants": [
+    {
+      "name_hebrew": "מרי פוסה",
+      "name_english": "Mari Posa",
+      "location": {
+        "city": "קיסריה",
+        "neighborhood": "",
+        "address": "",
+        "region": "מרכז"
+      },
+      "cuisine_type": "תאילנדי",
+      "status": "פתוח",
+      "price_range": "בינוני-יקר",
+      "host_opinion": "חיובית",
+      "host_comments": "חמוסטה התאילנדית מעולה",
+      "menu_items": [
+        "חמוסטה תאילנדי"
+      ],
+      "special_features": [
+        "מקום בקיסריה"
+      ],
+      "contact_info": {
+        "phone": "",
+        "website": "",
+        "social_media": ""
+      },
+      "business_news": null,
+      "mention_context": "חמוסטה התאילנדית במסעדת מרי פוסה בקיסריה"
+    },
+    {
+      "name_hebrew": "מיז'נה",
+      "name_english": "Mijena",
+      "location": {
+        "city": "הר",
+        "neighborhood": "",
+        "address": "",
+        "region": "צפון"
+      },
+      "cuisine_type": "ערבי מודרני",
+      "status": "פתוח",
+      "price_range": "יקר",
+      "host_opinion": "חיובית",
+      "host_comments": "קובות מתוגנות מעולות",
+      "menu_items": [
+        "קובות מתוגנות"
+      ],
+      "special_features": [
+        "מסעדה ערבית מודרנית"
+      ],
+      "contact_info": {
+        "phone": "",
+        "website": "",
+        "social_media": ""
+      },
+      "business_news": null,
+      "mention_context": "מיז'נה המסעדה הערבית המודרנית בהר"
+    },
+    {
+      "name_hebrew": "אלקבר",
+      "name_english": "Al-Kaber",
+      "location": {
+        "city": "עין זיוון",
+        "neighborhood": "רמת הגולן",
+        "address": "",
+        "region": "צפון"
+      },
+      "cuisine_type": "אמריקאי",
+      "status": "פתוח",
+      "price_range": "בינוני",
+      "host_opinion": "חיובית",
+      "host_comments": "בייגל קריספי צ'יקן מעולה",
+      "menu_items": [
+        "בייגל קריספי צ'יקן"
+      ],
+      "special_features": [
+        "עגלת קפה",
+        "פוד טרק"
+      ],
+      "contact_info": {
+        "phone": "",
+        "website": "",
+        "social_media": ""
+      },
+      "business_news": null,
+      "mention_context": "אלקבר ספק עגלת קפה ספק פוד טרק בכניסה לעין זיוון ברמת הגולן"
+    },
+    {
+      "name_hebrew": "גורמי סבזי",
+      "name_english": "Gourmet Sabzi",
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "שוק לוינסקי",
+        "address": "",
+        "region": "מרכז"
+      },
+      "cuisine_type": "פרסי",
+      "status": "פתוח",
+      "price_range": "בינוני",
+      "host_opinion": "חיובית",
+      "host_comments": "גונדי הטוב ביותר",
+      "menu_items": [
+        "גונדי"
+      ],
+      "special_features": [
+        "אותנטי פרסי"
+      ],
+      "contact_info": {
+        "phone": "",
+        "website": "",
+        "social_media": ""
+      },
+      "business_news": null,
+      "mention_context": "גורמי סבזי בשוק לוינסקי - גונדי האחד והיחיד"
+    },
+    {
+      "name_hebrew": "מושיק",
+      "name_english": "Moshik",
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "",
+        "address": "",
+        "region": "מרכז"
+      },
+      "cuisine_type": "גורמה",
+      "status": "פתוח",
+      "price_range": "יוקרתי",
+      "host_opinion": "חיובית מאוד",
+      "host_comments": "ארוחת טעימות מושלמת",
+      "menu_items": [],
+      "special_features": [
+        "טעימות",
+        "גורמה"
+      ],
+      "contact_info": {
+        "phone": "",
+        "website": "",
+        "social_media": ""
+      },
+      "business_news": null,
+      "mention_context": "חזרתי למושיק בפעם השנייה - ארוחה גובלת בשלמות"
+    }
+  ],
+  "food_trends": [
+    "פרסי פופולרי",
+    "אמריקאי פופולרי",
+    "גורמה פופולרי",
+    "תאילנדי פופולרי",
+    "מסעדות בקיסריה",
+    "מסעדות בתל אביב",
+    "ערבי מודרני פופולרי"
+  ],
+  "episode_summary": "ניתוח מבוסס Claude של 5 מסעדות מהסרטון 6jvskRWvQkg"
+}

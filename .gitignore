@@ -111,8 +111,9 @@ log_*.txt
 temp/
 tmp/
 
-# Node.js (for web frontend)
+# Node.js (for web frontend and API)
 web/node_modules/
+api/node_modules/
 web/.next/
 web/out/
 web/build/

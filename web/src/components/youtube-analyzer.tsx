@@ -43,12 +43,34 @@ export function YoutubeAnalyzer() {
     setAnalysisResult(null)
 
     try {
-      // This would be replaced with actual API call
-      // For now, simulating the analysis process
-      await new Promise(resolve => setTimeout(resolve, 3000))
+      const response = await fetch('http://localhost:3001/api/analyze', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ url }),
+      })
+
+      if (!response.ok) {
+        throw new Error('שגיאה בתחילת הניתוח')
+      }
+
+      const result = await response.json()
       
-      // Simulated error for demonstration
-      throw new Error("הפונקציונליות עדיין בפיתוח - יש צורך לחבר לצינור הניתוח של Python")
+      // Analysis is now processing in background
+      // Show success message and refresh after delay
+      await new Promise(resolve => setTimeout(resolve, 2000))
+      
+      setError(null)
+      setAnalysisResult(null)
+      
+      // Show success message and suggest refreshing
+      alert("הניתוח התחיל בהצלחה! המסעדות יופיעו ברשימה תוך דקות ספורות. רענן את העמוד כדי לראות את התוצאות.")
+      
+      // Auto-refresh the page after a delay to show new restaurants
+      setTimeout(() => {
+        window.location.reload()
+      }, 3000)
       
     } catch (err) {
       setError(err instanceof Error ? err.message : "שגיאה לא צפויה")

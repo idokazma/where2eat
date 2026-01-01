@@ -1,0 +1,87 @@
+{
+  "name_hebrew": "השנה ולא בדיוק שף הש",
+  "name_english": "Hshnh Vla Bdyvk Shף Hsh",
+  "location": {
+    "city": "לא צוין",
+    "neighborhood": "לא צוין",
+    "address": "לא צוין",
+    "region": "לא צוין",
+    "coordinates": {
+      "latitude": 32.5999528,
+      "longitude": 35.2951662
+    },
+    "full_address": "HaHashmal St 1, Afula, Israel"
+  },
+  "cuisine_type": "לא צוין",
+  "status": "לא צוין",
+  "price_range": "לא צוין",
+  "host_opinion": "לא צוין",
+  "host_comments": "לא צוין",
+  "menu_items": [],
+  "special_features": [],
+  "contact_info": {
+    "phone": "04-642-7428",
+    "website": "http://achuzagrillbar.co.il/",
+    "social_media": "לא צוין"
+  },
+  "business_news": null,
+  "mention_context": "הוזכר בהקשר: השנה ולא בדיוק שף הש",
+  "episode_info": {
+    "video_id": "6jvskRWvQkg",
+    "video_url": "https://www.youtube.com/watch?v=6jvskRWvQkg",
+    "language": "he",
+    "analysis_date": "2026-01-01",
+    "total_restaurants_found": 25,
+    "processing_method": "claude_chunked"
+  },
+  "food_trends": [
+    "מסעדות בלא צוין",
+    "לא צוין פופולרי"
+  ],
+  "episode_summary": "ניתוח מבוסס Claude של 25 מסעדות מהסרטון 6jvskRWvQkg",
+  "google_places": {
+    "place_id": "ChIJaWytfZVRHBUR56-2CMT8MVo",
+    "google_name": "Ha'Ahuza Grill-Bar",
+    "google_url": "https://maps.google.com/?cid=6499253656162316263",
+    "enriched_at": "2026-01-01 22:03:34"
+  },
+  "rating": {
+    "google_rating": 4.3,
+    "total_reviews": 3975,
+    "price_level": 2
+  },
+  "photos": [
+    {
+      "photo_reference": "AZLasHp7XC8eZWQUtv-FaGBqbNKX6axk3OoT3h7_vjEKqIxq-R4mnsvX8AIWvouSCXuwRYZfXb9SJq0YAmvAJh01Q9tTOi89uilRouHiG3HHWIbuT2rWQzFNHtABMtoI-P9-GLEXxw26pJA8DsoJAuk2kaYpk5UEYyxIVlyFY-G5AUOMR035wIlnnGZCYlMrJqftQKc07dBO4iw-ls1DVfVw0lS1eWwh5B0pRhz53BcaKeMWRKYy4z8dW-5YoL-D1cTlmcyRE6QgVLtPmUpt8-5-7uhkHh8jjZV8DQwy7veEdzH5BQ",
+      "photo_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AZLasHp7XC8eZWQUtv-FaGBqbNKX6axk3OoT3h7_vjEKqIxq-R4mnsvX8AIWvouSCXuwRYZfXb9SJq0YAmvAJh01Q9tTOi89uilRouHiG3HHWIbuT2rWQzFNHtABMtoI-P9-GLEXxw26pJA8DsoJAuk2kaYpk5UEYyxIVlyFY-G5AUOMR035wIlnnGZCYlMrJqftQKc07dBO4iw-ls1DVfVw0lS1eWwh5B0pRhz53BcaKeMWRKYy4z8dW-5YoL-D1cTlmcyRE6QgVLtPmUpt8-5-7uhkHh8jjZV8DQwy7veEdzH5BQ&key=AIzaSyCo7o6jQghstjLaPIdPIJUB7pL8j_e8lcQ",
+      "width": 2048,
+      "height": 1171
+    },
+    {
+      "photo_reference": "AZLasHqUjlc7mWKx2wlM4lvre-c6AInD2lIcxrOGWWMN2ol-3rmL6pl-2L14ZNrc3-w1j3XU7G_5BnyfdBwyn3JMBFQ60m7Vu_kRBtwIT55yKfvlbtvQrbGBualC-Eie2FXw2CDxQrFM2NgrCXTBc5j1BPUVoVMR_lTZgH82BqYzGhaTKBB7G1xAMaNtZU0-BSzXuWPzD1QPLeuRIZ43kzleWy-YjiNfz2vsp12V-_P9FhSl2ta9VhIvFtN1Ns9BGQ_tFVlf6ipz1nxgswlN2fiRMkFoICc1fExJBh74wNqOs4Noag",
+      "photo_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AZLasHqUjlc7mWKx2wlM4lvre-c6AInD2lIcxrOGWWMN2ol-3rmL6pl-2L14ZNrc3-w1j3XU7G_5BnyfdBwyn3JMBFQ60m7Vu_kRBtwIT55yKfvlbtvQrbGBualC-Eie2FXw2CDxQrFM2NgrCXTBc5j1BPUVoVMR_lTZgH82BqYzGhaTKBB7G1xAMaNtZU0-BSzXuWPzD1QPLeuRIZ43kzleWy-YjiNfz2vsp12V-_P9FhSl2ta9VhIvFtN1Ns9BGQ_tFVlf6ipz1nxgswlN2fiRMkFoICc1fExJBh74wNqOs4Noag&key=AIzaSyCo7o6jQghstjLaPIdPIJUB7pL8j_e8lcQ",
+      "width": 2736,
+      "height": 1824
+    },
+    {
+      "photo_reference": "AZLasHqZx0WhCQ_BNdx2IjhAB6jFGvVlfq-A5p3jqnas3nAN5huW3ayKJrYAEm3t-yZ1Ie9WCUjrc5m474pemOGOZEzXXx7v3ryfs6Kr3TljeI9ZysCOs886rCHD6iFsSPm4aNonm6k9cQilJ69HnHZQCj2nsKCOYLU_eyZ_fReD6rJLP3nxe1RP0XBmPEmOphUqcjwYJcJ2tDCixHF8TDxxmnjX9DwDc4CWhEFilcHKzlph10Jp8j72QoCSEZnqVqqgGX0Gdobys3radg9kI2Hfg3T-kTQR-YveXNbVuL1h8egrcg",
+      "photo_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AZLasHqZx0WhCQ_BNdx2IjhAB6jFGvVlfq-A5p3jqnas3nAN5huW3ayKJrYAEm3t-yZ1Ie9WCUjrc5m474pemOGOZEzXXx7v3ryfs6Kr3TljeI9ZysCOs886rCHD6iFsSPm4aNonm6k9cQilJ69HnHZQCj2nsKCOYLU_eyZ_fReD6rJLP3nxe1RP0XBmPEmOphUqcjwYJcJ2tDCixHF8TDxxmnjX9DwDc4CWhEFilcHKzlph10Jp8j72QoCSEZnqVqqgGX0Gdobys3radg9kI2Hfg3T-kTQR-YveXNbVuL1h8egrcg&key=AIzaSyCo7o6jQghstjLaPIdPIJUB7pL8j_e8lcQ",
+      "width": 685,
+      "height": 386
+    }
+  ],
+  "business_hours": {
+    "open_now": true,
+    "weekday_text": [
+      "Monday: 11:30 AM – 10:30 PM",
+      "Tuesday: 11:30 AM – 10:30 PM",
+      "Wednesday: 11:30 AM – 10:30 PM",
+      "Thursday: 11:30 AM – 10:30 PM",
+      "Friday: Closed",
+      "Saturday: 6:30 – 11:00 PM",
+      "Sunday: 11:30 AM – 10:30 PM"
+    ]
+  },
+  "google_places_enriched": true,
+  "google_places_attempted": true
+}

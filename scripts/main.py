@@ -14,6 +14,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 from src.youtube_transcript_collector import YouTubeTranscriptCollector
 from src.restaurant_analyzer import create_analysis_request, save_transcript
 from src.restaurant_search_agent import RestaurantSearchAgent
+from src.unified_restaurant_analyzer import UnifiedRestaurantAnalyzer
 
 
 # Configure logging
@@ -42,6 +43,15 @@ class RestaurantPodcastAnalyzer:
         self.logger = setup_logging()
         self.transcript_collector = YouTubeTranscriptCollector()
         self.search_agent = RestaurantSearchAgent()
+        
+        # Initialize unified restaurant analyzer
+        try:
+            self.restaurant_analyzer = UnifiedRestaurantAnalyzer()
+            self.logger.info(f"✅ Initialized {self.restaurant_analyzer.config.provider.upper()} analyzer")
+        except Exception as e:
+            self.logger.error(f"❌ Failed to initialize restaurant analyzer: {str(e)}")
+            raise e
+        
         self.results = {}
         
         # Create output directories
@@ -208,7 +218,16 @@ class RestaurantPodcastAnalyzer:
             result["files_generated"].append(analysis_request_file)
             result["analysis_request_file"] = analysis_request_file
             
-            # Step 4: Mark as ready for Claude analysis
+            # Step 4: Process with LLM to extract restaurants and save to API format
+            self.logger.info(f"🤖 Analyzing transcript with {self.restaurant_analyzer.config.provider.upper()} to extract restaurants...")
+            restaurants_data = self.extract_restaurants_with_llm(transcript_data)
+            if restaurants_data:
+                api_file = self.save_restaurants_for_api(restaurants_data, transcript_data)
+                result["files_generated"].append(api_file)
+                result["api_data_file"] = api_file
+                self.logger.info(f"✅ Restaurant data saved for API: {api_file}")
+            
+            # Step 5: Mark as ready for Claude analysis
             result["success"] = True
             result["ready_for_analysis"] = True
             
@@ -224,6 +243,70 @@ class RestaurantPodcastAnalyzer:
             })
         
         return result
+    
+    def extract_restaurants_with_llm(self, transcript_data: Dict) -> Dict:
+        """Extract restaurant information from transcript using LLM analysis"""
+        provider = self.restaurant_analyzer.config.provider
+        self.logger.info(f"🤖 Extracting restaurants from transcript using {provider.upper()} analysis...")
+        
+        try:
+            # Use configured LLM to analyze the transcript
+            analysis_results = self.restaurant_analyzer.analyze_transcript(transcript_data)
+            
+            # Save the analysis results
+            self.restaurant_analyzer.save_analysis(analysis_results)
+            
+            # Log the analysis
+            self.log_agent_call("UnifiedRestaurantAnalyzer", "analyze_transcript", {
+                "video_id": transcript_data['video_id'],
+                "llm_provider": provider,
+                "restaurants_found": len(analysis_results.get('restaurants', [])),
+                "processing_method": analysis_results.get('episode_info', {}).get('processing_method', provider)
+            })
+            
+            return analysis_results
+            
+        except Exception as e:
+            self.logger.error(f"❌ {provider.upper()} analysis failed: {str(e)}")
+            self.log_agent_call("UnifiedRestaurantAnalyzer", "analysis_error", {
+                "video_id": transcript_data['video_id'],
+                "llm_provider": provider,
+                "error": str(e)
+            })
+            
+            # Return error instead of fallback
+            raise e
+    
+    def save_restaurants_for_api(self, restaurants_data: Dict, transcript_data: Dict) -> str:
+        """Save restaurant data in the format expected by the API"""
+        # Create data/restaurants directory if it doesn't exist
+        restaurants_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data", "restaurants")
+        os.makedirs(restaurants_dir, exist_ok=True)
+        
+        # Save each restaurant as a separate file
+        files_created = []
+        for i, restaurant in enumerate(restaurants_data["restaurants"]):
+            # Add episode info to each restaurant
+            restaurant_with_episode = {
+                **restaurant,
+                "episode_info": restaurants_data["episode_info"],
+                "food_trends": restaurants_data["food_trends"],
+                "episode_summary": restaurants_data["episode_summary"]
+            }
+            
+            # Generate filename
+            restaurant_id = f"{transcript_data['video_id']}_{i+1}"
+            filename = f"{restaurant_id}.json"
+            filepath = os.path.join(restaurants_dir, filename)
+            
+            # Save to file
+            with open(filepath, 'w', encoding='utf-8') as f:
+                json.dump(restaurant_with_episode, f, ensure_ascii=False, indent=2)
+            
+            files_created.append(filepath)
+            self.logger.info(f"✅ Saved restaurant data: {filepath}")
+        
+        return f"Saved {len(files_created)} restaurant files to {restaurants_dir}"
     
     def process_multiple_podcasts(self, video_urls: List[str]) -> Dict:
         """Process multiple YouTube podcasts"""

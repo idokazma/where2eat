@@ -1,12 +1,13 @@
+/* Hebrew Typography - Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;500;600;700&family=Heebo:wght@300;400;500;600;700&family=Noto+Sans+Hebrew:wght@300;400;500;600;700&display=swap');
+
 @import "tailwindcss";
 @import "tw-animate-css";
-
-@custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-hebrew);
   --font-mono: var(--font-geist-mono);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
@@ -47,72 +48,117 @@
 }
 
 :root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
+  /* Font System - Hebrew First */
+  --font-hebrew: "Noto Sans Hebrew", "Assistant", "Heebo", system-ui, -apple-system, sans-serif;
+  
+  /* Radius System */
+  --radius: 0.75rem;
+  
+  /* Where2Eat Color System - Food-Inspired Palette */
+  --background: oklch(0.99 0.005 45);        /* Warm cream background */
+  --foreground: oklch(0.15 0.02 45);         /* Dark brown text */
+  --card: oklch(1 0 0);                      /* Pure white cards */
+  --card-foreground: oklch(0.15 0.02 45);    /* Dark text on cards */
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --popover-foreground: oklch(0.15 0.02 45);
+  
+  /* Primary Colors - Vibrant Orange (appetite stimulating) */
+  --primary: oklch(0.6 0.25 45);             /* Vibrant orange */
+  --primary-foreground: oklch(1 0 0);        /* White text on orange */
+  
+  /* Secondary Colors - Warm tones */
+  --secondary: oklch(0.96 0.02 45);          /* Light cream */
+  --secondary-foreground: oklch(0.2 0.02 45); /* Dark on light cream */
+  
+  /* Muted Colors */
+  --muted: oklch(0.94 0.01 45);              /* Subtle background */
+  --muted-foreground: oklch(0.5 0.01 45);    /* Secondary text */
+  
+  /* Accent Colors */
+  --accent: oklch(0.92 0.02 45);             /* Subtle accent */
+  --accent-foreground: oklch(0.2 0.02 45);   /* Text on accent */
+  
+  /* Semantic Colors */
+  --destructive: oklch(0.6 0.22 25);         /* Warm red for negative */
+  --success: oklch(0.55 0.15 145);           /* Fresh green for positive */
+  --warning: oklch(0.65 0.18 65);            /* Amber for mixed */
+  --info: oklch(0.55 0.15 220);              /* Blue for information */
+  
+  /* UI Elements */
+  --border: oklch(0.9 0.01 45);              /* Warm border */
+  --input: oklch(0.95 0.01 45);              /* Input background */
+  --ring: oklch(0.6 0.25 45);                /* Focus ring (matches primary) */
+  
+  /* Charts */
+  --chart-1: oklch(0.6 0.25 45);             /* Primary orange */
+  --chart-2: oklch(0.55 0.15 145);           /* Green */
+  --chart-3: oklch(0.65 0.18 65);            /* Amber */
+  --chart-4: oklch(0.55 0.15 220);           /* Blue */
+  --chart-5: oklch(0.6 0.22 25);             /* Red */
+  
+  /* Sidebar (if needed) */
+  --sidebar: oklch(0.98 0.01 45);
+  --sidebar-foreground: oklch(0.15 0.02 45);
+  --sidebar-primary: oklch(0.6 0.25 45);
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-accent: oklch(0.94 0.01 45);
+  --sidebar-accent-foreground: oklch(0.2 0.02 45);
+  --sidebar-border: oklch(0.9 0.01 45);
+  --sidebar-ring: oklch(0.6 0.25 45);
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  /* Dark theme - warm, cozy feeling for evening food browsing */
+  --background: oklch(0.12 0.015 45);        /* Deep warm brown */
+  --foreground: oklch(0.95 0.01 45);         /* Warm white text */
+  --card: oklch(0.18 0.02 45);               /* Warm dark cards */
+  --card-foreground: oklch(0.95 0.01 45);    /* Light text on dark cards */
+  --popover: oklch(0.18 0.02 45);
+  --popover-foreground: oklch(0.95 0.01 45);
+  
+  /* Primary in dark mode - slightly brighter orange */
+  --primary: oklch(0.65 0.28 45);            /* Brighter orange for dark mode */
+  --primary-foreground: oklch(0.1 0.02 45);  /* Dark text on bright orange */
+  
+  /* Secondary Colors */
+  --secondary: oklch(0.22 0.02 45);          /* Darker warm tone */
+  --secondary-foreground: oklch(0.9 0.01 45); /* Light text */
+  
+  /* Muted Colors */
+  --muted: oklch(0.2 0.02 45);               /* Muted dark background */
+  --muted-foreground: oklch(0.65 0.01 45);   /* Medium contrast text */
+  
+  /* Accent Colors */
+  --accent: oklch(0.25 0.02 45);             /* Subtle dark accent */
+  --accent-foreground: oklch(0.9 0.01 45);   /* Light text on accent */
+  
+  /* Semantic Colors (adjusted for dark mode) */
+  --destructive: oklch(0.65 0.22 25);        /* Brighter red for visibility */
+  --success: oklch(0.6 0.15 145);            /* Brighter green */
+  --warning: oklch(0.7 0.18 65);             /* Brighter amber */
+  --info: oklch(0.6 0.15 220);               /* Brighter blue */
+  
+  /* UI Elements */
+  --border: oklch(0.3 0.02 45);              /* Warm dark border */
+  --input: oklch(0.25 0.02 45);              /* Dark input background */
+  --ring: oklch(0.65 0.28 45);               /* Bright focus ring */
+  
+  /* Charts (same bright versions) */
+  --chart-1: oklch(0.65 0.28 45);            /* Bright orange */
+  --chart-2: oklch(0.6 0.15 145);            /* Bright green */
+  --chart-3: oklch(0.7 0.18 65);             /* Bright amber */
+  --chart-4: oklch(0.6 0.15 220);            /* Bright blue */
+  --chart-5: oklch(0.65 0.22 25);            /* Bright red */
+  
+  /* Sidebar */
+  --sidebar: oklch(0.15 0.02 45);
+  --sidebar-foreground: oklch(0.95 0.01 45);
+  --sidebar-primary: oklch(0.65 0.28 45);
+  --sidebar-primary-foreground: oklch(0.1 0.02 45);
+  --sidebar-accent: oklch(0.22 0.02 45);
+  --sidebar-accent-foreground: oklch(0.9 0.01 45);
+  --sidebar-border: oklch(0.3 0.02 45);
+  --sidebar-ring: oklch(0.65 0.28 45);
 }
 
 @layer base {
@@ -121,5 +167,168 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-family: var(--font-hebrew);
+    direction: rtl; /* RTL for Hebrew */
+  }
+  
+  /* RTL-specific overrides */
+  [dir="ltr"] {
+    direction: ltr;
+  }
+  
+  /* Enhanced Hebrew-optimized typography */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-hebrew);
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.025em;
+  }
+  
+  h1 { 
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 800;
+    margin-bottom: 1rem;
+  }
+  
+  h2 { 
+    font-size: clamp(2rem, 4vw, 3rem);
+    margin-bottom: 0.875rem;
+  }
+  
+  h3 { 
+    font-size: clamp(1.5rem, 3vw, 2.25rem);
+    margin-bottom: 0.75rem;
+  }
+  
+  h4 { 
+    font-size: clamp(1.25rem, 2.5vw, 1.875rem);
+    margin-bottom: 0.625rem;
+  }
+  
+  p {
+    line-height: 1.7;
+    margin-bottom: 1rem;
+    color: hsl(var(--foreground) / 0.8);
+  }
+  
+  /* Improved text hierarchy */
+  .text-large {
+    font-size: 1.125rem;
+    line-height: 1.6;
+  }
+  
+  .text-small {
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+  
+  /* Enhanced smooth transitions for better UX */
+  * {
+    transition: background-color 200ms ease, 
+                border-color 200ms ease, 
+                color 200ms ease,
+                transform 150ms ease,
+                box-shadow 200ms ease;
+  }
+  
+  /* Better spacing system */
+  .space-y-relaxed > * + * {
+    margin-top: 2rem;
+  }
+  
+  .space-y-comfortable > * + * {
+    margin-top: 1.5rem;
+  }
+  
+  /* Mobile-first responsive utilities */
+  @media (max-width: 640px) {
+    .container {
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
+    
+    /* Adjust hero section for mobile */
+    .hero-stats {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    
+    /* Stack cards on mobile */
+    .restaurant-card-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+    
+    /* Mobile-friendly contact info */
+    .contact-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    /* Adjust tab sizes for mobile */
+    .opinion-tabs {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.5rem;
+    }
+    
+    .opinion-tabs > * {
+      font-size: 0.875rem;
+      padding: 0.75rem 0.5rem;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    /* Extra small mobile adjustments */
+    h1 {
+      font-size: 2rem;
+    }
+    
+    .hero-padding {
+      padding: 2rem 1rem;
+    }
+    
+    /* Smaller filter buttons on mobile */
+    .filter-badge {
+      font-size: 0.75rem;
+      padding: 0.5rem 0.75rem;
+    }
+  }
+  
+  /* Touch-friendly improvements */
+  @media (pointer: coarse) {
+    /* Larger touch targets */
+    button, .clickable {
+      min-height: 44px;
+      min-width: 44px;
+    }
+    
+    /* Better spacing for touch */
+    .touch-friendly {
+      padding: 1rem;
+    }
+  }
+  
+  /* Focus indicators for accessibility */
+  *:focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+  }
+  
+  /* Improved scrollbar styling */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--muted));
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted-foreground));
+    border-radius: 3px;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--primary));
   }
 }

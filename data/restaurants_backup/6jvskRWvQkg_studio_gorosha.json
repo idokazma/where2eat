@@ -1,0 +1,93 @@
+{
+  "name_hebrew": "סטודיו גורשה",
+  "name_english": "Studio Gorosha",
+  "location": {
+    "city": "תל אביב",
+    "neighborhood": "",
+    "address": "",
+    "region": "מרכז",
+    "coordinates": {
+      "latitude": 32.0549421,
+      "longitude": 34.7617025
+    },
+    "full_address": "Shalma Rd 13, Tel Aviv-Yafo, 6811123, Israel"
+  },
+  "cuisine_type": "גסטרונומי",
+  "status": "פתוח",
+  "price_range": "יוקרתי",
+  "host_opinion": "חיובית מאוד",
+  "host_comments": "מסעדת השנה, משהו אחר ומשמעותי",
+  "menu_items": [],
+  "special_features": [
+    "חדשני",
+    "יוצא דופן"
+  ],
+  "contact_info": {
+    "phone": "077-880-1768",
+    "website": "https://ontopo.com/he/il/page/46507127",
+    "social_media": ""
+  },
+  "business_news": null,
+  "mention_context": "סטודיו גורשה של אלעזר - מסעדת השנה",
+  "episode_info": {
+    "video_id": "6jvskRWvQkg",
+    "video_url": "https://www.youtube.com/watch?v=6jvskRWvQkg",
+    "language": "he",
+    "analysis_date": "2026-01-01",
+    "total_restaurants_found": 11,
+    "processing_method": "claude_chunked"
+  },
+  "food_trends": [
+    "פרסי פופולרי",
+    "מסעדות בקיסריה",
+    "אמריקאי פופולרי",
+    "תאילנדי פופולרי",
+    "מסעדות בחיפה"
+  ],
+  "episode_summary": "ניתוח מבוסס Claude של 11 מסעדות מהסרטון 6jvskRWvQkg",
+  "google_places": {
+    "place_id": "ChIJd6-dGgBNHRURow2OAOvvkR8",
+    "google_name": "Studio Gursha",
+    "google_url": "https://maps.google.com/?cid=2274863079404473763",
+    "enriched_at": "2026-01-01 22:04:12"
+  },
+  "rating": {
+    "google_rating": 4.8,
+    "total_reviews": 398,
+    "price_level": null
+  },
+  "photos": [
+    {
+      "photo_reference": "AZLasHp-1Z21KIiNsc4L8rM8MoxxG7twRkCuFKrTCUlQ7z0VAca19uOwgPHYtOsaa7EWTTualHUPk1v7ZWAG8wGxlu7gOaPVW98IOxZnTq_EzVFQJcg4mFtJETX6iwEgu6s3XffPduzg5tRAT515BqHGoUTvDio8Ro_OfWrlGmg8CuuOx6MMbuAj0NjrMbs_nyHAHau9ucK8d1Ruc0mqtAfq0Wbehm0q97aifswXtykYgoYowxW5hmY58LsOBkDVO8cEPGLUWNP67a8_XFTLgmZW4FSOcjt-DkF6rgeibQ46_Q3fQw",
+      "photo_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AZLasHp-1Z21KIiNsc4L8rM8MoxxG7twRkCuFKrTCUlQ7z0VAca19uOwgPHYtOsaa7EWTTualHUPk1v7ZWAG8wGxlu7gOaPVW98IOxZnTq_EzVFQJcg4mFtJETX6iwEgu6s3XffPduzg5tRAT515BqHGoUTvDio8Ro_OfWrlGmg8CuuOx6MMbuAj0NjrMbs_nyHAHau9ucK8d1Ruc0mqtAfq0Wbehm0q97aifswXtykYgoYowxW5hmY58LsOBkDVO8cEPGLUWNP67a8_XFTLgmZW4FSOcjt-DkF6rgeibQ46_Q3fQw&key=AIzaSyCo7o6jQghstjLaPIdPIJUB7pL8j_e8lcQ",
+      "width": 1102,
+      "height": 1600
+    },
+    {
+      "photo_reference": "AZLasHpvltT5Q-d29LeBYGPs8Z3VNRhUByFblA1Zd8bR45xdjInNXr19iPgvZZ26q8yr9cLcr318lXivfi4SOuekYYf9eXWZ72o858JN4fNnDXmpHf4fpOy5dcDDV18zPvd57-vk8sEL_zRLzzI_TNqXK3YXWOQuNf8o6LQRhLxuZnxRXcoUqNFXJq1U1r8RyCAkqJhxymPa6dePZLfKN_mP8-rnqpP1w9n0psOFvFd3_s4VoHXEe214UYltPb4ll3jgjJN5VbeOc6afDoibHpFZs8llw0faS_9FgdIrmMwRPiYECg",
+      "photo_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AZLasHpvltT5Q-d29LeBYGPs8Z3VNRhUByFblA1Zd8bR45xdjInNXr19iPgvZZ26q8yr9cLcr318lXivfi4SOuekYYf9eXWZ72o858JN4fNnDXmpHf4fpOy5dcDDV18zPvd57-vk8sEL_zRLzzI_TNqXK3YXWOQuNf8o6LQRhLxuZnxRXcoUqNFXJq1U1r8RyCAkqJhxymPa6dePZLfKN_mP8-rnqpP1w9n0psOFvFd3_s4VoHXEe214UYltPb4ll3jgjJN5VbeOc6afDoibHpFZs8llw0faS_9FgdIrmMwRPiYECg&key=AIzaSyCo7o6jQghstjLaPIdPIJUB7pL8j_e8lcQ",
+      "width": 4800,
+      "height": 3201
+    },
+    {
+      "photo_reference": "AZLasHrPPzWj5IrdNhPRCguFJU7HeTvedPd_QbKbk1IVYtqARRFI70o20sH2-MdEDKyFcdSnNjX3xPdz9mz6sXDhYXKBAx80Y0j5QbQzC31tZibGhOPOcYvIxKVXNNnmsrSdJKoYIw0nvr4Vi3SxY7Yr0xAJliTFahyzuqzSHRUUZ8oIkaAsWcekD8JI0UvvW5mT34oLBR00xvNUERcW3QlOHg4DlCn6kw9faw4OGYSH69qqPqWEa5q8D7QVdoFy7NqtNPzCNOjk6SX4uUWQQH0jEXSJhsahDl8BqxDVEqn7S-IE_A",
+      "photo_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AZLasHrPPzWj5IrdNhPRCguFJU7HeTvedPd_QbKbk1IVYtqARRFI70o20sH2-MdEDKyFcdSnNjX3xPdz9mz6sXDhYXKBAx80Y0j5QbQzC31tZibGhOPOcYvIxKVXNNnmsrSdJKoYIw0nvr4Vi3SxY7Yr0xAJliTFahyzuqzSHRUUZ8oIkaAsWcekD8JI0UvvW5mT34oLBR00xvNUERcW3QlOHg4DlCn6kw9faw4OGYSH69qqPqWEa5q8D7QVdoFy7NqtNPzCNOjk6SX4uUWQQH0jEXSJhsahDl8BqxDVEqn7S-IE_A&key=AIzaSyCo7o6jQghstjLaPIdPIJUB7pL8j_e8lcQ",
+      "width": 3201,
+      "height": 4800
+    }
+  ],
+  "business_hours": {
+    "open_now": true,
+    "weekday_text": [
+      "Monday: Closed",
+      "Tuesday: 6:30 – 11:30 PM",
+      "Wednesday: 6:30 – 11:30 PM",
+      "Thursday: 6:30 – 11:30 PM",
+      "Friday: 6:30 – 11:30 PM",
+      "Saturday: 11:30 AM – 5:00 PM",
+      "Sunday: Closed"
+    ]
+  },
+  "google_places_enriched": true,
+  "google_places_attempted": true
+}

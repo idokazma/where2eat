@@ -1,0 +1,94 @@
+{
+  "name_hebrew": "גורמי סבזי",
+  "name_english": "Gourmet Sabzi",
+  "location": {
+    "city": "תל אביב",
+    "neighborhood": "שוק לוינסקי",
+    "address": "",
+    "region": "מרכז",
+    "coordinates": {
+      "latitude": 32.0597676,
+      "longitude": 34.7723295
+    },
+    "full_address": "Levinski St 47, Tel Aviv-Yafo, Israel"
+  },
+  "cuisine_type": "פרסי",
+  "status": "פתוח",
+  "price_range": "בינוני",
+  "host_opinion": "חיובית",
+  "host_comments": "גונדי הטוב ביותר",
+  "menu_items": [
+    "גונדי"
+  ],
+  "special_features": [
+    "אותנטי פרסי"
+  ],
+  "contact_info": {
+    "phone": "03-508-0709",
+    "website": "https://www.gormesabzitlv.com/",
+    "social_media": ""
+  },
+  "business_news": null,
+  "mention_context": "גורמי סבזי בשוק לוינסקי - גונדי האחד והיחיד",
+  "episode_info": {
+    "video_id": "6jvskRWvQkg",
+    "video_url": "https://www.youtube.com/watch?v=6jvskRWvQkg",
+    "language": "he",
+    "analysis_date": "2026-01-01",
+    "total_restaurants_found": 11,
+    "processing_method": "claude_chunked"
+  },
+  "food_trends": [
+    "פרסי פופולרי",
+    "מסעדות בקיסריה",
+    "אמריקאי פופולרי",
+    "תאילנדי פופולרי",
+    "מסעדות בחיפה"
+  ],
+  "episode_summary": "ניתוח מבוסס Claude של 11 מסעדות מהסרטון 6jvskRWvQkg",
+  "google_places": {
+    "place_id": "ChIJr4h_w51MHRUR_C_KhIPCTb4",
+    "google_name": "Gourmet Sabzi",
+    "google_url": "https://maps.google.com/?cid=13712830310537375740",
+    "enriched_at": "2026-01-01 22:03:45"
+  },
+  "rating": {
+    "google_rating": 4.3,
+    "total_reviews": 403,
+    "price_level": null
+  },
+  "photos": [
+    {
+      "photo_reference": "AZLasHpHlLyO5UwdnOJOmo1JfaLobYSFfEcC-tY5tYD-JwS6s5FnAZkGnswrWtJ62ybhVGGRfx2_DbNC3JNawkNVdDk02UhVSdfttsL7vzWv476RaXvul475G_Iq-C5Pf1H0mXn458MlNNQlt7_dhISP4nMWDrHNFxhJQA-mrnv0pbCRckNd0en_8QFxq24DTD5pDvY-Ah4_7t-CcrOttGbmd88yDQvPIyaQNpJIh67RQtPIP9lMEj_tH9nUdYriuR-2mUVtKycxzZjJxpldeuVueJ0DDIdSJ8vsyNPsRrlE0fb13VfxDGua650KrTBMvvgtRBUHJkLxs1falP7_6VfC2SId9SuDObRDtTLR2Ka4bwy6GqvuF5UNgB34z0RqXMlkGP62hlpaabvUzhh9-zOA8z7VTJ5nkzTuBVmzhoRonJ-VuN-g",
+      "photo_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AZLasHpHlLyO5UwdnOJOmo1JfaLobYSFfEcC-tY5tYD-JwS6s5FnAZkGnswrWtJ62ybhVGGRfx2_DbNC3JNawkNVdDk02UhVSdfttsL7vzWv476RaXvul475G_Iq-C5Pf1H0mXn458MlNNQlt7_dhISP4nMWDrHNFxhJQA-mrnv0pbCRckNd0en_8QFxq24DTD5pDvY-Ah4_7t-CcrOttGbmd88yDQvPIyaQNpJIh67RQtPIP9lMEj_tH9nUdYriuR-2mUVtKycxzZjJxpldeuVueJ0DDIdSJ8vsyNPsRrlE0fb13VfxDGua650KrTBMvvgtRBUHJkLxs1falP7_6VfC2SId9SuDObRDtTLR2Ka4bwy6GqvuF5UNgB34z0RqXMlkGP62hlpaabvUzhh9-zOA8z7VTJ5nkzTuBVmzhoRonJ-VuN-g&key=AIzaSyCo7o6jQghstjLaPIdPIJUB7pL8j_e8lcQ",
+      "width": 4000,
+      "height": 3000
+    },
+    {
+      "photo_reference": "AZLasHo9P8hIk6kDX6aj45fmCmhvVOwVDNVgbTlixFdCmUIdGZTsHPNHozXJhsiDRoJhW7Km3gv53ATW9KjK6tkzGs60f7nvkxdMQ21UVGiNdlDX8vDRUZzDW55uMw2raCeD8l3ks15BhBvEUVJSUxO7t5W48EY1l04ehrZ9dtESHSgt7J63RjZvUr8LF3yUhK_VyrKfumiZF9msSC-FfFcLQ-FDkSSuqHRDAoK0K3tmz1xN_E5JyXzFJjEw0YniYZu3l_9nUiIhcPA-_-l2zGCdsUhWDTv1hh2MQ7rXlLcjYQKdBA4j4_xWCQdFLPkuRUxN8npSSSwofTTbr7_C316d2vsMhWa5MpIiCg4Sd1gnWPHHYol6IYOqfmuZAYZothxEXudGYoUfldZd89sdcREFeB9M6_dkgcGGSm0ousxWYLN5hg",
+      "photo_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AZLasHo9P8hIk6kDX6aj45fmCmhvVOwVDNVgbTlixFdCmUIdGZTsHPNHozXJhsiDRoJhW7Km3gv53ATW9KjK6tkzGs60f7nvkxdMQ21UVGiNdlDX8vDRUZzDW55uMw2raCeD8l3ks15BhBvEUVJSUxO7t5W48EY1l04ehrZ9dtESHSgt7J63RjZvUr8LF3yUhK_VyrKfumiZF9msSC-FfFcLQ-FDkSSuqHRDAoK0K3tmz1xN_E5JyXzFJjEw0YniYZu3l_9nUiIhcPA-_-l2zGCdsUhWDTv1hh2MQ7rXlLcjYQKdBA4j4_xWCQdFLPkuRUxN8npSSSwofTTbr7_C316d2vsMhWa5MpIiCg4Sd1gnWPHHYol6IYOqfmuZAYZothxEXudGYoUfldZd89sdcREFeB9M6_dkgcGGSm0ousxWYLN5hg&key=AIzaSyCo7o6jQghstjLaPIdPIJUB7pL8j_e8lcQ",
+      "width": 3024,
+      "height": 4032
+    },
+    {
+      "photo_reference": "AZLasHoL7nP_k0-En62Uxk8NFjj_FW2tIZoAfoYCeAdGE17FbfnlXt3R4PsEE3Irthrlk7FbPW5Y-P9uXgY9hJYNIFtKhncNY3KOkv5Egf0t_kmepHyX2XOV2U3q0RHgmy5KAFJ3e9_GmaiFCxLqLUV12Q0VuXvW3TIruatFtzNXT1Biq05FrziKFnySZbufXGh3uiXC1bid22x3LZokWbOkI7Lh9vzBqJfGBea_s_AuJbxVutWUPmIxLEiwsYwsitQmaq92ShbrYb4Ytk3h8LvCMuFTfaT_Q90-eTBE_eaXsWwSYf-1f7U_MX06IHWlnOI0VodW4HjBoq3lHZMtQqKkNB94Uc7Xpc09OX_Lj_OIkq4kj2N9M7dY26t_b4GtmC89rRCQJViu85YmkCj9YYqIouEzo5EQ5QV8a_LY-XandpElwZgz",
+      "photo_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AZLasHoL7nP_k0-En62Uxk8NFjj_FW2tIZoAfoYCeAdGE17FbfnlXt3R4PsEE3Irthrlk7FbPW5Y-P9uXgY9hJYNIFtKhncNY3KOkv5Egf0t_kmepHyX2XOV2U3q0RHgmy5KAFJ3e9_GmaiFCxLqLUV12Q0VuXvW3TIruatFtzNXT1Biq05FrziKFnySZbufXGh3uiXC1bid22x3LZokWbOkI7Lh9vzBqJfGBea_s_AuJbxVutWUPmIxLEiwsYwsitQmaq92ShbrYb4Ytk3h8LvCMuFTfaT_Q90-eTBE_eaXsWwSYf-1f7U_MX06IHWlnOI0VodW4HjBoq3lHZMtQqKkNB94Uc7Xpc09OX_Lj_OIkq4kj2N9M7dY26t_b4GtmC89rRCQJViu85YmkCj9YYqIouEzo5EQ5QV8a_LY-XandpElwZgz&key=AIzaSyCo7o6jQghstjLaPIdPIJUB7pL8j_e8lcQ",
+      "width": 4000,
+      "height": 3000
+    }
+  ],
+  "business_hours": {
+    "open_now": false,
+    "weekday_text": [
+      "Monday: 11:00 AM – 5:30 PM",
+      "Tuesday: 11:00 AM – 5:30 PM",
+      "Wednesday: 11:00 AM – 5:30 PM",
+      "Thursday: 11:00 AM – 5:30 PM",
+      "Friday: 10:00 AM – 3:30 PM",
+      "Saturday: Closed",
+      "Sunday: 11:00 AM – 5:30 PM"
+    ]
+  },
+  "google_places_enriched": true,
+  "google_places_attempted": true
+}

@@ -1,0 +1,87 @@
+{
+  "name_hebrew": "יאן ארוש",
+  "name_english": "Yaן Arvsh",
+  "location": {
+    "city": "לא צוין",
+    "neighborhood": "לא צוין",
+    "address": "לא צוין",
+    "region": "לא צוין",
+    "coordinates": {
+      "latitude": 32.5115552,
+      "longitude": 35.4422954
+    },
+    "full_address": "הסחנה הקטנה, בית אלפא, Israel"
+  },
+  "cuisine_type": "לא צוין",
+  "status": "לא צוין",
+  "price_range": "לא צוין",
+  "host_opinion": "לא צוין",
+  "host_comments": "לא צוין",
+  "menu_items": [],
+  "special_features": [],
+  "contact_info": {
+    "phone": "054-979-7004",
+    "website": "https://www.hatris.rest/",
+    "social_media": "לא צוין"
+  },
+  "business_news": null,
+  "mention_context": "הוזכר בהקשר: יאן ארוש",
+  "episode_info": {
+    "video_id": "6jvskRWvQkg",
+    "video_url": "https://www.youtube.com/watch?v=6jvskRWvQkg",
+    "language": "he",
+    "analysis_date": "2026-01-01",
+    "total_restaurants_found": 25,
+    "processing_method": "claude_chunked"
+  },
+  "food_trends": [
+    "מסעדות בלא צוין",
+    "לא צוין פופולרי"
+  ],
+  "episode_summary": "ניתוח מבוסס Claude של 25 מסעדות מהסרטון 6jvskRWvQkg",
+  "google_places": {
+    "place_id": "ChIJl_VUnXRZHBURZ5ANgmCuex4",
+    "google_name": "התריס חלון של אוכל טוב",
+    "google_url": "https://maps.google.com/?cid=2196540972795269223",
+    "enriched_at": "2026-01-01 22:04:04"
+  },
+  "rating": {
+    "google_rating": 4.1,
+    "total_reviews": 68,
+    "price_level": null
+  },
+  "photos": [
+    {
+      "photo_reference": "AZLasHoMYzOq59odkjqa2w9yF8iaVurRM6KnX0uCQutKS_a2ki9E51nXj1aeH7Xmo3w7BVqqAkvOTbm4zZt24rJZKJA5VJvpairxGbLNYLFh0SUCDBviMeQlaq6_tjmoapTb5CaTUX8u5JktgEHJjbFrOVKh8qef_4STRrWnYuuVtm4LVQb67-KgOgfDKZ1vKFse_Hhy8eDbfFriRq7UsYETkDwpyqqaCVw_Y5XIEftttcD1XkuRy3Zt9EdRy0vO2O3344VdKRM_VnQ-s8MREBnHOBtj3rlhOPcPMXQFq-irfUjzlw",
+      "photo_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AZLasHoMYzOq59odkjqa2w9yF8iaVurRM6KnX0uCQutKS_a2ki9E51nXj1aeH7Xmo3w7BVqqAkvOTbm4zZt24rJZKJA5VJvpairxGbLNYLFh0SUCDBviMeQlaq6_tjmoapTb5CaTUX8u5JktgEHJjbFrOVKh8qef_4STRrWnYuuVtm4LVQb67-KgOgfDKZ1vKFse_Hhy8eDbfFriRq7UsYETkDwpyqqaCVw_Y5XIEftttcD1XkuRy3Zt9EdRy0vO2O3344VdKRM_VnQ-s8MREBnHOBtj3rlhOPcPMXQFq-irfUjzlw&key=AIzaSyCo7o6jQghstjLaPIdPIJUB7pL8j_e8lcQ",
+      "width": 3200,
+      "height": 4800
+    },
+    {
+      "photo_reference": "AZLasHrgIM0kBNinCVvu6wja5JQVS0dHp8uuehfgwebafq0FTlPcPfSromJCC7jkAR5oRQn7OEyysTj6B6ZHSzX0ftMT4AQtzJJD0Z0w80msAx5JBgEJs1dlLuIuVphxw0OmeAyzKqr3g898FCMVXU6qmKoIkqAKbJCe7RH252yiLYi_SBRSPgq-iEgx87kIhPz3jNMUBgn8uH1LOhMSuZYNHzzMbnc_FnEYzQPhU2nLR5clPHepTMTFZ9wA7S-XUSH-KRZzWA5ilsGXnUnWHbzLR7p0dkST9QTYiUXNCXKZGfny-A",
+      "photo_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AZLasHrgIM0kBNinCVvu6wja5JQVS0dHp8uuehfgwebafq0FTlPcPfSromJCC7jkAR5oRQn7OEyysTj6B6ZHSzX0ftMT4AQtzJJD0Z0w80msAx5JBgEJs1dlLuIuVphxw0OmeAyzKqr3g898FCMVXU6qmKoIkqAKbJCe7RH252yiLYi_SBRSPgq-iEgx87kIhPz3jNMUBgn8uH1LOhMSuZYNHzzMbnc_FnEYzQPhU2nLR5clPHepTMTFZ9wA7S-XUSH-KRZzWA5ilsGXnUnWHbzLR7p0dkST9QTYiUXNCXKZGfny-A&key=AIzaSyCo7o6jQghstjLaPIdPIJUB7pL8j_e8lcQ",
+      "width": 1200,
+      "height": 1500
+    },
+    {
+      "photo_reference": "AZLasHoHnd1iU-ybiH8DGhRoVbrvFeBM_roBu15L7a8EaMH7bpWPURzBKW33Wx4VGWigBr81Ypg0aoXp8d2W6ynASyqXG1iS29KXgh9W1ZwBMih6lKvjbs6o35Fnh30gGBJKGn-EVuyumj4kt7uOfwWSeXWBcJJMWDr46LUCuQORbK5QqzuNXEAbmTfL5YM_gZRY2rizjmD6AkMmLZ1IH5cU0GnPGjbIo6ePB9rtrRV8-dYADNLJOHE9rDckSihir98KKPxdSLt-QjIqURfyem1hN3_929qAGrYLd-pPw5f6D2TDZg",
+      "photo_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AZLasHoHnd1iU-ybiH8DGhRoVbrvFeBM_roBu15L7a8EaMH7bpWPURzBKW33Wx4VGWigBr81Ypg0aoXp8d2W6ynASyqXG1iS29KXgh9W1ZwBMih6lKvjbs6o35Fnh30gGBJKGn-EVuyumj4kt7uOfwWSeXWBcJJMWDr46LUCuQORbK5QqzuNXEAbmTfL5YM_gZRY2rizjmD6AkMmLZ1IH5cU0GnPGjbIo6ePB9rtrRV8-dYADNLJOHE9rDckSihir98KKPxdSLt-QjIqURfyem1hN3_929qAGrYLd-pPw5f6D2TDZg&key=AIzaSyCo7o6jQghstjLaPIdPIJUB7pL8j_e8lcQ",
+      "width": 512,
+      "height": 640
+    }
+  ],
+  "business_hours": {
+    "open_now": false,
+    "weekday_text": [
+      "Monday: 12:00 – 8:00 PM",
+      "Tuesday: 12:00 – 8:00 PM",
+      "Wednesday: 12:00 – 8:00 PM",
+      "Thursday: 12:00 – 9:00 PM",
+      "Friday: 11:00 AM – 6:00 PM",
+      "Saturday: 11:00 AM – 8:00 PM",
+      "Sunday: Closed"
+    ]
+  },
+  "google_places_enriched": true,
+  "google_places_attempted": true
+}

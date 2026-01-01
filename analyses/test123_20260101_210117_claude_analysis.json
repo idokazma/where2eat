@@ -1,0 +1,78 @@
+{
+  "episode_info": {
+    "video_id": "test123",
+    "video_url": "https://www.youtube.com/watch?v=test123",
+    "language": "he",
+    "analysis_date": "2026-01-01",
+    "total_restaurants_found": 2,
+    "processing_method": "claude_mock"
+  },
+  "restaurants": [
+    {
+      "name_hebrew": "צ'קולי",
+      "name_english": "Chakoli",
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "נמל תל אביב",
+        "address": "לא צוין",
+        "region": "מרכז"
+      },
+      "cuisine_type": "איטלקי",
+      "status": "פתוח",
+      "price_range": "בינוני-יקר",
+      "host_opinion": "חיובית מאוד",
+      "host_comments": "מקום מעולה עם נוף לים",
+      "menu_items": [
+        "פיצה",
+        "פסטה"
+      ],
+      "special_features": [
+        "נוף לים",
+        "מקום רומנטי"
+      ],
+      "contact_info": {
+        "phone": "לא צוין",
+        "website": "לא צוין",
+        "social_media": "לא צוין"
+      },
+      "business_news": null,
+      "mention_context": "המסעדה צ'קולי שנמצאת בתל אביב ליד הנמל זה מקום איטלקי מעולה עם נוף לים"
+    },
+    {
+      "name_hebrew": "גורמי סבזי",
+      "name_english": "Gourmet Sabzi",
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "שוק לוינסקי",
+        "address": "לא צוין",
+        "region": "מרכז"
+      },
+      "cuisine_type": "פרסי",
+      "status": "פתוח",
+      "price_range": "בינוני",
+      "host_opinion": "חיובית",
+      "host_comments": "מקום פרסי אותנטי עם מחירים טובים",
+      "menu_items": [
+        "קבאב",
+        "חורש"
+      ],
+      "special_features": [
+        "אותנטי",
+        "מחירים טובים"
+      ],
+      "contact_info": {
+        "phone": "לא צוין",
+        "website": "לא צוין",
+        "social_media": "לא צוין"
+      },
+      "business_news": null,
+      "mention_context": "המסעדה השנייה היא גורמי סבזי בשוק לוינסקי זה מקום פרסי אותנטי עם מחירים טובים"
+    }
+  ],
+  "food_trends": [
+    "איטלקי פופולרי",
+    "מסעדות עם נוף",
+    "אוכל ים תיכוני"
+  ],
+  "episode_summary": "ניתוח מבוסס Claude במצב בדיקה של 2 מסעדות מהסרטון test123"
+}

@@ -1,0 +1,87 @@
+{
+  "name_hebrew": "וד לכל",
+  "name_english": "Vd Lkl",
+  "location": {
+    "city": "לא צוין",
+    "neighborhood": "לא צוין",
+    "address": "לא צוין",
+    "region": "לא צוין",
+    "coordinates": {
+      "latitude": 31.795226,
+      "longitude": 35.0687482
+    },
+    "full_address": "Shoresh, Israel"
+  },
+  "cuisine_type": "לא צוין",
+  "status": "לא צוין",
+  "price_range": "לא צוין",
+  "host_opinion": "לא צוין",
+  "host_comments": "לא צוין",
+  "menu_items": [],
+  "special_features": [],
+  "contact_info": {
+    "phone": "02-534-5522",
+    "website": "http://www.2eat.co.il/linkmevaseret/",
+    "social_media": "לא צוין"
+  },
+  "business_news": null,
+  "mention_context": "הוזכר בהקשר: וד לכל",
+  "episode_info": {
+    "video_id": "6jvskRWvQkg",
+    "video_url": "https://www.youtube.com/watch?v=6jvskRWvQkg",
+    "language": "he",
+    "analysis_date": "2026-01-01",
+    "total_restaurants_found": 25,
+    "processing_method": "claude_chunked"
+  },
+  "food_trends": [
+    "מסעדות בלא צוין",
+    "לא צוין פופולרי"
+  ],
+  "episode_summary": "ניתוח מבוסס Claude של 25 מסעדות מהסרטון 6jvskRWvQkg",
+  "google_places": {
+    "place_id": "ChIJvXYFu-DWAhURKZbitIs3SI0",
+    "google_name": "Castel link",
+    "google_url": "https://maps.google.com/?cid=10180448030845736489",
+    "enriched_at": "2026-01-01 22:03:47"
+  },
+  "rating": {
+    "google_rating": 4.2,
+    "total_reviews": 1416,
+    "price_level": 2
+  },
+  "photos": [
+    {
+      "photo_reference": "AZLasHrZkySWIycGpmecz44yAhwLvi3xmoUESm0aE2SETGcg6J6Z2UCzhI5_9ktvCkAgbMbNBijwNCL2EGW7FZDexQ_MgY55B4jtPUxzrNkSCKHIoYABiotXyNbx-JvC6LfhUeWaqqmbGalm69jZcnDRNkQgIdWBaXjpymlFWq3-ggUt0Rd1WhxXA32msBvrtnGdjVD0ilt78Xl1ejg2SyWuyfC9oddrDeR170MYVbcjsk72ewdysIkAkBU1oNzxtZptuiVsn4cFwL1ihaQdvPFGRqyKuQThncqQjcSCWGBCzsZmKrIiwQEUOmimDzbub9miUKqRtUfqmp3S_fMyXnCxqrHXV1GI4IvJaR4Jq3afIQH04ojzuwCNy1g-c-rgMYIFo_0W8hbbsxWXTdFzPRfrvMfBgDQD4Bo-Lnmgc3_px4Bf6M8q",
+      "photo_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AZLasHrZkySWIycGpmecz44yAhwLvi3xmoUESm0aE2SETGcg6J6Z2UCzhI5_9ktvCkAgbMbNBijwNCL2EGW7FZDexQ_MgY55B4jtPUxzrNkSCKHIoYABiotXyNbx-JvC6LfhUeWaqqmbGalm69jZcnDRNkQgIdWBaXjpymlFWq3-ggUt0Rd1WhxXA32msBvrtnGdjVD0ilt78Xl1ejg2SyWuyfC9oddrDeR170MYVbcjsk72ewdysIkAkBU1oNzxtZptuiVsn4cFwL1ihaQdvPFGRqyKuQThncqQjcSCWGBCzsZmKrIiwQEUOmimDzbub9miUKqRtUfqmp3S_fMyXnCxqrHXV1GI4IvJaR4Jq3afIQH04ojzuwCNy1g-c-rgMYIFo_0W8hbbsxWXTdFzPRfrvMfBgDQD4Bo-Lnmgc3_px4Bf6M8q&key=AIzaSyCo7o6jQghstjLaPIdPIJUB7pL8j_e8lcQ",
+      "width": 3000,
+      "height": 4000
+    },
+    {
+      "photo_reference": "AZLasHqaqMsCOjYxnJsr_uZ2xvPQpjoiBXsMw8_OVzAKdRgdsZQEelex3HhW8C1dgV9MFYEdL7A5F_cYZoa6Dh17UqvMMpegiV-NKqUArhrM49rqhCwXck4hupsddX11s5J9ThjaLBJyu85b00oUaFV3JMGv7NVvcFkdP5NM9la1wf1P2lweOhWc4yYT7iv-1iqpCH4FOUHo6BPKsafnfny12cDdVidL2D6zQFI1f04JToiG9I_-LUMePqIKD43m8a8ySZ2W7NwjpDh2oV4FzzDzOoS-HaNbLFz7uQDbh7b4_BqyXw",
+      "photo_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AZLasHqaqMsCOjYxnJsr_uZ2xvPQpjoiBXsMw8_OVzAKdRgdsZQEelex3HhW8C1dgV9MFYEdL7A5F_cYZoa6Dh17UqvMMpegiV-NKqUArhrM49rqhCwXck4hupsddX11s5J9ThjaLBJyu85b00oUaFV3JMGv7NVvcFkdP5NM9la1wf1P2lweOhWc4yYT7iv-1iqpCH4FOUHo6BPKsafnfny12cDdVidL2D6zQFI1f04JToiG9I_-LUMePqIKD43m8a8ySZ2W7NwjpDh2oV4FzzDzOoS-HaNbLFz7uQDbh7b4_BqyXw&key=AIzaSyCo7o6jQghstjLaPIdPIJUB7pL8j_e8lcQ",
+      "width": 4800,
+      "height": 3200
+    },
+    {
+      "photo_reference": "AZLasHrdmx1ekA1D3BYkZNUaNd5253WVyvmPeCPpYiRN1j0cHL0_ANjVBCdafISmJQ4Bw4LVdwZfQAeOMza8NAM_OCe9m2cLeNgn0Uc7q3i37DnX1gvAThMuJ8AqeLvilrSQsXeED2xP_YllgdOzTCNi0GLyR_pCuXrrS7hj2NUpTUBlgJXKX4y70wRgRCC6naexl6loijhNx5eQmZopz914DKTIzbGPKxXAWxqc74rTDM6dQ7gma7Rt-ifrEnLcX2v2Pj5G1I6Xb8U-XogpxDHqLKAbqNt3bbe6bSFPkfm_ajP7nylzrONHRJNx_gw7B5K-bIB5n4OTYNRzmzzemrEa1PMQbU8i17VzFEnzuOuuX7TrvpETrl95IXbTLLoUwX5m6lt9d3fVMIFhpMW0aeo5IQQ2mUG_s-_Ipy2hjhV4fSsv49g",
+      "photo_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AZLasHrdmx1ekA1D3BYkZNUaNd5253WVyvmPeCPpYiRN1j0cHL0_ANjVBCdafISmJQ4Bw4LVdwZfQAeOMza8NAM_OCe9m2cLeNgn0Uc7q3i37DnX1gvAThMuJ8AqeLvilrSQsXeED2xP_YllgdOzTCNi0GLyR_pCuXrrS7hj2NUpTUBlgJXKX4y70wRgRCC6naexl6loijhNx5eQmZopz914DKTIzbGPKxXAWxqc74rTDM6dQ7gma7Rt-ifrEnLcX2v2Pj5G1I6Xb8U-XogpxDHqLKAbqNt3bbe6bSFPkfm_ajP7nylzrONHRJNx_gw7B5K-bIB5n4OTYNRzmzzemrEa1PMQbU8i17VzFEnzuOuuX7TrvpETrl95IXbTLLoUwX5m6lt9d3fVMIFhpMW0aeo5IQQ2mUG_s-_Ipy2hjhV4fSsv49g&key=AIzaSyCo7o6jQghstjLaPIdPIJUB7pL8j_e8lcQ",
+      "width": 4032,
+      "height": 3024
+    }
+  ],
+  "business_hours": {
+    "open_now": true,
+    "weekday_text": [
+      "Monday: 6:00 PM – 12:00 AM",
+      "Tuesday: 6:00 PM – 12:00 AM",
+      "Wednesday: 6:00 PM – 12:00 AM",
+      "Thursday: 6:00 PM – 12:00 AM",
+      "Friday: 12:00 PM – 12:00 AM",
+      "Saturday: 12:00 PM – 12:00 AM",
+      "Sunday: 6:00 PM – 12:00 AM"
+    ]
+  },
+  "google_places_enriched": true,
+  "google_places_attempted": true
+}
