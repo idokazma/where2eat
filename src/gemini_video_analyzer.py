@@ -7,15 +7,21 @@ Extracts restaurant mentions, transcripts, and food-related content.
 import os
 import json
 import re
+import time
 from typing import Dict, List, Optional, Any
 from dataclasses import dataclass
 import logging
 
 try:
-    import google.generativeai as genai
+    from google import genai
+    from google.genai import types
     GEMINI_AVAILABLE = True
 except ImportError:
-    GEMINI_AVAILABLE = False
+    try:
+        import google.generativeai as genai_old
+        GEMINI_AVAILABLE = False  # Old package, not fully supported
+    except ImportError:
+        GEMINI_AVAILABLE = False
 
 
 @dataclass
@@ -75,7 +81,7 @@ Return your response as valid JSON with this structure:
             "host_opinion": "positive",
             "host_comments": "מסעדה מעולה עם פסטה מדהימה",
             "menu_items": [
-                {"item_name": "פסטה קרבונרה", "price": "78 ש\"ח"}
+                {"item_name": "פסטה קרבונרה", "price": "78 ש״ח"}
             ],
             "price_range": "mid-range",
             "special_features": ["outdoor seating", "delivery"]
@@ -100,8 +106,8 @@ Important:
         """
         if not GEMINI_AVAILABLE:
             raise ImportError(
-                "google-generativeai package not installed. "
-                "Install with: pip install google-generativeai"
+                "google-genai package not installed. "
+                "Install with: pip install google-genai"
             )
 
         self.api_key = api_key or os.getenv('GEMINI_API_KEY') or os.getenv('GOOGLE_API_KEY')
@@ -110,8 +116,8 @@ Important:
                 "Gemini API key not found. Set GEMINI_API_KEY or GOOGLE_API_KEY environment variable."
             )
 
-        genai.configure(api_key=self.api_key)
-        self.model = genai.GenerativeModel('gemini-1.5-pro')
+        # Initialize the new genai client
+        self.client = genai.Client(api_key=self.api_key)
         self.logger = logging.getLogger(__name__)
 
     def extract_video_id(self, url: str) -> Optional[str]:
@@ -154,11 +160,25 @@ Important:
         try:
             self.logger.info(f"Analyzing video: {video_id}")
 
-            # Use Gemini to analyze the video directly
-            response = self.model.generate_content([
-                self.RESTAURANT_EXTRACTION_PROMPT,
-                {"video_url": video_url}
-            ])
+            # Ensure URL is properly formatted
+            if not video_url.startswith('http'):
+                video_url = f"https://www.youtube.com/watch?v={video_id}"
+
+            # Use Gemini to analyze the video directly with the new API
+            response = self.client.models.generate_content(
+                model="gemini-2.0-flash",
+                contents=[
+                    types.Content(
+                        parts=[
+                            types.Part.from_uri(
+                                file_uri=video_url,
+                                mime_type="video/*"
+                            ),
+                            types.Part.from_text(text=self.RESTAURANT_EXTRACTION_PROMPT)
+                        ]
+                    )
+                ]
+            )
 
             # Parse the response
             result_text = response.text
@@ -216,17 +236,19 @@ Important:
                 error=str(e)
             )
 
-    def analyze_playlist(
+    def analyze_videos_from_list(
         self,
         video_urls: List[str],
-        max_videos: int = 10
+        max_videos: int = 10,
+        delay_between: float = 2.0
     ) -> List[VideoAnalysisResult]:
         """
-        Analyze multiple videos from a playlist.
+        Analyze multiple videos.
 
         Args:
             video_urls: List of YouTube video URLs
             max_videos: Maximum number of videos to analyze
+            delay_between: Delay between API calls in seconds
 
         Returns:
             List of VideoAnalysisResult objects
@@ -236,32 +258,13 @@ Important:
             self.logger.info(f"Processing video {i+1}/{min(len(video_urls), max_videos)}")
             result = self.analyze_video(url)
             results.append(result)
+            if i < len(video_urls) - 1:
+                time.sleep(delay_between)  # Rate limiting
         return results
 
-    def get_video_transcript(self, video_url: str) -> Optional[str]:
+    def get_playlist_videos_via_gemini(self, playlist_url: str) -> List[Dict[str, str]]:
         """
-        Get just the transcript from a video.
-
-        Args:
-            video_url: YouTube video URL
-
-        Returns:
-            Transcript text or None
-        """
-        try:
-            response = self.model.generate_content([
-                "Please provide the complete transcript of this video. "
-                "Return only the spoken text, nothing else.",
-                {"video_url": video_url}
-            ])
-            return response.text
-        except Exception as e:
-            self.logger.error(f"Error getting transcript: {e}")
-            return None
-
-    def list_playlist_videos(self, playlist_url: str) -> List[Dict[str, str]]:
-        """
-        Get list of videos from a playlist using Gemini.
+        Get list of videos from a playlist by asking Gemini to analyze the playlist page.
 
         Args:
             playlist_url: YouTube playlist URL
@@ -270,23 +273,47 @@ Important:
             List of video info dicts with 'video_id', 'title', 'url'
         """
         try:
-            response = self.model.generate_content([
-                """Analyze this YouTube playlist and list all videos in it.
-                Return as JSON array with format:
-                [
-                    {"video_id": "xxx", "title": "Video Title", "url": "https://youtube.com/watch?v=xxx"},
-                    ...
+            # Extract playlist ID
+            playlist_match = re.search(r'list=([a-zA-Z0-9_-]+)', playlist_url)
+            if not playlist_match:
+                return []
+
+            playlist_id = playlist_match.group(1)
+            playlist_page_url = f"https://www.youtube.com/playlist?list={playlist_id}"
+
+            response = self.client.models.generate_content(
+                model="gemini-2.0-flash",
+                contents=[
+                    types.Content(
+                        parts=[
+                            types.Part.from_uri(
+                                file_uri=playlist_page_url,
+                                mime_type="text/html"
+                            ),
+                            types.Part.from_text(
+                                text="""Analyze this YouTube playlist page and list the first 15 videos in it.
+                                Return as a JSON array with format:
+                                [
+                                    {"video_id": "xxxxxxxxxxx", "title": "Video Title"},
+                                    ...
+                                ]
+                                Return ONLY the JSON array, no other text. Each video_id should be exactly 11 characters."""
+                            )
+                        ]
+                    )
                 ]
-                Return ONLY the JSON array, no other text.""",
-                {"video_url": playlist_url}
-            ])
+            )
 
             result_text = response.text
 
             # Extract JSON
             json_match = re.search(r'\[.*\]', result_text, re.DOTALL)
             if json_match:
-                return json.loads(json_match.group(0))
+                videos = json.loads(json_match.group(0))
+                # Add full URLs
+                for v in videos:
+                    v['url'] = f"https://www.youtube.com/watch?v={v['video_id']}"
+                return videos
 
             return []
         except Exception as e:
@@ -312,39 +339,57 @@ def analyze_playlist_with_gemini(
     """
     analyzer = GeminiVideoAnalyzer(api_key=api_key)
 
-    # Get playlist videos
-    videos = analyzer.list_playlist_videos(playlist_url)
+    # Try to get playlist videos
+    print("Fetching playlist videos...")
+    videos = analyzer.get_playlist_videos_via_gemini(playlist_url)
 
+    # If that fails, try to extract video ID from the URL and analyze just that video
     if not videos:
-        return {
-            "success": False,
-            "error": "Could not fetch playlist videos",
-            "videos": []
-        }
+        print("Could not fetch playlist. Trying to analyze the video in URL...")
+        video_id = analyzer.extract_video_id(playlist_url)
+        if video_id:
+            videos = [{'video_id': video_id, 'title': 'Unknown', 'url': f"https://www.youtube.com/watch?v={video_id}"}]
+        else:
+            return {
+                "success": False,
+                "error": "Could not fetch playlist videos or extract video ID",
+                "videos": []
+            }
+
+    print(f"Found {len(videos)} videos. Analyzing up to {max_videos}...")
 
     # Analyze each video
     results = []
     all_restaurants = []
 
     for i, video in enumerate(videos[:max_videos]):
-        print(f"\n[{i+1}/{min(len(videos), max_videos)}] Analyzing: {video.get('title', video.get('url'))}")
+        video_url = video.get('url', f"https://www.youtube.com/watch?v={video['video_id']}")
+        print(f"\n[{i+1}/{min(len(videos), max_videos)}] Analyzing: {video.get('title', video_url)}")
 
-        result = analyzer.analyze_video(video['url'])
+        result = analyzer.analyze_video(video_url)
         results.append({
             "video_id": result.video_id,
             "title": result.title or video.get('title'),
             "success": result.success,
             "restaurants": result.restaurants,
+            "restaurant_count": len(result.restaurants),
             "food_trends": result.food_trends,
             "episode_summary": result.episode_summary,
             "error": result.error
         })
 
         if result.success:
+            print(f"    Found {len(result.restaurants)} restaurants")
             for restaurant in result.restaurants:
                 restaurant['source_video'] = result.video_id
                 restaurant['source_title'] = result.title or video.get('title')
                 all_restaurants.append(restaurant)
+        else:
+            print(f"    Error: {result.error}")
+
+        # Rate limiting
+        if i < min(len(videos), max_videos) - 1:
+            time.sleep(2)
 
     return {
         "success": True,
