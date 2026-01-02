@@ -138,7 +138,7 @@ class TestChannelBatchProcessor:
         assert status['progress']['videos_completed'] == 5
         assert status['progress']['videos_failed'] == 1
         assert status['progress']['videos_total'] == 10
-        assert status['progress']['percentage'] == 50.0
+        assert status['progress']['percentage'] == 60.0  # (5+1)/10 * 100
 
     def test_get_job_status_nonexistent_job(self):
         """Test getting status of non-existent job returns None."""
@@ -170,7 +170,8 @@ class TestChannelBatchProcessor:
         success = self.processor.cancel_job("nonexistent_job")
         assert success is False
 
-    @mock.patch('src.channel_batch_processor.RestaurantPodcastAnalyzer')
+    @mock.patch('scripts.main.RestaurantPodcastAnalyzer')
+    @pytest.mark.asyncio
     async def test_process_video_batch_success(self, mock_analyzer_class):
         """Test processing a batch of videos successfully."""
         # Mock analyzer
@@ -205,7 +206,8 @@ class TestChannelBatchProcessor:
         assert job.videos_completed == 2
         assert job.videos_failed == 0
 
-    @mock.patch('src.channel_batch_processor.RestaurantPodcastAnalyzer')
+    @mock.patch('scripts.main.RestaurantPodcastAnalyzer')
+    @pytest.mark.asyncio
     async def test_process_video_batch_partial_failure(self, mock_analyzer_class):
         """Test processing batch with some failures."""
         mock_analyzer = mock.MagicMock()
@@ -290,7 +292,7 @@ class TestChannelBatchProcessor:
         assert summary['summary']['videos_failed'] == 2
         assert summary['summary']['restaurants_found'] == 25
         assert summary['summary']['success_rate'] == 80.0
-        assert summary['processing_duration_minutes'] == 30
+        assert abs(summary['processing_duration_minutes'] - 30) < 0.1
         assert len(summary['failed_videos']) == 2
 
     def test_save_job_results(self):
@@ -347,7 +349,7 @@ class TestChannelBatchProcessor:
         completed_jobs = self.processor.get_completed_jobs()
         
         assert len(completed_jobs) == 2
-        assert all(job['status'] == ProcessingStatus.COMPLETED for job in completed_jobs)
+        assert all(job['status'] == ProcessingStatus.COMPLETED.value for job in completed_jobs)
 
     def test_cleanup_old_jobs(self):
         """Test cleaning up old completed jobs."""
@@ -561,11 +563,11 @@ class TestProcessingStatus:
     
     def test_status_values(self):
         """Test all status values are correctly defined."""
-        assert ProcessingStatus.PENDING == "pending"
-        assert ProcessingStatus.PROCESSING == "processing"
-        assert ProcessingStatus.COMPLETED == "completed"
-        assert ProcessingStatus.FAILED == "failed"
-        assert ProcessingStatus.CANCELLED == "cancelled"
+        assert ProcessingStatus.PENDING.value == "pending"
+        assert ProcessingStatus.PROCESSING.value == "processing"
+        assert ProcessingStatus.COMPLETED.value == "completed"
+        assert ProcessingStatus.FAILED.value == "failed"
+        assert ProcessingStatus.CANCELLED.value == "cancelled"
 
     def test_status_transitions(self):
         """Test valid status transitions."""

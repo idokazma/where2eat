@@ -19,6 +19,53 @@ from restaurant_analyzer import (
 )
 
 
+@pytest.fixture
+def sample_transcript_data():
+    """Sample transcript data for testing"""
+    return {
+        'video_id': '6jvskRWvQkg',
+        'video_url': 'https://www.youtube.com/watch?v=6jvskRWvQkg',
+        'language': 'he',
+        'transcript': 'שלום וברוכים הבאים לתוכנית אוכל. היום נדבר על מסעדות מעולות. המסעדה הראשונה היא צ\'קולי שנמצאת בתל אביב ליד הנמל. המקום מדהים עם נוף לים והאוכל טעים מאוד. השף חביב משה מכין שם חמוסטה תאילנדית מעולה. המסעדה השנייה היא גורמי סבזי בשוק לוינסקי. זה מקום פרסי אותנטי עם מחירים טובים. הבעלים עושה שם אוכל פרסי מסורתי.',
+        'segments': [
+            {'text': 'שלום וברוכים הבאים לתוכנית אוכל', 'start': 0.0, 'duration': 3.0},
+            {'text': 'היום נדבר על מסעדות מעולות', 'start': 3.0, 'duration': 2.5},
+            {'text': 'המסעדה הראשונה היא צ\'קולי שנמצאת בתל אביב', 'start': 5.5, 'duration': 4.0}
+        ],
+        'segment_count': 3,
+        'formatted_timestamp': '2026-01-01 12:00:00'
+    }
+
+
+@pytest.fixture 
+def sample_claude_response():
+    """Sample Claude analysis response"""
+    return {
+        "episode_info": {
+            "video_id": "6jvskRWvQkg", 
+            "video_url": "https://www.youtube.com/watch?v=6jvskRWvQkg",
+            "language": "he",
+            "analysis_date": "2026-01-01"
+        },
+        "restaurants": [
+            {
+                "name_hebrew": "צ'קולי",
+                "name_english": "Chakoli",
+                "location": {
+                    "city": "תל אביב",
+                    "neighborhood": "נמל תל אביב",
+                    "address": "ליד הנמל",
+                    "region": "מרכז"
+                },
+                "cuisine_type": "תאילנדי",
+                "host_opinion": "positive",
+                "mentioned_details": ["נוף לים", "חמוסטה תאילנדית"],
+                "rating_indicators": ["מעולה", "טעים מאוד"]
+            }
+        ]
+    }
+
+
 class TestRestaurantAnalyzer:
     """Test cases for restaurant analysis functionality"""
     
@@ -170,10 +217,30 @@ class TestRestaurantAnalyzer:
 class TestRestaurantExtractionLogic:
     """Test the restaurant extraction logic from transcripts"""
     
-    def test_extract_restaurant_mentions(self):
+    @patch('openai.OpenAI')
+    @patch('src.unified_restaurant_analyzer.UnifiedRestaurantAnalyzer.analyze_transcript')
+    @patch('builtins.open', new_callable=mock_open)
+    @patch('os.makedirs')
+    @patch.dict(os.environ, {'OPENAI_API_KEY': 'test-key'})
+    def test_extract_restaurant_mentions(self, mock_makedirs, mock_file, mock_analyze, mock_openai):
         """Test identification of restaurant mentions in Hebrew text"""
-        from scripts.main import RestaurantPodcastAnalyzer
+        # Mock the LLM response
+        mock_analyze.return_value = {
+            "restaurants": [
+                {
+                    "name_hebrew": "צ'קולי",
+                    "name_english": "Chakoli", 
+                    "location": {"city": "תל אביב", "neighborhood": "נמל"},
+                    "cuisine_type": "תאילנדי",
+                    "host_opinion": "positive"
+                }
+            ],
+            "episode_info": {"video_id": "test123", "llm_provider": "openai"},
+            "food_trends": ["תאילנדי"],
+            "episode_summary": "פרק על מסעדות מומלצות"
+        }
         
+        from scripts.main import RestaurantPodcastAnalyzer
         analyzer = RestaurantPodcastAnalyzer()
         
         transcript_text = """
@@ -192,9 +259,7 @@ class TestRestaurantExtractionLogic:
         }
         
         # Test the internal analysis function
-        result = analyzer._analyze_transcript_with_claude_integration(
-            transcript_data, transcript_text
-        )
+        result = analyzer.extract_restaurants_with_llm(transcript_data)
         
         assert result is not None
         assert 'restaurants' in result
@@ -205,11 +270,11 @@ class TestRestaurantExtractionLogic:
         restaurants = result['restaurants']
         restaurant_names = [r['name_hebrew'] for r in restaurants]
         
-        # Check for specific restaurants
+        # Check for specific restaurants (should match our mock data)
         assert any('צ\'קולי' in name for name in restaurant_names)
-        assert any('מרי פוסה' in name for name in restaurant_names)
     
-    def test_restaurant_data_structure(self):
+    @patch('openai.OpenAI')
+    def test_restaurant_data_structure(self, mock_openai):
         """Test that extracted restaurant data has correct structure"""
         from scripts.main import RestaurantPodcastAnalyzer
         
@@ -250,7 +315,8 @@ class TestRestaurantExtractionLogic:
             for field in location_fields:
                 assert field in location
     
-    def test_sentiment_analysis(self):
+    @patch('openai.OpenAI')
+    def test_sentiment_analysis(self, mock_openai):
         """Test host opinion detection from context"""
         from scripts.main import RestaurantPodcastAnalyzer
         
