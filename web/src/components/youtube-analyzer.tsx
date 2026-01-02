@@ -7,19 +7,20 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
-import { 
-  AlertDialog, 
-  AlertDialogAction, 
-  AlertDialogCancel, 
-  AlertDialogContent, 
-  AlertDialogDescription, 
-  AlertDialogFooter, 
-  AlertDialogHeader, 
-  AlertDialogTitle, 
-  AlertDialogTrigger 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger
 } from "@/components/ui/alert-dialog"
 import { Youtube, Loader2, CheckCircle, XCircle, AlertCircle } from "lucide-react"
 import { PodcastData, YouTubeAnalysisRequest } from "@/types/restaurant"
+import { endpoints } from "@/lib/config"
 
 export function YoutubeAnalyzer() {
   const [url, setUrl] = useState("")
@@ -45,7 +46,7 @@ export function YoutubeAnalyzer() {
     setAnalysisResult(null)
 
     try {
-      const response = await fetch('http://localhost:3001/api/analyze', {
+      const response = await fetch(endpoints.analyze.video(), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

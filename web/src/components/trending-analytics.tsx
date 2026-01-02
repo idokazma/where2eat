@@ -5,18 +5,19 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { 
-  TrendingUp, 
-  BarChart3, 
-  MapPin, 
-  Utensils, 
-  Star, 
+import {
+  TrendingUp,
+  BarChart3,
+  MapPin,
+  Utensils,
+  Star,
   Calendar,
   Target,
   Award,
   Clock
 } from "lucide-react"
 import { Restaurant } from "@/types/restaurant"
+import { endpoints } from "@/lib/config"
 
 interface TrendingAnalyticsProps {
   restaurants: Restaurant[]
@@ -201,7 +202,7 @@ export function TrendingAnalytics({ restaurants, onRestaurantFilter }: TrendingA
   const loadTrendsData = async () => {
     setIsLoading(true)
     try {
-      const response = await fetch(`http://localhost:3001/api/analytics/trends?period=${timeframe}`)
+      const response = await fetch(endpoints.analytics.trends({ period: timeframe }))
       const data = await response.json()
       setTrendsData(data)
     } catch (error) {

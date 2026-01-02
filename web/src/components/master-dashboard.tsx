@@ -5,13 +5,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { 
-  LayoutDashboard, 
-  Search, 
-  Clock, 
-  Map, 
-  TrendingUp, 
-  Heart, 
+import {
+  LayoutDashboard,
+  Search,
+  Clock,
+  Map,
+  TrendingUp,
+  Heart,
   Filter,
   RefreshCw,
   BarChart3
@@ -26,6 +26,7 @@ import { CuisineFilter } from "./cuisine-filter"
 import { PriceFilter } from "./price-filter"
 import { useFavorites } from "@/contexts/favorites-context"
 import { TrendingAnalytics } from "./trending-analytics"
+import { endpoints } from "@/lib/config"
 
 interface SearchResults {
   restaurants: Restaurant[]
@@ -79,9 +80,9 @@ export function MasterDashboard() {
   const loadAllRestaurants = async () => {
     setIsLoading(true)
     try {
-      const response = await fetch('http://localhost:3001/api/restaurants')
+      const response = await fetch(endpoints.restaurants.list())
       const data = await response.json()
-      
+
       if (data.restaurants) {
         setAllRestaurants(data.restaurants)
         setFavoriteContext(data.restaurants)

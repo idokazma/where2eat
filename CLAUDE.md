@@ -51,11 +51,42 @@ npm start        # Production start
 
 ### Data Flow
 ```
-YouTube URL → Transcript Collector → AI Analyzer → Restaurant JSON → Location/Image Enrichment → Web UI
+YouTube URL → Transcript Collector → AI Analyzer → SQLite Database → Express API → Frontend
+```
+
+### Backend Service Layer (NEW)
+
+The backend now has a proper service layer with clear separation:
+
+- `src/database.py` - SQLite database layer for persistence
+- `src/backend_service.py` - Main service layer coordinating all backend operations
+- `scripts/cli.py` - Command-line interface for backend operations
+
+**CLI Usage:**
+```bash
+# Process a YouTube video
+python scripts/cli.py process-video 'https://www.youtube.com/watch?v=VIDEO_ID'
+
+# List restaurants with filters
+python scripts/cli.py list-restaurants --location "תל אביב" --cuisine "Italian"
+
+# Import from JSON files
+python scripts/cli.py import-json data/restaurants_backup/
+
+# Show database statistics
+python scripts/cli.py stats
+
+# System health check
+python scripts/cli.py health
+
+# Show analytics
+python scripts/cli.py analytics trends --period 3months
 ```
 
 ### Core Python Modules (src/)
 
+- `database.py` - SQLite database with episodes, restaurants, and jobs tables
+- `backend_service.py` - Unified service layer for all backend operations
 - `youtube_transcript_collector.py` - Fetches YouTube transcripts using youtube-transcript-api
 - `youtube_channel_collector.py` - Processes entire YouTube channels
 - `claude_restaurant_analyzer.py` / `openai_restaurant_analyzer.py` - AI-based restaurant extraction from transcripts
@@ -70,13 +101,17 @@ YouTube URL → Transcript Collector → AI Analyzer → Restaurant JSON → Loc
 - Next.js 16 with React 19, TypeScript, Tailwind CSS
 - Uses shadcn/ui components (Radix primitives)
 - App router in `web/src/app/`
+- **Configurable API URL** via `NEXT_PUBLIC_API_URL` environment variable
+- API configuration in `web/src/lib/config.ts`
 
 ### API (api/)
 - Express.js with CORS, Helmet security
 - Single `index.js` file
+- Calls backend service layer for data operations
 
 ### Data Storage
-- `data/restaurants/` - Individual restaurant JSON files
+- `data/where2eat.db` - SQLite database (primary storage)
+- `data/restaurants/` - Individual restaurant JSON files (for import/export)
 - `data/transcripts/` - Raw transcript data
 - `analyses/` - Claude analysis markdown outputs
 - `restaurant_locations/` - Location search results
