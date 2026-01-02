@@ -151,3 +151,4 @@ web/build/
 !restaurant_locations/search_requests/.gitkeep
 !restaurant_locations/results/.gitkeep
 !restaurant_locations/map_data/.gitkeep
+*.db
