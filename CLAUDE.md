@@ -23,6 +23,9 @@ python -m pytest tests/test_restaurant_search_agent.py -v
 # Run mock tests (no network required)
 python test_with_mock.py -v
 
+# Skip slow or network-dependent tests
+python -m pytest tests/ -m "not slow and not network"
+
 # Analyze a YouTube video
 python scripts/main.py 'https://www.youtube.com/watch?v=VIDEO_ID'
 
