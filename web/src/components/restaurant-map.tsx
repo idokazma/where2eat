@@ -6,6 +6,7 @@ import { MapPin, Navigation, Star } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { endpoints } from "@/lib/config"
 
 interface RestaurantMapProps {
   restaurants: Restaurant[]
@@ -192,20 +193,20 @@ export function RestaurantMap({ restaurants, selectedRestaurant, onRestaurantSel
     try {
       // First try with Hebrew name
       const query = `${restaurant.name_hebrew} ${restaurant.location.city} restaurant`
-      const response = await fetch(`http://localhost:3001/api/places/search?query=${encodeURIComponent(query)}`)
-      
+      const response = await fetch(endpoints.places.search(query))
+
       if (response.ok) {
         const data = await response.json()
         if (data.places && data.places.length > 0) {
           return data.places[0] as PlaceDetails
         }
       }
-      
+
       // Try with English name if available
       if (restaurant.name_english) {
         const altQuery = `${restaurant.name_english} ${restaurant.location.city} restaurant`
-        const altResponse = await fetch(`http://localhost:3001/api/places/search?query=${encodeURIComponent(altQuery)}`)
-        
+        const altResponse = await fetch(endpoints.places.search(altQuery))
+
         if (altResponse.ok) {
           const altData = await altResponse.json()
           if (altData.places && altData.places.length > 0) {
@@ -213,7 +214,7 @@ export function RestaurantMap({ restaurants, selectedRestaurant, onRestaurantSel
           }
         }
       }
-      
+
       return null
     } catch (error) {
       console.error('Error searching for restaurant:', error)

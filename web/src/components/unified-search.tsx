@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Search, Calendar, TrendingUp, Filter, X, RefreshCw } from "lucide-react"
 import { Restaurant } from "@/types/restaurant"
+import { endpoints, getApiUrl } from "@/lib/config"
 
 interface UnifiedSearchProps {
   onSearchResults: (results: SearchResults) => void
@@ -81,7 +82,7 @@ export function UnifiedSearch({ onSearchResults, onLoadingChange }: UnifiedSearc
 
   const loadSuggestions = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/restaurants')
+      const response = await fetch(endpoints.restaurants.list())
       const data = await response.json()
       
       if (data.restaurants) {
@@ -154,7 +155,7 @@ export function UnifiedSearch({ onSearchResults, onLoadingChange }: UnifiedSearc
       params.append('sort_direction', filters.sortDirection)
       params.append('limit', '50') // Increased limit for comprehensive results
 
-      const response = await fetch(`http://localhost:3001/api/restaurants/search?${params}`)
+      const response = await fetch(getApiUrl(`/api/restaurants/search?${params}`))
       const data = await response.json()
 
       if (response.ok) {
