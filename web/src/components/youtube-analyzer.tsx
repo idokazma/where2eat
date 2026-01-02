@@ -7,31 +7,53 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
-import { 
-  AlertDialog, 
-  AlertDialogAction, 
-  AlertDialogCancel, 
-  AlertDialogContent, 
-  AlertDialogDescription, 
-  AlertDialogFooter, 
-  AlertDialogHeader, 
-  AlertDialogTitle, 
-  AlertDialogTrigger 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger
 } from "@/components/ui/alert-dialog"
-import { Youtube, Loader2, CheckCircle, XCircle, AlertCircle } from "lucide-react"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { Youtube, Loader2, CheckCircle, XCircle, AlertCircle, ListVideo } from "lucide-react"
 import { PodcastData, YouTubeAnalysisRequest } from "@/types/restaurant"
+
+type AnalysisType = "video" | "channel" | "playlist"
 
 export function YoutubeAnalyzer() {
   const [url, setUrl] = useState("")
   const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [analysisResult, setAnalysisResult] = useState<PodcastData | null>(null)
   const [error, setError] = useState<string | null>(null)
-  const [analysisType, setAnalysisType] = useState<"video" | "channel">("video")
+  const [analysisType, setAnalysisType] = useState<AnalysisType>("video")
   const [channelJob, setChannelJob] = useState<any>(null)
 
   const isValidYouTubeUrl = (url: string) => {
     const youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+$/
     return youtubeRegex.test(url)
+  }
+
+  const isPlaylistUrl = (url: string) => {
+    return url.includes('list=') || url.includes('/playlist')
+  }
+
+  const detectUrlType = (url: string): AnalysisType => {
+    if (!url) return "video"
+    if (isPlaylistUrl(url)) return "playlist"
+    if (url.includes('/channel/') || url.includes('/c/') || url.includes('/@') || url.includes('/user/')) {
+      return "channel"
+    }
+    return "video"
   }
 
   const handleAnalyze = async () => {
@@ -45,12 +67,24 @@ export function YoutubeAnalyzer() {
     setAnalysisResult(null)
 
     try {
-      const response = await fetch('http://localhost:3001/api/analyze', {
+      // Determine which API endpoint to use based on analysis type
+      let endpoint = 'http://localhost:3001/api/analyze'
+      let body: Record<string, unknown> = { url }
+
+      if (analysisType === 'playlist') {
+        endpoint = 'http://localhost:3001/api/analyze/playlist'
+        body = { playlist_url: url, filters: { max_results: 50 } }
+      } else if (analysisType === 'channel') {
+        endpoint = 'http://localhost:3001/api/analyze/channel'
+        body = { channel_url: url, filters: { max_results: 50 } }
+      }
+
+      const response = await fetch(endpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ url }),
+        body: JSON.stringify(body),
       })
 
       if (!response.ok) {
@@ -58,27 +92,40 @@ export function YoutubeAnalyzer() {
       }
 
       const result = await response.json()
-      
+
+      // Store job info for channel/playlist processing
+      if (analysisType === 'playlist' || analysisType === 'channel') {
+        setChannelJob(result)
+      }
+
       // Analysis is now processing in background
       // Show success message and refresh after delay
       await new Promise(resolve => setTimeout(resolve, 2000))
-      
+
       setError(null)
       setAnalysisResult(null)
-      
-      // Show success message and suggest refreshing
-      alert("הניתוח התחיל בהצלחה! המסעדות יופיעו ברשימה תוך דקות ספורות. רענן את העמוד כדי לראות את התוצאות.")
-      
+
+      // Show success message based on analysis type
+      const typeLabel = analysisType === 'playlist' ? 'הפלייליסט' : analysisType === 'channel' ? 'הערוץ' : 'הסרטון'
+      alert(`הניתוח של ${typeLabel} התחיל בהצלחה! המסעדות יופיעו ברשימה תוך דקות ספורות. רענן את העמוד כדי לראות את התוצאות.`)
+
       // Auto-refresh the page after a delay to show new restaurants
       setTimeout(() => {
         window.location.reload()
       }, 3000)
-      
+
     } catch (err) {
       setError(err instanceof Error ? err.message : "שגיאה לא צפויה")
     } finally {
       setIsAnalyzing(false)
     }
+  }
+
+  // Auto-detect URL type when URL changes
+  const handleUrlChange = (newUrl: string) => {
+    setUrl(newUrl)
+    const detectedType = detectUrlType(newUrl)
+    setAnalysisType(detectedType)
   }
 
   const getStatusIcon = (status: YouTubeAnalysisRequest['status']) => {
@@ -102,29 +149,56 @@ export function YoutubeAnalyzer() {
     setError(null)
   }
 
+  const getAnalysisTypeLabel = () => {
+    switch (analysisType) {
+      case 'playlist': return 'פלייליסט'
+      case 'channel': return 'ערוץ'
+      default: return 'סרטון'
+    }
+  }
+
+  const getAnalysisTypeIcon = () => {
+    switch (analysisType) {
+      case 'playlist': return <ListVideo className="size-5 text-purple-500" />
+      case 'channel': return <Youtube className="size-5 text-red-500" />
+      default: return <Youtube className="size-5 text-red-500" />
+    }
+  }
+
   return (
     <div className="space-y-6">
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Youtube className="size-5 text-red-500" />
-            ניתוח סרטון YouTube
+            {getAnalysisTypeIcon()}
+            ניתוח {getAnalysisTypeLabel()} YouTube
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
             <label htmlFor="youtube-url" className="text-sm font-medium">
-              כתובת YouTube
+              כתובת YouTube (סרטון, פלייליסט או ערוץ)
             </label>
             <Input
               id="youtube-url"
               type="url"
-              placeholder="https://www.youtube.com/watch?v=..."
+              placeholder="https://www.youtube.com/watch?v=... או playlist?list=..."
               value={url}
-              onChange={(e) => setUrl(e.target.value)}
+              onChange={(e) => handleUrlChange(e.target.value)}
               className="text-left"
               disabled={isAnalyzing}
             />
+            {url && (
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <span>זוהה כ:</span>
+                <Badge variant={analysisType === 'playlist' ? 'default' : 'secondary'}>
+                  {getAnalysisTypeLabel()}
+                </Badge>
+                {analysisType === 'playlist' && (
+                  <span className="text-purple-600">כל הסרטונים בפלייליסט יעובדו</span>
+                )}
+              </div>
+            )}
           </div>
 
           <div className="flex gap-2">
