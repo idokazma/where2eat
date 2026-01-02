@@ -16,7 +16,7 @@ from typing import List, Dict, Optional, Callable, Any
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import logging
 
-from .youtube_channel_collector import YouTubeChannelCollector, ChannelNotFoundError, APIQuotaExceededError
+from .youtube_channel_collector import YouTubeChannelCollector, ChannelNotFoundError, APIQuotaExceededError, PlaylistNotFoundError
 
 
 class ProcessingStatus(Enum):
@@ -35,14 +35,17 @@ class BatchProcessingError(Exception):
 
 @dataclass
 class BatchProcessingJob:
-    """Represents a channel batch processing job with progress tracking."""
-    
+    """Represents a channel/playlist batch processing job with progress tracking."""
+
     job_id: str
-    channel_id: str
-    channel_title: str
+    channel_id: str  # Also used for playlist_id when processing playlists
+    channel_title: str  # Also used for playlist_title when processing playlists
     total_videos: int
     video_batches: List[List[Dict]]
     filters: Dict[str, Any]
+
+    # Source type (channel or playlist)
+    source_type: str = "channel"  # "channel" or "playlist"
     
     # Progress tracking
     status: ProcessingStatus = ProcessingStatus.PENDING
@@ -229,13 +232,95 @@ class ChannelBatchProcessor:
                 f"Started processing job {job.job_id} for channel '{job.channel_title}' "
                 f"({job.total_videos} videos in {len(video_batches)} batches)"
             )
-            
+
             return job
-            
+
         except (ChannelNotFoundError, APIQuotaExceededError) as e:
             raise BatchProcessingError(f"Channel processing failed: {str(e)}")
         except Exception as e:
             self.logger.error(f"Unexpected error starting channel processing: {str(e)}")
+            raise BatchProcessingError(f"Failed to start processing: {str(e)}")
+
+    def start_playlist_processing(
+        self,
+        playlist_url: str,
+        api_key: str,
+        filters: Optional[Dict[str, Any]] = None
+    ) -> BatchProcessingJob:
+        """
+        Start processing a YouTube playlist.
+
+        Args:
+            playlist_url: YouTube playlist URL or video URL with playlist
+            api_key: YouTube Data API key
+            filters: Optional filters for video selection
+
+        Returns:
+            BatchProcessingJob instance
+
+        Raises:
+            BatchProcessingError: If processing cannot be started
+        """
+        filters = filters or {}
+
+        # Check concurrent job limit
+        if len(self.active_jobs) >= self.max_concurrent_jobs:
+            raise BatchProcessingError(
+                f"Maximum concurrent jobs ({self.max_concurrent_jobs}) reached. "
+                f"Wait for existing jobs to complete or cancel them."
+            )
+
+        try:
+            # Initialize channel collector (also handles playlists)
+            collector = YouTubeChannelCollector(api_key=api_key)
+            playlist_id = collector.extract_playlist_id(playlist_url)
+
+            if not playlist_id:
+                raise BatchProcessingError(f"Invalid playlist URL: {playlist_url}")
+
+            # Check for duplicate processing
+            if any(job.channel_id == playlist_id and job.source_type == "playlist"
+                   for job in self.active_jobs.values()):
+                raise BatchProcessingError(
+                    f"Playlist {playlist_id} is already being processed"
+                )
+
+            # Get playlist information
+            playlist_info = collector.get_playlist_info(playlist_id)
+
+            # Get playlist videos with filters
+            videos = collector.get_playlist_videos(playlist_id, **filters)
+
+            # Create video batches
+            video_batches = self._create_video_batches(videos, self.batch_size)
+
+            # Create job
+            job = BatchProcessingJob(
+                job_id=str(uuid.uuid4()),
+                channel_id=playlist_id,  # Store playlist_id in channel_id field
+                channel_title=playlist_info['title'],  # Store playlist_title
+                total_videos=len(videos),
+                video_batches=video_batches,
+                filters=filters,
+                source_type="playlist"
+            )
+
+            # Add to active jobs
+            self.active_jobs[job.job_id] = job
+
+            self.logger.info(
+                f"Started processing job {job.job_id} for playlist '{job.channel_title}' "
+                f"({job.total_videos} videos in {len(video_batches)} batches)"
+            )
+
+            return job
+
+        except PlaylistNotFoundError as e:
+            raise BatchProcessingError(f"Playlist processing failed: {str(e)}")
+        except APIQuotaExceededError as e:
+            raise BatchProcessingError(f"Playlist processing failed: {str(e)}")
+        except Exception as e:
+            self.logger.error(f"Unexpected error starting playlist processing: {str(e)}")
             raise BatchProcessingError(f"Failed to start processing: {str(e)}")
     
     def get_job_status(self, job_id: str) -> Optional[Dict[str, Any]]:
@@ -262,6 +347,13 @@ class ChannelBatchProcessor:
         return {
             'job_id': job.job_id,
             'status': job.status,
+            'source_type': job.source_type,
+            'source_info': {
+                'id': job.channel_id,
+                'title': job.channel_title,
+                'type': job.source_type
+            },
+            # Keep channel_info for backwards compatibility
             'channel_info': {
                 'channel_id': job.channel_id,
                 'channel_title': job.channel_title
@@ -465,6 +557,13 @@ class ChannelBatchProcessor:
         """
         return {
             'job_id': job.job_id,
+            'source_type': job.source_type,
+            'source_info': {
+                'id': job.channel_id,
+                'title': job.channel_title,
+                'type': job.source_type
+            },
+            # Keep channel_info for backwards compatibility
             'channel_info': {
                 'channel_id': job.channel_id,
                 'channel_title': job.channel_title

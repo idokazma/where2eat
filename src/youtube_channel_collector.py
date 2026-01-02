@@ -1,6 +1,7 @@
 """
 YouTube Channel Collector
-Fetches all videos from YouTube channels using YouTube Data API v3 for restaurant analysis.
+Fetches all videos from YouTube channels and playlists using YouTube Data API v3 for restaurant analysis.
+Supports both channel uploads and custom playlist processing.
 """
 
 import re
@@ -20,6 +21,11 @@ class ChannelNotFoundError(Exception):
 
 class APIQuotaExceededError(Exception):
     """Raised when YouTube API quota is exceeded."""
+    pass
+
+
+class PlaylistNotFoundError(Exception):
+    """Raised when a YouTube playlist is not found."""
     pass
 
 
@@ -91,6 +97,54 @@ class YouTubeChannelCollector:
                     return None
 
         return None
+
+    def extract_playlist_id(self, url: str) -> Optional[str]:
+        """
+        Extract playlist ID from various YouTube URL formats.
+
+        Args:
+            url: YouTube URL or playlist ID
+
+        Returns:
+            Playlist ID or None if not found
+
+        Supported formats:
+        - https://www.youtube.com/playlist?list=PLxxxxxxxxxxxxxxx
+        - https://www.youtube.com/watch?v=xxxxx&list=PLxxxxxxxxxxxxxxx
+        - https://youtube.com/watch?v=xxxxx&list=PLxxxxxxxxxxxxxxx&index=5
+        - PLxxxxxxxxxxxxxxx (direct playlist ID)
+        """
+        if not url or not isinstance(url, str):
+            return None
+
+        # If it's already a playlist ID (starts with PL, UU, LL, etc.)
+        if re.match(r'^(PL|UU|LL|FL|RD|OL)[a-zA-Z0-9_-]+$', url):
+            return url
+
+        # Extract from URL with list= parameter
+        patterns = [
+            r'[?&]list=([a-zA-Z0-9_-]+)',  # Any URL with list= parameter
+            r'playlist\?list=([a-zA-Z0-9_-]+)',  # Direct playlist URL
+        ]
+
+        for pattern in patterns:
+            match = re.search(pattern, url)
+            if match:
+                return match.group(1)
+
+        return None
+
+    def is_playlist_url(self, url: str) -> bool:
+        """
+        Check if a URL is a YouTube playlist URL.
+
+        Args:
+            url: URL to check
+
+        Returns:
+            True if URL contains a playlist, False otherwise
+        """
+        return self.extract_playlist_id(url) is not None
 
     def _extract_handle_from_url(self, url: str) -> Optional[str]:
         """Extract channel handle from c/, user/, or @ URLs."""
@@ -444,3 +498,165 @@ class YouTubeChannelCollector:
     def reset_quota_counter(self):
         """Reset the quota counter (useful for testing or daily reset)."""
         self.requests_made = 0
+
+    def get_playlist_info(self, playlist_id: str) -> Dict:
+        """
+        Get detailed information about a YouTube playlist.
+
+        Args:
+            playlist_id: YouTube playlist ID
+
+        Returns:
+            Dictionary containing playlist information
+
+        Raises:
+            PlaylistNotFoundError: If playlist is not found
+            APIQuotaExceededError: If API quota is exceeded
+        """
+        try:
+            youtube = build('youtube', 'v3', developerKey=self.api_key)
+            self._check_quota_limit(1)
+
+            request = youtube.playlists().list(
+                part='snippet,contentDetails',
+                id=playlist_id
+            )
+
+            response = request.execute()
+
+            if not response.get('items'):
+                raise PlaylistNotFoundError(f"Playlist not found: {playlist_id}")
+
+            playlist_data = response['items'][0]
+            snippet = playlist_data['snippet']
+            content_details = playlist_data.get('contentDetails', {})
+
+            return {
+                'playlist_id': playlist_id,
+                'title': snippet['title'],
+                'description': snippet.get('description', ''),
+                'channel_id': snippet.get('channelId'),
+                'channel_title': snippet.get('channelTitle'),
+                'published_at': snippet.get('publishedAt'),
+                'thumbnail_url': snippet.get('thumbnails', {}).get('default', {}).get('url'),
+                'video_count': int(content_details.get('itemCount', 0))
+            }
+
+        except HttpError as e:
+            if e.resp.status == 403:
+                raise APIQuotaExceededError("YouTube API quota exceeded")
+            if e.resp.status == 404:
+                raise PlaylistNotFoundError(f"Playlist not found: {playlist_id}")
+            raise PlaylistNotFoundError(f"Error getting playlist info: {str(e)}")
+
+    def get_playlist_videos(
+        self,
+        playlist_id: str,
+        max_results: int = 50,
+        date_from: Optional[datetime] = None,
+        date_to: Optional[datetime] = None,
+        min_views: Optional[int] = None,
+        min_duration_seconds: Optional[int] = None
+    ) -> List[Dict]:
+        """
+        Get all videos from a YouTube playlist with optional filtering.
+
+        Args:
+            playlist_id: YouTube playlist ID
+            max_results: Maximum number of videos to return (pagination handled automatically)
+            date_from: Minimum publish date filter
+            date_to: Maximum publish date filter
+            min_views: Minimum view count filter
+            min_duration_seconds: Minimum duration filter
+
+        Returns:
+            List of video dictionaries with metadata
+
+        Raises:
+            PlaylistNotFoundError: If playlist is not found
+            APIQuotaExceededError: If API quota is exceeded
+        """
+        try:
+            youtube = build('youtube', 'v3', developerKey=self.api_key)
+            videos = []
+            next_page_token = None
+
+            while len(videos) < max_results:
+                self._check_quota_limit(1)
+
+                request = youtube.playlistItems().list(
+                    part='snippet,contentDetails',
+                    playlistId=playlist_id,
+                    maxResults=min(50, max_results - len(videos)),
+                    pageToken=next_page_token
+                )
+
+                response = request.execute()
+
+                if not response.get('items') and not videos:
+                    # Empty playlist
+                    break
+
+                for item in response.get('items', []):
+                    snippet = item['snippet']
+                    content_details = item.get('contentDetails', {})
+
+                    # Skip private/deleted videos
+                    if snippet.get('title') == 'Private video' or snippet.get('title') == 'Deleted video':
+                        self.logger.warning(f"Skipping private/deleted video in playlist position {snippet.get('position', 'unknown')}")
+                        continue
+
+                    video_data = {
+                        'video_id': snippet['resourceId']['videoId'],
+                        'title': snippet['title'],
+                        'description': snippet.get('description', ''),
+                        'published_at': content_details.get('videoPublishedAt', snippet.get('publishedAt')),
+                        'thumbnail_url': snippet.get('thumbnails', {}).get('default', {}).get('url'),
+                        'playlist_position': snippet.get('position', 0),
+                        'channel_id': snippet.get('videoOwnerChannelId'),
+                        'channel_title': snippet.get('videoOwnerChannelTitle')
+                    }
+                    videos.append(video_data)
+
+                next_page_token = response.get('nextPageToken')
+                if not next_page_token:
+                    break
+
+            # Get additional video details if filters are needed
+            if min_views or min_duration_seconds:
+                videos = self._enrich_video_details(videos)
+
+            # Apply filters
+            if date_from or date_to:
+                videos = self._filter_videos_by_date(videos, date_from, date_to)
+
+            if min_views:
+                videos = self._filter_videos_by_views(videos, min_views)
+
+            if min_duration_seconds:
+                videos = self._filter_videos_by_duration(videos, min_duration_seconds)
+
+            return videos[:max_results]
+
+        except HttpError as e:
+            if e.resp.status == 403:
+                raise APIQuotaExceededError("YouTube API quota exceeded")
+            if e.resp.status == 404:
+                raise PlaylistNotFoundError(f"Playlist not found: {playlist_id}")
+            raise PlaylistNotFoundError(f"Error getting playlist videos: {str(e)}")
+
+    def get_playlist_video_count(self, playlist_id: str) -> int:
+        """
+        Get total video count for a playlist (quick check).
+
+        Args:
+            playlist_id: YouTube playlist ID
+
+        Returns:
+            Number of videos in the playlist
+        """
+        try:
+            playlist_info = self.get_playlist_info(playlist_id)
+            return playlist_info['video_count']
+        except (PlaylistNotFoundError, APIQuotaExceededError):
+            return 0

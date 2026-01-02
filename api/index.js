@@ -986,6 +986,112 @@ app.post('/api/analyze/channel', async (req, res) => {
   }
 })
 
+// PLAYLIST PROCESSING API ENDPOINTS
+app.post('/api/analyze/playlist', async (req, res) => {
+  try {
+    const { playlist_url, filters = {}, processing_options = {} } = req.body
+
+    // Validate playlist URL - must contain list= parameter or be a playlist URL
+    if (!playlist_url || (!playlist_url.includes('list=') && !playlist_url.includes('/playlist'))) {
+      return res.status(400).json({ error: 'Valid YouTube playlist URL required. URL must contain list= parameter or be a /playlist URL' })
+    }
+
+    console.log('🚀 STARTING YOUTUBE PLAYLIST ANALYSIS PROCESS')
+    console.log('='.repeat(50))
+    console.log(`📋 Playlist URL: ${playlist_url}`)
+    console.log(`🔧 Filters: ${JSON.stringify(filters)}`)
+    console.log(`⚙️ Options: ${JSON.stringify(processing_options)}`)
+    console.log(`⏰ Timestamp: ${new Date().toISOString()}`)
+
+    // Start the Python playlist analysis in the background
+    const { spawn } = require('child_process')
+    const pythonPath = path.join(__dirname, '..', 'scripts', 'process_playlist.py')
+    const venvPython = path.join(__dirname, '..', 'venv', 'bin', 'python')
+
+    console.log(`🐍 Python script path: ${pythonPath}`)
+    console.log(`🐍 Using venv Python: ${venvPython}`)
+
+    // Prepare arguments for Python script
+    const args = [
+      pythonPath,
+      playlist_url,
+      '--max_results', (filters.max_results || 50).toString(),
+      '--batch_size', (processing_options.batch_size || 5).toString()
+    ]
+
+    if (filters.date_from) args.push('--date_from', filters.date_from)
+    if (filters.date_to) args.push('--date_to', filters.date_to)
+    if (filters.min_views) args.push('--min_views', filters.min_views.toString())
+    if (filters.min_duration_seconds) args.push('--min_duration_seconds', filters.min_duration_seconds.toString())
+    if (processing_options.skip_existing !== undefined) args.push('--skip_existing', processing_options.skip_existing.toString())
+
+    // Use virtual environment Python with proper activation
+    const python = spawn(venvPython, args, {
+      cwd: path.join(__dirname, '..'),
+      stdio: ['pipe', 'pipe', 'pipe'],
+      env: {
+        ...process.env,
+        PYTHONPATH: path.join(__dirname, '..'),
+        VIRTUAL_ENV: path.join(__dirname, '..', 'venv'),
+        PATH: `${path.join(__dirname, '..', 'venv', 'bin')}:${process.env.PATH}`
+      }
+    })
+
+    let output = ''
+    let errorOutput = ''
+
+    python.stdout.on('data', (data) => {
+      const text = data.toString()
+      output += text
+      console.log('📤 PYTHON STDOUT:', text.trim())
+    })
+
+    python.stderr.on('data', (data) => {
+      const text = data.toString()
+      errorOutput += text
+      console.log('🚨 PYTHON STDERR:', text.trim())
+    })
+
+    python.on('close', (code) => {
+      console.log('🏁 PYTHON PLAYLIST PROCESS COMPLETE')
+      console.log('='.repeat(50))
+      console.log(`📊 Exit Code: ${code}`)
+      console.log(`📝 Total Output Length: ${output.length}`)
+      console.log(`⚠️  Total Error Length: ${errorOutput.length}`)
+
+      if (code === 0) {
+        console.log('✅ Playlist analysis completed successfully!')
+        console.log('📁 Check data/restaurants/ for new restaurant files')
+      } else {
+        console.log('❌ Playlist analysis failed!')
+        console.log('🔍 Error output:', errorOutput.slice(0, 500) + '...')
+      }
+    })
+
+    python.on('error', (error) => {
+      console.log('💥 PYTHON PLAYLIST PROCESS ERROR:', error.message)
+    })
+
+    // Generate job ID for tracking
+    const jobId = uuidv4()
+
+    res.status(202).json({
+      job_id: jobId,
+      message: 'Playlist analysis started successfully',
+      status: 'started',
+      source_type: 'playlist',
+      playlist_url,
+      filters,
+      processing_options,
+      estimated_duration_minutes: Math.ceil((filters.max_results || 50) * 2 / (processing_options.batch_size || 5))
+    })
+
+  } catch (error) {
+    console.error('Error starting playlist analysis:', error)
+    res.status(500).json({ error: 'Failed to start playlist analysis' })
+  }
+})
+
 // Get job status endpoint
 app.get('/api/jobs/:jobId/status', async (req, res) => {
   try {
