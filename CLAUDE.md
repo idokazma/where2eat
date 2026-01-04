@@ -67,6 +67,12 @@ The backend now has a proper service layer with clear separation:
 # Process a YouTube video
 python scripts/cli.py process-video 'https://www.youtube.com/watch?v=VIDEO_ID'
 
+# Process a transcript file (when YouTube API is blocked)
+python scripts/cli.py process-transcript path/to/transcript.txt
+
+# Process multiple transcript files from a folder
+python scripts/cli.py process-transcripts path/to/transcripts/ --recursive
+
 # List restaurants with filters
 python scripts/cli.py list-restaurants --location "תל אביב" --cuisine "Italian"
 
@@ -83,10 +89,17 @@ python scripts/cli.py health
 python scripts/cli.py analytics trends --period 3months
 ```
 
+**Supported Transcript Formats:**
+- `.txt` - Plain text transcript
+- `.json` - JSON with 'transcript' or 'segments' field
+- `.srt` - SubRip subtitle format
+- `.vtt` - WebVTT subtitle format
+
 ### Core Python Modules (src/)
 
 - `database.py` - SQLite database with episodes, restaurants, and jobs tables
 - `backend_service.py` - Unified service layer for all backend operations
+- `transcript_file_loader.py` - Loads transcript files from disk (txt, json, srt, vtt)
 - `youtube_transcript_collector.py` - Fetches YouTube transcripts using youtube-transcript-api
 - `youtube_channel_collector.py` - Processes entire YouTube channels
 - `claude_restaurant_analyzer.py` / `openai_restaurant_analyzer.py` - AI-based restaurant extraction from transcripts

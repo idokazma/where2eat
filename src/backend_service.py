@@ -399,6 +399,272 @@ class BackendService:
 
         return result
 
+    # ==================== Transcript File Processing ====================
+
+    def _get_transcript_loader(self):
+        """Lazy load transcript file loader."""
+        if not hasattr(self, '_transcript_loader') or self._transcript_loader is None:
+            from transcript_file_loader import TranscriptFileLoader
+            self._transcript_loader = TranscriptFileLoader()
+        return self._transcript_loader
+
+    def process_transcript_file(
+        self,
+        file_path: str,
+        language: str = 'he',
+        save_to_db: bool = True,
+        progress_callback: Callable[[str, float], None] = None
+    ) -> Dict:
+        """Process a transcript file and extract restaurants.
+
+        This is an alternative to process_video() for when transcripts
+        are manually uploaded rather than fetched from YouTube.
+
+        Args:
+            file_path: Path to transcript file (.txt, .json, .srt, .vtt)
+            language: Language code (default: 'he')
+            save_to_db: Whether to save results to database
+            progress_callback: Optional callback(step, progress)
+
+        Returns:
+            Dict with processing results
+        """
+        result = {
+            'success': False,
+            'source_file': file_path,
+            'video_id': None,
+            'restaurants_found': 0,
+            'restaurants': [],
+            'episode_id': None,
+            'steps': {}
+        }
+
+        if progress_callback:
+            progress_callback('loading_file', 0.1)
+
+        # Step 1: Load transcript file
+        try:
+            loader = self._get_transcript_loader()
+            transcript_data = loader.load_file(file_path, language=language)
+        except Exception as e:
+            result['error'] = f'Failed to load file: {str(e)}'
+            return result
+
+        if not transcript_data.get('success'):
+            result['error'] = transcript_data.get('error', 'Failed to load transcript file')
+            return result
+
+        result['video_id'] = transcript_data.get('video_id')
+        result['steps']['load'] = transcript_data
+
+        if progress_callback:
+            progress_callback('analyzing_transcript', 0.4)
+
+        # Step 2: Analyze transcript
+        # Convert to format expected by analyze_transcript
+        analysis_input = {
+            'success': True,
+            'video_id': transcript_data.get('video_id'),
+            'video_url': transcript_data.get('video_url', f"file://{file_path}"),
+            'language': transcript_data.get('language', language),
+            'transcript': transcript_data.get('transcript', ''),
+            'segments': transcript_data.get('segments', [])
+        }
+
+        analysis_result = self.analyze_transcript(analysis_input)
+        result['steps']['analysis'] = analysis_result
+
+        if not analysis_result.get('success'):
+            result['error'] = analysis_result.get('error', 'Failed to analyze transcript')
+            return result
+
+        restaurants = analysis_result.get('restaurants', [])
+        result['restaurants'] = restaurants
+        result['restaurants_found'] = len(restaurants)
+        result['food_trends'] = analysis_result.get('food_trends', [])
+        result['episode_summary'] = analysis_result.get('episode_summary', '')
+
+        if progress_callback:
+            progress_callback('saving_results', 0.8)
+
+        # Step 3: Save to database
+        if save_to_db and restaurants:
+            try:
+                # Create episode
+                episode_id = self.db.create_episode(
+                    video_id=transcript_data.get('video_id'),
+                    video_url=transcript_data.get('video_url', f"file://{file_path}"),
+                    title=transcript_data.get('title'),
+                    language=transcript_data.get('language', language),
+                    transcript=transcript_data.get('transcript'),
+                    food_trends=analysis_result.get('food_trends', []),
+                    episode_summary=analysis_result.get('episode_summary'),
+                    analysis_date=datetime.now().isoformat()
+                )
+                result['episode_id'] = episode_id
+
+                # Create restaurants
+                restaurant_ids = []
+                for restaurant_data in restaurants:
+                    data_copy = restaurant_data.copy()
+                    name_hebrew = data_copy.pop('name_hebrew', 'Unknown')
+                    restaurant_id = self.db.create_restaurant(
+                        name_hebrew=name_hebrew,
+                        episode_id=episode_id,
+                        **data_copy
+                    )
+                    restaurant_ids.append(restaurant_id)
+
+                result['steps']['database'] = {
+                    'success': True,
+                    'episode_id': episode_id,
+                    'restaurant_ids': restaurant_ids
+                }
+
+            except Exception as e:
+                result['steps']['database'] = {
+                    'success': False,
+                    'error': str(e)
+                }
+
+        if progress_callback:
+            progress_callback('completed', 1.0)
+
+        result['success'] = True
+        return result
+
+    def process_transcript_folder(
+        self,
+        folder_path: str,
+        language: str = 'he',
+        recursive: bool = False,
+        save_to_db: bool = True,
+        progress_callback: Callable[[str, int, int], None] = None
+    ) -> Dict:
+        """Process all transcript files in a folder.
+
+        Args:
+            folder_path: Path to folder containing transcript files
+            language: Language code (default: 'he')
+            recursive: Whether to search subdirectories
+            save_to_db: Whether to save results to database
+            progress_callback: Optional callback(status, current, total)
+
+        Returns:
+            Dict with processing results
+        """
+        result = {
+            'success': False,
+            'folder_path': folder_path,
+            'files_processed': 0,
+            'files_failed': 0,
+            'total_restaurants': 0,
+            'file_results': []
+        }
+
+        # Load all transcript files
+        try:
+            loader = self._get_transcript_loader()
+            transcripts = loader.load_folder(
+                folder_path,
+                recursive=recursive,
+                language=language
+            )
+        except FileNotFoundError as e:
+            result['error'] = str(e)
+            return result
+        except Exception as e:
+            result['error'] = f'Failed to load folder: {str(e)}'
+            return result
+
+        if not transcripts:
+            result['success'] = True
+            result['error'] = 'No transcript files found in folder'
+            return result
+
+        total_files = len(transcripts)
+
+        # Process each transcript
+        for i, transcript_data in enumerate(transcripts):
+            if progress_callback:
+                progress_callback('processing', i + 1, total_files)
+
+            # Skip failed loads
+            if not transcript_data.get('success'):
+                result['files_failed'] += 1
+                result['file_results'].append({
+                    'file': transcript_data.get('source_file'),
+                    'success': False,
+                    'error': transcript_data.get('error')
+                })
+                continue
+
+            # Analyze transcript
+            analysis_input = {
+                'success': True,
+                'video_id': transcript_data.get('video_id'),
+                'video_url': transcript_data.get('video_url', f"file://{transcript_data.get('source_file')}"),
+                'language': transcript_data.get('language', language),
+                'transcript': transcript_data.get('transcript', ''),
+                'segments': transcript_data.get('segments', [])
+            }
+
+            try:
+                analysis_result = self.analyze_transcript(analysis_input)
+
+                if analysis_result.get('success'):
+                    restaurants = analysis_result.get('restaurants', [])
+
+                    # Save to database if enabled
+                    episode_id = None
+                    if save_to_db and restaurants:
+                        episode_id = self.db.create_episode(
+                            video_id=transcript_data.get('video_id'),
+                            video_url=analysis_input['video_url'],
+                            title=transcript_data.get('title'),
+                            language=transcript_data.get('language', language),
+                            transcript=transcript_data.get('transcript'),
+                            food_trends=analysis_result.get('food_trends', []),
+                            episode_summary=analysis_result.get('episode_summary'),
+                            analysis_date=datetime.now().isoformat()
+                        )
+
+                        for restaurant_data in restaurants:
+                            data_copy = restaurant_data.copy()
+                            name_hebrew = data_copy.pop('name_hebrew', 'Unknown')
+                            self.db.create_restaurant(
+                                name_hebrew=name_hebrew,
+                                episode_id=episode_id,
+                                **data_copy
+                            )
+
+                    result['files_processed'] += 1
+                    result['total_restaurants'] += len(restaurants)
+                    result['file_results'].append({
+                        'file': transcript_data.get('source_file'),
+                        'success': True,
+                        'restaurants_found': len(restaurants),
+                        'episode_id': episode_id
+                    })
+                else:
+                    result['files_failed'] += 1
+                    result['file_results'].append({
+                        'file': transcript_data.get('source_file'),
+                        'success': False,
+                        'error': analysis_result.get('error')
+                    })
+
+            except Exception as e:
+                result['files_failed'] += 1
+                result['file_results'].append({
+                    'file': transcript_data.get('source_file'),
+                    'success': False,
+                    'error': str(e)
+                })
+
+        result['success'] = True
+        return result
+
     # ==================== Restaurant CRUD ====================
 
     def get_all_restaurants(self) -> List[Dict]:

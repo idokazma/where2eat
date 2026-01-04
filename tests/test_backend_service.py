@@ -662,5 +662,186 @@ class TestStats:
         assert 'unique_cities' in stats
 
 
+class TestTranscriptFileProcessing:
+    """Test transcript file processing via BackendService."""
+
+    @pytest.fixture
+    def service(self):
+        """Create service with temp database."""
+        with tempfile.TemporaryDirectory() as temp_dir:
+            db_path = os.path.join(temp_dir, 'test.db')
+            yield BackendService(db_path=db_path)
+
+    @pytest.fixture
+    def sample_transcript_file(self):
+        """Create a sample transcript file."""
+        with tempfile.NamedTemporaryFile(
+            mode='w',
+            suffix='.txt',
+            delete=False,
+            encoding='utf-8'
+        ) as f:
+            f.write("""
+            שלום וברוכים הבאים לפרק החדש!
+            היום נדבר על מסעדה צ'קולי בתל אביב.
+            זה מקום ספרדי נהדר עם אוכל מעולה.
+            המחירים בסביבות 100-150 שקל למנה.
+            גם מסעדת ברסקה בירושלים שווה ביקור.
+            """)
+            f.flush()  # Ensure content is written to disk
+            temp_path = f.name
+        yield temp_path  # Yield after with block so file is closed
+        os.unlink(temp_path)
+
+    def test_process_transcript_file_success(
+        self, service, sample_transcript_file
+    ):
+        """Test processing a transcript file successfully."""
+        mock_analyzer_instance = Mock()
+        mock_analyzer_instance.analyze_transcript.return_value = {
+            'restaurants': [
+                {
+                    'name_hebrew': "צ'קולי",
+                    'name_english': 'Checoli',
+                    'location': {'city': 'תל אביב', 'region': 'Center'},
+                    'cuisine_type': 'Spanish'
+                },
+                {
+                    'name_hebrew': 'ברסקה',
+                    'name_english': 'Baresca',
+                    'location': {'city': 'ירושלים', 'region': 'Jerusalem'},
+                    'cuisine_type': 'Mediterranean'
+                }
+            ],
+            'food_trends': ['ספרדי', 'ים תיכוני'],
+            'episode_summary': 'סקירת מסעדות בישראל'
+        }
+        # Set analyzer directly on service instance
+        service._analyzer = mock_analyzer_instance
+
+        result = service.process_transcript_file(sample_transcript_file)
+
+        assert result['success'] is True
+        assert result['restaurants_found'] == 2
+        assert len(result['restaurants']) == 2
+        assert result['source_file'] == sample_transcript_file
+
+    def test_process_transcript_file_saves_to_db(
+        self, service, sample_transcript_file
+    ):
+        """Test that processed transcript is saved to database."""
+        mock_analyzer_instance = Mock()
+        mock_analyzer_instance.analyze_transcript.return_value = {
+            'restaurants': [
+                {
+                    'name_hebrew': 'מסעדה טסט',
+                    'location': {'city': 'חיפה'},
+                    'cuisine_type': 'Italian'
+                }
+            ],
+            'food_trends': [],
+            'episode_summary': ''
+        }
+        # Set analyzer directly on service instance
+        service._analyzer = mock_analyzer_instance
+
+        result = service.process_transcript_file(
+            sample_transcript_file,
+            save_to_db=True
+        )
+
+        assert result['success'] is True
+        assert result['episode_id'] is not None
+
+        # Verify data in database
+        restaurants = service.get_all_restaurants()
+        assert len(restaurants) == 1
+        assert restaurants[0]['name_hebrew'] == 'מסעדה טסט'
+
+    def test_process_transcript_file_not_found(self, service):
+        """Test handling of non-existent file."""
+        result = service.process_transcript_file('/nonexistent/file.txt')
+
+        assert result['success'] is False
+        assert 'error' in result
+
+    def test_process_transcript_file_unsupported_format(self, service):
+        """Test handling of unsupported file format."""
+        with tempfile.NamedTemporaryFile(
+            mode='w', suffix='.xyz', delete=False
+        ) as f:
+            f.write("content")
+            temp_path = f.name
+
+        try:
+            result = service.process_transcript_file(temp_path)
+            assert result['success'] is False
+            assert 'unsupported' in result['error'].lower()
+        finally:
+            os.unlink(temp_path)
+
+    def test_process_transcript_folder(self, service):
+        """Test processing multiple transcript files from a folder."""
+        mock_analyzer_instance = Mock()
+        mock_analyzer_instance.analyze_transcript.return_value = {
+            'restaurants': [
+                {'name_hebrew': 'מסעדה', 'location': {'city': 'תל אביב'}}
+            ],
+            'food_trends': [],
+            'episode_summary': ''
+        }
+        # Set analyzer directly on service instance
+        service._analyzer = mock_analyzer_instance
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            # Create multiple transcript files
+            for i in range(3):
+                with open(os.path.join(temp_dir, f'episode_{i}.txt'), 'w') as f:
+                    f.write(f'Transcript content for episode {i}')
+
+            result = service.process_transcript_folder(temp_dir)
+
+            assert result['success'] is True
+            assert result['files_processed'] == 3
+            assert result['total_restaurants'] == 3
+
+    def test_process_transcript_folder_not_found(self, service):
+        """Test handling of non-existent folder."""
+        result = service.process_transcript_folder('/nonexistent/folder')
+
+        assert result['success'] is False
+        assert 'error' in result
+
+    def test_process_transcript_folder_with_progress(self, service):
+        """Test progress callback during folder processing."""
+        mock_analyzer_instance = Mock()
+        mock_analyzer_instance.analyze_transcript.return_value = {
+            'restaurants': [],
+            'food_trends': [],
+            'episode_summary': ''
+        }
+        # Set analyzer directly on service instance
+        service._analyzer = mock_analyzer_instance
+
+        progress_calls = []
+
+        def track_progress(status, current, total):
+            progress_calls.append((status, current, total))
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            for i in range(2):
+                with open(os.path.join(temp_dir, f'ep_{i}.txt'), 'w') as f:
+                    f.write(f'Content {i}')
+
+            service.process_transcript_folder(
+                temp_dir,
+                progress_callback=track_progress
+            )
+
+            assert len(progress_calls) > 0
+            # Check last progress call
+            assert progress_calls[-1][1] == progress_calls[-1][2]  # current == total
+
+
 if __name__ == '__main__':
     pytest.main([__file__, '-v'])
