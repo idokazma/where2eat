@@ -11,7 +11,14 @@ const app = express()
 const port = process.env.PORT || 3001
 
 app.use(helmet())
-app.use(cors())
+app.use(cors({
+  origin: process.env.ALLOWED_ORIGINS?.split(',') || [
+    'http://localhost:3000',
+    'https://where2eat.vercel.app',
+    // Add your custom domain here or via ALLOWED_ORIGINS env var
+  ],
+  credentials: true
+}))
 app.use(morgan('combined'))
 app.use(express.json())
 
