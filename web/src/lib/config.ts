@@ -8,9 +8,10 @@
 export const config = {
   /**
    * Backend API URL
-   * Set NEXT_PUBLIC_API_URL in .env.local for custom API endpoint
+   * In lean mode, uses Next.js API routes (empty string = same origin)
+   * Set NEXT_PUBLIC_API_URL in .env.local for external API
    */
-  apiUrl: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001',
+  apiUrl: process.env.NEXT_PUBLIC_API_URL || '',
 
   /**
    * Google Places API Key (for map functionality)
