@@ -4,6 +4,7 @@ import { useMemo } from "react"
 import Masonry from "react-masonry-css"
 import { Restaurant } from "@/types/restaurant"
 import { VisualRestaurantCard } from "./visual-restaurant-card"
+import { GridSkeleton } from "./skeletons/grid-skeleton"
 
 interface MasonryRestaurantGridProps {
   restaurants: Restaurant[]
@@ -38,17 +39,7 @@ export function MasonryRestaurantGrid({
   }, [restaurants])
 
   if (isLoading) {
-    return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {[...Array(8)].map((_, i) => (
-          <div key={i} className="space-y-3">
-            <div className="aspect-landscape shimmer rounded-xl" />
-            <div className="h-4 shimmer rounded w-3/4" />
-            <div className="h-3 shimmer rounded w-1/2" />
-          </div>
-        ))}
-      </div>
-    )
+    return <GridSkeleton count={8} />
   }
 
   if (restaurants.length === 0) {
