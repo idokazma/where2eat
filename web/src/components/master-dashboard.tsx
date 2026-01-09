@@ -30,6 +30,10 @@ import { endpoints } from "@/lib/config"
 import { BentoHero } from "./bento-hero"
 import { MasonryRestaurantGrid } from "./masonry-restaurant-grid"
 import { LayoutToggle, LayoutMode } from "./layout-toggle"
+import { ParallaxHero } from "./parallax-hero"
+import { FeaturedCarousel } from "./featured-carousel"
+import { ScrollReveal } from "./scroll-reveal"
+import { AnimatedFilters } from "./animated-filters"
 
 interface SearchResults {
   restaurants: Restaurant[]
@@ -210,28 +214,25 @@ export function MasterDashboard() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-amber-50 p-4">
       <div className="max-w-7xl mx-auto space-y-6">
-        {/* Header */}
-        <Card className="border-2 border-orange-200 bg-gradient-to-r from-orange-500 to-amber-500 text-white">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-3xl font-bold flex items-center gap-2">
-                  <LayoutDashboard className="size-8" />
-                  מרכז הבקרה המאוחד - Where2Eat
-                </h1>
-                <p className="text-orange-100 mt-2">
-                  חקור מסעדות עם סינון מתקדם, ציר זמן ואנליטיקה
-                </p>
+        {/* Parallax Hero Header */}
+        <ScrollReveal>
+          <ParallaxHero
+            title="Where2Eat - מערכת גילוי מסעדות"
+            subtitle="חקור מסעדות עם סינון מתקדם, ציר זמן ואנליטיקה"
+          >
+            <div className="flex items-center gap-6 text-white/90">
+              <div className="text-center">
+                <div className="text-3xl font-bold">{dashboardAnalytics.totalRestaurants}</div>
+                <div className="text-sm">מסעדות</div>
               </div>
-              <div className="text-right">
-                <div className="text-2xl font-bold">{dashboardAnalytics.totalRestaurants}</div>
-                <div className="text-orange-200">מסעדות במערכת</div>
-                <div className="text-lg font-semibold mt-1">{dashboardAnalytics.totalEpisodes}</div>
-                <div className="text-orange-200">פרקים</div>
+              <div className="h-12 w-px bg-white/30" />
+              <div className="text-center">
+                <div className="text-3xl font-bold">{dashboardAnalytics.totalEpisodes}</div>
+                <div className="text-sm">פרקים</div>
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </ParallaxHero>
+        </ScrollReveal>
 
         {/* Main Navigation */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
@@ -292,65 +293,59 @@ export function MasterDashboard() {
               stats={dashboardAnalytics}
             />
 
-            {/* Classic Filters */}
-            <Card className="border-2 border-orange-200">
-              <CardHeader className="bg-gradient-to-r from-orange-100 to-amber-100">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="flex items-center gap-2">
-                    <Filter className="size-5 text-orange-600" />
-                    מסננים קלאסיים
-                  </CardTitle>
-                  <Button variant="outline" onClick={clearClassicFilters} size="sm">
-                    נקה מסננים
-                  </Button>
-                </div>
-              </CardHeader>
-              <CardContent className="p-6">
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                  <LocationFilter
-                    restaurants={allRestaurants}
-                    selectedCity={classicFilters.selectedCity}
-                    selectedRegion={classicFilters.selectedRegion}
-                    selectedNeighborhood={classicFilters.selectedNeighborhood}
-                    onCityChange={(city) => setClassicFilters(prev => ({ ...prev, selectedCity: city }))}
-                    onRegionChange={(region) => setClassicFilters(prev => ({ ...prev, selectedRegion: region }))}
-                    onNeighborhoodChange={(neighborhood) => setClassicFilters(prev => ({ ...prev, selectedNeighborhood: neighborhood }))}
-                  />
-                  <CuisineFilter
-                    restaurants={allRestaurants}
-                    selectedCuisines={classicFilters.selectedCuisines}
-                    onCuisineChange={(cuisines) => setClassicFilters(prev => ({ ...prev, selectedCuisines: cuisines }))}
-                  />
-                  <PriceFilter
-                    restaurants={allRestaurants}
-                    selectedPriceRanges={classicFilters.selectedPriceRanges}
-                    onPriceRangeChange={(priceRanges) => setClassicFilters(prev => ({ ...prev, selectedPriceRanges: priceRanges }))}
-                  />
-                </div>
-              </CardContent>
-            </Card>
+            {/* Featured Carousel */}
+            {displayRestaurants.length > 3 && (
+              <ScrollReveal delay={100}>
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <TrendingUp className="size-5 text-orange-600" />
+                      מסעדות מובילות
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <FeaturedCarousel
+                      restaurants={displayRestaurants.filter(r => r.host_opinion === 'positive').slice(0, 10)}
+                      autoplay={true}
+                      autoplayDelay={5000}
+                    />
+                  </CardContent>
+                </Card>
+              </ScrollReveal>
+            )}
+
+            {/* Animated Filters */}
+            <ScrollReveal delay={200}>
+              <AnimatedFilters
+                restaurants={allRestaurants}
+                filters={classicFilters}
+                onFiltersChange={setClassicFilters}
+                onClear={clearClassicFilters}
+              />
+            </ScrollReveal>
 
             {/* Restaurant Results */}
-            <Card>
-              <CardHeader>
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                  <CardTitle>
-                    תוצאות ({displayRestaurants.length} מסעדות)
-                  </CardTitle>
-                  <div className="flex items-center gap-2">
-                    <LayoutToggle
-                      currentLayout={layoutMode}
-                      onLayoutChange={setLayoutMode}
-                    />
-                    {searchResults && (
-                      <Button variant="outline" onClick={clearSearch} size="sm">
-                        נקה חיפוש מתקדם
-                      </Button>
-                    )}
+            <ScrollReveal delay={300}>
+              <Card>
+                <CardHeader>
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <CardTitle>
+                      תוצאות ({displayRestaurants.length} מסעדות)
+                    </CardTitle>
+                    <div className="flex items-center gap-2">
+                      <LayoutToggle
+                        currentLayout={layoutMode}
+                        onLayoutChange={setLayoutMode}
+                      />
+                      {searchResults && (
+                        <Button variant="outline" onClick={clearSearch} size="sm">
+                          נקה חיפוש מתקדם
+                        </Button>
+                      )}
+                    </div>
                   </div>
-                </div>
-              </CardHeader>
-              <CardContent>
+                </CardHeader>
+                <CardContent>
                 {layoutMode === "masonry" && (
                   <MasonryRestaurantGrid
                     restaurants={displayRestaurants}
@@ -383,8 +378,9 @@ export function MasterDashboard() {
                     <p>לא נמצאו מסעדות המתאימות לקריטריונים</p>
                   </div>
                 )}
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            </ScrollReveal>
           </TabsContent>
 
           {/* Advanced Search Tab */}
