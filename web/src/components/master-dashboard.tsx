@@ -27,6 +27,9 @@ import { PriceFilter } from "./price-filter"
 import { useFavorites } from "@/contexts/favorites-context"
 import { TrendingAnalytics } from "./trending-analytics"
 import { endpoints } from "@/lib/config"
+import { BentoHero } from "./bento-hero"
+import { MasonryRestaurantGrid } from "./masonry-restaurant-grid"
+import { LayoutToggle, LayoutMode } from "./layout-toggle"
 
 interface SearchResults {
   restaurants: Restaurant[]
@@ -59,6 +62,7 @@ export function MasterDashboard() {
   const [isLoading, setIsLoading] = useState(true)
   const [searchLoading, setSearchLoading] = useState(false)
   const [activeTab, setActiveTab] = useState("overview")
+  const [layoutMode, setLayoutMode] = useState<LayoutMode>("masonry")
 
   // Filter states for classic view
   const [classicFilters, setClassicFilters] = useState({
@@ -282,33 +286,11 @@ export function MasterDashboard() {
 
           {/* Overview Tab */}
           <TabsContent value="overview" className="space-y-6">
-            {/* Quick Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <Card className="bg-gradient-to-br from-green-500 to-emerald-500 text-white">
-                <CardContent className="p-4 text-center">
-                  <div className="text-2xl font-bold">{dashboardAnalytics.opinionDistribution.positive || 0}</div>
-                  <div className="text-green-100">מסעדות מומלצות</div>
-                </CardContent>
-              </Card>
-              <Card className="bg-gradient-to-br from-yellow-500 to-orange-500 text-white">
-                <CardContent className="p-4 text-center">
-                  <div className="text-2xl font-bold">{dashboardAnalytics.opinionDistribution.mixed || 0}</div>
-                  <div className="text-yellow-100">מסעדות מעורבות</div>
-                </CardContent>
-              </Card>
-              <Card className="bg-gradient-to-br from-blue-500 to-cyan-500 text-white">
-                <CardContent className="p-4 text-center">
-                  <div className="text-2xl font-bold">{dashboardAnalytics.topLocations.length}</div>
-                  <div className="text-blue-100">ערים שונות</div>
-                </CardContent>
-              </Card>
-              <Card className="bg-gradient-to-br from-purple-500 to-pink-500 text-white">
-                <CardContent className="p-4 text-center">
-                  <div className="text-2xl font-bold">{dashboardAnalytics.topCuisines.length}</div>
-                  <div className="text-purple-100">סוגי מטבח</div>
-                </CardContent>
-              </Card>
-            </div>
+            {/* Bento Hero Section */}
+            <BentoHero
+              featuredRestaurants={displayRestaurants.filter(r => r.host_opinion === 'positive').slice(0, 3)}
+              stats={dashboardAnalytics}
+            />
 
             {/* Classic Filters */}
             <Card className="border-2 border-orange-200">
@@ -351,24 +333,50 @@ export function MasterDashboard() {
             {/* Restaurant Results */}
             <Card>
               <CardHeader>
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                   <CardTitle>
                     תוצאות ({displayRestaurants.length} מסעדות)
                   </CardTitle>
-                  {searchResults && (
-                    <Button variant="outline" onClick={clearSearch} size="sm">
-                      נקה חיפוש מתקדם
-                    </Button>
-                  )}
+                  <div className="flex items-center gap-2">
+                    <LayoutToggle
+                      currentLayout={layoutMode}
+                      onLayoutChange={setLayoutMode}
+                    />
+                    {searchResults && (
+                      <Button variant="outline" onClick={clearSearch} size="sm">
+                        נקה חיפוש מתקדם
+                      </Button>
+                    )}
+                  </div>
                 </div>
               </CardHeader>
-              <CardContent className="space-y-4">
-                {displayRestaurants.map((restaurant, index) => (
-                  <RestaurantCard 
-                    key={`${restaurant.name_hebrew}-${index}`} 
-                    restaurant={restaurant}
+              <CardContent>
+                {layoutMode === "masonry" && (
+                  <MasonryRestaurantGrid
+                    restaurants={displayRestaurants}
+                    isLoading={false}
                   />
-                ))}
+                )}
+                {layoutMode === "grid" && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {displayRestaurants.map((restaurant, index) => (
+                      <RestaurantCard
+                        key={`${restaurant.name_hebrew}-${index}`}
+                        restaurant={restaurant}
+                      />
+                    ))}
+                  </div>
+                )}
+                {layoutMode === "list" && (
+                  <div className="space-y-4">
+                    {displayRestaurants.map((restaurant, index) => (
+                      <RestaurantCard
+                        key={`${restaurant.name_hebrew}-${index}`}
+                        restaurant={restaurant}
+                      />
+                    ))}
+                  </div>
+                )}
                 {displayRestaurants.length === 0 && (
                   <div className="text-center py-12 text-gray-500">
                     <div className="text-6xl mb-4">🍽️</div>

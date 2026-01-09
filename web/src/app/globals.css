@@ -54,14 +54,25 @@
   /* Radius System */
   --radius: 0.75rem;
   
-  /* Where2Eat Color System - Food-Inspired Palette */
+  /* Where2Eat Color System - Visual-First Palette */
   --background: oklch(0.99 0.005 45);        /* Warm cream background */
   --foreground: oklch(0.15 0.02 45);         /* Dark brown text */
   --card: oklch(1 0 0);                      /* Pure white cards */
   --card-foreground: oklch(0.15 0.02 45);    /* Dark text on cards */
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.15 0.02 45);
-  
+
+  /* Visual-First Primary Colors */
+  --visual-primary: oklch(0.65 0.25 25);     /* Warm Coral-Red */
+  --visual-secondary: oklch(0.7 0.2 75);     /* Golden Yellow */
+  --visual-accent: oklch(0.6 0.15 145);      /* Fresh Green */
+  --visual-dark: oklch(0.2 0.05 265);        /* Deep Blue-Black */
+
+  /* Image Overlays */
+  --overlay-dark: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+  --overlay-warm: linear-gradient(135deg, rgba(249,112,102,0.6), rgba(251,191,36,0.4));
+  --overlay-cool: linear-gradient(135deg, rgba(59,130,246,0.5), rgba(99,102,241,0.4));
+
   /* Primary Colors - Vibrant Orange (appetite stimulating) */
   --primary: oklch(0.6 0.25 45);             /* Vibrant orange */
   --primary-foreground: oklch(1 0 0);        /* White text on orange */
@@ -330,5 +341,95 @@
   
   ::-webkit-scrollbar-thumb:hover {
     background: hsl(var(--primary));
+  }
+}
+
+/* Visual-First Design Utilities */
+@layer utilities {
+  /* Masonry Grid */
+  .masonry-grid {
+    display: flex;
+    width: 100%;
+  }
+
+  .masonry-column {
+    background-clip: padding-box;
+  }
+
+  /* Image Overlays */
+  .image-overlay-dark {
+    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 50%, transparent 100%);
+  }
+
+  .image-overlay-warm {
+    background: linear-gradient(135deg, rgba(249,112,102,0.6), rgba(251,191,36,0.4));
+  }
+
+  .image-overlay-cool {
+    background: linear-gradient(135deg, rgba(59,130,246,0.5), rgba(99,102,241,0.4));
+  }
+
+  /* Typography for images */
+  .image-headline {
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+    font-weight: 800;
+    line-height: 1.1;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    letter-spacing: -0.02em;
+  }
+
+  .card-title-large {
+    font-size: clamp(1.25rem, 3vw, 1.75rem);
+    font-weight: 700;
+    line-height: 1.25;
+  }
+
+  /* Aspect Ratios */
+  .aspect-square {
+    aspect-ratio: 1 / 1;
+  }
+
+  .aspect-portrait {
+    aspect-ratio: 3 / 4;
+  }
+
+  .aspect-landscape {
+    aspect-ratio: 4 / 3;
+  }
+
+  .aspect-wide {
+    aspect-ratio: 16 / 9;
+  }
+
+  /* Shimmer Loading Effect */
+  @keyframes shimmer {
+    0% {
+      background-position: -1000px 0;
+    }
+    100% {
+      background-position: 1000px 0;
+    }
+  }
+
+  .shimmer {
+    animation: shimmer 2s infinite linear;
+    background: linear-gradient(
+      to right,
+      #f0f0f0 0%,
+      #e0e0e0 20%,
+      #f0f0f0 40%,
+      #f0f0f0 100%
+    );
+    background-size: 1000px 100%;
+  }
+
+  /* Visual Card Hover */
+  .visual-card-hover {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .visual-card-hover:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
   }
 }
