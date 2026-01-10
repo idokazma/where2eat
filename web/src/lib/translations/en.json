@@ -65,7 +65,8 @@
     },
     "cuisine": {
       "title": "Cuisine type",
-      "popular": "Popular cuisines"
+      "popular": "Popular cuisines",
+      "selected": "selected"
     },
     "price": {
       "title": "Price range",
@@ -76,6 +77,7 @@
       "budgetRestaurants": "Budget restaurants",
       "midRangeRestaurants": "Mid-range restaurants",
       "expensiveRestaurants": "Expensive restaurants",
+      "notMentioned": "Not specified",
       "notSpecified": "Price range not mentioned",
       "distribution": "Price distribution"
     },
@@ -92,7 +94,8 @@
     "businessNews": "Business news",
     "moreItems": "+{count} more items",
     "highlyRecommended": "Highly recommended",
-    "leadingRestaurants": "Leading restaurants"
+    "leadingRestaurants": "Leading restaurants",
+    "googleMaps": "Google Maps"
   },
   "layout": {
     "masonry": "Masonry",

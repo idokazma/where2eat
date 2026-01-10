@@ -206,18 +206,23 @@ export function MasterDashboard() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="text-center">
-          <RefreshCw className="size-8 animate-spin text-orange-500 mx-auto mb-4" />
-          <p className="text-lg text-gray-600">{t('common.loading')}</p>
+      <div className="min-h-screen bg-textured flex items-center justify-center">
+        <div className="text-center animate-reveal-up">
+          <div className="relative mb-6">
+            <div className="size-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
+              <RefreshCw className="size-8 animate-spin text-primary" />
+            </div>
+          </div>
+          <p className="text-lg font-medium text-foreground">{t('common.loading')}</p>
+          <p className="text-sm text-muted-foreground mt-1">מכין את המסעדות הטובות ביותר...</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-amber-50 p-4">
-      <div className="max-w-7xl mx-auto space-y-6">
+    <div className="min-h-screen bg-textured p-4 md:p-6">
+      <div className="max-w-7xl mx-auto space-y-8">
         {/* Parallax Hero Header */}
         <ScrollReveal>
           <div className="relative">
@@ -228,67 +233,72 @@ export function MasterDashboard() {
               title={t('app.heroTitle')}
               subtitle={t('app.heroSubtitle')}
             >
-              <div className="flex items-center gap-6 text-white/90">
+              <div className="flex items-center gap-8 text-white/90">
                 <div className="text-center">
-                  <div className="text-3xl font-bold">{dashboardAnalytics.totalRestaurants}</div>
-                  <div className="text-sm">{t('common.restaurants')}</div>
+                  <div className="text-4xl font-display font-black tracking-tight">{dashboardAnalytics.totalRestaurants}</div>
+                  <div className="text-sm font-medium tracking-wide opacity-80">{t('common.restaurants')}</div>
                 </div>
-                <div className="h-12 w-px bg-white/30" />
+                <div className="h-14 w-px bg-white/20" />
                 <div className="text-center">
-                  <div className="text-3xl font-bold">{dashboardAnalytics.totalEpisodes}</div>
-                  <div className="text-sm">{t('common.episodes')}</div>
+                  <div className="text-4xl font-display font-black tracking-tight">{dashboardAnalytics.totalEpisodes}</div>
+                  <div className="text-sm font-medium tracking-wide opacity-80">{t('common.episodes')}</div>
                 </div>
               </div>
             </ParallaxHero>
           </div>
         </ScrollReveal>
 
-        {/* Main Navigation */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <Card className="border-2 border-orange-200">
-            <CardContent className="p-4">
-              <TabsList className="grid grid-cols-2 lg:grid-cols-6 gap-2 bg-orange-100">
+        {/* Main Navigation - Refined Tab Design */}
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
+          <Card className="card-glass border-0 shadow-lg">
+            <CardContent className="p-2">
+              <TabsList className="grid grid-cols-2 lg:grid-cols-6 gap-1 bg-transparent h-auto p-1">
                 <TabsTrigger
                   value="overview"
-                  className="flex items-center gap-2 data-[state=active]:bg-orange-500 data-[state=active]:text-white"
+                  className="relative flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-medium text-muted-foreground transition-all data-[state=active]:text-primary data-[state=active]:bg-primary/10 data-[state=active]:shadow-sm hover:bg-muted/50"
                 >
                   <BarChart3 className="size-4" />
-                  {t('tabs.overview')}
+                  <span className="hidden sm:inline">{t('tabs.overview')}</span>
                 </TabsTrigger>
                 <TabsTrigger
                   value="search"
-                  className="flex items-center gap-2 data-[state=active]:bg-blue-500 data-[state=active]:text-white"
+                  className="relative flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-medium text-muted-foreground transition-all data-[state=active]:text-primary data-[state=active]:bg-primary/10 data-[state=active]:shadow-sm hover:bg-muted/50"
                 >
                   <Search className="size-4" />
-                  {t('tabs.advancedSearch')}
+                  <span className="hidden sm:inline">{t('tabs.advancedSearch')}</span>
                 </TabsTrigger>
                 <TabsTrigger
                   value="timeline"
-                  className="flex items-center gap-2 data-[state=active]:bg-purple-500 data-[state=active]:text-white"
+                  className="relative flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-medium text-muted-foreground transition-all data-[state=active]:text-primary data-[state=active]:bg-primary/10 data-[state=active]:shadow-sm hover:bg-muted/50"
                 >
                   <Clock className="size-4" />
-                  {t('tabs.timeline')}
+                  <span className="hidden sm:inline">{t('tabs.timeline')}</span>
                 </TabsTrigger>
                 <TabsTrigger
                   value="map"
-                  className="flex items-center gap-2 data-[state=active]:bg-green-500 data-[state=active]:text-white"
+                  className="relative flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-medium text-muted-foreground transition-all data-[state=active]:text-primary data-[state=active]:bg-primary/10 data-[state=active]:shadow-sm hover:bg-muted/50"
                 >
                   <Map className="size-4" />
-                  {t('tabs.map')}
+                  <span className="hidden sm:inline">{t('tabs.map')}</span>
                 </TabsTrigger>
                 <TabsTrigger
                   value="favorites"
-                  className="flex items-center gap-2 data-[state=active]:bg-red-500 data-[state=active]:text-white"
+                  className="relative flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-medium text-muted-foreground transition-all data-[state=active]:text-primary data-[state=active]:bg-primary/10 data-[state=active]:shadow-sm hover:bg-muted/50"
                 >
                   <Heart className="size-4" />
-                  {t('tabs.favorites')} ({favoriteRestaurants.length})
+                  <span className="hidden sm:inline">{t('tabs.favorites')}</span>
+                  {favoriteRestaurants.length > 0 && (
+                    <span className="absolute -top-1 -right-1 size-5 flex items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-bold">
+                      {favoriteRestaurants.length}
+                    </span>
+                  )}
                 </TabsTrigger>
                 <TabsTrigger
                   value="analytics"
-                  className="flex items-center gap-2 data-[state=active]:bg-indigo-500 data-[state=active]:text-white"
+                  className="relative flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-medium text-muted-foreground transition-all data-[state=active]:text-primary data-[state=active]:bg-primary/10 data-[state=active]:shadow-sm hover:bg-muted/50"
                 >
                   <TrendingUp className="size-4" />
-                  {t('tabs.trends')}
+                  <span className="hidden sm:inline">{t('tabs.trends')}</span>
                 </TabsTrigger>
               </TabsList>
             </CardContent>
@@ -335,19 +345,24 @@ export function MasterDashboard() {
 
             {/* Restaurant Results */}
             <ScrollReveal delay={300}>
-              <Card>
+              <Card className="card-standard">
                 <CardHeader>
                   <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                    <CardTitle>
-                      {t('common.results')} ({displayRestaurants.length} {t('common.restaurants')})
-                    </CardTitle>
-                    <div className="flex items-center gap-2">
+                    <div>
+                      <CardTitle className="font-display text-2xl">
+                        {t('common.results')}
+                      </CardTitle>
+                      <p className="text-muted-foreground text-sm mt-1">
+                        {displayRestaurants.length} {t('common.restaurants')}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-3">
                       <LayoutToggle
                         currentLayout={layoutMode}
                         onLayoutChange={setLayoutMode}
                       />
                       {searchResults && (
-                        <Button variant="outline" onClick={clearSearch} size="sm">
+                        <Button variant="outline" onClick={clearSearch} size="sm" className="rounded-full">
                           {t('common.clearAdvancedSearch')}
                         </Button>
                       )}
@@ -362,7 +377,7 @@ export function MasterDashboard() {
                   />
                 )}
                 {layoutMode === "grid" && (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 stagger-reveal">
                     {displayRestaurants.map((restaurant, index) => (
                       <RestaurantCard
                         key={`${restaurant.name_hebrew}-${index}`}
@@ -372,7 +387,7 @@ export function MasterDashboard() {
                   </div>
                 )}
                 {layoutMode === "list" && (
-                  <div className="space-y-4">
+                  <div className="space-y-4 stagger-reveal">
                     {displayRestaurants.map((restaurant, index) => (
                       <RestaurantCard
                         key={`${restaurant.name_hebrew}-${index}`}
@@ -382,9 +397,9 @@ export function MasterDashboard() {
                   </div>
                 )}
                 {displayRestaurants.length === 0 && (
-                  <div className="text-center py-12 text-gray-500">
-                    <div className="text-6xl mb-4">🍽️</div>
-                    <p>{t('common.noResults')}</p>
+                  <div className="text-center py-16 text-muted-foreground">
+                    <div className="text-7xl mb-6 opacity-50">🍽️</div>
+                    <p className="text-lg font-medium">{t('common.noResults')}</p>
                   </div>
                 )}
                 </CardContent>
