@@ -4,6 +4,7 @@ import { useState, useMemo } from "react"
 import { Badge } from "@/components/ui/badge"
 import { Utensils } from "lucide-react"
 import { Restaurant } from "@/types/restaurant"
+import { useLanguage } from "@/contexts/LanguageContext"
 
 interface CuisineFilterProps {
   restaurants: Restaurant[]
@@ -12,6 +13,7 @@ interface CuisineFilterProps {
 }
 
 export function CuisineFilter({ restaurants, selectedCuisines, onCuisineChange }: CuisineFilterProps) {
+  const { t } = useLanguage()
   const cuisineData = useMemo(() => {
     const cuisineMap = new Map<string, number>()
     
@@ -50,9 +52,9 @@ export function CuisineFilter({ restaurants, selectedCuisines, onCuisineChange }
     <div className="space-y-4">
       <div className="flex items-center gap-2 mb-3">
         <Utensils className="size-5 text-orange-500" />
-        <h3 className="font-semibold text-gray-700">סוג מטבח</h3>
+        <h3 className="font-semibold text-gray-700">{t('filters.cuisine.title')}</h3>
         <span className="text-sm text-gray-500">
-          ({selectedCuisines.length === 0 ? 'הכל' : selectedCuisines.length} נבחרו)
+          ({selectedCuisines.length === 0 ? t('common.all') : selectedCuisines.length})
         </span>
       </div>
 
@@ -63,14 +65,14 @@ export function CuisineFilter({ restaurants, selectedCuisines, onCuisineChange }
           className="cursor-pointer hover:bg-orange-100 border-orange-200"
           onClick={clearAllCuisines}
         >
-          נקה הכל
+          {t('common.clearAll')}
         </Badge>
         <Badge
-          variant="outline" 
+          variant="outline"
           className="cursor-pointer hover:bg-orange-100 border-orange-200"
           onClick={selectAllCuisines}
         >
-          בחר הכל
+          {t('common.selectAll')}
         </Badge>
       </div>
 
@@ -99,14 +101,14 @@ export function CuisineFilter({ restaurants, selectedCuisines, onCuisineChange }
       {/* Popular cuisines section */}
       {cuisineData.length > 0 && (
         <div className="mt-4 p-3 bg-orange-50 rounded-lg border border-orange-200">
-          <h4 className="text-sm font-medium text-orange-800 mb-2">המטבחים הפופולריים</h4>
+          <h4 className="text-sm font-medium text-orange-800 mb-2">{t('filters.cuisine.popular')}</h4>
           <div className="flex flex-wrap gap-1">
             {cuisineData.slice(0, 3).map(({ cuisine, count }) => (
-              <Badge 
+              <Badge
                 key={cuisine}
                 className="bg-orange-100 text-orange-800 border-orange-300"
               >
-                {cuisine} - {count} מסעדות
+                {cuisine} - {count} {t('common.restaurants')}
               </Badge>
             ))}
           </div>

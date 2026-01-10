@@ -4,6 +4,7 @@ import { useState, useMemo } from "react"
 import { Badge } from "@/components/ui/badge"
 import { MapPin } from "lucide-react"
 import { Restaurant } from "@/types/restaurant"
+import { useLanguage } from "@/contexts/LanguageContext"
 
 interface LocationFilterProps {
   restaurants: Restaurant[]
@@ -15,15 +16,16 @@ interface LocationFilterProps {
   onNeighborhoodChange: (neighborhood: string) => void
 }
 
-export function LocationFilter({ 
-  restaurants, 
-  selectedCity, 
-  selectedRegion, 
+export function LocationFilter({
+  restaurants,
+  selectedCity,
+  selectedRegion,
   selectedNeighborhood,
-  onCityChange, 
-  onRegionChange, 
-  onNeighborhoodChange 
+  onCityChange,
+  onRegionChange,
+  onNeighborhoodChange
 }: LocationFilterProps) {
+  const { t } = useLanguage()
   const locations = useMemo(() => {
     const cities = new Set<string>()
     const regions = new Set<string>()
@@ -55,23 +57,23 @@ export function LocationFilter({
     <div className="space-y-4">
       <div className="flex items-center gap-2 mb-3">
         <MapPin className="size-5 text-orange-500" />
-        <h3 className="font-semibold text-gray-700">מיקום</h3>
+        <h3 className="font-semibold text-gray-700">{t('filters.location.title')}</h3>
       </div>
 
       {/* Region Filter */}
       <div>
-        <h4 className="text-sm font-medium text-gray-600 mb-2">אזור</h4>
+        <h4 className="text-sm font-medium text-gray-600 mb-2">{t('filters.location.region')}</h4>
         <div className="flex flex-wrap gap-2">
           <Badge
             variant={selectedRegion === "all" ? "default" : "outline"}
             className={`cursor-pointer transition-all ${
-              selectedRegion === "all" 
-                ? "bg-gradient-to-r from-blue-500 to-cyan-500 text-white hover:from-blue-600 hover:to-cyan-600" 
+              selectedRegion === "all"
+                ? "bg-gradient-to-r from-blue-500 to-cyan-500 text-white hover:from-blue-600 hover:to-cyan-600"
                 : "hover:bg-blue-100 border-blue-200"
             }`}
             onClick={() => onRegionChange("all")}
           >
-            כל האזורים ({restaurants.length})
+            {t('filters.location.allRegions')} ({restaurants.length})
           </Badge>
           {locations.regions.map(region => (
             <Badge
@@ -92,18 +94,18 @@ export function LocationFilter({
 
       {/* City Filter */}
       <div>
-        <h4 className="text-sm font-medium text-gray-600 mb-2">עיר</h4>
+        <h4 className="text-sm font-medium text-gray-600 mb-2">{t('filters.location.city')}</h4>
         <div className="flex flex-wrap gap-2">
           <Badge
             variant={selectedCity === "all" ? "default" : "outline"}
             className={`cursor-pointer transition-all ${
-              selectedCity === "all" 
-                ? "bg-gradient-to-r from-green-500 to-emerald-500 text-white hover:from-green-600 hover:to-emerald-600" 
+              selectedCity === "all"
+                ? "bg-gradient-to-r from-green-500 to-emerald-500 text-white hover:from-green-600 hover:to-emerald-600"
                 : "hover:bg-green-100 border-green-200"
             }`}
             onClick={() => onCityChange("all")}
           >
-            כל העיירות
+            {t('filters.location.allCities')}
           </Badge>
           {locations.cities.map(city => (
             <Badge
@@ -125,18 +127,18 @@ export function LocationFilter({
       {/* Neighborhood Filter */}
       {locations.neighborhoods.length > 0 && (
         <div>
-          <h4 className="text-sm font-medium text-gray-600 mb-2">שכונה</h4>
+          <h4 className="text-sm font-medium text-gray-600 mb-2">{t('filters.location.neighborhood')}</h4>
           <div className="flex flex-wrap gap-2">
             <Badge
               variant={selectedNeighborhood === "all" ? "default" : "outline"}
               className={`cursor-pointer transition-all ${
-                selectedNeighborhood === "all" 
-                  ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600" 
+                selectedNeighborhood === "all"
+                  ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600"
                   : "hover:bg-purple-100 border-purple-200"
               }`}
               onClick={() => onNeighborhoodChange("all")}
             >
-              כל השכונות
+              {t('filters.location.allNeighborhoods')}
             </Badge>
             {locations.neighborhoods.map(neighborhood => (
               <Badge
