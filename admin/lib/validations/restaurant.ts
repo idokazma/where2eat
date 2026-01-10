@@ -27,12 +27,12 @@ export const restaurantSchema = z.object({
   price_range: z.enum(['budget', 'mid-range', 'expensive', 'not_mentioned']),
   host_opinion: z.enum(['positive', 'negative', 'mixed', 'neutral']),
   host_comments: z.string(),
-  menu_items: z.array(menuItemSchema).default([]),
-  special_features: z.array(z.string()).default([]),
+  menu_items: z.array(menuItemSchema),
+  special_features: z.array(z.string()),
   contact_info: contactInfoSchema,
   business_news: z.string().nullable(),
   mention_context: z.enum(['new_opening', 'review', 'news', 'recommendation', 'comparison', 'business_news']),
-  food_trends: z.array(z.string()).default([]),
+  food_trends: z.array(z.string()),
 });
 
 export type RestaurantFormData = z.infer<typeof restaurantSchema>;

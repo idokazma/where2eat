@@ -36,6 +36,7 @@
     "zod": "^4.3.5"
   },
   "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.18",
     "@types/react-dom": "^19.2.3",
     "autoprefixer": "^10.4.23",
     "eslint": "^9.39.2",
