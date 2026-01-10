@@ -22,12 +22,33 @@ const adminAuditRoutes = require('./routes/admin-audit')
 
 app.use(helmet())
 app.use(cors({
-  origin: process.env.ALLOWED_ORIGINS?.split(',') || [
-    'http://localhost:3000',
-    'http://localhost:3001', // Admin dashboard
-    'https://where2eat.vercel.app',
-    // Add your custom domain here or via ALLOWED_ORIGINS env var
-  ],
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+
+    // Allowed origins list
+    const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || [];
+    const defaultOrigins = [
+      'http://localhost:3000',
+      'http://localhost:3001',
+      'http://localhost:3002',
+      'https://where2eat.vercel.app',
+    ];
+
+    // Combine custom and default origins
+    const allAllowed = [...new Set([...allowedOrigins, ...defaultOrigins])];
+
+    // Allow any Vercel preview/production deployment
+    const isVercelDomain = origin.includes('.vercel.app') || origin.includes('vercel.app');
+    const isAllowedOrigin = allAllowed.includes(origin);
+
+    if (isVercelDomain || isAllowedOrigin) {
+      callback(null, true);
+    } else {
+      console.log(`CORS blocked origin: ${origin}`);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true
 }))
 app.use(morgan('combined'))

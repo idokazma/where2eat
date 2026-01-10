@@ -7,6 +7,57 @@ const { generateToken, authenticateToken } = require('../middleware/auth');
 const router = express.Router();
 
 /**
+ * POST /api/admin/auth/setup
+ * One-time setup to create the default admin user
+ * This should be called once after deployment
+ */
+router.post('/setup', async (req, res) => {
+  try {
+    // Default credentials (should be changed after first login)
+    const email = 'admin@where2eat.com';
+    const password = 'admin123';
+    const name = 'Super Admin';
+    const role = 'super_admin';
+
+    // Check if admin already exists
+    const existingResult = await callPythonAdminDB('get_user_by_email', { email });
+
+    if (existingResult.success && existingResult.user) {
+      return res.json({
+        message: 'Admin user already exists',
+        email: email,
+        hint: 'Use these credentials to login: admin@where2eat.com / admin123'
+      });
+    }
+
+    // Create admin user
+    const createResult = await callPythonAdminDB('create_user', {
+      email,
+      password,
+      name,
+      role
+    });
+
+    if (createResult.success) {
+      console.log('✅ Admin user created successfully');
+      res.json({
+        message: 'Admin user created successfully',
+        email: email,
+        hint: 'Login with: admin@where2eat.com / admin123 (change password after login!)'
+      });
+    } else {
+      res.status(500).json({
+        error: 'Failed to create admin user',
+        details: createResult.error
+      });
+    }
+  } catch (error) {
+    console.error('Setup error:', error);
+    res.status(500).json({ error: 'Setup failed', details: error.message });
+  }
+});
+
+/**
  * Helper function to call Python admin_database methods
  * @param {string} method - Python method name
  * @param {Object} args - Arguments to pass to the method

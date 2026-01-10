@@ -64,6 +64,22 @@ def main():
                     "error": "User not found"
                 }))
 
+        elif method_name == 'get_user_by_email':
+            # Get user by email
+            email = args.get('email')
+            user = db.get_admin_user(email=email)
+
+            if user:
+                print(json.dumps({
+                    "success": True,
+                    "user": user
+                }))
+            else:
+                print(json.dumps({
+                    "success": False,
+                    "error": "User not found"
+                }))
+
         elif method_name == 'create_session':
             # Create session (note: we store the token hash, not the token itself)
             user_id = args.get('user_id')
