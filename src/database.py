@@ -127,12 +127,99 @@ class Database:
                 )
             ''')
 
+            # Admin users table
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS admin_users (
+                    id TEXT PRIMARY KEY,
+                    email TEXT UNIQUE NOT NULL,
+                    password_hash TEXT NOT NULL,
+                    name TEXT NOT NULL,
+                    role TEXT NOT NULL CHECK(role IN ('super_admin', 'admin', 'editor', 'viewer')),
+                    is_active INTEGER DEFAULT 1,
+                    created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                    last_login TEXT
+                )
+            ''')
+
+            # Admin sessions table
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS admin_sessions (
+                    id TEXT PRIMARY KEY,
+                    user_id TEXT NOT NULL,
+                    token_hash TEXT NOT NULL,
+                    expires_at TEXT NOT NULL,
+                    created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                    ip_address TEXT,
+                    user_agent TEXT,
+                    FOREIGN KEY (user_id) REFERENCES admin_users(id)
+                )
+            ''')
+
+            # Restaurant edit history table (audit log)
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS restaurant_edits (
+                    id TEXT PRIMARY KEY,
+                    restaurant_name TEXT NOT NULL,
+                    restaurant_id TEXT,
+                    admin_user_id TEXT NOT NULL,
+                    edit_type TEXT NOT NULL CHECK(edit_type IN ('create', 'update', 'delete', 'approve', 'reject')),
+                    changes TEXT,
+                    timestamp TEXT DEFAULT CURRENT_TIMESTAMP,
+                    FOREIGN KEY (admin_user_id) REFERENCES admin_users(id),
+                    FOREIGN KEY (restaurant_id) REFERENCES restaurants(id)
+                )
+            ''')
+
+            # System settings table
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS settings (
+                    key TEXT PRIMARY KEY,
+                    value TEXT NOT NULL,
+                    updated_by TEXT,
+                    updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                    FOREIGN KEY (updated_by) REFERENCES admin_users(id)
+                )
+            ''')
+
+            # Articles table for CMS
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS articles (
+                    id TEXT PRIMARY KEY,
+                    title TEXT NOT NULL,
+                    slug TEXT UNIQUE NOT NULL,
+                    excerpt TEXT,
+                    content TEXT NOT NULL,
+                    featured_image TEXT,
+                    status TEXT NOT NULL CHECK(status IN ('draft', 'published', 'scheduled', 'archived')) DEFAULT 'draft',
+                    author_id TEXT NOT NULL,
+                    category TEXT,
+                    tags TEXT,
+                    seo_title TEXT,
+                    seo_description TEXT,
+                    seo_keywords TEXT,
+                    published_at TEXT,
+                    scheduled_for TEXT,
+                    view_count INTEGER DEFAULT 0,
+                    created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                    FOREIGN KEY (author_id) REFERENCES admin_users(id)
+                )
+            ''')
+
             # Create indexes for common queries
             cursor.execute('CREATE INDEX IF NOT EXISTS idx_restaurants_city ON restaurants(city)')
             cursor.execute('CREATE INDEX IF NOT EXISTS idx_restaurants_cuisine ON restaurants(cuisine_type)')
             cursor.execute('CREATE INDEX IF NOT EXISTS idx_restaurants_episode ON restaurants(episode_id)')
             cursor.execute('CREATE INDEX IF NOT EXISTS idx_episodes_video_id ON episodes(video_id)')
             cursor.execute('CREATE INDEX IF NOT EXISTS idx_jobs_status ON jobs(status)')
+            cursor.execute('CREATE INDEX IF NOT EXISTS idx_admin_users_email ON admin_users(email)')
+            cursor.execute('CREATE INDEX IF NOT EXISTS idx_admin_sessions_user_id ON admin_sessions(user_id)')
+            cursor.execute('CREATE INDEX IF NOT EXISTS idx_restaurant_edits_restaurant_id ON restaurant_edits(restaurant_id)')
+            cursor.execute('CREATE INDEX IF NOT EXISTS idx_restaurant_edits_admin_user_id ON restaurant_edits(admin_user_id)')
+            cursor.execute('CREATE INDEX IF NOT EXISTS idx_articles_slug ON articles(slug)')
+            cursor.execute('CREATE INDEX IF NOT EXISTS idx_articles_status ON articles(status)')
+            cursor.execute('CREATE INDEX IF NOT EXISTS idx_articles_author_id ON articles(author_id)')
+            cursor.execute('CREATE INDEX IF NOT EXISTS idx_articles_published_at ON articles(published_at)')
 
     # ==================== Episode Operations ====================
 
@@ -580,6 +667,94 @@ class Database:
             cursor.execute('DELETE FROM restaurants WHERE id = ?', (restaurant_id,))
             return cursor.rowcount > 0
 
+    def log_restaurant_edit(
+        self,
+        restaurant_id: str,
+        restaurant_name: str,
+        admin_user_id: str,
+        edit_type: str,
+        changes: str = None
+    ) -> str:
+        """Log a restaurant edit action.
+
+        Args:
+            restaurant_id: ID of the restaurant
+            restaurant_name: Name of the restaurant
+            admin_user_id: ID of the admin user making the edit
+            edit_type: Type of edit ('create', 'update', 'delete', 'approve', 'reject')
+            changes: JSON string of changes made
+
+        Returns:
+            Edit log ID
+        """
+        log_id = str(uuid.uuid4())
+
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute('''
+                INSERT INTO restaurant_edits (
+                    id, restaurant_id, restaurant_name, admin_user_id,
+                    edit_type, changes
+                ) VALUES (?, ?, ?, ?, ?, ?)
+            ''', (
+                log_id,
+                restaurant_id,
+                restaurant_name,
+                admin_user_id,
+                edit_type,
+                changes
+            ))
+
+            return log_id
+
+    def get_restaurant_edit_history(
+        self,
+        restaurant_id: str = None,
+        admin_user_id: str = None,
+        limit: int = 100
+    ) -> List[Dict]:
+        """Get restaurant edit history.
+
+        Args:
+            restaurant_id: Filter by restaurant ID
+            admin_user_id: Filter by admin user ID
+            limit: Maximum number of records to return
+
+        Returns:
+            List of edit history records
+        """
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+
+            if restaurant_id:
+                cursor.execute('''
+                    SELECT e.*, u.name as admin_name, u.email as admin_email
+                    FROM restaurant_edits e
+                    LEFT JOIN admin_users u ON e.admin_user_id = u.id
+                    WHERE e.restaurant_id = ?
+                    ORDER BY e.timestamp DESC
+                    LIMIT ?
+                ''', (restaurant_id, limit))
+            elif admin_user_id:
+                cursor.execute('''
+                    SELECT e.*, u.name as admin_name, u.email as admin_email
+                    FROM restaurant_edits e
+                    LEFT JOIN admin_users u ON e.admin_user_id = u.id
+                    WHERE e.admin_user_id = ?
+                    ORDER BY e.timestamp DESC
+                    LIMIT ?
+                ''', (admin_user_id, limit))
+            else:
+                cursor.execute('''
+                    SELECT e.*, u.name as admin_name, u.email as admin_email
+                    FROM restaurant_edits e
+                    LEFT JOIN admin_users u ON e.admin_user_id = u.id
+                    ORDER BY e.timestamp DESC
+                    LIMIT ?
+                ''', (limit,))
+
+            return [dict(row) for row in cursor.fetchall()]
+
     # ==================== Job Operations ====================
 
     def create_job(self, job_type: str, **kwargs) -> str:
@@ -794,6 +969,146 @@ class Database:
             'failed': failed,
             'errors': errors[:10]  # Limit error messages
         }
+
+    # ==================== Article Operations ====================
+
+    def create_article(self, title: str, slug: str, content: str, author_id: str, **kwargs) -> str:
+        """Create a new article.
+
+        Args:
+            title: Article title
+            slug: URL-friendly slug
+            content: Article HTML content
+            author_id: ID of the admin user creating the article
+            **kwargs: Additional article fields (excerpt, status, category, tags, seo fields, etc.)
+
+        Returns:
+            str: Article ID
+        """
+        article_id = str(uuid.uuid4())
+
+        fields = {
+            'id': article_id,
+            'title': title,
+            'slug': slug,
+            'content': content,
+            'author_id': author_id,
+            'excerpt': kwargs.get('excerpt', ''),
+            'featured_image': kwargs.get('featured_image'),
+            'status': kwargs.get('status', 'draft'),
+            'category': kwargs.get('category'),
+            'tags': json.dumps(kwargs.get('tags', [])) if isinstance(kwargs.get('tags'), list) else kwargs.get('tags'),
+            'seo_title': kwargs.get('seo_title'),
+            'seo_description': kwargs.get('seo_description'),
+            'seo_keywords': kwargs.get('seo_keywords'),
+            'published_at': kwargs.get('published_at'),
+            'scheduled_for': kwargs.get('scheduled_for'),
+            'created_at': datetime.now().isoformat(),
+            'updated_at': datetime.now().isoformat()
+        }
+
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+            columns = ', '.join(fields.keys())
+            placeholders = ', '.join(['?' for _ in fields])
+            cursor.execute(
+                f'INSERT INTO articles ({columns}) VALUES ({placeholders})',
+                list(fields.values())
+            )
+
+        return article_id
+
+    def get_article(self, article_id: str = None, slug: str = None) -> Optional[Dict]:
+        """Get article by ID or slug."""
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+            if article_id:
+                cursor.execute('SELECT * FROM articles WHERE id = ?', (article_id,))
+            elif slug:
+                cursor.execute('SELECT * FROM articles WHERE slug = ?', (slug,))
+            else:
+                return None
+
+            row = cursor.fetchone()
+            if row:
+                article = dict(row)
+                if article.get('tags'):
+                    try:
+                        article['tags'] = json.loads(article['tags'])
+                    except:
+                        article['tags'] = []
+                return article
+            return None
+
+    def list_articles(self, status: str = None, author_id: str = None,
+                     limit: int = 50, offset: int = 0, order_by: str = 'created_at DESC') -> List[Dict]:
+        """List articles with optional filtering."""
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+
+            query = 'SELECT * FROM articles WHERE 1=1'
+            params = []
+
+            if status:
+                query += ' AND status = ?'
+                params.append(status)
+
+            if author_id:
+                query += ' AND author_id = ?'
+                params.append(author_id)
+
+            query += f' ORDER BY {order_by} LIMIT ? OFFSET ?'
+            params.extend([limit, offset])
+
+            cursor.execute(query, params)
+            articles = [dict(row) for row in cursor.fetchall()]
+
+            # Parse tags JSON
+            for article in articles:
+                if article.get('tags'):
+                    try:
+                        article['tags'] = json.loads(article['tags'])
+                    except:
+                        article['tags'] = []
+
+            return articles
+
+    def update_article(self, article_id: str, **kwargs) -> bool:
+        """Update an article."""
+        if not kwargs:
+            return False
+
+        kwargs['updated_at'] = datetime.now().isoformat()
+
+        # Convert tags list to JSON string if needed
+        if 'tags' in kwargs and isinstance(kwargs['tags'], list):
+            kwargs['tags'] = json.dumps(kwargs['tags'])
+
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+            set_clause = ', '.join([f'{key} = ?' for key in kwargs.keys()])
+            cursor.execute(
+                f'UPDATE articles SET {set_clause} WHERE id = ?',
+                list(kwargs.values()) + [article_id]
+            )
+            return cursor.rowcount > 0
+
+    def delete_article(self, article_id: str) -> bool:
+        """Delete an article."""
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute('DELETE FROM articles WHERE id = ?', (article_id,))
+            return cursor.rowcount > 0
+
+    def count_articles(self, status: str = None) -> int:
+        """Count articles with optional status filter."""
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+            if status:
+                cursor.execute('SELECT COUNT(*) FROM articles WHERE status = ?', (status,))
+            else:
+                cursor.execute('SELECT COUNT(*) FROM articles')
+            return cursor.fetchone()[0]
 
 
 # Singleton instance for convenience

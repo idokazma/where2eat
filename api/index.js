@@ -2,6 +2,7 @@ const express = require('express')
 const cors = require('cors')
 const helmet = require('helmet')
 const morgan = require('morgan')
+const cookieParser = require('cookie-parser')
 const fs = require('fs-extra')
 const path = require('path')
 const { v4: uuidv4 } = require('uuid')
@@ -10,10 +11,20 @@ require('dotenv').config()
 const app = express()
 const port = process.env.PORT || 3001
 
+// Import admin routes
+const adminAuthRoutes = require('./routes/admin-auth')
+const adminRestaurantsRoutes = require('./routes/admin-restaurants')
+const adminAnalyticsRoutes = require('./routes/admin-analytics')
+const adminArticlesRoutes = require('./routes/admin-articles')
+const adminVideosRoutes = require('./routes/admin-videos')
+const adminBulkRoutes = require('./routes/admin-bulk')
+const adminAuditRoutes = require('./routes/admin-audit')
+
 app.use(helmet())
 app.use(cors({
   origin: process.env.ALLOWED_ORIGINS?.split(',') || [
     'http://localhost:3000',
+    'http://localhost:3001', // Admin dashboard
     'https://where2eat.vercel.app',
     // Add your custom domain here or via ALLOWED_ORIGINS env var
   ],
@@ -21,12 +32,22 @@ app.use(cors({
 }))
 app.use(morgan('combined'))
 app.use(express.json())
+app.use(cookieParser()) // Parse cookies for session management
 
 const dataDir = path.join(__dirname, '..', 'data', 'restaurants')
 
 app.get('/health', (req, res) => {
   res.json({ status: 'OK', timestamp: new Date().toISOString() })
 })
+
+// Admin routes
+app.use('/api/admin/auth', adminAuthRoutes)
+app.use('/api/admin/restaurants', adminRestaurantsRoutes)
+app.use('/api/admin/analytics', adminAnalyticsRoutes)
+app.use('/api/admin/articles', adminArticlesRoutes)
+app.use('/api/admin/videos', adminVideosRoutes)
+app.use('/api/admin/bulk', adminBulkRoutes)
+app.use('/api/admin/audit', adminAuditRoutes)
 
 app.get('/api/restaurants', async (req, res) => {
   try {
