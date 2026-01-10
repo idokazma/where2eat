@@ -11,8 +11,9 @@ require('dotenv').config()
 const app = express()
 const port = process.env.PORT || 3001
 
-// Import admin auth routes
+// Import admin routes
 const adminAuthRoutes = require('./routes/admin-auth')
+const adminRestaurantsRoutes = require('./routes/admin-restaurants')
 
 app.use(helmet())
 app.use(cors({
@@ -34,8 +35,9 @@ app.get('/health', (req, res) => {
   res.json({ status: 'OK', timestamp: new Date().toISOString() })
 })
 
-// Admin authentication routes
+// Admin routes
 app.use('/api/admin/auth', adminAuthRoutes)
+app.use('/api/admin/restaurants', adminRestaurantsRoutes)
 
 app.get('/api/restaurants', async (req, res) => {
   try {
