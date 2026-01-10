@@ -254,8 +254,90 @@ export const analyticsApi = {
   },
 };
 
+/**
+ * Articles API endpoints
+ */
+export const articlesApi = {
+  /**
+   * Get all articles with pagination and filters
+   */
+  async list(params?: {
+    page?: number;
+    limit?: number;
+    status?: string;
+    author_id?: string;
+    search?: string;
+  }): Promise<any> {
+    const queryParams = new URLSearchParams();
+
+    if (params?.page) queryParams.append('page', params.page.toString());
+    if (params?.limit) queryParams.append('limit', params.limit.toString());
+    if (params?.status) queryParams.append('status', params.status);
+    if (params?.author_id) queryParams.append('author_id', params.author_id);
+    if (params?.search) queryParams.append('search', params.search);
+
+    const query = queryParams.toString();
+    return apiFetch(`/api/admin/articles${query ? `?${query}` : ''}`);
+  },
+
+  /**
+   * Get article by ID
+   */
+  async get(id: string): Promise<any> {
+    return apiFetch(`/api/admin/articles/${id}`);
+  },
+
+  /**
+   * Create new article
+   */
+  async create(data: any): Promise<any> {
+    return apiFetch('/api/admin/articles', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+
+  /**
+   * Update article
+   */
+  async update(id: string, data: any): Promise<any> {
+    return apiFetch(`/api/admin/articles/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+  },
+
+  /**
+   * Delete article
+   */
+  async delete(id: string): Promise<void> {
+    return apiFetch(`/api/admin/articles/${id}`, {
+      method: 'DELETE',
+    });
+  },
+
+  /**
+   * Publish article
+   */
+  async publish(id: string): Promise<any> {
+    return apiFetch(`/api/admin/articles/${id}/publish`, {
+      method: 'POST',
+    });
+  },
+
+  /**
+   * Unpublish article
+   */
+  async unpublish(id: string): Promise<any> {
+    return apiFetch(`/api/admin/articles/${id}/unpublish`, {
+      method: 'POST',
+    });
+  },
+};
+
 export default {
   auth: authApi,
   restaurants: restaurantsApi,
   analytics: analyticsApi,
+  articles: articlesApi,
 };

@@ -15,6 +15,7 @@ const port = process.env.PORT || 3001
 const adminAuthRoutes = require('./routes/admin-auth')
 const adminRestaurantsRoutes = require('./routes/admin-restaurants')
 const adminAnalyticsRoutes = require('./routes/admin-analytics')
+const adminArticlesRoutes = require('./routes/admin-articles')
 
 app.use(helmet())
 app.use(cors({
@@ -40,6 +41,7 @@ app.get('/health', (req, res) => {
 app.use('/api/admin/auth', adminAuthRoutes)
 app.use('/api/admin/restaurants', adminRestaurantsRoutes)
 app.use('/api/admin/analytics', adminAnalyticsRoutes)
+app.use('/api/admin/articles', adminArticlesRoutes)
 
 app.get('/api/restaurants', async (req, res) => {
   try {
