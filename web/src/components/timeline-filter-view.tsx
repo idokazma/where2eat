@@ -9,6 +9,7 @@ import { Calendar, Filter, TrendingUp, BarChart3, MapPin, Utensils, ExternalLink
 import { Restaurant } from "@/types/restaurant"
 import { RestaurantCard } from "./restaurant-card"
 import { EpisodeMetadata } from "./episode-metadata"
+import { useLanguage } from "@/contexts/LanguageContext"
 
 interface TimelineFilterViewProps {
   restaurants: Restaurant[]
@@ -30,6 +31,7 @@ interface TimelineGroup {
 }
 
 export function TimelineFilterView({ restaurants, onRestaurantSelect }: TimelineFilterViewProps) {
+  const { t } = useLanguage()
   const [selectedCuisines, setSelectedCuisines] = useState<string[]>([])
   const [selectedPriceRanges, setSelectedPriceRanges] = useState<string[]>([])
   const [selectedOpinions, setSelectedOpinions] = useState<string[]>([])
@@ -203,10 +205,10 @@ export function TimelineFilterView({ restaurants, onRestaurantSelect }: Timeline
           <CardTitle className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Filter className="size-6" />
-              סינון מסעדות בציר הזמן
+              {t('timeline.title')}
             </div>
             <div className="text-right text-purple-100">
-              {analytics.totalFilteredRestaurants} מסעדות ב-{analytics.totalFilteredEpisodes} פרקים
+              {analytics.totalFilteredRestaurants} {t('timeline.restaurantsIn')}{analytics.totalFilteredEpisodes} {t('common.episodes')}
             </div>
           </CardTitle>
         </CardHeader>
@@ -217,7 +219,7 @@ export function TimelineFilterView({ restaurants, onRestaurantSelect }: Timeline
             <div>
               <h4 className="font-semibold mb-3 flex items-center gap-2">
                 <Utensils className="size-4 text-purple-500" />
-                מטבח ({selectedCuisines.length})
+                {t('timeline.cuisine')} ({selectedCuisines.length})
               </h4>
               <div className="flex flex-wrap gap-1">
                 {filterOptions.cuisines.map(cuisine => (
@@ -241,7 +243,7 @@ export function TimelineFilterView({ restaurants, onRestaurantSelect }: Timeline
             <div>
               <h4 className="font-semibold mb-3 flex items-center gap-2">
                 <MapPin className="size-4 text-purple-500" />
-                מיקום ({selectedLocations.length})
+                {t('timeline.location')} ({selectedLocations.length})
               </h4>
               <div className="flex flex-wrap gap-1">
                 {filterOptions.locations.map(location => (
@@ -263,14 +265,14 @@ export function TimelineFilterView({ restaurants, onRestaurantSelect }: Timeline
 
             {/* Price Range Filter */}
             <div>
-              <h4 className="font-semibold mb-3">טווח מחירים ({selectedPriceRanges.length})</h4>
+              <h4 className="font-semibold mb-3">{t('timeline.priceRange')} ({selectedPriceRanges.length})</h4>
               <div className="space-y-1">
                 {filterOptions.priceRanges.map(price => {
                   const priceConfig = {
-                    budget: { label: 'זול ₪', color: 'bg-green-500' },
-                    'mid-range': { label: 'בינוני ₪₪', color: 'bg-yellow-500' },
-                    expensive: { label: 'יקר ₪₪₪', color: 'bg-red-500' },
-                    not_mentioned: { label: 'לא צוין', color: 'bg-gray-500' }
+                    budget: { label: t('filters.price.budget'), color: 'bg-green-500' },
+                    'mid-range': { label: t('filters.price.midRange'), color: 'bg-yellow-500' },
+                    expensive: { label: t('filters.price.expensive'), color: 'bg-red-500' },
+                    not_mentioned: { label: t('filters.price.notSpecified'), color: 'bg-gray-500' }
                   }
                   
                   const config = priceConfig[price as keyof typeof priceConfig]
@@ -295,14 +297,14 @@ export function TimelineFilterView({ restaurants, onRestaurantSelect }: Timeline
 
             {/* Opinion Filter */}
             <div>
-              <h4 className="font-semibold mb-3">דעת המובחר ({selectedOpinions.length})</h4>
+              <h4 className="font-semibold mb-3">{t('timeline.hostOpinion')} ({selectedOpinions.length})</h4>
               <div className="space-y-1">
                 {filterOptions.opinions.map(opinion => {
                   const opinionConfig = {
-                    positive: { label: 'חיובית 👍', color: 'bg-green-500' },
-                    mixed: { label: 'מעורבת 🤔', color: 'bg-yellow-500' },
-                    neutral: { label: 'ניטרלית 😐', color: 'bg-gray-500' },
-                    negative: { label: 'שלילית 👎', color: 'bg-red-500' }
+                    positive: { label: t('filters.opinion.positive'), color: 'bg-green-500' },
+                    mixed: { label: t('filters.opinion.mixed'), color: 'bg-yellow-500' },
+                    neutral: { label: t('filters.opinion.neutral'), color: 'bg-gray-500' },
+                    negative: { label: t('filters.opinion.negative'), color: 'bg-red-500' }
                   }
                   
                   const config = opinionConfig[opinion as keyof typeof opinionConfig]
@@ -333,7 +335,7 @@ export function TimelineFilterView({ restaurants, onRestaurantSelect }: Timeline
                 onClick={clearAllFilters}
                 className="border-purple-300 text-purple-700 hover:bg-purple-50"
               >
-                נקה כל המסננים
+                {t('timeline.clearAllFilters')}
               </Button>
             </div>
           )}
@@ -345,11 +347,11 @@ export function TimelineFilterView({ restaurants, onRestaurantSelect }: Timeline
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="timeline" className="flex items-center gap-2">
             <Calendar className="size-4" />
-            תצוגת ציר זמן
+            {t('timeline.timelineView')}
           </TabsTrigger>
           <TabsTrigger value="analytics" className="flex items-center gap-2">
             <BarChart3 className="size-4" />
-            אנליטיקה וטרנדים
+            {t('timeline.analyticsAndTrends')}
           </TabsTrigger>
         </TabsList>
 
@@ -361,10 +363,10 @@ export function TimelineFilterView({ restaurants, onRestaurantSelect }: Timeline
                 <div className="flex items-center justify-between">
                   <div>
                     <h3 className="text-lg font-semibold text-gray-800">
-                      פרק מ-{formatDate(group.date)}
+                      {t('timeline.episodeFrom')}{formatDate(group.date)}
                     </h3>
                     <p className="text-sm text-gray-600">
-                      {group.filteredRestaurants.length} מתוך {group.restaurants.length} מסעדות מוצגות
+                      {group.filteredRestaurants.length} {t('timeline.of')} {group.restaurants.length} {t('timeline.restaurantsDisplayed')}
                     </p>
                   </div>
                   <Button
@@ -375,7 +377,7 @@ export function TimelineFilterView({ restaurants, onRestaurantSelect }: Timeline
                   >
                     <a href={group.episodeInfo.video_url} target="_blank" rel="noopener noreferrer">
                       <ExternalLink className="size-4 ml-1" />
-                      צפה בפרק
+                      {t('timeline.watchEpisode')}
                     </a>
                   </Button>
                 </div>
@@ -400,10 +402,10 @@ export function TimelineFilterView({ restaurants, onRestaurantSelect }: Timeline
               <CardContent>
                 <div className="text-6xl mb-4">📊</div>
                 <h3 className="text-xl font-semibold text-gray-700 mb-2">
-                  לא נמצאו תוצאות
+                  {t('errors.noResults')}
                 </h3>
                 <p className="text-gray-500">
-                  נסו לשנות את המסננים כדי לראות תוצאות
+                  {t('errors.tryChangingFilters')}
                 </p>
               </CardContent>
             </Card>
@@ -418,7 +420,7 @@ export function TimelineFilterView({ restaurants, onRestaurantSelect }: Timeline
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <TrendingUp className="size-5 text-orange-500" />
-                  מטבחים פופולריים
+                  {t('timeline.popularCuisines')}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -438,7 +440,7 @@ export function TimelineFilterView({ restaurants, onRestaurantSelect }: Timeline
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <MapPin className="size-5 text-green-500" />
-                  מיקומים מובילים
+                  {t('timeline.topLocations')}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -458,7 +460,7 @@ export function TimelineFilterView({ restaurants, onRestaurantSelect }: Timeline
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <BarChart3 className="size-5 text-blue-500" />
-                  טרנדים חודשיים
+                  {t('timeline.monthlyTrends')}
                 </CardTitle>
               </CardHeader>
               <CardContent>

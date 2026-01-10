@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { endpoints } from "@/lib/config"
+import { useLanguage } from "@/contexts/LanguageContext"
 
 interface RestaurantMapProps {
   restaurants: Restaurant[]
@@ -44,6 +45,7 @@ interface PlaceDetails {
 }
 
 export function RestaurantMap({ restaurants, selectedRestaurant, onRestaurantSelect }: RestaurantMapProps) {
+  const { t } = useLanguage()
   const mapRef = useRef<HTMLDivElement>(null)
   const [map, setMap] = useState<any>(null)
   const [markers, setMarkers] = useState<any[]>([])
@@ -272,9 +274,9 @@ export function RestaurantMap({ restaurants, selectedRestaurant, onRestaurantSel
           </p>
         ` : ''}
         
-        <button onclick="window.open('https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(placeDetails.formatted_address || restaurant.name_hebrew)}')" 
+        <button onclick="window.open('https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(placeDetails.formatted_address || restaurant.name_hebrew)}')"
                 style="background: #ea580c; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; margin-top: 8px;">
-          פתח ב-Google Maps
+          ${t('map.openInGoogleMaps')}
         </button>
       </div>
     `
@@ -292,12 +294,12 @@ export function RestaurantMap({ restaurants, selectedRestaurant, onRestaurantSel
 
   const getOpinionText = (opinion: Restaurant['host_opinion']) => {
     const texts = {
-      positive: 'מומלץ',
-      mixed: 'מעורב',
-      neutral: 'ניטרלי', 
-      negative: 'לא מומלץ'
+      positive: t('map.recommended'),
+      mixed: t('map.mixed'),
+      neutral: t('map.neutral'),
+      negative: t('map.notRecommended')
     }
-    return texts[opinion] || 'לא צוין'
+    return texts[opinion] || t('map.neutral')
   }
 
   const getPriceDisplay = (priceRange: Restaurant['price_range']) => {
@@ -334,7 +336,7 @@ export function RestaurantMap({ restaurants, selectedRestaurant, onRestaurantSel
         <CardContent className="p-6">
           <div className="text-center">
             <div className="text-red-500 text-4xl mb-4">🗺️</div>
-            <h3 className="text-lg font-semibold text-red-800 mb-2">שגיאה בטעינת המפה</h3>
+            <h3 className="text-lg font-semibold text-red-800 mb-2">{t('errors.loadingMap')}</h3>
             <p className="text-red-600">{error}</p>
           </div>
         </CardContent>
@@ -348,7 +350,7 @@ export function RestaurantMap({ restaurants, selectedRestaurant, onRestaurantSel
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <MapPin className="size-5 text-orange-500" />
-            מפת מסעדות
+            {t('map.title')}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -357,7 +359,7 @@ export function RestaurantMap({ restaurants, selectedRestaurant, onRestaurantSel
               <div className="absolute inset-0 bg-white/80 backdrop-blur-sm z-10 flex items-center justify-center">
                 <div className="text-center">
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500 mx-auto mb-2"></div>
-                  <p className="text-sm text-gray-600">טוען מפה...</p>
+                  <p className="text-sm text-gray-600">{t('map.loadingMap')}</p>
                 </div>
               </div>
             )}
@@ -376,7 +378,7 @@ export function RestaurantMap({ restaurants, selectedRestaurant, onRestaurantSel
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Navigation className="size-5 text-blue-500" />
-              מסעדות על המפה ({enrichedRestaurants.filter(r => r.placeDetails).length} מתוך {enrichedRestaurants.length})
+              {t('map.restaurantsOnMap')} ({enrichedRestaurants.filter(r => r.placeDetails).length} {t('timeline.of')} {enrichedRestaurants.length})
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -410,11 +412,11 @@ export function RestaurantMap({ restaurants, selectedRestaurant, onRestaurantSel
                         className="bg-orange-500 hover:bg-orange-600"
                       >
                         <MapPin className="size-4 ml-1" />
-                        הצג במפה
+                        {t('map.showOnMap')}
                       </Button>
                     ) : (
                       <Badge variant="outline" className="text-xs text-red-600">
-                        לא נמצא במפה
+                        {t('map.notFoundOnMap')}
                       </Badge>
                     )}
                   </div>

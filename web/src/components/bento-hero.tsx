@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge"
 import { TrendingUp, MapPin, Star, Users } from "lucide-react"
 import { Restaurant } from "@/types/restaurant"
 import { OptimizedImage } from "./optimized-image"
+import { useLanguage } from "@/contexts/LanguageContext"
 
 interface BentoHeroProps {
   featuredRestaurants: Restaurant[]
@@ -17,6 +18,7 @@ interface BentoHeroProps {
 }
 
 export function BentoHero({ featuredRestaurants, stats }: BentoHeroProps) {
+  const { t } = useLanguage()
   const featured = featuredRestaurants.slice(0, 3)
 
   return (
@@ -34,7 +36,7 @@ export function BentoHero({ featuredRestaurants, stats }: BentoHeroProps) {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
             <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-              <Badge className="bg-orange-500 text-white mb-3">מומלץ ביותר</Badge>
+              <Badge className="bg-orange-500 text-white mb-3">{t('restaurant.highlyRecommended')}</Badge>
               <h2 className="image-headline text-white mb-2">
                 {featured[0].name_hebrew}
               </h2>
@@ -63,24 +65,24 @@ export function BentoHero({ featuredRestaurants, stats }: BentoHeroProps) {
         <div className="p-6">
           <div className="flex items-center gap-2 mb-4">
             <TrendingUp className="size-5" />
-            <h3 className="text-lg font-bold">סטטיסטיקות מערכת</h3>
+            <h3 className="text-lg font-bold">{t('stats.systemStats')}</h3>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
               <div className="text-3xl font-bold">{stats.totalRestaurants}</div>
-              <div className="text-orange-100 text-sm">מסעדות</div>
+              <div className="text-orange-100 text-sm">{t('common.restaurants')}</div>
             </div>
             <div>
               <div className="text-3xl font-bold">{stats.totalEpisodes}</div>
-              <div className="text-orange-100 text-sm">פרקים</div>
+              <div className="text-orange-100 text-sm">{t('common.episodes')}</div>
             </div>
             <div>
               <div className="text-2xl font-bold">{stats.topCuisines.length}</div>
-              <div className="text-orange-100 text-sm">סוגי מטבח</div>
+              <div className="text-orange-100 text-sm">{t('stats.cuisineTypes')}</div>
             </div>
             <div>
               <div className="text-2xl font-bold">{stats.topLocations.length}</div>
-              <div className="text-orange-100 text-sm">ערים</div>
+              <div className="text-orange-100 text-sm">{t('stats.cities')}</div>
             </div>
           </div>
         </div>
@@ -113,7 +115,7 @@ export function BentoHero({ featuredRestaurants, stats }: BentoHeroProps) {
         <div className="p-4 h-full flex flex-col">
           <div className="flex items-center gap-2 mb-3">
             <Users className="size-4" />
-            <h3 className="font-bold text-sm">מטבחים פופולריים</h3>
+            <h3 className="font-bold text-sm">{t('timeline.popularCuisines')}</h3>
           </div>
           <div className="space-y-2 flex-1">
             {stats.topCuisines.slice(0, 3).map(([cuisine, count]) => (

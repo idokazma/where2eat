@@ -18,6 +18,7 @@ import {
 } from "lucide-react"
 import { Restaurant } from "@/types/restaurant"
 import { endpoints } from "@/lib/config"
+import { useLanguage } from "@/contexts/LanguageContext"
 
 interface TrendingAnalyticsProps {
   restaurants: Restaurant[]
@@ -42,6 +43,7 @@ interface RegionalInsights {
 }
 
 export function TrendingAnalytics({ restaurants, onRestaurantFilter }: TrendingAnalyticsProps) {
+  const { t } = useLanguage()
   const [timeframe, setTimeframe] = useState<'1month' | '3months' | '6months' | '1year'>('3months')
   const [trendsData, setTrendsData] = useState<any>(null)
   const [isLoading, setIsLoading] = useState(false)
@@ -222,10 +224,10 @@ export function TrendingAnalytics({ restaurants, onRestaurantFilter }: TrendingA
 
   const getTimeframeLabel = (period: string) => {
     const labels = {
-      '1month': 'חודש אחרון',
-      '3months': '3 חודשים אחרונים',  
-      '6months': '6 חודשים אחרונים',
-      '1year': 'שנה אחרונה'
+      '1month': t('analytics.periods.lastMonth'),
+      '3months': t('analytics.periods.last3Months'),
+      '6months': t('analytics.periods.last6Months'),
+      '1year': t('analytics.periods.lastYear')
     }
     return labels[period as keyof typeof labels] || period
   }
@@ -238,7 +240,7 @@ export function TrendingAnalytics({ restaurants, onRestaurantFilter }: TrendingA
           <div className="flex items-center justify-between">
             <CardTitle className="flex items-center gap-2">
               <TrendingUp className="size-6" />
-              טרנדים ואנליטיקה מתקדמת
+              {t('analytics.title')}
             </CardTitle>
             <div className="flex gap-2">
               {['1month', '3months', '6months', '1year'].map(period => (
@@ -260,19 +262,19 @@ export function TrendingAnalytics({ restaurants, onRestaurantFilter }: TrendingA
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-center">
             <div>
               <div className="text-2xl font-bold text-pink-600">{timeframeRestaurants.length}</div>
-              <div className="text-sm text-gray-600">מסעדות נותחו</div>
+              <div className="text-sm text-gray-600">{t('analytics.restaurantsAnalyzed')}</div>
             </div>
             <div>
               <div className="text-2xl font-bold text-rose-600">{trendingRestaurants.length}</div>
-              <div className="text-sm text-gray-600">מסעדות טרנדיות</div>
+              <div className="text-sm text-gray-600">{t('analytics.trendingRestaurants')}</div>
             </div>
             <div>
               <div className="text-2xl font-bold text-purple-600">{regionalInsights.length}</div>
-              <div className="text-sm text-gray-600">אזורים</div>
+              <div className="text-sm text-gray-600">{t('analytics.regions')}</div>
             </div>
             <div>
               <div className="text-2xl font-bold text-indigo-600">{cuisineTrends.length}</div>
-              <div className="text-sm text-gray-600">חודשי נתונים</div>
+              <div className="text-sm text-gray-600">{t('analytics.monthsOfData')}</div>
             </div>
           </div>
         </CardContent>
@@ -285,15 +287,15 @@ export function TrendingAnalytics({ restaurants, onRestaurantFilter }: TrendingA
             <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="trending" className="flex items-center gap-2">
                 <Star className="size-4" />
-                מסעדות טרנדיות
+                {t('analytics.trendingRestaurants')}
               </TabsTrigger>
               <TabsTrigger value="regional" className="flex items-center gap-2">
                 <MapPin className="size-4" />
-                תובנות אזוריות
+                {t('analytics.regionalInsights')}
               </TabsTrigger>
               <TabsTrigger value="cuisine" className="flex items-center gap-2">
                 <Utensils className="size-4" />
-                טרנדי מטבח
+                {t('analytics.cuisineTrends')}
               </TabsTrigger>
             </TabsList>
           </CardContent>
@@ -305,7 +307,7 @@ export function TrendingAnalytics({ restaurants, onRestaurantFilter }: TrendingA
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Award className="size-5 text-yellow-500" />
-                המסעדות הטרנדיות ביותר
+                {t('analytics.mostTrendingRestaurants')}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -318,7 +320,7 @@ export function TrendingAnalytics({ restaurants, onRestaurantFilter }: TrendingA
                     <div className="flex items-center gap-4">
                       <div className="text-center">
                         <div className="text-2xl font-bold text-yellow-600">#{index + 1}</div>
-                        <div className="text-xs text-yellow-500">טרנד</div>
+                        <div className="text-xs text-yellow-500">{t('analytics.trend')}</div>
                       </div>
                       <div className="flex-1">
                         <h4 className="font-semibold text-lg">{trending.restaurant.name_hebrew}</h4>
@@ -338,15 +340,15 @@ export function TrendingAnalytics({ restaurants, onRestaurantFilter }: TrendingA
                     </div>
                     <div className="text-right space-y-2">
                       <div className="flex items-center gap-2">
-                        <span className="text-sm text-gray-500">אזכורים:</span>
+                        <span className="text-sm text-gray-500">{t('analytics.mentions')}:</span>
                         <Badge className="bg-blue-500 text-white">{trending.mentions}</Badge>
                       </div>
                       <div className="flex items-center gap-2">
-                        <span className="text-sm text-gray-500">אחרון:</span>
+                        <span className="text-sm text-gray-500">{t('analytics.last')}:</span>
                         <span className="text-xs text-gray-500">{formatDate(trending.lastMentioned)}</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <span className="text-sm text-gray-500">ציון טרנד:</span>
+                        <span className="text-sm text-gray-500">{t('analytics.trendScore')}:</span>
                         <Badge className="bg-purple-500 text-white">
                           {trending.trendScore.toFixed(1)}
                         </Badge>
@@ -376,13 +378,13 @@ export function TrendingAnalytics({ restaurants, onRestaurantFilter }: TrendingA
                 </CardHeader>
                 <CardContent className="p-4 space-y-4">
                   <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-600">סה"כ מסעדות:</span>
+                    <span className="text-sm text-gray-600">{t('analytics.totalRestaurants')}:</span>
                     <Badge className="bg-gray-500 text-white">{region.totalRestaurants}</Badge>
                   </div>
-                  
+
                   {region.avgRating > 0 && (
                     <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-600">ממוצע דירוג:</span>
+                      <span className="text-sm text-gray-600">{t('analytics.averageRating')}:</span>
                       <Badge className="bg-green-500 text-white">
                         ⭐ {region.avgRating.toFixed(1)}
                       </Badge>
@@ -390,7 +392,7 @@ export function TrendingAnalytics({ restaurants, onRestaurantFilter }: TrendingA
                   )}
 
                   <div>
-                    <h5 className="font-medium mb-2">מטבחים פופולריים:</h5>
+                    <h5 className="font-medium mb-2">{t('timeline.popularCuisines')}:</h5>
                     <div className="space-y-1">
                       {Object.entries(region.cuisineDistribution)
                         .sort((a, b) => b[1] - a[1])
@@ -405,7 +407,7 @@ export function TrendingAnalytics({ restaurants, onRestaurantFilter }: TrendingA
                   </div>
 
                   <div>
-                    <h5 className="font-medium mb-2">חלוקת מחירים:</h5>
+                    <h5 className="font-medium mb-2">{t('analytics.priceDistribution')}:</h5>
                     <div className="flex flex-wrap gap-1">
                       {Object.entries(region.priceDistribution).map(([price, count]) => {
                         const priceConfig = {
@@ -425,7 +427,7 @@ export function TrendingAnalytics({ restaurants, onRestaurantFilter }: TrendingA
 
                   {region.topRestaurants.length > 0 && (
                     <div>
-                      <h5 className="font-medium mb-2">מסעדות מובילות:</h5>
+                      <h5 className="font-medium mb-2">{t('restaurant.leadingRestaurants')}:</h5>
                       <div className="space-y-1">
                         {region.topRestaurants.map((restaurant, idx) => (
                           <div key={idx} className="text-sm text-gray-700 flex items-center gap-1">
@@ -448,7 +450,7 @@ export function TrendingAnalytics({ restaurants, onRestaurantFilter }: TrendingA
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <BarChart3 className="size-5 text-blue-500" />
-                טרנדי מטבח לאורך זמן
+                {t('analytics.cuisineTrendsOverTime')}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -479,7 +481,7 @@ export function TrendingAnalytics({ restaurants, onRestaurantFilter }: TrendingA
               {cuisineTrends.length === 0 && (
                 <div className="text-center py-12 text-gray-500">
                   <BarChart3 className="size-16 mx-auto mb-4 text-gray-300" />
-                  <p>אין נתוני טרנדים זמינים לתקופה זו</p>
+                  <p>{t('analytics.noTrendsDataAvailable')}</p>
                 </div>
               )}
             </CardContent>
