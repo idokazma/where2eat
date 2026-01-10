@@ -255,6 +255,44 @@ export const analyticsApi = {
 };
 
 /**
+ * Videos API endpoints
+ */
+export const videosApi = {
+  /**
+   * Get all video processing jobs
+   */
+  async list(): Promise<any> {
+    return apiFetch('/api/admin/videos');
+  },
+
+  /**
+   * Process a new YouTube video
+   */
+  async process(videoUrl: string): Promise<any> {
+    return apiFetch('/api/admin/videos', {
+      method: 'POST',
+      body: JSON.stringify({ video_url: videoUrl }),
+    });
+  },
+
+  /**
+   * Get job details
+   */
+  async get(id: string): Promise<any> {
+    return apiFetch(`/api/admin/videos/${id}`);
+  },
+
+  /**
+   * Delete job
+   */
+  async delete(id: string): Promise<void> {
+    return apiFetch(`/api/admin/videos/${id}`, {
+      method: 'DELETE',
+    });
+  },
+};
+
+/**
  * Articles API endpoints
  */
 export const articlesApi = {
@@ -340,4 +378,5 @@ export default {
   restaurants: restaurantsApi,
   analytics: analyticsApi,
   articles: articlesApi,
+  videos: videosApi,
 };
