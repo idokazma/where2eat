@@ -1,0 +1,119 @@
+{
+  "app": {
+    "title": "Where2Eat - Discover Recommended Restaurants from Podcasts",
+    "description": "Discover recommended restaurants from YouTube podcasts",
+    "heroTitle": "Where2Eat - Restaurant Discovery System",
+    "heroSubtitle": "Explore restaurants with advanced filtering, timeline, and analytics"
+  },
+  "tabs": {
+    "overview": "Overview",
+    "advancedSearch": "Advanced Search",
+    "timeline": "Timeline",
+    "map": "Map",
+    "favorites": "Favorites",
+    "trends": "Trends"
+  },
+  "common": {
+    "loading": "Loading data...",
+    "restaurants": "Restaurants",
+    "episodes": "Episodes",
+    "noResults": "No restaurants found...",
+    "clearAdvancedSearch": "Clear advanced search",
+    "results": "Results",
+    "search": "Search",
+    "searching": "Searching...",
+    "clearFilters": "Clear filters",
+    "filters": "Filters",
+    "clickToExpand": "(Click to expand)",
+    "website": "Website",
+    "map": "Map",
+    "all": "All",
+    "clearAll": "Clear all",
+    "selectAll": "Select all"
+  },
+  "search": {
+    "title": "Unified Advanced Search",
+    "quickSearch": "Quick Search",
+    "advancedSearch": "Advanced Search",
+    "timelineSearch": "Timeline Search",
+    "placeholder": "Search restaurants by name, location...",
+    "recentSearches": "Recent searches:",
+    "allLocations": "All locations",
+    "cuisineType": "Cuisine type",
+    "priceRange": "Price range",
+    "hostOpinion": "Host opinion",
+    "startDate": "Start date",
+    "endDate": "End date",
+    "specificEpisode": "Specific episode",
+    "allEpisodes": "All episodes",
+    "quickRanges": "Quick date ranges",
+    "lastWeek": "Last week",
+    "lastMonth": "Last month",
+    "last3Months": "Last 3 months",
+    "lastYear": "Last year",
+    "activeFilters": "Active filters:"
+  },
+  "filters": {
+    "location": {
+      "title": "Location",
+      "region": "Region",
+      "city": "City",
+      "neighborhood": "Neighborhood",
+      "allRegions": "All regions",
+      "allCities": "All cities",
+      "allNeighborhoods": "All neighborhoods"
+    },
+    "cuisine": {
+      "title": "Cuisine type",
+      "popular": "Popular cuisines"
+    },
+    "price": {
+      "title": "Price range",
+      "budget": "Budget",
+      "midRange": "Mid-range",
+      "expensive": "Expensive",
+      "budgetFriendly": "Budget-friendly",
+      "budgetRestaurants": "Budget restaurants",
+      "midRangeRestaurants": "Mid-range restaurants",
+      "expensiveRestaurants": "Expensive restaurants",
+      "notSpecified": "Price range not mentioned",
+      "distribution": "Price distribution"
+    },
+    "opinion": {
+      "positive": "Positive 👍",
+      "mixed": "Mixed 🤔",
+      "neutral": "Neutral 😐",
+      "negative": "Negative 👎"
+    }
+  },
+  "restaurant": {
+    "recommendedMenu": "Recommended menu",
+    "specialFeatures": "Special features",
+    "businessNews": "Business news",
+    "moreItems": "+{count} more items",
+    "highlyRecommended": "Highly recommended",
+    "leadingRestaurants": "Leading restaurants"
+  },
+  "layout": {
+    "masonry": "Masonry",
+    "grid": "Grid",
+    "list": "List"
+  },
+  "favorites": {
+    "empty": "You haven't added any restaurants to favorites yet",
+    "emptyHint": "Click the heart on restaurants to add them to favorites"
+  },
+  "stats": {
+    "systemStats": "System statistics",
+    "cuisineTypes": "Cuisine types"
+  },
+  "youtube": {
+    "invalidUrl": "Please enter a valid YouTube URL",
+    "errorStarting": "Error starting analysis",
+    "unexpectedError": "Unexpected error",
+    "analysisStarted": "Analysis started successfully!..."
+  },
+  "errors": {
+    "failedToLoadMaps": "Failed to load Google Maps"
+  }
+}

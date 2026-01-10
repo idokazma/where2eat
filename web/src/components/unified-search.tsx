@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Search, Calendar, TrendingUp, Filter, X, RefreshCw } from "lucide-react"
 import { Restaurant } from "@/types/restaurant"
 import { endpoints, getApiUrl } from "@/lib/config"
+import { useLanguage } from "@/contexts/LanguageContext"
 
 interface UnifiedSearchProps {
   onSearchResults: (results: SearchResults) => void
@@ -52,6 +53,7 @@ interface SearchFilters {
 }
 
 export function UnifiedSearch({ onSearchResults, onLoadingChange }: UnifiedSearchProps) {
+  const { t } = useLanguage()
   const [filters, setFilters] = useState<SearchFilters>({
     searchTerm: '',
     location: '',
@@ -239,16 +241,16 @@ export function UnifiedSearch({ onSearchResults, onLoadingChange }: UnifiedSearc
       <CardHeader className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white">
         <CardTitle className="flex items-center gap-2">
           <Search className="size-6" />
-          חיפוש מתקדם ומאוחד
+          {t('search.title')}
         </CardTitle>
       </CardHeader>
-      
+
       <CardContent className="p-6">
         <Tabs defaultValue="quick" className="w-full">
           <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="quick">חיפוש מהיר</TabsTrigger>
-            <TabsTrigger value="advanced">חיפוש מתקדם</TabsTrigger>
-            <TabsTrigger value="timeline">חיפוש לפי זמן</TabsTrigger>
+            <TabsTrigger value="quick">{t('search.quickSearch')}</TabsTrigger>
+            <TabsTrigger value="advanced">{t('search.advancedSearch')}</TabsTrigger>
+            <TabsTrigger value="timeline">{t('search.timelineSearch')}</TabsTrigger>
           </TabsList>
           
           {/* Quick Search Tab */}
@@ -256,7 +258,7 @@ export function UnifiedSearch({ onSearchResults, onLoadingChange }: UnifiedSearc
             <div className="relative">
               <Search className="absolute right-4 top-4 size-5 text-blue-400" />
               <Input
-                placeholder="חפשו מסעדות לפי שם, מיקום, סוג מטבח או דעת המובחר..."
+                placeholder={t('search.placeholder')}
                 value={filters.searchTerm}
                 onChange={(e) => setFilters(prev => ({ ...prev, searchTerm: e.target.value }))}
                 className="pr-12 text-right text-lg py-6 border-2 border-blue-200 focus:border-blue-400 rounded-xl bg-blue-50/30"
@@ -266,7 +268,7 @@ export function UnifiedSearch({ onSearchResults, onLoadingChange }: UnifiedSearc
             {/* Search History */}
             {searchHistory.length > 0 && (
               <div>
-                <h4 className="text-sm font-medium text-gray-600 mb-2">חיפושים אחרונים:</h4>
+                <h4 className="text-sm font-medium text-gray-600 mb-2">{t('search.recentSearches')}</h4>
                 <div className="flex flex-wrap gap-2">
                   {searchHistory.slice(0, 5).map((term, index) => (
                     <Badge
