@@ -667,6 +667,94 @@ class Database:
             cursor.execute('DELETE FROM restaurants WHERE id = ?', (restaurant_id,))
             return cursor.rowcount > 0
 
+    def log_restaurant_edit(
+        self,
+        restaurant_id: str,
+        restaurant_name: str,
+        admin_user_id: str,
+        edit_type: str,
+        changes: str = None
+    ) -> str:
+        """Log a restaurant edit action.
+
+        Args:
+            restaurant_id: ID of the restaurant
+            restaurant_name: Name of the restaurant
+            admin_user_id: ID of the admin user making the edit
+            edit_type: Type of edit ('create', 'update', 'delete', 'approve', 'reject')
+            changes: JSON string of changes made
+
+        Returns:
+            Edit log ID
+        """
+        log_id = str(uuid.uuid4())
+
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute('''
+                INSERT INTO restaurant_edits (
+                    id, restaurant_id, restaurant_name, admin_user_id,
+                    edit_type, changes
+                ) VALUES (?, ?, ?, ?, ?, ?)
+            ''', (
+                log_id,
+                restaurant_id,
+                restaurant_name,
+                admin_user_id,
+                edit_type,
+                changes
+            ))
+
+            return log_id
+
+    def get_restaurant_edit_history(
+        self,
+        restaurant_id: str = None,
+        admin_user_id: str = None,
+        limit: int = 100
+    ) -> List[Dict]:
+        """Get restaurant edit history.
+
+        Args:
+            restaurant_id: Filter by restaurant ID
+            admin_user_id: Filter by admin user ID
+            limit: Maximum number of records to return
+
+        Returns:
+            List of edit history records
+        """
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+
+            if restaurant_id:
+                cursor.execute('''
+                    SELECT e.*, u.name as admin_name, u.email as admin_email
+                    FROM restaurant_edits e
+                    LEFT JOIN admin_users u ON e.admin_user_id = u.id
+                    WHERE e.restaurant_id = ?
+                    ORDER BY e.timestamp DESC
+                    LIMIT ?
+                ''', (restaurant_id, limit))
+            elif admin_user_id:
+                cursor.execute('''
+                    SELECT e.*, u.name as admin_name, u.email as admin_email
+                    FROM restaurant_edits e
+                    LEFT JOIN admin_users u ON e.admin_user_id = u.id
+                    WHERE e.admin_user_id = ?
+                    ORDER BY e.timestamp DESC
+                    LIMIT ?
+                ''', (admin_user_id, limit))
+            else:
+                cursor.execute('''
+                    SELECT e.*, u.name as admin_name, u.email as admin_email
+                    FROM restaurant_edits e
+                    LEFT JOIN admin_users u ON e.admin_user_id = u.id
+                    ORDER BY e.timestamp DESC
+                    LIMIT ?
+                ''', (limit,))
+
+            return [dict(row) for row in cursor.fetchall()]
+
     # ==================== Job Operations ====================
 
     def create_job(self, job_type: str, **kwargs) -> str:

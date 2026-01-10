@@ -61,7 +61,7 @@ export function clearAuthToken() {
 /**
  * Make authenticated API request
  */
-async function apiFetch<T>(
+export async function apiFetch<T>(
   endpoint: string,
   options: RequestInit = {}
 ): Promise<T> {
@@ -373,10 +373,105 @@ export const articlesApi = {
   },
 };
 
+/**
+ * Bulk operations API endpoints
+ */
+export const bulkApi = {
+  /**
+   * Bulk delete restaurants
+   */
+  async deleteRestaurants(ids: string[]): Promise<any> {
+    return apiFetch('/api/admin/bulk/restaurants/delete', {
+      method: 'POST',
+      body: JSON.stringify({ ids }),
+    });
+  },
+
+  /**
+   * Bulk update restaurants
+   */
+  async updateRestaurants(ids: string[], updates: any): Promise<any> {
+    return apiFetch('/api/admin/bulk/restaurants/update', {
+      method: 'POST',
+      body: JSON.stringify({ ids, updates }),
+    });
+  },
+
+  /**
+   * Export restaurants
+   */
+  async exportRestaurants(format: 'json' | 'csv' = 'json', ids?: string[]): Promise<Blob> {
+    const params = new URLSearchParams({ format });
+    if (ids && ids.length > 0) {
+      ids.forEach(id => params.append('ids', id));
+    }
+
+    const response = await fetch(`${API_URL}/api/admin/bulk/restaurants/export?${params}`, {
+      headers: {
+        Authorization: `Bearer ${getAuthToken()}`,
+      },
+      credentials: 'include',
+    });
+
+    if (!response.ok) {
+      throw new Error('Export failed');
+    }
+
+    return response.blob();
+  },
+
+  /**
+   * Import restaurants
+   */
+  async importRestaurants(restaurants: any[]): Promise<any> {
+    return apiFetch('/api/admin/bulk/restaurants/import', {
+      method: 'POST',
+      body: JSON.stringify({ restaurants }),
+    });
+  },
+
+  /**
+   * Export articles
+   */
+  async exportArticles(ids?: string[]): Promise<Blob> {
+    const params = new URLSearchParams();
+    if (ids && ids.length > 0) {
+      ids.forEach(id => params.append('ids', id));
+    }
+
+    const response = await fetch(`${API_URL}/api/admin/bulk/articles/export?${params}`, {
+      headers: {
+        Authorization: `Bearer ${getAuthToken()}`,
+      },
+      credentials: 'include',
+    });
+
+    if (!response.ok) {
+      throw new Error('Export failed');
+    }
+
+    return response.blob();
+  },
+
+  /**
+   * Get audit log / edit history
+   */
+  async getEditHistory(filters?: { restaurant_id?: string; admin_user_id?: string; limit?: number }): Promise<any> {
+    const params = new URLSearchParams();
+    if (filters?.restaurant_id) params.append('restaurant_id', filters.restaurant_id);
+    if (filters?.admin_user_id) params.append('admin_user_id', filters.admin_user_id);
+    if (filters?.limit) params.append('limit', filters.limit.toString());
+
+    const response = await apiFetch(`/api/admin/audit/history?${params}`);
+    return response;
+  },
+};
+
 export default {
   auth: authApi,
   restaurants: restaurantsApi,
   analytics: analyticsApi,
   articles: articlesApi,
   videos: videosApi,
+  bulk: bulkApi,
 };

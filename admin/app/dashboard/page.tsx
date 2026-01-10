@@ -26,12 +26,7 @@ export default function DashboardPage() {
     queryFn: () => analyticsApi.getRestaurants({ period: '7' }),
   });
 
-  // Fetch activities
-  const { data: activitiesData, isLoading: activitiesLoading } = useQuery({
-    queryKey: ['analytics', 'activities'],
-    queryFn: () => analyticsApi.getActivities({ limit: 10 }),
-    refetchInterval: 30000,
-  });
+  // Activities are now fetched within the ActivityFeed component
 
   // Prepare sparkline data from growth data
   const sparklineData = restaurantAnalytics?.growthData?.slice(-7).map((d: any) => ({
@@ -97,10 +92,7 @@ export default function DashboardPage() {
 
       {/* Recent Activity & Quick Actions */}
       <div className="grid gap-4 grid-cols-1 lg:grid-cols-2">
-        <ActivityFeed
-          activities={activitiesData?.activities || []}
-          isLoading={activitiesLoading}
-        />
+        <ActivityFeed limit={10} />
 
         <Card>
           <CardHeader>

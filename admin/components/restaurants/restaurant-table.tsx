@@ -1,17 +1,21 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   createColumnHelper,
   flexRender,
   getCoreRowModel,
   useReactTable,
+  RowSelectionState,
 } from '@tanstack/react-table';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Restaurant } from '@/types/restaurant';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Edit, Trash2, Eye } from 'lucide-react';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Edit, Trash2, Eye, Download, Upload, Trash } from 'lucide-react';
+import { bulkApi } from '@/lib/api';
 
 interface RestaurantTableProps {
   data: Restaurant[];
@@ -36,9 +40,66 @@ export function RestaurantTable({
   currentPage,
 }: RestaurantTableProps) {
   const router = useRouter();
+  const queryClient = useQueryClient();
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+
+  const selectedIds = useMemo(() => {
+    return Object.keys(rowSelection)
+      .filter(key => rowSelection[key])
+      .map(key => data[parseInt(key)]?.id)
+      .filter(Boolean) as string[];
+  }, [rowSelection, data]);
+
+  const bulkDeleteMutation = useMutation({
+    mutationFn: (ids: string[]) => bulkApi.deleteRestaurants(ids),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['restaurants'] });
+      setRowSelection({});
+    },
+  });
+
+  const handleBulkDelete = () => {
+    if (selectedIds.length === 0) return;
+    if (confirm(`Are you sure you want to delete ${selectedIds.length} restaurants?`)) {
+      bulkDeleteMutation.mutate(selectedIds);
+    }
+  };
+
+  const handleExport = async (format: 'json' | 'csv') => {
+    try {
+      const blob = await bulkApi.exportRestaurants(format, selectedIds.length > 0 ? selectedIds : undefined);
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `restaurants.${format}`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    } catch (error) {
+      console.error('Export failed:', error);
+    }
+  };
 
   const columns = useMemo(
     () => [
+      columnHelper.display({
+        id: 'select',
+        header: ({ table }) => (
+          <Checkbox
+            checked={table.getIsAllPageRowsSelected()}
+            onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+            aria-label="Select all"
+          />
+        ),
+        cell: ({ row }) => (
+          <Checkbox
+            checked={row.getIsSelected()}
+            onCheckedChange={(value) => row.toggleSelected(!!value)}
+            aria-label="Select row"
+          />
+        ),
+      }),
       columnHelper.accessor('name_hebrew', {
         header: 'Name',
         cell: (info) => (
@@ -163,6 +224,11 @@ export function RestaurantTable({
     getCoreRowModel: getCoreRowModel(),
     manualPagination: true,
     pageCount: pagination?.totalPages,
+    state: {
+      rowSelection,
+    },
+    enableRowSelection: true,
+    onRowSelectionChange: setRowSelection,
   });
 
   const handleDelete = async (id: string) => {
@@ -206,6 +272,68 @@ export function RestaurantTable({
 
   return (
     <div className="space-y-4">
+      {/* Bulk Operations Toolbar */}
+      {selectedIds.length > 0 && (
+        <Card>
+          <CardContent className="py-3">
+            <div className="flex items-center justify-between">
+              <div className="text-sm text-muted-foreground">
+                {selectedIds.length} restaurant{selectedIds.length > 1 ? 's' : ''} selected
+              </div>
+              <div className="flex gap-2">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => handleExport('json')}
+                >
+                  <Download className="mr-2 h-4 w-4" />
+                  Export JSON
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => handleExport('csv')}
+                >
+                  <Download className="mr-2 h-4 w-4" />
+                  Export CSV
+                </Button>
+                <Button
+                  size="sm"
+                  variant="destructive"
+                  onClick={handleBulkDelete}
+                  disabled={bulkDeleteMutation.isPending}
+                >
+                  <Trash className="mr-2 h-4 w-4" />
+                  {bulkDeleteMutation.isPending ? 'Deleting...' : 'Delete Selected'}
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Export All Button */}
+      {selectedIds.length === 0 && data && data.length > 0 && (
+        <div className="flex justify-end gap-2">
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => handleExport('json')}
+          >
+            <Download className="mr-2 h-4 w-4" />
+            Export All JSON
+          </Button>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => handleExport('csv')}
+          >
+            <Download className="mr-2 h-4 w-4" />
+            Export All CSV
+          </Button>
+        </div>
+      )}
+
       <Card>
         <CardContent className="p-0">
           <div className="overflow-x-auto">

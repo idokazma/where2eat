@@ -10,9 +10,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { User, LogOut, Settings } from 'lucide-react';
+import { User, LogOut, Settings, Menu } from 'lucide-react';
 
-export function Header() {
+interface HeaderProps {
+  onMobileMenuToggle?: () => void;
+}
+
+export function Header({ onMobileMenuToggle }: HeaderProps) {
   const { user, logout } = useAuth();
 
   const handleLogout = async () => {
@@ -25,9 +29,20 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="flex h-16 items-center justify-between px-6">
+      <div className="flex h-16 items-center justify-between px-4 md:px-6">
         <div className="flex items-center gap-4">
-          <h1 className="text-xl font-semibold">Admin Dashboard</h1>
+          {/* Mobile menu button */}
+          {onMobileMenuToggle && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="lg:hidden"
+              onClick={onMobileMenuToggle}
+            >
+              <Menu className="h-5 w-5" />
+            </Button>
+          )}
+          <h1 className="text-lg md:text-xl font-semibold">Admin Dashboard</h1>
         </div>
 
         <div className="flex items-center gap-4">
