@@ -5,6 +5,7 @@ import Masonry from "react-masonry-css"
 import { Restaurant } from "@/types/restaurant"
 import { VisualRestaurantCard } from "./visual-restaurant-card"
 import { GridSkeleton } from "./skeletons/grid-skeleton"
+import { useLanguage } from "@/contexts/LanguageContext"
 
 interface MasonryRestaurantGridProps {
   restaurants: Restaurant[]
@@ -15,6 +16,8 @@ export function MasonryRestaurantGrid({
   restaurants,
   isLoading = false
 }: MasonryRestaurantGridProps) {
+  const { t } = useLanguage()
+
   // Responsive column configuration
   const breakpointColumnsObj = {
     default: 4,  // Large desktops
@@ -44,10 +47,10 @@ export function MasonryRestaurantGrid({
 
   if (restaurants.length === 0) {
     return (
-      <div className="text-center py-16 text-gray-500">
-        <div className="text-8xl mb-4">🍽️</div>
-        <p className="text-xl font-semibold mb-2">לא נמצאו מסעדות</p>
-        <p className="text-sm">נסה לשנות את הסינון או החיפוש</p>
+      <div className="text-center py-20 text-muted-foreground">
+        <div className="text-8xl mb-6 opacity-50">🍽️</div>
+        <p className="text-xl font-semibold mb-2 text-foreground">{t('empty.noRestaurants')}</p>
+        <p className="text-sm">{t('empty.tryChangingFilters')}</p>
       </div>
     )
   }

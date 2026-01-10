@@ -113,7 +113,7 @@ export function FeaturedCarousel({
             className={`h-2 rounded-full transition-all ${
               index === selectedIndex
                 ? 'w-8 bg-primary'
-                : 'w-2 bg-gray-300 hover:bg-gray-400'
+                : 'w-2 bg-muted hover:bg-muted-foreground/50'
             }`}
             onClick={() => emblaApi?.scrollTo(index)}
             aria-label={`Go to slide ${index + 1}`}

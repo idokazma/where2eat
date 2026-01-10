@@ -53,30 +53,30 @@ export function MentionTimestampComponent({ restaurant, mentions = [], videoUrl,
 
   const getMentionTypeConfig = (type: string) => {
     const configs = {
-      introduction: { 
-        label: 'הצגה', 
-        color: 'bg-blue-100 text-blue-800 border-blue-200', 
-        icon: '👋' 
+      introduction: {
+        label: 'הצגה',
+        color: 'bg-info/10 text-info border-info/20',
+        icon: '👋'
       },
-      review: { 
-        label: 'ביקורת', 
-        color: 'bg-purple-100 text-purple-800 border-purple-200', 
-        icon: '📝' 
+      review: {
+        label: 'ביקורת',
+        color: 'bg-primary/10 text-primary border-primary/20',
+        icon: '📝'
       },
-      recommendation: { 
-        label: 'המלצה', 
-        color: 'bg-green-100 text-green-800 border-green-200', 
-        icon: '⭐' 
+      recommendation: {
+        label: 'המלצה',
+        color: 'bg-success/10 text-success border-success/20',
+        icon: '⭐'
       },
-      comparison: { 
-        label: 'השוואה', 
-        color: 'bg-yellow-100 text-yellow-800 border-yellow-200', 
-        icon: '⚖️' 
+      comparison: {
+        label: 'השוואה',
+        color: 'bg-warning/10 text-warning border-warning/20',
+        icon: '⚖️'
       },
-      closing: { 
-        label: 'סיכום', 
-        color: 'bg-gray-100 text-gray-800 border-gray-200', 
-        icon: '🏁' 
+      closing: {
+        label: 'סיכום',
+        color: 'bg-muted text-muted-foreground border-border',
+        icon: '🏁'
       }
     }
     return configs[type as keyof typeof configs] || configs.review
@@ -100,8 +100,8 @@ export function MentionTimestampComponent({ restaurant, mentions = [], videoUrl,
   ]
 
   return (
-    <Card className="border-2 border-indigo-200 bg-gradient-to-br from-indigo-50 to-purple-50">
-      <CardHeader className="bg-gradient-to-r from-indigo-500 to-purple-500 text-white">
+    <Card className="card-standard border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-accent/5">
+      <CardHeader className="bg-mesh-warm text-white rounded-t-lg">
         <CardTitle className="flex items-center gap-2">
           <Clock className="size-5" />
           זמני אזכור בפרק - {restaurant.name_hebrew}
@@ -110,22 +110,22 @@ export function MentionTimestampComponent({ restaurant, mentions = [], videoUrl,
           </Badge>
         </CardTitle>
       </CardHeader>
-      
+
       <CardContent className="p-6">
         <div className="space-y-4">
           {syntheticMentions.map((mention, index) => {
             const isExpanded = expandedMention === index
             const typeConfig = getMentionTypeConfig(mention.mention_type)
-            
+
             return (
-              <Card key={index} className="overflow-hidden border border-indigo-200">
-                <div className="bg-white p-4">
+              <Card key={index} className="overflow-hidden border border-border">
+                <div className="bg-card p-4">
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-2">
                         <Button
                           size="sm"
-                          className="bg-indigo-500 hover:bg-indigo-600 text-white"
+                          className="bg-primary hover:bg-primary/90 text-primary-foreground"
                           onClick={() => {
                             const timestampUrl = getTimestampUrl(mention.timestamp)
                             window.open(timestampUrl, '_blank')
@@ -138,17 +138,17 @@ export function MentionTimestampComponent({ restaurant, mentions = [], videoUrl,
                         <Badge className={typeConfig.color}>
                           {typeConfig.icon} {typeConfig.label}
                         </Badge>
-                        <span className="text-sm text-gray-500">
+                        <span className="text-sm text-muted-foreground">
                           משך: {mention.duration}
                         </span>
                       </div>
-                      
+
                       <div className="flex items-start gap-2 mb-3">
-                        <Quote className="size-4 text-indigo-500 mt-1 flex-shrink-0" />
-                        <p className="text-gray-700 text-right">{mention.context}</p>
+                        <Quote className="size-4 text-primary mt-1 flex-shrink-0" />
+                        <p className="text-foreground/80 text-right">{mention.context}</p>
                       </div>
                     </div>
-                    
+
                     <Button
                       variant="ghost"
                       size="sm"
@@ -159,19 +159,19 @@ export function MentionTimestampComponent({ restaurant, mentions = [], videoUrl,
                   </div>
 
                   {isExpanded && (
-                    <div className="mt-4 p-4 bg-indigo-50 rounded-lg border border-indigo-200">
-                      <h4 className="font-semibold text-indigo-800 mb-3">נקודות עיקריות:</h4>
+                    <div className="mt-4 p-4 bg-accent/50 rounded-xl border border-border">
+                      <h4 className="font-semibold text-foreground mb-3">נקודות עיקריות:</h4>
                       <div className="space-y-2">
                         {mention.key_points.map((point, pointIndex) => (
                           <div key={pointIndex} className="flex items-start gap-2">
-                            <span className="w-2 h-2 bg-indigo-400 rounded-full mt-2 flex-shrink-0" />
-                            <span className="text-sm text-indigo-700">{point}</span>
+                            <span className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0" />
+                            <span className="text-sm text-foreground/70">{point}</span>
                           </div>
                         ))}
                       </div>
 
-                      <div className="mt-4 pt-4 border-t border-indigo-200">
-                        <div className="flex gap-4 text-sm text-indigo-600">
+                      <div className="mt-4 pt-4 border-t border-border">
+                        <div className="flex gap-4 text-sm text-muted-foreground">
                           <div className="flex items-center gap-1">
                             <MapPin className="size-4" />
                             {restaurant.location.city || 'מיקום לא צוין'}
@@ -191,11 +191,11 @@ export function MentionTimestampComponent({ restaurant, mentions = [], videoUrl,
         </div>
 
         {/* Direct link to full video */}
-        <div className="mt-6 pt-4 border-t border-indigo-200">
+        <div className="mt-6 pt-4 border-t border-border">
           <Button
             variant="outline"
             asChild
-            className="w-full border-indigo-300 text-indigo-700 hover:bg-indigo-50"
+            className="w-full border-primary/30 text-primary hover:bg-primary/5"
           >
             <a href={videoUrl} target="_blank" rel="noopener noreferrer">
               <ExternalLink className="size-4 ml-2" />

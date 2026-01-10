@@ -26,10 +26,10 @@ const toastIcons = {
 }
 
 const toastColors = {
-  success: "bg-green-500",
-  error: "bg-red-500",
-  info: "bg-blue-500",
-  warning: "bg-yellow-500"
+  success: "bg-success",
+  error: "bg-destructive",
+  info: "bg-info",
+  warning: "bg-warning"
 }
 
 export function ToastNotification({ toasts, onDismiss }: ToastNotificationProps) {
