@@ -65,7 +65,8 @@
     },
     "cuisine": {
       "title": "סוג מטבח",
-      "popular": "המטבחים הפופולריים"
+      "popular": "המטבחים הפופולריים",
+      "selected": "נבחרו"
     },
     "price": {
       "title": "טווח מחירים",
@@ -76,6 +77,7 @@
       "budgetRestaurants": "מסעדות בתקציב נמוך",
       "midRangeRestaurants": "מסעדות בתקציב בינוני",
       "expensiveRestaurants": "מסעדות יקרות",
+      "notMentioned": "לא צוין",
       "notSpecified": "טווח מחיר לא צוין",
       "distribution": "התפלגות מחירים"
     },
@@ -92,7 +94,8 @@
     "businessNews": "חדשות עסקיות",
     "moreItems": "+{count} פריטים נוספים",
     "highlyRecommended": "מומלץ ביותר",
-    "leadingRestaurants": "מסעדות מובילות"
+    "leadingRestaurants": "מסעדות מובילות",
+    "googleMaps": "מפות גוגל"
   },
   "layout": {
     "masonry": "מזונרי",

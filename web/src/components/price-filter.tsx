@@ -4,6 +4,7 @@ import { useMemo } from "react"
 import { Badge } from "@/components/ui/badge"
 import { DollarSign } from "lucide-react"
 import { Restaurant } from "@/types/restaurant"
+import { useLanguage } from "@/contexts/LanguageContext"
 
 interface PriceFilterProps {
   restaurants: Restaurant[]
@@ -11,44 +12,46 @@ interface PriceFilterProps {
   onPriceRangeChange: (priceRanges: string[]) => void
 }
 
-const priceRangeConfig = {
-  'budget': {
-    label: 'זול',
-    icon: '₪',
-    color: 'from-green-500 to-emerald-500',
-    description: 'מסעדות בתקציב נמוך'
-  },
-  'mid-range': {
-    label: 'בינוני',
-    icon: '₪₪',
-    color: 'from-yellow-500 to-orange-500',
-    description: 'מסעדות בתקציב בינוני'
-  },
-  'expensive': {
-    label: 'יקר',
-    icon: '₪₪₪',
-    color: 'from-red-500 to-pink-500',
-    description: 'מסעדות יקרות'
-  },
-  'not_mentioned': {
-    label: 'לא צוין',
-    icon: '?',
-    color: 'from-gray-500 to-slate-500',
-    description: 'טווח מחיר לא צוין'
-  }
-}
-
 export function PriceFilter({ restaurants, selectedPriceRanges, onPriceRangeChange }: PriceFilterProps) {
+  const { t } = useLanguage()
+
+  const priceRangeConfig = useMemo(() => ({
+    'budget': {
+      label: t('filters.price.budget'),
+      icon: '₪',
+      color: 'from-green-500 to-emerald-500',
+      description: t('filters.price.budgetRestaurants')
+    },
+    'mid-range': {
+      label: t('filters.price.midRange'),
+      icon: '₪₪',
+      color: 'from-yellow-500 to-orange-500',
+      description: t('filters.price.midRangeRestaurants')
+    },
+    'expensive': {
+      label: t('filters.price.expensive'),
+      icon: '₪₪₪',
+      color: 'from-red-500 to-pink-500',
+      description: t('filters.price.expensiveRestaurants')
+    },
+    'not_mentioned': {
+      label: t('filters.price.notMentioned'),
+      icon: '?',
+      color: 'from-gray-500 to-slate-500',
+      description: t('filters.price.notSpecified')
+    }
+  }), [t])
+
   const priceData = useMemo(() => {
     const priceMap = new Map<string, number>()
-    
+
     restaurants.forEach(restaurant => {
       const priceRange = restaurant.price_range
       if (priceRange) {
         priceMap.set(priceRange, (priceMap.get(priceRange) || 0) + 1)
       }
     })
-    
+
     // Return in specific order: budget, mid-range, expensive, not_mentioned
     const orderedPrices = ['budget', 'mid-range', 'expensive', 'not_mentioned']
     return orderedPrices
@@ -58,7 +61,7 @@ export function PriceFilter({ restaurants, selectedPriceRanges, onPriceRangeChan
         count: priceMap.get(price) || 0,
         config: priceRangeConfig[price as keyof typeof priceRangeConfig]
       }))
-  }, [restaurants])
+  }, [restaurants, priceRangeConfig])
 
   const togglePriceRange = (priceRange: string) => {
     if (selectedPriceRanges.includes(priceRange)) {
@@ -87,9 +90,9 @@ export function PriceFilter({ restaurants, selectedPriceRanges, onPriceRangeChan
     <div className="space-y-4">
       <div className="flex items-center gap-2 mb-3">
         <DollarSign className="size-5 text-orange-500" />
-        <h3 className="font-semibold text-gray-700">טווח מחירים</h3>
+        <h3 className="font-semibold text-gray-700">{t('filters.price.title')}</h3>
         <span className="text-sm text-gray-500">
-          ({getTotalRestaurantsInRange()} מסעדות)
+          ({getTotalRestaurantsInRange()} {t('common.restaurants')})
         </span>
       </div>
 
@@ -100,14 +103,14 @@ export function PriceFilter({ restaurants, selectedPriceRanges, onPriceRangeChan
           className="cursor-pointer hover:bg-orange-100 border-orange-200"
           onClick={clearAllPrices}
         >
-          הכל
+          {t('common.all')}
         </Badge>
         <Badge
-          variant="outline" 
+          variant="outline"
           className="cursor-pointer hover:bg-green-100 border-green-200"
           onClick={selectBudgetFriendly}
         >
-          ידידותי לתקציב
+          {t('filters.price.budgetFriendly')}
         </Badge>
       </div>
 
@@ -115,7 +118,7 @@ export function PriceFilter({ restaurants, selectedPriceRanges, onPriceRangeChan
       <div className="space-y-3">
         {priceData.map(({ priceRange, count, config }) => {
           const isSelected = selectedPriceRanges.includes(priceRange) || isNoneSelected
-          
+
           return (
             <div
               key={priceRange}
@@ -149,7 +152,7 @@ export function PriceFilter({ restaurants, selectedPriceRanges, onPriceRangeChan
 
       {/* Price distribution summary */}
       <div className="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
-        <h4 className="text-sm font-medium text-blue-800 mb-2">התפלגות מחירים</h4>
+        <h4 className="text-sm font-medium text-blue-800 mb-2">{t('filters.price.distribution')}</h4>
         <div className="space-y-1">
           {priceData.map(({ priceRange, count, config }) => (
             <div key={priceRange} className="flex justify-between text-xs text-blue-700">

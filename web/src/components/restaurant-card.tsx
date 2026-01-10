@@ -6,6 +6,7 @@ import { Separator } from "@/components/ui/separator"
 import { MapPin, Clock, Phone, Globe, Star, Heart, ChevronDown, ChevronUp } from "lucide-react"
 import { Restaurant } from "@/types/restaurant"
 import { useFavorites } from "@/contexts/favorites-context"
+import { useLanguage } from "@/contexts/LanguageContext"
 import { useState } from "react"
 
 interface RestaurantCardProps {
@@ -61,6 +62,7 @@ function getPriceRangeDisplay(priceRange: Restaurant['price_range']) {
 
 export function RestaurantCard({ restaurant }: RestaurantCardProps) {
   const { isFavorite, addFavorite, removeFavorite } = useFavorites()
+  const { t } = useLanguage()
   const restaurantId = restaurant.name_hebrew
   const isRestaurantFavorite = isFavorite(restaurantId)
   const [isExpanded, setIsExpanded] = useState(false)
@@ -142,7 +144,7 @@ export function RestaurantCard({ restaurant }: RestaurantCardProps) {
             <div>
               <h4 className="font-semibold mb-2 flex items-center gap-2">
                 <Star className="size-4" />
-                תפריט מומלץ
+                {t('restaurant.recommendedMenu')}
               </h4>
               <div className="space-y-2">
                 {restaurant.menu_items.slice(0, 3).map((item, index) => (
@@ -162,7 +164,7 @@ export function RestaurantCard({ restaurant }: RestaurantCardProps) {
                 ))}
                 {restaurant.menu_items.length > 3 && (
                   <p className="text-xs text-muted-foreground">
-                    +{restaurant.menu_items.length - 3} פריטים נוספים
+                    {t('restaurant.moreItems').replace('{count}', String(restaurant.menu_items.length - 3))}
                   </p>
                 )}
               </div>
@@ -171,7 +173,7 @@ export function RestaurantCard({ restaurant }: RestaurantCardProps) {
 
           {restaurant.special_features.length > 0 && (
             <div>
-              <h4 className="font-semibold mb-2">תכונות מיוחדות</h4>
+              <h4 className="font-semibold mb-2">{t('restaurant.specialFeatures')}</h4>
               <div className="flex flex-wrap gap-1">
                 {restaurant.special_features.map((feature, index) => (
                   <Badge key={index} variant="secondary" className="text-xs">
@@ -201,7 +203,7 @@ export function RestaurantCard({ restaurant }: RestaurantCardProps) {
               <div className="flex items-center gap-1">
                 <Globe className="size-3" />
                 <a href={restaurant.contact_info.website} target="_blank" rel="noopener noreferrer" className="hover:underline">
-                  אתר
+                  {t('common.website')}
                 </a>
               </div>
             )}
@@ -209,7 +211,7 @@ export function RestaurantCard({ restaurant }: RestaurantCardProps) {
 
           {restaurant.business_news && (
             <div className="bg-blue-50 dark:bg-blue-950/20 rounded-lg p-3 border border-blue-200 dark:border-blue-800">
-              <h4 className="font-semibold text-blue-900 dark:text-blue-100 mb-1">חדשות עסקיות</h4>
+              <h4 className="font-semibold text-blue-900 dark:text-blue-100 mb-1">{t('restaurant.businessNews')}</h4>
               <p className="text-sm text-blue-800 dark:text-blue-200 text-right">{restaurant.business_news}</p>
             </div>
           )}
@@ -225,7 +227,7 @@ export function RestaurantCard({ restaurant }: RestaurantCardProps) {
               className="flex-1 flex items-center justify-center gap-1 px-3 py-2 bg-primary text-primary-foreground rounded text-sm hover:bg-primary/90 transition-colors"
             >
               <MapPin className="size-3" />
-              מפה
+              {t('common.map')}
             </button>
             <button
               onClick={(e) => {
@@ -236,7 +238,7 @@ export function RestaurantCard({ restaurant }: RestaurantCardProps) {
               className="flex-1 flex items-center justify-center gap-1 px-3 py-2 bg-secondary text-secondary-foreground rounded text-sm hover:bg-secondary/90 transition-colors"
             >
               <Globe className="size-3" />
-              Google
+              {t('restaurant.googleMaps')}
             </button>
           </div>
         </CardContent>
