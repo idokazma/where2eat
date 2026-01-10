@@ -9,6 +9,7 @@ import { LocationFilter } from "./location-filter"
 import { CuisineFilter } from "./cuisine-filter"
 import { PriceFilter } from "./price-filter"
 import { Restaurant } from "@/types/restaurant"
+import { useLanguage } from "@/contexts/LanguageContext"
 
 interface AnimatedFiltersProps {
   restaurants: Restaurant[]
@@ -29,6 +30,7 @@ export function AnimatedFilters({
   onFiltersChange,
   onClear
 }: AnimatedFiltersProps) {
+  const { t } = useLanguage()
   const [isOpen, setIsOpen] = useState(false)
 
   const containerVariants = {
@@ -80,12 +82,12 @@ export function AnimatedFilters({
           >
             {isOpen ? <X className="size-5" /> : <Filter className="size-5" />}
             <CardTitle className="text-orange-600">
-              מסננים {!isOpen && '(לחץ להרחבה)'}
+              {t('common.filters')} {!isOpen && t('filters.location.filterExpandHint')}
             </CardTitle>
           </Button>
           {isOpen && (
             <Button variant="outline" onClick={onClear} size="sm">
-              נקה מסננים
+              {t('common.clearFilters')}
             </Button>
           )}
         </div>
