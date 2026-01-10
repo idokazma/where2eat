@@ -143,9 +143,48 @@ python scripts/cli.py analytics trends --period 3months
 - `lucide-react` for icons
 - Tailwind with `tw-animate-css`
 
+## Claude Code Enhancements
+
+This project includes custom Claude Code configuration to enhance development:
+
+### Custom Skills
+- **Frontend Designer** (`.claude/skills/frontend-designer/`) - Expert knowledge of the Next.js 16, React 19, Tailwind v4 stack with project-specific design patterns
+
+### MCP Servers
+Model Context Protocol servers provide Claude with real-time access to external tools:
+
+- **GitHub MCP** - Create PRs, manage issues, read repository files
+- **Vercel MCP** - Deploy, manage environment variables, view build logs
+- **Railway MCP** - Deploy services, configure variables, view logs
+- **SQLite MCP** - Query the restaurant database with natural language
+
+**Setup:**
+```bash
+# Install Python MCP dependencies
+pip install -r .claude/mcp-servers/requirements.txt
+
+# Configure API tokens in .env
+GITHUB_TOKEN=ghp_xxx
+VERCEL_TOKEN=xxx
+RAILWAY_TOKEN=xxx
+```
+
+**Usage Examples:**
+```
+"Show my recent Vercel deployments"
+"Query restaurants in Tel Aviv with rating > 4.0"
+"Create a pull request for my frontend changes"
+"Get Railway deployment logs"
+```
+
+See `.claude/README.md` for full documentation.
+
 ## Environment Variables
 
 Required API keys (in `.env`):
 - Claude API key for restaurant analysis
 - Google Places API key for location data
 - OpenAI API key (alternative to Claude)
+- **GitHub token** (for Claude Code GitHub MCP)
+- **Vercel token** (for Claude Code Vercel MCP)
+- **Railway token** (for Claude Code Railway MCP)

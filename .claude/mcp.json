@@ -1,0 +1,42 @@
+{
+  "mcpServers": {
+    "github": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-github"
+      ],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}"
+      }
+    },
+    "vercel": {
+      "command": "python",
+      "args": [
+        "/home/user/where2eat/.claude/mcp-servers/vercel_server.py"
+      ],
+      "env": {
+        "VERCEL_TOKEN": "${VERCEL_TOKEN}",
+        "VERCEL_TEAM_ID": "${VERCEL_TEAM_ID}"
+      }
+    },
+    "railway": {
+      "command": "python",
+      "args": [
+        "/home/user/where2eat/.claude/mcp-servers/railway_server.py"
+      ],
+      "env": {
+        "RAILWAY_TOKEN": "${RAILWAY_TOKEN}"
+      }
+    },
+    "where2eat-sqlite": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-sqlite",
+        "--db-path",
+        "/home/user/where2eat/data/where2eat.db"
+      ]
+    }
+  }
+}

@@ -1,0 +1,11 @@
+# MCP Server Dependencies
+# Install with: pip install -r requirements.txt
+
+# MCP Python SDK
+mcp>=0.9.0
+
+# HTTP client for API requests
+httpx>=0.24.0
+
+# Type hints support (Python 3.9+)
+typing-extensions>=4.5.0
