@@ -215,7 +215,47 @@ export const restaurantsApi = {
   },
 };
 
+/**
+ * Analytics API endpoints
+ */
+export const analyticsApi = {
+  /**
+   * Get overview analytics
+   */
+  async getOverview(): Promise<any> {
+    return apiFetch('/api/admin/analytics/overview');
+  },
+
+  /**
+   * Get restaurant analytics
+   */
+  async getRestaurants(params?: { period?: string }): Promise<any> {
+    const queryParams = new URLSearchParams();
+    if (params?.period) queryParams.append('period', params.period);
+    const query = queryParams.toString();
+    return apiFetch(`/api/admin/analytics/restaurants${query ? `?${query}` : ''}`);
+  },
+
+  /**
+   * Get activity feed
+   */
+  async getActivities(params?: { limit?: number }): Promise<any> {
+    const queryParams = new URLSearchParams();
+    if (params?.limit) queryParams.append('limit', params.limit.toString());
+    const query = queryParams.toString();
+    return apiFetch(`/api/admin/analytics/activities${query ? `?${query}` : ''}`);
+  },
+
+  /**
+   * Get system health metrics
+   */
+  async getSystemHealth(): Promise<any> {
+    return apiFetch('/api/admin/analytics/system');
+  },
+};
+
 export default {
   auth: authApi,
   restaurants: restaurantsApi,
+  analytics: analyticsApi,
 };
