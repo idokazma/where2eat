@@ -61,7 +61,15 @@
       "neighborhood": "שכונה",
       "allRegions": "כל האזורים",
       "allCities": "כל העיירות",
-      "allNeighborhoods": "כל השכונות"
+      "allNeighborhoods": "כל השכונות",
+      "text": "טקסט: {text}",
+      "location": "מיקום: {location}",
+      "cuisine": "מטבח: {cuisine}",
+      "priceLabel": "מחיר: {price}",
+      "opinionLabel": "דעה: {opinion}",
+      "dates": "תאריכים: {start} - {end}",
+      "activeFiltersTitle": "מסננים פעילים:",
+      "filterExpandHint": "(לחץ להרחבה)"
     },
     "cuisine": {
       "title": "סוג מטבח",
@@ -77,7 +85,10 @@
       "midRangeRestaurants": "מסעדות בתקציב בינוני",
       "expensiveRestaurants": "מסעדות יקרות",
       "notSpecified": "טווח מחיר לא צוין",
-      "distribution": "התפלגות מחירים"
+      "distribution": "התפלגות מחירים",
+      "budgetSymbol": "זול ₪",
+      "midRangeSymbol": "בינוני ₪₪",
+      "expensiveSymbol": "יקר ₪₪₪"
     },
     "opinion": {
       "positive": "חיובית 👍",
@@ -92,7 +103,12 @@
     "businessNews": "חדשות עסקיות",
     "moreItems": "+{count} פריטים נוספים",
     "highlyRecommended": "מומלץ ביותר",
-    "leadingRestaurants": "מסעדות מובילות"
+    "leadingRestaurants": "מסעדות מובילות",
+    "showOnMap": "הצג במפה",
+    "notFoundOnMap": "לא נמצא במפה",
+    "loadingMap": "טוען מפה...",
+    "mapError": "שגיאה בטעינת המפה",
+    "restaurantsOnMap": "מסעדות על המפה ({found} מתוך {total})"
   },
   "layout": {
     "masonry": "מזונרי",
@@ -105,7 +121,9 @@
   },
   "stats": {
     "systemStats": "סטטיסטיקות מערכת",
-    "cuisineTypes": "סוגי מטבח"
+    "cuisineTypes": "סוגי מטבח",
+    "cities": "ערים",
+    "popularCuisines": "מטבחים פופולריים"
   },
   "youtube": {
     "invalidUrl": "נא להזין כתובת YouTube תקינה",
@@ -114,6 +132,6 @@
     "analysisStarted": "הניתוח התחיל בהצלחה!..."
   },
   "errors": {
-    "failedToLoadMaps": "Failed to load Google Maps"
+    "failedToLoadMaps": "נכשל בטעינת Google Maps"
   }
 }

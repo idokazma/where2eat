@@ -61,7 +61,15 @@
       "neighborhood": "Neighborhood",
       "allRegions": "All regions",
       "allCities": "All cities",
-      "allNeighborhoods": "All neighborhoods"
+      "allNeighborhoods": "All neighborhoods",
+      "text": "Text: {text}",
+      "location": "Location: {location}",
+      "cuisine": "Cuisine: {cuisine}",
+      "priceLabel": "Price: {price}",
+      "opinionLabel": "Opinion: {opinion}",
+      "dates": "Dates: {start} - {end}",
+      "activeFiltersTitle": "Active filters:",
+      "filterExpandHint": "(Click to expand)"
     },
     "cuisine": {
       "title": "Cuisine type",
@@ -77,7 +85,10 @@
       "midRangeRestaurants": "Mid-range restaurants",
       "expensiveRestaurants": "Expensive restaurants",
       "notSpecified": "Price range not mentioned",
-      "distribution": "Price distribution"
+      "distribution": "Price distribution",
+      "budgetSymbol": "Budget ₪",
+      "midRangeSymbol": "Mid-range ₪₪",
+      "expensiveSymbol": "Expensive ₪₪₪"
     },
     "opinion": {
       "positive": "Positive 👍",
@@ -92,7 +103,12 @@
     "businessNews": "Business news",
     "moreItems": "+{count} more items",
     "highlyRecommended": "Highly recommended",
-    "leadingRestaurants": "Leading restaurants"
+    "leadingRestaurants": "Leading restaurants",
+    "showOnMap": "Show on map",
+    "notFoundOnMap": "Not found on map",
+    "loadingMap": "Loading map...",
+    "mapError": "Error loading map",
+    "restaurantsOnMap": "Restaurants on map ({found} of {total})"
   },
   "layout": {
     "masonry": "Masonry",
@@ -105,7 +121,9 @@
   },
   "stats": {
     "systemStats": "System statistics",
-    "cuisineTypes": "Cuisine types"
+    "cuisineTypes": "Cuisine types",
+    "cities": "Cities",
+    "popularCuisines": "Popular cuisines"
   },
   "youtube": {
     "invalidUrl": "Please enter a valid YouTube URL",
