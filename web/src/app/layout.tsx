@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { FavoritesProvider } from "@/contexts/favorites-context";
+import { ClientLayout } from "@/components/client-layout";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -14,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Where2Eat - גלו מסעדות מומלצות מפודקאסטים",
-  description: "המערכת המתקדמת שמנתחת פודקאסטים על אוכל ומביאה לכם את המסעדות הכי מומלצות בארץ",
+  title: "Where2Eat - Discover Recommended Restaurants from Podcasts",
+  description: "The advanced system that analyzes food podcasts and brings you the most recommended restaurants",
   manifest: "/manifest.json",
   themeColor: "#F97066",
   viewport: {
@@ -36,7 +37,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="he" dir="rtl">
+    <html lang="en" dir="ltr">
       <head>
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#F97066" />
@@ -45,9 +46,11 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased font-hebrew`}
       >
-        <FavoritesProvider>
-          {children}
-        </FavoritesProvider>
+        <ClientLayout>
+          <FavoritesProvider>
+            {children}
+          </FavoritesProvider>
+        </ClientLayout>
       </body>
     </html>
   );
