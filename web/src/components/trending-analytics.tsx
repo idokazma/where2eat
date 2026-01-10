@@ -233,8 +233,8 @@ export function TrendingAnalytics({ restaurants, onRestaurantFilter }: TrendingA
   return (
     <div className="space-y-6">
       {/* Header and Controls */}
-      <Card className="border-2 border-pink-200 bg-gradient-to-br from-pink-50 to-rose-50">
-        <CardHeader className="bg-gradient-to-r from-pink-500 to-rose-500 text-white">
+      <Card className="border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-accent/5">
+        <CardHeader className="bg-mesh-warm text-white">
           <div className="flex items-center justify-between">
             <CardTitle className="flex items-center gap-2">
               <TrendingUp className="size-6" />
@@ -247,7 +247,7 @@ export function TrendingAnalytics({ restaurants, onRestaurantFilter }: TrendingA
                   variant={timeframe === period ? "secondary" : "outline"}
                   size="sm"
                   onClick={() => setTimeframe(period as any)}
-                  className={timeframe === period ? "bg-white text-pink-600" : "border-white text-white hover:bg-white/20"}
+                  className={timeframe === period ? "bg-white text-primary" : "border-white text-white hover:bg-white/20"}
                 >
                   {getTimeframeLabel(period)}
                 </Button>
@@ -255,24 +255,24 @@ export function TrendingAnalytics({ restaurants, onRestaurantFilter }: TrendingA
             </div>
           </div>
         </CardHeader>
-        
+
         <CardContent className="p-6">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-center">
             <div>
-              <div className="text-2xl font-bold text-pink-600">{timeframeRestaurants.length}</div>
-              <div className="text-sm text-gray-600">מסעדות נותחו</div>
+              <div className="text-2xl font-bold text-primary">{timeframeRestaurants.length}</div>
+              <div className="text-sm text-muted-foreground">מסעדות נותחו</div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-rose-600">{trendingRestaurants.length}</div>
-              <div className="text-sm text-gray-600">מסעדות טרנדיות</div>
+              <div className="text-2xl font-bold text-accent-foreground">{trendingRestaurants.length}</div>
+              <div className="text-sm text-muted-foreground">מסעדות טרנדיות</div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-purple-600">{regionalInsights.length}</div>
-              <div className="text-sm text-gray-600">אזורים</div>
+              <div className="text-2xl font-bold text-info">{regionalInsights.length}</div>
+              <div className="text-sm text-muted-foreground">אזורים</div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-indigo-600">{cuisineTrends.length}</div>
-              <div className="text-sm text-gray-600">חודשי נתונים</div>
+              <div className="text-2xl font-bold text-success">{cuisineTrends.length}</div>
+              <div className="text-sm text-muted-foreground">חודשי נתונים</div>
             </div>
           </div>
         </CardContent>
@@ -304,21 +304,21 @@ export function TrendingAnalytics({ restaurants, onRestaurantFilter }: TrendingA
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Award className="size-5 text-yellow-500" />
+                <Award className="size-5 text-warning" />
                 המסעדות הטרנדיות ביותר
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
                 {trendingRestaurants.map((trending, index) => (
-                  <div 
+                  <div
                     key={trending.restaurant.name_hebrew}
-                    className="flex items-center justify-between p-4 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg border border-yellow-200"
+                    className="flex items-center justify-between p-4 bg-gradient-to-r from-accent/10 to-primary/10 rounded-lg border border-primary/20"
                   >
                     <div className="flex items-center gap-4">
                       <div className="text-center">
-                        <div className="text-2xl font-bold text-yellow-600">#{index + 1}</div>
-                        <div className="text-xs text-yellow-500">טרנד</div>
+                        <div className="text-2xl font-bold text-primary">#{index + 1}</div>
+                        <div className="text-xs text-primary/70">טרנד</div>
                       </div>
                       <div className="flex-1">
                         <h4 className="font-semibold text-lg">{trending.restaurant.name_hebrew}</h4>
@@ -326,28 +326,28 @@ export function TrendingAnalytics({ restaurants, onRestaurantFilter }: TrendingA
                           <Badge variant="outline">{trending.restaurant.cuisine_type}</Badge>
                           <Badge variant="outline">{trending.restaurant.location.city}</Badge>
                           {trending.avgRating && (
-                            <Badge className="bg-green-100 text-green-800">
+                            <Badge className="bg-success/10 text-success border border-success/20">
                               ⭐ {trending.avgRating.toFixed(1)}
                             </Badge>
                           )}
                         </div>
-                        <p className="text-sm text-gray-600 mt-2">
+                        <p className="text-sm text-muted-foreground mt-2">
                           {trending.restaurant.host_comments?.substring(0, 100)}...
                         </p>
                       </div>
                     </div>
                     <div className="text-right space-y-2">
                       <div className="flex items-center gap-2">
-                        <span className="text-sm text-gray-500">אזכורים:</span>
-                        <Badge className="bg-blue-500 text-white">{trending.mentions}</Badge>
+                        <span className="text-sm text-muted-foreground">אזכורים:</span>
+                        <Badge className="bg-info text-white">{trending.mentions}</Badge>
                       </div>
                       <div className="flex items-center gap-2">
-                        <span className="text-sm text-gray-500">אחרון:</span>
-                        <span className="text-xs text-gray-500">{formatDate(trending.lastMentioned)}</span>
+                        <span className="text-sm text-muted-foreground">אחרון:</span>
+                        <span className="text-xs text-muted-foreground">{formatDate(trending.lastMentioned)}</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <span className="text-sm text-gray-500">ציון טרנד:</span>
-                        <Badge className="bg-purple-500 text-white">
+                        <span className="text-sm text-muted-foreground">ציון טרנד:</span>
+                        <Badge className="bg-primary text-primary-foreground">
                           {trending.trendScore.toFixed(1)}
                         </Badge>
                       </div>
@@ -362,12 +362,12 @@ export function TrendingAnalytics({ restaurants, onRestaurantFilter }: TrendingA
         {/* Regional Insights Tab */}
         <TabsContent value="regional" className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {regionalInsights.map(region => (
+            {regionalInsights.map((region, idx) => (
               <Card key={region.region} className="overflow-hidden">
                 <CardHeader className={`${
-                  region.region === 'North' ? 'bg-gradient-to-r from-blue-500 to-cyan-500' :
-                  region.region === 'Center' ? 'bg-gradient-to-r from-green-500 to-emerald-500' :
-                  'bg-gradient-to-r from-orange-500 to-red-500'
+                  idx % 3 === 0 ? 'bg-mesh-cool' :
+                  idx % 3 === 1 ? 'bg-mesh-warm' :
+                  'bg-gradient-to-r from-primary to-accent'
                 } text-white`}>
                   <CardTitle className="flex items-center gap-2">
                     <MapPin className="size-5" />
@@ -376,14 +376,14 @@ export function TrendingAnalytics({ restaurants, onRestaurantFilter }: TrendingA
                 </CardHeader>
                 <CardContent className="p-4 space-y-4">
                   <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-600">סה"כ מסעדות:</span>
-                    <Badge className="bg-gray-500 text-white">{region.totalRestaurants}</Badge>
+                    <span className="text-sm text-muted-foreground">סה"כ מסעדות:</span>
+                    <Badge className="bg-muted text-muted-foreground">{region.totalRestaurants}</Badge>
                   </div>
-                  
+
                   {region.avgRating > 0 && (
                     <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-600">ממוצע דירוג:</span>
-                      <Badge className="bg-green-500 text-white">
+                      <span className="text-sm text-muted-foreground">ממוצע דירוג:</span>
+                      <Badge className="bg-success text-white">
                         ⭐ {region.avgRating.toFixed(1)}
                       </Badge>
                     </div>
@@ -398,7 +398,7 @@ export function TrendingAnalytics({ restaurants, onRestaurantFilter }: TrendingA
                         .map(([cuisine, count]) => (
                         <div key={cuisine} className="flex justify-between text-sm">
                           <span>{cuisine}</span>
-                          <span className="text-gray-500">{count}</span>
+                          <span className="text-muted-foreground">{count}</span>
                         </div>
                       ))}
                     </div>
@@ -409,9 +409,9 @@ export function TrendingAnalytics({ restaurants, onRestaurantFilter }: TrendingA
                     <div className="flex flex-wrap gap-1">
                       {Object.entries(region.priceDistribution).map(([price, count]) => {
                         const priceConfig = {
-                          budget: { label: '₪', color: 'bg-green-100 text-green-800' },
-                          'mid-range': { label: '₪₪', color: 'bg-yellow-100 text-yellow-800' },
-                          expensive: { label: '₪₪₪', color: 'bg-red-100 text-red-800' }
+                          budget: { label: '₪', color: 'bg-success/10 text-success border border-success/20' },
+                          'mid-range': { label: '₪₪', color: 'bg-warning/10 text-warning border border-warning/20' },
+                          expensive: { label: '₪₪₪', color: 'bg-destructive/10 text-destructive border border-destructive/20' }
                         }
                         const config = priceConfig[price as keyof typeof priceConfig]
                         return config ? (
@@ -428,8 +428,8 @@ export function TrendingAnalytics({ restaurants, onRestaurantFilter }: TrendingA
                       <h5 className="font-medium mb-2">מסעדות מובילות:</h5>
                       <div className="space-y-1">
                         {region.topRestaurants.map((restaurant, idx) => (
-                          <div key={idx} className="text-sm text-gray-700 flex items-center gap-1">
-                            <span className="text-green-500">•</span>
+                          <div key={idx} className="text-sm text-foreground/80 flex items-center gap-1">
+                            <span className="text-success">•</span>
                             {restaurant.name_hebrew}
                           </div>
                         ))}
@@ -447,25 +447,25 @@ export function TrendingAnalytics({ restaurants, onRestaurantFilter }: TrendingA
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <BarChart3 className="size-5 text-blue-500" />
+                <BarChart3 className="size-5 text-info" />
                 טרנדי מטבח לאורך זמן
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
                 {cuisineTrends.map(monthData => (
-                  <div key={monthData.month} className="border rounded-lg p-4">
+                  <div key={monthData.month} className="border border-border rounded-lg p-4">
                     <div className="flex items-center gap-2 mb-3">
-                      <Calendar className="size-4 text-blue-500" />
+                      <Calendar className="size-4 text-info" />
                       <h4 className="font-medium">{monthData.month}</h4>
                     </div>
                     <div className="flex flex-wrap gap-2">
                       {Object.entries(monthData.cuisines)
                         .sort((a, b) => b[1] - a[1])
                         .map(([cuisine, count]) => (
-                        <Badge 
+                        <Badge
                           key={cuisine}
-                          className="bg-blue-100 text-blue-800 cursor-pointer hover:bg-blue-200"
+                          className="bg-info/10 text-info border border-info/20 cursor-pointer hover:bg-info/20"
                           onClick={() => onRestaurantFilter?.('cuisine', cuisine)}
                         >
                           {cuisine} ({count})
@@ -475,10 +475,10 @@ export function TrendingAnalytics({ restaurants, onRestaurantFilter }: TrendingA
                   </div>
                 ))}
               </div>
-              
+
               {cuisineTrends.length === 0 && (
-                <div className="text-center py-12 text-gray-500">
-                  <BarChart3 className="size-16 mx-auto mb-4 text-gray-300" />
+                <div className="text-center py-12 text-muted-foreground">
+                  <BarChart3 className="size-16 mx-auto mb-4 text-muted-foreground/30" />
                   <p>אין נתוני טרנדים זמינים לתקופה זו</p>
                 </div>
               )}

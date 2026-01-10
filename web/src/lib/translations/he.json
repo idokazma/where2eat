@@ -108,7 +108,13 @@
   },
   "stats": {
     "systemStats": "סטטיסטיקות מערכת",
-    "cuisineTypes": "סוגי מטבח"
+    "cuisineTypes": "סוגי מטבח",
+    "cities": "ערים",
+    "popularCuisines": "מטבחים פופולריים"
+  },
+  "empty": {
+    "noRestaurants": "לא נמצאו מסעדות",
+    "tryChangingFilters": "נסה לשנות את הסינון או החיפוש"
   },
   "youtube": {
     "invalidUrl": "נא להזין כתובת YouTube תקינה",

@@ -108,7 +108,13 @@
   },
   "stats": {
     "systemStats": "System statistics",
-    "cuisineTypes": "Cuisine types"
+    "cuisineTypes": "Cuisine types",
+    "cities": "Cities",
+    "popularCuisines": "Popular cuisines"
+  },
+  "empty": {
+    "noRestaurants": "No restaurants found",
+    "tryChangingFilters": "Try changing your filters or search"
   },
   "youtube": {
     "invalidUrl": "Please enter a valid YouTube URL",

@@ -17,15 +17,15 @@ interface VisualRestaurantCardProps {
 function getOpinionColor(opinion: Restaurant['host_opinion']) {
   switch (opinion) {
     case 'positive':
-      return 'bg-green-500'
+      return 'bg-success'
     case 'negative':
-      return 'bg-red-500'
+      return 'bg-destructive'
     case 'mixed':
-      return 'bg-yellow-500'
+      return 'bg-warning'
     case 'neutral':
-      return 'bg-gray-500'
+      return 'bg-muted-foreground'
     default:
-      return 'bg-gray-500'
+      return 'bg-muted-foreground'
   }
 }
 
@@ -88,7 +88,7 @@ export function VisualRestaurantCard({
 
   return (
     <Card
-      className="overflow-hidden visual-card-hover cursor-pointer border-0 shadow-md"
+      className="overflow-hidden card-interactive border-0 shadow-md"
       onClick={toggleExpanded}
     >
       {/* Image Section - 70% of card space */}
@@ -111,8 +111,8 @@ export function VisualRestaurantCard({
           >
             <Heart className={`size-5 transition-all ${
               isRestaurantFavorite
-                ? 'fill-red-500 text-red-500'
-                : 'text-gray-700 hover:text-red-500'
+                ? 'fill-destructive text-destructive'
+                : 'text-foreground/70 hover:text-destructive'
             }`} />
           </button>
         </div>
@@ -249,23 +249,23 @@ export function VisualRestaurantCard({
             </div>
 
             {restaurant.business_news && (
-              <div className="bg-blue-50 dark:bg-blue-950/20 rounded-lg p-3 border border-blue-200 dark:border-blue-800">
-                <h4 className="font-semibold text-blue-900 dark:text-blue-100 mb-1">חדשות עסקיות</h4>
-                <p className="text-sm text-blue-800 dark:text-blue-200 text-right">{restaurant.business_news}</p>
+              <div className="bg-info/10 rounded-xl p-4 border border-info/20">
+                <h4 className="font-semibold text-info mb-1.5">חדשות עסקיות</h4>
+                <p className="text-sm text-info/80 text-right leading-relaxed">{restaurant.business_news}</p>
               </div>
             )}
 
             {/* Action Buttons */}
-            <div className="flex gap-2 pt-2">
+            <div className="flex gap-3 pt-2">
               <button
                 onClick={(e) => {
                   e.stopPropagation()
                   const mapTab = document.querySelector('[value="map"]') as HTMLElement;
                   mapTab?.click();
                 }}
-                className="flex-1 flex items-center justify-center gap-1 px-3 py-2 bg-primary text-primary-foreground rounded text-sm hover:bg-primary/90 transition-colors"
+                className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-primary text-primary-foreground rounded-xl text-sm font-medium hover:bg-primary/90 transition-all hover:shadow-md active:scale-[0.98]"
               >
-                <MapPin className="size-3" />
+                <MapPin className="size-4" />
                 מפה
               </button>
               <button
@@ -274,9 +274,9 @@ export function VisualRestaurantCard({
                   const query = encodeURIComponent(`${restaurant.name_hebrew} ${restaurant.location.city} restaurant`)
                   window.open(`https://www.google.com/maps/search/?api=1&query=${query}`, '_blank')
                 }}
-                className="flex-1 flex items-center justify-center gap-1 px-3 py-2 bg-secondary text-secondary-foreground rounded text-sm hover:bg-secondary/90 transition-colors"
+                className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-secondary text-secondary-foreground rounded-xl text-sm font-medium hover:bg-secondary/80 transition-all hover:shadow-md active:scale-[0.98]"
               >
-                <Globe className="size-3" />
+                <Globe className="size-4" />
                 Google
               </button>
             </div>

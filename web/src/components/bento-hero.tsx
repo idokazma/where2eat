@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge"
 import { TrendingUp, MapPin, Star, Users, Sparkles } from "lucide-react"
 import { Restaurant } from "@/types/restaurant"
 import { OptimizedImage } from "./optimized-image"
+import { useLanguage } from "@/contexts/LanguageContext"
 
 interface BentoHeroProps {
   featuredRestaurants: Restaurant[]
@@ -17,6 +18,7 @@ interface BentoHeroProps {
 }
 
 export function BentoHero({ featuredRestaurants, stats }: BentoHeroProps) {
+  const { t } = useLanguage()
   const featured = featuredRestaurants.slice(0, 3)
 
   return (
@@ -40,7 +42,7 @@ export function BentoHero({ featuredRestaurants, stats }: BentoHeroProps) {
             <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
               <Badge className="bg-primary/90 backdrop-blur-sm text-primary-foreground mb-4 rounded-full px-4 py-1">
                 <Sparkles className="size-3 mr-1.5" />
-                מומלץ ביותר
+                {t('restaurant.highlyRecommended')}
               </Badge>
               <h2 className="font-display text-4xl font-black text-white mb-3 leading-tight tracking-tight drop-shadow-xl">
                 {featured[0].name_hebrew}
@@ -76,24 +78,24 @@ export function BentoHero({ featuredRestaurants, stats }: BentoHeroProps) {
             <div className="p-2 bg-white/20 rounded-lg">
               <TrendingUp className="size-5" />
             </div>
-            <h3 className="text-lg font-bold">סטטיסטיקות מערכת</h3>
+            <h3 className="text-lg font-bold">{t('stats.systemStats')}</h3>
           </div>
           <div className="grid grid-cols-2 gap-5">
             <div className="bg-white/10 rounded-xl p-4 backdrop-blur-sm">
               <div className="font-display text-4xl font-black">{stats.totalRestaurants}</div>
-              <div className="text-white/70 text-sm mt-1">מסעדות</div>
+              <div className="text-white/70 text-sm mt-1">{t('common.restaurants')}</div>
             </div>
             <div className="bg-white/10 rounded-xl p-4 backdrop-blur-sm">
               <div className="font-display text-4xl font-black">{stats.totalEpisodes}</div>
-              <div className="text-white/70 text-sm mt-1">פרקים</div>
+              <div className="text-white/70 text-sm mt-1">{t('common.episodes')}</div>
             </div>
             <div className="bg-white/10 rounded-xl p-4 backdrop-blur-sm">
               <div className="font-display text-3xl font-bold">{stats.topCuisines.length}</div>
-              <div className="text-white/70 text-sm mt-1">סוגי מטבח</div>
+              <div className="text-white/70 text-sm mt-1">{t('stats.cuisineTypes')}</div>
             </div>
             <div className="bg-white/10 rounded-xl p-4 backdrop-blur-sm">
               <div className="font-display text-3xl font-bold">{stats.topLocations.length}</div>
-              <div className="text-white/70 text-sm mt-1">ערים</div>
+              <div className="text-white/70 text-sm mt-1">{t('stats.cities')}</div>
             </div>
           </div>
         </div>
@@ -130,7 +132,7 @@ export function BentoHero({ featuredRestaurants, stats }: BentoHeroProps) {
             <div className="p-1.5 bg-white/20 rounded-lg">
               <Users className="size-4" />
             </div>
-            <h3 className="font-bold text-sm">מטבחים פופולריים</h3>
+            <h3 className="font-bold text-sm">{t('stats.popularCuisines')}</h3>
           </div>
           <div className="space-y-2.5 flex-1">
             {stats.topCuisines.slice(0, 3).map(([cuisine, count]) => (
