@@ -21,8 +21,10 @@ import {
 import { Youtube, Loader2, CheckCircle, XCircle, AlertCircle } from "lucide-react"
 import { PodcastData, YouTubeAnalysisRequest } from "@/types/restaurant"
 import { endpoints } from "@/lib/config"
+import { useLanguage } from "@/contexts/LanguageContext"
 
 export function YoutubeAnalyzer() {
+  const { t } = useLanguage()
   const [url, setUrl] = useState("")
   const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [analysisResult, setAnalysisResult] = useState<PodcastData | null>(null)
@@ -37,7 +39,7 @@ export function YoutubeAnalyzer() {
 
   const handleAnalyze = async () => {
     if (!isValidYouTubeUrl(url)) {
-      setError("נא להזין כתובת YouTube תקינה")
+      setError(t('youtube.invalidUrl'))
       return
     }
 
@@ -55,28 +57,28 @@ export function YoutubeAnalyzer() {
       })
 
       if (!response.ok) {
-        throw new Error('שגיאה בתחילת הניתוח')
+        throw new Error(t('youtube.errorStarting'))
       }
 
       const result = await response.json()
-      
+
       // Analysis is now processing in background
       // Show success message and refresh after delay
       await new Promise(resolve => setTimeout(resolve, 2000))
-      
+
       setError(null)
       setAnalysisResult(null)
-      
+
       // Show success message and suggest refreshing
-      alert("הניתוח התחיל בהצלחה! המסעדות יופיעו ברשימה תוך דקות ספורות. רענן את העמוד כדי לראות את התוצאות.")
-      
+      alert(t('youtube.analysisStarted'))
+
       // Auto-refresh the page after a delay to show new restaurants
       setTimeout(() => {
         window.location.reload()
       }, 3000)
-      
+
     } catch (err) {
-      setError(err instanceof Error ? err.message : "שגיאה לא צפויה")
+      setError(err instanceof Error ? err.message : t('youtube.unexpectedError'))
     } finally {
       setIsAnalyzing(false)
     }
@@ -109,13 +111,13 @@ export function YoutubeAnalyzer() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Youtube className="size-5 text-red-500" />
-            ניתוח סרטון YouTube
+            {t('youtube.analyzeVideo')}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
             <label htmlFor="youtube-url" className="text-sm font-medium">
-              כתובת YouTube
+              {t('youtube.youtubeAddress')}
             </label>
             <Input
               id="youtube-url"
@@ -137,28 +139,28 @@ export function YoutubeAnalyzer() {
               {isAnalyzing ? (
                 <>
                   <Loader2 className="size-4 animate-spin ml-2" />
-                  מנתח...
+                  {t('youtube.analyzing')}
                 </>
               ) : (
-                "התחל ניתוח"
+                t('youtube.startAnalysis')
               )}
             </Button>
             
             {(analysisResult || error) && (
               <AlertDialog>
                 <AlertDialogTrigger asChild>
-                  <Button variant="outline">נקה תוצאות</Button>
+                  <Button variant="outline">{t('youtube.clearResults')}</Button>
                 </AlertDialogTrigger>
                 <AlertDialogContent>
                   <AlertDialogHeader>
-                    <AlertDialogTitle>נקה תוצאות</AlertDialogTitle>
+                    <AlertDialogTitle>{t('youtube.clearResults')}</AlertDialogTitle>
                     <AlertDialogDescription>
-                      האם אתה בטוח שברצונך לנקות את התוצאות הנוכחיות?
+                      {t('youtube.confirmClearResults')}
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
-                    <AlertDialogCancel>ביטול</AlertDialogCancel>
-                    <AlertDialogAction onClick={clearResults}>נקה</AlertDialogAction>
+                    <AlertDialogCancel>{t('youtube.cancel')}</AlertDialogCancel>
+                    <AlertDialogAction onClick={clearResults}>{t('youtube.clear')}</AlertDialogAction>
                   </AlertDialogFooter>
                 </AlertDialogContent>
               </AlertDialog>
@@ -169,7 +171,7 @@ export function YoutubeAnalyzer() {
             <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-4">
               <div className="flex items-center gap-2 text-destructive">
                 <XCircle className="size-4" />
-                <span className="font-medium">שגיאה</span>
+                <span className="font-medium">{t('youtube.error')}</span>
               </div>
               <p className="text-sm text-destructive/80 mt-1 text-right">{error}</p>
             </div>
@@ -179,20 +181,20 @@ export function YoutubeAnalyzer() {
             <div className="bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
               <div className="flex items-center gap-2 text-blue-700 dark:text-blue-300">
                 <Loader2 className="size-4 animate-spin" />
-                <span className="font-medium">מנתח סרטון...</span>
+                <span className="font-medium">{t('youtube.analyzingVideo')}</span>
               </div>
               <div className="space-y-2 mt-3 text-sm text-blue-600 dark:text-blue-400">
                 <div className="flex items-center gap-2">
                   {getStatusIcon('processing')}
-                  <span>מוריד טרנסקריפט...</span>
+                  <span>{t('youtube.downloadingTranscript')}</span>
                 </div>
                 <div className="flex items-center gap-2 opacity-50">
                   {getStatusIcon('pending')}
-                  <span>מחלץ מידע על מסעדות...</span>
+                  <span>{t('youtube.extractingRestaurantInfo')}</span>
                 </div>
                 <div className="flex items-center gap-2 opacity-50">
                   {getStatusIcon('pending')}
-                  <span>מעבד תוצאות...</span>
+                  <span>{t('youtube.processingResults')}</span>
                 </div>
               </div>
             </div>
@@ -205,39 +207,39 @@ export function YoutubeAnalyzer() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <CheckCircle className="size-5 text-green-500" />
-              תוצאות ניתוח
+              {t('youtube.analysisResults')}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
             <div>
-              <h3 className="font-semibold mb-2">פרטי הפרק</h3>
+              <h3 className="font-semibold mb-2">{t('episode.details')}</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                 <div>
-                  <span className="text-muted-foreground">שפה:</span>
+                  <span className="text-muted-foreground">{t('episode.language')}:</span>
                   <span className="ml-2">{analysisResult.episode_info.language}</span>
                 </div>
                 <div>
-                  <span className="text-muted-foreground">תאריך ניתוח:</span>
+                  <span className="text-muted-foreground">{t('episode.analysisDate')}:</span>
                   <span className="ml-2">{analysisResult.episode_info.analysis_date}</span>
                 </div>
               </div>
-              <a 
-                href={analysisResult.episode_info.video_url} 
-                target="_blank" 
+              <a
+                href={analysisResult.episode_info.video_url}
+                target="_blank"
                 rel="noopener noreferrer"
                 className="text-blue-600 hover:underline text-sm block mt-2"
               >
-                צפה בסרטון המקורי ↗
+                {t('youtube.watchOriginalVideo')}
               </a>
             </div>
 
             <Separator />
 
             <div>
-              <h3 className="font-semibold mb-2">תקציר הפרק</h3>
-              <Textarea 
-                value={analysisResult.episode_summary} 
-                readOnly 
+              <h3 className="font-semibold mb-2">{t('youtube.episodeSummary')}</h3>
+              <Textarea
+                value={analysisResult.episode_summary}
+                readOnly
                 className="min-h-[100px] text-right"
               />
             </div>
@@ -246,7 +248,7 @@ export function YoutubeAnalyzer() {
               <>
                 <Separator />
                 <div>
-                  <h3 className="font-semibold mb-2">טרנדים במזון</h3>
+                  <h3 className="font-semibold mb-2">{t('youtube.foodTrends')}</h3>
                   <div className="flex flex-wrap gap-1">
                     {analysisResult.food_trends.map((trend, index) => (
                       <Badge key={index} variant="secondary">
@@ -262,10 +264,10 @@ export function YoutubeAnalyzer() {
 
             <div>
               <h3 className="font-semibold mb-2">
-                מסעדות שנמצאו ({analysisResult.restaurants.length})
+                {t('episode.restaurantsFound')} ({analysisResult.restaurants.length})
               </h3>
               <p className="text-sm text-muted-foreground mb-4">
-                המסעדות שזוהו בפרק יופיעו ברשימה הראשית למעלה
+                {t('youtube.restaurantsWillAppear')}
               </p>
             </div>
           </CardContent>

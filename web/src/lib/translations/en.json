@@ -111,9 +111,127 @@
     "invalidUrl": "Please enter a valid YouTube URL",
     "errorStarting": "Error starting analysis",
     "unexpectedError": "Unexpected error",
-    "analysisStarted": "Analysis started successfully!..."
+    "analysisStarted": "Analysis started successfully! Restaurants will appear in the list in a few minutes. Refresh the page to see the results.",
+    "analyzeVideo": "Analyze YouTube Video",
+    "youtubeAddress": "YouTube URL",
+    "analyzing": "Analyzing...",
+    "startAnalysis": "Start Analysis",
+    "clearResults": "Clear Results",
+    "confirmClearResults": "Are you sure you want to clear the current results?",
+    "cancel": "Cancel",
+    "clear": "Clear",
+    "error": "Error",
+    "analyzingVideo": "Analyzing video...",
+    "downloadingTranscript": "Downloading transcript...",
+    "extractingRestaurantInfo": "Extracting restaurant information...",
+    "processingResults": "Processing results...",
+    "analysisResults": "Analysis Results",
+    "episodeSummary": "Episode Summary",
+    "foodTrends": "Food Trends",
+    "watchOriginalVideo": "Watch original video",
+    "restaurantsWillAppear": "Restaurants identified in this episode will appear in the main list above"
   },
   "errors": {
-    "failedToLoadMaps": "Failed to load Google Maps"
+    "failedToLoadMaps": "Failed to load Google Maps",
+    "loadingMap": "Error loading map",
+    "noResults": "No results found",
+    "tryChangingFilters": "Try changing the filters"
+  },
+  "timeline": {
+    "title": "Timeline Restaurant Filter",
+    "restaurantsIn": "Restaurants in",
+    "cuisine": "Cuisine",
+    "location": "Location",
+    "priceRange": "Price Range",
+    "hostOpinion": "Host Opinion",
+    "clearAllFilters": "Clear all filters",
+    "timelineView": "Timeline View",
+    "analyticsAndTrends": "Analytics & Trends",
+    "episodeFrom": "Episode from",
+    "of": "of",
+    "restaurantsDisplayed": "restaurants displayed",
+    "watchEpisode": "Watch Episode",
+    "popularCuisines": "Popular Cuisines",
+    "topLocations": "Top Locations",
+    "monthlyTrends": "Monthly Trends"
+  },
+  "map": {
+    "title": "Restaurant Map",
+    "loadingMap": "Loading map...",
+    "restaurantsOnMap": "Restaurants on Map",
+    "showOnMap": "Show on Map",
+    "notFoundOnMap": "Not found on map",
+    "openInGoogleMaps": "Open in Google Maps",
+    "recommended": "Recommended",
+    "mixed": "Mixed",
+    "neutral": "Neutral",
+    "notRecommended": "Not Recommended"
+  },
+  "episode": {
+    "details": "Episode Details",
+    "analysisDate": "Analysis Date",
+    "language": "Language",
+    "watchVideo": "Watch Video",
+    "statistics": "Episode Statistics",
+    "restaurantsFound": "Restaurants Found",
+    "processingMethod": "Processing Method",
+    "geographicDistribution": "Geographic Distribution",
+    "cuisineTypes": "Cuisine Types",
+    "hostOpinionsInEpisode": "Host Opinions in Episode"
+  },
+  "mentions": {
+    "types": {
+      "presentation": "Presentation",
+      "review": "Review",
+      "recommendation": "Recommendation",
+      "comparison": "Comparison",
+      "summary": "Summary"
+    },
+    "discussionAbout": "Discussion about",
+    "hostOpinion": "Host Opinion",
+    "cuisine": "Cuisine",
+    "location": "Location",
+    "priceRange": "Price Range",
+    "timestampsInEpisode": "Mention Timestamps in Episode",
+    "duration": "Duration",
+    "less": "Less",
+    "more": "More",
+    "keyPoints": "Key Points",
+    "locationNotSpecified": "Location not specified",
+    "watchFullEpisode": "Watch Full Episode on YouTube"
+  },
+  "analytics": {
+    "title": "Trends & Advanced Analytics",
+    "periods": {
+      "lastMonth": "Last Month",
+      "last3Months": "Last 3 Months",
+      "last6Months": "Last 6 Months",
+      "lastYear": "Last Year"
+    },
+    "restaurantsAnalyzed": "Restaurants Analyzed",
+    "trendingRestaurants": "Trending Restaurants",
+    "regions": "Regions",
+    "monthsOfData": "Months of Data",
+    "mostTrendingRestaurants": "Most Trending Restaurants",
+    "trend": "Trend",
+    "mentions": "Mentions",
+    "last": "Last",
+    "trendScore": "Trend Score",
+    "regionalInsights": "Regional Insights",
+    "cuisineTrends": "Cuisine Trends",
+    "totalRestaurants": "Total Restaurants",
+    "averageRating": "Average Rating",
+    "priceDistribution": "Price Distribution",
+    "cuisineTrendsOverTime": "Cuisine Trends Over Time",
+    "noTrendsDataAvailable": "No trends data available for this period"
+  },
+  "language": {
+    "english": "English",
+    "hebrew": "Hebrew"
+  },
+  "stats": {
+    "systemStats": "System statistics",
+    "cuisineTypes": "Cuisine types",
+    "cities": "Cities"
   }
 }

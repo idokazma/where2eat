@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Play, ExternalLink, Clock, Quote, MapPin, Utensils } from "lucide-react"
 import { Restaurant } from "@/types/restaurant"
+import { useLanguage } from "@/contexts/LanguageContext"
 
 interface MentionTimestamp {
   timestamp: string
@@ -24,6 +25,7 @@ interface MentionTimestampProps {
 }
 
 export function MentionTimestampComponent({ restaurant, mentions = [], videoUrl, onTimestampClick }: MentionTimestampProps) {
+  const { t } = useLanguage()
   const [expandedMention, setExpandedMention] = useState<number | null>(null)
 
   const formatTimestamp = (timestamp: string) => {
@@ -53,30 +55,30 @@ export function MentionTimestampComponent({ restaurant, mentions = [], videoUrl,
 
   const getMentionTypeConfig = (type: string) => {
     const configs = {
-      introduction: { 
-        label: 'הצגה', 
-        color: 'bg-blue-100 text-blue-800 border-blue-200', 
-        icon: '👋' 
+      introduction: {
+        label: t('mentions.types.presentation'),
+        color: 'bg-blue-100 text-blue-800 border-blue-200',
+        icon: '👋'
       },
-      review: { 
-        label: 'ביקורת', 
-        color: 'bg-purple-100 text-purple-800 border-purple-200', 
-        icon: '📝' 
+      review: {
+        label: t('mentions.types.review'),
+        color: 'bg-purple-100 text-purple-800 border-purple-200',
+        icon: '📝'
       },
-      recommendation: { 
-        label: 'המלצה', 
-        color: 'bg-green-100 text-green-800 border-green-200', 
-        icon: '⭐' 
+      recommendation: {
+        label: t('mentions.types.recommendation'),
+        color: 'bg-green-100 text-green-800 border-green-200',
+        icon: '⭐'
       },
-      comparison: { 
-        label: 'השוואה', 
-        color: 'bg-yellow-100 text-yellow-800 border-yellow-200', 
-        icon: '⚖️' 
+      comparison: {
+        label: t('mentions.types.comparison'),
+        color: 'bg-yellow-100 text-yellow-800 border-yellow-200',
+        icon: '⚖️'
       },
-      closing: { 
-        label: 'סיכום', 
-        color: 'bg-gray-100 text-gray-800 border-gray-200', 
-        icon: '🏁' 
+      closing: {
+        label: t('mentions.types.summary'),
+        color: 'bg-gray-100 text-gray-800 border-gray-200',
+        icon: '🏁'
       }
     }
     return configs[type as keyof typeof configs] || configs.review
@@ -87,14 +89,14 @@ export function MentionTimestampComponent({ restaurant, mentions = [], videoUrl,
     {
       timestamp: "5:30",
       duration: "2:15",
-      context: restaurant.mention_context || `דיון על ${restaurant.name_hebrew}`,
+      context: restaurant.mention_context || `${t('mentions.discussionAbout')} ${restaurant.name_hebrew}`,
       restaurant_name: restaurant.name_hebrew,
       mention_type: 'review',
       key_points: [
-        restaurant.host_comments || "דעת המובחר",
-        `מטבח ${restaurant.cuisine_type}`,
-        `מיקום: ${restaurant.location.city || 'לא צוין'}`,
-        `טווח מחיר: ${restaurant.price_range}`
+        restaurant.host_comments || t('mentions.hostOpinion'),
+        `${t('mentions.cuisine')} ${restaurant.cuisine_type}`,
+        `${t('mentions.location')}: ${restaurant.location.city || t('mentions.locationNotSpecified')}`,
+        `${t('mentions.priceRange')}: ${restaurant.price_range}`
       ].filter(Boolean)
     }
   ]
@@ -104,9 +106,9 @@ export function MentionTimestampComponent({ restaurant, mentions = [], videoUrl,
       <CardHeader className="bg-gradient-to-r from-indigo-500 to-purple-500 text-white">
         <CardTitle className="flex items-center gap-2">
           <Clock className="size-5" />
-          זמני אזכור בפרק - {restaurant.name_hebrew}
+          {t('mentions.timestampsInEpisode')} - {restaurant.name_hebrew}
           <Badge className="bg-white/20 text-white border-white/30">
-            {syntheticMentions.length} אזכורים
+            {syntheticMentions.length} {t('analytics.mentions')}
           </Badge>
         </CardTitle>
       </CardHeader>
@@ -139,7 +141,7 @@ export function MentionTimestampComponent({ restaurant, mentions = [], videoUrl,
                           {typeConfig.icon} {typeConfig.label}
                         </Badge>
                         <span className="text-sm text-gray-500">
-                          משך: {mention.duration}
+                          {t('mentions.duration')}: {mention.duration}
                         </span>
                       </div>
                       
@@ -154,13 +156,13 @@ export function MentionTimestampComponent({ restaurant, mentions = [], videoUrl,
                       size="sm"
                       onClick={() => setExpandedMention(isExpanded ? null : index)}
                     >
-                      {isExpanded ? 'פחות' : 'עוד'}
+                      {isExpanded ? t('mentions.less') : t('mentions.more')}
                     </Button>
                   </div>
 
                   {isExpanded && (
                     <div className="mt-4 p-4 bg-indigo-50 rounded-lg border border-indigo-200">
-                      <h4 className="font-semibold text-indigo-800 mb-3">נקודות עיקריות:</h4>
+                      <h4 className="font-semibold text-indigo-800 mb-3">{t('mentions.keyPoints')}:</h4>
                       <div className="space-y-2">
                         {mention.key_points.map((point, pointIndex) => (
                           <div key={pointIndex} className="flex items-start gap-2">
@@ -174,7 +176,7 @@ export function MentionTimestampComponent({ restaurant, mentions = [], videoUrl,
                         <div className="flex gap-4 text-sm text-indigo-600">
                           <div className="flex items-center gap-1">
                             <MapPin className="size-4" />
-                            {restaurant.location.city || 'מיקום לא צוין'}
+                            {restaurant.location.city || t('mentions.locationNotSpecified')}
                           </div>
                           <div className="flex items-center gap-1">
                             <Utensils className="size-4" />
@@ -199,7 +201,7 @@ export function MentionTimestampComponent({ restaurant, mentions = [], videoUrl,
           >
             <a href={videoUrl} target="_blank" rel="noopener noreferrer">
               <ExternalLink className="size-4 ml-2" />
-              צפה בפרק המלא ב-YouTube
+              {t('mentions.watchFullEpisode')}
             </a>
           </Button>
         </div>

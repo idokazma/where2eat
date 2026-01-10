@@ -111,9 +111,127 @@
     "invalidUrl": "נא להזין כתובת YouTube תקינה",
     "errorStarting": "שגיאה בתחילת הניתוח",
     "unexpectedError": "שגיאה לא צפויה",
-    "analysisStarted": "הניתוח התחיל בהצלחה!..."
+    "analysisStarted": "הניתוח התחיל בהצלחה! המסעדות יופיעו ברשימה תוך דקות ספורות. רענן את העמוד כדי לראות את התוצאות.",
+    "analyzeVideo": "ניתוח סרטון YouTube",
+    "youtubeAddress": "כתובת YouTube",
+    "analyzing": "מנתח...",
+    "startAnalysis": "התחל ניתוח",
+    "clearResults": "נקה תוצאות",
+    "confirmClearResults": "האם אתה בטוח שברצונך לנקות את התוצאות הנוכחיות?",
+    "cancel": "ביטול",
+    "clear": "נקה",
+    "error": "שגיאה",
+    "analyzingVideo": "מנתח סרטון...",
+    "downloadingTranscript": "מוריד טרנסקריפט...",
+    "extractingRestaurantInfo": "מחלץ מידע על מסעדות...",
+    "processingResults": "מעבד תוצאות...",
+    "analysisResults": "תוצאות ניתוח",
+    "episodeSummary": "תקציר הפרק",
+    "foodTrends": "טרנדים במזון",
+    "watchOriginalVideo": "צפה בסרטון המקורי ↗",
+    "restaurantsWillAppear": "המסעדות שזוהו בפרק יופיעו ברשימה הראשית למעלה"
   },
   "errors": {
-    "failedToLoadMaps": "Failed to load Google Maps"
+    "failedToLoadMaps": "שגיאה בטעינת Google Maps",
+    "loadingMap": "שגיאה בטעינת המפה",
+    "noResults": "לא נמצאו תוצאות",
+    "tryChangingFilters": "נסו לשנות את המסננים"
+  },
+  "timeline": {
+    "title": "סינון מסעדות בציר הזמן",
+    "restaurantsIn": "מסעדות ב-",
+    "cuisine": "מטבח",
+    "location": "מיקום",
+    "priceRange": "טווח מחירים",
+    "hostOpinion": "דעת המובחר",
+    "clearAllFilters": "נקה כל המסננים",
+    "timelineView": "תצוגת ציר זמן",
+    "analyticsAndTrends": "אנליטיקה וטרנדים",
+    "episodeFrom": "פרק מ-",
+    "of": "מתוך",
+    "restaurantsDisplayed": "מסעדות מוצגות",
+    "watchEpisode": "צפה בפרק",
+    "popularCuisines": "מטבחים פופולריים",
+    "topLocations": "מיקומים מובילים",
+    "monthlyTrends": "טרנדים חודשיים"
+  },
+  "map": {
+    "title": "מפת מסעדות",
+    "loadingMap": "טוען מפה...",
+    "restaurantsOnMap": "מסעדות על המפה",
+    "showOnMap": "הצג במפה",
+    "notFoundOnMap": "לא נמצא במפה",
+    "openInGoogleMaps": "פתח ב-Google Maps",
+    "recommended": "מומלץ",
+    "mixed": "מעורב",
+    "neutral": "ניטרלי",
+    "notRecommended": "לא מומלץ"
+  },
+  "episode": {
+    "details": "פרטי הפרק",
+    "analysisDate": "תאריך ניתוח",
+    "language": "שפה",
+    "watchVideo": "צפה בסרטון",
+    "statistics": "סטטיסטיקות הפרק",
+    "restaurantsFound": "מסעדות שנמצאו",
+    "processingMethod": "שיטת עיבוד",
+    "geographicDistribution": "חלוקה גיאוגרפית",
+    "cuisineTypes": "סוגי מטבח",
+    "hostOpinionsInEpisode": "דעות המובחר בפרק"
+  },
+  "mentions": {
+    "types": {
+      "presentation": "הצגה",
+      "review": "ביקורת",
+      "recommendation": "המלצה",
+      "comparison": "השוואה",
+      "summary": "סיכום"
+    },
+    "discussionAbout": "דיון על",
+    "hostOpinion": "דעת המובחר",
+    "cuisine": "מטבח",
+    "location": "מיקום",
+    "priceRange": "טווח מחיר",
+    "timestampsInEpisode": "זמני אזכור בפרק",
+    "duration": "משך",
+    "less": "פחות",
+    "more": "עוד",
+    "keyPoints": "נקודות עיקריות",
+    "locationNotSpecified": "מיקום לא צוין",
+    "watchFullEpisode": "צפה בפרק המלא ב-YouTube"
+  },
+  "analytics": {
+    "title": "טרנדים ואנליטיקה מתקדמת",
+    "periods": {
+      "lastMonth": "חודש אחרון",
+      "last3Months": "3 חודשים אחרונים",
+      "last6Months": "6 חודשים אחרונים",
+      "lastYear": "שנה אחרונה"
+    },
+    "restaurantsAnalyzed": "מסעדות נותחו",
+    "trendingRestaurants": "מסעדות טרנדיות",
+    "regions": "אזורים",
+    "monthsOfData": "חודשי נתונים",
+    "mostTrendingRestaurants": "המסעדות הטרנדיות ביותר",
+    "trend": "טרנד",
+    "mentions": "אזכורים",
+    "last": "אחרון",
+    "trendScore": "ציון טרנד",
+    "regionalInsights": "תובנות אזוריות",
+    "cuisineTrends": "טרנדי מטבח",
+    "totalRestaurants": "סה\"כ מסעדות",
+    "averageRating": "ממוצע דירוג",
+    "priceDistribution": "חלוקת מחירים",
+    "cuisineTrendsOverTime": "טרנדי מטבח לאורך זמן",
+    "noTrendsDataAvailable": "אין נתוני טרנדים זמינים לתקופה זו"
+  },
+  "language": {
+    "english": "English",
+    "hebrew": "עברית"
+  },
+  "stats": {
+    "systemStats": "סטטיסטיקות מערכת",
+    "cuisineTypes": "סוגי מטבח",
+    "cities": "ערים"
   }
 }
