@@ -7,10 +7,19 @@ Use this to test and run backend functionality independently of the frontend.
 
 Usage:
     python scripts/cli.py process-video <youtube_url>
+    python scripts/cli.py process-transcript <file_path>
+    python scripts/cli.py process-transcripts <folder_path> [--recursive]
     python scripts/cli.py list-restaurants [--location CITY] [--cuisine TYPE]
     python scripts/cli.py import-json <directory>
     python scripts/cli.py stats
     python scripts/cli.py health
+
+Transcript File Formats:
+    Supported formats for process-transcript and process-transcripts:
+    - .txt  - Plain text transcript
+    - .json - JSON with 'transcript' or 'segments' field
+    - .srt  - SubRip subtitle format
+    - .vtt  - WebVTT subtitle format
 """
 
 import os
@@ -298,6 +307,97 @@ def cmd_analytics(args):
     return 0
 
 
+def cmd_process_transcript(args):
+    """Process a transcript file and extract restaurants."""
+    service = create_service(args.db)
+
+    print(f"Processing transcript: {args.file}")
+    print("-" * 50)
+
+    def progress_callback(step, progress):
+        steps = {
+            'loading_file': 'Loading file',
+            'analyzing_transcript': 'Analyzing with AI',
+            'saving_results': 'Saving to database',
+            'completed': 'Completed'
+        }
+        step_name = steps.get(step, step)
+        print(f"  [{int(progress * 100):3d}%] {step_name}")
+
+    result = service.process_transcript_file(
+        file_path=args.file,
+        language=args.language or 'he',
+        save_to_db=not args.dry_run,
+        progress_callback=progress_callback
+    )
+
+    print("-" * 50)
+
+    if result['success']:
+        print(f"Success! Found {result['restaurants_found']} restaurants")
+        print(f"Episode ID: {result.get('episode_id', 'N/A')}")
+        print()
+
+        if result['restaurants']:
+            print("Restaurants found:")
+            for i, restaurant in enumerate(result['restaurants'], 1):
+                name = restaurant.get('name_hebrew', 'Unknown')
+                city = restaurant.get('location', {}).get('city', 'Unknown')
+                cuisine = restaurant.get('cuisine_type', 'Unknown')
+                print(f"  {i}. {name} ({city}) - {cuisine}")
+
+        if result.get('food_trends'):
+            print(f"\nFood trends: {', '.join(result['food_trends'])}")
+
+        if result.get('episode_summary'):
+            print(f"\nSummary: {result['episode_summary']}")
+    else:
+        print(f"Failed: {result.get('error', 'Unknown error')}")
+
+    return 0 if result['success'] else 1
+
+
+def cmd_process_transcripts(args):
+    """Process multiple transcript files from a folder."""
+    service = create_service(args.db)
+
+    print(f"Processing transcripts from: {args.folder}")
+    print(f"Recursive: {args.recursive}")
+    print("-" * 50)
+
+    def progress_callback(status, current, total):
+        print(f"  Processing file {current}/{total}")
+
+    result = service.process_transcript_folder(
+        folder_path=args.folder,
+        language=args.language or 'he',
+        recursive=args.recursive,
+        save_to_db=not args.dry_run,
+        progress_callback=progress_callback
+    )
+
+    print("-" * 50)
+
+    if result['success']:
+        print(f"Processed: {result['files_processed']} files")
+        print(f"Failed: {result['files_failed']} files")
+        print(f"Total restaurants: {result['total_restaurants']}")
+        print()
+
+        if args.verbose and result.get('file_results'):
+            print("File details:")
+            for file_result in result['file_results']:
+                file_name = os.path.basename(file_result['file'])
+                if file_result['success']:
+                    print(f"  ✓ {file_name}: {file_result['restaurants_found']} restaurants")
+                else:
+                    print(f"  ✗ {file_name}: {file_result.get('error', 'Unknown error')}")
+    else:
+        print(f"Failed: {result.get('error', 'Unknown error')}")
+
+    return 0 if result['success'] else 1
+
+
 def main():
     parser = argparse.ArgumentParser(
         description='Where2Eat Backend CLI',
@@ -315,6 +415,28 @@ def main():
     p_video.add_argument('--language', '-l', default='he', help='Preferred language (default: he)')
     p_video.add_argument('--dry-run', '-n', action='store_true', help='Do not save to database')
     p_video.set_defaults(func=cmd_process_video)
+
+    # process-transcript command (single file)
+    p_transcript = subparsers.add_parser(
+        'process-transcript',
+        help='Process a transcript file (.txt, .json, .srt, .vtt)'
+    )
+    p_transcript.add_argument('file', help='Path to transcript file')
+    p_transcript.add_argument('--language', '-l', default='he', help='Preferred language (default: he)')
+    p_transcript.add_argument('--dry-run', '-n', action='store_true', help='Do not save to database')
+    p_transcript.set_defaults(func=cmd_process_transcript)
+
+    # process-transcripts command (folder)
+    p_transcripts = subparsers.add_parser(
+        'process-transcripts',
+        help='Process multiple transcript files from a folder'
+    )
+    p_transcripts.add_argument('folder', help='Path to folder containing transcript files')
+    p_transcripts.add_argument('--language', '-l', default='he', help='Preferred language (default: he)')
+    p_transcripts.add_argument('--recursive', '-r', action='store_true', help='Search subdirectories')
+    p_transcripts.add_argument('--dry-run', '-n', action='store_true', help='Do not save to database')
+    p_transcripts.add_argument('--verbose', '-v', action='store_true', help='Show per-file details')
+    p_transcripts.set_defaults(func=cmd_process_transcripts)
 
     # list-restaurants command
     p_list = subparsers.add_parser('list-restaurants', help='List restaurants')
