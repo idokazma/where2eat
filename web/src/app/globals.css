@@ -1,5 +1,7 @@
 /* Hebrew Typography - Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;500;600;700&family=Heebo:wght@300;400;500;600;700&family=Noto+Sans+Hebrew:wght@300;400;500;600;700&display=swap');
+/* Display: Frank Ruhl Libre for editorial headlines with Hebrew support */
+/* Body: Rubik for clean, modern body text with Hebrew support */
+@import url('https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;500;700;900&family=Rubik:wght@300;400;500;600;700;800&family=Assistant:wght@300;400;500;600;700&display=swap');
 
 @import "tailwindcss";
 @import "tw-animate-css";
@@ -48,205 +50,285 @@
 }
 
 :root {
-  /* Font System - Hebrew First */
-  --font-hebrew: "Noto Sans Hebrew", "Assistant", "Heebo", system-ui, -apple-system, sans-serif;
-  
-  /* Radius System */
-  --radius: 0.75rem;
-  
-  /* Where2Eat Color System - Visual-First Palette */
-  --background: oklch(0.99 0.005 45);        /* Warm cream background */
-  --foreground: oklch(0.15 0.02 45);         /* Dark brown text */
-  --card: oklch(1 0 0);                      /* Pure white cards */
-  --card-foreground: oklch(0.15 0.02 45);    /* Dark text on cards */
+  /* ============================================
+     TYPOGRAPHY SYSTEM - Editorial Hebrew Design
+     ============================================ */
+  --font-display: "Frank Ruhl Libre", "Noto Serif Hebrew", Georgia, serif;
+  --font-body: "Rubik", "Assistant", system-ui, sans-serif;
+  --font-hebrew: "Rubik", "Assistant", system-ui, sans-serif;
+
+  /* Radius System - Slightly larger for softer feel */
+  --radius: 0.875rem;
+
+  /* ============================================
+     COLOR SYSTEM - Warm Editorial Palette
+     ============================================ */
+
+  /* Backgrounds - Warm cream with subtle warmth */
+  --background: oklch(0.985 0.008 55);        /* Warmer cream */
+  --foreground: oklch(0.12 0.03 45);          /* Deep warm brown */
+  --card: oklch(1 0 0);                       /* Pure white cards */
+  --card-foreground: oklch(0.12 0.03 45);     /* Deep brown text */
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.15 0.02 45);
+  --popover-foreground: oklch(0.12 0.03 45);
+
+  /* Surface variations for depth */
+  --surface-elevated: oklch(1 0 0);
+  --surface-warm: oklch(0.97 0.015 55);
+  --surface-cool: oklch(0.97 0.01 220);
 
   /* Visual-First Primary Colors */
-  --visual-primary: oklch(0.65 0.25 25);     /* Warm Coral-Red */
-  --visual-secondary: oklch(0.7 0.2 75);     /* Golden Yellow */
-  --visual-accent: oklch(0.6 0.15 145);      /* Fresh Green */
-  --visual-dark: oklch(0.2 0.05 265);        /* Deep Blue-Black */
+  --visual-primary: oklch(0.55 0.22 35);      /* Burnt sienna - earthy, sophisticated */
+  --visual-secondary: oklch(0.72 0.16 75);    /* Golden honey */
+  --visual-accent: oklch(0.65 0.18 145);      /* Fresh sage green */
+  --visual-dark: oklch(0.15 0.04 45);         /* Deep espresso */
 
-  /* Image Overlays */
-  --overlay-dark: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
-  --overlay-warm: linear-gradient(135deg, rgba(249,112,102,0.6), rgba(251,191,36,0.4));
-  --overlay-cool: linear-gradient(135deg, rgba(59,130,246,0.5), rgba(99,102,241,0.4));
+  /* Image Overlays - More cinematic */
+  --overlay-dark: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 50%, transparent 100%);
+  --overlay-warm: linear-gradient(135deg, rgba(180,90,70,0.7), rgba(220,160,60,0.5));
+  --overlay-cool: linear-gradient(135deg, rgba(70,100,140,0.6), rgba(100,80,150,0.5));
 
-  /* Primary Colors - Vibrant Orange (appetite stimulating) */
-  --primary: oklch(0.6 0.25 45);             /* Vibrant orange */
-  --primary-foreground: oklch(1 0 0);        /* White text on orange */
-  
-  /* Secondary Colors - Warm tones */
-  --secondary: oklch(0.96 0.02 45);          /* Light cream */
-  --secondary-foreground: oklch(0.2 0.02 45); /* Dark on light cream */
-  
-  /* Muted Colors */
-  --muted: oklch(0.94 0.01 45);              /* Subtle background */
-  --muted-foreground: oklch(0.5 0.01 45);    /* Secondary text */
-  
+  /* Primary Colors - Burnt Sienna (sophisticated, appetizing) */
+  --primary: oklch(0.55 0.22 35);             /* Burnt sienna */
+  --primary-hover: oklch(0.5 0.24 35);        /* Darker on hover */
+  --primary-foreground: oklch(0.98 0.005 55); /* Warm white */
+
+  /* Accent Pop - For CTAs that need to stand out */
+  --accent-pop: oklch(0.65 0.2 145);          /* Vibrant sage */
+  --accent-pop-foreground: oklch(0.98 0.005 55);
+
+  /* Secondary Colors - Warm neutrals */
+  --secondary: oklch(0.95 0.015 55);          /* Warm off-white */
+  --secondary-foreground: oklch(0.2 0.03 45); /* Dark brown */
+
+  /* Muted Colors - Subtle warmth */
+  --muted: oklch(0.93 0.012 55);              /* Subtle warm gray */
+  --muted-foreground: oklch(0.45 0.02 45);    /* Medium brown */
+
   /* Accent Colors */
-  --accent: oklch(0.92 0.02 45);             /* Subtle accent */
-  --accent-foreground: oklch(0.2 0.02 45);   /* Text on accent */
-  
-  /* Semantic Colors */
-  --destructive: oklch(0.6 0.22 25);         /* Warm red for negative */
-  --success: oklch(0.55 0.15 145);           /* Fresh green for positive */
-  --warning: oklch(0.65 0.18 65);            /* Amber for mixed */
-  --info: oklch(0.55 0.15 220);              /* Blue for information */
-  
+  --accent: oklch(0.91 0.018 55);             /* Warm accent bg */
+  --accent-foreground: oklch(0.2 0.03 45);    /* Dark text */
+
+  /* Semantic Colors - Richer, more refined */
+  --destructive: oklch(0.55 0.2 25);          /* Deep terracotta red */
+  --success: oklch(0.55 0.16 145);            /* Sage green */
+  --warning: oklch(0.68 0.16 70);             /* Warm amber */
+  --info: oklch(0.55 0.12 240);               /* Muted blue */
+
   /* UI Elements */
-  --border: oklch(0.9 0.01 45);              /* Warm border */
-  --input: oklch(0.95 0.01 45);              /* Input background */
-  --ring: oklch(0.6 0.25 45);                /* Focus ring (matches primary) */
-  
-  /* Charts */
-  --chart-1: oklch(0.6 0.25 45);             /* Primary orange */
-  --chart-2: oklch(0.55 0.15 145);           /* Green */
-  --chart-3: oklch(0.65 0.18 65);            /* Amber */
-  --chart-4: oklch(0.55 0.15 220);           /* Blue */
-  --chart-5: oklch(0.6 0.22 25);             /* Red */
-  
-  /* Sidebar (if needed) */
-  --sidebar: oklch(0.98 0.01 45);
-  --sidebar-foreground: oklch(0.15 0.02 45);
-  --sidebar-primary: oklch(0.6 0.25 45);
-  --sidebar-primary-foreground: oklch(1 0 0);
-  --sidebar-accent: oklch(0.94 0.01 45);
-  --sidebar-accent-foreground: oklch(0.2 0.02 45);
-  --sidebar-border: oklch(0.9 0.01 45);
-  --sidebar-ring: oklch(0.6 0.25 45);
+  --border: oklch(0.88 0.015 55);             /* Warm border */
+  --input: oklch(0.96 0.01 55);               /* Input background */
+  --ring: oklch(0.55 0.22 35);                /* Focus ring (primary) */
+
+  /* Charts - Harmonious palette */
+  --chart-1: oklch(0.55 0.22 35);             /* Burnt sienna */
+  --chart-2: oklch(0.55 0.16 145);            /* Sage green */
+  --chart-3: oklch(0.68 0.16 70);             /* Warm amber */
+  --chart-4: oklch(0.55 0.12 240);            /* Muted blue */
+  --chart-5: oklch(0.6 0.18 320);             /* Dusty rose */
+
+  /* Sidebar */
+  --sidebar: oklch(0.97 0.012 55);
+  --sidebar-foreground: oklch(0.12 0.03 45);
+  --sidebar-primary: oklch(0.55 0.22 35);
+  --sidebar-primary-foreground: oklch(0.98 0.005 55);
+  --sidebar-accent: oklch(0.93 0.012 55);
+  --sidebar-accent-foreground: oklch(0.2 0.03 45);
+  --sidebar-border: oklch(0.88 0.015 55);
+  --sidebar-ring: oklch(0.55 0.22 35);
 }
 
 .dark {
-  /* Dark theme - warm, cozy feeling for evening food browsing */
-  --background: oklch(0.12 0.015 45);        /* Deep warm brown */
-  --foreground: oklch(0.95 0.01 45);         /* Warm white text */
-  --card: oklch(0.18 0.02 45);               /* Warm dark cards */
-  --card-foreground: oklch(0.95 0.01 45);    /* Light text on dark cards */
-  --popover: oklch(0.18 0.02 45);
-  --popover-foreground: oklch(0.95 0.01 45);
-  
-  /* Primary in dark mode - slightly brighter orange */
-  --primary: oklch(0.65 0.28 45);            /* Brighter orange for dark mode */
-  --primary-foreground: oklch(0.1 0.02 45);  /* Dark text on bright orange */
-  
+  /* ============================================
+     DARK THEME - Warm, cozy evening ambiance
+     ============================================ */
+  --background: oklch(0.1 0.02 45);           /* Deep espresso */
+  --foreground: oklch(0.94 0.012 55);         /* Warm cream text */
+  --card: oklch(0.15 0.025 45);               /* Rich dark cards */
+  --card-foreground: oklch(0.94 0.012 55);    /* Cream text */
+  --popover: oklch(0.15 0.025 45);
+  --popover-foreground: oklch(0.94 0.012 55);
+
+  /* Surface variations */
+  --surface-elevated: oklch(0.18 0.025 45);
+  --surface-warm: oklch(0.12 0.02 45);
+  --surface-cool: oklch(0.12 0.015 240);
+
+  /* Primary in dark mode - warmer, glowing */
+  --primary: oklch(0.62 0.22 40);             /* Warm terracotta glow */
+  --primary-hover: oklch(0.58 0.24 40);
+  --primary-foreground: oklch(0.08 0.02 45);  /* Deep dark text */
+
+  /* Accent pop */
+  --accent-pop: oklch(0.68 0.18 145);         /* Brighter sage */
+  --accent-pop-foreground: oklch(0.08 0.02 45);
+
   /* Secondary Colors */
-  --secondary: oklch(0.22 0.02 45);          /* Darker warm tone */
-  --secondary-foreground: oklch(0.9 0.01 45); /* Light text */
-  
+  --secondary: oklch(0.2 0.025 45);           /* Dark warm tone */
+  --secondary-foreground: oklch(0.9 0.01 55); /* Light warm text */
+
   /* Muted Colors */
-  --muted: oklch(0.2 0.02 45);               /* Muted dark background */
-  --muted-foreground: oklch(0.65 0.01 45);   /* Medium contrast text */
-  
+  --muted: oklch(0.18 0.02 45);               /* Muted dark bg */
+  --muted-foreground: oklch(0.6 0.015 55);    /* Medium cream */
+
   /* Accent Colors */
-  --accent: oklch(0.25 0.02 45);             /* Subtle dark accent */
-  --accent-foreground: oklch(0.9 0.01 45);   /* Light text on accent */
-  
-  /* Semantic Colors (adjusted for dark mode) */
-  --destructive: oklch(0.65 0.22 25);        /* Brighter red for visibility */
-  --success: oklch(0.6 0.15 145);            /* Brighter green */
-  --warning: oklch(0.7 0.18 65);             /* Brighter amber */
-  --info: oklch(0.6 0.15 220);               /* Brighter blue */
-  
+  --accent: oklch(0.22 0.025 45);             /* Subtle dark accent */
+  --accent-foreground: oklch(0.9 0.01 55);    /* Light text */
+
+  /* Semantic Colors (brighter for dark mode visibility) */
+  --destructive: oklch(0.6 0.2 25);           /* Glowing terracotta */
+  --success: oklch(0.62 0.16 145);            /* Bright sage */
+  --warning: oklch(0.72 0.16 70);             /* Golden amber */
+  --info: oklch(0.6 0.12 240);                /* Soft blue */
+
   /* UI Elements */
-  --border: oklch(0.3 0.02 45);              /* Warm dark border */
-  --input: oklch(0.25 0.02 45);              /* Dark input background */
-  --ring: oklch(0.65 0.28 45);               /* Bright focus ring */
-  
-  /* Charts (same bright versions) */
-  --chart-1: oklch(0.65 0.28 45);            /* Bright orange */
-  --chart-2: oklch(0.6 0.15 145);            /* Bright green */
-  --chart-3: oklch(0.7 0.18 65);             /* Bright amber */
-  --chart-4: oklch(0.6 0.15 220);            /* Bright blue */
-  --chart-5: oklch(0.65 0.22 25);            /* Bright red */
-  
+  --border: oklch(0.25 0.02 45);              /* Warm dark border */
+  --input: oklch(0.18 0.02 45);               /* Dark input bg */
+  --ring: oklch(0.62 0.22 40);                /* Warm glow ring */
+
+  /* Charts - Vibrant for dark bg */
+  --chart-1: oklch(0.62 0.22 40);             /* Warm terracotta */
+  --chart-2: oklch(0.62 0.16 145);            /* Bright sage */
+  --chart-3: oklch(0.72 0.16 70);             /* Golden amber */
+  --chart-4: oklch(0.6 0.12 240);             /* Soft blue */
+  --chart-5: oklch(0.65 0.18 320);            /* Dusty rose */
+
   /* Sidebar */
-  --sidebar: oklch(0.15 0.02 45);
-  --sidebar-foreground: oklch(0.95 0.01 45);
-  --sidebar-primary: oklch(0.65 0.28 45);
-  --sidebar-primary-foreground: oklch(0.1 0.02 45);
-  --sidebar-accent: oklch(0.22 0.02 45);
-  --sidebar-accent-foreground: oklch(0.9 0.01 45);
-  --sidebar-border: oklch(0.3 0.02 45);
-  --sidebar-ring: oklch(0.65 0.28 45);
+  --sidebar: oklch(0.12 0.02 45);
+  --sidebar-foreground: oklch(0.94 0.012 55);
+  --sidebar-primary: oklch(0.62 0.22 40);
+  --sidebar-primary-foreground: oklch(0.08 0.02 45);
+  --sidebar-accent: oklch(0.2 0.025 45);
+  --sidebar-accent-foreground: oklch(0.9 0.01 55);
+  --sidebar-border: oklch(0.25 0.02 45);
+  --sidebar-ring: oklch(0.62 0.22 40);
 }
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
-    font-family: var(--font-hebrew);
+    font-family: var(--font-body);
     direction: rtl; /* RTL for Hebrew */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
-  
+
   /* RTL-specific overrides */
   [dir="ltr"] {
     direction: ltr;
   }
-  
-  /* Enhanced Hebrew-optimized typography */
-  h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-hebrew);
-    font-weight: 700;
-    line-height: 1.2;
-    letter-spacing: -0.025em;
+
+  /* ============================================
+     TYPOGRAPHY - Editorial Hebrew Design
+     ============================================ */
+
+  /* Display headlines - Frank Ruhl Libre */
+  h1, h2 {
+    font-family: var(--font-display);
+    font-weight: 900;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    color: var(--foreground);
   }
-  
-  h1 { 
-    font-size: clamp(2.5rem, 5vw, 4rem);
-    font-weight: 800;
+
+  /* Section headers - Rubik bold */
+  h3, h4, h5, h6 {
+    font-family: var(--font-body);
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: -0.015em;
+    color: var(--foreground);
+  }
+
+  h1 {
+    font-size: clamp(2.75rem, 6vw, 4.5rem);
+    margin-bottom: 1.25rem;
+  }
+
+  h2 {
+    font-size: clamp(2rem, 4.5vw, 3.25rem);
     margin-bottom: 1rem;
   }
-  
-  h2 { 
-    font-size: clamp(2rem, 4vw, 3rem);
+
+  h3 {
+    font-size: clamp(1.5rem, 3vw, 2rem);
     margin-bottom: 0.875rem;
   }
-  
-  h3 { 
-    font-size: clamp(1.5rem, 3vw, 2.25rem);
+
+  h4 {
+    font-size: clamp(1.25rem, 2.5vw, 1.5rem);
     margin-bottom: 0.75rem;
   }
-  
-  h4 { 
-    font-size: clamp(1.25rem, 2.5vw, 1.875rem);
-    margin-bottom: 0.625rem;
-  }
-  
+
   p {
+    font-family: var(--font-body);
     line-height: 1.7;
     margin-bottom: 1rem;
-    color: hsl(var(--foreground) / 0.8);
+    color: var(--muted-foreground);
   }
-  
-  /* Improved text hierarchy */
+
+  /* Display text utility - for hero headlines */
+  .font-display {
+    font-family: var(--font-display) !important;
+  }
+
+  /* Text hierarchy utilities */
   .text-large {
     font-size: 1.125rem;
     line-height: 1.6;
   }
-  
+
   .text-small {
     font-size: 0.875rem;
     line-height: 1.5;
   }
-  
-  /* Enhanced smooth transitions for better UX */
-  * {
-    transition: background-color 200ms ease, 
-                border-color 200ms ease, 
-                color 200ms ease,
-                transform 150ms ease,
-                box-shadow 200ms ease;
+
+  .text-caption {
+    font-size: 0.75rem;
+    line-height: 1.4;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--muted-foreground);
   }
-  
+
+  /* Rich text styling */
+  .prose {
+    font-family: var(--font-body);
+    line-height: 1.75;
+  }
+
+  .prose h1, .prose h2, .prose h3 {
+    font-family: var(--font-display);
+  }
+
+  /* Enhanced smooth transitions */
+  * {
+    transition: background-color 200ms ease,
+                border-color 200ms ease,
+                color 200ms ease,
+                transform 200ms cubic-bezier(0.16, 1, 0.3, 1),
+                box-shadow 200ms ease,
+                opacity 200ms ease;
+  }
+
+  /* Disable transitions for reduced motion preference */
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      transition: none !important;
+      animation: none !important;
+    }
+  }
+
   /* Better spacing system */
   .space-y-relaxed > * + * {
     margin-top: 2rem;
   }
-  
+
   .space-y-comfortable > * + * {
     margin-top: 1.5rem;
   }
@@ -344,9 +426,77 @@
   }
 }
 
-/* Visual-First Design Utilities */
+/* ============================================
+   VISUAL-FIRST DESIGN UTILITIES
+   ============================================ */
 @layer utilities {
-  /* Masonry Grid */
+
+  /* ============================================
+     BACKGROUND TEXTURES & DEPTH
+     ============================================ */
+
+  /* Textured background with subtle grain */
+  .bg-textured {
+    position: relative;
+    background: linear-gradient(135deg, var(--surface-warm) 0%, var(--background) 50%, var(--surface-cool) 100%);
+  }
+
+  .bg-textured::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    opacity: 0.03;
+    pointer-events: none;
+    mix-blend-mode: overlay;
+  }
+
+  /* Mesh gradient background - dramatic hero style */
+  .bg-mesh-warm {
+    background:
+      radial-gradient(ellipse 80% 50% at 20% 40%, oklch(0.6 0.22 35 / 0.4), transparent),
+      radial-gradient(ellipse 60% 60% at 80% 20%, oklch(0.72 0.16 75 / 0.3), transparent),
+      radial-gradient(ellipse 50% 80% at 60% 80%, oklch(0.55 0.2 25 / 0.25), transparent),
+      linear-gradient(135deg, oklch(0.55 0.22 35) 0%, oklch(0.65 0.18 50) 50%, oklch(0.72 0.16 75) 100%);
+  }
+
+  .bg-mesh-cool {
+    background:
+      radial-gradient(ellipse 70% 60% at 30% 30%, oklch(0.55 0.12 240 / 0.4), transparent),
+      radial-gradient(ellipse 50% 70% at 70% 60%, oklch(0.6 0.18 320 / 0.3), transparent),
+      radial-gradient(ellipse 60% 50% at 50% 90%, oklch(0.65 0.16 145 / 0.2), transparent),
+      linear-gradient(135deg, oklch(0.45 0.1 240) 0%, oklch(0.5 0.15 280) 100%);
+  }
+
+  /* Paper texture effect */
+  .paper-texture::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.008) 2px,
+      rgba(0,0,0,0.008) 4px
+    );
+    pointer-events: none;
+  }
+
+  /* Grain overlay for images */
+  .grain-overlay::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    opacity: 0.15;
+    mix-blend-mode: overlay;
+    pointer-events: none;
+  }
+
+  /* ============================================
+     MASONRY GRID
+     ============================================ */
   .masonry-grid {
     display: flex;
     width: 100%;
@@ -356,80 +506,287 @@
     background-clip: padding-box;
   }
 
-  /* Image Overlays */
+  /* ============================================
+     IMAGE OVERLAYS - Cinematic
+     ============================================ */
   .image-overlay-dark {
-    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 50%, transparent 100%);
+    background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 40%, rgba(0,0,0,0.1) 70%, transparent 100%);
   }
 
   .image-overlay-warm {
-    background: linear-gradient(135deg, rgba(249,112,102,0.6), rgba(251,191,36,0.4));
+    background: linear-gradient(135deg, rgba(180,90,70,0.65), rgba(220,160,60,0.45));
   }
 
   .image-overlay-cool {
-    background: linear-gradient(135deg, rgba(59,130,246,0.5), rgba(99,102,241,0.4));
+    background: linear-gradient(135deg, rgba(70,100,140,0.55), rgba(100,80,150,0.45));
   }
 
-  /* Typography for images */
+  .image-overlay-vignette {
+    background: radial-gradient(ellipse at center, transparent 0%, rgba(0,0,0,0.4) 100%);
+  }
+
+  /* ============================================
+     TYPOGRAPHY FOR IMAGES
+     ============================================ */
   .image-headline {
-    font-size: clamp(1.5rem, 4vw, 2.5rem);
-    font-weight: 800;
-    line-height: 1.1;
-    text-shadow: 0 2px 8px rgba(0,0,0,0.3);
-    letter-spacing: -0.02em;
+    font-family: var(--font-display);
+    font-size: clamp(1.75rem, 5vw, 3rem);
+    font-weight: 900;
+    line-height: 1.05;
+    text-shadow: 0 2px 12px rgba(0,0,0,0.4), 0 4px 24px rgba(0,0,0,0.2);
+    letter-spacing: -0.03em;
   }
 
   .card-title-large {
-    font-size: clamp(1.25rem, 3vw, 1.75rem);
+    font-family: var(--font-display);
+    font-size: clamp(1.25rem, 3vw, 1.875rem);
     font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+  }
+
+  .card-title-medium {
+    font-family: var(--font-body);
+    font-size: clamp(1rem, 2vw, 1.25rem);
+    font-weight: 600;
     line-height: 1.25;
+    letter-spacing: -0.01em;
   }
 
-  /* Aspect Ratios */
-  .aspect-square {
-    aspect-ratio: 1 / 1;
+  /* ============================================
+     ASPECT RATIOS
+     ============================================ */
+  .aspect-square { aspect-ratio: 1 / 1; }
+  .aspect-portrait { aspect-ratio: 3 / 4; }
+  .aspect-landscape { aspect-ratio: 4 / 3; }
+  .aspect-wide { aspect-ratio: 16 / 9; }
+  .aspect-ultrawide { aspect-ratio: 21 / 9; }
+
+  /* ============================================
+     CARD HIERARCHY SYSTEM
+     ============================================ */
+
+  /* Featured card - bold, dramatic */
+  .card-featured {
+    border: none;
+    border-radius: 1.25rem;
+    box-shadow:
+      0 4px 6px -1px rgba(0,0,0,0.08),
+      0 20px 40px -10px rgba(0,0,0,0.15),
+      0 40px 80px -20px rgba(0,0,0,0.1);
+    overflow: hidden;
   }
 
-  .aspect-portrait {
-    aspect-ratio: 3 / 4;
+  .card-featured::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.5);
+    pointer-events: none;
   }
 
-  .aspect-landscape {
-    aspect-ratio: 4 / 3;
+  /* Standard card - refined, subtle */
+  .card-standard {
+    border: 1px solid var(--border);
+    border-radius: 1rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.03);
+    overflow: hidden;
   }
 
-  .aspect-wide {
-    aspect-ratio: 16 / 9;
+  /* Interactive card - responds to hover */
+  .card-interactive {
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    cursor: pointer;
   }
 
-  /* Shimmer Loading Effect */
+  .card-interactive:hover {
+    transform: translateY(-6px) rotate(-0.3deg);
+    box-shadow:
+      0 8px 16px -4px rgba(0,0,0,0.1),
+      0 24px 48px -12px rgba(0,0,0,0.15),
+      0 0 0 1px rgba(0,0,0,0.03);
+  }
+
+  .card-interactive:active {
+    transform: translateY(-2px) rotate(0deg);
+    transition-duration: 0.1s;
+  }
+
+  /* Glass card - frosted effect */
+  .card-glass {
+    background: rgba(255,255,255,0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 1rem;
+  }
+
+  .dark .card-glass {
+    background: rgba(30,25,20,0.7);
+    border-color: rgba(255,255,255,0.1);
+  }
+
+  /* ============================================
+     ANIMATION SYSTEM
+     ============================================ */
+
+  /* Keyframes */
   @keyframes shimmer {
-    0% {
-      background-position: -1000px 0;
+    0% { background-position: -1000px 0; }
+    100% { background-position: 1000px 0; }
+  }
+
+  @keyframes reveal-up {
+    from {
+      opacity: 0;
+      transform: translateY(24px);
     }
-    100% {
-      background-position: 1000px 0;
+    to {
+      opacity: 1;
+      transform: translateY(0);
     }
   }
 
+  @keyframes reveal-scale {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+
+  @keyframes pulse-soft {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+  }
+
+  @keyframes gradient-shift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  /* Shimmer loading */
   .shimmer {
     animation: shimmer 2s infinite linear;
     background: linear-gradient(
       to right,
-      #f0f0f0 0%,
-      #e0e0e0 20%,
-      #f0f0f0 40%,
-      #f0f0f0 100%
+      var(--muted) 0%,
+      var(--background) 20%,
+      var(--muted) 40%,
+      var(--muted) 100%
     );
     background-size: 1000px 100%;
   }
 
-  /* Visual Card Hover */
+  /* Staggered reveal - apply to parent */
+  .stagger-reveal > * {
+    opacity: 0;
+    animation: reveal-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .stagger-reveal > *:nth-child(1) { animation-delay: 0ms; }
+  .stagger-reveal > *:nth-child(2) { animation-delay: 80ms; }
+  .stagger-reveal > *:nth-child(3) { animation-delay: 160ms; }
+  .stagger-reveal > *:nth-child(4) { animation-delay: 240ms; }
+  .stagger-reveal > *:nth-child(5) { animation-delay: 320ms; }
+  .stagger-reveal > *:nth-child(6) { animation-delay: 400ms; }
+  .stagger-reveal > *:nth-child(7) { animation-delay: 480ms; }
+  .stagger-reveal > *:nth-child(8) { animation-delay: 560ms; }
+
+  /* Single reveal animations */
+  .animate-reveal-up {
+    animation: reveal-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .animate-reveal-scale {
+    animation: reveal-scale 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .animate-float-delayed {
+    animation: float 8s ease-in-out infinite;
+    animation-delay: -4s;
+  }
+
+  .animate-gradient {
+    background-size: 200% 200%;
+    animation: gradient-shift 8s ease infinite;
+  }
+
+  /* Visual Card Hover - enhanced */
   .visual-card-hover {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
   }
 
   .visual-card-hover:hover {
-    transform: translateY(-4px) scale(1.02);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    transform: translateY(-8px) scale(1.01);
+    box-shadow:
+      0 16px 32px -8px rgba(0,0,0,0.12),
+      0 32px 64px -16px rgba(0,0,0,0.1);
+  }
+
+  /* ============================================
+     DECORATIVE ELEMENTS
+     ============================================ */
+
+  /* Accent bar - colorful top border */
+  .accent-bar-positive {
+    background: linear-gradient(90deg, oklch(0.55 0.16 145), oklch(0.65 0.18 145));
+  }
+
+  .accent-bar-negative {
+    background: linear-gradient(90deg, oklch(0.55 0.2 25), oklch(0.6 0.18 25));
+  }
+
+  .accent-bar-mixed {
+    background: linear-gradient(90deg, oklch(0.68 0.16 70), oklch(0.72 0.14 75));
+  }
+
+  .accent-bar-neutral {
+    background: linear-gradient(90deg, oklch(0.6 0.02 55), oklch(0.65 0.02 55));
+  }
+
+  /* Floating shapes for hero backgrounds */
+  .floating-shape {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(60px);
+    opacity: 0.4;
+    pointer-events: none;
+  }
+
+  /* ============================================
+     SCROLLBAR STYLING
+     ============================================ */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--muted);
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--muted-foreground);
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--primary);
   }
 }
