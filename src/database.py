@@ -127,12 +127,70 @@ class Database:
                 )
             ''')
 
+            # Admin users table
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS admin_users (
+                    id TEXT PRIMARY KEY,
+                    email TEXT UNIQUE NOT NULL,
+                    password_hash TEXT NOT NULL,
+                    name TEXT NOT NULL,
+                    role TEXT NOT NULL CHECK(role IN ('super_admin', 'admin', 'editor', 'viewer')),
+                    is_active INTEGER DEFAULT 1,
+                    created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                    last_login TEXT
+                )
+            ''')
+
+            # Admin sessions table
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS admin_sessions (
+                    id TEXT PRIMARY KEY,
+                    user_id TEXT NOT NULL,
+                    token_hash TEXT NOT NULL,
+                    expires_at TEXT NOT NULL,
+                    created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                    ip_address TEXT,
+                    user_agent TEXT,
+                    FOREIGN KEY (user_id) REFERENCES admin_users(id)
+                )
+            ''')
+
+            # Restaurant edit history table (audit log)
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS restaurant_edits (
+                    id TEXT PRIMARY KEY,
+                    restaurant_name TEXT NOT NULL,
+                    restaurant_id TEXT,
+                    admin_user_id TEXT NOT NULL,
+                    edit_type TEXT NOT NULL CHECK(edit_type IN ('create', 'update', 'delete', 'approve', 'reject')),
+                    changes TEXT,
+                    timestamp TEXT DEFAULT CURRENT_TIMESTAMP,
+                    FOREIGN KEY (admin_user_id) REFERENCES admin_users(id),
+                    FOREIGN KEY (restaurant_id) REFERENCES restaurants(id)
+                )
+            ''')
+
+            # System settings table
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS settings (
+                    key TEXT PRIMARY KEY,
+                    value TEXT NOT NULL,
+                    updated_by TEXT,
+                    updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                    FOREIGN KEY (updated_by) REFERENCES admin_users(id)
+                )
+            ''')
+
             # Create indexes for common queries
             cursor.execute('CREATE INDEX IF NOT EXISTS idx_restaurants_city ON restaurants(city)')
             cursor.execute('CREATE INDEX IF NOT EXISTS idx_restaurants_cuisine ON restaurants(cuisine_type)')
             cursor.execute('CREATE INDEX IF NOT EXISTS idx_restaurants_episode ON restaurants(episode_id)')
             cursor.execute('CREATE INDEX IF NOT EXISTS idx_episodes_video_id ON episodes(video_id)')
             cursor.execute('CREATE INDEX IF NOT EXISTS idx_jobs_status ON jobs(status)')
+            cursor.execute('CREATE INDEX IF NOT EXISTS idx_admin_users_email ON admin_users(email)')
+            cursor.execute('CREATE INDEX IF NOT EXISTS idx_admin_sessions_user_id ON admin_sessions(user_id)')
+            cursor.execute('CREATE INDEX IF NOT EXISTS idx_restaurant_edits_restaurant_id ON restaurant_edits(restaurant_id)')
+            cursor.execute('CREATE INDEX IF NOT EXISTS idx_restaurant_edits_admin_user_id ON restaurant_edits(admin_user_id)')
 
     # ==================== Episode Operations ====================
 
