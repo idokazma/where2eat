@@ -26,6 +26,7 @@ app.use(cors({
     'http://localhost:3000',
     'http://localhost:3001', // Admin dashboard
     'https://where2eat.vercel.app',
+    'https://where2eat-delta.vercel.app', // Current Vercel deployment
     // Add your custom domain here or via ALLOWED_ORIGINS env var
   ],
   credentials: true
