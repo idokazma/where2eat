@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useMemo } from "react"
+import { useSearchParams } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
@@ -62,6 +63,10 @@ interface SearchAnalytics {
 
 export function MasterDashboard() {
   const { t } = useLanguage()
+  const searchParams = useSearchParams()
+
+  // Get active tab from URL params, default to "overview"
+  const tabFromUrl = searchParams.get('tab') || 'overview'
 
   // State management
   const [allRestaurants, setAllRestaurants] = useState<Restaurant[]>([])
@@ -69,8 +74,13 @@ export function MasterDashboard() {
   const [selectedRestaurant, setSelectedRestaurant] = useState<Restaurant | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [searchLoading, setSearchLoading] = useState(false)
-  const [activeTab, setActiveTab] = useState("overview")
+  const [activeTab, setActiveTab] = useState(tabFromUrl)
   const [layoutMode, setLayoutMode] = useState<LayoutMode>("masonry")
+
+  // Update active tab when URL changes
+  useEffect(() => {
+    setActiveTab(tabFromUrl)
+  }, [tabFromUrl])
 
   // Filter states for classic view
   const [classicFilters, setClassicFilters] = useState({
@@ -248,61 +258,8 @@ export function MasterDashboard() {
           </div>
         </ScrollReveal>
 
-        {/* Main Navigation - Refined Tab Design */}
+        {/* Main Navigation - Now handled by side nav, tabs hidden */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
-          <Card className="card-glass border-0 shadow-lg">
-            <CardContent className="p-2">
-              <TabsList className="grid grid-cols-2 lg:grid-cols-6 gap-1 bg-transparent h-auto p-1">
-                <TabsTrigger
-                  value="overview"
-                  className="relative flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-medium text-muted-foreground transition-all data-[state=active]:text-primary data-[state=active]:bg-primary/10 data-[state=active]:shadow-sm hover:bg-muted/50"
-                >
-                  <BarChart3 className="size-4" />
-                  <span className="hidden sm:inline">{t('tabs.overview')}</span>
-                </TabsTrigger>
-                <TabsTrigger
-                  value="search"
-                  className="relative flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-medium text-muted-foreground transition-all data-[state=active]:text-primary data-[state=active]:bg-primary/10 data-[state=active]:shadow-sm hover:bg-muted/50"
-                >
-                  <Search className="size-4" />
-                  <span className="hidden sm:inline">{t('tabs.advancedSearch')}</span>
-                </TabsTrigger>
-                <TabsTrigger
-                  value="timeline"
-                  className="relative flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-medium text-muted-foreground transition-all data-[state=active]:text-primary data-[state=active]:bg-primary/10 data-[state=active]:shadow-sm hover:bg-muted/50"
-                >
-                  <Clock className="size-4" />
-                  <span className="hidden sm:inline">{t('tabs.timeline')}</span>
-                </TabsTrigger>
-                <TabsTrigger
-                  value="map"
-                  className="relative flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-medium text-muted-foreground transition-all data-[state=active]:text-primary data-[state=active]:bg-primary/10 data-[state=active]:shadow-sm hover:bg-muted/50"
-                >
-                  <Map className="size-4" />
-                  <span className="hidden sm:inline">{t('tabs.map')}</span>
-                </TabsTrigger>
-                <TabsTrigger
-                  value="favorites"
-                  className="relative flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-medium text-muted-foreground transition-all data-[state=active]:text-primary data-[state=active]:bg-primary/10 data-[state=active]:shadow-sm hover:bg-muted/50"
-                >
-                  <Heart className="size-4" />
-                  <span className="hidden sm:inline">{t('tabs.favorites')}</span>
-                  {favoriteRestaurants.length > 0 && (
-                    <span className="absolute -top-1 -right-1 size-5 flex items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-bold">
-                      {favoriteRestaurants.length}
-                    </span>
-                  )}
-                </TabsTrigger>
-                <TabsTrigger
-                  value="analytics"
-                  className="relative flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-medium text-muted-foreground transition-all data-[state=active]:text-primary data-[state=active]:bg-primary/10 data-[state=active]:shadow-sm hover:bg-muted/50"
-                >
-                  <TrendingUp className="size-4" />
-                  <span className="hidden sm:inline">{t('tabs.trends')}</span>
-                </TabsTrigger>
-              </TabsList>
-            </CardContent>
-          </Card>
 
           {/* Overview Tab */}
           <TabsContent value="overview" className="space-y-6">
