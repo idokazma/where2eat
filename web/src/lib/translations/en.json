@@ -11,7 +11,8 @@
     "timeline": "Timeline",
     "map": "Map",
     "favorites": "Favorites",
-    "trends": "Trends"
+    "trends": "Trends",
+    "admin": "Admin"
   },
   "common": {
     "loading": "Loading data...",

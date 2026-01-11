@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { FavoritesProvider } from "@/contexts/favorites-context";
 import { ClientLayout } from "@/components/client-layout";
+import { SideNav } from "@/components/side-nav";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -48,7 +49,12 @@ export default function RootLayout({
       >
         <ClientLayout>
           <FavoritesProvider>
-            {children}
+            <div className="flex min-h-screen">
+              <SideNav />
+              <main className="flex-1 overflow-auto">
+                {children}
+              </main>
+            </div>
           </FavoritesProvider>
         </ClientLayout>
       </body>
