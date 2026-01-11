@@ -8,6 +8,23 @@ const path = require('path')
 const { v4: uuidv4 } = require('uuid')
 require('dotenv').config()
 
+// Helper function to determine Python executable path
+function getPythonExecutable() {
+  // First check for explicit environment variable (for Railway/production)
+  if (process.env.PYTHON_EXECUTABLE) {
+    return process.env.PYTHON_EXECUTABLE
+  }
+
+  // Check if local venv exists (for local development)
+  const venvPython = path.join(__dirname, '..', 'venv', 'bin', 'python')
+  if (fs.existsSync(venvPython)) {
+    return venvPython
+  }
+
+  // Fall back to system Python
+  return 'python3'
+}
+
 const app = express()
 const port = process.env.PORT || 3001
 
@@ -929,35 +946,33 @@ app.post('/api/analyze/channel', async (req, res) => {
     
     // Start the Python channel analysis in the background
     const { spawn } = require('child_process')
-    const pythonPath = path.join(__dirname, '..', 'scripts', 'process_channel.py')
-    const venvPython = path.join(__dirname, '..', 'venv', 'bin', 'python')
-    
-    console.log(`🐍 Python script path: ${pythonPath}`)
-    console.log(`🐍 Using venv Python: ${venvPython}`)
+    const scriptPath = path.join(__dirname, '..', 'scripts', 'process_channel.py')
+    const pythonExe = getPythonExecutable()
+
+    console.log(`🐍 Python script path: ${scriptPath}`)
+    console.log(`🐍 Using Python: ${pythonExe}`)
     
     // Prepare arguments for Python script
     const args = [
-      pythonPath,
+      scriptPath,
       '--channel_url', channel_url,
       '--max_results', (filters.max_results || 50).toString(),
       '--batch_size', (processing_options.batch_size || 5).toString()
     ]
-    
+
     if (filters.date_from) args.push('--date_from', filters.date_from)
     if (filters.date_to) args.push('--date_to', filters.date_to)
     if (filters.min_views) args.push('--min_views', filters.min_views.toString())
     if (filters.min_duration_seconds) args.push('--min_duration_seconds', filters.min_duration_seconds.toString())
     if (processing_options.skip_existing !== undefined) args.push('--skip_existing', processing_options.skip_existing.toString())
-    
-    // Use virtual environment Python with proper activation
-    const python = spawn(venvPython, args, {
+
+    // Use Python with proper environment
+    const python = spawn(pythonExe, args, {
       cwd: path.join(__dirname, '..'),
       stdio: ['pipe', 'pipe', 'pipe'],
-      env: { 
-        ...process.env, 
-        PYTHONPATH: path.join(__dirname, '..'),
-        VIRTUAL_ENV: path.join(__dirname, '..', 'venv'),
-        PATH: `${path.join(__dirname, '..', 'venv', 'bin')}:${process.env.PATH}`
+      env: {
+        ...process.env,
+        PYTHONPATH: path.join(__dirname, '..')
       }
     })
     
@@ -1160,21 +1175,19 @@ app.post('/api/analyze', async (req, res) => {
     
     // Start the Python analysis in the background
     const { spawn } = require('child_process')
-    const pythonPath = path.join(__dirname, '..', 'scripts', 'main.py')
-    const venvPython = path.join(__dirname, '..', 'venv', 'bin', 'python')
-    
-    console.log(`🐍 Python script path: ${pythonPath}`)
-    console.log(`🐍 Using venv Python: ${venvPython}`)
-    
-    // Use virtual environment Python with proper activation
-    const python = spawn(venvPython, [pythonPath, url], {
+    const scriptPath = path.join(__dirname, '..', 'scripts', 'main.py')
+    const pythonExe = getPythonExecutable()
+
+    console.log(`🐍 Python script path: ${scriptPath}`)
+    console.log(`🐍 Using Python: ${pythonExe}`)
+
+    // Use Python with proper environment
+    const python = spawn(pythonExe, [scriptPath, url], {
       cwd: path.join(__dirname, '..'),
       stdio: ['pipe', 'pipe', 'pipe'],
-      env: { 
-        ...process.env, 
-        PYTHONPATH: path.join(__dirname, '..'),
-        VIRTUAL_ENV: path.join(__dirname, '..', 'venv'),
-        PATH: `${path.join(__dirname, '..', 'venv', 'bin')}:${process.env.PATH}`
+      env: {
+        ...process.env,
+        PYTHONPATH: path.join(__dirname, '..')
       }
     })
     
