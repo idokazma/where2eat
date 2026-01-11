@@ -37,6 +37,7 @@ import { ScrollReveal } from "./scroll-reveal"
 import { AnimatedFilters } from "./animated-filters"
 import { useLanguage } from "@/contexts/LanguageContext"
 import { LanguageToggle } from "./language-toggle"
+import { ConnectivityCheck } from "./connectivity-check"
 
 interface SearchResults {
   restaurants: Restaurant[]
@@ -236,7 +237,8 @@ export function MasterDashboard() {
         {/* Parallax Hero Header */}
         <ScrollReveal>
           <div className="relative">
-            <div className="absolute top-4 right-4 z-10">
+            <div className="absolute top-4 right-4 z-10 flex items-start gap-3">
+              <ConnectivityCheck />
               <LanguageToggle />
             </div>
             <ParallaxHero
