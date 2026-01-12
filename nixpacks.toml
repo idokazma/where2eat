@@ -1,0 +1,8 @@
+[phases.setup]
+nixPkgs = ["nodejs_20", "python311", "python311Packages.pip"]
+
+[phases.install]
+cmds = ["cd api && npm install", "pip install -r requirements.txt"]
+
+[start]
+cmd = "cd api && npm start"
