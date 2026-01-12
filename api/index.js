@@ -41,6 +41,71 @@ app.get('/health', (req, res) => {
   res.json({ status: 'OK', timestamp: new Date().toISOString() })
 })
 
+// YouTube Transcript Collector health check endpoint
+app.get('/api/youtube-transcript/health', async (req, res) => {
+  try {
+    const { spawn } = require('child_process')
+    const path = require('path')
+
+    // Call Python health check script
+    const pythonScript = `
+import sys
+sys.path.insert(0, '/home/user/where2eat/src')
+from youtube_transcript_collector import YouTubeTranscriptCollector
+import json
+
+collector = YouTubeTranscriptCollector()
+health = collector.health_check()
+print(json.dumps(health))
+`
+
+    const python = spawn('python3', ['-c', pythonScript], {
+      cwd: path.join(__dirname, '..'),
+      env: { ...process.env }
+    })
+
+    let output = ''
+    let errorOutput = ''
+
+    python.stdout.on('data', (data) => {
+      output += data.toString()
+    })
+
+    python.stderr.on('data', (data) => {
+      errorOutput += data.toString()
+    })
+
+    python.on('close', (code) => {
+      if (code === 0) {
+        try {
+          const health = JSON.parse(output.trim())
+          res.json(health)
+        } catch (e) {
+          res.status(500).json({
+            status: 'error',
+            message: 'Failed to parse health check response',
+            error: e.message
+          })
+        }
+      } else {
+        res.status(500).json({
+          status: 'error',
+          message: 'Health check failed',
+          error: errorOutput
+        })
+      }
+    })
+
+  } catch (error) {
+    console.error('Error running transcript health check:', error)
+    res.status(500).json({
+      status: 'error',
+      message: 'Failed to run health check',
+      error: error.message
+    })
+  }
+})
+
 // Admin routes
 app.use('/api/admin/auth', adminAuthRoutes)
 app.use('/api/admin/restaurants', adminRestaurantsRoutes)

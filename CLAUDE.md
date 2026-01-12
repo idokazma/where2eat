@@ -87,7 +87,11 @@ python scripts/cli.py analytics trends --period 3months
 
 - `database.py` - SQLite database with episodes, restaurants, and jobs tables
 - `backend_service.py` - Unified service layer for all backend operations
-- `youtube_transcript_collector.py` - Fetches YouTube transcripts using youtube-transcript-api
+- `youtube_transcript_collector.py` - **Enhanced** YouTube transcript fetcher with:
+  - **Database caching** - Checks cache before making API requests
+  - **Rate limiting** - Enforces 1 request per 30 seconds (configurable)
+  - **Health checks** - API connectivity monitoring
+  - Non-blocking rate limiter using threading
 - `youtube_channel_collector.py` - Processes entire YouTube channels
 - `claude_restaurant_analyzer.py` / `openai_restaurant_analyzer.py` - AI-based restaurant extraction from transcripts
 - `unified_restaurant_analyzer.py` - Unified interface for multiple LLM providers
@@ -109,6 +113,14 @@ python scripts/cli.py analytics trends --period 3months
 - Single `index.js` file
 - Calls backend service layer for data operations
 
+**Key Endpoints:**
+- `GET /health` - API server health check
+- `GET /api/youtube-transcript/health` - YouTube transcript collector health check
+- `GET /api/restaurants` - List all restaurants
+- `GET /api/restaurants/search` - Advanced restaurant search with filters
+- `POST /api/analyze` - Analyze a YouTube video
+- `POST /api/analyze/channel` - Process an entire YouTube channel
+
 ### Data Storage
 - `data/where2eat.db` - SQLite database (primary storage)
 - `data/restaurants/` - Individual restaurant JSON files (for import/export)
@@ -129,6 +141,13 @@ python scripts/cli.py analytics trends --period 3months
 - Maintain >90% test coverage for new code
 - Test naming: `test_[method]_[scenario]_[expected_result]`
 - Use pytest with mocking for external APIs
+
+**Recent TDD Implementation:**
+The YouTube transcript collector was enhanced following TDD:
+- Added caching tests → Implemented database caching
+- Added rate limiting tests → Implemented 30-second rate limiter
+- Added health check tests → Implemented API connectivity monitoring
+- All features tested before implementation ✓
 
 ## Key Dependencies
 
