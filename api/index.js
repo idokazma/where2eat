@@ -47,21 +47,39 @@ app.get('/api/youtube-transcript/health', async (req, res) => {
     const { spawn } = require('child_process')
     const path = require('path')
 
-    // Call Python health check script
+    // Call Python health check script using relative paths
     const pythonScript = `
 import sys
-sys.path.insert(0, '/home/user/where2eat/src')
+import os
+# Add src directory to Python path
+sys.path.insert(0, 'src')
 from youtube_transcript_collector import YouTubeTranscriptCollector
 import json
 
-collector = YouTubeTranscriptCollector()
-health = collector.health_check()
-print(json.dumps(health))
+try:
+    collector = YouTubeTranscriptCollector()
+    health = collector.health_check()
+    print(json.dumps(health))
+except Exception as e:
+    import traceback
+    print(json.dumps({
+        "status": "error",
+        "message": str(e),
+        "traceback": traceback.format_exc(),
+        "api_connectivity": "unknown",
+        "cache": {"enabled": False},
+        "rate_limiter": {"enabled": False}
+    }))
 `
 
+    // Use python3 and set PYTHONPATH to project root
+    const projectRoot = path.join(__dirname, '..')
     const python = spawn('python3', ['-c', pythonScript], {
-      cwd: path.join(__dirname, '..'),
-      env: { ...process.env }
+      cwd: projectRoot,
+      env: {
+        ...process.env,
+        PYTHONPATH: projectRoot
+      }
     })
 
     let output = ''
@@ -84,16 +102,26 @@ print(json.dumps(health))
           res.status(500).json({
             status: 'error',
             message: 'Failed to parse health check response',
-            error: e.message
+            error: e.message,
+            raw_output: output.substring(0, 200)
           })
         }
       } else {
         res.status(500).json({
           status: 'error',
           message: 'Health check failed',
-          error: errorOutput
+          error: errorOutput || 'Python process exited with error',
+          exit_code: code
         })
       }
+    })
+
+    python.on('error', (error) => {
+      res.status(500).json({
+        status: 'error',
+        message: 'Failed to spawn Python process',
+        error: error.message
+      })
     })
 
   } catch (error) {
