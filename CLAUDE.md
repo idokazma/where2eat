@@ -87,7 +87,12 @@ python scripts/cli.py analytics trends --period 3months
 
 - `database.py` - SQLite database with episodes, restaurants, and jobs tables
 - `backend_service.py` - Unified service layer for all backend operations
-- `youtube_transcript_collector.py` - Fetches YouTube transcripts using youtube-transcript-api
+- `config.py` - **Configuration settings** for backend services (rate limits, feature flags)
+- `youtube_transcript_collector.py` - **Enhanced** YouTube transcript fetcher with:
+  - **Database caching** - Checks cache before making API requests
+  - **Rate limiting** - Enforces 1 request per 30 seconds (configurable in `config.py`)
+  - **Health checks** - API connectivity monitoring
+  - Non-blocking rate limiter using threading
 - `youtube_channel_collector.py` - Processes entire YouTube channels
 - `claude_restaurant_analyzer.py` / `openai_restaurant_analyzer.py` - AI-based restaurant extraction from transcripts
 - `unified_restaurant_analyzer.py` - Unified interface for multiple LLM providers
@@ -109,6 +114,14 @@ python scripts/cli.py analytics trends --period 3months
 - Single `index.js` file
 - Calls backend service layer for data operations
 
+**Key Endpoints:**
+- `GET /health` - API server health check
+- `GET /api/youtube-transcript/health` - YouTube transcript collector health check
+- `GET /api/restaurants` - List all restaurants
+- `GET /api/restaurants/search` - Advanced restaurant search with filters
+- `POST /api/analyze` - Analyze a YouTube video
+- `POST /api/analyze/channel` - Process an entire YouTube channel
+
 ### Data Storage
 - `data/where2eat.db` - SQLite database (primary storage)
 - `data/restaurants/` - Individual restaurant JSON files (for import/export)
@@ -129,6 +142,89 @@ python scripts/cli.py analytics trends --period 3months
 - Maintain >90% test coverage for new code
 - Test naming: `test_[method]_[scenario]_[expected_result]`
 - Use pytest with mocking for external APIs
+
+**Recent TDD Implementation:**
+The YouTube transcript collector was enhanced following TDD:
+- Added caching tests → Implemented database caching
+- Added rate limiting tests → Implemented 30-second rate limiter
+- Added health check tests → Implemented API connectivity monitoring
+- All features tested before implementation ✓
+
+## Usage Examples
+
+### YouTube Transcript Collector with Caching
+
+**Basic Usage (No Caching):**
+```python
+from youtube_transcript_collector import YouTubeTranscriptCollector
+
+collector = YouTubeTranscriptCollector()
+result = collector.get_transcript('https://www.youtube.com/watch?v=VIDEO_ID')
+print(result['transcript'])
+```
+
+**With Database Caching (Recommended):**
+```python
+from youtube_transcript_collector import YouTubeTranscriptCollector
+from database import Database
+
+db = Database()  # Uses default path: data/where2eat.db
+collector = YouTubeTranscriptCollector(database=db)
+
+# First call - fetches from API and caches
+result = collector.get_transcript('https://www.youtube.com/watch?v=VIDEO_ID')
+print(f"Cached: {result['cached']}")  # False
+
+# Second call - uses cache (no API request)
+result = collector.get_transcript('https://www.youtube.com/watch?v=VIDEO_ID')
+print(f"Cached: {result['cached']}")  # True
+```
+
+**Custom Rate Limiting:**
+```python
+# Set custom rate limit (e.g., 60 seconds between requests)
+collector = YouTubeTranscriptCollector(database=db, rate_limit_seconds=60)
+
+# Check rate limiter status
+status = collector.get_rate_limit_status()
+print(f"Requests made: {status['requests_made']}")
+print(f"Time until next available: {status['time_until_next_available']}s")
+```
+
+**Health Check:**
+```python
+collector = YouTubeTranscriptCollector()
+health = collector.health_check()
+print(f"Status: {health['status']}")
+print(f"API Connectivity: {health['api_connectivity']}")
+print(f"Cache Enabled: {health['cache']['enabled']}")
+```
+
+### Configuration
+
+Edit `src/config.py` to adjust settings:
+```python
+# YouTube Transcript Collector Settings
+YOUTUBE_TRANSCRIPT_RATE_LIMIT_SECONDS = 30  # Adjust as needed
+YOUTUBE_TRANSCRIPT_CACHE_ENABLED = True
+```
+
+### Troubleshooting
+
+**Rate Limit Errors:**
+- The collector automatically enforces rate limiting to prevent YouTube API blocks
+- Cached requests do NOT count toward the rate limit
+- Adjust `YOUTUBE_TRANSCRIPT_RATE_LIMIT_SECONDS` in `config.py` if needed
+
+**Cache Not Working:**
+- Ensure database instance is passed to collector
+- Check database permissions and path
+- Verify `data/where2eat.db` exists and is writable
+
+**API Connectivity Issues:**
+- Use health check endpoint: `GET /api/youtube-transcript/health`
+- Check network connectivity
+- Verify YouTube is not blocking requests (rare with rate limiting)
 
 ## Key Dependencies
 

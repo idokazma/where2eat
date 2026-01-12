@@ -12,10 +12,33 @@ from youtube_transcript_api._errors import (
 from youtube_transcript_api import TranscriptList
 from typing import List, Dict, Optional
 import re
+import time
+import threading
+from datetime import datetime
+from queue import Queue
+
+try:
+    from config import YOUTUBE_TRANSCRIPT_RATE_LIMIT_SECONDS
+except ImportError:
+    YOUTUBE_TRANSCRIPT_RATE_LIMIT_SECONDS = 30
 
 
 class YouTubeTranscriptCollector:
-    """Collects and processes YouTube video transcripts."""
+    """Collects and processes YouTube video transcripts with caching and rate limiting."""
+
+    def __init__(self, database=None, rate_limit_seconds: int = None):
+        """
+        Initialize the transcript collector.
+
+        Args:
+            database: Optional Database instance for caching transcripts
+            rate_limit_seconds: Minimum seconds between API requests (default: from config.py)
+        """
+        self.database = database
+        self.rate_limit_seconds = rate_limit_seconds if rate_limit_seconds is not None else YOUTUBE_TRANSCRIPT_RATE_LIMIT_SECONDS
+        self._last_request_time = 0
+        self._request_lock = threading.Lock()
+        self._requests_made = 0
 
     @staticmethod
     def extract_video_id(url: str) -> Optional[str]:
@@ -28,6 +51,10 @@ class YouTubeTranscriptCollector:
         Returns:
             Video ID or None if not found
         """
+        # Handle None or empty input
+        if not url:
+            return None
+
         # If it's already a video ID (11 characters, alphanumeric and dashes/underscores)
         if re.match(r'^[a-zA-Z0-9_-]{11}$', url):
             return url
@@ -132,13 +159,41 @@ class YouTubeTranscriptCollector:
 
         return None
 
+    def _wait_for_rate_limit(self):
+        """Wait if necessary to respect rate limit."""
+        with self._request_lock:
+            current_time = time.time()
+            time_since_last_request = current_time - self._last_request_time
+
+            if time_since_last_request < self.rate_limit_seconds:
+                wait_time = self.rate_limit_seconds - time_since_last_request
+                print(f"Rate limit: waiting {wait_time:.1f} seconds before next request...")
+                time.sleep(wait_time)
+
+            self._last_request_time = time.time()
+            self._requests_made += 1
+
+    def get_rate_limit_status(self) -> Dict:
+        """Get current rate limiter status."""
+        with self._request_lock:
+            current_time = time.time()
+            time_since_last = current_time - self._last_request_time
+            time_until_next = max(0, self.rate_limit_seconds - time_since_last)
+
+            return {
+                'requests_made': self._requests_made,
+                'time_until_next_available': time_until_next,
+                'rate_limit_seconds': self.rate_limit_seconds,
+                'last_request_timestamp': self._last_request_time
+            }
+
     def get_transcript(
         self,
         video_url: str,
         languages: List[str] = ['en']
     ) -> Optional[Dict]:
         """
-        Fetch transcript for a YouTube video.
+        Fetch transcript for a YouTube video with caching and rate limiting.
 
         Args:
             video_url: YouTube URL or video ID
@@ -154,25 +209,61 @@ class YouTubeTranscriptCollector:
             print(f"Error: Could not extract video ID from: {video_url}")
             return None
 
+        # Check cache first if database is available
+        if self.database:
+            cached_episode = self.database.get_episode(video_id=video_id)
+            if cached_episode and cached_episode.get('transcript'):
+                print(f"✓ Using cached transcript for video: {video_id}")
+                # Return cached data in the same format
+                return {
+                    'video_id': video_id,
+                    'video_url': f'https://www.youtube.com/watch?v={video_id}',
+                    'transcript': cached_episode['transcript'],
+                    'segments': [],  # Segments not stored in cache for now
+                    'language': cached_episode.get('language', 'unknown'),
+                    'segment_count': len(cached_episode['transcript'].split()),
+                    'cached': True
+                }
+
+        # Apply rate limiting before API call
+        self._wait_for_rate_limit()
+
         try:
-            # Fetch transcript
-            api = YouTubeTranscriptApi()
-            transcript_data = api.fetch(
+            # Fetch transcript from API
+            transcript_list = YouTubeTranscriptApi.get_transcript(
                 video_id,
                 languages=languages
             )
 
             # Combine all transcript segments into full text
-            full_text = ' '.join([snippet.text for snippet in transcript_data.snippets])
+            full_text = ' '.join([segment['text'] for segment in transcript_list])
+            segments = [{'text': segment['text'], 'start': segment['start'], 'duration': segment['duration']} for segment in transcript_list]
 
-            return {
+            result = {
                 'video_id': video_id,
                 'video_url': f'https://www.youtube.com/watch?v={video_id}',
                 'transcript': full_text,
-                'segments': [{'text': snippet.text, 'start': snippet.start, 'duration': snippet.duration} for snippet in transcript_data.snippets],
+                'segments': segments,
                 'language': languages[0] if languages else 'en',
-                'segment_count': len(transcript_data.snippets)
+                'segment_count': len(transcript_list),
+                'cached': False
             }
+
+            # Cache the result if database is available
+            if self.database:
+                try:
+                    self.database.create_episode(
+                        video_id=video_id,
+                        video_url=result['video_url'],
+                        transcript=full_text,
+                        language=result['language'],
+                        analysis_date=datetime.now().isoformat()
+                    )
+                    print(f"✓ Cached transcript for video: {video_id}")
+                except Exception as cache_error:
+                    print(f"Warning: Failed to cache transcript: {cache_error}")
+
+            return result
 
         except TranscriptsDisabled:
             print(f"Error: Transcripts are disabled for video: {video_id}")
@@ -234,3 +325,34 @@ class YouTubeTranscriptCollector:
         ]
 
         return matching_segments
+
+    def health_check(self) -> Dict:
+        """
+        Perform a health check on the transcript collector.
+
+        Returns:
+            Dictionary with health status information
+        """
+        health_info = {
+            'status': 'healthy',
+            'timestamp': datetime.now().isoformat(),
+            'rate_limiter': self.get_rate_limit_status(),
+            'cache': {
+                'enabled': self.database is not None,
+                'type': 'database' if self.database else None
+            },
+            'api_connectivity': False
+        }
+
+        # Test API connectivity with a known video (using YouTube's test video)
+        test_video_id = 'jNQXAC9IVRw'  # "Me at the zoo" - first YouTube video
+        try:
+            # Try to list available transcripts without fetching full content
+            YouTubeTranscriptApi.list_transcripts(test_video_id)
+            health_info['api_connectivity'] = True
+        except Exception as e:
+            health_info['status'] = 'unhealthy'
+            health_info['api_connectivity'] = False
+            health_info['error'] = str(e)
+
+        return health_info
