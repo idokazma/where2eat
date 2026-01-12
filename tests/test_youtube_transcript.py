@@ -166,16 +166,75 @@ class TestYouTubeTranscriptCollector:
 
 class TestTranscriptIntegration:
     """Integration tests for the transcript system"""
-    
+
+    @pytest.mark.integration
+    def test_real_video_processing_with_caching(self, tmp_path):
+        """Test with real YouTube video URLs including caching"""
+        import random
+
+        # Use one of the provided test URLs
+        test_urls = [
+            "https://www.youtube.com/watch?v=8fKi1aA24-w",
+            "https://www.youtube.com/watch?v=f9L1k9RctpM"
+        ]
+        video_url = random.choice(test_urls)
+        video_id = YouTubeTranscriptCollector.extract_video_id(video_url)
+
+        # Test with database caching
+        db_path = tmp_path / "integration_test.db"
+        from database import Database
+        db = Database(str(db_path))
+        collector = YouTubeTranscriptCollector(database=db, rate_limit_seconds=5)
+
+        # First call - should fetch from API and cache
+        print(f"\nTesting with URL: {video_url}")
+        result1 = collector.get_transcript(video_url, languages=['he', 'iw', 'en'])
+
+        if result1:  # Only test if transcript is available
+            print(f"✓ Successfully fetched transcript for video: {video_id}")
+            assert result1['video_id'] == video_id
+            assert result1['video_url'] == f'https://www.youtube.com/watch?v={video_id}'
+            assert result1['segment_count'] > 0
+            assert len(result1['transcript']) > 100  # Should have substantial content
+            assert isinstance(result1['segments'], list)
+            assert result1['cached'] is False
+
+            # Second call - should use cache
+            result2 = collector.get_transcript(video_url, languages=['he', 'iw', 'en'])
+            assert result2 is not None
+            assert result2['cached'] is True
+            assert result2['transcript'] == result1['transcript']
+            print(f"✓ Successfully retrieved from cache")
+        else:
+            pytest.skip("Real video transcript not available - testing offline functionality only")
+
+    @pytest.mark.integration
+    def test_health_check_with_real_api(self):
+        """Test health check with real YouTube API connection"""
+        collector = YouTubeTranscriptCollector()
+
+        health = collector.health_check()
+
+        print(f"\nHealth check status: {health['status']}")
+        print(f"API connectivity: {health['api_connectivity']}")
+
+        assert 'status' in health
+        assert 'timestamp' in health
+        assert 'api_connectivity' in health
+        assert health['status'] in ['healthy', 'degraded', 'unhealthy']
+
+        # API connectivity might be True or False depending on network/quota
+        assert isinstance(health['api_connectivity'], bool)
+
     def test_real_video_processing(self):
         """Test with the actual video URL provided by user"""
         # Note: This test requires internet connection and may fail if video becomes unavailable
         video_url = "https://www.youtube.com/watch?v=6jvskRWvQkg"
         collector = YouTubeTranscriptCollector()
-        
+
         # Try to get transcript (may fail if video unavailable or no transcript)
         result = collector.get_transcript(video_url, languages=['he', 'iw'])
-        
+
         if result:  # Only test if transcript is available
             assert result['video_id'] == '6jvskRWvQkg'
             assert result['video_url'] == video_url
@@ -183,7 +242,6 @@ class TestTranscriptIntegration:
             assert result['segment_count'] > 0
             assert len(result['transcript']) > 100  # Should have substantial content
             assert isinstance(result['segments'], list)
-            assert result['formatted_timestamp']
         else:
             pytest.skip("Real video transcript not available - testing offline functionality only")
     

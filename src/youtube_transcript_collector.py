@@ -17,20 +17,25 @@ import threading
 from datetime import datetime
 from queue import Queue
 
+try:
+    from config import YOUTUBE_TRANSCRIPT_RATE_LIMIT_SECONDS
+except ImportError:
+    YOUTUBE_TRANSCRIPT_RATE_LIMIT_SECONDS = 30
+
 
 class YouTubeTranscriptCollector:
     """Collects and processes YouTube video transcripts with caching and rate limiting."""
 
-    def __init__(self, database=None, rate_limit_seconds: int = 30):
+    def __init__(self, database=None, rate_limit_seconds: int = None):
         """
         Initialize the transcript collector.
 
         Args:
             database: Optional Database instance for caching transcripts
-            rate_limit_seconds: Minimum seconds between API requests (default: 30)
+            rate_limit_seconds: Minimum seconds between API requests (default: from config.py)
         """
         self.database = database
-        self.rate_limit_seconds = rate_limit_seconds
+        self.rate_limit_seconds = rate_limit_seconds if rate_limit_seconds is not None else YOUTUBE_TRANSCRIPT_RATE_LIMIT_SECONDS
         self._last_request_time = 0
         self._request_lock = threading.Lock()
         self._requests_made = 0
