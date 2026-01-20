@@ -229,15 +229,13 @@ class YouTubeTranscriptCollector:
         self._wait_for_rate_limit()
 
         try:
-            # Fetch transcript from API
-            transcript_list = YouTubeTranscriptApi.get_transcript(
-                video_id,
-                languages=languages
-            )
+            # Fetch transcript from API (v1.x uses instance-based API)
+            api = YouTubeTranscriptApi()
+            transcript_data = api.fetch(video_id, languages=languages)
 
             # Combine all transcript segments into full text
-            full_text = ' '.join([segment['text'] for segment in transcript_list])
-            segments = [{'text': segment['text'], 'start': segment['start'], 'duration': segment['duration']} for segment in transcript_list]
+            full_text = ' '.join([snippet.text for snippet in transcript_data.snippets])
+            segments = [{'text': snippet.text, 'start': snippet.start, 'duration': snippet.duration} for snippet in transcript_data.snippets]
 
             result = {
                 'video_id': video_id,
@@ -245,7 +243,7 @@ class YouTubeTranscriptCollector:
                 'transcript': full_text,
                 'segments': segments,
                 'language': languages[0] if languages else 'en',
-                'segment_count': len(transcript_list),
+                'segment_count': len(transcript_data.snippets),
                 'cached': False
             }
 
@@ -347,8 +345,9 @@ class YouTubeTranscriptCollector:
         # Test API connectivity with a known video (using YouTube's test video)
         test_video_id = 'jNQXAC9IVRw'  # "Me at the zoo" - first YouTube video
         try:
-            # Try to list available transcripts without fetching full content
-            YouTubeTranscriptApi.list_transcripts(test_video_id)
+            # Try to list available transcripts without fetching full content (v1.x API)
+            api = YouTubeTranscriptApi()
+            api.list(test_video_id)
             health_info['api_connectivity'] = True
         except Exception as e:
             health_info['status'] = 'unhealthy'
