@@ -1,6 +1,5 @@
 """Restaurant API endpoints."""
 
-import os
 import json
 import uuid
 from pathlib import Path
@@ -85,13 +84,13 @@ async def search_restaurants(
     if location:
         filtered = [
             r for r in filtered
-            if r.get("location", {}).get("city", "").lower().find(location.lower()) >= 0
+            if location.lower() in r.get("location", {}).get("city", "").lower()
         ]
 
     if cuisine:
         filtered = [
             r for r in filtered
-            if r.get("cuisine_type", "").lower().find(cuisine.lower()) >= 0
+            if cuisine.lower() in r.get("cuisine_type", "").lower()
         ]
 
     if price_range:
@@ -195,8 +194,8 @@ async def search_restaurants(
             })
 
     timeline_data = [
-        {"date": date, "restaurants": restaurants, "count": len(restaurants)}
-        for date, restaurants in sorted(date_groups.items(), reverse=True)
+        {"date": date, "restaurants": rests, "count": len(rests)}
+        for date, rests in sorted(date_groups.items(), reverse=True)
     ]
 
     return RestaurantSearchResponse(

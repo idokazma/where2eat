@@ -11,7 +11,7 @@ from fastapi import APIRouter, HTTPException, Query, Depends, Response, Request
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from jose import JWTError, jwt
 from passlib.context import CryptContext
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel
 
 from models.auth import LoginRequest, TokenResponse, UserInfo
 from models.restaurant import Restaurant, PaginatedRestaurants, Pagination
@@ -61,7 +61,7 @@ def get_password_hash(password: str) -> str:
 def create_access_token(data: dict) -> str:
     """Create JWT access token."""
     to_encode = data.copy()
-    expire = datetime.utcnow() + timedelta(hours=ACCESS_TOKEN_EXPIRE_HOURS)
+    expire = datetime.now() + timedelta(hours=ACCESS_TOKEN_EXPIRE_HOURS)
     to_encode.update({"exp": expire})
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 

@@ -2,7 +2,6 @@
 
 import sys
 import uuid
-import asyncio
 from pathlib import Path
 from typing import Optional
 from datetime import datetime, timedelta

@@ -1,7 +1,7 @@
 """Pydantic models for video analysis."""
 
 from typing import Optional, List, Dict, Any
-from pydantic import BaseModel, HttpUrl
+from pydantic import BaseModel
 
 
 class AnalyzeVideoRequest(BaseModel):
