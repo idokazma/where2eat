@@ -207,6 +207,9 @@ def pytest_configure(config):
     config.addinivalue_line(
         "markers", "network: mark test as requiring network access"
     )
+    config.addinivalue_line(
+        "markers", "api: mark test as API server test"
+    )
 
 
 def pytest_collection_modifyitems(config, items):
@@ -215,11 +218,15 @@ def pytest_collection_modifyitems(config, items):
         # Mark integration tests
         if "integration" in item.name.lower() or "test_pipeline" in str(item.fspath):
             item.add_marker(pytest.mark.integration)
-        
+
         # Mark slow tests
         if "large" in item.name.lower() or "batch" in item.name.lower():
             item.add_marker(pytest.mark.slow)
-        
+
         # Mark network tests
         if "real_video" in item.name.lower() or "network" in item.name.lower():
             item.add_marker(pytest.mark.network)
+
+        # Mark API server tests
+        if "test_api_server" in str(item.fspath):
+            item.add_marker(pytest.mark.api)
