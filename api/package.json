@@ -4,8 +4,10 @@
   "description": "Backend API for Where2Eat Restaurant Discovery System",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js",
+    "start": "uvicorn main:app --host 0.0.0.0 --port ${PORT:-8000}",
+    "dev": "uvicorn main:app --host 0.0.0.0 --port 8000 --reload",
+    "start:legacy": "node index.js",
+    "dev:legacy": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -31,6 +33,8 @@
     "morgan": "^1.10.1",
     "multer": "^2.0.2",
     "node-fetch": "^3.3.2",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
     "uuid": "^13.0.0"
   },
   "devDependencies": {
