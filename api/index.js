@@ -37,6 +37,136 @@ app.use(cookieParser()) // Parse cookies for session management
 
 const dataDir = path.join(__dirname, '..', 'data', 'restaurants')
 
+// Sample video to analyze on startup if no data exists
+// This video ID comes from the backup data files
+const SEED_VIDEO_URL = 'https://www.youtube.com/watch?v=6jvskRWvQkg'
+
+// Initialize restaurant data by fetching and analyzing a video if directory is empty
+async function initializeRestaurantData() {
+  console.log('=' .repeat(60))
+  console.log('🚀 SERVER STARTUP - RESTAURANT DATA INITIALIZATION')
+  console.log('=' .repeat(60))
+  console.log(`📅 Timestamp: ${new Date().toISOString()}`)
+  console.log(`📂 Data directory: ${dataDir}`)
+
+  try {
+    // Step 1: Check data directory
+    await fs.ensureDir(dataDir)
+    const files = await fs.readdir(dataDir)
+    const jsonFiles = files.filter(file => file.endsWith('.json'))
+
+    console.log(`📊 Current state: ${jsonFiles.length} restaurant JSON files found`)
+
+    if (jsonFiles.length > 0) {
+      console.log(`✅ Restaurant data already exists (${jsonFiles.length} files), skipping initialization`)
+      console.log('Files:', jsonFiles.slice(0, 5).join(', '), jsonFiles.length > 5 ? `... and ${jsonFiles.length - 5} more` : '')
+      return
+    }
+
+    // Step 2: No data - trigger video analysis
+    console.log('⚠️ No restaurant data found - triggering video analysis...')
+    console.log(`🎬 Seed video URL: ${SEED_VIDEO_URL}`)
+
+    // Step 3: Check environment for required API keys
+    console.log('\n📋 ENVIRONMENT CHECK:')
+    console.log(`  ANTHROPIC_API_KEY: ${process.env.ANTHROPIC_API_KEY ? '✅ SET' : '❌ NOT SET'}`)
+    console.log(`  OPENAI_API_KEY: ${process.env.OPENAI_API_KEY ? '✅ SET' : '❌ NOT SET'}`)
+    console.log(`  GOOGLE_PLACES_API_KEY: ${process.env.GOOGLE_PLACES_API_KEY ? '✅ SET' : '❌ NOT SET'}`)
+    console.log(`  NODE_ENV: ${process.env.NODE_ENV || 'not set'}`)
+    console.log(`  PWD: ${process.cwd()}`)
+
+    // Step 4: Check Python environment
+    const venvPython = path.join(__dirname, '..', 'venv', 'bin', 'python')
+    const systemPython = 'python3'
+    let pythonPath = systemPython
+
+    try {
+      await fs.access(venvPython)
+      pythonPath = venvPython
+      console.log(`\n🐍 Python: Using venv (${venvPython})`)
+    } catch {
+      console.log(`\n🐍 Python: Using system python3 (venv not found at ${venvPython})`)
+    }
+
+    // Step 5: Check if main.py exists
+    const mainScript = path.join(__dirname, '..', 'scripts', 'main.py')
+    try {
+      await fs.access(mainScript)
+      console.log(`📜 Script: ${mainScript} ✅ EXISTS`)
+    } catch {
+      console.error(`📜 Script: ${mainScript} ❌ NOT FOUND`)
+      console.error('❌ Cannot initialize - main.py script not found')
+      return
+    }
+
+    // Step 6: Spawn Python process to analyze video
+    console.log('\n🔄 STARTING VIDEO ANALYSIS...')
+    console.log('-'.repeat(40))
+
+    const { spawn } = require('child_process')
+
+    const python = spawn(pythonPath, [mainScript, SEED_VIDEO_URL], {
+      cwd: path.join(__dirname, '..'),
+      stdio: ['pipe', 'pipe', 'pipe'],
+      env: {
+        ...process.env,
+        PYTHONPATH: path.join(__dirname, '..'),
+        PYTHONUNBUFFERED: '1'  // Disable buffering for real-time logs
+      }
+    })
+
+    python.stdout.on('data', (data) => {
+      const lines = data.toString().split('\n').filter(l => l.trim())
+      lines.forEach(line => console.log(`[PYTHON STDOUT] ${line}`))
+    })
+
+    python.stderr.on('data', (data) => {
+      const lines = data.toString().split('\n').filter(l => l.trim())
+      lines.forEach(line => console.log(`[PYTHON STDERR] ${line}`))
+    })
+
+    python.on('error', (error) => {
+      console.error('❌ PYTHON SPAWN ERROR:', error.message)
+      console.error('Error details:', JSON.stringify(error, null, 2))
+    })
+
+    python.on('close', async (code) => {
+      console.log('-'.repeat(40))
+      console.log(`🏁 PYTHON PROCESS EXITED WITH CODE: ${code}`)
+
+      // Check if any restaurants were created
+      try {
+        const newFiles = await fs.readdir(dataDir)
+        const newJsonFiles = newFiles.filter(file => file.endsWith('.json'))
+        console.log(`📊 After analysis: ${newJsonFiles.length} restaurant JSON files`)
+
+        if (newJsonFiles.length > 0) {
+          console.log('✅ SUCCESS - Restaurant data initialized!')
+          console.log('Files created:', newJsonFiles.join(', '))
+        } else {
+          console.log('⚠️ WARNING - No restaurant files created after analysis')
+          console.log('Possible causes:')
+          console.log('  - API keys not configured')
+          console.log('  - Transcript fetch failed')
+          console.log('  - LLM analysis failed')
+          console.log('  - Check PYTHON STDERR logs above for details')
+        }
+      } catch (err) {
+        console.error('❌ Error checking results:', err.message)
+      }
+
+      console.log('=' .repeat(60))
+    })
+
+  } catch (error) {
+    console.error('❌ INITIALIZATION ERROR:', error.message)
+    console.error('Stack trace:', error.stack)
+  }
+}
+
+// Run initialization on startup
+initializeRestaurantData()
+
 app.get('/health', (req, res) => {
   res.json({ status: 'OK', timestamp: new Date().toISOString() })
 })
