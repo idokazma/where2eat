@@ -6,7 +6,9 @@ A restaurant discovery API that extracts restaurant mentions from YouTube podcas
 
 import os
 import sys
+import asyncio
 from pathlib import Path
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -19,6 +21,8 @@ load_dotenv()
 SRC_DIR = Path(__file__).parent.parent / "src"
 sys.path.insert(0, str(SRC_DIR))
 
+from models.analyze import DEFAULT_VIDEO_URL
+
 # Import routers
 from routers import (
     restaurants_router,
@@ -29,8 +33,56 @@ from routers import (
     admin_router,
 )
 
+
+async def fetch_default_video_on_startup():
+    """Fetch and analyze the default video on server startup."""
+    print(f"\n{'='*60}")
+    print(f"Starting up: Fetching default video...")
+    print(f"URL: {DEFAULT_VIDEO_URL}")
+    print(f"{'='*60}\n")
+
+    try:
+        from youtube_transcript_collector import YouTubeTranscriptCollector
+
+        collector = YouTubeTranscriptCollector()
+        result = collector.get_transcript(DEFAULT_VIDEO_URL, languages=['he', 'iw', 'en'])
+
+        if result:
+            print(f"[STARTUP] Successfully fetched transcript for default video")
+            print(f"[STARTUP] Video ID: {result.get('video_id')}")
+            print(f"[STARTUP] Language: {result.get('language')}")
+            print(f"[STARTUP] Segments: {result.get('segment_count', 0)}")
+            print(f"[STARTUP] Transcript length: {len(result.get('transcript', ''))} chars")
+            print(f"[STARTUP] Cached: {result.get('cached', False)}")
+
+            # Preview first 200 chars of transcript
+            transcript_preview = result.get('transcript', '')[:200]
+            print(f"[STARTUP] Preview: {transcript_preview}...")
+            print(f"\n{'='*60}")
+            print(f"Server ready! Default video loaded successfully.")
+            print(f"{'='*60}\n")
+        else:
+            print(f"[STARTUP] Warning: Could not fetch transcript for default video")
+            print(f"[STARTUP] Server will continue without preloaded data")
+
+    except Exception as e:
+        print(f"[STARTUP] Error fetching default video: {e}")
+        print(f"[STARTUP] Server will continue without preloaded data")
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Lifespan context manager for startup and shutdown events."""
+    # Startup: fetch default video
+    await fetch_default_video_on_startup()
+    yield
+    # Shutdown: cleanup if needed
+    print("[SHUTDOWN] Server shutting down...")
+
+
 # Create FastAPI app with metadata for docs
 app = FastAPI(
+    lifespan=lifespan,
     title="Where2Eat API",
     description="""
 ## Restaurant Discovery API
