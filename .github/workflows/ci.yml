@@ -7,8 +7,27 @@ on:
     branches: [main]
 
 jobs:
+  # Fast path resolution tests - no external dependencies needed
+  test-path-resolution:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install pytest
+        run: pip install pytest
+
+      - name: Run path resolution tests
+        run: |
+          python -m pytest tests/test_path_resolution.py -v --tb=short
+
   test-python:
     runs-on: ubuntu-latest
+    needs: test-path-resolution  # Ensure path resolution passes first
     steps:
       - uses: actions/checkout@v4
 
@@ -26,7 +45,7 @@ jobs:
 
       - name: Run tests
         run: |
-          python -m pytest tests/ -v --tb=short || echo "Some tests failed - check logs"
+          python -m pytest tests/ -v --tb=short --ignore=tests/test_path_resolution.py || echo "Some tests failed - check logs"
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           GOOGLE_PLACES_API_KEY: ${{ secrets.GOOGLE_PLACES_API_KEY }}
