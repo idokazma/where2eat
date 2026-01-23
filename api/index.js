@@ -47,10 +47,11 @@ app.get('/api/youtube-transcript/health', async (req, res) => {
     const { spawn } = require('child_process')
     const path = require('path')
 
-    // Call Python health check script
+    // Call Python health check script - use dynamic path for deployment compatibility
+    const srcPath = path.join(__dirname, '..', 'src')
     const pythonScript = `
 import sys
-sys.path.insert(0, '/home/user/where2eat/src')
+sys.path.insert(0, '${srcPath}')
 from youtube_transcript_collector import YouTubeTranscriptCollector
 import json
 
@@ -61,7 +62,7 @@ print(json.dumps(health))
 
     const python = spawn('python3', ['-c', pythonScript], {
       cwd: path.join(__dirname, '..'),
-      env: { ...process.env }
+      env: { ...process.env, PYTHONPATH: srcPath }
     })
 
     let output = ''
