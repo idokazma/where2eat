@@ -16,6 +16,7 @@ from models.analyze import (
     JobStatus,
     JobResults,
     JobListResponse,
+    DEFAULT_VIDEO_URL,
 )
 
 # Add src to path for imports
@@ -59,23 +60,26 @@ async def run_channel_analysis(channel_url: str, filters: dict, options: dict):
     response_model=AnalyzeResponse,
     status_code=202,
     summary="Analyze YouTube video",
-    description="Start analysis of a YouTube video to extract restaurant mentions.",
+    description=f"Start analysis of a YouTube video to extract restaurant mentions. Default: {DEFAULT_VIDEO_URL}",
 )
 async def analyze_video(
     request: AnalyzeVideoRequest,
     background_tasks: BackgroundTasks,
 ):
     """Analyze a YouTube video for restaurant mentions."""
-    if "youtube.com" not in request.url and "youtu.be" not in request.url:
+    # Use default URL if not provided
+    url = request.url or DEFAULT_VIDEO_URL
+
+    if "youtube.com" not in url and "youtu.be" not in url:
         raise HTTPException(status_code=400, detail="Valid YouTube URL required")
 
     # Start background analysis
-    background_tasks.add_task(run_video_analysis, request.url)
+    background_tasks.add_task(run_video_analysis, url)
 
     return AnalyzeResponse(
         message="Analysis started successfully",
         status="processing",
-        url=request.url,
+        url=url,
     )
 
 

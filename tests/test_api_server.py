@@ -569,11 +569,15 @@ class TestAnalyzeEndpoints:
         assert response.status_code == 400
         assert "YouTube" in response.json()["detail"]
 
-    def test_analyze_video_missing_url(self, client):
-        """Test video analysis without URL."""
+    def test_analyze_video_default_url(self, client):
+        """Test video analysis uses default URL when not provided."""
         response = client.post("/api/analyze", json={})
 
-        assert response.status_code == 422
+        assert response.status_code == 202
+        data = response.json()
+        assert data["status"] == "processing"
+        # Should use default URL
+        assert "youtu.be/wlCpj1zPzEA" in data["url"] or "youtube.com" in data["url"]
 
     def test_analyze_channel_success(self, client):
         """Test successful channel analysis request."""

@@ -3,10 +3,13 @@
 from typing import Optional, List, Dict, Any
 from pydantic import BaseModel
 
+# Default video URL for demo/testing
+DEFAULT_VIDEO_URL = "https://youtu.be/wlCpj1zPzEA"
+
 
 class AnalyzeVideoRequest(BaseModel):
     """Request to analyze a YouTube video."""
-    url: str
+    url: Optional[str] = DEFAULT_VIDEO_URL
 
 
 class AnalyzeChannelRequest(BaseModel):
