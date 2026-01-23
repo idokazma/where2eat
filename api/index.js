@@ -36,6 +36,41 @@ app.use(express.json())
 app.use(cookieParser()) // Parse cookies for session management
 
 const dataDir = path.join(__dirname, '..', 'data', 'restaurants')
+const backupDataDir = path.join(__dirname, '..', 'data', 'restaurants_backup')
+
+// Helper function to load restaurants from both directories
+async function loadAllRestaurants() {
+  const restaurants = []
+  const seenIds = new Set()
+
+  // Load from primary data directory first
+  for (const dir of [dataDir, backupDataDir]) {
+    try {
+      await fs.ensureDir(dir)
+      const files = await fs.readdir(dir)
+      const jsonFiles = files.filter(file => file.endsWith('.json'))
+
+      for (const file of jsonFiles) {
+        try {
+          const filePath = path.join(dir, file)
+          const data = await fs.readJson(filePath)
+          // Avoid duplicates - primary data takes precedence
+          const id = data.id || file.replace('.json', '')
+          if (!seenIds.has(id)) {
+            seenIds.add(id)
+            restaurants.push(data)
+          }
+        } catch (err) {
+          console.warn(`Warning: Failed to read ${file}:`, err.message)
+        }
+      }
+    } catch (err) {
+      console.warn(`Warning: Failed to read directory ${dir}:`, err.message)
+    }
+  }
+
+  return restaurants
+}
 
 app.get('/health', (req, res) => {
   res.json({ status: 'OK', timestamp: new Date().toISOString() })
@@ -117,21 +152,7 @@ app.use('/api/admin/audit', adminAuditRoutes)
 
 app.get('/api/restaurants', async (req, res) => {
   try {
-    await fs.ensureDir(dataDir)
-    const files = await fs.readdir(dataDir)
-    const jsonFiles = files.filter(file => file.endsWith('.json'))
-    
-    const restaurants = []
-    for (const file of jsonFiles) {
-      try {
-        const filePath = path.join(dataDir, file)
-        const data = await fs.readJson(filePath)
-        restaurants.push(data)
-      } catch (err) {
-        console.warn(`Warning: Failed to read ${file}:`, err.message)
-      }
-    }
-    
+    const restaurants = await loadAllRestaurants()
     res.json({ restaurants, count: restaurants.length })
   } catch (error) {
     console.error('Error loading restaurants:', error)
@@ -157,20 +178,7 @@ app.get('/api/restaurants/search', async (req, res) => {
       limit = 20
     } = req.query;
 
-    await fs.ensureDir(dataDir)
-    const files = await fs.readdir(dataDir)
-    const jsonFiles = files.filter(file => file.endsWith('.json'))
-    
-    const restaurants = []
-    for (const file of jsonFiles) {
-      try {
-        const filePath = path.join(dataDir, file)
-        const data = await fs.readJson(filePath)
-        restaurants.push(data)
-      } catch (err) {
-        console.warn(`Warning: Failed to read ${file}:`, err.message)
-      }
-    }
+    const restaurants = await loadAllRestaurants()
 
     // Apply filters
     let filteredRestaurants = restaurants.filter(restaurant => {
@@ -384,20 +392,7 @@ app.get('/api/episodes/search', async (req, res) => {
       limit = 20
     } = req.query;
 
-    await fs.ensureDir(dataDir)
-    const files = await fs.readdir(dataDir)
-    const jsonFiles = files.filter(file => file.endsWith('.json'))
-    
-    const restaurants = []
-    for (const file of jsonFiles) {
-      try {
-        const filePath = path.join(dataDir, file)
-        const data = await fs.readJson(filePath)
-        restaurants.push(data)
-      } catch (err) {
-        console.warn(`Warning: Failed to read ${file}:`, err.message)
-      }
-    }
+    const restaurants = await loadAllRestaurants()
 
     // Group restaurants by episode
     const episodeGroups = {};
@@ -512,20 +507,7 @@ app.get('/api/analytics/timeline', async (req, res) => {
       location_filter
     } = req.query;
 
-    await fs.ensureDir(dataDir)
-    const files = await fs.readdir(dataDir)
-    const jsonFiles = files.filter(file => file.endsWith('.json'))
-    
-    const restaurants = []
-    for (const file of jsonFiles) {
-      try {
-        const filePath = path.join(dataDir, file)
-        const data = await fs.readJson(filePath)
-        restaurants.push(data)
-      } catch (err) {
-        console.warn(`Warning: Failed to read ${file}:`, err.message)
-      }
-    }
+    const restaurants = await loadAllRestaurants()
 
     // Apply filters
     let filteredRestaurants = restaurants.filter(restaurant => {
@@ -674,20 +656,7 @@ app.get('/api/analytics/trends', async (req, res) => {
       trending_threshold = 3
     } = req.query;
 
-    await fs.ensureDir(dataDir)
-    const files = await fs.readdir(dataDir)
-    const jsonFiles = files.filter(file => file.endsWith('.json'))
-    
-    const restaurants = []
-    for (const file of jsonFiles) {
-      try {
-        const filePath = path.join(dataDir, file)
-        const data = await fs.readJson(filePath)
-        restaurants.push(data)
-      } catch (err) {
-        console.warn(`Warning: Failed to read ${file}:`, err.message)
-      }
-    }
+    const restaurants = await loadAllRestaurants()
 
     // Calculate period start date
     const now = new Date();
