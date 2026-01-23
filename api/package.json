@@ -4,10 +4,10 @@
   "description": "Backend API for Where2Eat Restaurant Discovery System",
   "main": "index.js",
   "scripts": {
-    "start": "uvicorn main:app --host 0.0.0.0 --port ${PORT:-8000}",
-    "dev": "uvicorn main:app --host 0.0.0.0 --port 8000 --reload",
-    "start:legacy": "node index.js",
-    "dev:legacy": "nodemon index.js",
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "start:fastapi": "uvicorn main:app --host 0.0.0.0 --port ${PORT:-8000}",
+    "dev:fastapi": "uvicorn main:app --host 0.0.0.0 --port 8000 --reload",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
