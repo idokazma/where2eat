@@ -31,16 +31,65 @@ async def run_video_analysis(url: str):
     try:
         from youtube_transcript_collector import YouTubeTranscriptCollector
         from unified_restaurant_analyzer import UnifiedRestaurantAnalyzer
+        import json
+        from pathlib import Path
+        import uuid
 
         collector = YouTubeTranscriptCollector()
         result = collector.get_transcript(url, languages=['he', 'iw', 'en'])
 
         if result:
+            print(f"[ANALYSIS] Transcript fetched for {url}, analyzing...")
             analyzer = UnifiedRestaurantAnalyzer()
-            # Analysis would happen here
-            print(f"Analysis completed for {url}")
+
+            # Actually analyze the transcript
+            analysis_result = analyzer.analyze_transcript({
+                'video_id': result.get('video_id'),
+                'video_url': url,
+                'language': result.get('language', 'he'),
+                'transcript': result.get('transcript', '')
+            })
+
+            # Save restaurants to JSON files
+            restaurants = analysis_result.get('restaurants', [])
+            data_dir = Path(__file__).parent.parent.parent / "data" / "restaurants"
+            data_dir.mkdir(parents=True, exist_ok=True)
+
+            saved_count = 0
+            for restaurant in restaurants:
+                restaurant_id = str(uuid.uuid4())
+                restaurant_data = {
+                    'id': restaurant_id,
+                    'name_hebrew': restaurant.get('name_hebrew', ''),
+                    'name_english': restaurant.get('name_english', ''),
+                    'location': restaurant.get('location', {}),
+                    'cuisine_type': restaurant.get('cuisine_type', ''),
+                    'status': restaurant.get('status', ''),
+                    'price_range': restaurant.get('price_range', ''),
+                    'host_opinion': restaurant.get('host_opinion', ''),
+                    'host_comments': restaurant.get('host_comments', ''),
+                    'menu_items': restaurant.get('menu_items', []),
+                    'special_features': restaurant.get('special_features', []),
+                    'contact_info': restaurant.get('contact_info', {}),
+                    'business_news': restaurant.get('business_news'),
+                    'mention_context': restaurant.get('mention_context', ''),
+                    'episode_info': analysis_result.get('episode_info', {}),
+                    'created_at': datetime.now().isoformat(),
+                    'updated_at': datetime.now().isoformat()
+                }
+
+                file_path = data_dir / f"{restaurant_id}.json"
+                with open(file_path, 'w', encoding='utf-8') as f:
+                    json.dump(restaurant_data, f, ensure_ascii=False, indent=2)
+                saved_count += 1
+
+            print(f"[ANALYSIS] Completed for {url}: found {len(restaurants)} restaurants, saved {saved_count}")
+        else:
+            print(f"[ANALYSIS] No transcript found for {url}")
     except Exception as e:
-        print(f"Analysis failed for {url}: {e}")
+        print(f"[ANALYSIS] Failed for {url}: {e}")
+        import traceback
+        traceback.print_exc()
 
 
 async def run_channel_analysis(channel_url: str, filters: dict, options: dict):
