@@ -18,7 +18,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Add src to path for Python imports
-SRC_DIR = Path(__file__).parent.parent / "src"
+SRC_DIR = (Path(__file__).parent.parent / "src").resolve()
 sys.path.insert(0, str(SRC_DIR))
 
 from models.analyze import DEFAULT_VIDEO_URL

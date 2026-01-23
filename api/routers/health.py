@@ -7,7 +7,7 @@ from datetime import datetime
 from fastapi import APIRouter
 
 # Add src to path for imports
-SRC_DIR = Path(__file__).parent.parent.parent / "src"
+SRC_DIR = (Path(__file__).parent.parent.parent / "src").resolve()
 sys.path.insert(0, str(SRC_DIR))
 
 router = APIRouter(tags=["Health"])
