@@ -266,16 +266,47 @@ class UnifiedRestaurantAnalyzer:
         # If no sentence boundary found, use preferred_end
         return min(preferred_end, len(text))
 
+    def _get_system_prompt(self) -> str:
+        """Get the enhanced system prompt for restaurant extraction"""
+        return """You are an expert Hebrew food podcast analyst specializing in extracting restaurant information from Israeli culinary content.
+
+EXPERTISE:
+- Deep understanding of Israeli food culture, restaurant scene, and dining trends
+- Fluent in Hebrew food terminology, slang, and regional expressions
+- Knowledge of Israeli geography: cities, neighborhoods, and culinary districts
+- Familiar with common Hebrew restaurant naming patterns (e.g., "מסעדת X", "ביסטרו Y", "בית קפה Z")
+
+EXTRACTION RULES:
+1. Extract ONLY explicitly named establishments - restaurants, cafés, bistros, food trucks, bakeries, bars
+2. DO NOT extract:
+   - Generic food terms (e.g., "חומוס", "שווארמה", "פיצה")
+   - Dish names that are not restaurant names
+   - Food brands or products (e.g., "אסם", "תנובה")
+   - Supermarket chains (unless they have a restaurant section being discussed)
+   - Chef names without their restaurant
+   - Vague references like "מסעדה אחת" or "מקום מסוים"
+
+3. For each restaurant, assess confidence:
+   - HIGH: Name explicitly stated with clear context
+   - MEDIUM: Name mentioned but context is limited
+   - LOW: Name inferred or partially heard
+
+4. Handle duplicates: If the same restaurant is mentioned multiple times, consolidate into one entry with merged information.
+
+5. Hebrew transliteration: Provide accurate English transliteration (e.g., "צ'קולי" → "Chakoli", not "Tzkoli")
+
+Always respond with valid JSON only. No markdown formatting or additional text."""
+
     def _call_openai(self, prompt: str) -> List[Dict]:
         """Call OpenAI API to analyze transcript"""
-        
+
         self.logger.info(f"🤖 Calling OpenAI API ({self.config.get_active_model()})")
-        
+
         try:
             response = self.client.chat.completions.create(
                 model=self.config.get_active_model(),
                 messages=[
-                    {"role": "system", "content": "You are a Hebrew food podcast expert specializing in restaurant extraction from Israeli podcast transcripts. You understand Hebrew cuisine, Israeli geography, and food culture. Always respond with valid JSON only."},
+                    {"role": "system", "content": self._get_system_prompt()},
                     {"role": "user", "content": prompt}
                 ],
                 temperature=self.config.get_active_temperature(),
@@ -301,18 +332,19 @@ class UnifiedRestaurantAnalyzer:
 
     def _call_claude(self, prompt: str) -> List[Dict]:
         """Call Claude API to analyze transcript"""
-        
+
         self.logger.info(f"🤖 Calling Claude API ({self.config.get_active_model()})")
-        
+
         try:
             response = self.client.messages.create(
                 model=self.config.get_active_model(),
                 max_tokens=self.config.get_active_max_tokens(),
                 temperature=self.config.get_active_temperature(),
+                system=self._get_system_prompt(),
                 messages=[
                     {
-                        "role": "user", 
-                        "content": f"{prompt}\n\nIMPORTANT: Respond with valid JSON only. No additional text or formatting."
+                        "role": "user",
+                        "content": prompt
                     }
                 ]
             )
@@ -482,53 +514,69 @@ class UnifiedRestaurantAnalyzer:
         truncated_transcript = transcript_text[:max_transcript_length]
         if len(transcript_text) > max_transcript_length:
             truncated_transcript += "..."
-        
-        return f"""
-Analyze this Hebrew food podcast transcript and extract ALL restaurants mentioned by name.
+
+        return f"""Analyze this Hebrew food podcast transcript and extract ALL restaurants mentioned by name.
 
 TRANSCRIPT:
 {truncated_transcript}
 
-TASK: Extract every restaurant, café, bistro, food truck, or dining establishment mentioned by its actual name in this Hebrew text.
+TASK: Extract every restaurant, café, bistro, food truck, bakery, or dining establishment mentioned by its actual name.
 
-REQUIREMENTS:
-1. Extract ONLY actual establishment names, not generic food terms
-2. Look for patterns like "במסעדת [name]", "מסעדת [name]", "[name] בתל אביב", etc.
-3. Include context about location, cuisine type, and host opinions if mentioned
-4. Provide both Hebrew name and English transliteration
+EXTRACTION GUIDELINES:
+1. Look for Hebrew patterns: "במסעדת X", "מסעדת X", "ביסטרו X", "בית קפה X", "של X", "אצל X"
+2. Look for location patterns: "[name] בתל אביב", "[name] ברחוב X", "[name] במרכז"
+3. Include chef-owned restaurants: "המסעדה של [שף]", "[שף] פתח מסעדה"
 
-OUTPUT FORMAT: Return a JSON object with "restaurants" array:
+DO NOT EXTRACT (negative examples):
+- Generic food terms: "חומוס", "שווארמה", "פיצה", "סושי" (unless part of a restaurant name)
+- Food brands: "אסם", "תנובה", "שטראוס"
+- Dish names: "שקשוקה", "חומוס מסבחה" (unless it's a restaurant name)
+- Vague references: "מסעדה אחת", "מקום מסוים", "בית קפה ליד"
+- Supermarket chains: "רמי לוי", "שופרסל" (unless discussing their restaurant section)
+
+OUTPUT FORMAT - Return a JSON object:
 {{
     "restaurants": [
         {{
             "name_hebrew": "שם המסעדה בעברית",
-            "name_english": "Restaurant Name in English",
+            "name_english": "Accurate English Transliteration",
+            "confidence": "high/medium/low",
             "location": {{
-                "city": "עיר", 
-                "neighborhood": "שכונה אם מוזכרת", 
-                "address": "כתובת אם מוזכרת",
-                "region": "אזור (צפון/מרכז/דרום/ירושלים)"
+                "city": "עיר",
+                "neighborhood": "שכונה",
+                "address": "כתובת מלאה אם מוזכרת",
+                "region": "צפון/מרכז/דרום/ירושלים/שרון"
             }},
-            "cuisine_type": "סוג מטבח",
-            "status": "סטטוס (פתוח/סגור/חדש)",
-            "price_range": "טווח מחירים (זול/בינוני/יקר)",
-            "host_opinion": "דעת המנחה (חיובית/שלילית/מעורבת)",
-            "host_comments": "הערות המנחה",
-            "menu_items": ["מנה1", "מנה2"],
-            "special_features": ["תכונה מיוחדת"],
+            "cuisine_type": "סוג מטבח (איטלקי/אסייתי/ים-תיכוני/וכו')",
+            "establishment_type": "מסעדה/ביסטרו/בית קפה/פוד טראק/מאפייה/בר",
+            "status": "פתוח/סגור/חדש/עומד להיפתח",
+            "price_range": "זול/בינוני/יקר/יוקרתי",
+            "host_opinion": "חיובית מאוד/חיובית/ניטרלית/שלילית/מעורבת",
+            "host_recommendation": true/false,
+            "host_comments": "ציטוט ישיר או פרפרזה של דברי המנחה",
+            "signature_dishes": ["מנה מומלצת 1", "מנה מומלצת 2"],
+            "menu_items": ["מנה שהוזכרה 1", "מנה שהוזכרה 2"],
+            "special_features": ["תכונה מיוחדת", "אווירה", "נוף"],
+            "chef_name": "שם השף אם מוזכר",
             "contact_info": {{
-                "phone": "טלפון אם מוזכר",
-                "website": "אתר אם מוזכר", 
-                "social_media": "רשתות חברתיות אם מוזכרות"
+                "phone": "טלפון",
+                "website": "אתר",
+                "instagram": "חשבון אינסטגרם"
             }},
-            "business_news": "חדשות עסקיות אם מוזכרות",
-            "mention_context": "ההקשר שבו הוזכר המקום"
+            "business_news": "פתיחה/סגירה/שינויים/אירועים",
+            "mention_context": "ציטוט קצר מהתמליל שמזכיר את המסעדה",
+            "timestamp_hint": "אם יש רמז לזמן בתמליל (התחלה/אמצע/סוף)"
         }}
-    ]
+    ],
+    "extraction_notes": "הערות על קושי בזיהוי או אי-ודאויות"
 }}
 
-Be precise and thorough. Extract ALL restaurants mentioned. Use "לא צוין" for missing information.
-"""
+CONFIDENCE LEVELS:
+- "high": שם מפורש עם הקשר ברור (e.g., "הלכנו למסעדת צ'קולי בנמל")
+- "medium": שם מוזכר אך הקשר חלקי (e.g., "צ'קולי היה טוב")
+- "low": שם לא ברור או נשמע חלקית (e.g., "משהו כמו צ'קו...")
+
+Be thorough but precise. Extract ALL valid restaurants. Use null for truly unknown fields (not "לא צוין")."""
 
     def _ensure_english_name(self, restaurant: Dict) -> Dict:
         """Ensure restaurant has a proper English name"""

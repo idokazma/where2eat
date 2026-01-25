@@ -66,13 +66,44 @@ class OpenAIRestaurantAnalyzer:
         else:
             self.logger.info(f"🤖 OpenAI Restaurant Analyzer initialized with model: {model}")
     
+    def _get_system_prompt(self) -> str:
+        """Get the enhanced system prompt for restaurant extraction"""
+        return """You are an expert Hebrew food podcast analyst specializing in extracting restaurant information from Israeli culinary content.
+
+EXPERTISE:
+- Deep understanding of Israeli food culture, restaurant scene, and dining trends
+- Fluent in Hebrew food terminology, slang, and regional expressions
+- Knowledge of Israeli geography: cities, neighborhoods, and culinary districts
+- Familiar with common Hebrew restaurant naming patterns (e.g., "מסעדת X", "ביסטרו Y", "בית קפה Z")
+
+EXTRACTION RULES:
+1. Extract ONLY explicitly named establishments - restaurants, cafés, bistros, food trucks, bakeries, bars
+2. DO NOT extract:
+   - Generic food terms (e.g., "חומוס", "שווארמה", "פיצה")
+   - Dish names that are not restaurant names
+   - Food brands or products (e.g., "אסם", "תנובה")
+   - Supermarket chains (unless they have a restaurant section being discussed)
+   - Chef names without their restaurant
+   - Vague references like "מסעדה אחת" or "מקום מסוים"
+
+3. For each restaurant, assess confidence:
+   - HIGH: Name explicitly stated with clear context
+   - MEDIUM: Name mentioned but context is limited
+   - LOW: Name inferred or partially heard
+
+4. Handle duplicates: If the same restaurant is mentioned multiple times, consolidate into one entry with merged information.
+
+5. Hebrew transliteration: Provide accurate English transliteration (e.g., "צ'קולי" → "Chakoli", not "Tzkoli")
+
+Always respond with valid JSON only. No markdown formatting or additional text."""
+
     def analyze_transcript(self, transcript_data: Dict) -> Dict:
         """
         Analyze YouTube transcript to extract restaurant information using OpenAI
-        
+
         Args:
             transcript_data: Dictionary containing transcript information
-            
+
         Returns:
             Dictionary with structured restaurant data
         """
@@ -107,15 +138,16 @@ class OpenAIRestaurantAnalyzer:
                 messages=[
                     {
                         "role": "system",
-                        "content": "You are an expert in analyzing Hebrew food content and extracting structured restaurant information. You understand Hebrew food terminology, restaurant names, and Israeli cuisine culture."
+                        "content": self._get_system_prompt()
                     },
                     {
-                        "role": "user", 
+                        "role": "user",
                         "content": prompt
                     }
                 ],
                 temperature=0.1,  # Low temperature for consistent extraction
-                max_tokens=4000
+                max_tokens=4000,
+                response_format={"type": "json_object"}
             )
             
             analysis_result = response.choices[0].message.content
@@ -160,9 +192,8 @@ class OpenAIRestaurantAnalyzer:
     
     def _create_analysis_prompt(self, transcript_text: str, transcript_data: Dict) -> str:
         """Create a structured prompt for OpenAI analysis"""
-        
-        return f"""
-Analyze this Hebrew food podcast transcript and extract ALL restaurant information mentioned.
+
+        return f"""Analyze this Hebrew food podcast transcript and extract ALL restaurants mentioned by name.
 
 VIDEO INFO:
 - Video ID: {transcript_data.get('video_id', 'unknown')}
@@ -172,39 +203,18 @@ VIDEO INFO:
 TRANSCRIPT:
 {transcript_text}
 
-TASK: Extract structured restaurant data in JSON format.
+EXTRACTION GUIDELINES:
+1. Look for Hebrew patterns: "במסעדת X", "מסעדת X", "ביסטרו X", "בית קפה X", "של X", "אצל X"
+2. Look for location patterns: "[name] בתל אביב", "[name] ברחוב X"
+3. Include chef-owned restaurants: "המסעדה של [שף]"
 
-For each restaurant mentioned, provide:
-{{
-    "name_hebrew": "שם המסעדה בעברית",
-    "name_english": "Restaurant Name in English",
-    "location": {{
-        "city": "עיר",
-        "neighborhood": "שכונה (if mentioned)",
-        "address": "כתובת מדויקת (if mentioned)",
-        "region": "North/Center/South"
-    }},
-    "cuisine_type": "סוג המטבח",
-    "status": "open/closed/unknown",
-    "price_range": "budget/mid-range/expensive/unknown", 
-    "host_opinion": "positive/negative/neutral/mentioned",
-    "host_comments": "ציטוט ישיר מהמנחים",
-    "menu_items": ["מנה 1", "מנה 2"],
-    "special_features": ["תכונה מיוחדת 1", "תכונה מיוחדת 2"],
-    "contact_info": {{
-        "hours": "שעות פעילות (if mentioned)",
-        "phone": "מספר טלפון (if mentioned)", 
-        "website": "אתר אינטרנט (if mentioned)"
-    }},
-    "business_news": "חדשות עסקיות (if mentioned)",
-    "mention_context": "review/recommendation/news/discussion"
-}}
+DO NOT EXTRACT:
+- Generic food terms: "חומוס", "שווארמה", "פיצה" (unless part of restaurant name)
+- Food brands: "אסם", "תנובה", "שטראוס"
+- Dish names: "שקשוקה", "חומוס מסבחה"
+- Vague references: "מסעדה אחת", "מקום מסוים"
 
-ALSO EXTRACT:
-- food_trends: ["מגמת אוכל 1", "מגמת אוכל 2"]
-- episode_summary: "תקציר הפרק"
-
-Return ONLY valid JSON in this exact format:
+Return ONLY valid JSON in this format:
 {{
     "episode_info": {{
         "video_id": "{transcript_data.get('video_id', 'unknown')}",
@@ -212,18 +222,48 @@ Return ONLY valid JSON in this exact format:
         "language": "{transcript_data.get('language', 'he')}",
         "analysis_date": "{datetime.now().strftime('%Y-%m-%d')}"
     }},
-    "restaurants": [{{restaurant objects}}],
-    "food_trends": ["trend1", "trend2"],
-    "episode_summary": "תקציר הפרק"
+    "restaurants": [
+        {{
+            "name_hebrew": "שם המסעדה בעברית",
+            "name_english": "Accurate English Transliteration",
+            "confidence": "high/medium/low",
+            "location": {{
+                "city": "עיר",
+                "neighborhood": "שכונה",
+                "address": "כתובת מלאה",
+                "region": "צפון/מרכז/דרום/ירושלים"
+            }},
+            "cuisine_type": "סוג המטבח",
+            "establishment_type": "מסעדה/ביסטרו/בית קפה/פוד טראק/מאפייה/בר",
+            "status": "פתוח/סגור/חדש/עומד להיפתח",
+            "price_range": "זול/בינוני/יקר/יוקרתי",
+            "host_opinion": "חיובית מאוד/חיובית/ניטרלית/שלילית/מעורבת",
+            "host_recommendation": true,
+            "host_comments": "ציטוט ישיר או פרפרזה מהמנחים",
+            "signature_dishes": ["מנה מומלצת 1"],
+            "menu_items": ["מנה שהוזכרה 1", "מנה שהוזכרה 2"],
+            "special_features": ["תכונה מיוחדת"],
+            "chef_name": "שם השף אם מוזכר",
+            "contact_info": {{
+                "phone": "טלפון",
+                "website": "אתר",
+                "instagram": "חשבון אינסטגרם"
+            }},
+            "business_news": "פתיחה/סגירה/שינויים",
+            "mention_context": "ציטוט קצר מהתמליל"
+        }}
+    ],
+    "food_trends": ["מגמת אוכל 1", "מגמת אוכל 2"],
+    "episode_summary": "תקציר קצר של הפרק",
+    "extraction_notes": "הערות על קושי בזיהוי"
 }}
 
-IMPORTANT:
-- Extract restaurant names exactly as mentioned in Hebrew
-- Be thorough - don't miss any restaurant mentions
-- If no specific restaurants mentioned, return empty restaurants array
-- Include context and host opinions accurately
-- Identify cuisine types from context clues
-"""
+CONFIDENCE LEVELS:
+- "high": שם מפורש עם הקשר ברור
+- "medium": שם מוזכר אך הקשר חלקי
+- "low": שם לא ברור או נשמע חלקית
+
+Be thorough but precise. Use null for truly unknown fields."""
 
     def _parse_openai_response(self, response_text: str, transcript_data: Dict) -> Dict:
         """Parse OpenAI response and ensure proper structure"""
