@@ -63,11 +63,31 @@ async function initializeRestaurantData() {
       return
     }
 
-    // Step 2: No data - trigger video analysis
-    console.log('⚠️ No restaurant data found - triggering video analysis...')
+    // Step 2: Try to copy from backup directory first
+    const backupDir = path.join(__dirname, '..', 'data', 'restaurants_backup')
+    try {
+      const backupFiles = await fs.readdir(backupDir)
+      const backupJsonFiles = backupFiles.filter(file => file.endsWith('.json'))
+
+      if (backupJsonFiles.length > 0) {
+        console.log(`📦 Found ${backupJsonFiles.length} backup files, copying to data directory...`)
+        for (const file of backupJsonFiles) {
+          const src = path.join(backupDir, file)
+          const dest = path.join(dataDir, file)
+          await fs.copy(src, dest)
+        }
+        console.log(`✅ Copied ${backupJsonFiles.length} restaurant files from backup`)
+        return
+      }
+    } catch (err) {
+      console.log(`📦 No backup directory found or error reading: ${err.message}`)
+    }
+
+    // Step 3: No backup data - trigger video analysis
+    console.log('⚠️ No restaurant data found and no backup - triggering video analysis...')
     console.log(`🎬 Seed video URL: ${SEED_VIDEO_URL}`)
 
-    // Step 3: Check environment for required API keys
+    // Step 4: Check environment for required API keys
     console.log('\n📋 ENVIRONMENT CHECK:')
     console.log(`  ANTHROPIC_API_KEY: ${process.env.ANTHROPIC_API_KEY ? '✅ SET' : '❌ NOT SET'}`)
     console.log(`  OPENAI_API_KEY: ${process.env.OPENAI_API_KEY ? '✅ SET' : '❌ NOT SET'}`)
@@ -75,7 +95,7 @@ async function initializeRestaurantData() {
     console.log(`  NODE_ENV: ${process.env.NODE_ENV || 'not set'}`)
     console.log(`  PWD: ${process.cwd()}`)
 
-    // Step 4: Check Python environment
+    // Step 5: Check Python environment
     const venvPython = path.join(__dirname, '..', 'venv', 'bin', 'python')
     const systemPython = 'python3'
     let pythonPath = systemPython
@@ -88,7 +108,7 @@ async function initializeRestaurantData() {
       console.log(`\n🐍 Python: Using system python3 (venv not found at ${venvPython})`)
     }
 
-    // Step 5: Check if main.py exists
+    // Step 6: Check if main.py exists
     const mainScript = path.join(__dirname, '..', 'scripts', 'main.py')
     try {
       await fs.access(mainScript)
@@ -99,7 +119,7 @@ async function initializeRestaurantData() {
       return
     }
 
-    // Step 6: Spawn Python process to analyze video
+    // Step 7: Spawn Python process to analyze video
     console.log('\n🔄 STARTING VIDEO ANALYSIS...')
     console.log('-'.repeat(40))
 
