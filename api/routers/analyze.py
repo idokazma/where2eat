@@ -20,8 +20,15 @@ from models.analyze import (
 )
 
 # Add src to path for imports
-SRC_DIR = (Path(__file__).parent.parent.parent / "src").resolve()
-sys.path.insert(0, str(SRC_DIR))
+# Handle both local dev (api/routers/analyze.py) and Railway deployment
+possible_src_paths = [
+    Path(__file__).parent.parent.parent / "src",  # Local: api/routers/../../src
+    Path(__file__).parent.parent / "src",          # Railway: /app/routers/../src
+]
+for src_path in possible_src_paths:
+    if src_path.exists():
+        sys.path.insert(0, str(src_path.resolve()))
+        break
 
 router = APIRouter(tags=["Analysis"])
 
