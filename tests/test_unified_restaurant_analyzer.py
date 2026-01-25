@@ -152,6 +152,103 @@ class TestJSONParsingRobustness:
         assert len(result) == 0
 
 
+class TestRestaurantDeduplicationAndMerge:
+    """Test that duplicate restaurants from multiple chunks are properly merged"""
+
+    def test_merge_duplicate_restaurants_combines_menu_items(self):
+        """Test that menu items from multiple mentions are combined"""
+        from unified_restaurant_analyzer import UnifiedRestaurantAnalyzer
+
+        analyzer = UnifiedRestaurantAnalyzer.__new__(UnifiedRestaurantAnalyzer)
+        analyzer.logger = Mock()
+
+        restaurants = [
+            {
+                "name_hebrew": "מסעדת טעם",
+                "name_english": "Taste Restaurant",
+                "menu_items": ["פסטה", "פיצה"]
+            },
+            {
+                "name_hebrew": "מסעדת טעם",  # Same restaurant
+                "name_english": "Taste Restaurant",
+                "menu_items": ["סלט", "פיצה"]  # פיצה is duplicate, סלט is new
+            }
+        ]
+
+        result = analyzer._deduplicate_restaurants(restaurants)
+
+        assert len(result) == 1
+        assert set(result[0]['menu_items']) == {"פסטה", "פיצה", "סלט"}
+
+    def test_merge_duplicate_restaurants_fills_missing_location(self):
+        """Test that location info is filled from subsequent mentions"""
+        from unified_restaurant_analyzer import UnifiedRestaurantAnalyzer
+
+        analyzer = UnifiedRestaurantAnalyzer.__new__(UnifiedRestaurantAnalyzer)
+        analyzer.logger = Mock()
+
+        restaurants = [
+            {
+                "name_hebrew": "קפה נחת",
+                "name_english": "Cafe Nachat",
+                "location": {"city": "ירושלים"}
+            },
+            {
+                "name_hebrew": "קפה נחת",
+                "name_english": "Cafe Nachat",
+                "location": {"city": "ירושלים", "neighborhood": "מחנה יהודה", "address": "רחוב יפו 12"}
+            }
+        ]
+
+        result = analyzer._deduplicate_restaurants(restaurants)
+
+        assert len(result) == 1
+        assert result[0]['location']['city'] == 'ירושלים'
+        assert result[0]['location']['neighborhood'] == 'מחנה יהודה'
+        assert result[0]['location']['address'] == 'רחוב יפו 12'
+
+    def test_merge_keeps_longer_comments(self):
+        """Test that longer/more detailed comments are preserved"""
+        from unified_restaurant_analyzer import UnifiedRestaurantAnalyzer
+
+        analyzer = UnifiedRestaurantAnalyzer.__new__(UnifiedRestaurantAnalyzer)
+        analyzer.logger = Mock()
+
+        restaurants = [
+            {
+                "name_hebrew": "ביסטרו",
+                "name_english": "Bistro",
+                "host_comments": "מקום טוב"
+            },
+            {
+                "name_hebrew": "ביסטרו",
+                "name_english": "Bistro",
+                "host_comments": "מקום מעולה עם אווירה נהדרת ואוכל טעים במיוחד"
+            }
+        ]
+
+        result = analyzer._deduplicate_restaurants(restaurants)
+
+        assert len(result) == 1
+        assert result[0]['host_comments'] == "מקום מעולה עם אווירה נהדרת ואוכל טעים במיוחד"
+
+    def test_deduplicate_different_restaurants_kept_separate(self):
+        """Test that different restaurants are not merged"""
+        from unified_restaurant_analyzer import UnifiedRestaurantAnalyzer
+
+        analyzer = UnifiedRestaurantAnalyzer.__new__(UnifiedRestaurantAnalyzer)
+        analyzer.logger = Mock()
+
+        restaurants = [
+            {"name_hebrew": "מסעדה א", "name_english": "Restaurant A"},
+            {"name_hebrew": "מסעדה ב", "name_english": "Restaurant B"},
+        ]
+
+        result = analyzer._deduplicate_restaurants(restaurants)
+
+        assert len(result) == 2
+
+
 class TestCallClaudeWithRobustParsing:
     """Test that _call_claude uses robust JSON parsing"""
 

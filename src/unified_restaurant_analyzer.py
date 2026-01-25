@@ -522,25 +522,90 @@ Be precise and thorough. Extract ALL restaurants mentioned. Use "לא צוין" 
         return result if result else "Restaurant"
 
     def _deduplicate_restaurants(self, restaurants: List[Dict]) -> List[Dict]:
-        """Remove duplicate restaurants based on Hebrew and English names"""
-        seen = set()
-        unique = []
-        
+        """
+        Remove duplicate restaurants and merge data from multiple mentions.
+
+        When a restaurant appears in multiple chunks, we merge the data:
+        - Keep all unique menu items and special features
+        - Use the most detailed comments/context
+        - Preserve location info from first mention with location
+        """
+        merged = {}  # identifier -> merged restaurant data
+
         for restaurant in restaurants:
             # Ensure English name is present and valid
             restaurant = self._ensure_english_name(restaurant)
-            
-            # Create identifier from both Hebrew and English names
-            identifier = (
-                restaurant.get('name_hebrew', '').strip().lower(),
-                restaurant.get('name_english', '').strip().lower()
-            )
-            
-            if identifier not in seen and identifier != ('', ''):
-                seen.add(identifier)
-                unique.append(restaurant)
-        
-        return unique
+
+            # Create identifier from Hebrew name (primary) with fallback to English
+            name_hebrew = restaurant.get('name_hebrew', '').strip().lower()
+            name_english = restaurant.get('name_english', '').strip().lower()
+
+            # Skip empty entries
+            if not name_hebrew and not name_english:
+                continue
+
+            # Use Hebrew name as primary identifier, fallback to English
+            identifier = name_hebrew if name_hebrew else name_english
+
+            if identifier not in merged:
+                # First occurrence - store it
+                merged[identifier] = restaurant.copy()
+            else:
+                # Merge with existing entry
+                existing = merged[identifier]
+                self._merge_restaurant_data(existing, restaurant)
+
+        return list(merged.values())
+
+    def _merge_restaurant_data(self, existing: Dict, new: Dict) -> None:
+        """
+        Merge new restaurant data into existing entry (modifies existing in place).
+
+        Strategy:
+        - Lists (menu_items, special_features): combine unique values
+        - Strings: keep longer/more detailed version
+        - Nested dicts (location, contact_info): merge recursively
+        """
+        # Merge list fields - combine unique values
+        for list_field in ['menu_items', 'special_features']:
+            existing_list = existing.get(list_field) or []
+            new_list = new.get(list_field) or []
+            # Combine and deduplicate while preserving order
+            combined = list(existing_list)
+            for item in new_list:
+                if item and item not in combined and item != 'לא צוין':
+                    combined.append(item)
+            if combined:
+                existing[list_field] = combined
+
+        # Merge string fields - prefer longer/more detailed content
+        for str_field in ['host_comments', 'mention_context', 'business_news']:
+            existing_val = existing.get(str_field) or ''
+            new_val = new.get(str_field) or ''
+            # Keep the longer value (more detail), but skip placeholder text
+            if new_val and new_val != 'לא צוין':
+                if not existing_val or existing_val == 'לא צוין' or len(new_val) > len(existing_val):
+                    existing[str_field] = new_val
+
+        # Merge location dict - fill in missing fields
+        existing_loc = existing.get('location') or {}
+        new_loc = new.get('location') or {}
+        for loc_field in ['city', 'neighborhood', 'address', 'region']:
+            if not existing_loc.get(loc_field) or existing_loc.get(loc_field) == 'לא צוין':
+                if new_loc.get(loc_field) and new_loc.get(loc_field) != 'לא צוין':
+                    existing_loc[loc_field] = new_loc[loc_field]
+        if existing_loc:
+            existing['location'] = existing_loc
+
+        # Merge contact_info dict - fill in missing fields
+        existing_contact = existing.get('contact_info') or {}
+        new_contact = new.get('contact_info') or {}
+        for contact_field in ['phone', 'website', 'social_media', 'hours']:
+            if not existing_contact.get(contact_field):
+                if new_contact.get(contact_field):
+                    existing_contact[contact_field] = new_contact[contact_field]
+        if existing_contact:
+            existing['contact_info'] = existing_contact
 
     def _extract_food_trends(self, restaurants: List[Dict]) -> List[str]:
         """Extract food trends from restaurant data"""
