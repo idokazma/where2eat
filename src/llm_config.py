@@ -26,9 +26,9 @@ class LLMConfig:
     openai_temperature: float = 0.1
     openai_max_tokens: int = 4000
     
-    # Claude configuration  
+    # Claude configuration
     claude_api_key: Optional[str] = None
-    claude_model: str = "claude-3-5-sonnet-20241022"
+    claude_model: str = "claude-sonnet-4-20250514"
     claude_temperature: float = 0.1
     claude_max_tokens: int = 4000
     
@@ -57,7 +57,7 @@ class LLMConfig:
             
             # Claude settings
             claude_api_key=os.getenv("ANTHROPIC_API_KEY") or os.getenv("CLAUDE_API_KEY"),
-            claude_model=os.getenv("CLAUDE_MODEL", "claude-3-5-sonnet-20241022"),
+            claude_model=os.getenv("CLAUDE_MODEL", "claude-sonnet-4-20250514"),
             claude_temperature=float(os.getenv("CLAUDE_TEMPERATURE", "0.1")),
             claude_max_tokens=int(os.getenv("CLAUDE_MAX_TOKENS", "4000")),
             
