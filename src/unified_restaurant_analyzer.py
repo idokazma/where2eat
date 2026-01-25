@@ -5,6 +5,7 @@ Uses configurable LLM providers (OpenAI/Claude) for Hebrew restaurant extraction
 
 import os
 import json
+import re
 import logging
 from datetime import datetime
 from typing import Dict, List, Optional, Union
@@ -266,27 +267,160 @@ class UnifiedRestaurantAnalyzer:
             )
             
             content = response.content[0].text
-            
+
             # Clean up potential markdown formatting
             if '```json' in content:
                 content = content.split('```json')[1].split('```')[0].strip()
             elif '```' in content:
                 content = content.split('```')[1].split('```')[0].strip()
-            
+
+            # Use safe JSON parsing to handle truncated responses
+            return self._safe_parse_json(content)
+
+        except Exception as e:
+            self.logger.error(f"Claude API call failed: {str(e)}")
+            raise e
+
+    def _safe_parse_json(self, content: str) -> List[Dict]:
+        """
+        Safely parse JSON response, handling truncated or malformed responses.
+
+        This handles common issues with LLM responses:
+        - Unterminated strings (e.g., when response is cut off mid-string)
+        - Missing closing brackets/braces
+        - Trailing commas
+        - Non-JSON responses
+
+        Args:
+            content: The raw response content to parse
+
+        Returns:
+            List of restaurant dictionaries (empty list if parsing fails completely)
+        """
+        if not content or not content.strip():
+            self.logger.warning("Empty response received")
+            return []
+
+        content = content.strip()
+
+        # First, try standard JSON parsing
+        try:
             result = json.loads(content)
-            
-            # Ensure we get a list of restaurants
             if isinstance(result, dict) and 'restaurants' in result:
                 return result['restaurants']
             elif isinstance(result, list):
                 return result
             else:
-                self.logger.warning(f"Unexpected Claude response format: {type(result)}")
+                self.logger.warning(f"Unexpected JSON format: {type(result)}")
                 return []
-                
-        except Exception as e:
-            self.logger.error(f"Claude API call failed: {str(e)}")
-            raise e
+        except json.JSONDecodeError:
+            pass  # Continue to repair attempts
+
+        # If standard parsing failed, try to repair the JSON
+        self.logger.warning("JSON parsing failed, attempting repair...")
+
+        repaired_content = self._repair_truncated_json(content)
+
+        try:
+            result = json.loads(repaired_content)
+            if isinstance(result, dict) and 'restaurants' in result:
+                restaurants = result['restaurants']
+                self.logger.info(f"Successfully repaired JSON, extracted {len(restaurants)} restaurants")
+                return restaurants
+            elif isinstance(result, list):
+                self.logger.info(f"Successfully repaired JSON array, extracted {len(result)} restaurants")
+                return result
+            else:
+                return []
+        except json.JSONDecodeError as e:
+            self.logger.warning(f"JSON repair failed: {str(e)}")
+
+            # Last resort: try to extract complete restaurant objects using regex
+            return self._extract_restaurants_by_regex(content)
+
+    def _repair_truncated_json(self, content: str) -> str:
+        """
+        Attempt to repair truncated JSON by fixing common issues.
+
+        Args:
+            content: The malformed JSON string
+
+        Returns:
+            Repaired JSON string (may still be invalid)
+        """
+        repaired = content
+
+        # Remove any trailing incomplete string (find last complete quote pair)
+        # This handles: "key": "truncated value...
+        in_string = False
+        last_complete_pos = 0
+        i = 0
+        while i < len(repaired):
+            char = repaired[i]
+            if char == '\\' and i + 1 < len(repaired):
+                i += 2  # Skip escaped character
+                continue
+            if char == '"':
+                if in_string:
+                    last_complete_pos = i + 1
+                in_string = not in_string
+            elif not in_string and char in '{}[],':
+                last_complete_pos = i + 1
+            i += 1
+
+        # If we ended inside a string, truncate to the last complete position
+        if in_string:
+            repaired = repaired[:last_complete_pos]
+
+        # Remove any trailing incomplete key-value pairs
+        # Pattern: remove trailing comma and incomplete content
+        repaired = re.sub(r',\s*"[^"]*"?\s*:?\s*$', '', repaired)
+        repaired = re.sub(r',\s*$', '', repaired)
+
+        # Count and fix mismatched brackets
+        open_braces = repaired.count('{') - repaired.count('}')
+        open_brackets = repaired.count('[') - repaired.count(']')
+
+        # Add missing closing brackets/braces
+        repaired += ']' * max(0, open_brackets)
+        repaired += '}' * max(0, open_braces)
+
+        return repaired
+
+    def _extract_restaurants_by_regex(self, content: str) -> List[Dict]:
+        """
+        Last-resort extraction: find complete restaurant objects using regex.
+
+        Args:
+            content: The raw content to search
+
+        Returns:
+            List of successfully parsed restaurant dictionaries
+        """
+        restaurants = []
+
+        # Pattern to find complete restaurant objects (balanced braces)
+        # This is a simplified approach that looks for objects with name_hebrew
+        pattern = r'\{[^{}]*"name_hebrew"\s*:\s*"[^"]+(?:"[^{}]*)*\}'
+
+        # Try to find restaurant-like objects
+        matches = re.findall(pattern, content)
+
+        for match in matches:
+            try:
+                # Attempt to parse each potential restaurant object
+                obj = json.loads(match)
+                if isinstance(obj, dict) and obj.get('name_hebrew'):
+                    restaurants.append(obj)
+            except json.JSONDecodeError:
+                continue
+
+        if restaurants:
+            self.logger.info(f"Regex extraction recovered {len(restaurants)} restaurants")
+        else:
+            self.logger.warning("Could not extract any restaurants from malformed response")
+
+        return restaurants
 
     def _create_analysis_prompt(self, transcript_text: str) -> str:
         """Create the analysis prompt for the LLM"""
