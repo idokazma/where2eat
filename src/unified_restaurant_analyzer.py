@@ -10,7 +10,7 @@ from datetime import datetime
 from typing import Dict, List, Optional, Union
 from dataclasses import dataclass, asdict
 
-from .llm_config import get_config, LLMProvider
+from llm_config import get_config, LLMProvider
 
 @dataclass
 class RestaurantInfo:

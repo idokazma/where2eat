@@ -16,7 +16,7 @@ from typing import List, Dict, Optional, Callable, Any
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import logging
 
-from .youtube_channel_collector import YouTubeChannelCollector, ChannelNotFoundError, APIQuotaExceededError
+from youtube_channel_collector import YouTubeChannelCollector, ChannelNotFoundError, APIQuotaExceededError
 
 
 class ProcessingStatus(Enum):

@@ -52,12 +52,37 @@ async def fetch_default_video_on_startup():
     print(f"URL: {DEFAULT_VIDEO_URL}")
     print(f"{'='*60}\n")
 
+    # Debug: Show Python path configuration
+    print(f"[STARTUP] Python path: {sys.path[:5]}...")
+    print(f"[STARTUP] Working directory: {Path.cwd()}")
+    print(f"[STARTUP] __file__ location: {Path(__file__).resolve()}")
+
     try:
-        from youtube_transcript_collector import YouTubeTranscriptCollector
-        from unified_restaurant_analyzer import UnifiedRestaurantAnalyzer
+        # Import datetime and json first (standard library - always available)
         from datetime import datetime
         import json
         import uuid
+
+        # Try importing src modules - these may not be available if only api/ was deployed
+        try:
+            from youtube_transcript_collector import YouTubeTranscriptCollector
+            from unified_restaurant_analyzer import UnifiedRestaurantAnalyzer
+        except ImportError as import_err:
+            print(f"[STARTUP] ERROR: Cannot import src modules: {import_err}")
+            print(f"[STARTUP] This usually means the 'src/' directory is not deployed.")
+            print(f"[STARTUP] Make sure Railway deploys from repo root, not just 'api/'.")
+            print(f"[STARTUP] Current sys.path: {sys.path}")
+
+            # Check if src directory exists
+            possible_paths = ["/app/src", str(Path(__file__).parent.parent / "src")]
+            for p in possible_paths:
+                exists = Path(p).exists()
+                print(f"[STARTUP]   Path '{p}' exists: {exists}")
+                if exists:
+                    files = list(Path(p).glob("*.py"))[:5]
+                    print(f"[STARTUP]   Files: {[f.name for f in files]}")
+
+            raise  # Re-raise to fall into the outer except block
 
         collector = YouTubeTranscriptCollector()
         result = collector.get_transcript(DEFAULT_VIDEO_URL, languages=['he', 'iw', 'en'])
