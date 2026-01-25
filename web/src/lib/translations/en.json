@@ -125,5 +125,15 @@
   },
   "errors": {
     "failedToLoadMaps": "Failed to load Google Maps"
+  },
+  "mobile": {
+    "directions": "Directions",
+    "call": "Call",
+    "addFavorite": "Add to favorites",
+    "removeFavorite": "Remove from favorites",
+    "showResults": "Show Results",
+    "nearbyRestaurants": "Nearby Restaurants",
+    "pullToRefresh": "Pull to refresh",
+    "swipeForMore": "Swipe for more options"
   }
 }

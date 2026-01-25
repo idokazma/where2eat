@@ -124,6 +124,16 @@
     "analysisStarted": "הניתוח התחיל בהצלחה!..."
   },
   "errors": {
-    "failedToLoadMaps": "Failed to load Google Maps"
+    "failedToLoadMaps": "שגיאה בטעינת מפות גוגל"
+  },
+  "mobile": {
+    "directions": "הוראות הגעה",
+    "call": "התקשר",
+    "addFavorite": "הוסף למועדפים",
+    "removeFavorite": "הסר מהמועדפים",
+    "showResults": "הצג תוצאות",
+    "nearbyRestaurants": "מסעדות בסביבה",
+    "pullToRefresh": "משוך לרענון",
+    "swipeForMore": "החלק לאפשרויות נוספות"
   }
 }

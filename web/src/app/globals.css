@@ -789,4 +789,113 @@
   ::-webkit-scrollbar-thumb:hover {
     background: var(--primary);
   }
+
+  /* ============================================
+     MOBILE-SPECIFIC UTILITIES
+     ============================================ */
+
+  /* Safe area insets for notched devices */
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom, 0.5rem);
+  }
+
+  .pt-safe {
+    padding-top: env(safe-area-inset-top, 0);
+  }
+
+  .pl-safe {
+    padding-left: env(safe-area-inset-left, 0);
+  }
+
+  .pr-safe {
+    padding-right: env(safe-area-inset-right, 0);
+  }
+
+  /* Bottom nav clearance */
+  .pb-nav {
+    padding-bottom: 5rem; /* 80px - height of bottom nav */
+  }
+
+  @media (min-width: 768px) {
+    .pb-nav {
+      padding-bottom: 0;
+    }
+  }
+
+  /* Touch target utilities */
+  .touch-target {
+    min-width: 44px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .touch-target-lg {
+    min-width: 56px;
+    min-height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Hide scrollbar utility */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Mobile slide-up animation */
+  @keyframes slide-up-mobile {
+    from {
+      transform: translateY(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  .animate-slide-up-mobile {
+    animation: slide-up-mobile 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* Thumb zone indicators (for development) */
+  .thumb-zone-primary {
+    /* Bottom third of screen - easiest to reach */
+  }
+
+  .thumb-zone-secondary {
+    /* Middle third - moderate reach */
+  }
+
+  .thumb-zone-tertiary {
+    /* Top third - hardest to reach */
+  }
+
+  /* Mobile card improvements */
+  @media (max-width: 767px) {
+    .card-interactive:active {
+      transform: scale(0.98);
+      transition-duration: 0.1s;
+    }
+
+    /* Disable hover effects on touch devices */
+    .card-interactive:hover {
+      transform: none;
+    }
+  }
+
+  /* High contrast mode support */
+  @media (prefers-contrast: high) {
+    .touch-target,
+    .touch-target-lg {
+      border: 2px solid currentColor;
+    }
+  }
 }

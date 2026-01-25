@@ -4,6 +4,7 @@ import "./globals.css";
 import { FavoritesProvider } from "@/contexts/favorites-context";
 import { ClientLayout } from "@/components/client-layout";
 import { SideNav } from "@/components/side-nav";
+import { MobileBottomNav } from "@/components/mobile/mobile-bottom-nav";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -50,10 +51,16 @@ export default function RootLayout({
         <ClientLayout>
           <FavoritesProvider>
             <div className="flex min-h-screen">
-              <SideNav />
-              <main className="flex-1 overflow-auto">
+              {/* Desktop Sidebar - hidden on mobile */}
+              <SideNav className="hidden md:flex" />
+
+              {/* Main Content - with bottom padding for mobile nav */}
+              <main className="flex-1 overflow-auto pb-20 md:pb-0">
                 {children}
               </main>
+
+              {/* Mobile Bottom Navigation - hidden on desktop */}
+              <MobileBottomNav />
             </div>
           </FavoritesProvider>
         </ClientLayout>

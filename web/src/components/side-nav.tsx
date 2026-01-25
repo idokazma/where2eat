@@ -26,7 +26,11 @@ interface NavItem {
   badge?: number
 }
 
-export function SideNav() {
+interface SideNavProps {
+  className?: string
+}
+
+export function SideNav({ className }: SideNavProps) {
   const pathname = usePathname()
   const { t } = useLanguage()
   const { favoriteRestaurants } = useFavorites()
@@ -81,7 +85,10 @@ export function SideNav() {
   ]
 
   return (
-    <div className="flex h-full w-64 flex-col gap-2 border-r border-border/40 bg-card/50 backdrop-blur-sm p-4">
+    <div className={cn(
+      "flex h-full w-64 flex-col gap-2 border-r border-border/40 bg-card/50 backdrop-blur-sm p-4",
+      className
+    )}>
       {/* Logo/Brand */}
       <div className="mb-6 px-3">
         <h2 className="text-2xl font-display font-black tracking-tight text-primary">
