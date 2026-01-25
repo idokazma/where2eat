@@ -80,47 +80,65 @@ class UnifiedRestaurantAnalyzer:
     def analyze_transcript(self, transcript_data: Dict) -> Dict:
         """
         Analyze a YouTube transcript to extract restaurant information
-        
+
         Args:
             transcript_data: Dictionary containing video_id, video_url, language, and transcript
-            
+
         Returns:
             Dictionary containing episode_info, restaurants, food_trends, and episode_summary
         """
         try:
-            # Process transcript in chunks if it's too long
             transcript_text = transcript_data['transcript']
-            
+            video_id = transcript_data.get('video_id', 'unknown')
+
+            self.logger.info(f"═══════════════════════════════════════════════════════════")
+            self.logger.info(f"Starting analysis for video: {video_id}")
+            self.logger.info(f"Transcript length: {len(transcript_text):,} characters")
+            self.logger.info(f"Chunk size threshold: {self.config.chunk_size:,} characters")
+
+            # Process transcript in chunks if it's too long
             if self.config.enable_chunking and len(transcript_text) > self.config.chunk_size:
+                num_chunks = (len(transcript_text) // self.config.chunk_size) + 1
+                self.logger.info(f"Chunking enabled: transcript will be split into ~{num_chunks} chunks")
                 return self._analyze_chunked_transcript(transcript_data)
             else:
+                self.logger.info(f"Single-pass analysis (transcript fits in one chunk)")
                 return self._analyze_single_transcript(transcript_data)
-                
+
         except Exception as e:
             self.logger.error(f"Error analyzing transcript: {str(e)}")
             return self._create_error_analysis(transcript_data, str(e))
 
     def _analyze_single_transcript(self, transcript_data: Dict) -> Dict:
         """Analyze a single transcript using the configured LLM"""
-        
+
         transcript_text = transcript_data['transcript']
-        
+        video_id = transcript_data.get('video_id', 'unknown')
+
         # Create analysis prompt
         prompt = self._create_analysis_prompt(transcript_text)
-        
+        prompt_size = len(prompt)
+
+        self.logger.info(f"  Calling {self.config.provider.upper()} API...")
+        self.logger.info(f"    ├─ Model: {self.config.get_active_model()}")
+        self.logger.info(f"    ├─ Prompt size: {prompt_size:,} characters")
+        self.logger.info(f"    └─ Max response tokens: {self.config.get_active_max_tokens():,}")
+
         try:
             # Call the appropriate LLM
             if self.config.provider == "openai":
                 restaurants = self._call_openai(prompt)
             else:
                 restaurants = self._call_claude(prompt)
-            
+
+            self.logger.info(f"  API response received: {len(restaurants)} restaurant(s) extracted")
+
             # Validate and process results
             validated_restaurants = []
             for restaurant in restaurants:
                 validated_restaurant = self._ensure_english_name(restaurant)
                 validated_restaurants.append(validated_restaurant)
-            
+
             return {
                 'episode_info': {
                     'video_id': transcript_data['video_id'],
@@ -135,39 +153,72 @@ class UnifiedRestaurantAnalyzer:
                 'food_trends': self._extract_food_trends(validated_restaurants),
                 'episode_summary': f"ניתוח {self.config.provider.upper()} של {len(validated_restaurants)} מסעדות מהסרטון {transcript_data['video_id']}"
             }
-            
+
         except Exception as e:
             self.logger.error(f"{self.config.provider.upper()} analysis failed: {str(e)}")
             raise e
 
     def _analyze_chunked_transcript(self, transcript_data: Dict) -> Dict:
         """Analyze transcript in chunks for comprehensive coverage"""
-        
+
         transcript_text = transcript_data['transcript']
-        
+        video_id = transcript_data.get('video_id', 'unknown')
+
         # Split into chunks
         chunks = self._create_chunks(transcript_text, self.config.chunk_size, self.config.chunk_overlap)
-        
+
+        self.logger.info(f"───────────────────────────────────────────────────────────")
+        self.logger.info(f"Chunked Analysis: {len(chunks)} chunks to process")
+        self.logger.info(f"Chunk overlap: {self.config.chunk_overlap:,} characters")
+
         all_restaurants = []
         all_trends = []
-        
+
         for i, chunk in enumerate(chunks):
-            self.logger.info(f"Analyzing chunk {i+1}/{len(chunks)} with {self.config.provider}")
-            
+            chunk_start = i * (self.config.chunk_size - self.config.chunk_overlap)
+            self.logger.info(f"")
+            self.logger.info(f"[Chunk {i+1}/{len(chunks)}] Processing...")
+            self.logger.info(f"  ├─ Size: {len(chunk):,} characters")
+            self.logger.info(f"  ├─ Position: chars {chunk_start:,}-{chunk_start + len(chunk):,}")
+
             chunk_data = transcript_data.copy()
             chunk_data['transcript'] = chunk
-            
+
             # Analyze each chunk
             chunk_result = self._analyze_single_transcript(chunk_data)
-            
-            # Collect results
-            all_restaurants.extend(chunk_result.get('restaurants', []))
+
+            chunk_restaurants = chunk_result.get('restaurants', [])
+            all_restaurants.extend(chunk_restaurants)
             all_trends.extend(chunk_result.get('food_trends', []))
-        
+
+            # Log restaurants found in this chunk
+            self.logger.info(f"  └─ Found {len(chunk_restaurants)} restaurant(s) in this chunk")
+            for r in chunk_restaurants[:5]:  # Show first 5
+                self.logger.info(f"      • {r.get('name_hebrew', 'Unknown')}")
+            if len(chunk_restaurants) > 5:
+                self.logger.info(f"      ... and {len(chunk_restaurants) - 5} more")
+
         # Deduplicate restaurants
+        self.logger.info(f"")
+        self.logger.info(f"───────────────────────────────────────────────────────────")
+        self.logger.info(f"Merging results from all chunks...")
+        self.logger.info(f"  ├─ Total raw mentions: {len(all_restaurants)}")
+
         unique_restaurants = self._deduplicate_restaurants(all_restaurants)
         unique_trends = list(set(all_trends))
-        
+
+        duplicates_merged = len(all_restaurants) - len(unique_restaurants)
+        self.logger.info(f"  ├─ Duplicates merged: {duplicates_merged}")
+        self.logger.info(f"  └─ Unique restaurants: {len(unique_restaurants)}")
+
+        self.logger.info(f"")
+        self.logger.info(f"═══════════════════════════════════════════════════════════")
+        self.logger.info(f"Analysis complete for {video_id}")
+        self.logger.info(f"  ├─ Chunks processed: {len(chunks)}")
+        self.logger.info(f"  ├─ Restaurants found: {len(unique_restaurants)}")
+        self.logger.info(f"  └─ Food trends: {len(unique_trends)}")
+        self.logger.info(f"═══════════════════════════════════════════════════════════")
+
         return {
             'episode_info': {
                 'video_id': transcript_data['video_id'],
