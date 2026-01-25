@@ -254,11 +254,13 @@ class ClaudeRestaurantAnalyzer:
         self.logger.info("🤖 Attempting to call Claude Task agent for restaurant analysis")
         
         # Create the detailed task prompt
+        # Use larger context window to capture all restaurants (previous bug: 8000 char limit)
+        max_length = 100000
         task_prompt = f"""
         You are a specialized restaurant analysis agent. Analyze this Hebrew food podcast transcript and extract ALL restaurants mentioned by name.
-        
+
         TRANSCRIPT SEGMENT:
-        {transcript_text[:8000]}{'...' if len(transcript_text) > 8000 else ''}
+        {transcript_text[:max_length]}{'...' if len(transcript_text) > max_length else ''}
         
         TASK: Extract every restaurant, café, bistro, food truck, or dining establishment that is mentioned by its actual name in this Hebrew text.
         

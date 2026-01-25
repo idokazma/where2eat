@@ -290,9 +290,10 @@ class UnifiedRestaurantAnalyzer:
 
     def _create_analysis_prompt(self, transcript_text: str) -> str:
         """Create the analysis prompt for the LLM"""
-        
-        # Truncate transcript if too long for context
-        max_transcript_length = 8000
+
+        # Use chunk_size from config to ensure we analyze the full transcript
+        # Previous bug: truncated to 8000 chars which missed most restaurants
+        max_transcript_length = self.config.chunk_size
         truncated_transcript = transcript_text[:max_transcript_length]
         if len(transcript_text) > max_transcript_length:
             truncated_transcript += "..."
