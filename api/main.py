@@ -18,15 +18,19 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Add src to path for Python imports
-# Handle both local dev (api/main.py) and Railway deployment (/app/main.py)
+# Handle both local dev (api/main.py) and Railway deployment (/app/main.py or /app/api/main.py)
 possible_src_paths = [
-    Path(__file__).parent.parent / "src",  # Local: api/../src
-    Path(__file__).parent / "src",          # Railway: /app/src
+    Path("/app/src"),                        # Railway absolute path (highest priority)
+    Path(__file__).parent.parent / "src",    # Local: api/../src or /app/api/../src
+    Path(__file__).parent / "src",           # Fallback: /app/src if main.py is at /app/
 ]
 for src_path in possible_src_paths:
     if src_path.exists():
         sys.path.insert(0, str(src_path.resolve()))
+        print(f"[PATH] Added to sys.path: {src_path.resolve()}")
         break
+else:
+    print(f"[PATH] Warning: Could not find src directory. Tried: {[str(p) for p in possible_src_paths]}")
 
 from models.analyze import DEFAULT_VIDEO_URL
 

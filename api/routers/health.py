@@ -9,11 +9,12 @@ from fastapi import APIRouter
 # Add src to path for imports
 # Handle both local dev (api/routers/health.py) and Railway deployment
 possible_src_paths = [
+    Path("/app/src"),                              # Railway absolute path (highest priority)
     Path(__file__).parent.parent.parent / "src",  # Local: api/routers/../../src
-    Path(__file__).parent.parent / "src",          # Railway: /app/routers/../src
+    Path(__file__).parent.parent / "src",          # Fallback: /app/routers/../src
 ]
 for src_path in possible_src_paths:
-    if src_path.exists():
+    if src_path.exists() and str(src_path.resolve()) not in sys.path:
         sys.path.insert(0, str(src_path.resolve()))
         break
 
