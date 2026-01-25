@@ -16,9 +16,9 @@ LLMProvider = Literal["openai", "claude"]
 @dataclass
 class LLMConfig:
     """Configuration for LLM providers"""
-    
+
     # Provider selection
-    provider: LLMProvider = "openai"
+    provider: LLMProvider = "claude"
     
     # OpenAI configuration
     openai_api_key: Optional[str] = None
@@ -41,10 +41,10 @@ class LLMConfig:
     def from_env(cls) -> 'LLMConfig':
         """Create configuration from environment variables"""
         
-        # Get provider from env (default: openai)
-        provider = os.getenv("LLM_PROVIDER", "openai").lower()
+        # Get provider from env (default: claude)
+        provider = os.getenv("LLM_PROVIDER", "claude").lower()
         if provider not in ["openai", "claude"]:
-            provider = "openai"
+            provider = "claude"
         
         return cls(
             provider=provider,
