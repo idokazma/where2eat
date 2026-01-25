@@ -1,10 +1,10 @@
 "use client"
 
+import { Suspense } from "react"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useSearchParams } from "next/navigation"
 import { cn } from "@/lib/utils"
 import {
-  LayoutDashboard,
   Search,
   Clock,
   Map,
@@ -30,10 +30,13 @@ interface SideNavProps {
   className?: string
 }
 
-export function SideNav({ className }: SideNavProps) {
+function SideNavContent({ className }: SideNavProps) {
   const pathname = usePathname()
+  const searchParams = useSearchParams()
   const { t } = useLanguage()
   const { favoriteRestaurants } = useFavorites()
+
+  const currentTab = searchParams.get('tab') || 'overview'
 
   const navItems: NavItem[] = [
     {
@@ -105,9 +108,7 @@ export function SideNav({ className }: SideNavProps) {
       <nav className="flex-1 space-y-1">
         {navItems.map((item) => {
           const Icon = item.icon
-          // Check if current route matches (for main dashboard tabs)
           const isMainDashboard = pathname === "/"
-          const currentTab = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '').get('tab') || 'overview'
           const itemTab = item.href.includes('?tab=') ? item.href.split('?tab=')[1] : 'overview'
           const isActive = isMainDashboard && currentTab === itemTab
 
@@ -160,5 +161,25 @@ export function SideNav({ className }: SideNavProps) {
         })}
       </div>
     </div>
+  )
+}
+
+// Wrapper with Suspense for useSearchParams
+export function SideNav({ className }: SideNavProps) {
+  return (
+    <Suspense fallback={
+      <div className={cn(
+        "flex h-full w-64 flex-col gap-2 border-r border-border/40 bg-card/50 backdrop-blur-sm p-4",
+        className
+      )}>
+        <div className="mb-6 px-3">
+          <h2 className="text-2xl font-display font-black tracking-tight text-primary">
+            Where2Eat
+          </h2>
+        </div>
+      </div>
+    }>
+      <SideNavContent className={className} />
+    </Suspense>
   )
 }

@@ -1,5 +1,6 @@
 "use client"
 
+import { Suspense } from "react"
 import { usePathname, useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
@@ -20,7 +21,7 @@ interface NavItem {
   badge?: number
 }
 
-export function MobileBottomNav() {
+function MobileBottomNavContent() {
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const { t } = useLanguage()
@@ -115,5 +116,14 @@ export function MobileBottomNav() {
         })}
       </div>
     </nav>
+  )
+}
+
+// Wrapper with Suspense for useSearchParams
+export function MobileBottomNav() {
+  return (
+    <Suspense fallback={null}>
+      <MobileBottomNavContent />
+    </Suspense>
   )
 }

@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { FavoritesProvider } from "@/contexts/favorites-context";
@@ -20,17 +20,18 @@ export const metadata: Metadata = {
   title: "Where2Eat - Discover Recommended Restaurants from Podcasts",
   description: "The advanced system that analyzes food podcasts and brings you the most recommended restaurants",
   manifest: "/manifest.json",
-  themeColor: "#F97066",
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 5,
-  },
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
     title: "Where2Eat",
   },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: "#F97066",
 };
 
 export default function RootLayout({
