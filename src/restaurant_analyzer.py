@@ -88,51 +88,69 @@ def save_transcript(transcript_data):
 def create_analysis_request(transcript_data):
     """
     Create the analysis request that will be sent to Claude via the Task agent
-    
+
     Args:
         transcript_data (dict): Transcript data
-        
+
     Returns:
         str: Formatted analysis request
     """
-    
+
     # Truncate transcript if it's too long (keep first 15000 chars to stay within limits)
     transcript_text = transcript_data['transcript']
     if len(transcript_text) > 15000:
         transcript_text = transcript_text[:15000] + "\n\n[TRANSCRIPT TRUNCATED - SHOWING FIRST PORTION ONLY]"
-    
+
     video_info = f"Video: {transcript_data['video_url']} (Language: {transcript_data['language']})"
-    
-    analysis_request = f"""
-Please analyze this Hebrew food podcast transcript and create a comprehensive summary of all restaurants mentioned.
+
+    analysis_request = f"""Analyze this Hebrew food podcast transcript and extract ALL restaurants mentioned by name.
 
 {video_info}
 
 TASK: Extract and summarize all restaurant information from this Hebrew food podcast transcript.
 
-INSTRUCTIONS:
-For each restaurant mentioned, provide:
-1. Restaurant name (in Hebrew and English if possible)
-2. Location (city, neighborhood, specific address if mentioned)  
-3. Type of cuisine/food
-4. What the hosts said about it (positive/negative opinions, specific comments)
-5. Specific dishes or menu items mentioned with descriptions
-6. Price range if mentioned
-7. Any other details (atmosphere, service, opening hours, etc.)
+EXTRACTION GUIDELINES:
+1. Look for Hebrew patterns: "במסעדת X", "מסעדת X", "ביסטרו X", "בית קפה X", "של X", "אצל X"
+2. Look for location patterns: "[name] בתל אביב", "[name] ברחוב X"
+3. Include chef-owned restaurants: "המסעדה של [שף]"
+
+DO NOT EXTRACT:
+- Generic food terms: "חומוס", "שווארמה", "פיצה" (unless part of restaurant name)
+- Food brands: "אסם", "תנובה", "שטראוס"
+- Dish names that are not restaurant names
+- Vague references: "מסעדה אחת", "מקום מסוים", "בית קפה ליד"
+
+FOR EACH RESTAURANT, PROVIDE:
+1. Restaurant name (in Hebrew and accurate English transliteration)
+2. Confidence level: high/medium/low
+3. Location (city, neighborhood, specific address if mentioned)
+4. Type of cuisine/food and establishment type (מסעדה/ביסטרו/בית קפה/פוד טראק/מאפייה/בר)
+5. Host opinion (חיובית מאוד/חיובית/ניטרלית/שלילית/מעורבת)
+6. Whether the host recommends it (yes/no)
+7. Direct quotes or paraphrases from the hosts
+8. Signature dishes and other menu items mentioned
+9. Chef name if mentioned
+10. Price range if mentioned (זול/בינוני/יקר/יוקרתי)
+11. Special features (atmosphere, service, location features)
+12. Any business news (openings, closings, changes)
+
+CONFIDENCE LEVELS:
+- "high": שם מפורש עם הקשר ברור (e.g., "הלכנו למסעדת צ'קולי בנמל")
+- "medium": שם מוזכר אך הקשר חלקי
+- "low": שם לא ברור או נשמע חלקית
 
 ALSO INCLUDE:
-- Overall themes and trends discussed in the episode
+- Overall themes and food trends discussed in the episode
 - Notable quotes about specific restaurants
 - Any news about restaurant openings, closings, or changes
 
-FORMAT: Structure the output as a clear, organized summary that would be useful for a restaurant guide. Use bullet points and clear headings.
+FORMAT: Structure the output as a clear, organized summary with bullet points and headings.
 
 TRANSCRIPT TEXT:
 {transcript_text}
 
-Please provide a detailed analysis focusing on extracting all restaurant-related information from this Hebrew food podcast.
-"""
-    
+Be thorough but precise. Extract ALL valid restaurants, skip generic food terms and vague references."""
+
     return analysis_request
 
 

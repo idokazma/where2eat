@@ -256,34 +256,47 @@ class ClaudeRestaurantAnalyzer:
         # Create the detailed task prompt
         # Use larger context window to capture all restaurants (previous bug: 8000 char limit)
         max_length = 100000
-        task_prompt = f"""
-        You are a specialized restaurant analysis agent. Analyze this Hebrew food podcast transcript and extract ALL restaurants mentioned by name.
+        task_prompt = f"""You are a specialized Hebrew food podcast analyst. Analyze this transcript and extract ALL restaurants mentioned by name.
 
-        TRANSCRIPT SEGMENT:
-        {transcript_text[:max_length]}{'...' if len(transcript_text) > max_length else ''}
-        
-        TASK: Extract every restaurant, café, bistro, food truck, or dining establishment that is mentioned by its actual name in this Hebrew text.
-        
-        REQUIREMENTS:
-        1. Extract ONLY actual establishment names, not generic food terms
-        2. Look for patterns like "במסעדת [name]", "מסעדת [name]", "[name] בתל אביב", etc.
-        3. Include context about location, cuisine type, and host opinions if mentioned
-        4. Provide both Hebrew name and English transliteration
-        
-        Return a JSON array with this structure for each restaurant:
-        {{
-            "name_hebrew": "שם המסעדה בעברית",
-            "name_english": "Restaurant Name in English",
-            "location": {{"city": "עיר", "neighborhood": "שכונה", "region": "אזור"}},
-            "cuisine_type": "סוג מטבח",
-            "host_opinion": "דעת המנחה", 
-            "host_comments": "הערות המנחה",
-            "menu_items": ["מנה1", "מנה2"],
-            "mention_context": "ההקשר שבו הוזכר"
-        }}
-        
-        Be precise and thorough. Extract ALL restaurants mentioned.
-        """
+TRANSCRIPT SEGMENT:
+{transcript_text[:max_length]}{'...' if len(transcript_text) > max_length else ''}
+
+TASK: Extract every restaurant, café, bistro, food truck, bakery, or bar mentioned by its actual name.
+
+EXTRACTION GUIDELINES:
+1. Look for Hebrew patterns: "במסעדת X", "מסעדת X", "ביסטרו X", "בית קפה X", "של X", "אצל X"
+2. Look for location patterns: "[name] בתל אביב", "[name] ברחוב X"
+3. Include chef-owned restaurants: "המסעדה של [שף]"
+
+DO NOT EXTRACT (important):
+- Generic food terms: "חומוס", "שווארמה", "פיצה" (unless part of restaurant name)
+- Food brands: "אסם", "תנובה", "שטראוס"
+- Dish names that are not restaurant names
+- Vague references: "מסעדה אחת", "מקום מסוים", "בית קפה ליד"
+
+Return a JSON array with this structure for each restaurant:
+{{
+    "name_hebrew": "שם המסעדה בעברית",
+    "name_english": "Accurate English Transliteration",
+    "confidence": "high/medium/low",
+    "location": {{"city": "עיר", "neighborhood": "שכונה", "region": "צפון/מרכז/דרום/ירושלים"}},
+    "cuisine_type": "סוג מטבח",
+    "establishment_type": "מסעדה/ביסטרו/בית קפה/פוד טראק/מאפייה/בר",
+    "host_opinion": "חיובית מאוד/חיובית/ניטרלית/שלילית/מעורבת",
+    "host_recommendation": true/false,
+    "host_comments": "ציטוט ישיר או פרפרזה",
+    "signature_dishes": ["מנה מומלצת"],
+    "menu_items": ["מנה1", "מנה2"],
+    "chef_name": "שם השף אם מוזכר",
+    "mention_context": "ציטוט קצר מהתמליל"
+}}
+
+CONFIDENCE LEVELS:
+- "high": שם מפורש עם הקשר ברור (e.g., "הלכנו למסעדת צ'קולי")
+- "medium": שם מוזכר אך הקשר חלקי
+- "low": שם לא ברור או נשמע חלקית
+
+Be thorough but precise. Extract ALL valid restaurants. Use null for unknown fields."""
         
         try:
             # Call the actual Task agent
@@ -711,53 +724,62 @@ class ClaudeRestaurantAnalyzer:
 
     def _create_analysis_prompt(self, transcript_text: str, transcript_data: Dict) -> str:
         """Create the analysis prompt for Claude"""
-        
-        return f"""
-        Analyze this Hebrew food podcast transcript and extract ALL restaurant information mentioned.
-        
-        **Task:** Extract structured restaurant data from Hebrew transcript
-        
-        **Input Text:**
-        {transcript_text[:2000]}...
-        
-        **Required Output Format (JSON):**
-        For each restaurant mentioned, provide:
-        {{
-            "name_hebrew": "שם המסעדה בעברית",
-            "name_english": "Restaurant Name in English (transliterated or translated)",
-            "location": {{
-                "city": "עיר בעברית", 
-                "neighborhood": "שכונה (אם מוזכרת)",
-                "address": "כתובת מלאה (אם מוזכרת)",
-                "region": "אזור (צפון/מרכז/דרום/ירושלים)"
-            }},
-            "cuisine_type": "סוג המטבח (איטלקי/מקסיקני/יפני וכו')",
-            "status": "סטטוס (פתוח/סגור/חדש/ותיק)",
-            "price_range": "טווח מחירים (זול/בינוני/יקר/יוקרתי)",
-            "host_opinion": "דעת המנחה (חיובית/שלילית/מעורבת)",
-            "host_comments": "הערות ספציפיות של המנחה",
-            "menu_items": ["מנה 1", "מנה 2"],
-            "special_features": ["תכונה מיוחדת 1", "תכונה מיוחדת 2"],
-            "contact_info": {{
-                "phone": "מספר טלפון (אם מוזכר)",
-                "website": "אתר אינטרנט (אם מוזכר)",
-                "social_media": "רשתות חברתיות (אם מוזכרות)"
-            }},
-            "business_news": "חדשות עסקיות (סגירה/פתיחה/שינויים)",
-            "mention_context": "הקשר הזכירה במילותיו של המנחה"
-        }}
-        
-        **Instructions:**
-        1. Extract ONLY restaurants that are explicitly mentioned by name
-        2. Distinguish between restaurant names and generic food terms
-        3. Include both full restaurants and food trucks/stands if named
-        4. If location is unclear, mark as "לא צוין"
-        5. **MANDATORY:** Always provide proper English transliteration/translation for Hebrew restaurant names
-        6. For English names: Use proper transliteration (e.g., "צ'קולי" → "Chakoli", "מקדונלד'ס" → "McDonald's")
-        7. Include exact quotes for host comments and context
-        
-        **Important:** Return ONLY the JSON array of restaurant objects, no additional text.
-        """
+
+        return f"""Analyze this Hebrew food podcast transcript and extract ALL restaurants mentioned by name.
+
+**Input Text:**
+{transcript_text[:2000]}...
+
+EXTRACTION GUIDELINES:
+1. Look for Hebrew patterns: "במסעדת X", "מסעדת X", "ביסטרו X", "בית קפה X", "של X", "אצל X"
+2. Look for location patterns: "[name] בתל אביב", "[name] ברחוב X"
+3. Include chef-owned restaurants: "המסעדה של [שף]"
+
+DO NOT EXTRACT:
+- Generic food terms: "חומוס", "שווארמה", "פיצה" (unless part of restaurant name)
+- Food brands: "אסם", "תנובה", "שטראוס"
+- Dish names that are not restaurant names
+- Vague references: "מסעדה אחת", "מקום מסוים"
+
+**Required Output Format (JSON array):**
+[
+    {{
+        "name_hebrew": "שם המסעדה בעברית",
+        "name_english": "Accurate English Transliteration (e.g., צ'קולי → Chakoli)",
+        "confidence": "high/medium/low",
+        "location": {{
+            "city": "עיר",
+            "neighborhood": "שכונה",
+            "address": "כתובת מלאה",
+            "region": "צפון/מרכז/דרום/ירושלים/שרון"
+        }},
+        "cuisine_type": "סוג המטבח (איטלקי/אסייתי/ים-תיכוני/וכו')",
+        "establishment_type": "מסעדה/ביסטרו/בית קפה/פוד טראק/מאפייה/בר",
+        "status": "פתוח/סגור/חדש/עומד להיפתח",
+        "price_range": "זול/בינוני/יקר/יוקרתי",
+        "host_opinion": "חיובית מאוד/חיובית/ניטרלית/שלילית/מעורבת",
+        "host_recommendation": true/false,
+        "host_comments": "ציטוט ישיר או פרפרזה מהמנחה",
+        "signature_dishes": ["מנה מומלצת 1"],
+        "menu_items": ["מנה 1", "מנה 2"],
+        "special_features": ["תכונה מיוחדת 1", "תכונה מיוחדת 2"],
+        "chef_name": "שם השף אם מוזכר",
+        "contact_info": {{
+            "phone": "מספר טלפון",
+            "website": "אתר אינטרנט",
+            "instagram": "חשבון אינסטגרם"
+        }},
+        "business_news": "סגירה/פתיחה/שינויים",
+        "mention_context": "ציטוט קצר מהתמליל שמזכיר את המסעדה"
+    }}
+]
+
+CONFIDENCE LEVELS:
+- "high": שם מפורש עם הקשר ברור
+- "medium": שם מוזכר אך הקשר חלקי
+- "low": שם לא ברור או נשמע חלקית
+
+**Important:** Return ONLY the JSON array. Use null for truly unknown fields (not "לא צוין")."""
 
     def _create_mock_analysis(self, transcript_data: Dict) -> Dict:
         """Create mock analysis results for testing"""
