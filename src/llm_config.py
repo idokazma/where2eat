@@ -33,8 +33,10 @@ class LLMConfig:
     claude_max_tokens: int = 8192  # Increased to handle large transcript analyses
     
     # Analysis configuration
-    chunk_size: int = 100000  # Increased for better context
-    chunk_overlap: int = 2000
+    # chunk_size controls when transcripts are split into multiple API calls
+    # 30K chars (~7500 tokens input) leaves room for ~8K tokens output
+    chunk_size: int = 30000
+    chunk_overlap: int = 1000
     enable_chunking: bool = True
     
     @classmethod
@@ -62,8 +64,8 @@ class LLMConfig:
             claude_max_tokens=int(os.getenv("CLAUDE_MAX_TOKENS", "8192")),
             
             # Analysis settings
-            chunk_size=int(os.getenv("TRANSCRIPT_CHUNK_SIZE", "100000")),
-            chunk_overlap=int(os.getenv("TRANSCRIPT_CHUNK_OVERLAP", "2000")),
+            chunk_size=int(os.getenv("TRANSCRIPT_CHUNK_SIZE", "30000")),
+            chunk_overlap=int(os.getenv("TRANSCRIPT_CHUNK_OVERLAP", "1000")),
             enable_chunking=os.getenv("ENABLE_CHUNKING", "true").lower() == "true"
         )
     
