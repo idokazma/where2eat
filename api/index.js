@@ -1125,21 +1125,21 @@ app.get('/api/places/search', async (req, res) => {
 app.get('/api/places/details/:placeId', async (req, res) => {
   try {
     const { placeId } = req.params
-    
+
     const apiKey = process.env.GOOGLE_PLACES_API_KEY
     if (!apiKey) {
       return res.status(500).json({ error: 'Google Places API key not configured' })
     }
-    
+
     const fields = 'place_id,name,formatted_address,geometry,rating,price_level,formatted_phone_number,website,opening_hours,photos,reviews'
     const detailsUrl = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=${fields}&key=${apiKey}`
-    
+
     console.log(`📍 Getting place details for: ${placeId}`)
-    
+
     const fetch = (await import('node-fetch')).default
     const response = await fetch(detailsUrl)
     const data = await response.json()
-    
+
     if (data.status === 'OK') {
       console.log(`✅ Retrieved details for: ${data.result.name}`)
       res.json({ place: data.result })
@@ -1147,10 +1147,228 @@ app.get('/api/places/details/:placeId', async (req, res) => {
       console.log(`❌ Google Places Details API error: ${data.status}`)
       res.status(400).json({ error: data.status, message: data.error_message })
     }
-    
+
   } catch (error) {
     console.error('Error getting place details:', error)
     res.status(500).json({ error: 'Failed to get place details' })
+  }
+})
+
+// RESTAURANT ENRICHMENT ENDPOINT - Enrich with Google Places data
+app.post('/api/restaurants/:id/enrich', async (req, res) => {
+  try {
+    const { id } = req.params
+    const filePath = path.join(dataDir, `${id}.json`)
+
+    if (!await fs.pathExists(filePath)) {
+      return res.status(404).json({ error: 'Restaurant not found' })
+    }
+
+    const apiKey = process.env.GOOGLE_PLACES_API_KEY
+    if (!apiKey) {
+      return res.status(500).json({ error: 'Google Places API key not configured' })
+    }
+
+    // Read restaurant data
+    const restaurant = await fs.readJson(filePath)
+
+    // Skip if already enriched
+    if (restaurant.google_places_enriched) {
+      return res.json({
+        message: 'Restaurant already enriched',
+        restaurant,
+        enriched: false
+      })
+    }
+
+    console.log(`🔍 Enriching restaurant: ${restaurant.name_hebrew || restaurant.name_english}`)
+
+    // Search for restaurant on Google Places
+    const searchQueries = []
+    const city = restaurant.location?.city || ''
+
+    if (restaurant.name_english && city) {
+      searchQueries.push(`${restaurant.name_english} ${city}`)
+    }
+    if (restaurant.name_hebrew && city) {
+      searchQueries.push(`${restaurant.name_hebrew} ${city}`)
+    }
+    if (restaurant.name_english) {
+      searchQueries.push(`${restaurant.name_english} restaurant ${city}`)
+    }
+
+    const fetch = (await import('node-fetch')).default
+    let placeDetails = null
+
+    for (const query of searchQueries) {
+      if (placeDetails) break
+
+      const searchUrl = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${encodeURIComponent(query)}&type=restaurant&key=${apiKey}`
+      const searchResponse = await fetch(searchUrl)
+      const searchData = await searchResponse.json()
+
+      if (searchData.status === 'OK' && searchData.results.length > 0) {
+        const placeId = searchData.results[0].place_id
+
+        // Get detailed info
+        const fields = 'place_id,name,formatted_address,geometry,rating,user_ratings_total,price_level,formatted_phone_number,website,opening_hours,photos'
+        const detailsUrl = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=${fields}&key=${apiKey}`
+        const detailsResponse = await fetch(detailsUrl)
+        const detailsData = await detailsResponse.json()
+
+        if (detailsData.status === 'OK') {
+          placeDetails = detailsData.result
+        }
+      }
+    }
+
+    if (placeDetails) {
+      // Merge Google Places data
+      restaurant.google_places = {
+        place_id: placeDetails.place_id,
+        google_name: placeDetails.name,
+        google_url: `https://www.google.com/maps/place/?q=place_id:${placeDetails.place_id}`,
+        enriched_at: new Date().toISOString()
+      }
+
+      if (placeDetails.geometry?.location) {
+        restaurant.location = restaurant.location || {}
+        restaurant.location.coordinates = {
+          latitude: placeDetails.geometry.location.lat,
+          longitude: placeDetails.geometry.location.lng
+        }
+      }
+
+      if (placeDetails.formatted_address) {
+        restaurant.location = restaurant.location || {}
+        restaurant.location.full_address = placeDetails.formatted_address
+      }
+
+      if (placeDetails.rating) {
+        restaurant.rating = {
+          google_rating: placeDetails.rating,
+          total_reviews: placeDetails.user_ratings_total || 0,
+          price_level: placeDetails.price_level
+        }
+      }
+
+      if (placeDetails.formatted_phone_number) {
+        restaurant.contact_info = restaurant.contact_info || {}
+        restaurant.contact_info.phone = placeDetails.formatted_phone_number
+      }
+
+      if (placeDetails.website) {
+        restaurant.contact_info = restaurant.contact_info || {}
+        restaurant.contact_info.website = placeDetails.website
+      }
+
+      if (placeDetails.photos && placeDetails.photos.length > 0) {
+        restaurant.photos = placeDetails.photos.slice(0, 3).map(photo => ({
+          photo_reference: photo.photo_reference,
+          photo_url: `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${photo.photo_reference}&key=${apiKey}`,
+          width: photo.width,
+          height: photo.height
+        }))
+      }
+
+      if (placeDetails.opening_hours) {
+        restaurant.business_hours = {
+          open_now: placeDetails.opening_hours.open_now,
+          weekday_text: placeDetails.opening_hours.weekday_text || []
+        }
+      }
+
+      restaurant.google_places_enriched = true
+      restaurant.google_places_attempted = true
+
+      // Save enriched data
+      await fs.writeJson(filePath, restaurant, { spaces: 2 })
+
+      console.log(`✅ Successfully enriched ${restaurant.name_hebrew || restaurant.name_english}`)
+
+      res.json({
+        message: 'Restaurant enriched successfully',
+        restaurant,
+        enriched: true,
+        google_places: restaurant.google_places
+      })
+    } else {
+      restaurant.google_places_enriched = false
+      restaurant.google_places_attempted = true
+      await fs.writeJson(filePath, restaurant, { spaces: 2 })
+
+      console.log(`❌ Could not find Google Places data for ${restaurant.name_hebrew || restaurant.name_english}`)
+
+      res.json({
+        message: 'No Google Places data found',
+        restaurant,
+        enriched: false
+      })
+    }
+
+  } catch (error) {
+    console.error('Error enriching restaurant:', error)
+    res.status(500).json({ error: 'Failed to enrich restaurant' })
+  }
+})
+
+// Batch enrich all restaurants
+app.post('/api/restaurants/enrich-all', async (req, res) => {
+  try {
+    const apiKey = process.env.GOOGLE_PLACES_API_KEY
+    if (!apiKey) {
+      return res.status(500).json({ error: 'Google Places API key not configured' })
+    }
+
+    await fs.ensureDir(dataDir)
+    const files = await fs.readdir(dataDir)
+    const jsonFiles = files.filter(file => file.endsWith('.json'))
+
+    const stats = {
+      total: jsonFiles.length,
+      enriched: 0,
+      skipped: 0,
+      failed: 0
+    }
+
+    console.log(`🚀 Starting batch enrichment of ${stats.total} restaurants`)
+
+    // Start background enrichment process
+    const { spawn } = require('child_process')
+    const pythonPath = path.join(__dirname, '..', 'scripts', 'enrich_restaurants.py')
+    const venvPython = path.join(__dirname, '..', 'venv', 'bin', 'python')
+
+    const python = spawn(venvPython, [pythonPath], {
+      cwd: path.join(__dirname, '..'),
+      stdio: ['pipe', 'pipe', 'pipe'],
+      env: {
+        ...process.env,
+        PYTHONPATH: path.join(__dirname, '..'),
+        GOOGLE_PLACES_API_KEY: apiKey
+      }
+    })
+
+    python.stdout.on('data', (data) => {
+      console.log('📤 ENRICHMENT:', data.toString().trim())
+    })
+
+    python.stderr.on('data', (data) => {
+      console.log('🚨 ENRICHMENT ERROR:', data.toString().trim())
+    })
+
+    python.on('close', (code) => {
+      console.log(`🏁 Batch enrichment completed with exit code: ${code}`)
+    })
+
+    res.status(202).json({
+      message: 'Batch enrichment started',
+      status: 'processing',
+      total_restaurants: stats.total
+    })
+
+  } catch (error) {
+    console.error('Error starting batch enrichment:', error)
+    res.status(500).json({ error: 'Failed to start batch enrichment' })
   }
 })
 

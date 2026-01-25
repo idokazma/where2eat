@@ -48,6 +48,7 @@ class BackendService:
         self.db = db or get_database(db_path)
         self._transcript_collector = None
         self._analyzer = None
+        self._places_enricher = None
 
     # ==================== Transcript Collection ====================
 
@@ -150,6 +151,17 @@ class BackendService:
                     raise ImportError("No restaurant analyzer available")
         return self._analyzer
 
+    def _get_places_enricher(self):
+        """Lazy load Google Places enricher."""
+        if self._places_enricher is None:
+            try:
+                from google_places_enricher import GooglePlacesEnricher
+                self._places_enricher = GooglePlacesEnricher()
+            except (ImportError, ValueError) as e:
+                # ValueError is raised if API key is missing
+                raise ImportError(f"Google Places enricher not available: {e}")
+        return self._places_enricher
+
     def analyze_transcript(self, transcript_data: Dict) -> Dict:
         """Analyze transcript to extract restaurant mentions.
 
@@ -194,6 +206,81 @@ class BackendService:
                 'restaurants': []
             }
 
+    # ==================== Google Places Enrichment ====================
+
+    def enrich_restaurants(self, restaurants: List[Dict]) -> Dict:
+        """Enrich restaurants with Google Places data (coordinates, ratings, photos).
+
+        Args:
+            restaurants: List of restaurant dicts from analyze_transcript
+
+        Returns:
+            Dict with enriched restaurants and stats
+        """
+        if not restaurants:
+            return {
+                'success': True,
+                'restaurants': [],
+                'stats': {'total': 0, 'enriched': 0, 'failed': 0}
+            }
+
+        try:
+            enricher = self._get_places_enricher()
+        except ImportError as e:
+            return {
+                'success': False,
+                'error': str(e),
+                'restaurants': restaurants,
+                'stats': {'total': len(restaurants), 'enriched': 0, 'failed': 0}
+            }
+
+        enriched_restaurants = []
+        stats = {'total': len(restaurants), 'enriched': 0, 'failed': 0}
+
+        for restaurant in restaurants:
+            try:
+                enriched = enricher.enrich_restaurant(restaurant)
+                enriched_restaurants.append(enriched)
+
+                if enriched.get('google_places_enriched'):
+                    stats['enriched'] += 1
+                else:
+                    stats['failed'] += 1
+
+            except Exception as e:
+                # If enrichment fails, keep original data
+                restaurant['google_places_error'] = str(e)
+                enriched_restaurants.append(restaurant)
+                stats['failed'] += 1
+
+        return {
+            'success': True,
+            'restaurants': enriched_restaurants,
+            'stats': stats
+        }
+
+    def enrich_restaurant_by_id(self, restaurant_id: str) -> Dict:
+        """Enrich a single restaurant by ID with Google Places data.
+
+        Args:
+            restaurant_id: Database restaurant ID
+
+        Returns:
+            Enriched restaurant data
+        """
+        restaurant = self.get_restaurant(restaurant_id)
+        if not restaurant:
+            return {'success': False, 'error': 'Restaurant not found'}
+
+        result = self.enrich_restaurants([restaurant])
+        if result['success'] and result['restaurants']:
+            enriched = result['restaurants'][0]
+            # Update in database
+            self.update_restaurant(restaurant_id, enriched)
+            return {'success': True, 'restaurant': enriched}
+
+        return {'success': False, 'error': result.get('error', 'Enrichment failed')}
+
     # ==================== Full Pipeline ====================
 
     def process_video(
@@ -201,6 +288,7 @@ class BackendService:
         video_url: str,
         language: str = 'he',
         save_to_db: bool = True,
+        enrich_with_google: bool = False,
         progress_callback: Callable[[str, float], None] = None
     ) -> Dict:
         """Process a single YouTube video end-to-end.
@@ -208,12 +296,14 @@ class BackendService:
         This runs the full pipeline:
         1. Fetch transcript
         2. Extract restaurants
-        3. Save to database
+        3. (Optional) Enrich with Google Places data
+        4. Save to database
 
         Args:
             video_url: YouTube video URL
             language: Preferred language (default: 'he')
             save_to_db: Whether to save results to database
+            enrich_with_google: Whether to look up restaurants on Google Places
             progress_callback: Optional callback(step, progress)
 
         Returns:
@@ -262,10 +352,25 @@ class BackendService:
             return result
 
         restaurants = analysis_result.get('restaurants', [])
-        result['restaurants'] = restaurants
-        result['restaurants_found'] = len(restaurants)
         result['food_trends'] = analysis_result.get('food_trends', [])
         result['episode_summary'] = analysis_result.get('episode_summary', '')
+
+        # Step 4: Enrich with Google Places (optional)
+        if enrich_with_google and restaurants:
+            if progress_callback:
+                progress_callback('enriching_with_google', 0.6)
+
+            enrichment_result = self.enrich_restaurants(restaurants)
+            result['steps']['enrichment'] = {
+                'success': enrichment_result.get('success'),
+                'stats': enrichment_result.get('stats')
+            }
+
+            if enrichment_result.get('success'):
+                restaurants = enrichment_result.get('restaurants', restaurants)
+
+        result['restaurants'] = restaurants
+        result['restaurants_found'] = len(restaurants)
 
         if progress_callback:
             progress_callback('saving_results', 0.8)
@@ -848,7 +953,8 @@ class BackendService:
         checks = {
             'database': False,
             'transcript_collector': False,
-            'analyzer': False
+            'analyzer': False,
+            'google_places': False
         }
 
         try:
@@ -869,8 +975,17 @@ class BackendService:
         except Exception:
             pass
 
+        try:
+            self._get_places_enricher()
+            checks['google_places'] = True
+        except Exception:
+            pass
+
+        # Google Places is optional, so don't count it for health status
+        core_checks = {k: v for k, v in checks.items() if k != 'google_places'}
+
         return {
-            'status': 'healthy' if all(checks.values()) else 'degraded',
+            'status': 'healthy' if all(core_checks.values()) else 'degraded',
             'checks': checks,
             'timestamp': datetime.now().isoformat()
         }
