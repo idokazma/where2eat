@@ -45,12 +45,14 @@ class RestaurantPodcastAnalyzer:
         self.search_agent = RestaurantSearchAgent()
         
         # Initialize unified restaurant analyzer
+        self.restaurant_analyzer = None
         try:
             self.restaurant_analyzer = UnifiedRestaurantAnalyzer()
             self.logger.info(f"✅ Initialized {self.restaurant_analyzer.config.provider.upper()} analyzer")
         except Exception as e:
-            self.logger.error(f"❌ Failed to initialize restaurant analyzer: {str(e)}")
-            raise e
+            self.logger.warning(f"⚠️ Failed to initialize restaurant analyzer: {str(e)}")
+            self.logger.warning("⚠️ LLM analysis will be skipped - only transcript collection will work")
+            self.logger.warning("⚠️ Set OPENAI_API_KEY or ANTHROPIC_API_KEY in .env file to enable analysis")
         
         self.results = {}
         
@@ -219,13 +221,22 @@ class RestaurantPodcastAnalyzer:
             result["analysis_request_file"] = analysis_request_file
             
             # Step 4: Process with LLM to extract restaurants and save to API format
-            self.logger.info(f"🤖 Analyzing transcript with {self.restaurant_analyzer.config.provider.upper()} to extract restaurants...")
-            restaurants_data = self.extract_restaurants_with_llm(transcript_data)
-            if restaurants_data:
-                api_file = self.save_restaurants_for_api(restaurants_data, transcript_data)
-                result["files_generated"].append(api_file)
-                result["api_data_file"] = api_file
-                self.logger.info(f"✅ Restaurant data saved for API: {api_file}")
+            try:
+                self.logger.info(f"🤖 Analyzing transcript with {self.restaurant_analyzer.config.provider.upper()} to extract restaurants...")
+                restaurants_data = self.extract_restaurants_with_llm(transcript_data)
+                if restaurants_data and restaurants_data.get('restaurants'):
+                    api_file = self.save_restaurants_for_api(restaurants_data, transcript_data)
+                    result["files_generated"].append(api_file)
+                    result["api_data_file"] = api_file
+                    self.logger.info(f"✅ Restaurant data saved for API: {api_file}")
+                else:
+                    self.logger.warning("⚠️ LLM analysis returned no restaurants")
+            except Exception as llm_error:
+                self.logger.error(f"⚠️ LLM analysis failed: {str(llm_error)}")
+                self.logger.error("⚠️ Check that OPENAI_API_KEY or ANTHROPIC_API_KEY is set in .env file")
+                # Save transcript info even if LLM fails
+                self.save_transcript_metadata(transcript_data)
+                result["llm_error"] = str(llm_error)
             
             # Step 5: Mark as ready for Claude analysis
             result["success"] = True
@@ -246,6 +257,9 @@ class RestaurantPodcastAnalyzer:
     
     def extract_restaurants_with_llm(self, transcript_data: Dict) -> Dict:
         """Extract restaurant information from transcript using LLM analysis"""
+        if self.restaurant_analyzer is None:
+            raise ValueError("LLM analyzer not initialized - missing API key. Set OPENAI_API_KEY or ANTHROPIC_API_KEY in .env file.")
+
         provider = self.restaurant_analyzer.config.provider
         self.logger.info(f"🤖 Extracting restaurants from transcript using {provider.upper()} analysis...")
         
@@ -277,6 +291,31 @@ class RestaurantPodcastAnalyzer:
             # Return error instead of fallback
             raise e
     
+    def save_transcript_metadata(self, transcript_data: Dict) -> str:
+        """Save basic transcript metadata when LLM analysis fails"""
+        transcripts_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data", "transcripts")
+        os.makedirs(transcripts_dir, exist_ok=True)
+
+        metadata = {
+            "video_id": transcript_data.get('video_id'),
+            "video_url": transcript_data.get('video_url'),
+            "language": transcript_data.get('language'),
+            "segment_count": transcript_data.get('segment_count'),
+            "transcript_length": len(transcript_data.get('transcript', '')),
+            "fetched_at": datetime.now().isoformat(),
+            "status": "transcript_only",
+            "note": "LLM analysis failed - transcript saved for manual processing"
+        }
+
+        filename = f"{transcript_data['video_id']}_metadata.json"
+        filepath = os.path.join(transcripts_dir, filename)
+
+        with open(filepath, 'w', encoding='utf-8') as f:
+            json.dump(metadata, f, ensure_ascii=False, indent=2)
+
+        self.logger.info(f"📝 Saved transcript metadata: {filepath}")
+        return filepath
+
     def save_restaurants_for_api(self, restaurants_data: Dict, transcript_data: Dict) -> str:
         """Save restaurant data in the format expected by the API"""
         # Create data/restaurants directory if it doesn't exist
