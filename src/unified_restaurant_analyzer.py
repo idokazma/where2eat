@@ -5,6 +5,7 @@ Uses configurable LLM providers (OpenAI/Claude) for Hebrew restaurant extraction
 
 import os
 import json
+import re
 import logging
 from datetime import datetime
 from typing import Dict, List, Optional, Union
@@ -79,47 +80,65 @@ class UnifiedRestaurantAnalyzer:
     def analyze_transcript(self, transcript_data: Dict) -> Dict:
         """
         Analyze a YouTube transcript to extract restaurant information
-        
+
         Args:
             transcript_data: Dictionary containing video_id, video_url, language, and transcript
-            
+
         Returns:
             Dictionary containing episode_info, restaurants, food_trends, and episode_summary
         """
         try:
-            # Process transcript in chunks if it's too long
             transcript_text = transcript_data['transcript']
-            
+            video_id = transcript_data.get('video_id', 'unknown')
+
+            self.logger.info(f"═══════════════════════════════════════════════════════════")
+            self.logger.info(f"Starting analysis for video: {video_id}")
+            self.logger.info(f"Transcript length: {len(transcript_text):,} characters")
+            self.logger.info(f"Chunk size threshold: {self.config.chunk_size:,} characters")
+
+            # Process transcript in chunks if it's too long
             if self.config.enable_chunking and len(transcript_text) > self.config.chunk_size:
+                num_chunks = (len(transcript_text) // self.config.chunk_size) + 1
+                self.logger.info(f"Chunking enabled: transcript will be split into ~{num_chunks} chunks")
                 return self._analyze_chunked_transcript(transcript_data)
             else:
+                self.logger.info(f"Single-pass analysis (transcript fits in one chunk)")
                 return self._analyze_single_transcript(transcript_data)
-                
+
         except Exception as e:
             self.logger.error(f"Error analyzing transcript: {str(e)}")
             return self._create_error_analysis(transcript_data, str(e))
 
     def _analyze_single_transcript(self, transcript_data: Dict) -> Dict:
         """Analyze a single transcript using the configured LLM"""
-        
+
         transcript_text = transcript_data['transcript']
-        
+        video_id = transcript_data.get('video_id', 'unknown')
+
         # Create analysis prompt
         prompt = self._create_analysis_prompt(transcript_text)
-        
+        prompt_size = len(prompt)
+
+        self.logger.info(f"  Calling {self.config.provider.upper()} API...")
+        self.logger.info(f"    ├─ Model: {self.config.get_active_model()}")
+        self.logger.info(f"    ├─ Prompt size: {prompt_size:,} characters")
+        self.logger.info(f"    └─ Max response tokens: {self.config.get_active_max_tokens():,}")
+
         try:
             # Call the appropriate LLM
             if self.config.provider == "openai":
                 restaurants = self._call_openai(prompt)
             else:
                 restaurants = self._call_claude(prompt)
-            
+
+            self.logger.info(f"  API response received: {len(restaurants)} restaurant(s) extracted")
+
             # Validate and process results
             validated_restaurants = []
             for restaurant in restaurants:
                 validated_restaurant = self._ensure_english_name(restaurant)
                 validated_restaurants.append(validated_restaurant)
-            
+
             return {
                 'episode_info': {
                     'video_id': transcript_data['video_id'],
@@ -134,39 +153,72 @@ class UnifiedRestaurantAnalyzer:
                 'food_trends': self._extract_food_trends(validated_restaurants),
                 'episode_summary': f"ניתוח {self.config.provider.upper()} של {len(validated_restaurants)} מסעדות מהסרטון {transcript_data['video_id']}"
             }
-            
+
         except Exception as e:
             self.logger.error(f"{self.config.provider.upper()} analysis failed: {str(e)}")
             raise e
 
     def _analyze_chunked_transcript(self, transcript_data: Dict) -> Dict:
         """Analyze transcript in chunks for comprehensive coverage"""
-        
+
         transcript_text = transcript_data['transcript']
-        
+        video_id = transcript_data.get('video_id', 'unknown')
+
         # Split into chunks
         chunks = self._create_chunks(transcript_text, self.config.chunk_size, self.config.chunk_overlap)
-        
+
+        self.logger.info(f"───────────────────────────────────────────────────────────")
+        self.logger.info(f"Chunked Analysis: {len(chunks)} chunks to process")
+        self.logger.info(f"Chunk overlap: {self.config.chunk_overlap:,} characters")
+
         all_restaurants = []
         all_trends = []
-        
+
         for i, chunk in enumerate(chunks):
-            self.logger.info(f"Analyzing chunk {i+1}/{len(chunks)} with {self.config.provider}")
-            
+            chunk_start = i * (self.config.chunk_size - self.config.chunk_overlap)
+            self.logger.info(f"")
+            self.logger.info(f"[Chunk {i+1}/{len(chunks)}] Processing...")
+            self.logger.info(f"  ├─ Size: {len(chunk):,} characters")
+            self.logger.info(f"  ├─ Position: chars {chunk_start:,}-{chunk_start + len(chunk):,}")
+
             chunk_data = transcript_data.copy()
             chunk_data['transcript'] = chunk
-            
+
             # Analyze each chunk
             chunk_result = self._analyze_single_transcript(chunk_data)
-            
-            # Collect results
-            all_restaurants.extend(chunk_result.get('restaurants', []))
+
+            chunk_restaurants = chunk_result.get('restaurants', [])
+            all_restaurants.extend(chunk_restaurants)
             all_trends.extend(chunk_result.get('food_trends', []))
-        
+
+            # Log restaurants found in this chunk
+            self.logger.info(f"  └─ Found {len(chunk_restaurants)} restaurant(s) in this chunk")
+            for r in chunk_restaurants[:5]:  # Show first 5
+                self.logger.info(f"      • {r.get('name_hebrew', 'Unknown')}")
+            if len(chunk_restaurants) > 5:
+                self.logger.info(f"      ... and {len(chunk_restaurants) - 5} more")
+
         # Deduplicate restaurants
+        self.logger.info(f"")
+        self.logger.info(f"───────────────────────────────────────────────────────────")
+        self.logger.info(f"Merging results from all chunks...")
+        self.logger.info(f"  ├─ Total raw mentions: {len(all_restaurants)}")
+
         unique_restaurants = self._deduplicate_restaurants(all_restaurants)
         unique_trends = list(set(all_trends))
-        
+
+        duplicates_merged = len(all_restaurants) - len(unique_restaurants)
+        self.logger.info(f"  ├─ Duplicates merged: {duplicates_merged}")
+        self.logger.info(f"  └─ Unique restaurants: {len(unique_restaurants)}")
+
+        self.logger.info(f"")
+        self.logger.info(f"═══════════════════════════════════════════════════════════")
+        self.logger.info(f"Analysis complete for {video_id}")
+        self.logger.info(f"  ├─ Chunks processed: {len(chunks)}")
+        self.logger.info(f"  ├─ Restaurants found: {len(unique_restaurants)}")
+        self.logger.info(f"  └─ Food trends: {len(unique_trends)}")
+        self.logger.info(f"═══════════════════════════════════════════════════════════")
+
         return {
             'episode_info': {
                 'video_id': transcript_data['video_id'],
@@ -266,27 +318,160 @@ class UnifiedRestaurantAnalyzer:
             )
             
             content = response.content[0].text
-            
+
             # Clean up potential markdown formatting
             if '```json' in content:
                 content = content.split('```json')[1].split('```')[0].strip()
             elif '```' in content:
                 content = content.split('```')[1].split('```')[0].strip()
-            
+
+            # Use safe JSON parsing to handle truncated responses
+            return self._safe_parse_json(content)
+
+        except Exception as e:
+            self.logger.error(f"Claude API call failed: {str(e)}")
+            raise e
+
+    def _safe_parse_json(self, content: str) -> List[Dict]:
+        """
+        Safely parse JSON response, handling truncated or malformed responses.
+
+        This handles common issues with LLM responses:
+        - Unterminated strings (e.g., when response is cut off mid-string)
+        - Missing closing brackets/braces
+        - Trailing commas
+        - Non-JSON responses
+
+        Args:
+            content: The raw response content to parse
+
+        Returns:
+            List of restaurant dictionaries (empty list if parsing fails completely)
+        """
+        if not content or not content.strip():
+            self.logger.warning("Empty response received")
+            return []
+
+        content = content.strip()
+
+        # First, try standard JSON parsing
+        try:
             result = json.loads(content)
-            
-            # Ensure we get a list of restaurants
             if isinstance(result, dict) and 'restaurants' in result:
                 return result['restaurants']
             elif isinstance(result, list):
                 return result
             else:
-                self.logger.warning(f"Unexpected Claude response format: {type(result)}")
+                self.logger.warning(f"Unexpected JSON format: {type(result)}")
                 return []
-                
-        except Exception as e:
-            self.logger.error(f"Claude API call failed: {str(e)}")
-            raise e
+        except json.JSONDecodeError:
+            pass  # Continue to repair attempts
+
+        # If standard parsing failed, try to repair the JSON
+        self.logger.warning("JSON parsing failed, attempting repair...")
+
+        repaired_content = self._repair_truncated_json(content)
+
+        try:
+            result = json.loads(repaired_content)
+            if isinstance(result, dict) and 'restaurants' in result:
+                restaurants = result['restaurants']
+                self.logger.info(f"Successfully repaired JSON, extracted {len(restaurants)} restaurants")
+                return restaurants
+            elif isinstance(result, list):
+                self.logger.info(f"Successfully repaired JSON array, extracted {len(result)} restaurants")
+                return result
+            else:
+                return []
+        except json.JSONDecodeError as e:
+            self.logger.warning(f"JSON repair failed: {str(e)}")
+
+            # Last resort: try to extract complete restaurant objects using regex
+            return self._extract_restaurants_by_regex(content)
+
+    def _repair_truncated_json(self, content: str) -> str:
+        """
+        Attempt to repair truncated JSON by fixing common issues.
+
+        Args:
+            content: The malformed JSON string
+
+        Returns:
+            Repaired JSON string (may still be invalid)
+        """
+        repaired = content
+
+        # Remove any trailing incomplete string (find last complete quote pair)
+        # This handles: "key": "truncated value...
+        in_string = False
+        last_complete_pos = 0
+        i = 0
+        while i < len(repaired):
+            char = repaired[i]
+            if char == '\\' and i + 1 < len(repaired):
+                i += 2  # Skip escaped character
+                continue
+            if char == '"':
+                if in_string:
+                    last_complete_pos = i + 1
+                in_string = not in_string
+            elif not in_string and char in '{}[],':
+                last_complete_pos = i + 1
+            i += 1
+
+        # If we ended inside a string, truncate to the last complete position
+        if in_string:
+            repaired = repaired[:last_complete_pos]
+
+        # Remove any trailing incomplete key-value pairs
+        # Pattern: remove trailing comma and incomplete content
+        repaired = re.sub(r',\s*"[^"]*"?\s*:?\s*$', '', repaired)
+        repaired = re.sub(r',\s*$', '', repaired)
+
+        # Count and fix mismatched brackets
+        open_braces = repaired.count('{') - repaired.count('}')
+        open_brackets = repaired.count('[') - repaired.count(']')
+
+        # Add missing closing brackets/braces
+        repaired += ']' * max(0, open_brackets)
+        repaired += '}' * max(0, open_braces)
+
+        return repaired
+
+    def _extract_restaurants_by_regex(self, content: str) -> List[Dict]:
+        """
+        Last-resort extraction: find complete restaurant objects using regex.
+
+        Args:
+            content: The raw content to search
+
+        Returns:
+            List of successfully parsed restaurant dictionaries
+        """
+        restaurants = []
+
+        # Pattern to find complete restaurant objects (balanced braces)
+        # This is a simplified approach that looks for objects with name_hebrew
+        pattern = r'\{[^{}]*"name_hebrew"\s*:\s*"[^"]+(?:"[^{}]*)*\}'
+
+        # Try to find restaurant-like objects
+        matches = re.findall(pattern, content)
+
+        for match in matches:
+            try:
+                # Attempt to parse each potential restaurant object
+                obj = json.loads(match)
+                if isinstance(obj, dict) and obj.get('name_hebrew'):
+                    restaurants.append(obj)
+            except json.JSONDecodeError:
+                continue
+
+        if restaurants:
+            self.logger.info(f"Regex extraction recovered {len(restaurants)} restaurants")
+        else:
+            self.logger.warning("Could not extract any restaurants from malformed response")
+
+        return restaurants
 
     def _create_analysis_prompt(self, transcript_text: str) -> str:
         """Create the analysis prompt for the LLM"""
@@ -388,25 +573,90 @@ Be precise and thorough. Extract ALL restaurants mentioned. Use "לא צוין" 
         return result if result else "Restaurant"
 
     def _deduplicate_restaurants(self, restaurants: List[Dict]) -> List[Dict]:
-        """Remove duplicate restaurants based on Hebrew and English names"""
-        seen = set()
-        unique = []
-        
+        """
+        Remove duplicate restaurants and merge data from multiple mentions.
+
+        When a restaurant appears in multiple chunks, we merge the data:
+        - Keep all unique menu items and special features
+        - Use the most detailed comments/context
+        - Preserve location info from first mention with location
+        """
+        merged = {}  # identifier -> merged restaurant data
+
         for restaurant in restaurants:
             # Ensure English name is present and valid
             restaurant = self._ensure_english_name(restaurant)
-            
-            # Create identifier from both Hebrew and English names
-            identifier = (
-                restaurant.get('name_hebrew', '').strip().lower(),
-                restaurant.get('name_english', '').strip().lower()
-            )
-            
-            if identifier not in seen and identifier != ('', ''):
-                seen.add(identifier)
-                unique.append(restaurant)
-        
-        return unique
+
+            # Create identifier from Hebrew name (primary) with fallback to English
+            name_hebrew = restaurant.get('name_hebrew', '').strip().lower()
+            name_english = restaurant.get('name_english', '').strip().lower()
+
+            # Skip empty entries
+            if not name_hebrew and not name_english:
+                continue
+
+            # Use Hebrew name as primary identifier, fallback to English
+            identifier = name_hebrew if name_hebrew else name_english
+
+            if identifier not in merged:
+                # First occurrence - store it
+                merged[identifier] = restaurant.copy()
+            else:
+                # Merge with existing entry
+                existing = merged[identifier]
+                self._merge_restaurant_data(existing, restaurant)
+
+        return list(merged.values())
+
+    def _merge_restaurant_data(self, existing: Dict, new: Dict) -> None:
+        """
+        Merge new restaurant data into existing entry (modifies existing in place).
+
+        Strategy:
+        - Lists (menu_items, special_features): combine unique values
+        - Strings: keep longer/more detailed version
+        - Nested dicts (location, contact_info): merge recursively
+        """
+        # Merge list fields - combine unique values
+        for list_field in ['menu_items', 'special_features']:
+            existing_list = existing.get(list_field) or []
+            new_list = new.get(list_field) or []
+            # Combine and deduplicate while preserving order
+            combined = list(existing_list)
+            for item in new_list:
+                if item and item not in combined and item != 'לא צוין':
+                    combined.append(item)
+            if combined:
+                existing[list_field] = combined
+
+        # Merge string fields - prefer longer/more detailed content
+        for str_field in ['host_comments', 'mention_context', 'business_news']:
+            existing_val = existing.get(str_field) or ''
+            new_val = new.get(str_field) or ''
+            # Keep the longer value (more detail), but skip placeholder text
+            if new_val and new_val != 'לא צוין':
+                if not existing_val or existing_val == 'לא צוין' or len(new_val) > len(existing_val):
+                    existing[str_field] = new_val
+
+        # Merge location dict - fill in missing fields
+        existing_loc = existing.get('location') or {}
+        new_loc = new.get('location') or {}
+        for loc_field in ['city', 'neighborhood', 'address', 'region']:
+            if not existing_loc.get(loc_field) or existing_loc.get(loc_field) == 'לא צוין':
+                if new_loc.get(loc_field) and new_loc.get(loc_field) != 'לא צוין':
+                    existing_loc[loc_field] = new_loc[loc_field]
+        if existing_loc:
+            existing['location'] = existing_loc
+
+        # Merge contact_info dict - fill in missing fields
+        existing_contact = existing.get('contact_info') or {}
+        new_contact = new.get('contact_info') or {}
+        for contact_field in ['phone', 'website', 'social_media', 'hours']:
+            if not existing_contact.get(contact_field):
+                if new_contact.get(contact_field):
+                    existing_contact[contact_field] = new_contact[contact_field]
+        if existing_contact:
+            existing['contact_info'] = existing_contact
 
     def _extract_food_trends(self, restaurants: List[Dict]) -> List[str]:
         """Extract food trends from restaurant data"""

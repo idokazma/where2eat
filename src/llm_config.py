@@ -30,11 +30,13 @@ class LLMConfig:
     claude_api_key: Optional[str] = None
     claude_model: str = "claude-sonnet-4-20250514"
     claude_temperature: float = 0.1
-    claude_max_tokens: int = 4000
+    claude_max_tokens: int = 8192  # Increased to handle large transcript analyses
     
     # Analysis configuration
-    chunk_size: int = 100000  # Increased for better context
-    chunk_overlap: int = 2000
+    # chunk_size controls when transcripts are split into multiple API calls
+    # 30K chars (~7500 tokens input) leaves room for ~8K tokens output
+    chunk_size: int = 30000
+    chunk_overlap: int = 1000
     enable_chunking: bool = True
     
     @classmethod
@@ -59,11 +61,11 @@ class LLMConfig:
             claude_api_key=os.getenv("ANTHROPIC_API_KEY") or os.getenv("CLAUDE_API_KEY"),
             claude_model=os.getenv("CLAUDE_MODEL", "claude-sonnet-4-20250514"),
             claude_temperature=float(os.getenv("CLAUDE_TEMPERATURE", "0.1")),
-            claude_max_tokens=int(os.getenv("CLAUDE_MAX_TOKENS", "4000")),
+            claude_max_tokens=int(os.getenv("CLAUDE_MAX_TOKENS", "8192")),
             
             # Analysis settings
-            chunk_size=int(os.getenv("TRANSCRIPT_CHUNK_SIZE", "100000")),
-            chunk_overlap=int(os.getenv("TRANSCRIPT_CHUNK_OVERLAP", "2000")),
+            chunk_size=int(os.getenv("TRANSCRIPT_CHUNK_SIZE", "30000")),
+            chunk_overlap=int(os.getenv("TRANSCRIPT_CHUNK_OVERLAP", "1000")),
             enable_chunking=os.getenv("ENABLE_CHUNKING", "true").lower() == "true"
         )
     
