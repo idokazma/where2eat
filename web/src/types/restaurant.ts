@@ -20,18 +20,18 @@ export interface ContactInfo {
 
 export interface Restaurant {
   name_hebrew: string;
-  name_english: string | null;
-  location: Location;
-  cuisine_type: string;
-  status: 'open' | 'closed' | 'new_opening' | 'closing_soon' | 'reopening';
-  price_range: 'budget' | 'mid-range' | 'expensive' | 'not_mentioned';
-  host_opinion: 'positive' | 'negative' | 'mixed' | 'neutral';
-  host_comments: string;
-  menu_items: MenuItem[];
-  special_features: string[];
-  contact_info: ContactInfo;
-  business_news: string | null;
-  mention_context: 'new_opening' | 'review' | 'news' | 'recommendation' | 'comparison' | 'business_news';
+  name_english?: string | null;
+  location?: Location;
+  cuisine_type?: string | null;
+  status?: 'open' | 'closed' | 'new_opening' | 'closing_soon' | 'reopening' | null;
+  price_range?: 'budget' | 'mid-range' | 'expensive' | 'not_mentioned' | null;
+  host_opinion?: 'positive' | 'negative' | 'mixed' | 'neutral' | null;
+  host_comments?: string | null;
+  menu_items?: MenuItem[];
+  special_features?: string[];
+  contact_info?: ContactInfo;
+  business_news?: string | null;
+  mention_context?: 'new_opening' | 'review' | 'news' | 'recommendation' | 'comparison' | 'business_news' | null;
   episode_info?: EpisodeInfo;
   mention_timestamps?: MentionTimestamp[];
   google_places?: GooglePlacesInfo;

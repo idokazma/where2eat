@@ -73,17 +73,17 @@ export function TimelineFilterView({ restaurants, onRestaurantSelect }: Timeline
     return timelineGroups.map(group => {
       const filteredRestaurants = group.restaurants.filter(restaurant => {
         // Cuisine filter
-        if (selectedCuisines.length > 0 && !selectedCuisines.includes(restaurant.cuisine_type)) {
+        if (selectedCuisines.length > 0 && (!restaurant.cuisine_type || !selectedCuisines.includes(restaurant.cuisine_type))) {
           return false
         }
 
         // Price range filter
-        if (selectedPriceRanges.length > 0 && !selectedPriceRanges.includes(restaurant.price_range)) {
+        if (selectedPriceRanges.length > 0 && (!restaurant.price_range || !selectedPriceRanges.includes(restaurant.price_range))) {
           return false
         }
 
         // Opinion filter
-        if (selectedOpinions.length > 0 && !selectedOpinions.includes(restaurant.host_opinion)) {
+        if (selectedOpinions.length > 0 && (!restaurant.host_opinion || !selectedOpinions.includes(restaurant.host_opinion))) {
           return false
         }
 

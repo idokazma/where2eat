@@ -32,9 +32,9 @@ export function RestaurantList({ restaurants }: RestaurantListProps) {
       const matchesSearch = searchTerm === "" || 
         restaurant.name_hebrew.includes(searchTerm) ||
         (restaurant.name_english?.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        restaurant.location.city?.includes(searchTerm) ||
-        restaurant.location.neighborhood?.includes(searchTerm) ||
-        restaurant.host_comments.includes(searchTerm)
+        restaurant.location?.city?.includes(searchTerm) ||
+        restaurant.location?.neighborhood?.includes(searchTerm) ||
+        restaurant.host_comments?.includes(searchTerm)
 
       const matchesCuisine = selectedCuisine === "all" || restaurant.cuisine_type === selectedCuisine
       const matchesStatus = selectedStatus === "all" || restaurant.status === selectedStatus
