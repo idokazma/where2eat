@@ -33,9 +33,9 @@ export function LocationFilter({
     const neighborhoods = new Set<string>()
 
     restaurants.forEach(restaurant => {
-      if (restaurant.location.city) cities.add(restaurant.location.city)
-      if (restaurant.location.region) regions.add(restaurant.location.region)
-      if (restaurant.location.neighborhood) neighborhoods.add(restaurant.location.neighborhood)
+      if (restaurant.location?.city) cities.add(restaurant.location.city)
+      if (restaurant.location?.region) regions.add(restaurant.location.region)
+      if (restaurant.location?.neighborhood) neighborhoods.add(restaurant.location.neighborhood)
     })
 
     return {
@@ -47,9 +47,9 @@ export function LocationFilter({
 
   const getCounts = (filterType: 'city' | 'region' | 'neighborhood', value: string) => {
     return restaurants.filter(r => {
-      if (filterType === 'city') return r.location.city === value
-      if (filterType === 'region') return r.location.region === value
-      if (filterType === 'neighborhood') return r.location.neighborhood === value
+      if (filterType === 'city') return r.location?.city === value
+      if (filterType === 'region') return r.location?.region === value
+      if (filterType === 'neighborhood') return r.location?.neighborhood === value
       return false
     }).length
   }
