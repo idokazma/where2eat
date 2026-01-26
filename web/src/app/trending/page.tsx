@@ -1,9 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Flame, RefreshCw } from 'lucide-react';
+import { Flame } from 'lucide-react';
 import { PageLayout } from '@/components/layout';
 import { RestaurantCardNew } from '@/components/restaurant';
+import { RestaurantCardSkeleton, FilterChipSkeleton } from '@/components/ui/skeleton';
 import { Restaurant } from '@/types/restaurant';
 import { endpoints } from '@/lib/config';
 
@@ -39,8 +40,17 @@ export default function TrendingPage() {
   if (isLoading) {
     return (
       <PageLayout title="טרנדי" showHeader showBottomNav>
-        <div className="flex items-center justify-center min-h-[60vh]">
-          <RefreshCw className="w-8 h-8 animate-spin text-[var(--color-accent)]" />
+        {/* Skeleton time period tabs */}
+        <div className="flex gap-2 px-4 py-3 border-b border-[var(--color-border)]">
+          <FilterChipSkeleton />
+          <FilterChipSkeleton />
+          <FilterChipSkeleton />
+        </div>
+        {/* Skeleton cards */}
+        <div className="px-4 py-4 space-y-4">
+          <RestaurantCardSkeleton />
+          <RestaurantCardSkeleton />
+          <RestaurantCardSkeleton />
         </div>
       </PageLayout>
     );
@@ -58,10 +68,10 @@ export default function TrendingPage() {
           <button
             key={period.value}
             onClick={() => setTimePeriod(period.value)}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+            className={`px-4 py-2 rounded-full text-sm font-medium transition-all press-effect ${
               timePeriod === period.value
                 ? 'bg-[var(--color-ink)] text-[var(--color-paper)]'
-                : 'bg-[var(--color-surface)] text-[var(--color-ink-muted)]'
+                : 'bg-[var(--color-surface)] text-[var(--color-ink-muted)] hover:bg-[var(--color-surface-elevated)]'
             }`}
           >
             {period.label}

@@ -7,6 +7,7 @@ import { PageLayout } from '@/components/layout';
 import { FilterBar, FilterChip, LocationFilter } from '@/components/filters';
 import { TrendingSection, DiscoveryFeed } from '@/components/feed';
 import { BottomSheet } from '@/components/ui/BottomSheet';
+import { PageLoadingSkeleton } from '@/components/ui/skeleton';
 import { useLocationFilter } from '@/hooks/useLocationFilter';
 import { useFavorites } from '@/contexts/favorites-context';
 import { endpoints } from '@/lib/config';
@@ -139,21 +140,11 @@ export function HomePageNew() {
     );
   };
 
-  // Loading state
+  // Loading state - show skeleton
   if (isLoading) {
     return (
       <PageLayout showHeader showBottomNav>
-        <div className="flex items-center justify-center min-h-[60vh]">
-          <div className="text-center animate-fade-up">
-            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-[var(--color-accent-subtle)] flex items-center justify-center">
-              <RefreshCw className="w-8 h-8 animate-spin text-[var(--color-accent)]" />
-            </div>
-            <p className="text-lg font-medium text-[var(--color-ink)]">טוען מסעדות...</p>
-            <p className="text-sm text-[var(--color-ink-muted)] mt-1">
-              מכין את ההמלצות הטובות ביותר
-            </p>
-          </div>
-        </div>
+        <PageLoadingSkeleton />
       </PageLayout>
     );
   }

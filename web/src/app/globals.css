@@ -736,9 +736,54 @@
     to { transform: translateY(0); }
   }
 
+  @keyframes slide-down {
+    from { transform: translateY(-100%); }
+    to { transform: translateY(0); }
+  }
+
   @keyframes shimmer {
     0% { background-position: -1000px 0; }
     100% { background-position: 1000px 0; }
+  }
+
+  @keyframes pulse-soft {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+  }
+
+  @keyframes bounce-in {
+    0% {
+      opacity: 0;
+      transform: scale(0.3);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.05);
+    }
+    70% {
+      transform: scale(0.9);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  @keyframes heart-beat {
+    0%, 100% { transform: scale(1); }
+    25% { transform: scale(1.2); }
+    50% { transform: scale(0.95); }
+    75% { transform: scale(1.1); }
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-2px); }
+    20%, 40%, 60%, 80% { transform: translateX(2px); }
+  }
+
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
   }
 
   .animate-fade-up {
@@ -755,6 +800,80 @@
 
   .animate-slide-up {
     animation: slide-up 300ms var(--spring) forwards;
+  }
+
+  .animate-slide-down {
+    animation: slide-down 300ms var(--spring) forwards;
+  }
+
+  .animate-bounce-in {
+    animation: bounce-in 400ms var(--ease-out) forwards;
+  }
+
+  .animate-heart-beat {
+    animation: heart-beat 400ms var(--ease-out);
+  }
+
+  .animate-shake {
+    animation: shake 500ms var(--ease-out);
+  }
+
+  .animate-pulse-soft {
+    animation: pulse-soft 2s ease-in-out infinite;
+  }
+
+  .animate-spin {
+    animation: spin 1s linear infinite;
+  }
+
+  /* Button press effect */
+  .press-effect {
+    transition: transform 100ms var(--ease-out);
+  }
+
+  .press-effect:active {
+    transform: scale(0.95);
+  }
+
+  /* Skeleton loader */
+  .skeleton {
+    background: linear-gradient(
+      90deg,
+      var(--color-surface) 0%,
+      var(--color-surface-elevated) 50%,
+      var(--color-surface) 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s ease-in-out infinite;
+    border-radius: var(--radius-md);
+  }
+
+  .skeleton-text {
+    height: 1em;
+    border-radius: var(--radius-sm);
+  }
+
+  .skeleton-title {
+    height: 1.5em;
+    width: 60%;
+  }
+
+  .skeleton-image {
+    aspect-ratio: 16 / 10;
+    border-radius: var(--radius-md);
+  }
+
+  .skeleton-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+  }
+
+  .skeleton-card {
+    background: var(--color-surface-elevated);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    border: 1px solid var(--color-border);
   }
 
   /* Staggered animation delays */
