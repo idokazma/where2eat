@@ -134,7 +134,7 @@ export function VisualRestaurantCard({
             <Badge variant="secondary" className="bg-white/20 backdrop-blur-sm text-white border-white/30">
               {restaurant.cuisine_type}
             </Badge>
-            {restaurant.location.city && (
+            {restaurant.location?.city && (
               <Badge variant="secondary" className="bg-white/20 backdrop-blur-sm text-white border-white/30 flex items-center gap-1">
                 <MapPin className="size-3" />
                 {restaurant.location.city}
@@ -167,12 +167,12 @@ export function VisualRestaurantCard({
         {/* Expanded content */}
         {isExpanded && (
           <div className="mt-4 space-y-4">
-            {restaurant.location.address && (
+            {restaurant.location?.address && (
               <div className="flex items-start gap-2">
                 <MapPin className="size-4 mt-0.5 text-muted-foreground flex-shrink-0" />
                 <div className="text-sm">
                   <p>{restaurant.location.address}</p>
-                  {restaurant.location.neighborhood && (
+                  {restaurant.location?.neighborhood && (
                     <p className="text-muted-foreground">{restaurant.location.neighborhood}</p>
                   )}
                 </div>
@@ -271,7 +271,7 @@ export function VisualRestaurantCard({
               <button
                 onClick={(e) => {
                   e.stopPropagation()
-                  const query = encodeURIComponent(`${restaurant.name_hebrew} ${restaurant.location.city} restaurant`)
+                  const query = encodeURIComponent(`${restaurant.name_hebrew} ${restaurant.location?.city || ''} restaurant`)
                   window.open(`https://www.google.com/maps/search/?api=1&query=${query}`, '_blank')
                 }}
                 className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-secondary text-secondary-foreground rounded-xl text-sm font-medium hover:bg-secondary/80 transition-all hover:shadow-md active:scale-[0.98]"

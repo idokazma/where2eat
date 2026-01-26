@@ -324,7 +324,7 @@ export function TrendingAnalytics({ restaurants, onRestaurantFilter }: TrendingA
                         <h4 className="font-semibold text-lg">{trending.restaurant.name_hebrew}</h4>
                         <div className="flex items-center gap-2 mt-1">
                           <Badge variant="outline">{trending.restaurant.cuisine_type}</Badge>
-                          <Badge variant="outline">{trending.restaurant.location.city}</Badge>
+                          <Badge variant="outline">{trending.restaurant.location?.city}</Badge>
                           {trending.avgRating && (
                             <Badge className="bg-success/10 text-success border border-success/20">
                               ⭐ {trending.avgRating.toFixed(1)}

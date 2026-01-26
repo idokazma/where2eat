@@ -192,7 +192,7 @@ export function RestaurantMap({ restaurants, selectedRestaurant, onRestaurantSel
   const searchRestaurantPlace = async (restaurant: Restaurant): Promise<PlaceDetails | null> => {
     try {
       // First try with Hebrew name
-      const query = `${restaurant.name_hebrew} ${restaurant.location.city} restaurant`
+      const query = `${restaurant.name_hebrew} ${restaurant.location?.city || ''} restaurant`
       const response = await fetch(endpoints.places.search(query))
 
       if (response.ok) {
@@ -204,7 +204,7 @@ export function RestaurantMap({ restaurants, selectedRestaurant, onRestaurantSel
 
       // Try with English name if available
       if (restaurant.name_english) {
-        const altQuery = `${restaurant.name_english} ${restaurant.location.city} restaurant`
+        const altQuery = `${restaurant.name_english} ${restaurant.location?.city || ''} restaurant`
         const altResponse = await fetch(endpoints.places.search(altQuery))
 
         if (altResponse.ok) {
@@ -257,7 +257,7 @@ export function RestaurantMap({ restaurants, selectedRestaurant, onRestaurantSel
         </div>
         
         <p style="margin: 8px 0; color: #4b5563; font-size: 14px;">
-          📍 ${placeDetails.formatted_address || restaurant.location.city}
+          📍 ${placeDetails.formatted_address || restaurant.location?.city || ''}
         </p>
         
         ${placeDetails.rating ? `
@@ -393,7 +393,7 @@ export function RestaurantMap({ restaurants, selectedRestaurant, onRestaurantSel
                     )}
                     <div className="flex items-center gap-2 mt-1">
                       <Badge variant="outline" className="text-xs">
-                        {restaurant.location.city}
+                        {restaurant.location?.city}
                       </Badge>
                       {restaurant.placeDetails?.rating && (
                         <span className="text-xs text-gray-500">
