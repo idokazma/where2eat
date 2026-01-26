@@ -48,14 +48,65 @@ from routers import (
 async def fetch_default_video_on_startup():
     """Fetch and analyze the default video on server startup."""
     print(f"\n{'='*60}")
-    print(f"Starting up: Fetching and analyzing default video...")
-    print(f"URL: {DEFAULT_VIDEO_URL}")
+    print(f"Starting up: Initializing restaurant data...")
     print(f"{'='*60}\n")
 
     # Debug: Show Python path configuration
     print(f"[STARTUP] Python path: {sys.path[:5]}...")
     print(f"[STARTUP] Working directory: {Path.cwd()}")
     print(f"[STARTUP] __file__ location: {Path(__file__).resolve()}")
+
+    import shutil
+
+    # Data directories
+    data_dir = Path(__file__).parent.parent / "data" / "restaurants"
+    backup_dir = Path(__file__).parent.parent / "data" / "restaurants_backup"
+
+    # Also check absolute paths for Railway deployment
+    if not backup_dir.exists():
+        backup_dir = Path("/app/data/restaurants_backup")
+    if not data_dir.parent.exists():
+        data_dir = Path("/app/data/restaurants")
+
+    print(f"[STARTUP] Data directory: {data_dir}")
+    print(f"[STARTUP] Backup directory: {backup_dir}")
+    print(f"[STARTUP] Backup exists: {backup_dir.exists()}")
+
+    # Step 1: Check if we already have restaurant data
+    data_dir.mkdir(parents=True, exist_ok=True)
+    existing_files = list(data_dir.glob("*.json"))
+    existing_files = [f for f in existing_files if f.name != ".gitkeep"]
+
+    if len(existing_files) > 0:
+        print(f"[STARTUP] Found {len(existing_files)} existing restaurant files")
+        print(f"[STARTUP] Skipping data initialization")
+        return
+
+    # Step 2: Try to copy from backup directory
+    if backup_dir.exists():
+        backup_files = list(backup_dir.glob("*.json"))
+        backup_files = [f for f in backup_files if f.name != ".gitkeep"]
+
+        if len(backup_files) > 0:
+            print(f"[STARTUP] Found {len(backup_files)} backup files, copying...")
+            copied = 0
+            for src_file in backup_files:
+                try:
+                    dst_file = data_dir / src_file.name
+                    shutil.copy2(src_file, dst_file)
+                    copied += 1
+                except Exception as e:
+                    print(f"[STARTUP] Failed to copy {src_file.name}: {e}")
+
+            print(f"[STARTUP] Copied {copied} restaurant files from backup")
+            print(f"\n{'='*60}")
+            print(f"Server ready! {copied} restaurants loaded from backup.")
+            print(f"{'='*60}\n")
+            return
+
+    # Step 3: No backup - try to analyze default video
+    print(f"[STARTUP] No backup data found, attempting to analyze default video...")
+    print(f"[STARTUP] URL: {DEFAULT_VIDEO_URL}")
 
     try:
         # Import datetime and json first (standard library - always available)

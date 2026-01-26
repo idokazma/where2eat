@@ -19,6 +19,9 @@ RUN pip install --no-cache-dir \
 COPY src ./src
 COPY api ./api
 
+# Copy restaurant backup data for seeding
+COPY data/restaurants_backup ./data/restaurants_backup
+
 # Set PYTHONPATH to include src directory for imports
 ENV PYTHONPATH="/app/src:${PYTHONPATH}"
 
