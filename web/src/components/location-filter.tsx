@@ -33,9 +33,9 @@ export function LocationFilter({
     const neighborhoods = new Set<string>()
 
     restaurants.forEach(restaurant => {
-      if (restaurant.location?.city) cities.add(restaurant.location?.city)
-      if (restaurant.location?.region) regions.add(restaurant.location?.region)
-      if (restaurant.location?.neighborhood) neighborhoods.add(restaurant.location?.neighborhood)
+      if (restaurant.location?.city) cities.add(restaurant.location.city)
+      if (restaurant.location?.region) regions.add(restaurant.location.region)
+      if (restaurant.location?.neighborhood) neighborhoods.add(restaurant.location.neighborhood)
     })
 
     return {

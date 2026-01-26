@@ -78,7 +78,7 @@ export function TimelineFilterView({ restaurants, onRestaurantSelect }: Timeline
         }
 
         // Price range filter
-        if (selectedPriceRanges.length > 0 && (!restaurant.price_range || !selectedPriceRanges.includes(restaurant.price_range!))) {
+        if (selectedPriceRanges.length > 0 && (!restaurant.price_range || !selectedPriceRanges.includes(restaurant.price_range))) {
           return false
         }
 
@@ -88,8 +88,8 @@ export function TimelineFilterView({ restaurants, onRestaurantSelect }: Timeline
         }
 
         // Location filter
-        if (selectedLocations.length > 0 && !selectedLocations.some(loc => 
-          restaurant.location?.city?.includes(loc) || 
+        if (selectedLocations.length > 0 && !selectedLocations.some(loc =>
+          restaurant.location?.city?.includes(loc) ||
           restaurant.location?.region?.includes(loc)
         )) {
           return false
@@ -116,8 +116,8 @@ export function TimelineFilterView({ restaurants, onRestaurantSelect }: Timeline
       if (restaurant.cuisine_type) cuisines.add(restaurant.cuisine_type)
       if (restaurant.price_range) priceRanges.add(restaurant.price_range)
       if (restaurant.host_opinion) opinions.add(restaurant.host_opinion)
-      if (restaurant.location?.city) locations.add(restaurant.location?.city)
-      if (restaurant.location?.region) locations.add(restaurant.location?.region)
+      if (restaurant.location?.city) locations.add(restaurant.location.city)
+      if (restaurant.location?.region) locations.add(restaurant.location.region)
     })
 
     return {

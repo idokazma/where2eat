@@ -146,8 +146,8 @@ export function MasterDashboard() {
         // Cuisine filters
         if (classicFilters.selectedCuisines.length > 0 && (!restaurant.cuisine_type || !classicFilters.selectedCuisines.includes(restaurant.cuisine_type))) return false
 
-        // Price range filters  
-        if (classicFilters.selectedPriceRanges.length > 0 && !classicFilters.selectedPriceRanges.includes(restaurant.price_range!)) return false
+        // Price range filters
+        if (classicFilters.selectedPriceRanges.length > 0 && (!restaurant.price_range || !classicFilters.selectedPriceRanges.includes(restaurant.price_range))) return false
 
         return true
       })
@@ -175,7 +175,7 @@ export function MasterDashboard() {
       
       // Count locations
       if (restaurant.location?.city) {
-        locationCount[restaurant.location?.city] = (locationCount[restaurant.location?.city] || 0) + 1
+        locationCount[restaurant.location.city] = (locationCount[restaurant.location.city] || 0) + 1
       }
       
       // Count opinions

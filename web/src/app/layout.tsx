@@ -1,35 +1,24 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { FavoritesProvider } from "@/contexts/favorites-context";
 import { ClientLayout } from "@/components/client-layout";
-import { SideNav } from "@/components/side-nav";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "Where2Eat - Discover Recommended Restaurants from Podcasts",
   description: "The advanced system that analyzes food podcasts and brings you the most recommended restaurants",
   manifest: "/manifest.json",
-  themeColor: "#F97066",
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 5,
-  },
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
     title: "Where2Eat",
   },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: "#E63B2E",
 };
 
 export default function RootLayout({
@@ -38,23 +27,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" dir="ltr">
+    <html lang="he" dir="rtl">
       <head>
         <link rel="manifest" href="/manifest.json" />
-        <meta name="theme-color" content="#F97066" />
+        <meta name="theme-color" content="#E63B2E" />
         <link rel="apple-touch-icon" href="/icon-192.png" />
+        {/* Preconnect to Google Fonts */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased font-hebrew`}
-      >
+      <body className="antialiased">
         <ClientLayout>
           <FavoritesProvider>
-            <div className="flex min-h-screen">
-              <SideNav />
-              <main className="flex-1 overflow-auto">
-                {children}
-              </main>
-            </div>
+            {children}
           </FavoritesProvider>
         </ClientLayout>
       </body>

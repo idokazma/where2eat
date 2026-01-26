@@ -18,12 +18,12 @@ export function RestaurantList({ restaurants }: RestaurantListProps) {
   const [selectedStatus, setSelectedStatus] = useState("all")
 
   const cuisineTypes = useMemo(() => {
-    const types = Array.from(new Set(restaurants.map(r => r.cuisine_type).filter((t): t is string => Boolean(t))))
+    const types = Array.from(new Set(restaurants.map(r => r.cuisine_type).filter((t): t is string => !!t)))
     return types.sort()
   }, [restaurants])
 
   const statusTypes = useMemo(() => {
-    const types = Array.from(new Set(restaurants.map(r => r.status).filter(Boolean) as string[]))
+    const types = Array.from(new Set(restaurants.map(r => r.status).filter((s): s is NonNullable<typeof s> => !!s)))
     return types.sort()
   }, [restaurants])
 

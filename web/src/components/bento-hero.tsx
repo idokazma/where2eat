@@ -48,18 +48,14 @@ export function BentoHero({ featuredRestaurants, stats }: BentoHeroProps) {
                 {featured[0].name_hebrew}
               </h2>
               <div className="flex items-center gap-5 text-sm">
-                {featured[0].location?.city && (
-                  <div className="flex items-center gap-1.5 bg-white/10 backdrop-blur-sm px-3 py-1.5 rounded-full">
-                    <MapPin className="size-4" />
-                    <span>{featured[0].location.city}</span>
-                  </div>
-                )}
-                {featured[0].cuisine_type && (
-                  <div className="flex items-center gap-1.5 bg-white/10 backdrop-blur-sm px-3 py-1.5 rounded-full">
-                    <Star className="size-4 fill-amber-400 text-amber-400" />
-                    <span>{featured[0].cuisine_type}</span>
-                  </div>
-                )}
+                <div className="flex items-center gap-1.5 bg-white/10 backdrop-blur-sm px-3 py-1.5 rounded-full">
+                  <MapPin className="size-4" />
+                  <span>{featured[0].location?.city || 'ישראל'}</span>
+                </div>
+                <div className="flex items-center gap-1.5 bg-white/10 backdrop-blur-sm px-3 py-1.5 rounded-full">
+                  <Star className="size-4 fill-amber-400 text-amber-400" />
+                  <span>{featured[0].cuisine_type}</span>
+                </div>
               </div>
               {featured[0].host_comments && (
                 <p className="text-white/85 text-sm mt-4 line-clamp-2 italic leading-relaxed max-w-lg">
@@ -118,12 +114,10 @@ export function BentoHero({ featuredRestaurants, stats }: BentoHeroProps) {
             <div className="absolute inset-0 image-overlay-dark" />
             <div className="absolute bottom-0 left-0 right-0 p-5 text-white">
               <h3 className="font-display font-bold text-xl mb-1.5 drop-shadow-lg">{featured[1].name_hebrew}</h3>
-              {featured[1].location?.city && (
-                <div className="flex items-center gap-1.5 text-sm text-white/80">
-                  <MapPin className="size-3.5" />
-                  <span>{featured[1].location.city}</span>
-                </div>
-              )}
+              <div className="flex items-center gap-1.5 text-sm text-white/80">
+                <MapPin className="size-3.5" />
+                <span>{featured[1].location?.city || 'ישראל'}</span>
+              </div>
             </div>
             <div className="absolute inset-0 bg-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           </div>
