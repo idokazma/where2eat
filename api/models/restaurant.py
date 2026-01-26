@@ -32,7 +32,7 @@ class Restaurant(BaseModel):
     id: Optional[str] = None
     name_hebrew: str
     name_english: Optional[str] = None
-    cuisine_type: str
+    cuisine_type: Optional[str] = None
     location: Optional[Location] = None
     price_range: Optional[str] = None
     status: Optional[str] = None
@@ -50,7 +50,7 @@ class RestaurantCreate(BaseModel):
     """Model for creating a restaurant."""
     name_hebrew: str
     name_english: Optional[str] = None
-    cuisine_type: str
+    cuisine_type: Optional[str] = None
     location: Optional[Location] = None
     price_range: Optional[str] = None
     status: Optional[str] = None
@@ -62,9 +62,9 @@ class RestaurantCreate(BaseModel):
 
 class RestaurantUpdate(BaseModel):
     """Model for updating a restaurant."""
-    name_hebrew: str
+    name_hebrew: Optional[str] = None
     name_english: Optional[str] = None
-    cuisine_type: str
+    cuisine_type: Optional[str] = None
     location: Optional[Location] = None
     price_range: Optional[str] = None
     status: Optional[str] = None
