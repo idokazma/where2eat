@@ -77,7 +77,6 @@ export function DiscoveryFeed({
             <div
               key={restaurant.google_places?.place_id || `${restaurant.name_hebrew}-${index}`}
               className={`animate-fade-up stagger-${Math.min(index + 1, 8)}`}
-              style={{ opacity: 0 }}
             >
               <RestaurantCardNew
                 restaurant={restaurant}

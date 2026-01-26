@@ -1,6 +1,6 @@
 "use client"
 
-import { createContext, useContext, useState, useEffect, ReactNode } from "react"
+import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from "react"
 import { Restaurant } from "@/types/restaurant"
 
 interface FavoritesContextType {
@@ -51,9 +51,9 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
     isFavorite(restaurant.name_hebrew)
   )
 
-  const setAllRestaurants = (restaurants: Restaurant[]) => {
+  const setAllRestaurants = useCallback((restaurants: Restaurant[]) => {
     setAllRestaurantsState(restaurants)
-  }
+  }, [])
 
   return (
     <FavoritesContext.Provider value={{
