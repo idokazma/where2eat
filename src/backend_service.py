@@ -938,6 +938,537 @@ class BackendService:
             for job in jobs
         ]
 
+    # ==================== Connection Testing ====================
+
+    def test_youtube_connection(self) -> Dict:
+        """Test YouTube transcript API connectivity.
+
+        Returns:
+            Dict with status, response_time_ms, and details
+        """
+        import time
+        result = {
+            'service': 'youtube_transcript',
+            'status': 'error',
+            'response_time_ms': 0,
+            'details': {}
+        }
+
+        start_time = time.time()
+        try:
+            collector = self._get_transcript_collector()
+
+            # Try to get health check if available
+            if hasattr(collector, 'health_check'):
+                health = collector.health_check()
+                result['status'] = 'healthy' if health.get('status') == 'healthy' else 'degraded'
+                result['details'] = {
+                    'api_connectivity': health.get('api_connectivity', False),
+                    'cache_enabled': health.get('cache', {}).get('enabled', False),
+                    'cache_entries': health.get('cache', {}).get('entries', 0),
+                    'rate_limit_status': health.get('rate_limiter', {})
+                }
+            else:
+                # Basic connectivity check
+                result['status'] = 'healthy'
+                result['details'] = {'message': 'Collector available'}
+
+        except ImportError as e:
+            result['status'] = 'unavailable'
+            result['details'] = {'error': f'Module not installed: {str(e)}'}
+        except Exception as e:
+            result['status'] = 'error'
+            result['details'] = {'error': str(e)}
+        finally:
+            result['response_time_ms'] = int((time.time() - start_time) * 1000)
+
+        return result
+
+    def test_google_places_connection(self) -> Dict:
+        """Test Google Places API connectivity.
+
+        Returns:
+            Dict with status, response_time_ms, and details
+        """
+        import time
+        result = {
+            'service': 'google_places',
+            'status': 'error',
+            'response_time_ms': 0,
+            'details': {}
+        }
+
+        start_time = time.time()
+        try:
+            enricher = self._get_places_enricher()
+
+            # Try a simple search to verify API key works
+            if hasattr(enricher, 'search_place'):
+                # Use a well-known place for testing
+                test_result = enricher.search_place('Carmel Market Tel Aviv')
+                if test_result:
+                    result['status'] = 'healthy'
+                    result['details'] = {
+                        'api_key_valid': True,
+                        'test_query': 'Carmel Market Tel Aviv',
+                        'results_found': len(test_result) if isinstance(test_result, list) else 1
+                    }
+                else:
+                    result['status'] = 'degraded'
+                    result['details'] = {'api_key_valid': True, 'message': 'No results for test query'}
+            else:
+                result['status'] = 'healthy'
+                result['details'] = {'message': 'Enricher available'}
+
+        except ImportError as e:
+            result['status'] = 'unavailable'
+            result['details'] = {'error': f'Module not installed: {str(e)}'}
+        except ValueError as e:
+            result['status'] = 'error'
+            result['details'] = {'error': 'API key not configured', 'message': str(e)}
+        except Exception as e:
+            error_str = str(e)
+            if 'API key' in error_str or 'quota' in error_str.lower():
+                result['status'] = 'error'
+                result['details'] = {'error': 'API key invalid or quota exceeded', 'message': error_str}
+            else:
+                result['status'] = 'error'
+                result['details'] = {'error': error_str}
+        finally:
+            result['response_time_ms'] = int((time.time() - start_time) * 1000)
+
+        return result
+
+    def test_claude_connection(self) -> Dict:
+        """Test Claude/Anthropic API connectivity.
+
+        Returns:
+            Dict with status, response_time_ms, and details
+        """
+        import time
+        import os
+
+        result = {
+            'service': 'claude_api',
+            'status': 'error',
+            'response_time_ms': 0,
+            'details': {}
+        }
+
+        start_time = time.time()
+        api_key = os.environ.get('ANTHROPIC_API_KEY', '')
+
+        if not api_key:
+            result['status'] = 'unavailable'
+            result['details'] = {'error': 'ANTHROPIC_API_KEY not configured'}
+            return result
+
+        try:
+            import anthropic
+            client = anthropic.Anthropic(api_key=api_key)
+
+            # Make a minimal API call to verify connectivity
+            response = client.messages.create(
+                model="claude-3-haiku-20240307",
+                max_tokens=10,
+                messages=[{"role": "user", "content": "Hi"}]
+            )
+
+            result['status'] = 'healthy'
+            result['details'] = {
+                'api_key_valid': True,
+                'model_tested': 'claude-3-haiku-20240307',
+                'response_received': True
+            }
+
+        except ImportError:
+            result['status'] = 'unavailable'
+            result['details'] = {'error': 'anthropic package not installed'}
+        except anthropic.AuthenticationError:
+            result['status'] = 'error'
+            result['details'] = {'error': 'Invalid API key'}
+        except anthropic.RateLimitError:
+            result['status'] = 'degraded'
+            result['details'] = {'error': 'Rate limit exceeded', 'api_key_valid': True}
+        except Exception as e:
+            result['status'] = 'error'
+            result['details'] = {'error': str(e)}
+        finally:
+            result['response_time_ms'] = int((time.time() - start_time) * 1000)
+
+        return result
+
+    def test_openai_connection(self) -> Dict:
+        """Test OpenAI API connectivity.
+
+        Returns:
+            Dict with status, response_time_ms, and details
+        """
+        import time
+        import os
+
+        result = {
+            'service': 'openai_api',
+            'status': 'error',
+            'response_time_ms': 0,
+            'details': {}
+        }
+
+        start_time = time.time()
+        api_key = os.environ.get('OPENAI_API_KEY', '')
+
+        if not api_key:
+            result['status'] = 'unavailable'
+            result['details'] = {'error': 'OPENAI_API_KEY not configured'}
+            return result
+
+        try:
+            import openai
+            client = openai.OpenAI(api_key=api_key)
+
+            # Make a minimal API call to verify connectivity
+            response = client.chat.completions.create(
+                model="gpt-3.5-turbo",
+                max_tokens=10,
+                messages=[{"role": "user", "content": "Hi"}]
+            )
+
+            result['status'] = 'healthy'
+            result['details'] = {
+                'api_key_valid': True,
+                'model_tested': 'gpt-3.5-turbo',
+                'response_received': True
+            }
+
+        except ImportError:
+            result['status'] = 'unavailable'
+            result['details'] = {'error': 'openai package not installed'}
+        except openai.AuthenticationError:
+            result['status'] = 'error'
+            result['details'] = {'error': 'Invalid API key'}
+        except openai.RateLimitError:
+            result['status'] = 'degraded'
+            result['details'] = {'error': 'Rate limit exceeded', 'api_key_valid': True}
+        except Exception as e:
+            result['status'] = 'error'
+            result['details'] = {'error': str(e)}
+        finally:
+            result['response_time_ms'] = int((time.time() - start_time) * 1000)
+
+        return result
+
+    def test_database_connection(self) -> Dict:
+        """Test SQLite database connectivity and integrity.
+
+        Returns:
+            Dict with status, response_time_ms, and details
+        """
+        import time
+        import os
+
+        result = {
+            'service': 'database',
+            'status': 'error',
+            'response_time_ms': 0,
+            'details': {}
+        }
+
+        start_time = time.time()
+        try:
+            # Test basic connectivity
+            stats = self.db.get_stats()
+
+            # Get database file info
+            db_path = self.db.db_path if hasattr(self.db, 'db_path') else 'unknown'
+            db_size = 0
+            if db_path and os.path.exists(db_path):
+                db_size = os.path.getsize(db_path)
+
+            # Run integrity check
+            integrity_ok = True
+            try:
+                cursor = self.db.conn.execute("PRAGMA integrity_check")
+                integrity_result = cursor.fetchone()[0]
+                integrity_ok = integrity_result == 'ok'
+            except Exception:
+                integrity_ok = False
+
+            result['status'] = 'healthy' if integrity_ok else 'degraded'
+            result['details'] = {
+                'connected': True,
+                'integrity_check': 'passed' if integrity_ok else 'failed',
+                'db_path': db_path,
+                'db_size_bytes': db_size,
+                'db_size_mb': round(db_size / (1024 * 1024), 2),
+                'stats': {
+                    'total_restaurants': stats.get('total_restaurants', 0),
+                    'total_episodes': stats.get('total_episodes', 0),
+                    'active_jobs': stats.get('active_jobs', 0)
+                }
+            }
+
+        except Exception as e:
+            result['status'] = 'error'
+            result['details'] = {'error': str(e), 'connected': False}
+        finally:
+            result['response_time_ms'] = int((time.time() - start_time) * 1000)
+
+        return result
+
+    def test_all_connections(self) -> Dict:
+        """Test all service connections at once.
+
+        Returns:
+            Dict with overall status and individual service results
+        """
+        import time
+        from concurrent.futures import ThreadPoolExecutor, as_completed
+
+        start_time = time.time()
+
+        # Run all tests in parallel for speed
+        tests = {
+            'database': self.test_database_connection,
+            'youtube_transcript': self.test_youtube_connection,
+            'google_places': self.test_google_places_connection,
+            'claude_api': self.test_claude_connection,
+            'openai_api': self.test_openai_connection
+        }
+
+        results = {}
+        with ThreadPoolExecutor(max_workers=5) as executor:
+            future_to_service = {
+                executor.submit(test_fn): service
+                for service, test_fn in tests.items()
+            }
+            for future in as_completed(future_to_service):
+                service = future_to_service[future]
+                try:
+                    results[service] = future.result()
+                except Exception as e:
+                    results[service] = {
+                        'service': service,
+                        'status': 'error',
+                        'response_time_ms': 0,
+                        'details': {'error': str(e)}
+                    }
+
+        # Determine overall status
+        # Core services: database, youtube_transcript
+        # Optional services: google_places, claude_api, openai_api (at least one LLM needed)
+        core_healthy = all(
+            results.get(svc, {}).get('status') == 'healthy'
+            for svc in ['database', 'youtube_transcript']
+        )
+
+        llm_available = any(
+            results.get(svc, {}).get('status') in ['healthy', 'degraded']
+            for svc in ['claude_api', 'openai_api']
+        )
+
+        if core_healthy and llm_available:
+            overall_status = 'healthy'
+        elif results.get('database', {}).get('status') == 'healthy':
+            overall_status = 'degraded'
+        else:
+            overall_status = 'unhealthy'
+
+        return {
+            'overall_status': overall_status,
+            'services': results,
+            'summary': {
+                'total_services': len(results),
+                'healthy': sum(1 for r in results.values() if r.get('status') == 'healthy'),
+                'degraded': sum(1 for r in results.values() if r.get('status') == 'degraded'),
+                'error': sum(1 for r in results.values() if r.get('status') == 'error'),
+                'unavailable': sum(1 for r in results.values() if r.get('status') == 'unavailable')
+            },
+            'total_time_ms': int((time.time() - start_time) * 1000),
+            'timestamp': datetime.now().isoformat()
+        }
+
+    def get_api_key_status(self) -> Dict:
+        """Get masked status of all API keys.
+
+        Returns:
+            Dict with masked API key info for each service
+        """
+        import os
+
+        def mask_key(key: str) -> str:
+            """Mask an API key, showing only last 4 chars."""
+            if not key:
+                return None
+            if len(key) <= 8:
+                return '****'
+            return f"****{key[-4:]}"
+
+        keys = {
+            'anthropic': {
+                'env_var': 'ANTHROPIC_API_KEY',
+                'value': os.environ.get('ANTHROPIC_API_KEY', ''),
+            },
+            'openai': {
+                'env_var': 'OPENAI_API_KEY',
+                'value': os.environ.get('OPENAI_API_KEY', ''),
+            },
+            'google_places': {
+                'env_var': 'GOOGLE_PLACES_API_KEY',
+                'value': os.environ.get('GOOGLE_PLACES_API_KEY', ''),
+            },
+            'google_maps': {
+                'env_var': 'GOOGLE_MAPS_API_KEY',
+                'value': os.environ.get('GOOGLE_MAPS_API_KEY', ''),
+            }
+        }
+
+        result = {}
+        for service, info in keys.items():
+            value = info['value']
+            result[service] = {
+                'configured': bool(value),
+                'masked_key': mask_key(value),
+                'env_var': info['env_var']
+            }
+
+        return {
+            'api_keys': result,
+            'timestamp': datetime.now().isoformat()
+        }
+
+    # ==================== Error Logging ====================
+
+    def log_error(
+        self,
+        service: str,
+        level: str,
+        message: str,
+        stack_trace: str = None,
+        context: Dict = None,
+        job_id: str = None,
+        video_id: str = None
+    ) -> str:
+        """Log an error to the database.
+
+        Args:
+            service: Service name (youtube, google_places, claude, openai, database, etc.)
+            level: Error level (critical, warning, info, debug)
+            message: Error message
+            stack_trace: Optional stack trace
+            context: Optional context dict
+            job_id: Optional related job ID
+            video_id: Optional related video ID
+
+        Returns:
+            Error ID
+        """
+        return self.db.log_error(
+            service=service,
+            level=level,
+            message=message,
+            stack_trace=stack_trace,
+            context=context,
+            job_id=job_id,
+            video_id=video_id
+        )
+
+    def get_errors(
+        self,
+        level: str = None,
+        service: str = None,
+        resolved: bool = None,
+        limit: int = 100,
+        offset: int = 0
+    ) -> Dict:
+        """Get error logs with filters.
+
+        Args:
+            level: Filter by level (critical, warning, info, debug)
+            service: Filter by service name
+            resolved: Filter by resolved status
+            limit: Max results
+            offset: Pagination offset
+
+        Returns:
+            Dict with errors and pagination info
+        """
+        return self.db.get_errors(
+            level=level,
+            service=service,
+            resolved=resolved,
+            limit=limit,
+            offset=offset
+        )
+
+    def resolve_error(self, error_id: str, admin_user_id: int = None, notes: str = None) -> bool:
+        """Mark an error as resolved.
+
+        Args:
+            error_id: Error ID to resolve
+            admin_user_id: ID of admin resolving the error
+            notes: Optional resolution notes
+
+        Returns:
+            True if successful
+        """
+        return self.db.resolve_error(error_id, admin_user_id, notes)
+
+    def get_error_summary(self, hours: int = 24) -> Dict:
+        """Get error summary statistics.
+
+        Args:
+            hours: Number of hours to look back
+
+        Returns:
+            Dict with error counts by level and service
+        """
+        return self.db.get_error_summary(hours)
+
+    # ==================== System Metrics ====================
+
+    def get_system_metrics(self) -> Dict:
+        """Get comprehensive system metrics.
+
+        Returns:
+            Dict with memory, disk, and performance metrics
+        """
+        import os
+        import psutil
+
+        # Process memory
+        process = psutil.Process(os.getpid())
+        memory_info = process.memory_info()
+
+        # Database size
+        db_path = self.db.db_path if hasattr(self.db, 'db_path') else None
+        db_size = os.path.getsize(db_path) if db_path and os.path.exists(db_path) else 0
+
+        # Get stats
+        stats = self.db.get_stats()
+
+        return {
+            'memory': {
+                'rss_bytes': memory_info.rss,
+                'rss_mb': round(memory_info.rss / (1024 * 1024), 2),
+                'vms_bytes': memory_info.vms,
+                'vms_mb': round(memory_info.vms / (1024 * 1024), 2),
+                'percent': process.memory_percent()
+            },
+            'database': {
+                'size_bytes': db_size,
+                'size_mb': round(db_size / (1024 * 1024), 2),
+                'path': db_path
+            },
+            'counts': {
+                'restaurants': stats.get('total_restaurants', 0),
+                'episodes': stats.get('total_episodes', 0),
+                'active_jobs': stats.get('active_jobs', 0),
+                'unique_cities': stats.get('unique_cities', 0),
+                'unique_cuisines': stats.get('unique_cuisines', 0)
+            },
+            'timestamp': datetime.now().isoformat()
+        }
+
     # ==================== Utilities ====================
 
     def get_stats(self) -> Dict:

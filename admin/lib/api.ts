@@ -467,6 +467,231 @@ export const bulkApi = {
   },
 };
 
+/**
+ * Connection status types
+ */
+export type ConnectionStatus = 'healthy' | 'degraded' | 'error' | 'unavailable' | 'timeout';
+
+export interface ConnectionTestResult {
+  service: string;
+  status: ConnectionStatus;
+  response_time_ms: number;
+  details: Record<string, any>;
+}
+
+export interface AllConnectionsResult {
+  overall_status: 'healthy' | 'degraded' | 'unhealthy';
+  services: Record<string, ConnectionTestResult>;
+  summary: {
+    total_services: number;
+    healthy: number;
+    degraded: number;
+    error: number;
+    unavailable: number;
+  };
+  total_time_ms: number;
+  timestamp: string;
+}
+
+export interface ErrorLog {
+  id: string;
+  error_id: string;
+  level: 'critical' | 'warning' | 'info' | 'debug';
+  service: string;
+  message: string;
+  stack_trace?: string;
+  context?: Record<string, any>;
+  job_id?: string;
+  video_id?: string;
+  first_occurred: string;
+  last_occurred: string;
+  occurrence_count: number;
+  resolved: boolean;
+  resolved_at?: string;
+  resolved_by?: string;
+  resolved_by_name?: string;
+  resolution_notes?: string;
+}
+
+export interface ErrorSummary {
+  period_hours: number;
+  total_errors: number;
+  total_occurrences: number;
+  unresolved: number;
+  by_level: Record<string, { count: number; occurrences: number }>;
+  by_service: Record<string, { count: number; occurrences: number }>;
+}
+
+export interface SystemHealth {
+  status: 'healthy' | 'degraded' | 'unhealthy';
+  backend: {
+    status: string;
+    checks: Record<string, boolean>;
+    timestamp: string;
+  };
+  server: {
+    uptime_seconds: number;
+    uptime_formatted: string;
+    memory_usage: {
+      rss: number;
+      heapTotal: number;
+      heapUsed: number;
+      external: number;
+    };
+    node_version: string;
+    platform: string;
+  };
+  timestamp: string;
+}
+
+export interface SystemStats {
+  database: {
+    restaurants: number;
+    episodes: number;
+    active_jobs: number;
+    unique_cities: number;
+    unique_cuisines: number;
+  };
+  system: {
+    memory: {
+      rss_bytes: number;
+      rss_mb: number;
+      vms_bytes: number;
+      vms_mb: number;
+      percent: number;
+    };
+    database: {
+      size_bytes: number;
+      size_mb: number;
+      path: string;
+    };
+    counts: Record<string, number>;
+    timestamp: string;
+  };
+  timestamp: string;
+}
+
+/**
+ * System API endpoints
+ */
+export const systemApi = {
+  /**
+   * Get all connection statuses
+   */
+  async getConnectionStatus(): Promise<AllConnectionsResult> {
+    return apiFetch('/api/admin/system/connections/status');
+  },
+
+  /**
+   * Test a specific service connection
+   */
+  async testConnection(service: string): Promise<ConnectionTestResult> {
+    return apiFetch('/api/admin/system/connections/test', {
+      method: 'POST',
+      body: JSON.stringify({ service }),
+    });
+  },
+
+  /**
+   * Get connection test history
+   */
+  async getConnectionHistory(params?: { service?: string; limit?: number; hours?: number }): Promise<{ history: any[] }> {
+    const queryParams = new URLSearchParams();
+    if (params?.service) queryParams.append('service', params.service);
+    if (params?.limit) queryParams.append('limit', params.limit.toString());
+    if (params?.hours) queryParams.append('hours', params.hours.toString());
+    const query = queryParams.toString();
+    return apiFetch(`/api/admin/system/connections/history${query ? `?${query}` : ''}`);
+  },
+
+  /**
+   * Get API key status (super_admin only)
+   */
+  async getApiKeyStatus(): Promise<{ api_keys: Record<string, { configured: boolean; masked_key: string | null; env_var: string }>; timestamp: string }> {
+    return apiFetch('/api/admin/system/api-keys/status');
+  },
+
+  /**
+   * Get system health
+   */
+  async getHealth(): Promise<SystemHealth> {
+    return apiFetch('/api/admin/system/health');
+  },
+
+  /**
+   * Get system statistics
+   */
+  async getStats(): Promise<SystemStats> {
+    return apiFetch('/api/admin/system/stats');
+  },
+
+  /**
+   * Get system metrics history
+   */
+  async getMetrics(params?: { type?: string; name?: string; hours?: number; limit?: number }): Promise<{ metrics: any[] }> {
+    const queryParams = new URLSearchParams();
+    if (params?.type) queryParams.append('type', params.type);
+    if (params?.name) queryParams.append('name', params.name);
+    if (params?.hours) queryParams.append('hours', params.hours.toString());
+    if (params?.limit) queryParams.append('limit', params.limit.toString());
+    const query = queryParams.toString();
+    return apiFetch(`/api/admin/system/metrics${query ? `?${query}` : ''}`);
+  },
+
+  /**
+   * Run database vacuum (super_admin only)
+   */
+  async runVacuum(): Promise<{ success: boolean; message: string; timestamp: string }> {
+    return apiFetch('/api/admin/system/maintenance/vacuum', { method: 'POST' });
+  },
+
+  /**
+   * Clear resolved errors (super_admin only)
+   */
+  async clearResolvedErrors(olderThanDays: number = 30): Promise<{ success: boolean; deleted: number; message: string }> {
+    return apiFetch('/api/admin/system/maintenance/clear-errors', {
+      method: 'POST',
+      body: JSON.stringify({ olderThanDays }),
+    });
+  },
+};
+
+/**
+ * Errors API endpoints
+ */
+export const errorsApi = {
+  /**
+   * Get error logs with filters
+   */
+  async list(params?: { level?: string; service?: string; resolved?: boolean; limit?: number; offset?: number }): Promise<{ errors: ErrorLog[]; total: number; limit: number; offset: number; total_pages: number }> {
+    const queryParams = new URLSearchParams();
+    if (params?.level) queryParams.append('level', params.level);
+    if (params?.service) queryParams.append('service', params.service);
+    if (params?.resolved !== undefined) queryParams.append('resolved', params.resolved.toString());
+    if (params?.limit) queryParams.append('limit', params.limit.toString());
+    if (params?.offset) queryParams.append('offset', params.offset.toString());
+    const query = queryParams.toString();
+    return apiFetch(`/api/admin/system/errors${query ? `?${query}` : ''}`);
+  },
+
+  /**
+   * Get error summary statistics
+   */
+  async getSummary(hours: number = 24): Promise<ErrorSummary> {
+    return apiFetch(`/api/admin/system/errors/summary?hours=${hours}`);
+  },
+
+  /**
+   * Resolve an error
+   */
+  async resolve(errorId: string, notes?: string): Promise<{ success: boolean; message: string }> {
+    return apiFetch(`/api/admin/system/errors/${errorId}/resolve`, {
+      method: 'POST',
+      body: JSON.stringify({ notes }),
+    });
+  },
+};
+
 export default {
   auth: authApi,
   restaurants: restaurantsApi,
@@ -474,4 +699,6 @@ export default {
   articles: articlesApi,
   videos: videosApi,
   bulk: bulkApi,
+  system: systemApi,
+  errors: errorsApi,
 };

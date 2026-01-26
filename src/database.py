@@ -206,6 +206,56 @@ class Database:
                 )
             ''')
 
+            # Error logs table for system monitoring
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS error_logs (
+                    id TEXT PRIMARY KEY,
+                    error_id TEXT UNIQUE NOT NULL,
+                    level TEXT NOT NULL CHECK(level IN ('critical', 'warning', 'info', 'debug')),
+                    service TEXT NOT NULL,
+                    message TEXT NOT NULL,
+                    stack_trace TEXT,
+                    context TEXT,
+                    job_id TEXT,
+                    video_id TEXT,
+                    first_occurred TEXT DEFAULT CURRENT_TIMESTAMP,
+                    last_occurred TEXT DEFAULT CURRENT_TIMESTAMP,
+                    occurrence_count INTEGER DEFAULT 1,
+                    resolved INTEGER DEFAULT 0,
+                    resolved_at TEXT,
+                    resolved_by TEXT,
+                    resolution_notes TEXT,
+                    FOREIGN KEY (resolved_by) REFERENCES admin_users(id)
+                )
+            ''')
+
+            # Connection test history table
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS connection_tests (
+                    id TEXT PRIMARY KEY,
+                    service TEXT NOT NULL,
+                    status TEXT NOT NULL CHECK(status IN ('healthy', 'degraded', 'error', 'unavailable', 'timeout')),
+                    response_time_ms INTEGER,
+                    error_message TEXT,
+                    details TEXT,
+                    tested_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                    tested_by TEXT,
+                    FOREIGN KEY (tested_by) REFERENCES admin_users(id)
+                )
+            ''')
+
+            # System metrics table for historical tracking
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS system_metrics (
+                    id TEXT PRIMARY KEY,
+                    timestamp TEXT DEFAULT CURRENT_TIMESTAMP,
+                    metric_type TEXT NOT NULL,
+                    metric_name TEXT NOT NULL,
+                    metric_value REAL NOT NULL,
+                    metadata TEXT
+                )
+            ''')
+
             # Create indexes for common queries
             cursor.execute('CREATE INDEX IF NOT EXISTS idx_restaurants_city ON restaurants(city)')
             cursor.execute('CREATE INDEX IF NOT EXISTS idx_restaurants_cuisine ON restaurants(cuisine_type)')
@@ -220,6 +270,12 @@ class Database:
             cursor.execute('CREATE INDEX IF NOT EXISTS idx_articles_status ON articles(status)')
             cursor.execute('CREATE INDEX IF NOT EXISTS idx_articles_author_id ON articles(author_id)')
             cursor.execute('CREATE INDEX IF NOT EXISTS idx_articles_published_at ON articles(published_at)')
+            cursor.execute('CREATE INDEX IF NOT EXISTS idx_error_logs_level ON error_logs(level)')
+            cursor.execute('CREATE INDEX IF NOT EXISTS idx_error_logs_service ON error_logs(service)')
+            cursor.execute('CREATE INDEX IF NOT EXISTS idx_error_logs_resolved ON error_logs(resolved)')
+            cursor.execute('CREATE INDEX IF NOT EXISTS idx_error_logs_first_occurred ON error_logs(first_occurred)')
+            cursor.execute('CREATE INDEX IF NOT EXISTS idx_connection_tests_service ON connection_tests(service)')
+            cursor.execute('CREATE INDEX IF NOT EXISTS idx_system_metrics_type ON system_metrics(metric_type)')
 
     # ==================== Episode Operations ====================
 
@@ -1109,6 +1165,453 @@ class Database:
             else:
                 cursor.execute('SELECT COUNT(*) FROM articles')
             return cursor.fetchone()[0]
+
+    # ==================== Error Logging Operations ====================
+
+    @property
+    def conn(self):
+        """Get a connection for direct queries (used by backend_service)."""
+        return sqlite3.connect(self.db_path)
+
+    def log_error(
+        self,
+        service: str,
+        level: str,
+        message: str,
+        stack_trace: str = None,
+        context: Dict = None,
+        job_id: str = None,
+        video_id: str = None
+    ) -> str:
+        """Log an error to the database.
+
+        If an identical error (same service + message) exists and is unresolved,
+        increment its occurrence count instead of creating a new entry.
+
+        Args:
+            service: Service name (youtube, google_places, claude, openai, database, etc.)
+            level: Error level (critical, warning, info, debug)
+            message: Error message
+            stack_trace: Optional stack trace
+            context: Optional context dict
+            job_id: Optional related job ID
+            video_id: Optional related video ID
+
+        Returns:
+            Error ID
+        """
+        import hashlib
+
+        # Create a hash of service + message for deduplication
+        error_hash = hashlib.md5(f"{service}:{message}".encode()).hexdigest()[:16]
+        error_id = f"err_{error_hash}"
+
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+
+            # Check if this error already exists and is unresolved
+            cursor.execute('''
+                SELECT id, occurrence_count FROM error_logs
+                WHERE error_id = ? AND resolved = 0
+            ''', (error_id,))
+            existing = cursor.fetchone()
+
+            if existing:
+                # Update existing error
+                cursor.execute('''
+                    UPDATE error_logs SET
+                        occurrence_count = occurrence_count + 1,
+                        last_occurred = CURRENT_TIMESTAMP,
+                        stack_trace = COALESCE(?, stack_trace),
+                        context = COALESCE(?, context),
+                        job_id = COALESCE(?, job_id),
+                        video_id = COALESCE(?, video_id)
+                    WHERE id = ?
+                ''', (
+                    stack_trace,
+                    json.dumps(context) if context else None,
+                    job_id,
+                    video_id,
+                    existing['id']
+                ))
+                return error_id
+            else:
+                # Create new error entry
+                log_id = str(uuid.uuid4())
+                cursor.execute('''
+                    INSERT INTO error_logs (
+                        id, error_id, level, service, message, stack_trace,
+                        context, job_id, video_id
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ''', (
+                    log_id,
+                    error_id,
+                    level,
+                    service,
+                    message,
+                    stack_trace,
+                    json.dumps(context) if context else None,
+                    job_id,
+                    video_id
+                ))
+                return error_id
+
+    def get_errors(
+        self,
+        level: str = None,
+        service: str = None,
+        resolved: bool = None,
+        limit: int = 100,
+        offset: int = 0
+    ) -> Dict:
+        """Get error logs with filters.
+
+        Args:
+            level: Filter by level (critical, warning, info, debug)
+            service: Filter by service name
+            resolved: Filter by resolved status (True/False/None for all)
+            limit: Max results
+            offset: Pagination offset
+
+        Returns:
+            Dict with errors, pagination info, and counts
+        """
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+
+            # Build WHERE clause
+            conditions = []
+            params = []
+
+            if level:
+                conditions.append("level = ?")
+                params.append(level)
+
+            if service:
+                conditions.append("service = ?")
+                params.append(service)
+
+            if resolved is not None:
+                conditions.append("resolved = ?")
+                params.append(1 if resolved else 0)
+
+            where_clause = " AND ".join(conditions) if conditions else "1=1"
+
+            # Count total
+            cursor.execute(f'SELECT COUNT(*) as total FROM error_logs WHERE {where_clause}', params)
+            total = cursor.fetchone()['total']
+
+            # Get errors
+            cursor.execute(f'''
+                SELECT e.*, u.name as resolved_by_name
+                FROM error_logs e
+                LEFT JOIN admin_users u ON e.resolved_by = u.id
+                WHERE {where_clause}
+                ORDER BY e.last_occurred DESC
+                LIMIT ? OFFSET ?
+            ''', params + [limit, offset])
+
+            errors = []
+            for row in cursor.fetchall():
+                error = dict(row)
+                if error.get('context'):
+                    try:
+                        error['context'] = json.loads(error['context'])
+                    except:
+                        pass
+                error['resolved'] = bool(error['resolved'])
+                errors.append(error)
+
+            return {
+                'errors': errors,
+                'total': total,
+                'limit': limit,
+                'offset': offset,
+                'total_pages': (total + limit - 1) // limit if limit > 0 else 1
+            }
+
+    def resolve_error(self, error_id: str, admin_user_id: str = None, notes: str = None) -> bool:
+        """Mark an error as resolved.
+
+        Args:
+            error_id: Error ID to resolve
+            admin_user_id: ID of admin resolving the error
+            notes: Optional resolution notes
+
+        Returns:
+            True if successful
+        """
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute('''
+                UPDATE error_logs SET
+                    resolved = 1,
+                    resolved_at = CURRENT_TIMESTAMP,
+                    resolved_by = ?,
+                    resolution_notes = ?
+                WHERE error_id = ?
+            ''', (admin_user_id, notes, error_id))
+            return cursor.rowcount > 0
+
+    def get_error_summary(self, hours: int = 24) -> Dict:
+        """Get error summary statistics.
+
+        Args:
+            hours: Number of hours to look back
+
+        Returns:
+            Dict with error counts by level and service
+        """
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+
+            # Calculate time threshold
+            cursor.execute(f'''
+                SELECT datetime('now', '-{hours} hours') as threshold
+            ''')
+            threshold = cursor.fetchone()['threshold']
+
+            # Get counts by level
+            cursor.execute('''
+                SELECT level, COUNT(*) as count, SUM(occurrence_count) as total_occurrences
+                FROM error_logs
+                WHERE first_occurred >= ? OR last_occurred >= ?
+                GROUP BY level
+            ''', (threshold, threshold))
+            by_level = {row['level']: {'count': row['count'], 'occurrences': row['total_occurrences']}
+                       for row in cursor.fetchall()}
+
+            # Get counts by service
+            cursor.execute('''
+                SELECT service, COUNT(*) as count, SUM(occurrence_count) as total_occurrences
+                FROM error_logs
+                WHERE first_occurred >= ? OR last_occurred >= ?
+                GROUP BY service
+            ''', (threshold, threshold))
+            by_service = {row['service']: {'count': row['count'], 'occurrences': row['total_occurrences']}
+                         for row in cursor.fetchall()}
+
+            # Get unresolved count
+            cursor.execute('''
+                SELECT COUNT(*) as count FROM error_logs WHERE resolved = 0
+            ''')
+            unresolved = cursor.fetchone()['count']
+
+            # Get total in period
+            cursor.execute('''
+                SELECT COUNT(*) as count, SUM(occurrence_count) as total_occurrences
+                FROM error_logs
+                WHERE first_occurred >= ? OR last_occurred >= ?
+            ''', (threshold, threshold))
+            totals = cursor.fetchone()
+
+            return {
+                'period_hours': hours,
+                'total_errors': totals['count'] or 0,
+                'total_occurrences': totals['total_occurrences'] or 0,
+                'unresolved': unresolved,
+                'by_level': by_level,
+                'by_service': by_service
+            }
+
+    def clear_resolved_errors(self, older_than_days: int = 30) -> int:
+        """Delete resolved errors older than specified days.
+
+        Args:
+            older_than_days: Delete resolved errors older than this many days
+
+        Returns:
+            Number of deleted records
+        """
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute(f'''
+                DELETE FROM error_logs
+                WHERE resolved = 1
+                AND resolved_at < datetime('now', '-{older_than_days} days')
+            ''')
+            return cursor.rowcount
+
+    # ==================== Connection Test History ====================
+
+    def log_connection_test(
+        self,
+        service: str,
+        status: str,
+        response_time_ms: int,
+        error_message: str = None,
+        details: Dict = None,
+        tested_by: str = None
+    ) -> str:
+        """Log a connection test result.
+
+        Args:
+            service: Service name
+            status: Test status (healthy, degraded, error, unavailable, timeout)
+            response_time_ms: Response time in milliseconds
+            error_message: Optional error message
+            details: Optional details dict
+            tested_by: Optional admin user ID
+
+        Returns:
+            Test log ID
+        """
+        log_id = str(uuid.uuid4())
+
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute('''
+                INSERT INTO connection_tests (
+                    id, service, status, response_time_ms, error_message, details, tested_by
+                ) VALUES (?, ?, ?, ?, ?, ?, ?)
+            ''', (
+                log_id,
+                service,
+                status,
+                response_time_ms,
+                error_message,
+                json.dumps(details) if details else None,
+                tested_by
+            ))
+
+            return log_id
+
+    def get_connection_history(
+        self,
+        service: str = None,
+        limit: int = 100,
+        hours: int = 24
+    ) -> List[Dict]:
+        """Get connection test history.
+
+        Args:
+            service: Filter by service name
+            limit: Max results
+            hours: Look back hours
+
+        Returns:
+            List of connection test records
+        """
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+
+            if service:
+                cursor.execute('''
+                    SELECT * FROM connection_tests
+                    WHERE service = ? AND tested_at >= datetime('now', '-' || ? || ' hours')
+                    ORDER BY tested_at DESC
+                    LIMIT ?
+                ''', (service, hours, limit))
+            else:
+                cursor.execute('''
+                    SELECT * FROM connection_tests
+                    WHERE tested_at >= datetime('now', '-' || ? || ' hours')
+                    ORDER BY tested_at DESC
+                    LIMIT ?
+                ''', (hours, limit))
+
+            tests = []
+            for row in cursor.fetchall():
+                test = dict(row)
+                if test.get('details'):
+                    try:
+                        test['details'] = json.loads(test['details'])
+                    except:
+                        pass
+                tests.append(test)
+
+            return tests
+
+    # ==================== System Metrics ====================
+
+    def log_metric(
+        self,
+        metric_type: str,
+        metric_name: str,
+        metric_value: float,
+        metadata: Dict = None
+    ) -> str:
+        """Log a system metric.
+
+        Args:
+            metric_type: Type of metric (response_time, memory, db_size, etc.)
+            metric_name: Name of the metric
+            metric_value: Numeric value
+            metadata: Optional metadata dict
+
+        Returns:
+            Metric log ID
+        """
+        log_id = str(uuid.uuid4())
+
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute('''
+                INSERT INTO system_metrics (id, metric_type, metric_name, metric_value, metadata)
+                VALUES (?, ?, ?, ?, ?)
+            ''', (
+                log_id,
+                metric_type,
+                metric_name,
+                metric_value,
+                json.dumps(metadata) if metadata else None
+            ))
+
+            return log_id
+
+    def get_metrics(
+        self,
+        metric_type: str = None,
+        metric_name: str = None,
+        hours: int = 24,
+        limit: int = 1000
+    ) -> List[Dict]:
+        """Get system metrics.
+
+        Args:
+            metric_type: Filter by type
+            metric_name: Filter by name
+            hours: Look back hours
+            limit: Max results
+
+        Returns:
+            List of metric records
+        """
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+
+            conditions = ["timestamp >= datetime('now', '-' || ? || ' hours')"]
+            params = [hours]
+
+            if metric_type:
+                conditions.append("metric_type = ?")
+                params.append(metric_type)
+
+            if metric_name:
+                conditions.append("metric_name = ?")
+                params.append(metric_name)
+
+            where_clause = " AND ".join(conditions)
+            params.append(limit)
+
+            cursor.execute(f'''
+                SELECT * FROM system_metrics
+                WHERE {where_clause}
+                ORDER BY timestamp DESC
+                LIMIT ?
+            ''', params)
+
+            metrics = []
+            for row in cursor.fetchall():
+                metric = dict(row)
+                if metric.get('metadata'):
+                    try:
+                        metric['metadata'] = json.loads(metric['metadata'])
+                    except:
+                        pass
+                metrics.append(metric)
+
+            return metrics
 
 
 # Singleton instance for convenience

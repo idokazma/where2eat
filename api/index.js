@@ -19,6 +19,7 @@ const adminArticlesRoutes = require('./routes/admin-articles')
 const adminVideosRoutes = require('./routes/admin-videos')
 const adminBulkRoutes = require('./routes/admin-bulk')
 const adminAuditRoutes = require('./routes/admin-audit')
+const adminSystemRoutes = require('./routes/admin-system')
 
 app.use(helmet())
 app.use(cors({
@@ -292,6 +293,7 @@ app.use('/api/admin/articles', adminArticlesRoutes)
 app.use('/api/admin/videos', adminVideosRoutes)
 app.use('/api/admin/bulk', adminBulkRoutes)
 app.use('/api/admin/audit', adminAuditRoutes)
+app.use('/api/admin/system', adminSystemRoutes)
 
 app.get('/api/restaurants', async (req, res) => {
   try {
