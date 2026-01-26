@@ -1,16 +1,209 @@
-/* Hebrew Typography - Google Fonts */
-/* Display: Frank Ruhl Libre for editorial headlines with Hebrew support */
-/* Body: Rubik for clean, modern body text with Hebrew support */
-@import url('https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;500;700;900&family=Rubik:wght@300;400;500;600;700;800&family=Assistant:wght@300;400;500;600;700&display=swap');
+/* ============================================
+   WHERE2EAT DESIGN SYSTEM v2
+   Mobile-first, Editorial, Hebrew-native
+   ============================================ */
+
+/* Typography - Heebo for urban Hebrew character */
+@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap');
 
 @import "tailwindcss";
 @import "tw-animate-css";
 
+/* ============================================
+   DESIGN TOKENS
+   ============================================ */
+
+:root {
+  /* Typography */
+  --font-display: 'Heebo', system-ui, sans-serif;
+  --font-body: 'Heebo', system-ui, sans-serif;
+  --font-mono: ui-monospace, 'Geist Mono', monospace;
+
+  /* Type Scale */
+  --text-display-xl: 3rem;
+  --text-display-lg: 2.25rem;
+  --text-display-md: 1.75rem;
+  --text-body-lg: 1.125rem;
+  --text-body-md: 1rem;
+  --text-body-sm: 0.875rem;
+  --text-body-xs: 0.75rem;
+
+  /* Line Heights */
+  --leading-tight: 1.1;
+  --leading-snug: 1.3;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.7;
+
+  /* Spacing Scale */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+
+  /* Border Radius */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+  --radius-full: 9999px;
+  --radius: 0.75rem;
+
+  /* Z-Index Scale */
+  --z-base: 0;
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-fixed: 300;
+  --z-modal-backdrop: 400;
+  --z-modal: 500;
+  --z-popover: 600;
+  --z-toast: 700;
+
+  /* Timing Functions */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* ============================================
+     COLOR SYSTEM - Urban Editorial
+     ============================================ */
+
+  /* Core Ink Colors */
+  --color-ink: #1A1A1A;
+  --color-ink-muted: #6B6B6B;
+  --color-ink-subtle: #9A9A9A;
+
+  /* Background Colors */
+  --color-paper: #FAFAF8;
+  --color-surface: #F5F4F0;
+  --color-surface-elevated: #FFFFFF;
+
+  /* Accent - Eater Red */
+  --color-accent: #E63B2E;
+  --color-accent-hover: #CC3428;
+  --color-accent-subtle: #FEF2F1;
+
+  /* Secondary Accent - Gold */
+  --color-gold: #D4A84B;
+  --color-gold-subtle: #FDF8EC;
+
+  /* Semantic Colors */
+  --color-positive: #1D9E6C;
+  --color-positive-subtle: #E8F7F0;
+  --color-negative: #D64545;
+  --color-negative-subtle: #FDEDED;
+  --color-warning: #E5A000;
+  --color-warning-subtle: #FEF7E0;
+
+  /* Borders */
+  --color-border: #E8E7E3;
+  --color-border-strong: #D4D3CF;
+
+  /* Legacy tokens for compatibility */
+  --background: var(--color-paper);
+  --foreground: var(--color-ink);
+  --card: var(--color-surface-elevated);
+  --card-foreground: var(--color-ink);
+  --popover: var(--color-surface-elevated);
+  --popover-foreground: var(--color-ink);
+  --primary: var(--color-accent);
+  --primary-foreground: #FFFFFF;
+  --secondary: var(--color-surface);
+  --secondary-foreground: var(--color-ink);
+  --muted: var(--color-surface);
+  --muted-foreground: var(--color-ink-muted);
+  --accent: var(--color-surface);
+  --accent-foreground: var(--color-ink);
+  --destructive: var(--color-negative);
+  --border: var(--color-border);
+  --input: var(--color-surface);
+  --ring: var(--color-accent);
+
+  /* Chart Colors */
+  --chart-1: var(--color-accent);
+  --chart-2: var(--color-positive);
+  --chart-3: var(--color-gold);
+  --chart-4: #4A7B9D;
+  --chart-5: #8B5A8B;
+
+  /* Sidebar (legacy) */
+  --sidebar: var(--color-surface);
+  --sidebar-foreground: var(--color-ink);
+  --sidebar-primary: var(--color-accent);
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: var(--color-surface);
+  --sidebar-accent-foreground: var(--color-ink);
+  --sidebar-border: var(--color-border);
+  --sidebar-ring: var(--color-accent);
+}
+
+/* Dark Mode */
+[data-theme="dark"], .dark {
+  --color-ink: #F5F4F0;
+  --color-ink-muted: #A0A0A0;
+  --color-ink-subtle: #6B6B6B;
+
+  --color-paper: #0D0D0D;
+  --color-surface: #1A1A1A;
+  --color-surface-elevated: #252525;
+
+  --color-accent: #FF5A4D;
+  --color-accent-hover: #FF7166;
+  --color-accent-subtle: #2A1A18;
+
+  --color-gold: #E5B85C;
+  --color-gold-subtle: #2A2518;
+
+  --color-positive: #2DB87D;
+  --color-positive-subtle: #1A2A22;
+  --color-negative: #E65555;
+  --color-negative-subtle: #2A1A1A;
+
+  --color-border: #2A2A2A;
+  --color-border-strong: #3A3A3A;
+
+  /* Legacy tokens */
+  --background: var(--color-paper);
+  --foreground: var(--color-ink);
+  --card: var(--color-surface);
+  --card-foreground: var(--color-ink);
+  --popover: var(--color-surface);
+  --popover-foreground: var(--color-ink);
+  --primary: var(--color-accent);
+  --primary-foreground: #0D0D0D;
+  --secondary: var(--color-surface);
+  --secondary-foreground: var(--color-ink);
+  --muted: var(--color-surface);
+  --muted-foreground: var(--color-ink-muted);
+  --accent: var(--color-surface);
+  --accent-foreground: var(--color-ink);
+  --destructive: var(--color-negative);
+  --border: var(--color-border);
+  --input: var(--color-surface);
+  --ring: var(--color-accent);
+
+  --sidebar: var(--color-surface);
+  --sidebar-foreground: var(--color-ink);
+  --sidebar-primary: var(--color-accent);
+  --sidebar-primary-foreground: #0D0D0D;
+  --sidebar-accent: var(--color-surface-elevated);
+  --sidebar-accent-foreground: var(--color-ink);
+  --sidebar-border: var(--color-border);
+  --sidebar-ring: var(--color-accent);
+}
+
+/* Tailwind theme integration */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-hebrew);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-body);
+  --font-mono: var(--font-mono);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -44,603 +237,477 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
-  --radius-2xl: calc(var(--radius) + 8px);
-  --radius-3xl: calc(var(--radius) + 12px);
-  --radius-4xl: calc(var(--radius) + 16px);
 }
 
-:root {
-  /* ============================================
-     TYPOGRAPHY SYSTEM - Editorial Hebrew Design
-     ============================================ */
-  --font-display: "Frank Ruhl Libre", "Noto Serif Hebrew", Georgia, serif;
-  --font-body: "Rubik", "Assistant", system-ui, sans-serif;
-  --font-hebrew: "Rubik", "Assistant", system-ui, sans-serif;
-
-  /* Radius System - Slightly larger for softer feel */
-  --radius: 0.875rem;
-
-  /* ============================================
-     COLOR SYSTEM - Warm Editorial Palette
-     ============================================ */
-
-  /* Backgrounds - Warm cream with subtle warmth */
-  --background: oklch(0.985 0.008 55);        /* Warmer cream */
-  --foreground: oklch(0.12 0.03 45);          /* Deep warm brown */
-  --card: oklch(1 0 0);                       /* Pure white cards */
-  --card-foreground: oklch(0.12 0.03 45);     /* Deep brown text */
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.12 0.03 45);
-
-  /* Surface variations for depth */
-  --surface-elevated: oklch(1 0 0);
-  --surface-warm: oklch(0.97 0.015 55);
-  --surface-cool: oklch(0.97 0.01 220);
-
-  /* Visual-First Primary Colors */
-  --visual-primary: oklch(0.55 0.22 35);      /* Burnt sienna - earthy, sophisticated */
-  --visual-secondary: oklch(0.72 0.16 75);    /* Golden honey */
-  --visual-accent: oklch(0.65 0.18 145);      /* Fresh sage green */
-  --visual-dark: oklch(0.15 0.04 45);         /* Deep espresso */
-
-  /* Image Overlays - More cinematic */
-  --overlay-dark: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 50%, transparent 100%);
-  --overlay-warm: linear-gradient(135deg, rgba(180,90,70,0.7), rgba(220,160,60,0.5));
-  --overlay-cool: linear-gradient(135deg, rgba(70,100,140,0.6), rgba(100,80,150,0.5));
-
-  /* Primary Colors - Burnt Sienna (sophisticated, appetizing) */
-  --primary: oklch(0.55 0.22 35);             /* Burnt sienna */
-  --primary-hover: oklch(0.5 0.24 35);        /* Darker on hover */
-  --primary-foreground: oklch(0.98 0.005 55); /* Warm white */
-
-  /* Accent Pop - For CTAs that need to stand out */
-  --accent-pop: oklch(0.65 0.2 145);          /* Vibrant sage */
-  --accent-pop-foreground: oklch(0.98 0.005 55);
-
-  /* Secondary Colors - Warm neutrals */
-  --secondary: oklch(0.95 0.015 55);          /* Warm off-white */
-  --secondary-foreground: oklch(0.2 0.03 45); /* Dark brown */
-
-  /* Muted Colors - Subtle warmth */
-  --muted: oklch(0.93 0.012 55);              /* Subtle warm gray */
-  --muted-foreground: oklch(0.45 0.02 45);    /* Medium brown */
-
-  /* Accent Colors */
-  --accent: oklch(0.91 0.018 55);             /* Warm accent bg */
-  --accent-foreground: oklch(0.2 0.03 45);    /* Dark text */
-
-  /* Semantic Colors - Richer, more refined */
-  --destructive: oklch(0.55 0.2 25);          /* Deep terracotta red */
-  --success: oklch(0.55 0.16 145);            /* Sage green */
-  --warning: oklch(0.68 0.16 70);             /* Warm amber */
-  --info: oklch(0.55 0.12 240);               /* Muted blue */
-
-  /* UI Elements */
-  --border: oklch(0.88 0.015 55);             /* Warm border */
-  --input: oklch(0.96 0.01 55);               /* Input background */
-  --ring: oklch(0.55 0.22 35);                /* Focus ring (primary) */
-
-  /* Charts - Harmonious palette */
-  --chart-1: oklch(0.55 0.22 35);             /* Burnt sienna */
-  --chart-2: oklch(0.55 0.16 145);            /* Sage green */
-  --chart-3: oklch(0.68 0.16 70);             /* Warm amber */
-  --chart-4: oklch(0.55 0.12 240);            /* Muted blue */
-  --chart-5: oklch(0.6 0.18 320);             /* Dusty rose */
-
-  /* Sidebar */
-  --sidebar: oklch(0.97 0.012 55);
-  --sidebar-foreground: oklch(0.12 0.03 45);
-  --sidebar-primary: oklch(0.55 0.22 35);
-  --sidebar-primary-foreground: oklch(0.98 0.005 55);
-  --sidebar-accent: oklch(0.93 0.012 55);
-  --sidebar-accent-foreground: oklch(0.2 0.03 45);
-  --sidebar-border: oklch(0.88 0.015 55);
-  --sidebar-ring: oklch(0.55 0.22 35);
-}
-
-.dark {
-  /* ============================================
-     DARK THEME - Warm, cozy evening ambiance
-     ============================================ */
-  --background: oklch(0.1 0.02 45);           /* Deep espresso */
-  --foreground: oklch(0.94 0.012 55);         /* Warm cream text */
-  --card: oklch(0.15 0.025 45);               /* Rich dark cards */
-  --card-foreground: oklch(0.94 0.012 55);    /* Cream text */
-  --popover: oklch(0.15 0.025 45);
-  --popover-foreground: oklch(0.94 0.012 55);
-
-  /* Surface variations */
-  --surface-elevated: oklch(0.18 0.025 45);
-  --surface-warm: oklch(0.12 0.02 45);
-  --surface-cool: oklch(0.12 0.015 240);
-
-  /* Primary in dark mode - warmer, glowing */
-  --primary: oklch(0.62 0.22 40);             /* Warm terracotta glow */
-  --primary-hover: oklch(0.58 0.24 40);
-  --primary-foreground: oklch(0.08 0.02 45);  /* Deep dark text */
-
-  /* Accent pop */
-  --accent-pop: oklch(0.68 0.18 145);         /* Brighter sage */
-  --accent-pop-foreground: oklch(0.08 0.02 45);
-
-  /* Secondary Colors */
-  --secondary: oklch(0.2 0.025 45);           /* Dark warm tone */
-  --secondary-foreground: oklch(0.9 0.01 55); /* Light warm text */
-
-  /* Muted Colors */
-  --muted: oklch(0.18 0.02 45);               /* Muted dark bg */
-  --muted-foreground: oklch(0.6 0.015 55);    /* Medium cream */
-
-  /* Accent Colors */
-  --accent: oklch(0.22 0.025 45);             /* Subtle dark accent */
-  --accent-foreground: oklch(0.9 0.01 55);    /* Light text */
-
-  /* Semantic Colors (brighter for dark mode visibility) */
-  --destructive: oklch(0.6 0.2 25);           /* Glowing terracotta */
-  --success: oklch(0.62 0.16 145);            /* Bright sage */
-  --warning: oklch(0.72 0.16 70);             /* Golden amber */
-  --info: oklch(0.6 0.12 240);                /* Soft blue */
-
-  /* UI Elements */
-  --border: oklch(0.25 0.02 45);              /* Warm dark border */
-  --input: oklch(0.18 0.02 45);               /* Dark input bg */
-  --ring: oklch(0.62 0.22 40);                /* Warm glow ring */
-
-  /* Charts - Vibrant for dark bg */
-  --chart-1: oklch(0.62 0.22 40);             /* Warm terracotta */
-  --chart-2: oklch(0.62 0.16 145);            /* Bright sage */
-  --chart-3: oklch(0.72 0.16 70);             /* Golden amber */
-  --chart-4: oklch(0.6 0.12 240);             /* Soft blue */
-  --chart-5: oklch(0.65 0.18 320);            /* Dusty rose */
-
-  /* Sidebar */
-  --sidebar: oklch(0.12 0.02 45);
-  --sidebar-foreground: oklch(0.94 0.012 55);
-  --sidebar-primary: oklch(0.62 0.22 40);
-  --sidebar-primary-foreground: oklch(0.08 0.02 45);
-  --sidebar-accent: oklch(0.2 0.025 45);
-  --sidebar-accent-foreground: oklch(0.9 0.01 55);
-  --sidebar-border: oklch(0.25 0.02 45);
-  --sidebar-ring: oklch(0.62 0.22 40);
-}
+/* ============================================
+   BASE STYLES
+   ============================================ */
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    @apply border-border;
   }
 
-  body {
-    @apply bg-background text-foreground;
+  html {
     font-family: var(--font-body);
-    direction: rtl; /* RTL for Hebrew */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
-  /* RTL-specific overrides */
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    font-size: var(--text-body-md);
+    line-height: var(--leading-normal);
+    direction: rtl;
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+
   [dir="ltr"] {
     direction: ltr;
   }
 
-  /* ============================================
-     TYPOGRAPHY - Editorial Hebrew Design
-     ============================================ */
-
-  /* Display headlines - Frank Ruhl Libre */
-  h1, h2 {
+  /* Typography */
+  h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-display);
-    font-weight: 900;
-    line-height: 1.1;
-    letter-spacing: -0.03em;
-    color: var(--foreground);
-  }
-
-  /* Section headers - Rubik bold */
-  h3, h4, h5, h6 {
-    font-family: var(--font-body);
-    font-weight: 700;
-    line-height: 1.25;
-    letter-spacing: -0.015em;
-    color: var(--foreground);
+    color: var(--color-ink);
+    line-height: var(--leading-tight);
+    letter-spacing: -0.02em;
   }
 
   h1 {
-    font-size: clamp(2.75rem, 6vw, 4.5rem);
-    margin-bottom: 1.25rem;
+    font-size: var(--text-display-xl);
+    font-weight: 900;
   }
 
   h2 {
-    font-size: clamp(2rem, 4.5vw, 3.25rem);
-    margin-bottom: 1rem;
+    font-size: var(--text-display-lg);
+    font-weight: 800;
   }
 
   h3 {
-    font-size: clamp(1.5rem, 3vw, 2rem);
-    margin-bottom: 0.875rem;
+    font-size: var(--text-display-md);
+    font-weight: 700;
   }
 
   h4 {
-    font-size: clamp(1.25rem, 2.5vw, 1.5rem);
-    margin-bottom: 0.75rem;
+    font-size: var(--text-body-lg);
+    font-weight: 700;
   }
 
   p {
-    font-family: var(--font-body);
-    line-height: 1.7;
-    margin-bottom: 1rem;
-    color: var(--muted-foreground);
+    color: var(--color-ink-muted);
+    line-height: var(--leading-relaxed);
   }
 
-  /* Display text utility - for hero headlines */
-  .font-display {
-    font-family: var(--font-display) !important;
-  }
-
-  /* Text hierarchy utilities */
-  .text-large {
-    font-size: 1.125rem;
-    line-height: 1.6;
-  }
-
-  .text-small {
-    font-size: 0.875rem;
-    line-height: 1.5;
-  }
-
-  .text-caption {
-    font-size: 0.75rem;
-    line-height: 1.4;
-    letter-spacing: 0.02em;
-    text-transform: uppercase;
-    font-weight: 600;
-    color: var(--muted-foreground);
-  }
-
-  /* Rich text styling */
-  .prose {
-    font-family: var(--font-body);
-    line-height: 1.75;
-  }
-
-  .prose h1, .prose h2, .prose h3 {
-    font-family: var(--font-display);
-  }
-
-  /* Enhanced smooth transitions */
-  * {
-    transition: background-color 200ms ease,
-                border-color 200ms ease,
-                color 200ms ease,
-                transform 200ms cubic-bezier(0.16, 1, 0.3, 1),
-                box-shadow 200ms ease,
-                opacity 200ms ease;
-  }
-
-  /* Disable transitions for reduced motion preference */
-  @media (prefers-reduced-motion: reduce) {
-    * {
-      transition: none !important;
-      animation: none !important;
-    }
-  }
-
-  /* Better spacing system */
-  .space-y-relaxed > * + * {
-    margin-top: 2rem;
-  }
-
-  .space-y-comfortable > * + * {
-    margin-top: 1.5rem;
-  }
-  
-  /* Mobile-first responsive utilities */
-  @media (max-width: 640px) {
-    .container {
-      padding-left: 1rem;
-      padding-right: 1rem;
-    }
-    
-    /* Adjust hero section for mobile */
-    .hero-stats {
-      grid-template-columns: 1fr;
-      gap: 1rem;
-    }
-    
-    /* Stack cards on mobile */
-    .restaurant-card-header {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 1rem;
-    }
-    
-    /* Mobile-friendly contact info */
-    .contact-grid {
-      grid-template-columns: 1fr;
-    }
-    
-    /* Adjust tab sizes for mobile */
-    .opinion-tabs {
-      grid-template-columns: repeat(2, 1fr);
-      gap: 0.5rem;
-    }
-    
-    .opinion-tabs > * {
-      font-size: 0.875rem;
-      padding: 0.75rem 0.5rem;
-    }
-  }
-  
-  @media (max-width: 480px) {
-    /* Extra small mobile adjustments */
-    h1 {
-      font-size: 2rem;
-    }
-    
-    .hero-padding {
-      padding: 2rem 1rem;
-    }
-    
-    /* Smaller filter buttons on mobile */
-    .filter-badge {
-      font-size: 0.75rem;
-      padding: 0.5rem 0.75rem;
-    }
-  }
-  
-  /* Touch-friendly improvements */
-  @media (pointer: coarse) {
-    /* Larger touch targets */
-    button, .clickable {
-      min-height: 44px;
-      min-width: 44px;
-    }
-    
-    /* Better spacing for touch */
-    .touch-friendly {
-      padding: 1rem;
-    }
-  }
-  
-  /* Focus indicators for accessibility */
+  /* Focus states */
   *:focus-visible {
-    outline: 2px solid hsl(var(--ring));
+    outline: 2px solid var(--color-accent);
     outline-offset: 2px;
   }
-  
-  /* Improved scrollbar styling */
-  ::-webkit-scrollbar {
-    width: 6px;
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
   }
-  
-  ::-webkit-scrollbar-track {
-    background: hsl(var(--muted));
+
+  /* Mobile container padding */
+  @media (max-width: 640px) {
+    .container {
+      padding-left: var(--space-4);
+      padding-right: var(--space-4);
+    }
   }
-  
-  ::-webkit-scrollbar-thumb {
-    background: hsl(var(--muted-foreground));
-    border-radius: 3px;
-  }
-  
-  ::-webkit-scrollbar-thumb:hover {
-    background: hsl(var(--primary));
+
+  /* Touch-friendly targets */
+  @media (pointer: coarse) {
+    button, a, [role="button"] {
+      min-height: 44px;
+    }
   }
 }
 
 /* ============================================
-   VISUAL-FIRST DESIGN UTILITIES
+   COMPONENT STYLES
    ============================================ */
-@layer utilities {
 
-  /* ============================================
-     BACKGROUND TEXTURES & DEPTH
-     ============================================ */
-
-  /* Textured background with subtle grain */
-  .bg-textured {
-    position: relative;
-    background: linear-gradient(135deg, var(--surface-warm) 0%, var(--background) 50%, var(--surface-cool) 100%);
-  }
-
-  .bg-textured::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-    opacity: 0.03;
-    pointer-events: none;
-    mix-blend-mode: overlay;
-  }
-
-  /* Mesh gradient background - dramatic hero style */
-  .bg-mesh-warm {
-    background:
-      radial-gradient(ellipse 80% 50% at 20% 40%, oklch(0.6 0.22 35 / 0.4), transparent),
-      radial-gradient(ellipse 60% 60% at 80% 20%, oklch(0.72 0.16 75 / 0.3), transparent),
-      radial-gradient(ellipse 50% 80% at 60% 80%, oklch(0.55 0.2 25 / 0.25), transparent),
-      linear-gradient(135deg, oklch(0.55 0.22 35) 0%, oklch(0.65 0.18 50) 50%, oklch(0.72 0.16 75) 100%);
-  }
-
-  .bg-mesh-cool {
-    background:
-      radial-gradient(ellipse 70% 60% at 30% 30%, oklch(0.55 0.12 240 / 0.4), transparent),
-      radial-gradient(ellipse 50% 70% at 70% 60%, oklch(0.6 0.18 320 / 0.3), transparent),
-      radial-gradient(ellipse 60% 50% at 50% 90%, oklch(0.65 0.16 145 / 0.2), transparent),
-      linear-gradient(135deg, oklch(0.45 0.1 240) 0%, oklch(0.5 0.15 280) 100%);
-  }
-
-  /* Paper texture effect */
-  .paper-texture::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: repeating-linear-gradient(
-      45deg,
-      transparent,
-      transparent 2px,
-      rgba(0,0,0,0.008) 2px,
-      rgba(0,0,0,0.008) 4px
-    );
-    pointer-events: none;
-  }
-
-  /* Grain overlay for images */
-  .grain-overlay::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-    opacity: 0.15;
-    mix-blend-mode: overlay;
-    pointer-events: none;
-  }
-
-  /* ============================================
-     MASONRY GRID
-     ============================================ */
-  .masonry-grid {
+@layer components {
+  /* Bottom Navigation */
+  .bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 64px;
+    padding-bottom: env(safe-area-inset-bottom);
+    background: var(--color-surface-elevated);
+    border-top: 1px solid var(--color-border);
     display: flex;
-    width: 100%;
+    justify-content: space-around;
+    align-items: center;
+    z-index: var(--z-fixed);
   }
 
-  .masonry-column {
-    background-clip: padding-box;
+  .bottom-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-1);
+    padding: var(--space-2);
+    min-width: 64px;
+    color: var(--color-ink-muted);
+    text-decoration: none;
+    font-size: var(--text-body-xs);
+    font-weight: 500;
+    transition: color 150ms var(--ease-out);
   }
 
-  /* ============================================
-     IMAGE OVERLAYS - Cinematic
-     ============================================ */
-  .image-overlay-dark {
-    background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 40%, rgba(0,0,0,0.1) 70%, transparent 100%);
+  .bottom-nav-item.active {
+    color: var(--color-accent);
   }
 
-  .image-overlay-warm {
-    background: linear-gradient(135deg, rgba(180,90,70,0.65), rgba(220,160,60,0.45));
+  .bottom-nav-item:hover {
+    color: var(--color-ink);
   }
 
-  .image-overlay-cool {
-    background: linear-gradient(135deg, rgba(70,100,140,0.55), rgba(100,80,150,0.45));
+  /* Header */
+  .header {
+    position: sticky;
+    top: 0;
+    height: 56px;
+    padding-inline: var(--space-4);
+    background: var(--color-paper);
+    border-bottom: 1px solid var(--color-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: var(--z-sticky);
   }
 
-  .image-overlay-vignette {
-    background: radial-gradient(ellipse at center, transparent 0%, rgba(0,0,0,0.4) 100%);
-  }
-
-  /* ============================================
-     TYPOGRAPHY FOR IMAGES
-     ============================================ */
-  .image-headline {
+  .header-title {
     font-family: var(--font-display);
-    font-size: clamp(1.75rem, 5vw, 3rem);
-    font-weight: 900;
-    line-height: 1.05;
-    text-shadow: 0 2px 12px rgba(0,0,0,0.4), 0 4px 24px rgba(0,0,0,0.2);
-    letter-spacing: -0.03em;
+    font-size: var(--text-body-lg);
+    font-weight: 800;
+    color: var(--color-ink);
   }
 
-  .card-title-large {
-    font-family: var(--font-display);
-    font-size: clamp(1.25rem, 3vw, 1.875rem);
-    font-weight: 700;
-    line-height: 1.15;
-    letter-spacing: -0.02em;
-  }
-
-  .card-title-medium {
-    font-family: var(--font-body);
-    font-size: clamp(1rem, 2vw, 1.25rem);
-    font-weight: 600;
-    line-height: 1.25;
-    letter-spacing: -0.01em;
-  }
-
-  /* ============================================
-     ASPECT RATIOS
-     ============================================ */
-  .aspect-square { aspect-ratio: 1 / 1; }
-  .aspect-portrait { aspect-ratio: 3 / 4; }
-  .aspect-landscape { aspect-ratio: 4 / 3; }
-  .aspect-wide { aspect-ratio: 16 / 9; }
-  .aspect-ultrawide { aspect-ratio: 21 / 9; }
-
-  /* ============================================
-     CARD HIERARCHY SYSTEM
-     ============================================ */
-
-  /* Featured card - bold, dramatic */
-  .card-featured {
-    border: none;
-    border-radius: 1.25rem;
-    box-shadow:
-      0 4px 6px -1px rgba(0,0,0,0.08),
-      0 20px 40px -10px rgba(0,0,0,0.15),
-      0 40px 80px -20px rgba(0,0,0,0.1);
-    overflow: hidden;
-  }
-
-  .card-featured::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.5);
-    pointer-events: none;
-  }
-
-  /* Standard card - refined, subtle */
-  .card-standard {
-    border: 1px solid var(--border);
-    border-radius: 1rem;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.03);
-    overflow: hidden;
-  }
-
-  /* Interactive card - responds to hover */
-  .card-interactive {
-    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  /* Filter Chip */
+  .filter-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
+    font-size: var(--text-body-sm);
+    font-weight: 500;
+    color: var(--color-ink);
     cursor: pointer;
+    transition: all 150ms var(--ease-out);
+    white-space: nowrap;
   }
 
-  .card-interactive:hover {
-    transform: translateY(-6px) rotate(-0.3deg);
-    box-shadow:
-      0 8px 16px -4px rgba(0,0,0,0.1),
-      0 24px 48px -12px rgba(0,0,0,0.15),
-      0 0 0 1px rgba(0,0,0,0.03);
+  .filter-chip:hover {
+    border-color: var(--color-border-strong);
   }
 
-  .card-interactive:active {
-    transform: translateY(-2px) rotate(0deg);
-    transition-duration: 0.1s;
+  .filter-chip.active {
+    background: var(--color-ink);
+    border-color: var(--color-ink);
+    color: var(--color-paper);
   }
 
-  /* Glass card - frosted effect */
-  .card-glass {
-    background: rgba(255,255,255,0.7);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255,255,255,0.3);
-    border-radius: 1rem;
+  .filter-chip.selected {
+    background: var(--color-accent-subtle);
+    border-color: var(--color-accent);
+    color: var(--color-accent);
   }
 
-  .dark .card-glass {
-    background: rgba(30,25,20,0.7);
-    border-color: rgba(255,255,255,0.1);
+  /* Filter Bar */
+  .filter-bar {
+    display: flex;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-4);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
   }
 
-  /* ============================================
-     ANIMATION SYSTEM
-     ============================================ */
-
-  /* Keyframes */
-  @keyframes shimmer {
-    0% { background-position: -1000px 0; }
-    100% { background-position: 1000px 0; }
+  .filter-bar::-webkit-scrollbar {
+    display: none;
   }
 
-  @keyframes reveal-up {
+  /* Episode Badge */
+  .episode-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+    background: var(--color-gold);
+    color: #1A1A1A;
+    border-radius: var(--radius-sm);
+    font-size: var(--text-body-xs);
+    font-weight: 600;
+  }
+
+  /* Distance Badge */
+  .distance-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-1) var(--space-2);
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    border-radius: var(--radius-sm);
+    font-size: var(--text-body-xs);
+    font-weight: 500;
+    backdrop-filter: blur(4px);
+  }
+
+  /* Restaurant Card */
+  .restaurant-card {
+    background: var(--color-surface-elevated);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    transition: all 300ms var(--ease-out);
+  }
+
+  .restaurant-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.1);
+  }
+
+  .restaurant-card-image {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    background: var(--color-surface);
+    overflow: hidden;
+  }
+
+  .restaurant-card-content {
+    padding: var(--space-4);
+  }
+
+  .restaurant-card-title {
+    font-family: var(--font-display);
+    font-size: var(--text-display-md);
+    font-weight: 700;
+    color: var(--color-ink);
+    line-height: var(--leading-tight);
+    margin-bottom: var(--space-2);
+  }
+
+  .restaurant-card-meta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--text-body-sm);
+    color: var(--color-ink-muted);
+  }
+
+  .restaurant-card-meta-separator {
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: var(--color-ink-subtle);
+  }
+
+  .restaurant-card-quote {
+    margin-top: var(--space-3);
+    padding: var(--space-3);
+    background: var(--color-surface);
+    border-radius: var(--radius-md);
+    font-size: var(--text-body-sm);
+    font-style: italic;
+    color: var(--color-ink-muted);
+  }
+
+  .restaurant-card-actions {
+    display: flex;
+    gap: var(--space-2);
+    margin-top: var(--space-4);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--color-border);
+  }
+
+  /* Typography Card (no image fallback) */
+  .typography-card-bg {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-display);
+    font-size: var(--text-display-lg);
+    font-weight: 300;
+    color: rgba(255, 255, 255, 0.9);
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  /* Bottom Sheet */
+  .bottom-sheet-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: var(--z-modal-backdrop);
+  }
+
+  .bottom-sheet {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--color-surface-elevated);
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    padding: var(--space-4);
+    padding-bottom: calc(var(--space-4) + env(safe-area-inset-bottom));
+    max-height: 85vh;
+    overflow-y: auto;
+    z-index: var(--z-modal);
+  }
+
+  .bottom-sheet-handle {
+    width: 36px;
+    height: 4px;
+    background: var(--color-border-strong);
+    border-radius: var(--radius-full);
+    margin: 0 auto var(--space-4);
+  }
+
+  /* Section Header */
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-4);
+  }
+
+  .section-title {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-family: var(--font-display);
+    font-size: var(--text-body-lg);
+    font-weight: 700;
+    color: var(--color-ink);
+  }
+
+  .section-action {
+    font-size: var(--text-body-sm);
+    font-weight: 500;
+    color: var(--color-accent);
+    text-decoration: none;
+  }
+
+  /* Trending Card (compact) */
+  .trending-card {
+    width: 140px;
+    flex-shrink: 0;
+  }
+
+  .trending-card-image {
+    position: relative;
+    aspect-ratio: 1;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    background: var(--color-surface);
+  }
+
+  .trending-card-rank {
+    position: absolute;
+    bottom: var(--space-2);
+    right: var(--space-2);
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-accent);
+    color: white;
+    border-radius: var(--radius-sm);
+    font-size: var(--text-body-sm);
+    font-weight: 700;
+  }
+
+  .trending-card-title {
+    margin-top: var(--space-2);
+    font-size: var(--text-body-sm);
+    font-weight: 600;
+    color: var(--color-ink);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .trending-card-meta {
+    font-size: var(--text-body-xs);
+    color: var(--color-ink-muted);
+  }
+
+  /* Page Layout */
+  .page-container {
+    min-height: 100vh;
+    min-height: 100dvh;
+    padding-bottom: calc(64px + env(safe-area-inset-bottom));
+  }
+
+  .page-content {
+    max-width: 640px;
+    margin: 0 auto;
+  }
+
+  @media (min-width: 1024px) {
+    .page-content {
+      max-width: 1200px;
+    }
+
+    .page-container {
+      padding-bottom: 0;
+    }
+  }
+}
+
+/* ============================================
+   UTILITY CLASSES
+   ============================================ */
+
+@layer utilities {
+  /* Cuisine Gradients */
+  .gradient-hummus { background: linear-gradient(135deg, #E8D5B7 0%, #C4A77D 100%); }
+  .gradient-shawarma { background: linear-gradient(135deg, #D4956A 0%, #A66B4A 100%); }
+  .gradient-asian { background: linear-gradient(135deg, #2D5A4A 0%, #1A3D32 100%); }
+  .gradient-italian { background: linear-gradient(135deg, #C75146 0%, #8B3A33 100%); }
+  .gradient-fish { background: linear-gradient(135deg, #4A7B9D 0%, #2D5A73 100%); }
+  .gradient-meat { background: linear-gradient(135deg, #6B3A3A 0%, #4A2828 100%); }
+  .gradient-dessert { background: linear-gradient(135deg, #D4A5B9 0%, #A67A8E 100%); }
+  .gradient-default { background: linear-gradient(135deg, #6B6B6B 0%, #4A4A4A 100%); }
+
+  /* Opinion Accent Bars */
+  .accent-bar-positive { background: linear-gradient(90deg, var(--color-positive), #2DB87D); }
+  .accent-bar-negative { background: linear-gradient(90deg, var(--color-negative), #E65555); }
+  .accent-bar-mixed { background: linear-gradient(90deg, var(--color-warning), #F0B800); }
+  .accent-bar-neutral { background: linear-gradient(90deg, var(--color-ink-muted), #8A8A8A); }
+
+  /* Image Overlays */
+  .overlay-dark {
+    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 50%, transparent 100%);
+  }
+
+  .overlay-vignette {
+    background: radial-gradient(ellipse at center, transparent 0%, rgba(0,0,0,0.3) 100%);
+  }
+
+  /* Animations */
+  @keyframes fade-up {
     from {
       opacity: 0;
-      transform: translateY(24px);
+      transform: translateY(20px);
     }
     to {
       opacity: 1;
@@ -648,7 +715,12 @@
     }
   }
 
-  @keyframes reveal-scale {
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes scale-in {
     from {
       opacity: 0;
       transform: scale(0.95);
@@ -659,134 +731,117 @@
     }
   }
 
-  @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
+  @keyframes slide-up {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
   }
 
-  @keyframes pulse-soft {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.7; }
+  @keyframes shimmer {
+    0% { background-position: -1000px 0; }
+    100% { background-position: 1000px 0; }
   }
 
-  @keyframes gradient-shift {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
+  .animate-fade-up {
+    animation: fade-up 300ms var(--ease-out) forwards;
   }
 
-  /* Shimmer loading */
+  .animate-fade-in {
+    animation: fade-in 200ms var(--ease-out) forwards;
+  }
+
+  .animate-scale-in {
+    animation: scale-in 200ms var(--ease-out) forwards;
+  }
+
+  .animate-slide-up {
+    animation: slide-up 300ms var(--spring) forwards;
+  }
+
+  /* Staggered animation delays */
+  .stagger-1 { animation-delay: 0ms; }
+  .stagger-2 { animation-delay: 50ms; }
+  .stagger-3 { animation-delay: 100ms; }
+  .stagger-4 { animation-delay: 150ms; }
+  .stagger-5 { animation-delay: 200ms; }
+  .stagger-6 { animation-delay: 250ms; }
+  .stagger-7 { animation-delay: 300ms; }
+  .stagger-8 { animation-delay: 350ms; }
+
+  /* Loading shimmer */
   .shimmer {
     animation: shimmer 2s infinite linear;
     background: linear-gradient(
       to right,
-      var(--muted) 0%,
-      var(--background) 20%,
-      var(--muted) 40%,
-      var(--muted) 100%
+      var(--color-surface) 0%,
+      var(--color-surface-elevated) 20%,
+      var(--color-surface) 40%,
+      var(--color-surface) 100%
     );
     background-size: 1000px 100%;
   }
 
-  /* Staggered reveal - apply to parent */
-  .stagger-reveal > * {
-    opacity: 0;
-    animation: reveal-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  /* Hide scrollbar */
+  .scrollbar-hide {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
   }
 
-  .stagger-reveal > *:nth-child(1) { animation-delay: 0ms; }
-  .stagger-reveal > *:nth-child(2) { animation-delay: 80ms; }
-  .stagger-reveal > *:nth-child(3) { animation-delay: 160ms; }
-  .stagger-reveal > *:nth-child(4) { animation-delay: 240ms; }
-  .stagger-reveal > *:nth-child(5) { animation-delay: 320ms; }
-  .stagger-reveal > *:nth-child(6) { animation-delay: 400ms; }
-  .stagger-reveal > *:nth-child(7) { animation-delay: 480ms; }
-  .stagger-reveal > *:nth-child(8) { animation-delay: 560ms; }
-
-  /* Single reveal animations */
-  .animate-reveal-up {
-    animation: reveal-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
   }
 
-  .animate-reveal-scale {
-    animation: reveal-scale 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  /* Safe area padding */
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
   }
 
-  .animate-float {
-    animation: float 6s ease-in-out infinite;
+  .pt-safe {
+    padding-top: env(safe-area-inset-top);
   }
 
-  .animate-float-delayed {
-    animation: float 8s ease-in-out infinite;
-    animation-delay: -4s;
+  /* Touch action */
+  .touch-pan-y {
+    touch-action: pan-y;
   }
 
-  .animate-gradient {
-    background-size: 200% 200%;
-    animation: gradient-shift 8s ease infinite;
+  /* Text utilities */
+  .text-balance {
+    text-wrap: balance;
   }
 
-  /* Visual Card Hover - enhanced */
-  .visual-card-hover {
-    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 
-  .visual-card-hover:hover {
-    transform: translateY(-8px) scale(1.01);
-    box-shadow:
-      0 16px 32px -8px rgba(0,0,0,0.12),
-      0 32px 64px -16px rgba(0,0,0,0.1);
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
+}
 
-  /* ============================================
-     DECORATIVE ELEMENTS
-     ============================================ */
+/* ============================================
+   SCROLLBAR STYLING
+   ============================================ */
 
-  /* Accent bar - colorful top border */
-  .accent-bar-positive {
-    background: linear-gradient(90deg, oklch(0.55 0.16 145), oklch(0.65 0.18 145));
-  }
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
 
-  .accent-bar-negative {
-    background: linear-gradient(90deg, oklch(0.55 0.2 25), oklch(0.6 0.18 25));
-  }
+::-webkit-scrollbar-track {
+  background: var(--color-surface);
+}
 
-  .accent-bar-mixed {
-    background: linear-gradient(90deg, oklch(0.68 0.16 70), oklch(0.72 0.14 75));
-  }
+::-webkit-scrollbar-thumb {
+  background: var(--color-border-strong);
+  border-radius: 3px;
+}
 
-  .accent-bar-neutral {
-    background: linear-gradient(90deg, oklch(0.6 0.02 55), oklch(0.65 0.02 55));
-  }
-
-  /* Floating shapes for hero backgrounds */
-  .floating-shape {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(60px);
-    opacity: 0.4;
-    pointer-events: none;
-  }
-
-  /* ============================================
-     SCROLLBAR STYLING
-     ============================================ */
-  ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-  }
-
-  ::-webkit-scrollbar-track {
-    background: var(--muted);
-    border-radius: 4px;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    background: var(--muted-foreground);
-    border-radius: 4px;
-  }
-
-  ::-webkit-scrollbar-thumb:hover {
-    background: var(--primary);
-  }
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-ink-muted);
 }
