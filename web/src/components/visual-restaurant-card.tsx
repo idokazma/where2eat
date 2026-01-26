@@ -134,7 +134,7 @@ export function VisualRestaurantCard({
             <Badge variant="secondary" className="bg-white/20 backdrop-blur-sm text-white border-white/30">
               {restaurant.cuisine_type}
             </Badge>
-            {restaurant.location.city && (
+            {restaurant.location?.city && (
               <Badge variant="secondary" className="bg-white/20 backdrop-blur-sm text-white border-white/30 flex items-center gap-1">
                 <MapPin className="size-3" />
                 {restaurant.location.city}
@@ -167,19 +167,19 @@ export function VisualRestaurantCard({
         {/* Expanded content */}
         {isExpanded && (
           <div className="mt-4 space-y-4">
-            {restaurant.location.address && (
+            {restaurant.location?.address && (
               <div className="flex items-start gap-2">
                 <MapPin className="size-4 mt-0.5 text-muted-foreground flex-shrink-0" />
                 <div className="text-sm">
                   <p>{restaurant.location.address}</p>
-                  {restaurant.location.neighborhood && (
+                  {restaurant.location?.neighborhood && (
                     <p className="text-muted-foreground">{restaurant.location.neighborhood}</p>
                   )}
                 </div>
               </div>
             )}
 
-            {restaurant.menu_items.length > 0 && (
+            {restaurant.menu_items && restaurant.menu_items.length > 0 && (
               <div>
                 <h4 className="font-semibold mb-2 flex items-center gap-2">
                   <Star className="size-4" />
@@ -210,7 +210,7 @@ export function VisualRestaurantCard({
               </div>
             )}
 
-            {restaurant.special_features.length > 0 && (
+            {restaurant.special_features && restaurant.special_features.length > 0 && (
               <div>
                 <h4 className="font-semibold mb-2">תכונות מיוחדות</h4>
                 <div className="flex flex-wrap gap-1">
@@ -226,19 +226,19 @@ export function VisualRestaurantCard({
             <Separator />
 
             <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
-              {restaurant.contact_info.hours && (
+              {restaurant.contact_info?.hours && (
                 <div className="flex items-center gap-1">
                   <Clock className="size-3" />
                   <span>{restaurant.contact_info.hours}</span>
                 </div>
               )}
-              {restaurant.contact_info.phone && (
+              {restaurant.contact_info?.phone && (
                 <div className="flex items-center gap-1">
                   <Phone className="size-3" />
                   <span>{restaurant.contact_info.phone}</span>
                 </div>
               )}
-              {restaurant.contact_info.website && (
+              {restaurant.contact_info?.website && (
                 <div className="flex items-center gap-1">
                   <Globe className="size-3" />
                   <a href={restaurant.contact_info.website} target="_blank" rel="noopener noreferrer" className="hover:underline">
@@ -271,7 +271,7 @@ export function VisualRestaurantCard({
               <button
                 onClick={(e) => {
                   e.stopPropagation()
-                  const query = encodeURIComponent(`${restaurant.name_hebrew} ${restaurant.location.city} restaurant`)
+                  const query = encodeURIComponent(`${restaurant.name_hebrew} ${restaurant.location?.city || ''} restaurant`)
                   window.open(`https://www.google.com/maps/search/?api=1&query=${query}`, '_blank')
                 }}
                 className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-secondary text-secondary-foreground rounded-xl text-sm font-medium hover:bg-secondary/80 transition-all hover:shadow-md active:scale-[0.98]"

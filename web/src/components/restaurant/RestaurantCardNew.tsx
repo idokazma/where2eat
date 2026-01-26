@@ -78,7 +78,7 @@ export function RestaurantCardNew({
   className = '',
   imageUrl,
 }: RestaurantCardNewProps) {
-  const { isFavorite, toggleFavorite } = useFavorites();
+  const { isFavorite, addFavorite, removeFavorite } = useFavorites();
   const [imageError, setImageError] = useState(false);
 
   const hasImage = imageUrl && !imageError;
@@ -87,7 +87,11 @@ export function RestaurantCardNew({
 
   const handleSaveClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    toggleFavorite(restaurantId);
+    if (isSaved) {
+      removeFavorite(restaurantId);
+    } else {
+      addFavorite(restaurantId);
+    }
   };
 
   const handleWatchClick = (e: React.MouseEvent) => {

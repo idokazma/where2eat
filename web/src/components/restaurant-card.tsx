@@ -137,7 +137,7 @@ export function RestaurantCard({ restaurant }: RestaurantCardProps) {
         </div>
 
         <div className="flex flex-wrap items-center gap-2 mt-3">
-          {restaurant.location.city && (
+          {restaurant.location?.city && (
             <Badge variant="secondary" className="flex items-center gap-1.5 text-xs rounded-full px-3">
               <MapPin className="size-3" />
               {restaurant.location.city}
@@ -163,14 +163,14 @@ export function RestaurantCard({ restaurant }: RestaurantCardProps) {
       {isExpanded && (
         <CardContent className="space-y-5 pt-0 animate-reveal-up" style={{ animationDuration: '0.3s' }}>
           {/* Address Section */}
-          {restaurant.location.address && (
+          {restaurant.location?.address && (
             <div className="flex items-start gap-3 p-3 bg-muted/30 rounded-xl">
               <div className="p-2 bg-primary/10 rounded-lg">
                 <MapPin className="size-4 text-primary" />
               </div>
               <div className="text-sm">
                 <p className="font-medium">{restaurant.location.address}</p>
-                {restaurant.location.neighborhood && (
+                {restaurant.location?.neighborhood && (
                   <p className="text-muted-foreground text-xs mt-0.5">{restaurant.location.neighborhood}</p>
                 )}
               </div>
@@ -178,7 +178,7 @@ export function RestaurantCard({ restaurant }: RestaurantCardProps) {
           )}
 
           {/* Menu Items Section */}
-          {restaurant.menu_items.length > 0 && (
+          {restaurant.menu_items && restaurant.menu_items.length > 0 && (
             <div>
               <h4 className="font-semibold mb-3 flex items-center gap-2 text-sm">
                 <Star className="size-4 text-amber-500" />
@@ -210,7 +210,7 @@ export function RestaurantCard({ restaurant }: RestaurantCardProps) {
           )}
 
           {/* Special Features */}
-          {restaurant.special_features.length > 0 && (
+          {restaurant.special_features && restaurant.special_features.length > 0 && (
             <div>
               <h4 className="font-semibold mb-2 text-sm">{t('restaurant.specialFeatures')}</h4>
               <div className="flex flex-wrap gap-1.5">
@@ -227,19 +227,19 @@ export function RestaurantCard({ restaurant }: RestaurantCardProps) {
 
           {/* Contact Info */}
           <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
-            {restaurant.contact_info.hours && (
+            {restaurant.contact_info?.hours && (
               <div className="flex items-center gap-1.5">
                 <Clock className="size-3.5" />
                 <span>{restaurant.contact_info.hours}</span>
               </div>
             )}
-            {restaurant.contact_info.phone && (
+            {restaurant.contact_info?.phone && (
               <div className="flex items-center gap-1.5">
                 <Phone className="size-3.5" />
                 <span>{restaurant.contact_info.phone}</span>
               </div>
             )}
-            {restaurant.contact_info.website && (
+            {restaurant.contact_info?.website && (
               <div className="flex items-center gap-1.5">
                 <Globe className="size-3.5" />
                 <a href={restaurant.contact_info.website} target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">
@@ -273,7 +273,7 @@ export function RestaurantCard({ restaurant }: RestaurantCardProps) {
             <button
               onClick={(e) => {
                 e.stopPropagation()
-                const query = encodeURIComponent(`${restaurant.name_hebrew} ${restaurant.location.city} restaurant`)
+                const query = encodeURIComponent(`${restaurant.name_hebrew} ${restaurant.location?.city || ''} restaurant`)
                 window.open(`https://www.google.com/maps/search/?api=1&query=${query}`, '_blank')
               }}
               className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-secondary text-secondary-foreground rounded-xl text-sm font-medium hover:bg-secondary/80 transition-all hover:shadow-md active:scale-[0.98]"

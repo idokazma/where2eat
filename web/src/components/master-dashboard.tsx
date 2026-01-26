@@ -139,15 +139,15 @@ export function MasterDashboard() {
         }
 
         // Location filters
-        if (classicFilters.selectedCity !== "all" && restaurant.location.city !== classicFilters.selectedCity) return false
-        if (classicFilters.selectedRegion !== "all" && restaurant.location.region !== classicFilters.selectedRegion) return false
-        if (classicFilters.selectedNeighborhood !== "all" && restaurant.location.neighborhood !== classicFilters.selectedNeighborhood) return false
+        if (classicFilters.selectedCity !== "all" && restaurant.location?.city !== classicFilters.selectedCity) return false
+        if (classicFilters.selectedRegion !== "all" && restaurant.location?.region !== classicFilters.selectedRegion) return false
+        if (classicFilters.selectedNeighborhood !== "all" && restaurant.location?.neighborhood !== classicFilters.selectedNeighborhood) return false
 
         // Cuisine filters
         if (classicFilters.selectedCuisines.length > 0 && (!restaurant.cuisine_type || !classicFilters.selectedCuisines.includes(restaurant.cuisine_type))) return false
 
-        // Price range filters  
-        if (classicFilters.selectedPriceRanges.length > 0 && !classicFilters.selectedPriceRanges.includes(restaurant.price_range)) return false
+        // Price range filters
+        if (classicFilters.selectedPriceRanges.length > 0 && (!restaurant.price_range || !classicFilters.selectedPriceRanges.includes(restaurant.price_range))) return false
 
         return true
       })
@@ -174,7 +174,7 @@ export function MasterDashboard() {
       }
       
       // Count locations
-      if (restaurant.location.city) {
+      if (restaurant.location?.city) {
         locationCount[restaurant.location.city] = (locationCount[restaurant.location.city] || 0) + 1
       }
       

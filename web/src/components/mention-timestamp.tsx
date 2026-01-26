@@ -93,7 +93,7 @@ export function MentionTimestampComponent({ restaurant, mentions = [], videoUrl,
       key_points: [
         restaurant.host_comments || "דעת המובחר",
         `מטבח ${restaurant.cuisine_type}`,
-        `מיקום: ${restaurant.location.city || 'לא צוין'}`,
+        `מיקום: ${restaurant.location?.city || 'לא צוין'}`,
         `טווח מחיר: ${restaurant.price_range}`
       ].filter(Boolean)
     }
@@ -174,7 +174,7 @@ export function MentionTimestampComponent({ restaurant, mentions = [], videoUrl,
                         <div className="flex gap-4 text-sm text-muted-foreground">
                           <div className="flex items-center gap-1">
                             <MapPin className="size-4" />
-                            {restaurant.location.city || 'מיקום לא צוין'}
+                            {restaurant.location?.city || 'מיקום לא צוין'}
                           </div>
                           <div className="flex items-center gap-1">
                             <Utensils className="size-4" />

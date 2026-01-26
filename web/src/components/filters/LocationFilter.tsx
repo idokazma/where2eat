@@ -67,16 +67,25 @@ export function LocationFilter({ className = '' }: LocationFilterProps) {
         <span>{mode === 'manual' ? getDisplayLabel() : 'מיקום'}</span>
 
         {mode === 'manual' ? (
-          <button
+          <span
+            role="button"
+            tabIndex={0}
             onClick={(e) => {
               e.stopPropagation();
               handleClearCity();
             }}
-            className="flex-shrink-0 -mr-1 p-0.5 rounded-full hover:bg-[var(--color-accent)] hover:text-white transition-colors"
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                e.stopPropagation();
+                handleClearCity();
+              }
+            }}
+            className="flex-shrink-0 -mr-1 p-0.5 rounded-full hover:bg-[var(--color-accent)] hover:text-white transition-colors cursor-pointer"
             aria-label="Clear location"
           >
             <X className="w-3.5 h-3.5" />
-          </button>
+          </span>
         ) : (
           <ChevronDown className="w-4 h-4 flex-shrink-0 -mr-1" />
         )}
