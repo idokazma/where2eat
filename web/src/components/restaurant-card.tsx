@@ -137,10 +137,10 @@ export function RestaurantCard({ restaurant }: RestaurantCardProps) {
         </div>
 
         <div className="flex flex-wrap items-center gap-2 mt-3">
-          {restaurant.location.city && (
+          {restaurant.location?.city && (
             <Badge variant="secondary" className="flex items-center gap-1.5 text-xs rounded-full px-3">
               <MapPin className="size-3" />
-              {restaurant.location.city}
+              {restaurant.location?.city}
             </Badge>
           )}
           <div className="flex items-center gap-1.5 mr-auto bg-muted/50 px-2.5 py-1 rounded-full">
@@ -163,29 +163,29 @@ export function RestaurantCard({ restaurant }: RestaurantCardProps) {
       {isExpanded && (
         <CardContent className="space-y-5 pt-0 animate-reveal-up" style={{ animationDuration: '0.3s' }}>
           {/* Address Section */}
-          {restaurant.location.address && (
+          {restaurant.location?.address && (
             <div className="flex items-start gap-3 p-3 bg-muted/30 rounded-xl">
               <div className="p-2 bg-primary/10 rounded-lg">
                 <MapPin className="size-4 text-primary" />
               </div>
               <div className="text-sm">
-                <p className="font-medium">{restaurant.location.address}</p>
-                {restaurant.location.neighborhood && (
-                  <p className="text-muted-foreground text-xs mt-0.5">{restaurant.location.neighborhood}</p>
+                <p className="font-medium">{restaurant.location?.address}</p>
+                {restaurant.location?.neighborhood && (
+                  <p className="text-muted-foreground text-xs mt-0.5">{restaurant.location?.neighborhood}</p>
                 )}
               </div>
             </div>
           )}
 
           {/* Menu Items Section */}
-          {restaurant.menu_items.length > 0 && (
+          {(restaurant.menu_items?.length ?? 0) > 0 && (
             <div>
               <h4 className="font-semibold mb-3 flex items-center gap-2 text-sm">
                 <Star className="size-4 text-amber-500" />
                 {t('restaurant.recommendedMenu')}
               </h4>
               <div className="space-y-2">
-                {restaurant.menu_items.slice(0, 3).map((item, index) => (
+                {restaurant.menu_items?.slice(0, 3).map((item, index) => (
                   <div key={index} className="flex justify-between items-start gap-3 text-sm p-2 rounded-lg hover:bg-muted/30 transition-colors">
                     <div className="flex-1 text-right">
                       <p className="font-medium">{item.item_name}</p>
@@ -200,9 +200,9 @@ export function RestaurantCard({ restaurant }: RestaurantCardProps) {
                     </div>
                   </div>
                 ))}
-                {restaurant.menu_items.length > 3 && (
+                {(restaurant.menu_items?.length ?? 0) > 3 && (
                   <p className="text-xs text-muted-foreground text-center pt-1">
-                    {t('restaurant.moreItems').replace('{count}', String(restaurant.menu_items.length - 3))}
+                    {t('restaurant.moreItems').replace('{count}', String((restaurant.menu_items?.length ?? 0) - 3))}
                   </p>
                 )}
               </div>
@@ -210,11 +210,11 @@ export function RestaurantCard({ restaurant }: RestaurantCardProps) {
           )}
 
           {/* Special Features */}
-          {restaurant.special_features.length > 0 && (
+          {(restaurant.special_features?.length ?? 0) > 0 && (
             <div>
               <h4 className="font-semibold mb-2 text-sm">{t('restaurant.specialFeatures')}</h4>
               <div className="flex flex-wrap gap-1.5">
-                {restaurant.special_features.map((feature, index) => (
+                {restaurant.special_features?.map((feature, index) => (
                   <Badge key={index} variant="secondary" className="text-xs rounded-full px-3">
                     {feature}
                   </Badge>
@@ -227,22 +227,22 @@ export function RestaurantCard({ restaurant }: RestaurantCardProps) {
 
           {/* Contact Info */}
           <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
-            {restaurant.contact_info.hours && (
+            {restaurant.contact_info?.hours && (
               <div className="flex items-center gap-1.5">
                 <Clock className="size-3.5" />
-                <span>{restaurant.contact_info.hours}</span>
+                <span>{restaurant.contact_info?.hours}</span>
               </div>
             )}
-            {restaurant.contact_info.phone && (
+            {restaurant.contact_info?.phone && (
               <div className="flex items-center gap-1.5">
                 <Phone className="size-3.5" />
-                <span>{restaurant.contact_info.phone}</span>
+                <span>{restaurant.contact_info?.phone}</span>
               </div>
             )}
-            {restaurant.contact_info.website && (
+            {restaurant.contact_info?.website && (
               <div className="flex items-center gap-1.5">
                 <Globe className="size-3.5" />
-                <a href={restaurant.contact_info.website} target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">
+                <a href={restaurant.contact_info?.website} target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">
                   {t('common.website')}
                 </a>
               </div>
@@ -273,7 +273,7 @@ export function RestaurantCard({ restaurant }: RestaurantCardProps) {
             <button
               onClick={(e) => {
                 e.stopPropagation()
-                const query = encodeURIComponent(`${restaurant.name_hebrew} ${restaurant.location.city} restaurant`)
+                const query = encodeURIComponent(`${restaurant.name_hebrew} ${restaurant.location?.city} restaurant`)
                 window.open(`https://www.google.com/maps/search/?api=1&query=${query}`, '_blank')
               }}
               className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-secondary text-secondary-foreground rounded-xl text-sm font-medium hover:bg-secondary/80 transition-all hover:shadow-md active:scale-[0.98]"

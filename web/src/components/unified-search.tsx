@@ -93,7 +93,7 @@ export function UnifiedSearch({ onSearchResults, onLoadingChange }: UnifiedSearc
         const episodes = new Set<string>()
 
         data.restaurants.forEach((restaurant: Restaurant) => {
-          if (restaurant.location?.city) locations.add(restaurant.location.city)
+          if (restaurant.location?.city) locations.add(restaurant.location?.city)
           if (restaurant.cuisine_type) cuisines.add(restaurant.cuisine_type)
           if (restaurant.episode_info?.video_id) episodes.add(restaurant.episode_info.video_id)
         })

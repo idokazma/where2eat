@@ -192,7 +192,7 @@ export function RestaurantMap({ restaurants, selectedRestaurant, onRestaurantSel
   const searchRestaurantPlace = async (restaurant: Restaurant): Promise<PlaceDetails | null> => {
     try {
       // First try with Hebrew name
-      const query = `${restaurant.name_hebrew} ${restaurant.location.city} restaurant`
+      const query = `${restaurant.name_hebrew} ${restaurant.location?.city} restaurant`
       const response = await fetch(endpoints.places.search(query))
 
       if (response.ok) {
@@ -204,7 +204,7 @@ export function RestaurantMap({ restaurants, selectedRestaurant, onRestaurantSel
 
       // Try with English name if available
       if (restaurant.name_english) {
-        const altQuery = `${restaurant.name_english} ${restaurant.location.city} restaurant`
+        const altQuery = `${restaurant.name_english} ${restaurant.location?.city} restaurant`
         const altResponse = await fetch(endpoints.places.search(altQuery))
 
         if (altResponse.ok) {
@@ -231,7 +231,7 @@ export function RestaurantMap({ restaurants, selectedRestaurant, onRestaurantSel
       negative: '%23ef4444'  // red
     }
     
-    const color = colors[opinion] || colors.neutral
+    const color = (opinion && colors[opinion]) || colors.neutral
     
     return baseUrl + encodeURIComponent(`
       <svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
@@ -257,7 +257,7 @@ export function RestaurantMap({ restaurants, selectedRestaurant, onRestaurantSel
         </div>
         
         <p style="margin: 8px 0; color: #4b5563; font-size: 14px;">
-          📍 ${placeDetails.formatted_address || restaurant.location.city}
+          📍 ${placeDetails.formatted_address || restaurant.location?.city}
         </p>
         
         ${placeDetails.rating ? `
@@ -287,17 +287,17 @@ export function RestaurantMap({ restaurants, selectedRestaurant, onRestaurantSel
       neutral: '#6b7280',
       negative: '#ef4444'
     }
-    return colors[opinion] || colors.neutral
+    return (opinion && colors[opinion]) || colors.neutral
   }
 
   const getOpinionText = (opinion: Restaurant['host_opinion']) => {
     const texts = {
       positive: 'מומלץ',
       mixed: 'מעורב',
-      neutral: 'ניטרלי', 
+      neutral: 'ניטרלי',
       negative: 'לא מומלץ'
     }
-    return texts[opinion] || 'לא צוין'
+    return (opinion && texts[opinion]) || 'לא צוין'
   }
 
   const getPriceDisplay = (priceRange: Restaurant['price_range']) => {
@@ -307,7 +307,7 @@ export function RestaurantMap({ restaurants, selectedRestaurant, onRestaurantSel
       expensive: '₪₪₪',
       not_mentioned: '-'
     }
-    return displays[priceRange] || '-'
+    return (priceRange && displays[priceRange]) || '-'
   }
 
   const centerOnRestaurant = (restaurant: Restaurant & { placeDetails?: PlaceDetails }) => {
@@ -393,7 +393,7 @@ export function RestaurantMap({ restaurants, selectedRestaurant, onRestaurantSel
                     )}
                     <div className="flex items-center gap-2 mt-1">
                       <Badge variant="outline" className="text-xs">
-                        {restaurant.location.city}
+                        {restaurant.location?.city}
                       </Badge>
                       {restaurant.placeDetails?.rating && (
                         <span className="text-xs text-gray-500">
