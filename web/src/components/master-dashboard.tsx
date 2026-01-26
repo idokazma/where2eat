@@ -128,13 +128,13 @@ export function MasterDashboard() {
         // Search term filter
         if (classicFilters.searchTerm) {
           const searchLower = classicFilters.searchTerm.toLowerCase()
-          const matchesSearch = 
-            restaurant.name_hebrew.toLowerCase().includes(searchLower) ||
+          const matchesSearch =
+            restaurant.name_hebrew?.toLowerCase().includes(searchLower) ||
             restaurant.name_english?.toLowerCase().includes(searchLower) ||
-            restaurant.location.city?.toLowerCase().includes(searchLower) ||
-            restaurant.cuisine_type.toLowerCase().includes(searchLower) ||
-            restaurant.host_comments.toLowerCase().includes(searchLower)
-          
+            restaurant.location?.city?.toLowerCase().includes(searchLower) ||
+            restaurant.cuisine_type?.toLowerCase().includes(searchLower) ||
+            restaurant.host_comments?.toLowerCase().includes(searchLower)
+
           if (!matchesSearch) return false
         }
 
@@ -144,7 +144,7 @@ export function MasterDashboard() {
         if (classicFilters.selectedNeighborhood !== "all" && restaurant.location.neighborhood !== classicFilters.selectedNeighborhood) return false
 
         // Cuisine filters
-        if (classicFilters.selectedCuisines.length > 0 && !classicFilters.selectedCuisines.includes(restaurant.cuisine_type)) return false
+        if (classicFilters.selectedCuisines.length > 0 && (!restaurant.cuisine_type || !classicFilters.selectedCuisines.includes(restaurant.cuisine_type))) return false
 
         // Price range filters  
         if (classicFilters.selectedPriceRanges.length > 0 && !classicFilters.selectedPriceRanges.includes(restaurant.price_range)) return false
