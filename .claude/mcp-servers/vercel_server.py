@@ -11,6 +11,12 @@ import logging
 import asyncio
 import httpx
 from typing import Any, Sequence
+from pathlib import Path
+from dotenv import load_dotenv
+
+# Load .env from project root
+env_path = Path(__file__).parent.parent.parent / ".env"
+load_dotenv(env_path)
 
 # Configure logging to stderr (required for MCP)
 logging.basicConfig(
