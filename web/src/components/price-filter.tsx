@@ -83,7 +83,7 @@ export function PriceFilter({ restaurants, selectedPriceRanges, onPriceRangeChan
 
   const getTotalRestaurantsInRange = () => {
     if (isNoneSelected) return restaurants.length
-    return restaurants.filter(r => selectedPriceRanges.includes(r.price_range)).length
+    return restaurants.filter(r => selectedPriceRanges.includes(r.price_range!)).length
   }
 
   return (
