@@ -290,7 +290,7 @@ export default function RestaurantDetailPage() {
               מה המארח אמר
             </h2>
             <p className="text-[var(--color-ink)] leading-relaxed">
-              "{restaurant.host_comments}"
+              &ldquo;{restaurant.host_comments}&rdquo;
             </p>
           </div>
         )}

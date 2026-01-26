@@ -62,8 +62,9 @@ export function useLocationFilter() {
   const [state, setState] = useState<LocationFilterState>(defaultState);
   const [isInitialized, setIsInitialized] = useState(false);
 
-  // Load from storage on mount
+  // Load from storage on mount (standard hydration pattern)
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setState(loadFromStorage());
     setIsInitialized(true);
   }, []);

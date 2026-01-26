@@ -1,7 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
-import { RefreshCw } from 'lucide-react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { Restaurant } from '@/types/restaurant';
 import { PageLayout } from '@/components/layout';
 import { FilterBar, FilterChip, LocationFilter } from '@/components/filters';
@@ -50,11 +49,7 @@ export function HomePageNew() {
   const { setAllRestaurants: setFavoriteContext } = useFavorites();
 
   // Load restaurants
-  useEffect(() => {
-    loadRestaurants();
-  }, []);
-
-  const loadRestaurants = async () => {
+  const loadRestaurants = useCallback(async () => {
     setIsLoading(true);
     setError(null);
     try {
@@ -71,7 +66,11 @@ export function HomePageNew() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [setFavoriteContext]);
+
+  useEffect(() => {
+    loadRestaurants();
+  }, [loadRestaurants]);
 
   // Filter restaurants
   const filteredRestaurants = useMemo(() => {
