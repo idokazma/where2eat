@@ -293,6 +293,102 @@ export const videosApi = {
 };
 
 /**
+ * Verification API types
+ */
+export interface VerificationResult {
+  is_hallucination: boolean;
+  confidence: number;
+  recommendation: 'accept' | 'reject' | 'review';
+  reasons: string[];
+}
+
+export interface RestaurantVerification {
+  id: string;
+  name_hebrew: string;
+  name_english: string;
+  google_name: string;
+  city: string;
+  cuisine_type: string;
+  verification: VerificationResult;
+  episode_info: {
+    video_id: string;
+    video_url: string;
+    analysis_date: string;
+  };
+  mention_context: string;
+  host_comments: string;
+  data_completeness: {
+    has_location: boolean;
+    has_cuisine: boolean;
+    has_google_data: boolean;
+    has_photos: boolean;
+    has_rating: boolean;
+  };
+}
+
+export interface VerificationReport {
+  generated_at: string;
+  total: number;
+  summary: {
+    accepted: number;
+    rejected: number;
+    needs_review: number;
+  };
+  restaurants: RestaurantVerification[];
+}
+
+/**
+ * Verification API endpoints
+ */
+export const verificationApi = {
+  /**
+   * Get full verification report
+   */
+  async getReport(): Promise<VerificationReport> {
+    return apiFetch<VerificationReport>('/api/admin/verification/report');
+  },
+
+  /**
+   * Revalidate all restaurants
+   */
+  async revalidate(): Promise<{
+    message: string;
+    results: {
+      total: number;
+      accepted: number;
+      rejected: number;
+      needs_review: number;
+    };
+    rejected_names: string[];
+  }> {
+    return apiFetch('/api/admin/verification/revalidate', {
+      method: 'POST',
+    });
+  },
+
+  /**
+   * Get verification for a specific restaurant
+   */
+  async getRestaurant(id: string): Promise<{
+    restaurant: {
+      name_hebrew: string;
+      name_english: string;
+      google_name: string;
+      city: string;
+    };
+    verification: VerificationResult;
+    details: {
+      mention_context: string;
+      host_comments: string;
+      episode_video_id: string;
+      analysis_date: string;
+    };
+  }> {
+    return apiFetch(`/api/admin/verification/restaurant/${id}`);
+  },
+};
+
+/**
  * Articles API endpoints
  */
 export const articlesApi = {

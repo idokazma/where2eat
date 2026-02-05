@@ -325,7 +325,7 @@ class HallucinationDetector:
                 return True
 
         # Check if they're similar when removing geresh entirely
-        # מיז'נה and מיג'אנה both become מינה when normalized
+        # מיז'נה and מיג'אנה both become similar when normalized
         n1_no_geresh = re.sub(r"[זג]'", 'ג', n1)  # Replace ז' and ג' with ג
         n2_no_geresh = re.sub(r"[זג]'", 'ג', n2)
         if n1_no_geresh == n2_no_geresh:
@@ -333,6 +333,24 @@ class HallucinationDetector:
         if len(n1_no_geresh) >= 3 and len(n2_no_geresh) >= 3:
             if n1_no_geresh in n2_no_geresh or n2_no_geresh in n1_no_geresh:
                 return True
+            # Check if they differ by only 1-2 characters (handles מיגנה vs מיגאנה)
+            if abs(len(n1_no_geresh) - len(n2_no_geresh)) <= 2:
+                # Simple edit distance check
+                shorter = n1_no_geresh if len(n1_no_geresh) <= len(n2_no_geresh) else n2_no_geresh
+                longer = n2_no_geresh if len(n1_no_geresh) <= len(n2_no_geresh) else n1_no_geresh
+                # Check if shorter is subset of longer with 1-2 insertions
+                i, j, diffs = 0, 0, 0
+                while i < len(shorter) and j < len(longer):
+                    if shorter[i] == longer[j]:
+                        i += 1
+                        j += 1
+                    else:
+                        j += 1
+                        diffs += 1
+                        if diffs > 2:
+                            break
+                if i == len(shorter) and diffs <= 2:
+                    return True
 
         # Check transliteration match (Hebrew name vs English Google name)
         # e.g., צפרירים → Zafririm

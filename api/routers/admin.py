@@ -16,6 +16,14 @@ from pydantic import BaseModel
 from models.auth import LoginRequest, TokenResponse, UserInfo
 from models.restaurant import Restaurant, PaginatedRestaurants, Pagination
 
+# Import hallucination detector
+try:
+    from hallucination_detector import HallucinationDetector, filter_hallucinations
+    HALLUCINATION_DETECTOR_AVAILABLE = True
+except ImportError:
+    HALLUCINATION_DETECTOR_AVAILABLE = False
+    print("[Warning] Hallucination detector not available")
+
 router = APIRouter(prefix="/api/admin", tags=["Admin"])
 security = HTTPBearer(auto_error=False)
 
@@ -428,4 +436,170 @@ async def get_restaurant_history(
                 "timestamp": datetime.now().isoformat(),
             }
         ]
+    }
+
+
+# ==================== Verification Report Endpoints ====================
+
+@router.get(
+    "/verification/report",
+    summary="Get hallucination verification report",
+    description="Get a detailed report of restaurant extraction verification results.",
+)
+async def get_verification_report(
+    user: dict = Depends(get_current_user),
+):
+    """Get hallucination verification report for all restaurants."""
+    if not HALLUCINATION_DETECTOR_AVAILABLE:
+        raise HTTPException(
+            status_code=503,
+            detail="Hallucination detector not available"
+        )
+
+    restaurants = load_all_restaurants()
+    detector = HallucinationDetector(strict_mode=False)
+
+    report = {
+        "generated_at": datetime.now().isoformat(),
+        "total": len(restaurants),
+        "summary": {
+            "accepted": 0,
+            "rejected": 0,
+            "needs_review": 0
+        },
+        "restaurants": []
+    }
+
+    for restaurant in restaurants:
+        result = detector.detect(restaurant)
+
+        restaurant_report = {
+            "id": restaurant.get("id", restaurant.get("name_english", "")),
+            "name_hebrew": restaurant.get("name_hebrew", ""),
+            "name_english": restaurant.get("name_english", ""),
+            "google_name": restaurant.get("google_places", {}).get("google_name", ""),
+            "city": restaurant.get("location", {}).get("city", ""),
+            "cuisine_type": restaurant.get("cuisine_type", ""),
+            "verification": {
+                "is_hallucination": result.is_hallucination,
+                "confidence": result.confidence,
+                "recommendation": result.recommendation,
+                "reasons": result.reasons
+            },
+            "episode_info": {
+                "video_id": restaurant.get("episode_info", {}).get("video_id", ""),
+                "video_url": restaurant.get("episode_info", {}).get("video_url", ""),
+                "analysis_date": restaurant.get("episode_info", {}).get("analysis_date", "")
+            },
+            "mention_context": restaurant.get("mention_context", ""),
+            "host_comments": restaurant.get("host_comments", ""),
+            "data_completeness": {
+                "has_location": bool(restaurant.get("location", {}).get("city")),
+                "has_cuisine": bool(restaurant.get("cuisine_type") and restaurant.get("cuisine_type") != "לא צוין"),
+                "has_google_data": bool(restaurant.get("google_places", {}).get("google_name")),
+                "has_photos": bool(restaurant.get("photos")),
+                "has_rating": bool(restaurant.get("rating", {}).get("google_rating"))
+            }
+        }
+
+        report["restaurants"].append(restaurant_report)
+
+        if result.recommendation == "accept":
+            report["summary"]["accepted"] += 1
+        elif result.recommendation == "reject":
+            report["summary"]["rejected"] += 1
+        else:
+            report["summary"]["needs_review"] += 1
+
+    # Sort by confidence (highest hallucination confidence first)
+    report["restaurants"].sort(
+        key=lambda r: r["verification"]["confidence"],
+        reverse=True
+    )
+
+    return report
+
+
+@router.post(
+    "/verification/revalidate",
+    summary="Revalidate all restaurants",
+    description="Run hallucination detection on all restaurants and update their status.",
+)
+async def revalidate_restaurants(
+    user: dict = Depends(require_role(["admin", "super_admin"])),
+):
+    """Revalidate all restaurants with hallucination detection."""
+    if not HALLUCINATION_DETECTOR_AVAILABLE:
+        raise HTTPException(
+            status_code=503,
+            detail="Hallucination detector not available"
+        )
+
+    restaurants = load_all_restaurants()
+    accepted, rejected, needs_review = filter_hallucinations(restaurants, strict_mode=True)
+
+    return {
+        "message": "Validation complete",
+        "results": {
+            "total": len(restaurants),
+            "accepted": len(accepted),
+            "rejected": len(rejected),
+            "needs_review": len(needs_review)
+        },
+        "rejected_names": [r.get("name_hebrew", "") for r in rejected]
+    }
+
+
+@router.get(
+    "/verification/restaurant/{restaurant_id}",
+    summary="Get verification details for a restaurant",
+    description="Get detailed hallucination detection results for a specific restaurant.",
+)
+async def get_restaurant_verification(
+    restaurant_id: str,
+    user: dict = Depends(get_current_user),
+):
+    """Get verification details for a specific restaurant."""
+    if not HALLUCINATION_DETECTOR_AVAILABLE:
+        raise HTTPException(
+            status_code=503,
+            detail="Hallucination detector not available"
+        )
+
+    file_path = RESTAURANTS_DIR / f"{restaurant_id}.json"
+    if not file_path.exists():
+        # Try to find by searching all restaurants
+        restaurants = load_all_restaurants()
+        restaurant = next(
+            (r for r in restaurants if r.get("name_english", "").lower().replace(" ", "_") == restaurant_id.lower()),
+            None
+        )
+        if not restaurant:
+            raise HTTPException(status_code=404, detail="Restaurant not found")
+    else:
+        with open(file_path, "r", encoding="utf-8") as f:
+            restaurant = json.load(f)
+
+    detector = HallucinationDetector(strict_mode=False)
+    result = detector.detect(restaurant)
+
+    return {
+        "restaurant": {
+            "name_hebrew": restaurant.get("name_hebrew", ""),
+            "name_english": restaurant.get("name_english", ""),
+            "google_name": restaurant.get("google_places", {}).get("google_name", ""),
+            "city": restaurant.get("location", {}).get("city", ""),
+        },
+        "verification": {
+            "is_hallucination": result.is_hallucination,
+            "confidence": result.confidence,
+            "recommendation": result.recommendation,
+            "reasons": result.reasons
+        },
+        "details": {
+            "mention_context": restaurant.get("mention_context", ""),
+            "host_comments": restaurant.get("host_comments", ""),
+            "episode_video_id": restaurant.get("episode_info", {}).get("video_id", ""),
+            "analysis_date": restaurant.get("episode_info", {}).get("analysis_date", "")
+        }
     }
