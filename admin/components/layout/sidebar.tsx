@@ -12,6 +12,7 @@ import {
   ChevronLeft,
   ChevronRight,
   FileSearch,
+  ShieldCheck,
   X
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -24,6 +25,7 @@ const navigation = [
   { name: 'Articles', href: '/dashboard/articles', icon: FileText },
   { name: 'Videos', href: '/dashboard/videos', icon: Video },
   { name: 'Analytics', href: '/dashboard/analytics', icon: BarChart3 },
+  { name: 'Verification', href: '/dashboard/verification', icon: ShieldCheck },
   { name: 'Audit Log', href: '/dashboard/audit', icon: FileSearch },
   { name: 'Settings', href: '/dashboard/settings', icon: Settings },
 ];

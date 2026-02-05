@@ -24,6 +24,7 @@ sys.path.insert(0, os.path.join(PROJECT_ROOT, 'src'))
 sys.path.insert(0, os.path.join(PROJECT_ROOT, 'scripts'))
 
 from database import Database, get_database
+from hallucination_detector import HallucinationDetector, filter_hallucinations
 
 
 class BackendService:
@@ -281,6 +282,118 @@ class BackendService:
 
         return {'success': False, 'error': result.get('error', 'Enrichment failed')}
 
+    # ==================== Hallucination Filtering ====================
+
+    def filter_restaurant_hallucinations(
+        self,
+        restaurants: List[Dict],
+        strict_mode: bool = True
+    ) -> Dict:
+        """Filter out hallucinated restaurant extractions.
+
+        Uses multiple signals to detect false extractions:
+        - Name matching with Google Places
+        - Common Hebrew word detection
+        - Sentence fragment detection
+        - Data completeness scoring
+
+        Args:
+            restaurants: List of restaurant dicts (ideally after Google enrichment)
+            strict_mode: If True, reject uncertain extractions
+
+        Returns:
+            Dict with filtered results and metadata
+        """
+        if not restaurants:
+            return {
+                'accepted': [],
+                'rejected': [],
+                'needs_review': [],
+                'all_with_metadata': [],
+                'accepted_count': 0,
+                'rejected_count': 0,
+                'review_count': 0
+            }
+
+        accepted, rejected, needs_review = filter_hallucinations(
+            restaurants,
+            strict_mode=strict_mode
+        )
+
+        # In strict mode, needs_review items are also rejected
+        if strict_mode:
+            rejected.extend(needs_review)
+            needs_review = []
+
+        return {
+            'accepted': accepted,
+            'rejected': rejected,
+            'needs_review': needs_review,
+            'all_with_metadata': accepted + rejected + needs_review,
+            'accepted_count': len(accepted),
+            'rejected_count': len(rejected),
+            'review_count': len(needs_review)
+        }
+
+    def get_hallucination_report(self, restaurants: List[Dict] = None) -> Dict:
+        """Generate a detailed hallucination report for admin review.
+
+        Args:
+            restaurants: Optional list of restaurants. If None, loads from database.
+
+        Returns:
+            Dict with detailed analysis of each restaurant
+        """
+        if restaurants is None:
+            # Load from database
+            restaurants = self.list_restaurants()
+
+        detector = HallucinationDetector(strict_mode=False)
+        report = {
+            'total': len(restaurants),
+            'accepted': 0,
+            'rejected': 0,
+            'needs_review': 0,
+            'restaurants': []
+        }
+
+        for restaurant in restaurants:
+            result = detector.detect(restaurant)
+
+            restaurant_report = {
+                'id': restaurant.get('id'),
+                'name_hebrew': restaurant.get('name_hebrew', ''),
+                'name_english': restaurant.get('name_english', ''),
+                'google_name': restaurant.get('google_places', {}).get('google_name', ''),
+                'city': restaurant.get('location', {}).get('city', ''),
+                'verification': {
+                    'is_hallucination': result.is_hallucination,
+                    'confidence': result.confidence,
+                    'recommendation': result.recommendation,
+                    'reasons': result.reasons
+                },
+                'episode_info': restaurant.get('episode_info', {}),
+                'mention_context': restaurant.get('mention_context', ''),
+                'extraction_date': restaurant.get('episode_info', {}).get('analysis_date', '')
+            }
+
+            report['restaurants'].append(restaurant_report)
+
+            if result.recommendation == 'accept':
+                report['accepted'] += 1
+            elif result.recommendation == 'reject':
+                report['rejected'] += 1
+            else:
+                report['needs_review'] += 1
+
+        # Sort by confidence (highest hallucination confidence first)
+        report['restaurants'].sort(
+            key=lambda r: r['verification']['confidence'],
+            reverse=True
+        )
+
+        return report
+
     # ==================== Full Pipeline ====================
 
     def process_video(
@@ -369,13 +482,30 @@ class BackendService:
             if enrichment_result.get('success'):
                 restaurants = enrichment_result.get('restaurants', restaurants)
 
+        # Step 5: Filter hallucinations
+        if progress_callback:
+            progress_callback('filtering_hallucinations', 0.7)
+
+        filter_result = self.filter_restaurant_hallucinations(restaurants)
+        result['steps']['hallucination_filter'] = {
+            'total_before': len(restaurants),
+            'accepted': filter_result['accepted_count'],
+            'rejected': filter_result['rejected_count'],
+            'needs_review': filter_result['review_count'],
+            'rejected_names': [r.get('name_hebrew', '') for r in filter_result['rejected']]
+        }
+
+        # Use only accepted restaurants for saving
+        restaurants = filter_result['accepted']
+        # Keep all restaurants (including rejected) in result for reporting
+        result['all_restaurants'] = filter_result['all_with_metadata']
         result['restaurants'] = restaurants
         result['restaurants_found'] = len(restaurants)
 
         if progress_callback:
             progress_callback('saving_results', 0.8)
 
-        # Step 4: Save to database
+        # Step 6: Save to database
         if save_to_db and restaurants:
             try:
                 # Create episode
