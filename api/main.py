@@ -45,6 +45,25 @@ from routers import (
 )
 
 
+def get_data_directory() -> Path:
+    """Get the data directory, respecting DATABASE_DIR env var for Railway volumes."""
+    db_dir = os.getenv('DATABASE_DIR')
+    if db_dir:
+        return Path(db_dir)
+
+    # Default paths
+    default_dir = Path(__file__).parent.parent / "data"
+    if default_dir.exists():
+        return default_dir
+
+    # Railway fallback
+    railway_dir = Path("/app/data")
+    if railway_dir.exists():
+        return railway_dir
+
+    return default_dir
+
+
 async def fetch_default_video_on_startup():
     """Fetch and analyze the default video on server startup."""
     print(f"\n{'='*60}")
@@ -58,51 +77,111 @@ async def fetch_default_video_on_startup():
 
     import shutil
 
-    # Data directories
-    data_dir = Path(__file__).parent.parent / "data" / "restaurants"
-    backup_dir = Path(__file__).parent.parent / "data" / "restaurants_backup"
+    # Get data directory (volume-aware)
+    base_data_dir = get_data_directory()
+    data_dir = base_data_dir / "restaurants"
+    db_path = base_data_dir / "where2eat.db"
 
-    # Also check absolute paths for Railway deployment
+    # Backup directory (always from the image, not from volume)
+    backup_dir = Path(__file__).parent.parent / "data" / "restaurants_backup"
     if not backup_dir.exists():
         backup_dir = Path("/app/data/restaurants_backup")
-    if not data_dir.parent.exists():
-        data_dir = Path("/app/data/restaurants")
+
+    print(f"[STARTUP] DATABASE_DIR env: {os.getenv('DATABASE_DIR', 'not set')}")
+    print(f"[STARTUP] Base data directory: {base_data_dir}")
+    print(f"[STARTUP] Database path: {db_path}")
 
     print(f"[STARTUP] Data directory: {data_dir}")
     print(f"[STARTUP] Backup directory: {backup_dir}")
     print(f"[STARTUP] Backup exists: {backup_dir.exists()}")
 
-    # Step 1: Check if we already have restaurant data
+    # Ensure data directory exists
     data_dir.mkdir(parents=True, exist_ok=True)
+
+    # Step 1: Check if SQLite database already has restaurant data
+    try:
+        from database import Database
+        db = Database(str(db_path))
+        stats = db.get_stats()
+        restaurant_count = stats.get('restaurants', 0)
+
+        if restaurant_count > 0:
+            print(f"[STARTUP] Database already has {restaurant_count} restaurants")
+            print(f"[STARTUP] Database is persistent - skipping initialization")
+            print(f"\n{'='*60}")
+            print(f"Server ready! {restaurant_count} restaurants in database.")
+            print(f"{'='*60}\n")
+            return
+        else:
+            print(f"[STARTUP] Database exists but is empty, will seed from backup")
+    except Exception as db_err:
+        print(f"[STARTUP] Could not check database: {db_err}")
+
+    # Step 2: Check for existing JSON files (legacy)
     existing_files = list(data_dir.glob("*.json"))
     existing_files = [f for f in existing_files if f.name != ".gitkeep"]
 
     if len(existing_files) > 0:
-        print(f"[STARTUP] Found {len(existing_files)} existing restaurant files")
-        print(f"[STARTUP] Skipping data initialization")
-        return
+        print(f"[STARTUP] Found {len(existing_files)} existing restaurant JSON files")
+        print(f"[STARTUP] Importing to database...")
+        try:
+            from database import Database
+            db = Database(str(db_path))
+            result = db.import_from_json_files(str(data_dir))
+            print(f"[STARTUP] Imported {result.get('imported', 0)} restaurants to database")
+            print(f"\n{'='*60}")
+            print(f"Server ready! {result.get('imported', 0)} restaurants loaded.")
+            print(f"{'='*60}\n")
+            return
+        except Exception as import_err:
+            print(f"[STARTUP] Failed to import JSON files to database: {import_err}")
 
-    # Step 2: Try to copy from backup directory
+    # Step 3: Try to seed from backup directory directly to database
     if backup_dir.exists():
         backup_files = list(backup_dir.glob("*.json"))
         backup_files = [f for f in backup_files if f.name != ".gitkeep"]
 
         if len(backup_files) > 0:
-            print(f"[STARTUP] Found {len(backup_files)} backup files, copying...")
-            copied = 0
-            for src_file in backup_files:
-                try:
-                    dst_file = data_dir / src_file.name
-                    shutil.copy2(src_file, dst_file)
-                    copied += 1
-                except Exception as e:
-                    print(f"[STARTUP] Failed to copy {src_file.name}: {e}")
+            print(f"[STARTUP] Found {len(backup_files)} backup files, importing to database...")
+            try:
+                from database import Database
+                db = Database(str(db_path))
+                result = db.import_from_json_files(str(backup_dir))
+                imported = result.get('imported', 0)
+                print(f"[STARTUP] Imported {imported} restaurants from backup to database")
 
-            print(f"[STARTUP] Copied {copied} restaurant files from backup")
-            print(f"\n{'='*60}")
-            print(f"Server ready! {copied} restaurants loaded from backup.")
-            print(f"{'='*60}\n")
-            return
+                # Also copy to data_dir for backward compatibility
+                copied = 0
+                for src_file in backup_files:
+                    try:
+                        dst_file = data_dir / src_file.name
+                        shutil.copy2(src_file, dst_file)
+                        copied += 1
+                    except Exception as e:
+                        print(f"[STARTUP] Failed to copy {src_file.name}: {e}")
+
+                print(f"[STARTUP] Also copied {copied} files for backward compatibility")
+                print(f"\n{'='*60}")
+                print(f"Server ready! {imported} restaurants loaded from backup.")
+                print(f"{'='*60}\n")
+                return
+            except Exception as db_err:
+                print(f"[STARTUP] Failed to import backup to database: {db_err}")
+                # Fall back to just copying files
+                copied = 0
+                for src_file in backup_files:
+                    try:
+                        dst_file = data_dir / src_file.name
+                        shutil.copy2(src_file, dst_file)
+                        copied += 1
+                    except Exception as e:
+                        print(f"[STARTUP] Failed to copy {src_file.name}: {e}")
+
+                print(f"[STARTUP] Copied {copied} restaurant files from backup (legacy mode)")
+                print(f"\n{'='*60}")
+                print(f"Server ready! {copied} restaurants loaded from backup.")
+                print(f"{'='*60}\n")
+                return
 
     # Step 3: No backup - try to analyze default video
     print(f"[STARTUP] No backup data found, attempting to analyze default video...")

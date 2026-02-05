@@ -20,10 +20,21 @@ class Database:
 
         Args:
             db_path: Path to SQLite database file. Defaults to data/where2eat.db
+                     Can be overridden via DATABASE_DIR or DATABASE_PATH env vars.
         """
         if db_path is None:
-            project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-            db_path = os.path.join(project_root, 'data', 'where2eat.db')
+            # Check for explicit database path env var
+            db_path = os.getenv('DATABASE_PATH')
+
+            if not db_path:
+                # Check for DATABASE_DIR env var (Railway volume mount point)
+                db_dir = os.getenv('DATABASE_DIR')
+                if db_dir:
+                    db_path = os.path.join(db_dir, 'where2eat.db')
+                else:
+                    # Default: project_root/data/where2eat.db
+                    project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+                    db_path = os.path.join(project_root, 'data', 'where2eat.db')
 
         self.db_path = db_path
         os.makedirs(os.path.dirname(db_path), exist_ok=True)
