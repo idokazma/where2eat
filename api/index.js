@@ -19,6 +19,7 @@ const adminArticlesRoutes = require('./routes/admin-articles')
 const adminVideosRoutes = require('./routes/admin-videos')
 const adminBulkRoutes = require('./routes/admin-bulk')
 const adminAuditRoutes = require('./routes/admin-audit')
+const { filterHallucinations } = require('./utils/hallucination-filter')
 
 app.use(helmet())
 app.use(cors({
@@ -298,8 +299,8 @@ app.get('/api/restaurants', async (req, res) => {
     await fs.ensureDir(dataDir)
     const files = await fs.readdir(dataDir)
     const jsonFiles = files.filter(file => file.endsWith('.json'))
-    
-    const restaurants = []
+
+    let restaurants = []
     for (const file of jsonFiles) {
       try {
         const filePath = path.join(dataDir, file)
@@ -309,7 +310,17 @@ app.get('/api/restaurants', async (req, res) => {
         console.warn(`Warning: Failed to read ${file}:`, err.message)
       }
     }
-    
+
+    // Filter out hallucinations (false extractions)
+    const includeAll = req.query.include_all === 'true'
+    if (!includeAll) {
+      const originalCount = restaurants.length
+      restaurants = filterHallucinations(restaurants, { strictMode: true })
+      if (originalCount !== restaurants.length) {
+        console.log(`[Hallucination Filter] Filtered ${originalCount - restaurants.length} of ${originalCount} restaurants`)
+      }
+    }
+
     res.json({ restaurants, count: restaurants.length })
   } catch (error) {
     console.error('Error loading restaurants:', error)
@@ -332,14 +343,15 @@ app.get('/api/restaurants/search', async (req, res) => {
       sort_by = 'analysis_date',
       sort_direction = 'desc',
       page = 1,
-      limit = 20
+      limit = 20,
+      include_all = 'false'
     } = req.query;
 
     await fs.ensureDir(dataDir)
     const files = await fs.readdir(dataDir)
     const jsonFiles = files.filter(file => file.endsWith('.json'))
-    
-    const restaurants = []
+
+    let restaurants = []
     for (const file of jsonFiles) {
       try {
         const filePath = path.join(dataDir, file)
@@ -348,6 +360,11 @@ app.get('/api/restaurants/search', async (req, res) => {
       } catch (err) {
         console.warn(`Warning: Failed to read ${file}:`, err.message)
       }
+    }
+
+    // Filter out hallucinations first (unless include_all is set)
+    if (include_all !== 'true') {
+      restaurants = filterHallucinations(restaurants, { strictMode: true })
     }
 
     // Apply filters
