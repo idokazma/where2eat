@@ -11,7 +11,11 @@ from typing import Optional, List
 from datetime import datetime
 
 from fastapi import APIRouter, HTTPException, Query
-from sqlalchemy.orm import Session
+
+try:
+    from sqlalchemy.orm import Session
+except ImportError:
+    Session = None
 
 from models.restaurant import (
     Restaurant as RestaurantSchema,
@@ -55,6 +59,21 @@ def get_db_session():
 def ensure_data_dir():
     """Ensure the data directory exists."""
     DATA_DIR.mkdir(parents=True, exist_ok=True)
+
+
+def load_all_restaurants() -> List[dict]:
+    """Load all restaurants, trying SQLAlchemy first then falling back to JSON."""
+    if use_sqlalchemy():
+        ctx = get_db_session()
+        if ctx:
+            try:
+                with ctx as db:
+                    restaurants = load_all_restaurants_db(db)
+                    if restaurants:
+                        return restaurants
+            except Exception as e:
+                print(f"Warning: SQLAlchemy error, falling back to JSON: {e}")
+    return load_all_restaurants_json()
 
 
 def load_all_restaurants_json() -> List[dict]:

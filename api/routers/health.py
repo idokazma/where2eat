@@ -15,7 +15,7 @@ possible_src_paths = [
 ]
 for src_path in possible_src_paths:
     if src_path.exists() and str(src_path.resolve()) not in sys.path:
-        sys.path.insert(0, str(src_path.resolve()))
+        sys.path.append(str(src_path.resolve()))
         break
 
 router = APIRouter(tags=["Health"])

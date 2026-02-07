@@ -26,7 +26,9 @@ possible_src_paths = [
 ]
 for src_path in possible_src_paths:
     if src_path.exists():
-        sys.path.insert(0, str(src_path.resolve()))
+        resolved = str(src_path.resolve())
+        if resolved not in sys.path:
+            sys.path.append(resolved)
         print(f"[PATH] Added to sys.path: {src_path.resolve()}")
         break
 else:
