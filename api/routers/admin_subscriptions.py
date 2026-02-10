@@ -39,7 +39,7 @@ class UpdateSubscriptionRequest(BaseModel):
 
 def _get_subscription_manager():
     """Get SubscriptionManager instance."""
-    from database import Database, get_database
+    from database import get_database
     from subscription_manager import SubscriptionManager
     db = get_database()
     return SubscriptionManager(db)

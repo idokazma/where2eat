@@ -47,26 +47,34 @@ async def pipeline_overview(
     user: dict = Depends(get_current_user),
 ):
     """Get pipeline overview stats."""
-    from database import get_database
-    db = get_database()
+    try:
+        from database import get_database
+        db = get_database()
 
-    with db.get_connection() as conn:
-        cursor = conn.cursor()
+        with db.get_connection() as conn:
+            cursor = conn.cursor()
 
-        counts = {}
-        for status in ["queued", "processing", "completed", "failed", "skipped"]:
-            cursor.execute(
-                "SELECT COUNT(*) as count FROM video_queue WHERE status = ?",
-                (status,),
-            )
-            counts[status] = cursor.fetchone()["count"]
+            counts = {}
+            for status in ["queued", "processing", "completed", "failed", "skipped"]:
+                cursor.execute(
+                    "SELECT COUNT(*) as count FROM video_queue WHERE status = ?",
+                    (status,),
+                )
+                counts[status] = cursor.fetchone()["count"]
 
-    return {
-        "overview": {
-            **counts,
-            "total": sum(counts.values()),
+        return {
+            "overview": {
+                **counts,
+                "total": sum(counts.values()),
+            }
         }
-    }
+    except Exception:
+        return {
+            "overview": {
+                "queued": 0, "processing": 0, "completed": 0,
+                "failed": 0, "skipped": 0, "total": 0,
+            }
+        }
 
 
 @router.get(
@@ -159,61 +167,73 @@ async def pipeline_stats(
     user: dict = Depends(get_current_user),
 ):
     """Get pipeline statistics."""
-    from database import get_database
-    db = get_database()
+    try:
+        from database import get_database
+        db = get_database()
 
-    with db.get_connection() as conn:
-        cursor = conn.cursor()
+        with db.get_connection() as conn:
+            cursor = conn.cursor()
 
-        # Status counts
-        cursor.execute(
-            "SELECT status, COUNT(*) as count FROM video_queue GROUP BY status"
-        )
-        status_counts = {row["status"]: row["count"] for row in cursor.fetchall()}
+            # Status counts
+            cursor.execute(
+                "SELECT status, COUNT(*) as count FROM video_queue GROUP BY status"
+            )
+            status_counts = {row["status"]: row["count"] for row in cursor.fetchall()}
 
-        # Average processing time
-        cursor.execute("""
-            SELECT AVG(
-                CAST((julianday(processing_completed_at) - julianday(processing_started_at)) * 86400 AS INTEGER)
-            ) as avg_seconds
-            FROM video_queue
-            WHERE status = 'completed'
-              AND processing_completed_at IS NOT NULL
-              AND processing_started_at IS NOT NULL
-        """)
-        row = cursor.fetchone()
-        avg_seconds = row["avg_seconds"] if row and row["avg_seconds"] else 0
+            # Average processing time
+            cursor.execute("""
+                SELECT AVG(
+                    CAST((julianday(processing_completed_at) - julianday(processing_started_at)) * 86400 AS INTEGER)
+                ) as avg_seconds
+                FROM video_queue
+                WHERE status = 'completed'
+                  AND processing_completed_at IS NOT NULL
+                  AND processing_started_at IS NOT NULL
+            """)
+            row = cursor.fetchone()
+            avg_seconds = row["avg_seconds"] if row and row["avg_seconds"] else 0
 
-        # Completed in last 24 hours
-        cursor.execute("""
-            SELECT COUNT(*) as count FROM video_queue
-            WHERE status = 'completed'
-              AND processing_completed_at >= datetime('now', '-1 day')
-        """)
-        last_24h = cursor.fetchone()["count"]
+            # Completed in last 24 hours
+            cursor.execute("""
+                SELECT COUNT(*) as count FROM video_queue
+                WHERE status = 'completed'
+                  AND processing_completed_at >= datetime('now', '-1 day')
+            """)
+            last_24h = cursor.fetchone()["count"]
 
-        # Completed in last 7 days
-        cursor.execute("""
-            SELECT COUNT(*) as count FROM video_queue
-            WHERE status = 'completed'
-              AND processing_completed_at >= datetime('now', '-7 days')
-        """)
-        last_7d = cursor.fetchone()["count"]
+            # Completed in last 7 days
+            cursor.execute("""
+                SELECT COUNT(*) as count FROM video_queue
+                WHERE status = 'completed'
+                  AND processing_completed_at >= datetime('now', '-7 days')
+            """)
+            last_7d = cursor.fetchone()["count"]
 
-    total = sum(status_counts.values()) if status_counts else 0
-    failed = status_counts.get("failed", 0)
-    failure_rate = (failed / total * 100) if total > 0 else 0
+        total = sum(status_counts.values()) if status_counts else 0
+        failed = status_counts.get("failed", 0)
+        failure_rate = (failed / total * 100) if total > 0 else 0
 
-    return {
-        "stats": {
-            "status_counts": status_counts,
-            "avg_processing_seconds": round(avg_seconds, 1),
-            "completed_last_24h": last_24h,
-            "completed_last_7d": last_7d,
-            "failure_rate_percent": round(failure_rate, 2),
-            "total_items": total,
+        return {
+            "stats": {
+                "status_counts": status_counts,
+                "avg_processing_seconds": round(avg_seconds, 1),
+                "completed_last_24h": last_24h,
+                "completed_last_7d": last_7d,
+                "failure_rate_percent": round(failure_rate, 2),
+                "total_items": total,
+            }
         }
-    }
+    except Exception:
+        return {
+            "stats": {
+                "status_counts": {},
+                "avg_processing_seconds": 0,
+                "completed_last_24h": 0,
+                "completed_last_7d": 0,
+                "failure_rate_percent": 0,
+                "total_items": 0,
+            }
+        }
 
 
 @router.post(
@@ -240,7 +260,11 @@ async def retry_video(
         cursor = conn.cursor()
         cursor.execute(
             """UPDATE video_queue
-               SET status = 'queued', error_message = NULL, processing_started_at = NULL
+               SET status = 'queued',
+                   error_message = NULL,
+                   processing_started_at = NULL,
+                   processing_completed_at = NULL,
+                   attempt_count = 0
                WHERE id = ?""",
             (queue_id,),
         )

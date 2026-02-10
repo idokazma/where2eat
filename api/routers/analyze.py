@@ -214,19 +214,22 @@ async def list_jobs(
             jobs = []
             for row in rows:
                 row_dict = dict(row)
+                completed = row_dict.get("progress_videos_completed", 0)
+                total = row_dict.get("progress_videos_total", 0)
+                percentage = (completed / total * 100) if total > 0 else 0.0
                 jobs.append({
-                    "job_id": row_dict.get("id", row_dict.get("job_id", "")),
+                    "job_id": row_dict.get("id", ""),
                     "status": row_dict.get("status", "unknown"),
                     "channel_info": {
-                        "channel_title": row_dict.get("channel_title", ""),
-                        "channel_id": row_dict.get("channel_id", ""),
+                        "channel_url": row_dict.get("channel_url", ""),
+                        "video_url": row_dict.get("video_url", ""),
                     },
                     "progress": {
-                        "videos_completed": row_dict.get("videos_completed", 0),
-                        "videos_total": row_dict.get("videos_total", 0),
-                        "percentage": row_dict.get("percentage", 0.0),
+                        "videos_completed": completed,
+                        "videos_total": total,
+                        "percentage": round(percentage, 1),
                     },
-                    "started_at": row_dict.get("created_at", ""),
+                    "started_at": row_dict.get("started_at", row_dict.get("created_at", "")),
                 })
 
             return JobListResponse(jobs=jobs, count=len(jobs))
