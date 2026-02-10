@@ -2,6 +2,17 @@
 Configuration settings for Where2Eat backend services.
 """
 
+import os
+
 # YouTube Transcript Collector Settings
 YOUTUBE_TRANSCRIPT_RATE_LIMIT_SECONDS = 30  # Minimum seconds between API requests
 YOUTUBE_TRANSCRIPT_CACHE_ENABLED = True  # Enable database caching
+
+# Pipeline Scheduler Settings
+PIPELINE_POLL_INTERVAL_HOURS = int(os.getenv('PIPELINE_POLL_INTERVAL_HOURS', '12'))
+PIPELINE_PROCESS_INTERVAL_MINUTES = int(os.getenv('PIPELINE_PROCESS_INTERVAL_MINUTES', '60'))
+PIPELINE_MAX_RETRY_ATTEMPTS = int(os.getenv('PIPELINE_MAX_RETRY_ATTEMPTS', '3'))
+PIPELINE_MAX_INITIAL_VIDEOS = int(os.getenv('PIPELINE_MAX_INITIAL_VIDEOS', '50'))
+PIPELINE_STALE_TIMEOUT_HOURS = int(os.getenv('PIPELINE_STALE_TIMEOUT_HOURS', '2'))
+PIPELINE_LOG_RETENTION_DAYS = int(os.getenv('PIPELINE_LOG_RETENTION_DAYS', '30'))
+PIPELINE_SCHEDULER_ENABLED = os.getenv('PIPELINE_SCHEDULER_ENABLED', 'true').lower() == 'true'
