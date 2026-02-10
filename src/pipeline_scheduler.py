@@ -373,46 +373,27 @@ class PipelineScheduler:
             logger.error("Error cleaning up old logs: %s", e)
 
     def _fetch_channel_videos(self, subscription: dict) -> List[dict]:
-        """Fetch videos from a YouTube channel or playlist.
+        """Fetch videos from a YouTube channel or playlist using yt-dlp.
 
         Returns list of dicts: [{video_id, video_url, video_title, published_at}, ...]
 
         This method is separated to be easily mockable in tests.
         Dispatches to _fetch_playlist_videos for playlist subscriptions,
-        or uses YouTubeChannelCollector for channel subscriptions.
+        or uses _fetch_videos_with_ytdlp for channel subscriptions.
+
+        No API key required — uses yt-dlp for all fetching.
         """
-        try:
-            if subscription.get('source_type') == 'playlist':
-                return self._fetch_playlist_videos(subscription)
+        if subscription.get('source_type') == 'playlist':
+            return self._fetch_playlist_videos(subscription)
 
-            from youtube_channel_collector import YouTubeChannelCollector
-            collector = YouTubeChannelCollector()
-
-            source_url = subscription.get('source_url', '')
-            videos_raw = collector.get_channel_videos(
-                channel_url=source_url,
-                max_results=PIPELINE_MAX_INITIAL_VIDEOS,
-            )
-
-            result = []
-            for v in (videos_raw or []):
-                vid = v.get('video_id')
-                if vid:
-                    result.append({
-                        'video_id': vid,
-                        'video_url': v.get('video_url', f'https://www.youtube.com/watch?v={vid}'),
-                        'video_title': v.get('title', ''),
-                        'published_at': v.get('published_at'),
-                    })
-            return result
-        except ImportError:
-            logger.error("YouTubeChannelCollector is not available")
+        source_url = subscription.get('source_url', '')
+        if not source_url:
+            logger.warning("No source_url for subscription %s", subscription.get('id'))
             return []
-        except Exception as e:
-            raise
+        return self._fetch_videos_with_ytdlp(source_url)
 
     def _fetch_playlist_videos(self, subscription: dict) -> List[dict]:
-        """Fetch videos from a YouTube playlist using YouTube Data API.
+        """Fetch videos from a YouTube playlist using yt-dlp (no API key needed).
 
         Args:
             subscription: Subscription dict with 'source_id' (playlist ID).
@@ -420,46 +401,61 @@ class PipelineScheduler:
         Returns:
             List of video dicts with video_id, video_url, video_title, published_at.
         """
-        try:
-            from googleapiclient.discovery import build
-            import os
+        playlist_id = subscription.get('source_id', '')
+        playlist_url = f'https://www.youtube.com/playlist?list={playlist_id}'
+        return self._fetch_videos_with_ytdlp(playlist_url)
 
-            api_key = os.getenv('YOUTUBE_DATA_API_KEY')
-            if not api_key:
-                logger.warning("YOUTUBE_DATA_API_KEY not set, cannot fetch playlist videos")
+    def _fetch_videos_with_ytdlp(self, url: str) -> List[dict]:
+        """Fetch video list from a YouTube URL using yt-dlp.
+
+        Works for playlists, channels, and any YouTube URL containing
+        multiple videos. Uses flat extraction (no download, no API key).
+
+        Args:
+            url: YouTube playlist or channel URL.
+
+        Returns:
+            List of video dicts with video_id, video_url, video_title, published_at.
+        """
+        try:
+            import yt_dlp
+
+            ydl_opts = {
+                'extract_flat': True,
+                'quiet': True,
+                'no_warnings': True,
+                'playlistend': PIPELINE_MAX_INITIAL_VIDEOS,
+            }
+
+            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                info = ydl.extract_info(url, download=False)
+
+            if not info:
+                logger.warning("yt-dlp returned no info for %s", url)
                 return []
 
-            youtube = build('youtube', 'v3', developerKey=api_key)
             videos = []
-            next_page = None
+            for entry in (info.get('entries') or []):
+                video_id = entry.get('id')
+                if video_id:
+                    # yt-dlp returns upload_date as YYYYMMDD; convert to ISO
+                    upload_date = entry.get('upload_date') or ''
+                    if upload_date and len(upload_date) == 8:
+                        upload_date = f'{upload_date[:4]}-{upload_date[4:6]}-{upload_date[6:8]}'
 
-            while True:
-                request = youtube.playlistItems().list(
-                    part='snippet',
-                    playlistId=subscription['source_id'],
-                    maxResults=50,
-                    pageToken=next_page
-                )
-                response = request.execute()
-
-                for item in response.get('items', []):
-                    snippet = item.get('snippet', {})
-                    video_id = snippet.get('resourceId', {}).get('videoId')
-                    if video_id:
-                        videos.append({
-                            'video_id': video_id,
-                            'video_url': f'https://www.youtube.com/watch?v={video_id}',
-                            'video_title': snippet.get('title', ''),
-                            'published_at': snippet.get('publishedAt', ''),
-                        })
-
-                next_page = response.get('nextPageToken')
-                if not next_page:
-                    break
+                    videos.append({
+                        'video_id': video_id,
+                        'video_url': entry.get('url') or f'https://www.youtube.com/watch?v={video_id}',
+                        'video_title': entry.get('title', ''),
+                        'published_at': upload_date,
+                    })
 
             return videos
+        except ImportError:
+            logger.error("yt-dlp is not installed. Install with: pip install yt-dlp")
+            return []
         except Exception as e:
-            logger.error(f"Error fetching playlist {subscription.get('source_id')}: {e}")
+            logger.error("Error fetching videos from %s: %s", url, e)
             return []
 
     def _get_backend_service(self):
