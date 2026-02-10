@@ -43,8 +43,12 @@ def get_db_session():
     try:
         import sys
         src_path = Path(__file__).parent.parent.parent / "src"
-        if str(src_path) not in sys.path:
-            sys.path.insert(0, str(src_path))
+        src_path_str = str(src_path.resolve())
+        # Ensure src is at position 0 so src/models is found before api/models
+        if src_path_str in sys.path:
+            sys.path.remove(src_path_str)
+        sys.path.insert(0, src_path_str)
+        # Import from src/models (not api/models)
         from models import get_db_session as models_get_db_session
         return models_get_db_session()
     except Exception as e:

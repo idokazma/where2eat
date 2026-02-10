@@ -28,8 +28,9 @@ for src_path in possible_src_paths:
     if src_path.exists():
         resolved = str(src_path.resolve())
         if resolved not in sys.path:
-            sys.path.append(resolved)
-        print(f"[PATH] Added to sys.path: {src_path.resolve()}")
+            # Insert at position 0 to ensure src/models takes priority over api/models
+            sys.path.insert(0, resolved)
+        print(f"[PATH] Added to sys.path (position 0): {src_path.resolve()}")
         break
 else:
     print(f"[PATH] Warning: Could not find src directory. Tried: {[str(p) for p in possible_src_paths]}")
