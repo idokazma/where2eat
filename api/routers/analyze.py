@@ -192,29 +192,50 @@ async def analyze_channel(
 async def list_jobs(
     status: Optional[str] = Query(None, description="Filter by job status"),
 ):
-    """List active analysis jobs."""
-    # Mock jobs for now - would be replaced with actual job tracking
-    mock_jobs = [
-        {
-            "job_id": "123e4567-e89b-12d3-a456-426614174000",
-            "status": "processing",
-            "channel_info": {
-                "channel_title": "Food Channel",
-                "channel_id": "UCtest123",
-            },
-            "progress": {
-                "videos_completed": 15,
-                "videos_total": 50,
-                "percentage": 30.0,
-            },
-            "started_at": datetime.now().isoformat(),
-        }
-    ]
+    """List analysis jobs from the database."""
+    try:
+        from database import get_database
+        db = get_database()
 
-    if status:
-        mock_jobs = [j for j in mock_jobs if j["status"] == status]
+        with db.get_connection() as conn:
+            cursor = conn.cursor()
 
-    return JobListResponse(jobs=mock_jobs, count=len(mock_jobs))
+            if status:
+                cursor.execute(
+                    "SELECT * FROM jobs WHERE status = ? ORDER BY created_at DESC LIMIT 50",
+                    (status,),
+                )
+            else:
+                cursor.execute(
+                    "SELECT * FROM jobs ORDER BY created_at DESC LIMIT 50"
+                )
+
+            rows = cursor.fetchall()
+            jobs = []
+            for row in rows:
+                row_dict = dict(row)
+                completed = row_dict.get("progress_videos_completed", 0)
+                total = row_dict.get("progress_videos_total", 0)
+                percentage = (completed / total * 100) if total > 0 else 0.0
+                jobs.append({
+                    "job_id": row_dict.get("id", ""),
+                    "status": row_dict.get("status", "unknown"),
+                    "channel_info": {
+                        "channel_url": row_dict.get("channel_url", ""),
+                        "video_url": row_dict.get("video_url", ""),
+                    },
+                    "progress": {
+                        "videos_completed": completed,
+                        "videos_total": total,
+                        "percentage": round(percentage, 1),
+                    },
+                    "started_at": row_dict.get("started_at", row_dict.get("created_at", "")),
+                })
+
+            return JobListResponse(jobs=jobs, count=len(jobs))
+    except Exception:
+        # If jobs table doesn't exist or query fails, return empty list
+        return JobListResponse(jobs=[], count=0)
 
 
 @router.get(

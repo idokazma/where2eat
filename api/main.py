@@ -10,8 +10,9 @@ import asyncio
 from pathlib import Path
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.base import BaseHTTPMiddleware
 from dotenv import load_dotenv
 
 # Load environment variables
@@ -45,6 +46,8 @@ from routers import (
     places_router,
     health_router,
     admin_router,
+    admin_subscriptions_router,
+    admin_pipeline_router,
 )
 
 
@@ -452,6 +455,25 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
+# Security headers middleware
+class SecurityHeadersMiddleware(BaseHTTPMiddleware):
+    """Add security headers to all responses (equivalent to Express Helmet)."""
+
+    async def dispatch(self, request: Request, call_next):
+        response = await call_next(request)
+        response.headers["X-Content-Type-Options"] = "nosniff"
+        response.headers["X-Frame-Options"] = "DENY"
+        response.headers["X-XSS-Protection"] = "1; mode=block"
+        response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+        response.headers["Strict-Transport-Security"] = (
+            "max-age=31536000; includeSubDomains"
+        )
+        return response
+
+
+app.add_middleware(SecurityHeadersMiddleware)
+
 # Include routers
 app.include_router(health_router)
 app.include_router(restaurants_router)
@@ -459,6 +481,8 @@ app.include_router(analytics_router)
 app.include_router(analyze_router)
 app.include_router(places_router)
 app.include_router(admin_router)
+app.include_router(admin_subscriptions_router)
+app.include_router(admin_pipeline_router)
 
 
 @app.get("/", include_in_schema=False)
