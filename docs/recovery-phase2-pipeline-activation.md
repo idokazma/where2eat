@@ -102,11 +102,10 @@ curl https://where2eat-production.up.railway.app/api/restaurants
 All 8 tests pass.
 
 ## Known Issues
-- `YOUTUBE_DATA_API_KEY` must be set on Railway for playlist video fetching to work. Without it, the scheduler's `_fetch_playlist_videos()` returns empty.
 - The scheduler runs poll every 12h by default. First poll won't happen until the interval fires. Use `poll` command or the `/check` endpoint to trigger immediately.
 - Google Places API is returning `REQUEST_DENIED` — needs manual verification in Google Cloud Console.
+- Video fetching uses `yt-dlp` (no API key needed). Ensure `yt-dlp` is installed in the deployment environment.
 
 ## Environment Variables Required on Railway
-- `YOUTUBE_DATA_API_KEY` — For fetching playlist videos via YouTube Data API
 - `GOOGLE_PLACES_API_KEY` — For restaurant location enrichment (currently failing)
 - `ANTHROPIC_API_KEY` — For Claude-based transcript analysis

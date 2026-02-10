@@ -4,16 +4,19 @@ Seed subscription script for Where2Eat pipeline.
 
 Usage:
     # Add a playlist subscription
-    python scripts/seed_subscription.py --url "https://www.youtube.com/playlist?list=PLxxx" --name "My Playlist"
+    python scripts/seed_subscription.py add --url "https://www.youtube.com/playlist?list=PLxxx" --name "My Playlist"
 
     # Add a channel subscription
-    python scripts/seed_subscription.py --url "https://www.youtube.com/@ChannelName" --name "My Channel"
+    python scripts/seed_subscription.py add --url "https://www.youtube.com/@ChannelName" --name "My Channel"
 
     # List all subscriptions
-    python scripts/seed_subscription.py --list
+    python scripts/seed_subscription.py list
 
     # Trigger immediate poll for all active subscriptions
-    python scripts/seed_subscription.py --poll
+    python scripts/seed_subscription.py poll
+
+    # Show pipeline status
+    python scripts/seed_subscription.py status
 
 This script is designed to be run:
 - Locally against the local database
@@ -25,7 +28,6 @@ Environment:
 """
 
 import argparse
-import json
 import os
 import sys
 from pathlib import Path
