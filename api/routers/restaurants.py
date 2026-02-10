@@ -41,16 +41,23 @@ def get_db_session():
     if not use_sqlalchemy():
         return None
     try:
-        import sys
-        src_path = Path(__file__).parent.parent.parent / "src"
-        src_path_str = str(src_path.resolve())
-        # Ensure src is at position 0 so src/models is found before api/models
-        if src_path_str in sys.path:
-            sys.path.remove(src_path_str)
-        sys.path.insert(0, src_path_str)
-        # Import from src/models (not api/models)
-        from models import get_db_session as models_get_db_session
-        return models_get_db_session()
+        import importlib.util
+
+        # Explicitly load src/models/base.py to avoid collision with api/models
+        src_base_path = Path(__file__).parent.parent.parent / "src" / "models" / "base.py"
+        if not src_base_path.exists():
+            # Try Railway absolute path
+            src_base_path = Path("/app/src/models/base.py")
+
+        if not src_base_path.exists():
+            print(f"Warning: Could not find src/models/base.py at {src_base_path}")
+            return None
+
+        spec = importlib.util.spec_from_file_location("src_models_base", src_base_path)
+        src_models_base = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(src_models_base)
+
+        return src_models_base.get_db_session()
     except Exception as e:
         print(f"Warning: Could not get database session: {e}")
         return None
