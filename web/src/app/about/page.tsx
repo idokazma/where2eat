@@ -1,10 +1,36 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ChevronRight, Youtube, Sparkles, MapPin } from 'lucide-react';
 import { PageLayout } from '@/components/layout';
+import { endpoints } from '@/lib/config';
 
 export default function AboutPage() {
+  const [restaurantCount, setRestaurantCount] = useState<number | null>(null);
+  const [episodeCount, setEpisodeCount] = useState<number | null>(null);
+
+  useEffect(() => {
+    fetch(endpoints.restaurants.list())
+      .then(res => res.json())
+      .then(data => {
+        const restaurants = data.restaurants || [];
+        setRestaurantCount(data.count ?? restaurants.length);
+        const episodes = new Set(
+          restaurants.map((r: any) => r.episode_info?.video_id).filter(Boolean)
+        );
+        setEpisodeCount(episodes.size);
+      })
+      .catch(() => {
+        // Silently fail — stats will show loading state
+      });
+  }, []);
+
+  const formatStat = (count: number | null) => {
+    if (count === null) return '...';
+    return count.toLocaleString();
+  };
+
   return (
     <PageLayout showHeader showBottomNav showSettings={false}>
       {/* Back button */}
@@ -73,11 +99,11 @@ export default function AboutPage() {
           {/* Stats */}
           <div className="grid grid-cols-2 gap-4 p-4 bg-[var(--color-surface)] rounded-xl">
             <div className="text-center">
-              <p className="text-2xl font-bold text-[var(--color-accent)]">200+</p>
+              <p className="text-2xl font-bold text-[var(--color-accent)]">{formatStat(restaurantCount)}</p>
               <p className="text-sm text-[var(--color-ink-muted)]">מסעדות</p>
             </div>
             <div className="text-center">
-              <p className="text-2xl font-bold text-[var(--color-gold)]">50+</p>
+              <p className="text-2xl font-bold text-[var(--color-gold)]">{formatStat(episodeCount)}</p>
               <p className="text-sm text-[var(--color-ink-muted)]">פרקים</p>
             </div>
           </div>

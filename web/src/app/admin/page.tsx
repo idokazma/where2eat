@@ -1,10 +1,9 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
 import {
   Settings,
@@ -18,10 +17,12 @@ import {
   Youtube,
   FileJson,
   Trash2,
-  Download
+  Download,
+  Lock,
+  LogOut,
 } from "lucide-react"
 import { useLanguage } from "@/contexts/LanguageContext"
-import { endpoints } from "@/lib/config"
+import { endpoints, getApiUrl } from "@/lib/config"
 
 interface Job {
   id: number
@@ -41,7 +42,84 @@ interface Stats {
   failed_jobs: number
 }
 
-export default function AdminPage() {
+function AdminLoginForm({ onLogin }: { onLogin: (token: string) => void }) {
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [error, setError] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setError("")
+    setIsLoading(true)
+
+    try {
+      const response = await fetch(getApiUrl("/api/admin/auth/login"), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      })
+
+      const data = await response.json()
+
+      if (response.ok && data.token) {
+        onLogin(data.token)
+      } else {
+        setError(data.detail || "Invalid credentials")
+      }
+    } catch {
+      setError("Failed to connect to server")
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  return (
+    <div className="flex items-center justify-center min-h-[60vh]">
+      <Card className="w-full max-w-sm">
+        <CardHeader className="text-center">
+          <div className="mx-auto w-12 h-12 rounded-full bg-muted flex items-center justify-center mb-2">
+            <Lock className="size-6 text-muted-foreground" />
+          </div>
+          <CardTitle>Admin Login</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <Input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              autoComplete="email"
+            />
+            <Input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              autoComplete="current-password"
+            />
+            {error && (
+              <p className="text-sm text-red-600">{error}</p>
+            )}
+            <Button type="submit" className="w-full" disabled={isLoading}>
+              {isLoading ? (
+                <RefreshCw className="size-4 mr-2 animate-spin" />
+              ) : (
+                <Lock className="size-4 mr-2" />
+              )}
+              {isLoading ? "Signing in..." : "Sign In"}
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
+    </div>
+  )
+}
+
+function AdminDashboard({ token, onLogout }: { token: string; onLogout: () => void }) {
   const { t } = useLanguage()
   const [youtubeUrl, setYoutubeUrl] = useState("")
   const [isAnalyzing, setIsAnalyzing] = useState(false)
@@ -50,12 +128,12 @@ export default function AdminPage() {
   const [isLoadingJobs, setIsLoadingJobs] = useState(false)
   const [isLoadingStats, setIsLoadingStats] = useState(false)
 
-  useEffect(() => {
-    loadJobs()
-    loadStats()
-  }, [])
+  const authHeaders = {
+    Authorization: `Bearer ${token}`,
+    "Content-Type": "application/json",
+  }
 
-  const loadJobs = async () => {
+  const loadJobs = useCallback(async () => {
     setIsLoadingJobs(true)
     try {
       const response = await fetch(endpoints.jobs.list())
@@ -68,16 +146,15 @@ export default function AdminPage() {
     } finally {
       setIsLoadingJobs(false)
     }
-  }
+  }, [])
 
-  const loadStats = async () => {
+  const loadStats = useCallback(async () => {
     setIsLoadingStats(true)
     try {
       const response = await fetch(endpoints.restaurants.list())
       const data = await response.json()
 
-      // Calculate stats from the data
-      const totalRestaurants = data.restaurants?.length || 0
+      const totalRestaurants = data.restaurants?.length || data.count || 0
       const episodeIds = new Set(data.restaurants?.map((r: any) => r.episode_info?.video_id).filter(Boolean) || [])
 
       setStats({
@@ -93,7 +170,12 @@ export default function AdminPage() {
     } finally {
       setIsLoadingStats(false)
     }
-  }
+  }, [jobs])
+
+  useEffect(() => {
+    loadJobs()
+    loadStats()
+  }, [loadJobs, loadStats])
 
   const handleAnalyzeVideo = async () => {
     if (!youtubeUrl) return
@@ -102,9 +184,7 @@ export default function AdminPage() {
     try {
       const response = await fetch(endpoints.analyze.video(), {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: authHeaders,
         body: JSON.stringify({ url: youtubeUrl }),
       })
 
@@ -115,7 +195,7 @@ export default function AdminPage() {
         setYoutubeUrl("")
         loadJobs()
       } else {
-        alert(data.error || t('youtube.errorStarting'))
+        alert(data.error || data.detail || t('youtube.errorStarting'))
       }
     } catch (error) {
       console.error('Error analyzing video:', error)
@@ -129,6 +209,7 @@ export default function AdminPage() {
     try {
       await fetch(endpoints.jobs.cancel(String(jobId)), {
         method: 'POST',
+        headers: authHeaders,
       })
       loadJobs()
     } catch (error) {
@@ -166,13 +247,19 @@ export default function AdminPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div>
-        <h1 className="text-4xl font-display font-black tracking-tight text-foreground">
-          Admin Dashboard
-        </h1>
-        <p className="text-muted-foreground mt-2">
-          Manage restaurants, analyze videos, and monitor system status
-        </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-4xl font-display font-black tracking-tight text-foreground">
+            Admin Dashboard
+          </h1>
+          <p className="text-muted-foreground mt-2">
+            Manage restaurants, analyze videos, and monitor system status
+          </p>
+        </div>
+        <Button variant="outline" size="sm" onClick={onLogout}>
+          <LogOut className="size-4 mr-2" />
+          Logout
+        </Button>
       </div>
 
       {/* Stats Overview */}
@@ -353,4 +440,59 @@ export default function AdminPage() {
       </Card>
     </div>
   )
+}
+
+const STORAGE_KEY = "where2eat_admin_token"
+
+export default function AdminPage() {
+  const [token, setToken] = useState<string | null>(null)
+  const [isChecking, setIsChecking] = useState(true)
+
+  useEffect(() => {
+    // Check for existing token in sessionStorage
+    const stored = sessionStorage.getItem(STORAGE_KEY)
+    if (stored) {
+      // Verify the token is still valid
+      fetch(getApiUrl("/api/admin/auth/me"), {
+        headers: { Authorization: `Bearer ${stored}` },
+      })
+        .then((res) => {
+          if (res.ok) {
+            setToken(stored)
+          } else {
+            sessionStorage.removeItem(STORAGE_KEY)
+          }
+        })
+        .catch(() => {
+          sessionStorage.removeItem(STORAGE_KEY)
+        })
+        .finally(() => setIsChecking(false))
+    } else {
+      setIsChecking(false)
+    }
+  }, [])
+
+  const handleLogin = (newToken: string) => {
+    sessionStorage.setItem(STORAGE_KEY, newToken)
+    setToken(newToken)
+  }
+
+  const handleLogout = () => {
+    sessionStorage.removeItem(STORAGE_KEY)
+    setToken(null)
+  }
+
+  if (isChecking) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <RefreshCw className="size-6 animate-spin text-muted-foreground" />
+      </div>
+    )
+  }
+
+  if (!token) {
+    return <AdminLoginForm onLogin={handleLogin} />
+  }
+
+  return <AdminDashboard token={token} onLogout={handleLogout} />
 }
