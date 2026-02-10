@@ -5,6 +5,9 @@ google-api-python-client==2.108.0
 google-auth-httplib2==0.2.0
 google-auth-oauthlib==1.1.0
 
+# YouTube video listing (no API key needed)
+yt-dlp>=2024.0.0
+
 # Scheduler
 apscheduler>=3.10.0
 

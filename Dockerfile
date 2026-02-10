@@ -14,7 +14,8 @@ RUN pip install --no-cache-dir \
     google-api-python-client \
     python-dotenv \
     httpx \
-    apscheduler
+    apscheduler \
+    yt-dlp
 
 # Copy source code
 COPY src ./src
