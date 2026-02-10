@@ -159,6 +159,33 @@ class TestPollSubscriptions:
         logs = pl.get_logs(event_type='poll_completed')
         assert logs['total'] >= 1
 
+    def test_poll_handles_playlist_subscription(self, scheduler, db):
+        """Playlist subscriptions use _fetch_playlist_videos."""
+        mgr = SubscriptionManager(db)
+        sub = mgr.add_subscription(
+            source_url='https://www.youtube.com/playlist?list=PLtest123',
+            source_name='Test Playlist',
+            priority=3,
+        )
+
+        videos = _make_video_list(['pl_vid_1', 'pl_vid_2'])
+
+        with patch.object(
+            scheduler, '_fetch_playlist_videos', return_value=videos
+        ) as mock_fetch_playlist:
+            scheduler.poll_subscriptions()
+
+        # _fetch_playlist_videos should have been called (via _fetch_channel_videos dispatch)
+        mock_fetch_playlist.assert_called_once()
+        call_arg = mock_fetch_playlist.call_args[0][0]
+        assert call_arg['source_type'] == 'playlist'
+        assert call_arg['source_id'] == 'PLtest123'
+
+        # Videos should be enqueued
+        queue_mgr = VideoQueueManager(db)
+        depth = queue_mgr.get_queue_depth()
+        assert depth == 2
+
     def test_poll_handles_api_error_gracefully(self, scheduler, db):
         """If YT API fails, logs error, continues to next subscription."""
         # Create two subscriptions

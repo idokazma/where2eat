@@ -373,14 +373,18 @@ class PipelineScheduler:
             logger.error("Error cleaning up old logs: %s", e)
 
     def _fetch_channel_videos(self, subscription: dict) -> List[dict]:
-        """Fetch videos from a YouTube channel/playlist.
+        """Fetch videos from a YouTube channel or playlist.
 
         Returns list of dicts: [{video_id, video_url, video_title, published_at}, ...]
 
         This method is separated to be easily mockable in tests.
-        Uses YouTubeChannelCollector internally.
+        Dispatches to _fetch_playlist_videos for playlist subscriptions,
+        or uses YouTubeChannelCollector for channel subscriptions.
         """
         try:
+            if subscription.get('source_type') == 'playlist':
+                return self._fetch_playlist_videos(subscription)
+
             from youtube_channel_collector import YouTubeChannelCollector
             collector = YouTubeChannelCollector()
 
@@ -406,6 +410,57 @@ class PipelineScheduler:
             return []
         except Exception as e:
             raise
+
+    def _fetch_playlist_videos(self, subscription: dict) -> List[dict]:
+        """Fetch videos from a YouTube playlist using YouTube Data API.
+
+        Args:
+            subscription: Subscription dict with 'source_id' (playlist ID).
+
+        Returns:
+            List of video dicts with video_id, video_url, video_title, published_at.
+        """
+        try:
+            from googleapiclient.discovery import build
+            import os
+
+            api_key = os.getenv('YOUTUBE_DATA_API_KEY')
+            if not api_key:
+                logger.warning("YOUTUBE_DATA_API_KEY not set, cannot fetch playlist videos")
+                return []
+
+            youtube = build('youtube', 'v3', developerKey=api_key)
+            videos = []
+            next_page = None
+
+            while True:
+                request = youtube.playlistItems().list(
+                    part='snippet',
+                    playlistId=subscription['source_id'],
+                    maxResults=50,
+                    pageToken=next_page
+                )
+                response = request.execute()
+
+                for item in response.get('items', []):
+                    snippet = item.get('snippet', {})
+                    video_id = snippet.get('resourceId', {}).get('videoId')
+                    if video_id:
+                        videos.append({
+                            'video_id': video_id,
+                            'video_url': f'https://www.youtube.com/watch?v={video_id}',
+                            'video_title': snippet.get('title', ''),
+                            'published_at': snippet.get('publishedAt', ''),
+                        })
+
+                next_page = response.get('nextPageToken')
+                if not next_page:
+                    break
+
+            return videos
+        except Exception as e:
+            logger.error(f"Error fetching playlist {subscription.get('source_id')}: {e}")
+            return []
 
     def _get_backend_service(self):
         """Lazy-load BackendService (to avoid import issues in tests)."""

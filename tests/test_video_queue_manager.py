@@ -281,6 +281,41 @@ class TestFailVideo:
         assert len(error_log) == 1
         assert error_log[0]['message'] == 'Something broke'
 
+    def test_mark_failed_permanent_failure_skips(self, db, manager):
+        """Videos with permanent failures are skipped, not retried."""
+        permanent_errors = [
+            "Transcript not available for this video",
+            "Video unavailable",
+            "Private video - cannot access",
+            "Sign in to confirm your age to view",
+        ]
+
+        for i, error_msg in enumerate(permanent_errors):
+            entry = manager.enqueue(
+                video_id=f'perm_fail_{i}',
+                video_url=f'https://youtube.com/watch?v=perm_fail_{i}',
+            )
+
+            # Dequeue so status is 'processing' (simulating real flow)
+            past = (datetime.utcnow() - timedelta(minutes=5)).isoformat()
+            with db.get_connection() as conn:
+                conn.execute(
+                    "UPDATE video_queue SET scheduled_for = ? WHERE id = ?",
+                    (past, entry['id']),
+                )
+            dequeued = manager.dequeue()
+            assert dequeued is not None
+
+            result = manager.mark_failed(dequeued['id'], error_msg)
+            assert result is True
+
+            video = manager.get_video(dequeued['id'])
+            assert video['status'] == 'skipped', (
+                f"Expected 'skipped' for error '{error_msg}', got '{video['status']}'"
+            )
+            # Should NOT be requeued
+            assert video['status'] != 'queued'
+
     def test_retry_backoff_calculation(self, db, manager):
         """Backoff increases exponentially: 1h, 2h, 4h."""
         entry = manager.enqueue(video_id='backoff1', video_url='url_backoff1')

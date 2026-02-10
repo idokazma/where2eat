@@ -188,10 +188,20 @@ class VideoQueueManager:
             )
             return cursor.rowcount > 0
 
+    # Error patterns that indicate permanent failures (no point retrying)
+    PERMANENT_FAILURE_PATTERNS = [
+        "Transcript not available",
+        "Video unavailable",
+        "Private video",
+        "Sign in to confirm your age",
+    ]
+
     def mark_failed(self, queue_id: str, error_message: str) -> bool:
         """Mark a video as failed.
 
-        If attempt_count < max_attempts: requeue with exponential backoff.
+        If the error_message matches a permanent failure pattern, the video
+        is immediately marked as 'skipped' regardless of attempt count.
+        Otherwise, if attempt_count < max_attempts: requeue with exponential backoff.
         Otherwise: permanently mark as 'failed'.
         Appends to error_log JSON array.
         """
@@ -228,6 +238,32 @@ class VideoQueueManager:
             )
 
             new_attempt_count = current_attempt_count + 1
+
+            # Check for permanent failure patterns - skip immediately
+            is_permanent = any(
+                pattern in error_message
+                for pattern in self.PERMANENT_FAILURE_PATTERNS
+            )
+            if is_permanent:
+                cursor.execute(
+                    """
+                    UPDATE video_queue
+                    SET status = 'skipped',
+                        attempt_count = ?,
+                        error_message = ?,
+                        error_log = ?,
+                        processing_completed_at = ?
+                    WHERE id = ?
+                    """,
+                    (
+                        new_attempt_count,
+                        error_message,
+                        json.dumps(error_log),
+                        datetime.utcnow().isoformat(),
+                        queue_id,
+                    ),
+                )
+                return True
 
             if new_attempt_count < max_attempts:
                 # Requeue with exponential backoff
