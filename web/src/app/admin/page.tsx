@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -65,7 +65,7 @@ function AdminLoginForm({ onLogin }: { onLogin: (token: string) => void }) {
       if (response.ok && data.token) {
         onLogin(data.token)
       } else {
-        setError(data.detail || "Invalid credentials")
+        setError(data.error || data.detail || "Invalid credentials")
       }
     } catch {
       setError("Failed to connect to server")
@@ -133,7 +133,7 @@ function AdminDashboard({ token, onLogout }: { token: string; onLogout: () => vo
     "Content-Type": "application/json",
   }
 
-  const loadJobs = useCallback(async () => {
+  const loadJobs = async () => {
     setIsLoadingJobs(true)
     try {
       const response = await fetch(endpoints.jobs.list())
@@ -146,36 +146,42 @@ function AdminDashboard({ token, onLogout }: { token: string; onLogout: () => vo
     } finally {
       setIsLoadingJobs(false)
     }
-  }, [])
+  }
 
-  const loadStats = useCallback(async () => {
+  const loadStats = async () => {
     setIsLoadingStats(true)
     try {
-      const response = await fetch(endpoints.restaurants.list())
-      const data = await response.json()
+      const [restaurantRes, jobRes] = await Promise.all([
+        fetch(endpoints.restaurants.list()),
+        fetch(endpoints.jobs.list()),
+      ])
+      const restaurantData = await restaurantRes.json()
+      const jobData = await jobRes.json()
 
-      const totalRestaurants = data.restaurants?.length || data.count || 0
-      const episodeIds = new Set(data.restaurants?.map((r: any) => r.episode_info?.video_id).filter(Boolean) || [])
+      const totalRestaurants = restaurantData.restaurants?.length || restaurantData.count || 0
+      const episodeIds = new Set(restaurantData.restaurants?.map((r: any) => r.episode_info?.video_id).filter(Boolean) || [])
+      const jobList = jobData.jobs || []
 
       setStats({
         total_restaurants: totalRestaurants,
         total_episodes: episodeIds.size,
-        total_jobs: jobs.length,
-        pending_jobs: jobs.filter(j => j.status === 'pending' || j.status === 'processing').length,
-        completed_jobs: jobs.filter(j => j.status === 'completed').length,
-        failed_jobs: jobs.filter(j => j.status === 'failed').length
+        total_jobs: jobList.length,
+        pending_jobs: jobList.filter((j: Job) => j.status === 'pending' || j.status === 'processing').length,
+        completed_jobs: jobList.filter((j: Job) => j.status === 'completed').length,
+        failed_jobs: jobList.filter((j: Job) => j.status === 'failed').length
       })
     } catch (error) {
       console.error('Failed to load stats:', error)
     } finally {
       setIsLoadingStats(false)
     }
-  }, [jobs])
+  }
 
   useEffect(() => {
     loadJobs()
     loadStats()
-  }, [loadJobs, loadStats])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const handleAnalyzeVideo = async () => {
     if (!youtubeUrl) return
@@ -208,7 +214,7 @@ function AdminDashboard({ token, onLogout }: { token: string; onLogout: () => vo
   const handleCancelJob = async (jobId: number) => {
     try {
       await fetch(endpoints.jobs.cancel(String(jobId)), {
-        method: 'POST',
+        method: 'DELETE',
         headers: authHeaders,
       })
       loadJobs()
@@ -477,7 +483,19 @@ export default function AdminPage() {
     setToken(newToken)
   }
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    // Call server-side logout to invalidate session and clear httpOnly cookie
+    try {
+      const stored = sessionStorage.getItem(STORAGE_KEY)
+      if (stored) {
+        await fetch(getApiUrl("/api/admin/auth/logout"), {
+          method: "POST",
+          headers: { Authorization: `Bearer ${stored}` },
+        })
+      }
+    } catch {
+      // Continue with client-side cleanup even if server call fails
+    }
     sessionStorage.removeItem(STORAGE_KEY)
     setToken(null)
   }

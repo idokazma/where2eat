@@ -22,7 +22,9 @@ export default function AboutPage() {
         setEpisodeCount(episodes.size);
       })
       .catch(() => {
-        // Silently fail — stats will show loading state
+        // Show 0 on error rather than stuck loading state
+        setRestaurantCount(0);
+        setEpisodeCount(0);
       });
   }, []);
 
