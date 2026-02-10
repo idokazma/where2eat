@@ -13,7 +13,9 @@ import {
   ChevronRight,
   FileSearch,
   ShieldCheck,
-  X
+  X,
+  Rss,
+  GitBranch
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -24,6 +26,8 @@ const navigation = [
   { name: 'Restaurants', href: '/dashboard/restaurants', icon: UtensilsCrossed },
   { name: 'Articles', href: '/dashboard/articles', icon: FileText },
   { name: 'Videos', href: '/dashboard/videos', icon: Video },
+  { name: 'Subscriptions', href: '/dashboard/subscriptions', icon: Rss },
+  { name: 'Pipeline', href: '/dashboard/pipeline', icon: GitBranch },
   { name: 'Analytics', href: '/dashboard/analytics', icon: BarChart3 },
   { name: 'Verification', href: '/dashboard/verification', icon: ShieldCheck },
   { name: 'Audit Log', href: '/dashboard/audit', icon: FileSearch },
