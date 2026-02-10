@@ -162,6 +162,18 @@ class TestFetchVideosWithYtdlp:
 
         assert result == []
 
+    def test_handles_none_info_result(self, scheduler):
+        """Returns empty list when extract_info returns None."""
+        mock_ydl = MagicMock()
+        mock_ydl.__enter__ = MagicMock(return_value=mock_ydl)
+        mock_ydl.__exit__ = MagicMock(return_value=False)
+        mock_ydl.extract_info.return_value = None
+
+        with patch('yt_dlp.YoutubeDL', return_value=mock_ydl):
+            result = scheduler._fetch_videos_with_ytdlp('https://www.youtube.com/playlist?list=PLtest')
+
+        assert result == []
+
     def test_returns_empty_on_import_error(self, scheduler):
         """Returns empty list if yt-dlp is not installed."""
         with patch.dict('sys.modules', {'yt_dlp': None}):

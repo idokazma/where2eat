@@ -383,14 +383,14 @@ class PipelineScheduler:
 
         No API key required — uses yt-dlp for all fetching.
         """
-        try:
-            if subscription.get('source_type') == 'playlist':
-                return self._fetch_playlist_videos(subscription)
+        if subscription.get('source_type') == 'playlist':
+            return self._fetch_playlist_videos(subscription)
 
-            source_url = subscription.get('source_url', '')
-            return self._fetch_videos_with_ytdlp(source_url)
-        except Exception as e:
-            raise
+        source_url = subscription.get('source_url', '')
+        if not source_url:
+            logger.warning("No source_url for subscription %s", subscription.get('id'))
+            return []
+        return self._fetch_videos_with_ytdlp(source_url)
 
     def _fetch_playlist_videos(self, subscription: dict) -> List[dict]:
         """Fetch videos from a YouTube playlist using yt-dlp (no API key needed).
@@ -429,6 +429,10 @@ class PipelineScheduler:
 
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 info = ydl.extract_info(url, download=False)
+
+            if not info:
+                logger.warning("yt-dlp returned no info for %s", url)
+                return []
 
             videos = []
             for entry in (info.get('entries') or []):
