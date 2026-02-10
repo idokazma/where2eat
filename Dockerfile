@@ -13,7 +13,8 @@ RUN pip install --no-cache-dir \
     openai \
     google-api-python-client \
     python-dotenv \
-    httpx
+    httpx \
+    apscheduler
 
 # Copy source code
 COPY src ./src

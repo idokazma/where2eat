@@ -347,13 +347,44 @@ async def fetch_default_video_on_startup():
             print(f"[STARTUP] Server will continue without preloaded data")
 
 
+def start_pipeline_scheduler():
+    """Start the auto video fetching pipeline scheduler."""
+    try:
+        from pipeline_scheduler import PipelineScheduler
+        scheduler = PipelineScheduler()
+        scheduler.start()
+        status = scheduler.get_status()
+        if status['running']:
+            print(f"[SCHEDULER] Pipeline scheduler started")
+            print(f"[SCHEDULER] Poll interval: every {status.get('poll_interval_hours', '?')}h")
+            print(f"[SCHEDULER] Process interval: every {status.get('process_interval_minutes', '?')}m")
+        else:
+            print(f"[SCHEDULER] Pipeline scheduler is disabled via config")
+        return scheduler
+    except Exception as e:
+        print(f"[SCHEDULER] Failed to start pipeline scheduler: {e}")
+        import traceback
+        traceback.print_exc()
+        return None
+
+
+# Global scheduler reference for health checks
+_pipeline_scheduler = None
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Lifespan context manager for startup and shutdown events."""
+    global _pipeline_scheduler
     # Startup: fetch default video
     await fetch_default_video_on_startup()
+    # Start pipeline scheduler
+    _pipeline_scheduler = start_pipeline_scheduler()
     yield
-    # Shutdown: cleanup if needed
+    # Shutdown: stop scheduler and cleanup
+    if _pipeline_scheduler:
+        print("[SHUTDOWN] Stopping pipeline scheduler...")
+        _pipeline_scheduler.stop()
     print("[SHUTDOWN] Server shutting down...")
 
 

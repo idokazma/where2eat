@@ -563,6 +563,74 @@ export const bulkApi = {
   },
 };
 
+/**
+ * Subscriptions API endpoints
+ */
+export const subscriptionsApi = {
+  async list(): Promise<any> {
+    return apiFetch('/api/admin/subscriptions');
+  },
+  async get(id: string): Promise<any> {
+    return apiFetch(`/api/admin/subscriptions/${id}`);
+  },
+  async add(data: { source_url: string; source_name?: string; priority?: number; check_interval_hours?: number }): Promise<any> {
+    return apiFetch('/api/admin/subscriptions', { method: 'POST', body: JSON.stringify(data) });
+  },
+  async update(id: string, data: any): Promise<any> {
+    return apiFetch(`/api/admin/subscriptions/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  },
+  async delete(id: string): Promise<void> {
+    return apiFetch(`/api/admin/subscriptions/${id}`, { method: 'DELETE' });
+  },
+  async pause(id: string): Promise<any> {
+    return apiFetch(`/api/admin/subscriptions/${id}/pause`, { method: 'POST' });
+  },
+  async resume(id: string): Promise<any> {
+    return apiFetch(`/api/admin/subscriptions/${id}/resume`, { method: 'POST' });
+  },
+  async check(id: string): Promise<any> {
+    return apiFetch(`/api/admin/subscriptions/${id}/check`, { method: 'POST' });
+  },
+};
+
+/**
+ * Pipeline API endpoints
+ */
+export const pipelineApi = {
+  async getOverview(): Promise<any> {
+    return apiFetch('/api/admin/pipeline');
+  },
+  async getQueue(page = 1, limit = 20): Promise<any> {
+    return apiFetch(`/api/admin/pipeline/queue?page=${page}&limit=${limit}`);
+  },
+  async getHistory(page = 1, limit = 20): Promise<any> {
+    return apiFetch(`/api/admin/pipeline/history?page=${page}&limit=${limit}`);
+  },
+  async getLogs(params?: { level?: string; event_type?: string; page?: number; limit?: number }): Promise<any> {
+    const qp = new URLSearchParams();
+    if (params?.level) qp.append('level', params.level);
+    if (params?.event_type) qp.append('event_type', params.event_type);
+    if (params?.page) qp.append('page', params.page.toString());
+    if (params?.limit) qp.append('limit', params.limit.toString());
+    return apiFetch(`/api/admin/pipeline/logs?${qp}`);
+  },
+  async getStats(): Promise<any> {
+    return apiFetch('/api/admin/pipeline/stats');
+  },
+  async retry(id: string): Promise<any> {
+    return apiFetch(`/api/admin/pipeline/${id}/retry`, { method: 'POST' });
+  },
+  async skip(id: string): Promise<any> {
+    return apiFetch(`/api/admin/pipeline/${id}/skip`, { method: 'POST' });
+  },
+  async prioritize(id: string): Promise<any> {
+    return apiFetch(`/api/admin/pipeline/${id}/prioritize`, { method: 'POST' });
+  },
+  async remove(id: string): Promise<void> {
+    return apiFetch(`/api/admin/pipeline/${id}`, { method: 'DELETE' });
+  },
+};
+
 export default {
   auth: authApi,
   restaurants: restaurantsApi,
@@ -570,4 +638,6 @@ export default {
   articles: articlesApi,
   videos: videosApi,
   bulk: bulkApi,
+  subscriptions: subscriptionsApi,
+  pipeline: pipelineApi,
 };

@@ -121,6 +121,10 @@ YouTube URL → Transcript Collector → AI Analyzer → SQLite Database → Exp
 | `map_integration.py` | GeoJSON and map visualization generation |
 | `channel_batch_processor.py` | Batch processing for YouTube channels |
 | `admin_database.py` | Admin-specific database operations |
+| `subscription_manager.py` | YouTube channel/playlist subscription management |
+| `video_queue_manager.py` | Video processing queue with priority scheduling and retry |
+| `pipeline_scheduler.py` | APScheduler-based auto polling and processing orchestrator |
+| `pipeline_logger.py` | Structured pipeline event logging with rotation |
 
 ### Frontend (web/)
 
@@ -180,8 +184,18 @@ YouTube URL → Transcript Collector → AI Analyzer → SQLite Database → Exp
 | GET | `/api/jobs` | List background jobs |
 | GET | `/api/jobs/:jobId/status` | Job status |
 | | `/api/admin/*` | Admin routes (auth required) |
+| | `/api/admin/subscriptions/*` | Channel subscription management (auth required) |
+| | `/api/admin/pipeline/*` | Pipeline queue, logs, stats (auth required) |
 
 **Admin route modules** (`api/routes/`): `admin-articles.js`, `admin-restaurants.js`, `admin-audit.js`, `admin-videos.js`, `admin-analytics.js`, `admin-bulk.js`, `admin-auth.js`
+
+**Admin Dashboard Pages:**
+
+| Route | Description |
+|-------|-------------|
+| `/dashboard/subscriptions` | Channel/playlist subscription management |
+| `/dashboard/pipeline` | Pipeline queue monitor with retry/skip/prioritize |
+| `/dashboard/pipeline/logs` | Filterable pipeline event log viewer |
 
 ### Admin Dashboard (admin/)
 
@@ -190,13 +204,14 @@ Separate Next.js app for content management:
 - Article management with Tiptap rich text editor
 - Analytics dashboard with Recharts
 - JWT-based authentication with protected routes
+- Pipeline monitoring: subscription management, video queue, processing logs
 - Runs on port 3001 by default
 
 ### Data Storage
 
 | Path | Contents |
 |------|----------|
-| `data/where2eat.db` | SQLite database (primary storage) |
+| `data/where2eat.db` | SQLite database (primary storage). Tables: episodes, restaurants, jobs, subscriptions, video_queue, pipeline_logs, admin_users, admin_sessions, restaurant_edits, settings, articles |
 | `data/restaurants/` | Individual restaurant JSON files |
 | `data/restaurants_backup/` | Restaurant backup files (20+ Hebrew-named JSONs) |
 | `transcripts/` | YouTube transcript cache |
@@ -257,6 +272,11 @@ Additional workflows: `deploy.yml`, `pages.yml`, `scraper.yml`
 | `test_channel_batch_processor.py` | Batch processing |
 | `test_pipeline_integration.py` | End-to-end pipeline |
 | `test_path_resolution.py` | Path resolution |
+| `test_subscription_manager.py` | Subscription CRUD, URL resolution |
+| `test_video_queue_manager.py` | Queue operations, scheduling, retry |
+| `test_pipeline_logger.py` | Pipeline logging, filtering, rotation |
+| `test_pipeline_scheduler.py` | Scheduler orchestration, polling, processing |
+| `test_auto_pipeline_integration.py` | End-to-end pipeline flow integration |
 
 Frontend tests are in `web/src/components/__tests__/` and `web/src/lib/__tests__/`.
 
@@ -268,6 +288,7 @@ Frontend tests are in `web/src/components/__tests__/` and `web/src/lib/__tests__
 - `google-api-python-client==2.108.0` - Google APIs (Places, Maps)
 - `google-auth-httplib2==0.2.0`, `google-auth-oauthlib==1.1.0` - Google auth
 - `python-dotenv==1.0.0` - Environment variables
+- `apscheduler>=3.10.0` - Background job scheduling for auto video pipeline
 
 ### Frontend (web/)
 - `next@16.1.1`, `react@19.2.3` - Framework
@@ -308,6 +329,12 @@ Frontend (`web/.env.local`):
 
 Admin (`admin/.env.production`):
 - `NEXT_PUBLIC_API_URL` - API server URL
+
+Pipeline scheduler (optional, in `.env`):
+- `PIPELINE_POLL_INTERVAL_HOURS` (default: 12)
+- `PIPELINE_PROCESS_INTERVAL_MINUTES` (default: 60)
+- `PIPELINE_SCHEDULER_ENABLED` (default: true)
+- `PIPELINE_MAX_INITIAL_VIDEOS` (default: 50)
 
 Claude Code MCP tokens (in `.env`):
 - `GITHUB_TOKEN` - GitHub MCP server

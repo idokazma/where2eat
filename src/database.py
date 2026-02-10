@@ -217,6 +217,70 @@ class Database:
                 )
             ''')
 
+            # Subscriptions table (monitored YouTube channels/playlists)
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS subscriptions (
+                    id TEXT PRIMARY KEY,
+                    source_type TEXT NOT NULL CHECK(source_type IN ('channel', 'playlist')),
+                    source_url TEXT NOT NULL,
+                    source_id TEXT UNIQUE NOT NULL,
+                    source_name TEXT,
+                    is_active INTEGER DEFAULT 1,
+                    priority INTEGER DEFAULT 5,
+                    check_interval_hours INTEGER DEFAULT 12,
+                    last_checked_at TEXT,
+                    last_video_published_at TEXT,
+                    total_videos_found INTEGER DEFAULT 0,
+                    total_videos_processed INTEGER DEFAULT 0,
+                    total_restaurants_found INTEGER DEFAULT 0,
+                    created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TEXT DEFAULT CURRENT_TIMESTAMP
+                )
+            ''')
+
+            # Video queue table (videos waiting to be processed)
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS video_queue (
+                    id TEXT PRIMARY KEY,
+                    subscription_id TEXT,
+                    video_id TEXT UNIQUE NOT NULL,
+                    video_url TEXT NOT NULL,
+                    video_title TEXT,
+                    channel_name TEXT,
+                    published_at TEXT,
+                    discovered_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                    status TEXT DEFAULT 'queued' CHECK(status IN ('queued', 'processing', 'completed', 'failed', 'skipped')),
+                    priority INTEGER DEFAULT 5,
+                    attempt_count INTEGER DEFAULT 0,
+                    max_attempts INTEGER DEFAULT 3,
+                    scheduled_for TEXT,
+                    processing_started_at TEXT,
+                    processing_completed_at TEXT,
+                    restaurants_found INTEGER DEFAULT 0,
+                    error_message TEXT,
+                    error_log TEXT,
+                    episode_id TEXT,
+                    FOREIGN KEY (subscription_id) REFERENCES subscriptions(id),
+                    FOREIGN KEY (episode_id) REFERENCES episodes(id)
+                )
+            ''')
+
+            # Pipeline logs table (structured event log)
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS pipeline_logs (
+                    id TEXT PRIMARY KEY,
+                    timestamp TEXT DEFAULT CURRENT_TIMESTAMP,
+                    level TEXT NOT NULL CHECK(level IN ('info', 'warning', 'error')),
+                    event_type TEXT NOT NULL,
+                    subscription_id TEXT,
+                    video_queue_id TEXT,
+                    message TEXT NOT NULL,
+                    details TEXT,
+                    FOREIGN KEY (subscription_id) REFERENCES subscriptions(id),
+                    FOREIGN KEY (video_queue_id) REFERENCES video_queue(id)
+                )
+            ''')
+
             # Create indexes for common queries
             cursor.execute('CREATE INDEX IF NOT EXISTS idx_restaurants_city ON restaurants(city)')
             cursor.execute('CREATE INDEX IF NOT EXISTS idx_restaurants_cuisine ON restaurants(cuisine_type)')
@@ -231,6 +295,16 @@ class Database:
             cursor.execute('CREATE INDEX IF NOT EXISTS idx_articles_status ON articles(status)')
             cursor.execute('CREATE INDEX IF NOT EXISTS idx_articles_author_id ON articles(author_id)')
             cursor.execute('CREATE INDEX IF NOT EXISTS idx_articles_published_at ON articles(published_at)')
+            cursor.execute('CREATE INDEX IF NOT EXISTS idx_subscriptions_is_active ON subscriptions(is_active)')
+            cursor.execute('CREATE INDEX IF NOT EXISTS idx_subscriptions_source_id ON subscriptions(source_id)')
+            cursor.execute('CREATE INDEX IF NOT EXISTS idx_video_queue_status ON video_queue(status)')
+            cursor.execute('CREATE INDEX IF NOT EXISTS idx_video_queue_video_id ON video_queue(video_id)')
+            cursor.execute('CREATE INDEX IF NOT EXISTS idx_video_queue_subscription_id ON video_queue(subscription_id)')
+            cursor.execute('CREATE INDEX IF NOT EXISTS idx_video_queue_scheduled_for ON video_queue(scheduled_for)')
+            cursor.execute('CREATE INDEX IF NOT EXISTS idx_pipeline_logs_timestamp ON pipeline_logs(timestamp)')
+            cursor.execute('CREATE INDEX IF NOT EXISTS idx_pipeline_logs_level ON pipeline_logs(level)')
+            cursor.execute('CREATE INDEX IF NOT EXISTS idx_pipeline_logs_event_type ON pipeline_logs(event_type)')
+            cursor.execute('CREATE INDEX IF NOT EXISTS idx_pipeline_logs_subscription_id ON pipeline_logs(subscription_id)')
 
     # ==================== Episode Operations ====================
 

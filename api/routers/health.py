@@ -24,14 +24,23 @@ router = APIRouter(tags=["Health"])
 @router.get(
     "/health",
     summary="Health check",
-    description="Basic health check endpoint.",
+    description="Basic health check endpoint with optional pipeline status.",
 )
 async def health_check():
-    """Basic health check."""
-    return {
+    """Basic health check with pipeline scheduler status."""
+    response = {
         "status": "OK",
         "timestamp": datetime.now().isoformat(),
     }
+
+    try:
+        from main import _pipeline_scheduler
+        if _pipeline_scheduler:
+            response["pipeline"] = _pipeline_scheduler.get_status()
+    except Exception:
+        pass
+
+    return response
 
 
 @router.get(
