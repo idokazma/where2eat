@@ -154,5 +154,30 @@ class TestPathResolution:
                 f"{api_file.name} should use .resolve() for SRC_DIR"
 
 
+    def test_no_collision_between_api_models_and_src_models(self):
+        """api/models and src/models are separate namespaces."""
+        api_models = PROJECT_ROOT / "api" / "models"
+        src_models = PROJECT_ROOT / "src" / "models"
+
+        if not api_models.exists() or not src_models.exists():
+            pytest.skip("Both api/models and src/models must exist")
+
+        # They should resolve to different directories
+        assert api_models.resolve() != src_models.resolve(), \
+            "api/models and src/models should be different directories"
+
+    def test_importlib_resolves_to_src_models(self):
+        """importlib loading of src/models/base.py resolves correctly."""
+        import importlib.util
+
+        src_base = PROJECT_ROOT / "src" / "models" / "base.py"
+        if not src_base.exists():
+            pytest.skip("src/models/base.py not found")
+
+        spec = importlib.util.spec_from_file_location("src_models_base", src_base)
+        assert spec is not None
+        assert str(src_base.resolve()) in str(Path(spec.origin).resolve())
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
