@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import { Heart, Star, Play, MapPin, ExternalLink } from 'lucide-react';
+import { Heart, Star, Play, MapPin, ExternalLink, Camera } from 'lucide-react';
 import { Restaurant } from '@/types/restaurant';
 import { EpisodeBadge } from './EpisodeBadge';
 import { DistanceBadge } from './DistanceBadge';
@@ -81,7 +81,9 @@ export function RestaurantCardNew({
   const { isFavorite, addFavorite, removeFavorite } = useFavorites();
   const [imageError, setImageError] = useState(false);
 
+  const [imageLoading, setImageLoading] = useState(true);
   const hasImage = imageUrl && !imageError;
+  const photoCount = restaurant.photos?.length || 0;
   const restaurantId = restaurant.google_places?.place_id || restaurant.name_hebrew;
   const isSaved = isFavorite(restaurantId);
 
@@ -145,14 +147,22 @@ export function RestaurantCardNew({
       {/* Image Section */}
       <div className="restaurant-card-image">
         {hasImage ? (
-          <Image
-            src={imageUrl}
-            alt={restaurant.name_hebrew}
-            fill
-            className="object-cover"
-            onError={() => setImageError(true)}
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          />
+          <>
+            {imageLoading && (
+              <div className="absolute inset-0 shimmer bg-[var(--color-surface)]" />
+            )}
+            <Image
+              src={imageUrl}
+              alt={restaurant.name_hebrew}
+              fill
+              className={`object-cover transition-opacity duration-500 ${
+                imageLoading ? 'opacity-0' : 'opacity-100'
+              }`}
+              onError={() => setImageError(true)}
+              onLoad={() => setImageLoading(false)}
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            />
+          </>
         ) : (
           <div
             className={`absolute inset-0 typography-card-bg ${getGradientClass(
@@ -175,9 +185,17 @@ export function RestaurantCardNew({
             size="sm"
           />
 
-          {showDistance && distanceMeters && (
-            <DistanceBadge distanceMeters={distanceMeters} />
-          )}
+          <div className="flex items-center gap-2">
+            {photoCount > 1 && (
+              <span className="flex items-center gap-1 px-2 py-1 bg-black/50 backdrop-blur-sm rounded text-white text-xs font-medium">
+                <Camera className="w-3 h-3" />
+                {photoCount}
+              </span>
+            )}
+            {showDistance && distanceMeters && (
+              <DistanceBadge distanceMeters={distanceMeters} />
+            )}
+          </div>
         </div>
       </div>
 

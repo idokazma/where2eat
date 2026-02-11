@@ -4,6 +4,7 @@ import { UtensilsCrossed } from 'lucide-react';
 import { Restaurant } from '@/types/restaurant';
 import { RestaurantCardNew } from '@/components/restaurant/RestaurantCardNew';
 import { SectionHeader } from '@/components/ui/SectionHeader';
+import { getRestaurantImage } from '@/lib/images';
 
 interface DiscoveryFeedProps {
   restaurants: Restaurant[];
@@ -83,6 +84,7 @@ export function DiscoveryFeed({
                 showDistance={showDistances && !!distanceMeters}
                 distanceMeters={distanceMeters}
                 onTap={() => onRestaurantClick?.(restaurant)}
+                imageUrl={getRestaurantImage(restaurant) || undefined}
               />
             </div>
           );

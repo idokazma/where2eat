@@ -1,8 +1,10 @@
 'use client';
 
+import Image from 'next/image';
 import { Flame } from 'lucide-react';
 import { Restaurant } from '@/types/restaurant';
 import { SectionHeader } from '@/components/ui/SectionHeader';
+import { getRestaurantImage } from '@/lib/images';
 
 interface TrendingSectionProps {
   restaurants: Restaurant[];
@@ -66,12 +68,21 @@ export function TrendingSection({
           >
             {/* Image/gradient area */}
             <div className={`trending-card-image ${getCuisineGradient(restaurant.cuisine_type)}`}>
-              {/* Cuisine text as fallback */}
-              <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-white/80 text-lg font-light">
-                  {restaurant.cuisine_type || 'מסעדה'}
-                </span>
-              </div>
+              {getRestaurantImage(restaurant) ? (
+                <Image
+                  src={getRestaurantImage(restaurant)!}
+                  alt={restaurant.name_hebrew}
+                  fill
+                  className="object-cover"
+                  sizes="140px"
+                />
+              ) : (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span className="text-white/80 text-lg font-light">
+                    {restaurant.cuisine_type || 'מסעדה'}
+                  </span>
+                </div>
+              )}
 
               {/* Rank badge */}
               <div className="trending-card-rank">
