@@ -7,6 +7,7 @@ A restaurant discovery API that extracts restaurant mentions from YouTube podcas
 import os
 import sys
 import asyncio
+from datetime import datetime
 from pathlib import Path
 from contextlib import asynccontextmanager
 
@@ -351,6 +352,94 @@ async def fetch_default_video_on_startup():
             print(f"[STARTUP] Server will continue without preloaded data")
 
 
+def seed_initial_data():
+    """Seed admin user and default subscriptions if the database is empty.
+
+    - Creates a default admin user from ADMIN_EMAIL / ADMIN_PASSWORD env vars
+      (only if admin_users.json has no users).
+    - Adds the Hebrew Food Podcast playlist subscription if the subscriptions
+      table is empty.
+    """
+    import json
+    import uuid
+    from pathlib import Path
+
+    # --- 1. Seed admin user ---
+    admin_email = os.getenv("ADMIN_EMAIL")
+    admin_password = os.getenv("ADMIN_PASSWORD")
+
+    data_dir = get_data_directory()
+    admin_db_path = data_dir / "admin_users.json"
+
+    if admin_email and admin_password:
+        try:
+            existing = {"users": []}
+            if admin_db_path.exists():
+                with open(admin_db_path, "r") as f:
+                    existing = json.load(f)
+
+            if not existing.get("users"):
+                from passlib.context import CryptContext
+                pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+                admin_user = {
+                    "id": str(uuid.uuid4()),
+                    "email": admin_email,
+                    "name": "Admin",
+                    "role": "super_admin",
+                    "password_hash": pwd_context.hash(admin_password),
+                    "is_active": True,
+                    "created_at": datetime.now().isoformat(),
+                }
+                existing["users"] = [admin_user]
+                data_dir.mkdir(parents=True, exist_ok=True)
+                with open(admin_db_path, "w") as f:
+                    json.dump(existing, f, indent=2)
+                print(f"[SEED] Created default admin user: {admin_email}")
+            else:
+                print(f"[SEED] Admin users already exist ({len(existing['users'])} users)")
+        except Exception as e:
+            print(f"[SEED] Failed to seed admin user: {e}")
+    else:
+        print("[SEED] ADMIN_EMAIL / ADMIN_PASSWORD not set, skipping admin user seed")
+
+    # --- 2. Seed default subscriptions ---
+    DEFAULT_SUBSCRIPTIONS = [
+        {
+            "url": "https://www.youtube.com/playlist?list=PLZPgleW4baxrsrU-metYY1imJ85uH9FNg",
+            "name": "Hebrew Food Podcast",
+            "priority": 3,
+        },
+    ]
+
+    try:
+        from database import get_database
+        from subscription_manager import SubscriptionManager
+
+        db = get_database()
+        manager = SubscriptionManager(db)
+        subs = manager.list_subscriptions(active_only=False)
+
+        if not subs:
+            for sub_info in DEFAULT_SUBSCRIPTIONS:
+                try:
+                    sub = manager.add_subscription(
+                        source_url=sub_info["url"],
+                        source_name=sub_info["name"],
+                        priority=sub_info["priority"],
+                    )
+                    print(f"[SEED] Added subscription: {sub_info['name']} ({sub['source_type']}: {sub['source_id']})")
+                except ValueError as e:
+                    print(f"[SEED] Subscription already exists: {e}")
+            print(f"[SEED] Seeded {len(DEFAULT_SUBSCRIPTIONS)} default subscription(s)")
+        else:
+            print(f"[SEED] Subscriptions already exist ({len(subs)} subscriptions)")
+    except Exception as e:
+        print(f"[SEED] Failed to seed subscriptions: {e}")
+        import traceback
+        traceback.print_exc()
+
+
 def start_pipeline_scheduler():
     """Start the auto video fetching pipeline scheduler."""
     try:
@@ -382,6 +471,8 @@ async def lifespan(app: FastAPI):
     global _pipeline_scheduler
     # Startup: fetch default video
     await fetch_default_video_on_startup()
+    # Seed admin user and subscriptions if empty
+    seed_initial_data()
     # Start pipeline scheduler
     _pipeline_scheduler = start_pipeline_scheduler()
     yield
