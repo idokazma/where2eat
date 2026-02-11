@@ -237,6 +237,38 @@ async def pipeline_stats(
 
 
 @router.post(
+    "/poll",
+    summary="Trigger immediate poll",
+    description="Trigger an immediate poll of all active subscriptions. Requires admin role.",
+)
+async def trigger_poll(
+    user: dict = Depends(require_role(["admin", "super_admin"])),
+):
+    """Trigger immediate poll for all active subscriptions."""
+    try:
+        from database import get_database
+        from pipeline_scheduler import PipelineScheduler
+
+        db = get_database()
+        scheduler = PipelineScheduler(db=db)
+        scheduler.poll_subscriptions()
+
+        queue_manager = _get_queue_manager()
+        depth = queue_manager.get_queue_depth()
+
+        return {
+            "success": True,
+            "message": "Poll completed",
+            "queue_depth": depth,
+        }
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Poll failed: {str(e)}",
+        )
+
+
+@router.post(
     "/{queue_id}/retry",
     summary="Retry failed video",
     description="Requeue a failed video for retry. Requires admin role.",
