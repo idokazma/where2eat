@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 import { Restaurant } from '@/types/restaurant';
 import { PageLayout } from '@/components/layout';
 import { FilterBar, FilterChip, LocationFilter } from '@/components/filters';
@@ -31,6 +32,8 @@ const PRICE_RANGES = [
 ];
 
 export function HomePageNew() {
+  const router = useRouter();
+
   // Data state
   const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -117,8 +120,10 @@ export function HomePageNew() {
 
   // Handle restaurant click
   const handleRestaurantClick = (restaurant: Restaurant) => {
-    // TODO: Navigate to restaurant detail page
-    console.log('Clicked restaurant:', restaurant.name_hebrew);
+    const id = restaurant.google_places?.place_id;
+    if (id) {
+      router.push(`/restaurant/${id}`);
+    }
   };
 
   // Toggle cuisine selection

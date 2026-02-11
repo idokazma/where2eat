@@ -18,6 +18,13 @@ export interface ContactInfo {
   website: string | null;
 }
 
+export interface RestaurantPhoto {
+  photo_reference: string;
+  photo_url: string;
+  width: number;
+  height: number;
+}
+
 export interface Restaurant {
   name_hebrew: string;
   name_english?: string | null;
@@ -37,6 +44,8 @@ export interface Restaurant {
   google_places?: GooglePlacesInfo;
   rating?: Rating;
   food_trends?: string[];
+  photos?: RestaurantPhoto[];
+  image_url?: string | null;
 }
 
 export interface EpisodeInfo {

@@ -7,6 +7,7 @@ import { RestaurantCardNew } from '@/components/restaurant';
 import { RestaurantCardSkeleton, FilterChipSkeleton } from '@/components/ui/skeleton';
 import { Restaurant } from '@/types/restaurant';
 import { endpoints } from '@/lib/config';
+import { getRestaurantImage } from '@/lib/images';
 
 type TimePeriod = 'week' | 'month' | '3months';
 
@@ -96,6 +97,7 @@ export default function TrendingPage() {
             <RestaurantCardNew
               restaurant={restaurant}
               variant={index === 0 ? 'featured' : 'default'}
+              imageUrl={getRestaurantImage(restaurant) || undefined}
             />
 
             {index > 0 && index < 5 && (
