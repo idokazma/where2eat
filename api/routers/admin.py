@@ -35,8 +35,9 @@ ACCESS_TOKEN_EXPIRE_HOURS = 24
 # Password hashing
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-# Data paths
-DATA_DIR = Path(__file__).parent.parent.parent / "data"
+# Data paths - respect DATABASE_DIR env var for Railway volumes
+_db_dir_env = os.getenv("DATABASE_DIR")
+DATA_DIR = Path(_db_dir_env) if _db_dir_env else Path(__file__).parent.parent.parent / "data"
 RESTAURANTS_DIR = DATA_DIR / "restaurants"
 ADMIN_DB_PATH = DATA_DIR / "admin_users.json"
 
@@ -119,6 +120,67 @@ def require_role(allowed_roles: List[str]):
 
 
 # Auth endpoints
+class SetupRequest(BaseModel):
+    """First-run setup request."""
+    email: str
+    password: str
+    name: str = "Admin"
+
+
+@router.post(
+    "/auth/setup",
+    response_model=TokenResponse,
+    summary="First-run admin setup",
+    description="Create the initial admin user. Only works when no admin users exist.",
+)
+async def setup_admin(request: SetupRequest, response: Response):
+    """Create the first admin user. Disabled after first use."""
+    admin_data = load_admin_users()
+    if admin_data.get("users"):
+        raise HTTPException(status_code=403, detail="Setup already completed")
+
+    user_id = str(uuid.uuid4())
+    now = datetime.now().isoformat()
+    user = {
+        "id": user_id,
+        "email": request.email,
+        "name": request.name,
+        "role": "super_admin",
+        "password_hash": get_password_hash(request.password),
+        "is_active": True,
+        "created_at": now,
+    }
+    admin_data["users"] = [user]
+    save_admin_users(admin_data)
+
+    token = create_access_token({
+        "user_id": user_id,
+        "email": request.email,
+        "role": "super_admin",
+    })
+
+    response.set_cookie(
+        key="where2eat_admin_token",
+        value=token,
+        httponly=True,
+        secure=os.getenv("NODE_ENV") == "production",
+        samesite="strict",
+        max_age=ACCESS_TOKEN_EXPIRE_HOURS * 3600,
+    )
+
+    return TokenResponse(
+        token=token,
+        user=UserInfo(
+            id=user_id,
+            email=request.email,
+            name=request.name,
+            role="super_admin",
+            is_active=True,
+            created_at=now,
+        ),
+    )
+
+
 @router.post(
     "/auth/login",
     response_model=TokenResponse,
