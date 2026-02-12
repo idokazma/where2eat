@@ -21,11 +21,7 @@ sys.path.insert(0, SRC_DIR)
 
 # Import modules to test
 from restaurant_analyzer import run_complete_pipeline, fetch_transcript, create_analysis_request
-import importlib.util
-_spec = importlib.util.spec_from_file_location("scripts_main", os.path.join(SCRIPTS_DIR, "main.py"))
-_scripts_main = importlib.util.module_from_spec(_spec)
-_spec.loader.exec_module(_scripts_main)
-RestaurantPodcastAnalyzer = _scripts_main.RestaurantPodcastAnalyzer
+from scripts.main import RestaurantPodcastAnalyzer
 
 
 class TestFullPipelineIntegration:
@@ -161,20 +157,23 @@ class TestFullPipelineIntegration:
         """Test the RestaurantPodcastAnalyzer class end-to-end"""
         with tempfile.TemporaryDirectory() as temp_dir:
             os.chdir(temp_dir)
-            
-            # Mock the transcript collector
-            with patch('scripts.main.YouTubeTranscriptCollector') as mock_collector:
+
+            # Mock the transcript collector and other dependencies
+            with patch('scripts.main.YouTubeTranscriptCollector') as mock_collector, \
+                 patch('scripts.main.RestaurantSearchAgent'), \
+                 patch('scripts.main.UnifiedRestaurantAnalyzer'), \
+                 patch('scripts.main.setup_logging', return_value=Mock()):
                 mock_instance = Mock()
                 mock_instance.get_transcript.return_value = mock_transcript_data
                 mock_instance.get_transcript_auto.return_value = None
                 mock_collector.return_value = mock_instance
-                
+
                 # Create analyzer
                 analyzer = RestaurantPodcastAnalyzer()
-                
+
                 # Process single podcast
                 result = analyzer.process_single_podcast(test_video_url)
-                
+
                 # Verify result structure
                 assert result['success'] is True
                 assert result['video_id'] == '6jvskRWvQkg'
@@ -186,12 +185,35 @@ class TestFullPipelineIntegration:
         """Test restaurant extraction from transcript"""
         with tempfile.TemporaryDirectory() as temp_dir:
             os.chdir(temp_dir)
-            
-            with patch('scripts.main.setup_logging'):
+
+            with patch('scripts.main.setup_logging', return_value=Mock()), \
+                 patch('scripts.main.YouTubeTranscriptCollector'), \
+                 patch('scripts.main.RestaurantSearchAgent'), \
+                 patch('scripts.main.UnifiedRestaurantAnalyzer') as mock_analyzer_cls:
+                # Setup mock analyzer to return expected data
+                mock_analyzer_instance = Mock()
+                mock_analyzer_instance.config.provider = 'openai'
+                mock_analyzer_instance.analyze_transcript.return_value = {
+                    'episode_info': {
+                        'video_id': mock_transcript_data['video_id'],
+                        'video_url': mock_transcript_data['video_url'],
+                        'language': mock_transcript_data['language'],
+                        'analysis_date': datetime.now().isoformat()
+                    },
+                    'restaurants': [
+                        {'name_hebrew': "צ'קולי", 'name_english': 'Checoli'},
+                        {'name_hebrew': 'גורמי סבזי', 'name_english': 'Gourmet Sabzi'},
+                        {'name_hebrew': 'מרי פוסה', 'name_english': 'Mary Posa'}
+                    ],
+                    'food_trends': ['ים תיכוני'],
+                    'episode_summary': 'פרק על מסעדות'
+                }
+                mock_analyzer_cls.return_value = mock_analyzer_instance
+
                 analyzer = RestaurantPodcastAnalyzer()
-                
+
                 # Test restaurant extraction
-                restaurants_data = analyzer.extract_restaurants_with_claude(mock_transcript_data)
+                restaurants_data = analyzer.extract_restaurants_with_llm(mock_transcript_data)
                 
                 # Verify structure
                 assert 'episode_info' in restaurants_data
@@ -212,8 +234,8 @@ class TestFullPipelineIntegration:
                 restaurant_names = [r['name_hebrew'] for r in restaurants]
                 expected_names = ['צ\'קולי', 'מרי פוסה', 'גורמי סבזי']
                 
-                found_restaurants = [name for name in expected_names 
-                                   if any(expected in restaurant_name 
+                found_restaurants = [name for name in expected_names
+                                   if any(name in restaurant_name
                                          for restaurant_name in restaurant_names)]
                 assert len(found_restaurants) >= 2
     
@@ -221,110 +243,124 @@ class TestFullPipelineIntegration:
         """Test batch processing of multiple videos"""
         with tempfile.TemporaryDirectory() as temp_dir:
             os.chdir(temp_dir)
-            
+
             video_urls = [
                 "https://www.youtube.com/watch?v=6jvskRWvQkg",
                 "https://www.youtube.com/watch?v=test123456"
             ]
-            
+
             # Mock transcript collector for all videos
-            with patch('scripts.main.YouTubeTranscriptCollector') as mock_collector:
+            with patch('scripts.main.YouTubeTranscriptCollector') as mock_collector, \
+                 patch('scripts.main.RestaurantSearchAgent'), \
+                 patch('scripts.main.UnifiedRestaurantAnalyzer'), \
+                 patch('scripts.main.setup_logging', return_value=Mock()):
                 mock_instance = Mock()
-                
+
                 def mock_get_transcript(url, **kwargs):
                     if '6jvskRWvQkg' in url:
                         return mock_transcript_data
                     else:
                         return None  # Simulate failed transcript for second video
-                
+
                 mock_instance.get_transcript.side_effect = mock_get_transcript
                 mock_instance.get_transcript_auto.return_value = None
                 mock_collector.return_value = mock_instance
-                
-                with patch('scripts.main.setup_logging'):
-                    analyzer = RestaurantPodcastAnalyzer()
-                    
-                    # Process multiple podcasts
-                    batch_results = analyzer.process_multiple_podcasts(video_urls)
-                    
-                    # Verify batch results structure
-                    assert batch_results['total_podcasts'] == 2
-                    assert batch_results['successful'] >= 1
-                    assert batch_results['failed'] >= 1
-                    assert len(batch_results['results']) == 2
-                    
-                    # Verify individual results
-                    results = batch_results['results']
-                    success_result = next(r for r in results if r['success'])
-                    assert success_result['video_id'] == '6jvskRWvQkg'
+
+                analyzer = RestaurantPodcastAnalyzer()
+
+                # Process multiple podcasts
+                batch_results = analyzer.process_multiple_podcasts(video_urls)
+
+                # Verify batch results structure
+                assert batch_results['total_podcasts'] == 2
+                assert batch_results['successful'] >= 1
+                assert batch_results['failed'] >= 1
+                assert len(batch_results['results']) == 2
+
+                # Verify individual results
+                results = batch_results['results']
+                success_result = next(r for r in results if r['success'])
+                assert success_result['video_id'] == '6jvskRWvQkg'
     
     def test_error_handling_integration(self):
         """Test error handling throughout the pipeline"""
         with tempfile.TemporaryDirectory() as temp_dir:
             os.chdir(temp_dir)
-            
+
             # Test with invalid URL
             invalid_url = "not_a_youtube_url"
-            
-            with patch('scripts.main.setup_logging'):
-                analyzer = RestaurantPodcastAnalyzer()
-                result = analyzer.process_single_podcast(invalid_url)
-                
-                assert result['success'] is False
-                assert 'error' in result
-            
-            # Test with unavailable transcript
-            with patch('scripts.main.YouTubeTranscriptCollector') as mock_collector:
+
+            with patch('scripts.main.setup_logging', return_value=Mock()), \
+                 patch('scripts.main.YouTubeTranscriptCollector') as mock_collector, \
+                 patch('scripts.main.RestaurantSearchAgent'), \
+                 patch('scripts.main.UnifiedRestaurantAnalyzer'):
                 mock_instance = Mock()
                 mock_instance.get_transcript.return_value = None
                 mock_instance.get_transcript_auto.return_value = None
                 mock_collector.return_value = mock_instance
-                
-                with patch('scripts.main.setup_logging'):
-                    analyzer = RestaurantPodcastAnalyzer()
-                    
-                    result = analyzer.process_single_podcast("https://www.youtube.com/watch?v=unavailable")
-                    assert result['success'] is False
-                    assert result['error'] == "Failed to fetch transcript"
+
+                analyzer = RestaurantPodcastAnalyzer()
+                result = analyzer.process_single_podcast(invalid_url)
+
+                assert result['success'] is False
+                assert 'error' in result
+
+            # Test with unavailable transcript
+            with patch('scripts.main.YouTubeTranscriptCollector') as mock_collector, \
+                 patch('scripts.main.RestaurantSearchAgent'), \
+                 patch('scripts.main.UnifiedRestaurantAnalyzer'), \
+                 patch('scripts.main.setup_logging', return_value=Mock()):
+                mock_instance = Mock()
+                mock_instance.get_transcript.return_value = None
+                mock_instance.get_transcript_auto.return_value = None
+                mock_collector.return_value = mock_instance
+
+                analyzer = RestaurantPodcastAnalyzer()
+
+                result = analyzer.process_single_podcast("https://www.youtube.com/watch?v=unavailable")
+                assert result['success'] is False
+                assert result['error'] == "Failed to fetch transcript"
     
     def test_data_persistence_integration(self, mock_transcript_data):
         """Test that data is properly persisted throughout the pipeline"""
         with tempfile.TemporaryDirectory() as temp_dir:
             os.chdir(temp_dir)
-            
-            with patch('scripts.main.YouTubeTranscriptCollector') as mock_collector:
+
+            with patch('scripts.main.YouTubeTranscriptCollector') as mock_collector, \
+                 patch('scripts.main.RestaurantSearchAgent'), \
+                 patch('scripts.main.UnifiedRestaurantAnalyzer'), \
+                 patch('scripts.main.setup_logging', return_value=Mock()):
                 mock_instance = Mock()
                 mock_instance.get_transcript.return_value = mock_transcript_data
                 mock_collector.return_value = mock_instance
-                
-                with patch('scripts.main.setup_logging'):
-                    analyzer = RestaurantPodcastAnalyzer()
-                    
-                    # Process podcast
-                    result = analyzer.process_single_podcast("https://www.youtube.com/watch?v=6jvskRWvQkg")
-                    
-                    # Verify files were created
-                    assert result['success'] is True
-                    files_generated = result['files_generated']
-                    
-                    # Check that all generated files exist
-                    for file_path in files_generated:
-                        if os.path.isabs(file_path):
-                            # Absolute path - check if file exists  
-                            assert os.path.exists(file_path), f"Generated file not found: {file_path}"
-                        else:
-                            # Relative path - check in current directory
-                            assert os.path.exists(file_path), f"Generated file not found: {file_path}"
-                    
-                    # Verify transcript files contain expected content
-                    transcript_files = [f for f in files_generated if 'transcript' in f]
-                    if transcript_files:
-                        text_file = next((f for f in transcript_files if f.endswith('.txt')), None)
-                        if text_file and os.path.exists(text_file):
-                            with open(text_file, 'r', encoding='utf-8') as f:
-                                content = f.read()
-                                assert '6jvskRWvQkg' in content
-                                assert 'צ\'קולי' in content
+
+                analyzer = RestaurantPodcastAnalyzer()
+
+                # Process podcast
+                result = analyzer.process_single_podcast("https://www.youtube.com/watch?v=6jvskRWvQkg")
+
+                # Verify files were created
+                assert result['success'] is True
+                files_generated = result['files_generated']
+
+                # Check that all generated files exist
+                for file_path in files_generated:
+                    if os.path.isabs(file_path):
+                        # Absolute path - check if file exists
+                        assert os.path.exists(file_path), f"Generated file not found: {file_path}"
+                    else:
+                        # Relative path - check in current directory
+                        assert os.path.exists(file_path), f"Generated file not found: {file_path}"
+
+                # Verify transcript files contain expected content
+                transcript_files = [f for f in files_generated if 'transcript' in f]
+                if transcript_files:
+                    text_file = next((f for f in transcript_files if f.endswith('.txt')), None)
+                    if text_file and os.path.exists(text_file):
+                        with open(text_file, 'r', encoding='utf-8') as f:
+                            content = f.read()
+                            assert '6jvskRWvQkg' in content
+                            assert 'צ\'קולי' in content
 
 
 class TestPipelinePerformance:
@@ -357,7 +393,7 @@ class TestPipelinePerformance:
             'video_url': 'https://www.youtube.com/watch?v=complex_test',
             'language': 'he',
             'transcript': '''
-            היום נדבר על 10 מסעדות: צ'קולי, מרי פוסה, גורמי סבזי, הסתקיה, 
+            היום נדבר על 10 מסעדות: צ'קולי, מרי פוסה, גורמי סבזי, הסתקיה,
             משיה, ביסטרו 44, אונה, פופינה, מנטה ועוד מסעדה אחת שכתחתי.
             כל מסעדה יש לה סיפור מיוחד ואוכל מעולה.
             ''',
@@ -365,13 +401,30 @@ class TestPipelinePerformance:
             'segment_count': 0,
             'formatted_timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         }
-        
-        with patch('scripts.main.setup_logging'):
+
+        with patch('scripts.main.setup_logging', return_value=Mock()), \
+             patch('scripts.main.YouTubeTranscriptCollector'), \
+             patch('scripts.main.RestaurantSearchAgent'), \
+             patch('scripts.main.UnifiedRestaurantAnalyzer') as mock_analyzer_cls:
+            mock_analyzer = Mock()
+            mock_analyzer.config.provider = 'openai'
+            mock_analyzer.analyze_transcript.return_value = {
+                'episode_info': {'video_id': 'complex_test'},
+                'restaurants': [
+                    {'name_hebrew': "צ'קולי"},
+                    {'name_hebrew': 'מרי פוסה'},
+                    {'name_hebrew': 'גורמי סבזי'},
+                ],
+                'food_trends': [],
+                'episode_summary': ''
+            }
+            mock_analyzer_cls.return_value = mock_analyzer
+
             analyzer = RestaurantPodcastAnalyzer()
-            
+
             # Test extraction with many mentions
-            restaurants_data = analyzer.extract_restaurants_with_claude(complex_transcript)
-            
+            restaurants_data = analyzer.extract_restaurants_with_llm(complex_transcript)
+
             # Should handle multiple restaurants
             assert len(restaurants_data['restaurants']) >= 2
             assert 'episode_info' in restaurants_data
@@ -395,7 +448,7 @@ class TestPipelineRobustness:
         # Should still create valid analysis request
         analysis_request = create_analysis_request(empty_transcript_data)
         assert 'empty_test' in analysis_request
-        assert 'INSTRUCTIONS:' in analysis_request
+        assert 'TASK:' in analysis_request
     
     def test_non_hebrew_transcript(self):
         """Test handling of non-Hebrew transcripts"""
@@ -423,10 +476,18 @@ class TestPipelineRobustness:
             "https://www.youtube.com/watch",
             "https://vimeo.com/123456"
         ]
-        
-        with patch('scripts.main.setup_logging'):
+
+        with patch('scripts.main.setup_logging', return_value=Mock()), \
+             patch('scripts.main.YouTubeTranscriptCollector') as mock_collector, \
+             patch('scripts.main.RestaurantSearchAgent'), \
+             patch('scripts.main.UnifiedRestaurantAnalyzer'):
+            mock_instance = Mock()
+            mock_instance.get_transcript.return_value = None
+            mock_instance.get_transcript_auto.return_value = None
+            mock_collector.return_value = mock_instance
+
             analyzer = RestaurantPodcastAnalyzer()
-            
+
             for url in malformed_urls:
                 result = analyzer.process_single_podcast(url)
                 assert result['success'] is False

@@ -58,7 +58,9 @@ class TestFileOperations:
         }
         
         for file_type, expected_path in naming_patterns.items():
-            assert video_id in expected_path, f"Video ID not in {file_type} filename"
+            # batch_results use timestamp only, not video_id
+            if file_type != "batch_results":
+                assert video_id in expected_path, f"Video ID not in {file_type} filename"
             assert expected_path.endswith(('.txt', '.json', '.md')), f"Invalid extension for {file_type}"
     
     def test_json_serialization(self):
@@ -249,27 +251,26 @@ class TestRestaurantDataPersistence:
             "episode_summary": "פרק על מסעדות מומלצות בתל אביב"
         }
     
-    def test_save_restaurants_for_api(self, sample_restaurants_data):
+    @patch('scripts.main.UnifiedRestaurantAnalyzer')
+    @patch('scripts.main.RestaurantSearchAgent')
+    @patch('scripts.main.YouTubeTranscriptCollector')
+    @patch('scripts.main.setup_logging', return_value=Mock())
+    def test_save_restaurants_for_api(self, mock_logging, mock_collector, mock_search, mock_analyzer_cls, sample_restaurants_data):
         """Test saving restaurant data in API format"""
         from scripts.main import RestaurantPodcastAnalyzer
-        
+
         with tempfile.TemporaryDirectory() as temp_dir:
-            # Mock the data directory path
-            restaurants_dir = os.path.join(temp_dir, "data", "restaurants")
-            os.makedirs(restaurants_dir, exist_ok=True)
-            
-            with patch('scripts.main.os.path.join', return_value=restaurants_dir):
-                with patch('scripts.main.os.makedirs'):
-                    analyzer = RestaurantPodcastAnalyzer()
-                    transcript_data = {'video_id': '6jvskRWvQkg'}
-                    
-                    result = analyzer.save_restaurants_for_api(
-                        sample_restaurants_data, transcript_data
-                    )
-                    
-                    # Check that files were created message
-                    assert "Saved" in result
-                    assert "restaurant files" in result
+            os.chdir(temp_dir)
+            analyzer = RestaurantPodcastAnalyzer()
+            transcript_data = {'video_id': '6jvskRWvQkg'}
+
+            result = analyzer.save_restaurants_for_api(
+                sample_restaurants_data, transcript_data
+            )
+
+            # Check that files were created message
+            assert "Saved" in result
+            assert "restaurant files" in result
     
     def test_restaurant_file_structure(self):
         """Test individual restaurant file structure"""
@@ -318,7 +319,10 @@ class TestLoggingAndBatchResults:
             os.chdir(temp_dir)
             
             # Create analyzer and test logging
-            with patch('scripts.main.setup_logging'):
+            with patch('scripts.main.setup_logging'), \
+                 patch('scripts.main.YouTubeTranscriptCollector'), \
+                 patch('scripts.main.RestaurantSearchAgent'), \
+                 patch('scripts.main.UnifiedRestaurantAnalyzer'):
                 analyzer = RestaurantPodcastAnalyzer()
                 
                 # Mock log_agent_call to test structure
