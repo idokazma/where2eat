@@ -108,7 +108,7 @@ async def fetch_default_video_on_startup():
     # Ensure data directory exists
     data_dir.mkdir(parents=True, exist_ok=True)
 
-    # Step 1: Check if SQLite database already has restaurant data
+    # Check if SQLite database already has restaurant data
     try:
         from database import Database
         db = Database(str(db_path))
@@ -123,77 +123,20 @@ async def fetch_default_video_on_startup():
             print(f"{'='*60}\n")
             return
         else:
-            print(f"[STARTUP] Database exists but is empty, will seed from backup")
+            print(f"[STARTUP] Database exists but is empty")
+            print(f"[STARTUP] The pipeline will populate it as videos are processed")
     except Exception as db_err:
         print(f"[STARTUP] Could not check database: {db_err}")
 
-    # Step 2: Check for existing JSON files (legacy)
-    existing_files = list(data_dir.glob("*.json"))
-    existing_files = [f for f in existing_files if f.name != ".gitkeep"]
+    # No seeding from JSON/backup files - only pipeline-processed data is served.
+    # If the database is empty, the pipeline scheduler will process queued videos.
+    print(f"[STARTUP] No restaurant data yet. Pipeline will populate the database.")
+    print(f"\n{'='*60}")
+    print(f"Server ready! Waiting for pipeline to process videos.")
+    print(f"{'='*60}\n")
+    return
 
-    if len(existing_files) > 0:
-        print(f"[STARTUP] Found {len(existing_files)} existing restaurant JSON files")
-        print(f"[STARTUP] Importing to database...")
-        try:
-            from database import Database
-            db = Database(str(db_path))
-            result = db.import_from_json_files(str(data_dir))
-            print(f"[STARTUP] Imported {result.get('imported', 0)} restaurants to database")
-            print(f"\n{'='*60}")
-            print(f"Server ready! {result.get('imported', 0)} restaurants loaded.")
-            print(f"{'='*60}\n")
-            return
-        except Exception as import_err:
-            print(f"[STARTUP] Failed to import JSON files to database: {import_err}")
-
-    # Step 3: Try to seed from backup directory directly to database
-    if backup_dir.exists():
-        backup_files = list(backup_dir.glob("*.json"))
-        backup_files = [f for f in backup_files if f.name != ".gitkeep"]
-
-        if len(backup_files) > 0:
-            print(f"[STARTUP] Found {len(backup_files)} backup files, importing to database...")
-            try:
-                from database import Database
-                db = Database(str(db_path))
-                result = db.import_from_json_files(str(backup_dir))
-                imported = result.get('imported', 0)
-                print(f"[STARTUP] Imported {imported} restaurants from backup to database")
-
-                # Also copy to data_dir for backward compatibility
-                copied = 0
-                for src_file in backup_files:
-                    try:
-                        dst_file = data_dir / src_file.name
-                        shutil.copy2(src_file, dst_file)
-                        copied += 1
-                    except Exception as e:
-                        print(f"[STARTUP] Failed to copy {src_file.name}: {e}")
-
-                print(f"[STARTUP] Also copied {copied} files for backward compatibility")
-                print(f"\n{'='*60}")
-                print(f"Server ready! {imported} restaurants loaded from backup.")
-                print(f"{'='*60}\n")
-                return
-            except Exception as db_err:
-                print(f"[STARTUP] Failed to import backup to database: {db_err}")
-                # Fall back to just copying files
-                copied = 0
-                for src_file in backup_files:
-                    try:
-                        dst_file = data_dir / src_file.name
-                        shutil.copy2(src_file, dst_file)
-                        copied += 1
-                    except Exception as e:
-                        print(f"[STARTUP] Failed to copy {src_file.name}: {e}")
-
-                print(f"[STARTUP] Copied {copied} restaurant files from backup (legacy mode)")
-                print(f"\n{'='*60}")
-                print(f"Server ready! {copied} restaurants loaded from backup.")
-                print(f"{'='*60}\n")
-                return
-
-    # Step 3: No backup - try to analyze default video
+    # Fallback: No backup - try to analyze default video
     print(f"[STARTUP] No backup data found, attempting to analyze default video...")
     print(f"[STARTUP] URL: {DEFAULT_VIDEO_URL}")
 

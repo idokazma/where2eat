@@ -93,6 +93,29 @@ def get_db_session():
 # Native SQLite operations (primary - used by the pipeline)
 # ============================================================================
 
+def _is_valid_restaurant(r: dict) -> bool:
+    """Filter out garbage entries from poor AI extraction.
+
+    Checks that a restaurant has a real name and location, not a
+    partial Hebrew sentence fragment.
+    """
+    name = (r.get("name_hebrew") or "").strip()
+    if not name or len(name) < 2:
+        return False
+    # City must be set to something real (not "לא צוין" which means "not specified")
+    city = ""
+    loc = r.get("location")
+    if isinstance(loc, dict):
+        city = (loc.get("city") or "").strip()
+    elif isinstance(loc, str):
+        city = loc.strip()
+    else:
+        city = (r.get("city") or "").strip()
+    if not city or city == "לא צוין":
+        return False
+    return True
+
+
 def load_all_restaurants_sqlite() -> List[dict]:
     """Load all restaurants from the native SQLite database (pipeline storage)."""
     db = _get_sqlite_db()
@@ -100,7 +123,7 @@ def load_all_restaurants_sqlite() -> List[dict]:
         return []
     try:
         restaurants = db.get_all_restaurants(include_episode_info=True)
-        return restaurants
+        return [r for r in restaurants if _is_valid_restaurant(r)]
     except Exception as e:
         print(f"Warning: Failed to load from SQLite: {e}")
         return []
@@ -116,7 +139,11 @@ def ensure_data_dir():
 
 
 def load_all_restaurants() -> List[dict]:
-    """Load all restaurants, trying SQLite first, then SQLAlchemy, then JSON."""
+    """Load all restaurants from pipeline-processed data only.
+
+    Only serves restaurants that were processed by the video pipeline,
+    not seeded from JSON backup files.
+    """
     # 1. Try native SQLite (pipeline storage) first
     restaurants = load_all_restaurants_sqlite()
     if restaurants:
@@ -130,12 +157,11 @@ def load_all_restaurants() -> List[dict]:
                 with ctx as db:
                     restaurants = load_all_restaurants_db(db)
                     if restaurants:
-                        return restaurants
+                        return [r for r in restaurants if _is_valid_restaurant(r)]
             except Exception as e:
-                print(f"Warning: SQLAlchemy error, falling back to JSON: {e}")
+                print(f"Warning: SQLAlchemy error: {e}")
 
-    # 3. Fallback to JSON files
-    return load_all_restaurants_json()
+    return []
 
 
 def load_all_restaurants_json() -> List[dict]:
@@ -148,7 +174,8 @@ def load_all_restaurants_json() -> List[dict]:
         try:
             with open(file_path, "r", encoding="utf-8") as f:
                 data = json.load(f)
-                restaurants.append(data)
+                if _is_valid_restaurant(data):
+                    restaurants.append(data)
         except Exception as e:
             print(f"Warning: Failed to read {file_path}: {e}")
     return restaurants
