@@ -98,7 +98,7 @@ class TestFullPipelineIntegration:
             os.chdir(temp_dir)
             
             # Step 1: Mock transcript fetching
-            with patch('src.youtube_transcript_collector.YouTubeTranscriptCollector') as mock_collector:
+            with patch('restaurant_analyzer.YouTubeTranscriptCollector') as mock_collector:
                 mock_instance = Mock()
                 mock_instance.get_transcript.return_value = mock_transcript_data
                 mock_collector.return_value = mock_instance
@@ -122,7 +122,7 @@ class TestFullPipelineIntegration:
                 os.makedirs(dir_name, exist_ok=True)
                 assert os.path.exists(dir_name)
     
-    @patch('src.youtube_transcript_collector.YouTubeTranscriptCollector')
+    @patch('restaurant_analyzer.YouTubeTranscriptCollector')
     def test_complete_pipeline_execution(self, mock_collector, test_video_url, mock_transcript_data):
         """Test the complete pipeline execution"""
         with tempfile.TemporaryDirectory() as temp_dir:

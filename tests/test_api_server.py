@@ -41,10 +41,10 @@ def client(temp_data_dir):
     """Create test client with isolated data directory."""
     # Patch the DATA_DIR in restaurants router before importing
     with patch("routers.restaurants.DATA_DIR", Path(temp_data_dir) / "data" / "restaurants"), \
-         patch("main.fetch_default_video_on_startup", new=_noop), \
-         patch("main.sync_sqlite_to_postgres"), \
-         patch("main.seed_initial_data"), \
-         patch("main.start_pipeline_scheduler", return_value=None):
+         patch("main.fetch_default_video_on_startup", new=_noop, create=True), \
+         patch("main.sync_sqlite_to_postgres", create=True), \
+         patch("main.seed_initial_data", create=True), \
+         patch("main.start_pipeline_scheduler", return_value=None, create=True):
         from main import app
         with TestClient(app) as client:
             yield client
