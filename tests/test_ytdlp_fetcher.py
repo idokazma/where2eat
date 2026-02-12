@@ -304,3 +304,22 @@ class TestFetchChannelVideosDispatch:
                 result = scheduler._fetch_channel_videos(subscription)
 
         assert result == []  # no crash, no API key error
+
+    def test_fetch_playlist_videos_works_without_youtube_api_key(self, scheduler):
+        """_fetch_playlist_videos uses yt-dlp only, no YouTube Data API key needed."""
+        subscription = {'source_id': 'PLnokey', 'source_type': 'playlist'}
+        expected = [
+            {'video_id': 'vid_nokey', 'video_url': 'https://www.youtube.com/watch?v=vid_nokey',
+             'video_title': 'No Key Needed', 'published_at': '2024-03-01'},
+        ]
+
+        # Ensure no YouTube Data API key is set
+        env = {k: v for k, v in os.environ.items() if k != 'YOUTUBE_DATA_API_KEY'}
+
+        with patch.dict(os.environ, env, clear=True):
+            with patch.object(scheduler, '_fetch_videos_with_ytdlp', return_value=expected):
+                result = scheduler._fetch_playlist_videos(subscription)
+
+        assert len(result) == 1
+        assert result[0]['video_id'] == 'vid_nokey'
+        assert result[0]['video_title'] == 'No Key Needed'
