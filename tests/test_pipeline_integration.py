@@ -12,13 +12,20 @@ import shutil
 from datetime import datetime
 from unittest.mock import Mock, patch, MagicMock
 
-# Add project paths
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'scripts'))
+# Add project paths — scripts must come first so `main` resolves to scripts/main.py
+# (not api/main.py which is the FastAPI app)
+SCRIPTS_DIR = os.path.join(os.path.dirname(__file__), '..', 'scripts')
+SRC_DIR = os.path.join(os.path.dirname(__file__), '..', 'src')
+sys.path.insert(0, SCRIPTS_DIR)
+sys.path.insert(0, SRC_DIR)
 
 # Import modules to test
 from restaurant_analyzer import run_complete_pipeline, fetch_transcript, create_analysis_request
-from main import RestaurantPodcastAnalyzer
+import importlib.util
+_spec = importlib.util.spec_from_file_location("scripts_main", os.path.join(SCRIPTS_DIR, "main.py"))
+_scripts_main = importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(_scripts_main)
+RestaurantPodcastAnalyzer = _scripts_main.RestaurantPodcastAnalyzer
 
 
 class TestFullPipelineIntegration:
