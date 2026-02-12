@@ -104,7 +104,7 @@ class BackendService:
 
         try:
             collector = self._get_transcript_collector()
-            transcript_data = collector.get_transcript(video_url, language=language)
+            transcript_data = collector.get_transcript(video_url, languages=[language])
 
             if transcript_data is None:
                 # Try auto-generated transcript
