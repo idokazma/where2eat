@@ -1,5 +1,6 @@
 """Admin pipeline management endpoints for FastAPI."""
 
+import json
 import sys
 from pathlib import Path
 from typing import Optional
@@ -234,6 +235,71 @@ async def pipeline_stats(
                 "total_items": 0,
             }
         }
+
+
+@router.get(
+    "/{queue_id}/detail",
+    summary="Get video detail with transcript",
+    description="Get full details of a pipeline item including episode transcript and restaurants found.",
+)
+async def get_video_detail(
+    queue_id: str,
+    user: dict = Depends(get_current_user),
+):
+    """Get full video detail including transcript."""
+    queue_manager = _get_queue_manager()
+    video = queue_manager.get_video(queue_id)
+
+    if not video:
+        raise HTTPException(status_code=404, detail="Item not found")
+
+    result = {
+        "queue_item": video,
+        "episode": None,
+        "restaurants": [],
+        "transcript": None,
+        "transcript_length": 0,
+    }
+
+    # Parse error_log JSON if present
+    if video.get("error_log"):
+        try:
+            result["queue_item"]["error_log"] = json.loads(video["error_log"])
+        except (json.JSONDecodeError, TypeError):
+            pass
+
+    # If completed, fetch the linked episode with transcript
+    episode_id = video.get("episode_id")
+    if episode_id:
+        from database import get_database
+        db = get_database()
+        episode = db.get_episode(episode_id=episode_id)
+        if episode:
+            transcript = episode.get("transcript", "")
+            result["episode"] = {
+                "id": episode["id"],
+                "video_id": episode.get("video_id"),
+                "video_url": episode.get("video_url"),
+                "channel_name": episode.get("channel_name"),
+                "title": episode.get("title"),
+                "language": episode.get("language"),
+                "analysis_date": episode.get("analysis_date"),
+                "episode_summary": episode.get("episode_summary"),
+                "food_trends": episode.get("food_trends", []),
+            }
+            result["transcript"] = transcript
+            result["transcript_length"] = len(transcript) if transcript else 0
+
+        # Fetch restaurants for this episode
+        try:
+            search_result = db.search_restaurants(
+                episode_id=video.get("video_id"), limit=100
+            )
+            result["restaurants"] = search_result.get("restaurants", [])
+        except Exception:
+            pass
+
+    return result
 
 
 @router.post(

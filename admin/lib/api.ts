@@ -629,7 +629,58 @@ export const pipelineApi = {
   async remove(id: string): Promise<void> {
     return apiFetch(`/api/admin/pipeline/${id}`, { method: 'DELETE' });
   },
+  async getVideoDetail(queueId: string): Promise<VideoDetail> {
+    return apiFetch<VideoDetail>(`/api/admin/pipeline/${queueId}/detail`);
+  },
 };
+
+export interface VideoDetailQueueItem {
+  id: string;
+  video_id: string;
+  video_url: string;
+  video_title: string;
+  channel_name: string;
+  status: 'queued' | 'processing' | 'completed' | 'failed' | 'skipped';
+  priority: number;
+  attempt_count: number;
+  max_attempts: number;
+  scheduled_for: string;
+  discovered_at: string;
+  processing_started_at: string | null;
+  processing_completed_at: string | null;
+  restaurants_found: number;
+  error_message: string | null;
+  error_log: Array<{
+    message: string;
+    timestamp: string;
+    attempt: number;
+  }> | null;
+  episode_id: string | null;
+}
+
+export interface VideoDetail {
+  queue_item: VideoDetailQueueItem;
+  episode: {
+    id: string;
+    video_id: string;
+    video_url: string;
+    channel_name: string | null;
+    title: string | null;
+    language: string;
+    analysis_date: string;
+    episode_summary: string | null;
+    food_trends: string[];
+  } | null;
+  restaurants: Array<{
+    name_hebrew: string;
+    name_english?: string;
+    city?: string;
+    cuisine_type?: string;
+    host_opinion?: string;
+  }>;
+  transcript: string | null;
+  transcript_length: number;
+}
 
 export default {
   auth: authApi,

@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
+import { VideoDetailDialog } from '@/components/pipeline/video-detail-dialog';
 
 interface PipelineOverview {
   queued: number;
@@ -69,6 +70,7 @@ export default function PipelinePage() {
   const queryClient = useQueryClient();
   const [queuePage, setQueuePage] = useState(1);
   const [historyPage, setHistoryPage] = useState(1);
+  const [selectedQueueId, setSelectedQueueId] = useState<string | null>(null);
 
   // Fetch overview with auto-refresh
   const { data: overview, isLoading: overviewLoading } = useQuery<PipelineOverview>({
@@ -279,7 +281,10 @@ export default function PipelinePage() {
                   <Card key={item.id}>
                     <CardContent className="pt-6">
                       <div className="flex items-start justify-between gap-4">
-                        <div className="flex-1 min-w-0">
+                        <div
+                          className="flex-1 min-w-0 cursor-pointer hover:opacity-80 transition-opacity"
+                          onClick={() => setSelectedQueueId(item.id)}
+                        >
                           <div className="flex items-center gap-2 mb-2">
                             <div className={cn('h-2 w-2 rounded-full shrink-0', getPriorityColor(item.priority))} />
                             <h3 className="font-medium truncate">{item.video_title}</h3>
@@ -396,7 +401,10 @@ export default function PipelinePage() {
                   <Card key={item.id}>
                     <CardContent className="pt-6">
                       <div className="flex items-start justify-between gap-4">
-                        <div className="flex-1 min-w-0">
+                        <div
+                          className="flex-1 min-w-0 cursor-pointer hover:opacity-80 transition-opacity"
+                          onClick={() => setSelectedQueueId(item.id)}
+                        >
                           <div className="flex items-center gap-2 mb-2">
                             {item.status === 'completed' ? (
                               <CheckCircle2 className="h-5 w-5 shrink-0 text-green-500" />
@@ -490,6 +498,11 @@ export default function PipelinePage() {
           )}
         </TabsContent>
       </Tabs>
+
+      <VideoDetailDialog
+        queueId={selectedQueueId}
+        onClose={() => setSelectedQueueId(null)}
+      />
     </div>
   );
 }
