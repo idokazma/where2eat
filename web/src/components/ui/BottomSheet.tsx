@@ -54,7 +54,9 @@ export function BottomSheet({
   // Reset drag state when closed
   useEffect(() => {
     if (!isOpen) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setDragY(0);
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsDragging(false);
     }
   }, [isOpen]);

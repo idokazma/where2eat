@@ -22,6 +22,7 @@ export function ParallaxHero({
 
   useEffect(() => {
     // Trigger entrance animation
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsLoaded(true)
 
     // Check if user prefers reduced motion

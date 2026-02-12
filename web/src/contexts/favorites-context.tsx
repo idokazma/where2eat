@@ -23,6 +23,7 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
     const saved = localStorage.getItem("where2eat-favorites")
     if (saved) {
       try {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setFavorites(JSON.parse(saved))
       } catch (error) {
         console.error("Error loading favorites:", error)

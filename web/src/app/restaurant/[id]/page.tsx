@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
+import type { Restaurant } from '@/types/restaurant';
 import {
   ChevronRight,
   Star,
@@ -20,7 +21,6 @@ import {
   Utensils,
   Camera,
 } from 'lucide-react';
-import { Restaurant } from '@/types/restaurant';
 import { useFavorites } from '@/contexts/favorites-context';
 import { endpoints } from '@/lib/config';
 import { getRestaurantImage, getRestaurantImages, getCuisineGradient } from '@/lib/images';

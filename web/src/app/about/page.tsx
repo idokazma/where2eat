@@ -17,7 +17,7 @@ export default function AboutPage() {
         const restaurants = data.restaurants || [];
         setRestaurantCount(data.count ?? restaurants.length);
         const episodes = new Set(
-          restaurants.map((r: any) => r.episode_info?.video_id).filter(Boolean)
+          restaurants.map((r: { episode_info?: { video_id?: string } }) => r.episode_info?.video_id).filter(Boolean)
         );
         setEpisodeCount(episodes.size);
       })

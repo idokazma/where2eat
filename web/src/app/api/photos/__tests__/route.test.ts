@@ -17,15 +17,15 @@ jest.mock('next/server', () => {
   class MockNextResponse {
     status: number;
     _headers: Map<string, string>;
-    _body: any;
+    _body: unknown;
 
-    constructor(body: any, init?: { headers?: Record<string, string>; status?: number }) {
+    constructor(body: unknown, init?: { headers?: Record<string, string>; status?: number }) {
       this._body = body;
       this.status = init?.status || 200;
       this._headers = new Map(Object.entries(init?.headers || {}));
     }
 
-    static json(data: any, init?: { status?: number }) {
+    static json(data: unknown, init?: { status?: number }) {
       const resp = new MockNextResponse(JSON.stringify(data), { status: init?.status });
       resp._body = data;
       return resp;
@@ -63,7 +63,7 @@ describe('Photo proxy route', () => {
     process.env.GOOGLE_PLACES_API_KEY = '';
     process.env.NEXT_PUBLIC_GOOGLE_PLACES_API_KEY = '';
 
-    const { GET } = require('../[reference]/route');
+    const { GET } = await import('../[reference]/route');
 
     const request = {
       nextUrl: { searchParams: new URLSearchParams('maxwidth=800') },
@@ -80,7 +80,7 @@ describe('Photo proxy route', () => {
   it('returns 400 when reference is empty', async () => {
     process.env.GOOGLE_PLACES_API_KEY = 'test-key';
 
-    const { GET } = require('../[reference]/route');
+    const { GET } = await import('../[reference]/route');
 
     const request = {
       nextUrl: { searchParams: new URLSearchParams('maxwidth=800') },
@@ -104,9 +104,9 @@ describe('Photo proxy route', () => {
       headers: { get: (key: string) => (key === 'content-type' ? 'image/jpeg' : null) },
     };
 
-    global.fetch = jest.fn().mockResolvedValue(mockResponse) as any;
+    global.fetch = jest.fn().mockResolvedValue(mockResponse) as jest.Mock;
 
-    const { GET } = require('../[reference]/route');
+    const { GET } = await import('../[reference]/route');
 
     const request = {
       nextUrl: { searchParams: new URLSearchParams('maxwidth=800') },
@@ -130,9 +130,9 @@ describe('Photo proxy route', () => {
       headers: { get: (key: string) => (key === 'content-type' ? 'image/webp' : null) },
     };
 
-    global.fetch = jest.fn().mockResolvedValue(mockResponse) as any;
+    global.fetch = jest.fn().mockResolvedValue(mockResponse) as jest.Mock;
 
-    const { GET } = require('../[reference]/route');
+    const { GET } = await import('../[reference]/route');
 
     const request = {
       nextUrl: { searchParams: new URLSearchParams('maxwidth=400') },

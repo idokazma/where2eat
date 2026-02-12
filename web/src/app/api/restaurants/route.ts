@@ -22,7 +22,7 @@ export async function GET() {
         const filePath = path.join(dataDir, file);
         const content = await fs.readFile(filePath, 'utf-8');
         restaurants.push(JSON.parse(content));
-      } catch (err) {
+      } catch {
         console.warn(`Failed to read ${file}`);
       }
     }

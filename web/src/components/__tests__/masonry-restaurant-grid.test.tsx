@@ -1,10 +1,11 @@
 import { screen } from '@testing-library/react'
 import { renderWithProviders, createMockRestaurant } from '@/test-utils'
 import { MasonryRestaurantGrid } from '../masonry-restaurant-grid'
+import type { Restaurant } from '@/types/restaurant'
 
 // Mock components
 jest.mock('../visual-restaurant-card', () => ({
-  VisualRestaurantCard: ({ restaurant }: any) => (
+  VisualRestaurantCard: ({ restaurant }: { restaurant: Restaurant }) => (
     <div data-testid="restaurant-card">{restaurant.name_hebrew}</div>
   ),
 }))

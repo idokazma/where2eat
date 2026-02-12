@@ -539,6 +539,73 @@ class BackendService:
                     'restaurant_ids': restaurant_ids
                 }
 
+                # Write-through to PostgreSQL if DATABASE_URL is set
+                if os.getenv('DATABASE_URL'):
+                    try:
+                        from models.base import get_db_session
+                        from models.restaurant import Episode as EpisodeModel, Restaurant as RestaurantModel
+                        with get_db_session() as session:
+                            # Upsert episode
+                            existing_ep = session.query(EpisodeModel).filter_by(video_id=video_id).first()
+                            if not existing_ep:
+                                ep_model = EpisodeModel(
+                                    id=episode_id,
+                                    video_id=video_id,
+                                    video_url=video_url,
+                                    language=transcript_result.get('language', language),
+                                    transcript=transcript_result.get('transcript'),
+                                    food_trends=analysis_result.get('food_trends', []),
+                                    episode_summary=analysis_result.get('episode_summary'),
+                                    analysis_date=datetime.now(),
+                                )
+                                session.add(ep_model)
+                            # Upsert restaurants
+                            for i, restaurant_data in enumerate(restaurants):
+                                rid = restaurant_ids[i] if i < len(restaurant_ids) else None
+                                if rid:
+                                    existing_r = session.query(RestaurantModel).filter_by(id=rid).first()
+                                    if existing_r:
+                                        continue
+                                location = restaurant_data.get('location', {})
+                                contact = restaurant_data.get('contact_info', {})
+                                rating = restaurant_data.get('rating', {})
+                                r_model = RestaurantModel(
+                                    id=rid,
+                                    episode_id=episode_id,
+                                    name_hebrew=restaurant_data.get('name_hebrew', 'Unknown'),
+                                    name_english=restaurant_data.get('name_english'),
+                                    city=restaurant_data.get('city') or location.get('city'),
+                                    neighborhood=restaurant_data.get('neighborhood') or location.get('neighborhood'),
+                                    address=restaurant_data.get('address') or location.get('address'),
+                                    region=restaurant_data.get('region') or location.get('region', 'Center'),
+                                    cuisine_type=restaurant_data.get('cuisine_type'),
+                                    status=restaurant_data.get('status', 'open'),
+                                    price_range=restaurant_data.get('price_range'),
+                                    host_opinion=restaurant_data.get('host_opinion'),
+                                    host_comments=restaurant_data.get('host_comments'),
+                                    menu_items=restaurant_data.get('menu_items'),
+                                    special_features=restaurant_data.get('special_features'),
+                                    contact_hours=restaurant_data.get('contact_hours') or contact.get('hours'),
+                                    contact_phone=restaurant_data.get('contact_phone') or contact.get('phone'),
+                                    contact_website=restaurant_data.get('contact_website') or contact.get('website'),
+                                    business_news=restaurant_data.get('business_news'),
+                                    mention_context=restaurant_data.get('mention_context'),
+                                    mention_timestamp=restaurant_data.get('mention_timestamp'),
+                                    google_place_id=restaurant_data.get('google_place_id'),
+                                    google_rating=restaurant_data.get('google_rating') or rating.get('google_rating'),
+                                    google_user_ratings_total=restaurant_data.get('google_user_ratings_total') or rating.get('user_ratings_total'),
+                                    image_url=restaurant_data.get('image_url'),
+                                )
+                                session.add(r_model)
+                            session.commit()
+                        result['steps']['postgres_write_through'] = {'success': True}
+                    except Exception as pg_err:
+                        print(f"[PIPELINE] PostgreSQL write-through failed: {pg_err}")
+                        result['steps']['postgres_write_through'] = {
+                            'success': False,
+                            'error': str(pg_err)
+                        }
+
             except Exception as e:
                 result['steps']['database'] = {
                     'success': False,

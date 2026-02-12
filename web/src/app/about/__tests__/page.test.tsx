@@ -1,24 +1,23 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import AboutPage from '../page';
+import type { ReactNode } from 'react';
 
 // Mock next/link
 jest.mock('next/link', () => ({
   __esModule: true,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  default: ({ children, href, ...props }: any) => (
+  default: ({ children, href, ...props }: { children: ReactNode; href: string; [key: string]: unknown }) => (
     <a href={href} {...props}>{children}</a>
   ),
 }));
 
 // Mock PageLayout to just render children
 jest.mock('@/components/layout', () => ({
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  PageLayout: ({ children }: any) => <div>{children}</div>,
+  PageLayout: ({ children }: { children: ReactNode }) => <div>{children}</div>,
 }));
 
 // Mock fetch
 const mockFetch = jest.fn();
-global.fetch = mockFetch as any;
+global.fetch = mockFetch as jest.Mock;
 
 describe('AboutPage', () => {
   beforeEach(() => {

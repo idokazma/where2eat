@@ -89,8 +89,11 @@ async def fetch_default_video_on_startup():
     data_dir = base_data_dir / "restaurants"
     db_path = base_data_dir / "where2eat.db"
 
-    # Backup directory (always from the image, not from volume)
-    backup_dir = Path(__file__).parent.parent / "data" / "restaurants_backup"
+    # Backup directory - try the seed path first (outside volume mount),
+    # then fall back to data path
+    backup_dir = Path("/app/seed/restaurants_backup")
+    if not backup_dir.exists():
+        backup_dir = Path(__file__).parent.parent / "data" / "restaurants_backup"
     if not backup_dir.exists():
         backup_dir = Path("/app/data/restaurants_backup")
 
@@ -440,6 +443,113 @@ def seed_initial_data():
         traceback.print_exc()
 
 
+def sync_sqlite_to_postgres():
+    """Sync data from SQLite (pipeline storage) to PostgreSQL (API storage).
+
+    Reads all episodes and restaurants from the SQLite database on the
+    persistent volume and upserts them into PostgreSQL. Runs at every
+    startup to catch any new pipeline-processed data.
+    """
+    if not os.getenv('DATABASE_URL'):
+        print("[SYNC] No DATABASE_URL set, skipping SQLite→PostgreSQL sync")
+        return
+
+    try:
+        from database import get_database
+        from models.base import get_db_session
+        from models.restaurant import Episode as EpisodeModel, Restaurant as RestaurantModel
+
+        sqlite_db = get_database()
+        episodes = sqlite_db.get_all_episodes()
+        restaurants = sqlite_db.get_all_restaurants(include_episode_info=False)
+
+        if not episodes and not restaurants:
+            print("[SYNC] SQLite database is empty, nothing to sync")
+            return
+
+        print(f"[SYNC] Found {len(episodes)} episodes and {len(restaurants)} restaurants in SQLite")
+
+        synced_episodes = 0
+        synced_restaurants = 0
+
+        with get_db_session() as session:
+            # Sync episodes
+            for ep in episodes:
+                existing = session.query(EpisodeModel).filter_by(video_id=ep['video_id']).first()
+                if existing:
+                    continue
+                episode_model = EpisodeModel(
+                    id=ep['id'],
+                    video_id=ep['video_id'],
+                    video_url=ep['video_url'],
+                    channel_id=ep.get('channel_id'),
+                    channel_name=ep.get('channel_name'),
+                    title=ep.get('title'),
+                    language=ep.get('language', 'he'),
+                    transcript=ep.get('transcript'),
+                    food_trends=ep.get('food_trends'),
+                    episode_summary=ep.get('episode_summary'),
+                )
+                if ep.get('analysis_date'):
+                    try:
+                        episode_model.analysis_date = datetime.fromisoformat(
+                            ep['analysis_date'].replace('Z', '+00:00')
+                        )
+                    except (ValueError, AttributeError):
+                        pass
+                session.add(episode_model)
+                synced_episodes += 1
+
+            # Sync restaurants
+            for r in restaurants:
+                existing = session.query(RestaurantModel).filter_by(id=r['id']).first()
+                if existing:
+                    continue
+                location = r.get('location', {})
+                contact = r.get('contact_info', {})
+                rating = r.get('rating', {})
+                restaurant_model = RestaurantModel(
+                    id=r['id'],
+                    episode_id=r.get('episode_id'),
+                    name_hebrew=r.get('name_hebrew', 'Unknown'),
+                    name_english=r.get('name_english'),
+                    city=location.get('city'),
+                    neighborhood=location.get('neighborhood'),
+                    address=location.get('address'),
+                    region=location.get('region', 'Center'),
+                    latitude=r.get('latitude'),
+                    longitude=r.get('longitude'),
+                    cuisine_type=r.get('cuisine_type'),
+                    status=r.get('status', 'open'),
+                    price_range=r.get('price_range'),
+                    host_opinion=r.get('host_opinion'),
+                    host_comments=r.get('host_comments'),
+                    menu_items=r.get('menu_items'),
+                    special_features=r.get('special_features'),
+                    contact_hours=contact.get('hours'),
+                    contact_phone=contact.get('phone'),
+                    contact_website=contact.get('website'),
+                    business_news=r.get('business_news'),
+                    mention_context=r.get('mention_context'),
+                    mention_timestamp=r.get('mention_timestamp'),
+                    google_place_id=r.get('google_place_id'),
+                    google_rating=rating.get('google_rating'),
+                    google_user_ratings_total=rating.get('user_ratings_total'),
+                    image_url=r.get('image_url'),
+                )
+                session.add(restaurant_model)
+                synced_restaurants += 1
+
+            session.commit()
+
+        print(f"[SYNC] Synced {synced_episodes} new episodes and {synced_restaurants} new restaurants to PostgreSQL")
+
+    except Exception as e:
+        print(f"[SYNC] SQLite→PostgreSQL sync failed: {e}")
+        import traceback
+        traceback.print_exc()
+
+
 def start_pipeline_scheduler():
     """Start the auto video fetching pipeline scheduler."""
     try:
@@ -469,8 +579,16 @@ _pipeline_scheduler = None
 async def lifespan(app: FastAPI):
     """Lifespan context manager for startup and shutdown events."""
     global _pipeline_scheduler
+    # Initialize PostgreSQL tables if DATABASE_URL is set
+    try:
+        from models.base import init_db
+        init_db()
+    except Exception as e:
+        print(f"[STARTUP] Database init failed: {e}")
     # Startup: fetch default video
     await fetch_default_video_on_startup()
+    # Sync SQLite data to PostgreSQL
+    sync_sqlite_to_postgres()
     # Seed admin user and subscriptions if empty
     seed_initial_data()
     # Start pipeline scheduler

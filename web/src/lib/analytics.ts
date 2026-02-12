@@ -1,6 +1,7 @@
 "use client"
 
 import { onCLS, onLCP, onFCP, onTTFB, onINP } from 'web-vitals'
+import type { Metric } from 'web-vitals'
 
 export interface WebVitalsMetric {
   id: string
@@ -12,11 +13,11 @@ export interface WebVitalsMetric {
 export function reportWebVitals(onPerfEntry?: (metric: WebVitalsMetric) => void) {
   if (!onPerfEntry || typeof window === 'undefined') return
 
-  onCLS((metric: any) => onPerfEntry(metric as WebVitalsMetric))
-  onLCP((metric: any) => onPerfEntry(metric as WebVitalsMetric))
-  onFCP((metric: any) => onPerfEntry(metric as WebVitalsMetric))
-  onTTFB((metric: any) => onPerfEntry(metric as WebVitalsMetric))
-  onINP((metric: any) => onPerfEntry(metric as WebVitalsMetric))
+  onCLS((metric: Metric) => onPerfEntry(metric as WebVitalsMetric))
+  onLCP((metric: Metric) => onPerfEntry(metric as WebVitalsMetric))
+  onFCP((metric: Metric) => onPerfEntry(metric as WebVitalsMetric))
+  onTTFB((metric: Metric) => onPerfEntry(metric as WebVitalsMetric))
+  onINP((metric: Metric) => onPerfEntry(metric as WebVitalsMetric))
 }
 
 export function logMetricToConsole(metric: WebVitalsMetric) {

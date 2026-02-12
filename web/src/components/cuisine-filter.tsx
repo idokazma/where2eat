@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useMemo } from "react"
 import { Badge } from "@/components/ui/badge"
 import { Utensils } from "lucide-react"
 import { Restaurant } from "@/types/restaurant"
@@ -46,7 +46,6 @@ export function CuisineFilter({ restaurants, selectedCuisines, onCuisineChange }
     onCuisineChange(cuisineData.map(item => item.cuisine))
   }
 
-  const isAllSelected = selectedCuisines.length === cuisineData.length
   const isNoneSelected = selectedCuisines.length === 0
 
   return (

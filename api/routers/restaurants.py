@@ -31,6 +31,32 @@ router = APIRouter(prefix="/api/restaurants", tags=["Restaurants"])
 DATA_DIR = Path(__file__).parent.parent.parent / "data" / "restaurants"
 
 
+def _get_data_directory() -> Path:
+    """Get the data directory, respecting DATABASE_DIR env var for Railway volumes."""
+    db_dir = os.getenv('DATABASE_DIR')
+    if db_dir:
+        return Path(db_dir)
+    default_dir = Path(__file__).parent.parent.parent / "data"
+    if default_dir.exists():
+        return default_dir
+    railway_dir = Path("/app/data")
+    if railway_dir.exists():
+        return railway_dir
+    return default_dir
+
+
+def _get_sqlite_db():
+    """Get a native SQLite Database instance (used by the pipeline)."""
+    try:
+        from database import Database
+        db_path = _get_data_directory() / "where2eat.db"
+        if db_path.exists():
+            return Database(str(db_path))
+    except Exception as e:
+        print(f"Warning: Could not open SQLite database: {e}")
+    return None
+
+
 def use_sqlalchemy() -> bool:
     """Check if we should use SQLAlchemy (PostgreSQL/SQLite ORM)."""
     return os.getenv('DATABASE_URL') is not None or os.getenv('USE_SQLALCHEMY', '').lower() == 'true'
@@ -64,6 +90,23 @@ def get_db_session():
 
 
 # ============================================================================
+# Native SQLite operations (primary - used by the pipeline)
+# ============================================================================
+
+def load_all_restaurants_sqlite() -> List[dict]:
+    """Load all restaurants from the native SQLite database (pipeline storage)."""
+    db = _get_sqlite_db()
+    if not db:
+        return []
+    try:
+        restaurants = db.get_all_restaurants(include_episode_info=True)
+        return restaurants
+    except Exception as e:
+        print(f"Warning: Failed to load from SQLite: {e}")
+        return []
+
+
+# ============================================================================
 # Legacy JSON file operations (backward compatibility)
 # ============================================================================
 
@@ -73,7 +116,13 @@ def ensure_data_dir():
 
 
 def load_all_restaurants() -> List[dict]:
-    """Load all restaurants, trying SQLAlchemy first then falling back to JSON."""
+    """Load all restaurants, trying SQLite first, then SQLAlchemy, then JSON."""
+    # 1. Try native SQLite (pipeline storage) first
+    restaurants = load_all_restaurants_sqlite()
+    if restaurants:
+        return restaurants
+
+    # 2. Try SQLAlchemy (PostgreSQL) if configured
     if use_sqlalchemy():
         ctx = get_db_session()
         if ctx:
@@ -84,6 +133,8 @@ def load_all_restaurants() -> List[dict]:
                         return restaurants
             except Exception as e:
                 print(f"Warning: SQLAlchemy error, falling back to JSON: {e}")
+
+    # 3. Fallback to JSON files
     return load_all_restaurants_json()
 
 
@@ -173,18 +224,7 @@ def search_restaurants_db(
 )
 async def list_restaurants():
     """Get all restaurants."""
-    if use_sqlalchemy():
-        ctx = get_db_session()
-        if ctx:
-            try:
-                with ctx as db:
-                    restaurants = load_all_restaurants_db(db)
-                    return RestaurantList(restaurants=restaurants, count=len(restaurants))
-            except Exception as e:
-                print(f"Warning: SQLAlchemy error, falling back to JSON: {e}")
-
-    # Fallback to JSON files
-    restaurants = load_all_restaurants_json()
+    restaurants = load_all_restaurants()
     return RestaurantList(restaurants=restaurants, count=len(restaurants))
 
 
@@ -212,7 +252,7 @@ async def search_restaurants(
     """Search restaurants with filters."""
     offset = (page - 1) * limit
 
-    # Try SQLAlchemy first
+    # Try SQLAlchemy first if configured
     if use_sqlalchemy():
         ctx = get_db_session()
         if ctx:
@@ -246,10 +286,10 @@ async def search_restaurants(
                         analytics=analytics,
                     )
             except Exception as e:
-                print(f"Warning: SQLAlchemy error, falling back to JSON: {e}")
+                print(f"Warning: SQLAlchemy error, falling back: {e}")
 
-    # Fallback to JSON file search
-    restaurants = load_all_restaurants_json()
+    # Load from SQLite (pipeline storage) or JSON files
+    restaurants = load_all_restaurants()
 
     # Apply filters
     filtered = restaurants
@@ -395,7 +435,17 @@ async def search_restaurants(
 )
 async def get_restaurant(restaurant_id: str):
     """Get a single restaurant by ID."""
-    # Try SQLAlchemy first
+    # 1. Try native SQLite first (pipeline storage)
+    db = _get_sqlite_db()
+    if db:
+        try:
+            restaurant = db.get_restaurant(restaurant_id)
+            if restaurant:
+                return restaurant
+        except Exception as e:
+            print(f"Warning: SQLite error: {e}")
+
+    # 2. Try SQLAlchemy if configured
     if use_sqlalchemy():
         ctx = get_db_session()
         if ctx:
@@ -413,7 +463,7 @@ async def get_restaurant(restaurant_id: str):
             except Exception as e:
                 print(f"Warning: SQLAlchemy error, falling back to JSON: {e}")
 
-    # Fallback to JSON file
+    # 3. Fallback to JSON file
     file_path = DATA_DIR / f"{restaurant_id}.json"
     if not file_path.exists():
         raise HTTPException(status_code=404, detail="Restaurant not found")

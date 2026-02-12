@@ -1,6 +1,8 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import enTranslations from '@/lib/translations/en.json';
+import heTranslations from '@/lib/translations/he.json';
 
 export type Language = 'en' | 'he';
 
@@ -20,6 +22,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const savedLanguage = localStorage.getItem('language') as Language;
     if (savedLanguage && (savedLanguage === 'en' || savedLanguage === 'he')) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setLanguageState(savedLanguage);
     }
   }, []);
@@ -33,16 +36,16 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   };
 
   const t = (key: string): string => {
-    // Import translations dynamically
-    const translations = require(`@/lib/translations/${language}.json`);
+    // Get translations based on current language
+    const translations = language === 'en' ? enTranslations : heTranslations;
 
     // Support nested keys like "search.placeholder"
     const keys = key.split('.');
-    let value: any = translations;
+    let value: unknown = translations;
 
     for (const k of keys) {
       if (value && typeof value === 'object' && k in value) {
-        value = value[k];
+        value = (value as Record<string, unknown>)[k];
       } else {
         console.warn(`Translation key not found: ${key} for language: ${language}`);
         return key;

@@ -41,9 +41,15 @@ interface RegionalInsights {
   topRestaurants: Restaurant[]
 }
 
+interface TrendsData {
+  topCuisines: Array<{ cuisine: string; count: number }>
+  topCities: Array<{ city: string; count: number }>
+  priceDistribution: Record<string, number>
+}
+
 export function TrendingAnalytics({ restaurants, onRestaurantFilter }: TrendingAnalyticsProps) {
   const [timeframe, setTimeframe] = useState<'1month' | '3months' | '6months' | '1year'>('3months')
-  const [trendsData, setTrendsData] = useState<any>(null)
+  const [trendsData, setTrendsData] = useState<TrendsData | null>(null)
   const [isLoading, setIsLoading] = useState(false)
 
   // Calculate timeframe-filtered restaurants
@@ -246,7 +252,7 @@ export function TrendingAnalytics({ restaurants, onRestaurantFilter }: TrendingA
                   key={period}
                   variant={timeframe === period ? "secondary" : "outline"}
                   size="sm"
-                  onClick={() => setTimeframe(period as any)}
+                  onClick={() => setTimeframe(period as '1month' | '3months' | '6months' | '1year')}
                   className={timeframe === period ? "bg-white text-primary" : "border-white text-white hover:bg-white/20"}
                 >
                   {getTimeframeLabel(period)}
@@ -376,7 +382,7 @@ export function TrendingAnalytics({ restaurants, onRestaurantFilter }: TrendingA
                 </CardHeader>
                 <CardContent className="p-4 space-y-4">
                   <div className="flex justify-between items-center">
-                    <span className="text-sm text-muted-foreground">סה"כ מסעדות:</span>
+                    <span className="text-sm text-muted-foreground">סה&quot;כ מסעדות:</span>
                     <Badge className="bg-muted text-muted-foreground">{region.totalRestaurants}</Badge>
                   </div>
 
