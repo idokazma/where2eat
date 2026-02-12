@@ -1,6 +1,6 @@
-import { render, screen } from '@testing-library/react'
+import { screen } from '@testing-library/react'
+import { renderWithProviders, createMockRestaurant } from '@/test-utils'
 import { MasonryRestaurantGrid } from '../masonry-restaurant-grid'
-import { Restaurant } from '@/types/restaurant'
 
 // Mock components
 jest.mock('../visual-restaurant-card', () => ({
@@ -13,74 +13,14 @@ jest.mock('../skeletons/grid-skeleton', () => ({
   GridSkeleton: () => <div data-testid="grid-skeleton">Loading...</div>,
 }))
 
-const mockRestaurants: Restaurant[] = [
-  {
-    name_hebrew: 'מסעדה 1',
-    name_english: 'Restaurant 1',
-    cuisine_type: 'Italian',
-    price_range: 'mid-range',
-    host_opinion: 'positive',
-    host_comments: 'Great place',
-    location: {
-      city: 'Tel Aviv',
-      region: 'Center',
-      neighborhood: 'Neve Tzedek',
-      address: '123 Test St',
-      latitude: 32.0,
-      longitude: 34.0,
-    },
-    contact_info: {
-      phone: '03-1234567',
-      website: 'https://test.com',
-      hours: '10:00-22:00',
-    },
-    menu_items: [],
-    special_features: [],
-    status: 'open',
-    business_news: '',
-    episode_info: {
-      episode_title: 'Test Episode',
-      video_id: 'abc123',
-      youtube_url: 'https://youtube.com/watch?v=abc123',
-      publish_date: '2024-01-01',
-    },
-  },
-  {
-    name_hebrew: 'מסעדה 2',
-    name_english: 'Restaurant 2',
-    cuisine_type: 'Japanese',
-    price_range: 'expensive',
-    host_opinion: 'positive',
-    host_comments: 'Amazing sushi',
-    location: {
-      city: 'Tel Aviv',
-      region: 'Center',
-      neighborhood: 'Florentin',
-      address: '456 Test Ave',
-      latitude: 32.1,
-      longitude: 34.1,
-    },
-    contact_info: {
-      phone: '03-7654321',
-      website: 'https://test2.com',
-      hours: '11:00-23:00',
-    },
-    menu_items: [],
-    special_features: [],
-    status: 'open',
-    business_news: '',
-    episode_info: {
-      episode_title: 'Test Episode 2',
-      video_id: 'def456',
-      youtube_url: 'https://youtube.com/watch?v=def456',
-      publish_date: '2024-01-02',
-    },
-  },
+const mockRestaurants = [
+  createMockRestaurant({ name_hebrew: 'מסעדה 1', cuisine_type: 'Italian' }),
+  createMockRestaurant({ name_hebrew: 'מסעדה 2', cuisine_type: 'Japanese' }),
 ]
 
 describe('MasonryRestaurantGrid', () => {
   it('shows loading skeleton when isLoading is true', () => {
-    render(
+    renderWithProviders(
       <MasonryRestaurantGrid
         restaurants={[]}
         isLoading={true}
@@ -91,7 +31,7 @@ describe('MasonryRestaurantGrid', () => {
   })
 
   it('shows empty state when no restaurants', () => {
-    render(
+    renderWithProviders(
       <MasonryRestaurantGrid
         restaurants={[]}
         isLoading={false}
@@ -103,7 +43,7 @@ describe('MasonryRestaurantGrid', () => {
   })
 
   it('renders restaurant cards when data is provided', () => {
-    render(
+    renderWithProviders(
       <MasonryRestaurantGrid
         restaurants={mockRestaurants}
         isLoading={false}
@@ -115,7 +55,7 @@ describe('MasonryRestaurantGrid', () => {
   })
 
   it('renders correct number of restaurant cards', () => {
-    render(
+    renderWithProviders(
       <MasonryRestaurantGrid
         restaurants={mockRestaurants}
         isLoading={false}
