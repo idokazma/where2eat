@@ -64,7 +64,7 @@ class TestAdminUserSeed:
         assert not admin_db_path.exists()
 
         with patch.dict(os.environ, env_vars, clear=False):
-            with patch("main.SubscriptionManager", side_effect=ImportError("skip")):
+            with patch("subscription_manager.SubscriptionManager", side_effect=ImportError("skip")):
                 try:
                     from main import seed_initial_data
                     seed_initial_data()
@@ -105,7 +105,7 @@ class TestAdminUserSeed:
         }
 
         with patch.dict(os.environ, env_vars, clear=False):
-            with patch("main.SubscriptionManager", side_effect=ImportError("skip")):
+            with patch("subscription_manager.SubscriptionManager", side_effect=ImportError("skip")):
                 try:
                     from main import seed_initial_data
                     seed_initial_data()

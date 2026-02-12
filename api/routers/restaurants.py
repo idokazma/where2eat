@@ -257,13 +257,13 @@ async def search_restaurants(
     if location:
         filtered = [
             r for r in filtered
-            if location.lower() in r.get("location", {}).get("city", "").lower()
+            if location.lower() in ((r.get("location") or {}).get("city") or "").lower()
         ]
 
     if cuisine:
         filtered = [
             r for r in filtered
-            if cuisine.lower() in r.get("cuisine_type", "").lower()
+            if cuisine.lower() in (r.get("cuisine_type") or "").lower()
         ]
 
     if price_range:
@@ -279,9 +279,9 @@ async def search_restaurants(
         query_lower = query.lower()
         filtered = [
             r for r in filtered
-            if query_lower in r.get("name_hebrew", "").lower()
-            or query_lower in r.get("name_english", "").lower()
-            or query_lower in r.get("host_comments", "").lower()
+            if query_lower in (r.get("name_hebrew") or "").lower()
+            or query_lower in (r.get("name_english") or "").lower()
+            or query_lower in (r.get("host_comments") or "").lower()
         ]
 
     if episode_id:
@@ -323,7 +323,7 @@ async def search_restaurants(
             analytics["filter_counts"]["cuisine"][cuisine_type] = (
                 analytics["filter_counts"]["cuisine"].get(cuisine_type, 0) + 1
             )
-        if r.get("location", {}).get("city"):
+        if (r.get("location") or {}).get("city"):
             city = r["location"]["city"]
             analytics["filter_counts"]["location"][city] = (
                 analytics["filter_counts"]["location"].get(city, 0) + 1
@@ -342,15 +342,15 @@ async def search_restaurants(
     # Apply sorting
     def get_sort_value(r):
         if sort_by == "name":
-            return r.get("name_hebrew", "")
+            return r.get("name_hebrew") or ""
         elif sort_by == "location":
-            return r.get("location", {}).get("city", "")
+            return (r.get("location") or {}).get("city") or ""
         elif sort_by == "cuisine":
-            return r.get("cuisine_type", "")
+            return r.get("cuisine_type") or ""
         elif sort_by == "rating":
-            return r.get("rating", {}).get("google_rating", 0) or 0
+            return (r.get("rating") or {}).get("google_rating", 0) or 0
         else:  # analysis_date
-            return r.get("episode_info", {}).get("analysis_date", "")
+            return (r.get("episode_info") or {}).get("analysis_date") or ""
 
     filtered.sort(key=get_sort_value, reverse=(sort_direction == "desc"))
 

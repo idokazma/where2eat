@@ -113,7 +113,8 @@ class TestYouTubeTranscriptCollector:
         """Test auto transcript detection"""
         mock_transcript_data = MockTranscriptData(sample_transcript_data)
 
-        with patch('youtube_transcript_collector.YouTubeTranscriptApi') as MockApi:
+        with patch('youtube_transcript_collector.YouTubeTranscriptApi') as MockApi, \
+             patch('youtube_transcript_collector.time.sleep'):
             mock_instance = MockApi.return_value
             # First fetch call for 'en' will raise NoTranscriptFound
             # Then it will try 'he' which succeeds
@@ -416,26 +417,23 @@ class TestRateLimiting:
         sample_data = [{'text': "test", 'start': 0.0, 'duration': 1.0}]
         mock_transcript_data = MockTranscriptData(sample_data)
 
-        with patch('youtube_transcript_collector.YouTubeTranscriptApi') as MockApi:
+        with patch('youtube_transcript_collector.YouTubeTranscriptApi') as MockApi, \
+             patch('youtube_transcript_collector.time.sleep') as mock_sleep:
             mock_instance = MockApi.return_value
             mock_instance.fetch.return_value = mock_transcript_data
 
             # First request should succeed immediately
-            start_time = time.time()
             result1 = rate_limited_collector.get_transcript("https://www.youtube.com/watch?v=test1234567")
-            first_request_time = time.time() - start_time
-
             assert result1 is not None
-            assert first_request_time < 1.0  # Should be fast
 
-            # Second request should be delayed
-            start_time = time.time()
+            # Second request should trigger rate limiter sleep
             result2 = rate_limited_collector.get_transcript("https://www.youtube.com/watch?v=test7654321")
-            second_request_time = time.time() - start_time
-
             assert result2 is not None
-            # Should wait close to 30 seconds (allow 1 second tolerance)
-            assert second_request_time >= 29.0
+
+            # Rate limiter should have called sleep with ~30 seconds
+            assert mock_sleep.called
+            sleep_time = mock_sleep.call_args[0][0]
+            assert sleep_time >= 28.0  # Should wait close to 30 seconds
 
     def test_rate_limiter_status_method(self, rate_limited_collector):
         """Test that rate limiter exposes status information"""

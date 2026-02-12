@@ -60,6 +60,7 @@ class RestaurantPodcastAnalyzer:
         os.makedirs("demo_results", exist_ok=True)
         os.makedirs("transcripts", exist_ok=True)
         os.makedirs("analyses", exist_ok=True)
+        os.makedirs("logs", exist_ok=True)
         
         self.logger.info("🚀 RestaurantPodcastAnalyzer initialized")
     

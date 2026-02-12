@@ -224,29 +224,31 @@ class TestRunRestaurantSearch(unittest.TestCase):
         with self.assertRaises(ValueError):
             run_restaurant_search("")
 
+    @patch('restaurant_search_agent.Path.mkdir')
     @patch.object(RestaurantSearchAgent, 'search_restaurant')
     @patch.object(RestaurantSearchAgent, 'save_restaurant_results')
     @patch('builtins.print')
-    def test_run_restaurant_search_success(self, mock_print, mock_save, mock_search):
+    def test_run_restaurant_search_success(self, mock_print, mock_save, mock_search, mock_mkdir):
         """Test successful restaurant search run."""
         mock_search.return_value = RestaurantInfo(name="Test Restaurant")
         mock_save.return_value = Path("/fake/path/results.json")
-        
+
         result = run_restaurant_search("Test Restaurant", "Austin")
-        
+
         self.assertTrue(result["success"])
         self.assertEqual(result["restaurant_name"], "Test Restaurant")
         self.assertEqual(result["city"], "Austin")
         self.assertTrue(result["search_request_prepared"])
 
+    @patch('restaurant_search_agent.Path.mkdir')
     @patch.object(RestaurantSearchAgent, 'search_restaurant')
     @patch('builtins.print')
-    def test_run_restaurant_search_failure(self, mock_print, mock_search):
+    def test_run_restaurant_search_failure(self, mock_print, mock_search, mock_mkdir):
         """Test restaurant search run with failure."""
         mock_search.side_effect = Exception("Search failed")
-        
+
         result = run_restaurant_search("Test Restaurant")
-        
+
         self.assertFalse(result["success"])
         self.assertEqual(result["error"], "Search failed")
         self.assertEqual(result["restaurant_name"], "Test Restaurant")

@@ -22,7 +22,7 @@ sys.path.insert(0, str(SRC_DIR))
 from fastapi.testclient import TestClient
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture
 def temp_data_dir():
     """Create a temporary data directory for tests."""
     with tempfile.TemporaryDirectory() as temp_dir:
@@ -31,11 +31,20 @@ def temp_data_dir():
         yield temp_dir
 
 
+async def _noop():
+    """Async no-op for mocking lifespan startup."""
+    pass
+
+
 @pytest.fixture
 def client(temp_data_dir):
     """Create test client with isolated data directory."""
     # Patch the DATA_DIR in restaurants router before importing
-    with patch("routers.restaurants.DATA_DIR", Path(temp_data_dir) / "data" / "restaurants"):
+    with patch("routers.restaurants.DATA_DIR", Path(temp_data_dir) / "data" / "restaurants"), \
+         patch("main.fetch_default_video_on_startup", new=_noop, create=True), \
+         patch("main.sync_sqlite_to_postgres", create=True), \
+         patch("main.seed_initial_data", create=True), \
+         patch("main.start_pipeline_scheduler", return_value=None, create=True):
         from main import app
         with TestClient(app) as client:
             yield client
@@ -126,7 +135,7 @@ class TestHealthEndpoints:
             "timestamp": datetime.now().isoformat()
         }
 
-        with patch("routers.health.YouTubeTranscriptCollector") as MockCollector:
+        with patch("youtube_transcript_collector.YouTubeTranscriptCollector") as MockCollector:
             mock_instance = MockCollector.return_value
             mock_instance.health_check.return_value = mock_health
 
@@ -139,7 +148,7 @@ class TestHealthEndpoints:
 
     def test_youtube_transcript_health_error(self, client):
         """Test YouTube transcript health check when service fails."""
-        with patch("routers.health.YouTubeTranscriptCollector") as MockCollector:
+        with patch("youtube_transcript_collector.YouTubeTranscriptCollector") as MockCollector:
             MockCollector.side_effect = Exception("Connection failed")
 
             response = client.get("/api/youtube-transcript/health")
@@ -226,7 +235,7 @@ class TestRestaurantEndpoints:
 
     def test_create_restaurant_missing_required_field(self, client):
         """Test creating restaurant without required fields returns 422."""
-        invalid_data = {"name_hebrew": "מסעדה"}  # Missing cuisine_type
+        invalid_data = {}  # Missing required name_hebrew
 
         response = client.post("/api/restaurants", json=invalid_data)
 

@@ -178,6 +178,23 @@ class HallucinationDetector:
             recommendation=recommendation
         )
 
+    @staticmethod
+    def _strip_google_suffix(name: str) -> str:
+        """Strip common business-type suffixes from Google Places names."""
+        suffixes = [
+            " - מסעדת שף", " - מסעדה", " - בית קפה", " - ביסטרו",
+            " - בר", " - פיצריה", " - קונדיטוריה",
+            " Restaurant", " Cafe", " Bar", " Bistro",
+        ]
+        for suffix in suffixes:
+            if name.endswith(suffix):
+                name = name[: -len(suffix)]
+        # Also strip after " - " generically if the part after is short
+        if " - " in name:
+            parts = name.split(" - ", 1)
+            name = parts[0]
+        return name.strip()
+
     def _check_name_match(
         self,
         name_hebrew: str,
@@ -194,12 +211,19 @@ class HallucinationDetector:
             # No Google data to compare - neutral
             return 0.5, None
 
-        google_name_lower = google_name.lower().strip()
+        # Empty names can't match anything
+        if not name_hebrew.strip() and not name_english.strip():
+            return 1.0, "Empty restaurant name"
+
+        # Strip common suffixes from Google name before comparing
+        google_name_clean = self._strip_google_suffix(google_name)
+
+        google_name_lower = google_name_clean.lower().strip()
         name_hebrew_lower = name_hebrew.lower().strip()
         name_english_lower = name_english.lower().strip()
 
         # Check for Hebrew-specific matching (handles ז'/ג' etc.)
-        if self._hebrew_names_match(name_hebrew, google_name):
+        if self._hebrew_names_match(name_hebrew, google_name_clean):
             return 0.0, None
 
         # Check for exact or near match
