@@ -399,8 +399,30 @@ def sync_sqlite_to_postgres():
 
     try:
         from database import get_database
-        from models.base import get_db_session
-        from models.restaurant import Episode as EpisodeModel, Restaurant as RestaurantModel
+        import importlib.util
+
+        # Load src/models/base.py explicitly (not api/models/)
+        src_base_path = Path(__file__).parent.parent / "src" / "models" / "base.py"
+        if not src_base_path.exists():
+            src_base_path = Path("/app/src/models/base.py")
+        if not src_base_path.exists():
+            print("[SYNC] src/models/base.py not found, skipping sync")
+            return
+        spec = importlib.util.spec_from_file_location("src_models_base", src_base_path)
+        src_models_base = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(src_models_base)
+        get_db_session = src_models_base.get_db_session
+
+        # Load src/models/restaurant.py explicitly (not api/models/restaurant.py)
+        src_restaurant_path = src_base_path.parent / "restaurant.py"
+        if not src_restaurant_path.exists():
+            print("[SYNC] src/models/restaurant.py not found, skipping sync")
+            return
+        spec2 = importlib.util.spec_from_file_location("src_models_restaurant", src_restaurant_path)
+        src_models_restaurant = importlib.util.module_from_spec(spec2)
+        spec2.loader.exec_module(src_models_restaurant)
+        EpisodeModel = src_models_restaurant.Episode
+        RestaurantModel = src_models_restaurant.Restaurant
 
         sqlite_db = get_database()
         episodes = sqlite_db.get_all_episodes()
@@ -523,11 +545,19 @@ async def lifespan(app: FastAPI):
     """Lifespan context manager for startup and shutdown events."""
     global _pipeline_scheduler
     # Initialize PostgreSQL tables if DATABASE_URL is set
-    try:
-        from models.base import init_db
-        init_db()
-    except Exception as e:
-        print(f"[STARTUP] Database init failed: {e}")
+    if os.getenv('DATABASE_URL'):
+        try:
+            import importlib.util
+            src_base_path = Path(__file__).parent.parent / "src" / "models" / "base.py"
+            if not src_base_path.exists():
+                src_base_path = Path("/app/src/models/base.py")
+            if src_base_path.exists():
+                spec = importlib.util.spec_from_file_location("src_models_base", src_base_path)
+                src_models_base = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(src_models_base)
+                src_models_base.init_db()
+        except Exception as e:
+            print(f"[STARTUP] Database init failed: {e}")
     # Startup: fetch default video
     await fetch_default_video_on_startup()
     # Sync SQLite data to PostgreSQL
