@@ -190,14 +190,14 @@ class YouTubeTranscriptCollector:
     def get_transcript(
         self,
         video_url: str,
-        languages: List[str] = ['en']
+        languages: List[str] = ['he', 'iw', 'en']
     ) -> Optional[Dict]:
         """
         Fetch transcript for a YouTube video with caching and rate limiting.
 
         Args:
             video_url: YouTube URL or video ID
-            languages: List of preferred language codes (default: ['en'])
+            languages: List of preferred language codes (default: ['he', 'iw', 'en'])
 
         Returns:
             Dictionary containing video_id, transcript text, and metadata
@@ -279,7 +279,7 @@ class YouTubeTranscriptCollector:
     def get_transcripts_batch(
         self,
         video_urls: List[str],
-        languages: List[str] = ['en']
+        languages: List[str] = ['he', 'iw', 'en']
     ) -> List[Dict]:
         """
         Fetch transcripts for multiple videos.
