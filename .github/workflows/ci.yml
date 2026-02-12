@@ -5,6 +5,14 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+  workflow_call:
+    secrets:
+      ANTHROPIC_API_KEY:
+        required: false
+      GOOGLE_PLACES_API_KEY:
+        required: false
+      OPENAI_API_KEY:
+        required: false
 
 jobs:
   # Fast path resolution tests - no external dependencies needed
@@ -45,12 +53,11 @@ jobs:
 
       - name: Run tests
         run: |
-          python -m pytest tests/ -v --tb=short --ignore=tests/test_path_resolution.py || echo "Some tests failed - check logs"
+          python -m pytest tests/ -v --tb=short --ignore=tests/test_path_resolution.py
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           GOOGLE_PLACES_API_KEY: ${{ secrets.GOOGLE_PLACES_API_KEY }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-        continue-on-error: true  # Don't fail the whole build on test failures initially
 
   test-frontend:
     runs-on: ubuntu-latest
@@ -69,8 +76,11 @@ jobs:
         run: npm install
 
       - name: Lint
-        run: npm run lint || echo "Lint warnings found"
+        run: npm run lint
         continue-on-error: true
+
+      - name: Test
+        run: npm test -- --ci
 
       - name: Build
         run: npm run build

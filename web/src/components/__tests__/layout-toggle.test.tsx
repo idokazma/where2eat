@@ -1,11 +1,13 @@
-import { render, screen, fireEvent } from '@testing-library/react'
+import { screen, fireEvent } from '@testing-library/react'
+import { renderWithProviders } from '@/test-utils'
+import { LanguageProvider } from '@/contexts/LanguageContext'
 import { LayoutToggle } from '../layout-toggle'
 
 describe('LayoutToggle', () => {
   it('renders all three layout options', () => {
     const mockOnChange = jest.fn()
 
-    render(
+    renderWithProviders(
       <LayoutToggle
         currentLayout="masonry"
         onLayoutChange={mockOnChange}
@@ -20,7 +22,7 @@ describe('LayoutToggle', () => {
   it('highlights current layout', () => {
     const mockOnChange = jest.fn()
 
-    const { rerender } = render(
+    const { rerender } = renderWithProviders(
       <LayoutToggle
         currentLayout="masonry"
         onLayoutChange={mockOnChange}
@@ -31,10 +33,12 @@ describe('LayoutToggle', () => {
     expect(masonryButton).toHaveClass('bg-primary')
 
     rerender(
-      <LayoutToggle
-        currentLayout="grid"
-        onLayoutChange={mockOnChange}
-      />
+      <LanguageProvider>
+        <LayoutToggle
+          currentLayout="grid"
+          onLayoutChange={mockOnChange}
+        />
+      </LanguageProvider>
     )
 
     const gridButton = screen.getByText('גריד').closest('button')
@@ -44,7 +48,7 @@ describe('LayoutToggle', () => {
   it('calls onLayoutChange when clicking buttons', () => {
     const mockOnChange = jest.fn()
 
-    render(
+    renderWithProviders(
       <LayoutToggle
         currentLayout="masonry"
         onLayoutChange={mockOnChange}
@@ -61,7 +65,7 @@ describe('LayoutToggle', () => {
   it('does not call onChange when clicking current layout', () => {
     const mockOnChange = jest.fn()
 
-    render(
+    renderWithProviders(
       <LayoutToggle
         currentLayout="masonry"
         onLayoutChange={mockOnChange}
