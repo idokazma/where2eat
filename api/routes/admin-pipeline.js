@@ -23,19 +23,19 @@ db = Database()
 with db.get_connection() as conn:
     cursor = conn.cursor()
     # Queue depth
-    cursor.execute("SELECT COUNT(*) as count FROM pipeline_queue WHERE status = 'queued'")
+    cursor.execute("SELECT COUNT(*) as count FROM video_queue WHERE status = 'queued'")
     queued = cursor.fetchone()['count']
     # Currently processing
-    cursor.execute("SELECT COUNT(*) as count FROM pipeline_queue WHERE status = 'processing'")
+    cursor.execute("SELECT COUNT(*) as count FROM video_queue WHERE status = 'processing'")
     processing = cursor.fetchone()['count']
     # Completed
-    cursor.execute("SELECT COUNT(*) as count FROM pipeline_queue WHERE status = 'completed'")
+    cursor.execute("SELECT COUNT(*) as count FROM video_queue WHERE status = 'completed'")
     completed = cursor.fetchone()['count']
     # Failed
-    cursor.execute("SELECT COUNT(*) as count FROM pipeline_queue WHERE status = 'failed'")
+    cursor.execute("SELECT COUNT(*) as count FROM video_queue WHERE status = 'failed'")
     failed = cursor.fetchone()['count']
     # Skipped
-    cursor.execute("SELECT COUNT(*) as count FROM pipeline_queue WHERE status = 'skipped'")
+    cursor.execute("SELECT COUNT(*) as count FROM video_queue WHERE status = 'skipped'")
     skipped = cursor.fetchone()['count']
     print(json.dumps({
         'overview': {
@@ -91,10 +91,10 @@ from src.database import Database
 db = Database()
 with db.get_connection() as conn:
     cursor = conn.cursor()
-    cursor.execute("SELECT COUNT(*) as count FROM pipeline_queue WHERE status = 'queued'")
+    cursor.execute("SELECT COUNT(*) as count FROM video_queue WHERE status = 'queued'")
     total = cursor.fetchone()['count']
     cursor.execute('''
-        SELECT * FROM pipeline_queue
+        SELECT * FROM video_queue
         WHERE status = 'queued'
         ORDER BY priority DESC, created_at ASC
         LIMIT ? OFFSET ?
@@ -153,10 +153,10 @@ from src.database import Database
 db = Database()
 with db.get_connection() as conn:
     cursor = conn.cursor()
-    cursor.execute("SELECT COUNT(*) as count FROM pipeline_queue WHERE status IN ('completed', 'failed')")
+    cursor.execute("SELECT COUNT(*) as count FROM video_queue WHERE status IN ('completed', 'failed')")
     total = cursor.fetchone()['count']
     cursor.execute('''
-        SELECT * FROM pipeline_queue
+        SELECT * FROM video_queue
         WHERE status IN ('completed', 'failed')
         ORDER BY updated_at DESC
         LIMIT ? OFFSET ?
@@ -236,7 +236,7 @@ with db.get_connection() as conn:
     cursor.execute(f'''
         SELECT * FROM pipeline_logs
         {where_sql}
-        ORDER BY created_at DESC
+        ORDER BY timestamp DESC
         LIMIT ? OFFSET ?
     ''', params_with_limit)
     logs = [dict(row) for row in cursor.fetchall()]
@@ -292,24 +292,24 @@ with db.get_connection() as conn:
     # Overall counts by status
     cursor.execute('''
         SELECT status, COUNT(*) as count
-        FROM pipeline_queue
+        FROM video_queue
         GROUP BY status
     ''')
     status_counts = {row['status']: row['count'] for row in cursor.fetchall()}
     # Average processing time for completed items
     cursor.execute('''
         SELECT AVG(
-            CAST((julianday(updated_at) - julianday(created_at)) * 86400 AS INTEGER)
+            CAST((julianday(processing_completed_at) - julianday(processing_started_at)) * 86400 AS INTEGER)
         ) as avg_seconds
-        FROM pipeline_queue
-        WHERE status = 'completed' AND updated_at IS NOT NULL
+        FROM video_queue
+        WHERE status = 'completed' AND processing_completed_at IS NOT NULL AND processing_started_at IS NOT NULL
     ''')
     row = cursor.fetchone()
     avg_processing_seconds = row['avg_seconds'] if row and row['avg_seconds'] else 0
     # Items processed in last 24 hours
     cursor.execute('''
         SELECT COUNT(*) as count
-        FROM pipeline_queue
+        FROM video_queue
         WHERE status = 'completed'
         AND updated_at >= datetime('now', '-1 day')
     ''')
@@ -317,7 +317,7 @@ with db.get_connection() as conn:
     # Items processed in last 7 days
     cursor.execute('''
         SELECT COUNT(*) as count
-        FROM pipeline_queue
+        FROM video_queue
         WHERE status = 'completed'
         AND updated_at >= datetime('now', '-7 days')
     ''')
@@ -377,7 +377,7 @@ from src.database import Database
 db = Database()
 with db.get_connection() as conn:
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM pipeline_queue WHERE id = ?", ('${req.params.id}',))
+    cursor.execute("SELECT * FROM video_queue WHERE id = ?", ('${req.params.id}',))
     item = cursor.fetchone()
     if item:
         item = dict(item)
@@ -385,7 +385,7 @@ with db.get_connection() as conn:
             print(json.dumps({'success': False, 'error': 'Only failed items can be retried'}))
         else:
             cursor.execute('''
-                UPDATE pipeline_queue
+                UPDATE video_queue
                 SET status = 'queued', error_message = NULL, updated_at = datetime('now')
                 WHERE id = ?
             ''', ('${req.params.id}',))
@@ -438,7 +438,7 @@ from src.database import Database
 db = Database()
 with db.get_connection() as conn:
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM pipeline_queue WHERE id = ?", ('${req.params.id}',))
+    cursor.execute("SELECT * FROM video_queue WHERE id = ?", ('${req.params.id}',))
     item = cursor.fetchone()
     if item:
         item = dict(item)
@@ -446,7 +446,7 @@ with db.get_connection() as conn:
             print(json.dumps({'success': False, 'error': 'Only queued items can be skipped'}))
         else:
             cursor.execute('''
-                UPDATE pipeline_queue
+                UPDATE video_queue
                 SET status = 'skipped', updated_at = datetime('now')
                 WHERE id = ?
             ''', ('${req.params.id}',))
@@ -499,7 +499,7 @@ from src.database import Database
 db = Database()
 with db.get_connection() as conn:
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM pipeline_queue WHERE id = ?", ('${req.params.id}',))
+    cursor.execute("SELECT * FROM video_queue WHERE id = ?", ('${req.params.id}',))
     item = cursor.fetchone()
     if item:
         item = dict(item)
@@ -507,11 +507,11 @@ with db.get_connection() as conn:
             print(json.dumps({'success': False, 'error': 'Only queued items can be prioritized'}))
         else:
             # Set priority higher than current max
-            cursor.execute("SELECT MAX(priority) as max_priority FROM pipeline_queue WHERE status = 'queued'")
+            cursor.execute("SELECT MAX(priority) as max_priority FROM video_queue WHERE status = 'queued'")
             max_row = cursor.fetchone()
             new_priority = (max_row['max_priority'] or 0) + 1
             cursor.execute('''
-                UPDATE pipeline_queue
+                UPDATE video_queue
                 SET priority = ?, updated_at = datetime('now')
                 WHERE id = ?
             ''', (new_priority, '${req.params.id}'))
@@ -564,10 +564,10 @@ from src.database import Database
 db = Database()
 with db.get_connection() as conn:
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM pipeline_queue WHERE id = ?", ('${req.params.id}',))
+    cursor.execute("SELECT * FROM video_queue WHERE id = ?", ('${req.params.id}',))
     item = cursor.fetchone()
     if item:
-        cursor.execute("DELETE FROM pipeline_queue WHERE id = ?", ('${req.params.id}',))
+        cursor.execute("DELETE FROM video_queue WHERE id = ?", ('${req.params.id}',))
         conn.commit()
         print(json.dumps({'success': True, 'message': 'Video removed from queue'}))
     else:

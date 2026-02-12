@@ -70,5 +70,34 @@ export const endpoints = {
     results: (jobId: string) => getApiUrl(`/api/jobs/${jobId}/results`),
     cancel: (jobId: string) => getApiUrl(`/api/jobs/${jobId}`),
   },
+  admin: {
+    pipeline: {
+      overview: () => getApiUrl('/api/admin/pipeline'),
+      queue: (params?: Record<string, string>) => {
+        const query = params ? `?${new URLSearchParams(params).toString()}` : '';
+        return getApiUrl(`/api/admin/pipeline/queue${query}`);
+      },
+      history: (params?: Record<string, string>) => {
+        const query = params ? `?${new URLSearchParams(params).toString()}` : '';
+        return getApiUrl(`/api/admin/pipeline/history${query}`);
+      },
+      stats: () => getApiUrl('/api/admin/pipeline/stats'),
+      logs: (params?: Record<string, string>) => {
+        const query = params ? `?${new URLSearchParams(params).toString()}` : '';
+        return getApiUrl(`/api/admin/pipeline/logs${query}`);
+      },
+      retry: (id: string) => getApiUrl(`/api/admin/pipeline/${id}/retry`),
+      skip: (id: string) => getApiUrl(`/api/admin/pipeline/${id}/skip`),
+      prioritize: (id: string) => getApiUrl(`/api/admin/pipeline/${id}/prioritize`),
+      remove: (id: string) => getApiUrl(`/api/admin/pipeline/${id}`),
+    },
+    episodes: {
+      list: (params?: Record<string, string>) => {
+        const query = params ? `?${new URLSearchParams(params).toString()}` : '';
+        return getApiUrl(`/api/admin/episodes${query}`);
+      },
+      restaurants: (episodeId: string) => getApiUrl(`/api/admin/episodes/${episodeId}/restaurants`),
+    },
+  },
   health: () => getApiUrl('/health'),
 };
