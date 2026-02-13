@@ -437,6 +437,9 @@ def sync_sqlite_to_postgres():
         EpisodeModel = src_models_restaurant.Episode
         RestaurantModel = src_models_restaurant.Restaurant
 
+        # Ensure PostgreSQL tables exist
+        src_models_base.init_db()
+
         sqlite_db = get_database()
         episodes = sqlite_db.get_all_episodes()
         restaurants = sqlite_db.get_all_restaurants(include_episode_info=False)
