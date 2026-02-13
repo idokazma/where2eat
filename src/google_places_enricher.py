@@ -206,13 +206,14 @@ class GooglePlacesEnricher:
             for photo in google_data['photos'][:3]:  # Limit to 3 photos
                 photo_reference = photo.get('photo_reference')
                 if photo_reference:
-                    photo_url = f"{self.base_url}/photo?maxwidth=400&photoreference={photo_reference}&key={self.api_key}"
                     enhanced_data['photos'].append({
                         'photo_reference': photo_reference,
-                        'photo_url': photo_url,
                         'width': photo.get('width'),
                         'height': photo.get('height')
                     })
+                    # Set image_url to first reference for database storage
+                    if not enhanced_data.get('image_url') and photo_reference:
+                        enhanced_data['image_url'] = photo_reference
         
         # Add opening hours
         if google_data.get('opening_hours'):

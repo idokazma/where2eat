@@ -1,4 +1,5 @@
 import { Restaurant } from '@/types/restaurant';
+import { config } from '@/lib/config';
 
 /**
  * Get the best available photo URL for a restaurant.
@@ -18,6 +19,10 @@ export function getRestaurantImage(restaurant: Restaurant): string | null {
 
   // Fall back to image_url field
   if (restaurant.image_url) {
+    // If image_url looks like a photo reference (not a URL), build proxy URL
+    if (!restaurant.image_url.startsWith('http')) {
+      return getPhotoProxyUrl(restaurant.image_url);
+    }
     return restaurant.image_url;
   }
 
@@ -51,7 +56,8 @@ export function getPhotoProxyUrl(
   photoReference: string,
   maxWidth: number = 800
 ): string {
-  return `/api/photos/${encodeURIComponent(photoReference)}?maxwidth=${maxWidth}`;
+  const base = config.apiUrl || '';
+  return `${base}/api/places/photo/${encodeURIComponent(photoReference)}?maxwidth=${maxWidth}`;
 }
 
 /**

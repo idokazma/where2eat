@@ -5,6 +5,7 @@ from typing import Optional
 
 import httpx
 from fastapi import APIRouter, HTTPException, Query
+from fastapi.responses import Response
 
 router = APIRouter(prefix="/api/places", tags=["Places"])
 
@@ -97,3 +98,33 @@ async def get_place_details(place_id: str):
             status_code=400,
             detail=f"Google Places API error: {data.get('status')}",
         )
+
+
+@router.get(
+    "/photo/{reference}",
+    summary="Proxy Google Places photo",
+    description="Fetches a Google Places photo by reference, hiding the API key.",
+)
+async def get_photo(
+    reference: str,
+    maxwidth: int = Query(800, ge=100, le=1600),
+):
+    """Proxy a Google Places photo to hide the API key."""
+    api_key = get_api_key()
+    photo_url = (
+        f"https://maps.googleapis.com/maps/api/place/photo"
+        f"?maxwidth={maxwidth}&photoreference={reference}&key={api_key}"
+    )
+
+    async with httpx.AsyncClient(follow_redirects=True) as client:
+        resp = await client.get(photo_url)
+
+    if resp.status_code != 200:
+        raise HTTPException(status_code=resp.status_code, detail="Failed to fetch photo")
+
+    content_type = resp.headers.get("content-type", "image/jpeg")
+    return Response(
+        content=resp.content,
+        media_type=content_type,
+        headers={"Cache-Control": "public, max-age=604800, immutable"},
+    )

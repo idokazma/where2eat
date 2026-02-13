@@ -17,7 +17,7 @@ describe('getRestaurantImage', () => {
         { photo_reference: 'ref123', photo_url: 'https://direct.com/img.jpg', width: 400, height: 300 },
       ],
     });
-    expect(getRestaurantImage(r)).toBe('/api/photos/ref123?maxwidth=800');
+    expect(getRestaurantImage(r)).toBe('/api/places/photo/ref123?maxwidth=800');
   });
 
   it('returns photo_url when no photo_reference', () => {
@@ -56,9 +56,9 @@ describe('getRestaurantImages', () => {
     });
     const urls = getRestaurantImages(r);
     expect(urls).toHaveLength(3);
-    expect(urls[0]).toBe('/api/photos/ref1?maxwidth=800');
+    expect(urls[0]).toBe('/api/places/photo/ref1?maxwidth=800');
     expect(urls[1]).toBe('https://direct.com/2.jpg');
-    expect(urls[2]).toBe('/api/photos/ref3?maxwidth=800');
+    expect(urls[2]).toBe('/api/places/photo/ref3?maxwidth=800');
   });
 
   it('falls back to image_url when photos array is empty', () => {
@@ -74,16 +74,16 @@ describe('getRestaurantImages', () => {
 
 describe('getPhotoProxyUrl', () => {
   it('builds correct proxy URL with default maxWidth', () => {
-    expect(getPhotoProxyUrl('abc123')).toBe('/api/photos/abc123?maxwidth=800');
+    expect(getPhotoProxyUrl('abc123')).toBe('/api/places/photo/abc123?maxwidth=800');
   });
 
   it('builds proxy URL with custom maxWidth', () => {
-    expect(getPhotoProxyUrl('abc123', 400)).toBe('/api/photos/abc123?maxwidth=400');
+    expect(getPhotoProxyUrl('abc123', 400)).toBe('/api/places/photo/abc123?maxwidth=400');
   });
 
   it('encodes special characters in reference', () => {
     expect(getPhotoProxyUrl('ref/with spaces')).toBe(
-      '/api/photos/ref%2Fwith%20spaces?maxwidth=800'
+      '/api/places/photo/ref%2Fwith%20spaces?maxwidth=800'
     );
   });
 });
