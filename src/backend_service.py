@@ -322,7 +322,7 @@ class BackendService:
                         update_data['google_user_ratings_total'] = rating.get('total_reviews')
                     photos = enriched.get('photos', [])
                     if photos:
-                        update_data['photos'] = json.dumps(photos)
+                        update_data['photos'] = photos
                         if not enriched.get('image_url'):
                             ref = photos[0].get('photo_reference')
                             if ref:
