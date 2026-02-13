@@ -339,19 +339,29 @@ class BackendService:
 
                     if update_data:
                         self.db.update_restaurant(restaurant['id'], **update_data)
-                        # Also update PostgreSQL
+                        # Also update PostgreSQL via raw SQL
                         try:
-                            from models.base import get_db_session
-                            from models.restaurant import Restaurant as RestaurantModel
-                            with get_db_session() as session:
-                                pg_restaurant = session.query(RestaurantModel).filter_by(id=restaurant['id']).first()
-                                if pg_restaurant:
-                                    for key, val in update_data.items():
-                                        if key == 'photos' and isinstance(val, str):
-                                            val = json.loads(val)
-                                        if hasattr(pg_restaurant, key):
-                                            setattr(pg_restaurant, key, val)
-                                    session.commit()
+                            from models.base import get_engine
+                            from sqlalchemy import text
+                            engine = get_engine()
+                            pg_data = {}
+                            set_parts = []
+                            for key, val in update_data.items():
+                                if key == 'photos':
+                                    # photos is JSON column - pass string, cast in SQL
+                                    pg_data[key] = val if isinstance(val, str) else json.dumps(val)
+                                    set_parts.append(f"{key} = CAST(:{key} AS json)")
+                                else:
+                                    pg_data[key] = val
+                                    set_parts.append(f"{key} = :{key}")
+                            set_clauses = ", ".join(set_parts)
+                            pg_data['rid'] = restaurant['id']
+                            with engine.connect() as conn:
+                                conn.execute(
+                                    text(f"UPDATE restaurants SET {set_clauses} WHERE id = :rid"),
+                                    pg_data
+                                )
+                                conn.commit()
                         except Exception as pg_err:
                             print(f"[RE-ENRICH] PostgreSQL update failed for {restaurant.get('name_hebrew')}: {pg_err}")
                     stats['enriched'] += 1
