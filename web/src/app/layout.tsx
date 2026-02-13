@@ -35,6 +35,12 @@ export default function RootLayout({
         {/* Preconnect to Google Fonts */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        {/* Preload Space Grotesk accent font */}
+        <link
+          rel="preload"
+          href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap"
+          as="style"
+        />
       </head>
       <body className="antialiased">
         <ClientLayout>

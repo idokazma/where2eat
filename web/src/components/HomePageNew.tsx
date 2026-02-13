@@ -175,43 +175,49 @@ export function HomePageNew() {
   return (
     <PageLayout showHeader showBottomNav>
       {/* Filter Bar */}
-      <FilterBar>
-        <LocationFilter />
+      <div className="animate-fade-up stagger-section-1">
+        <FilterBar>
+          <LocationFilter />
 
-        {/* Cuisine filter */}
-        <FilterChip
-          label={selectedCuisines.length > 0 ? `סוג (${selectedCuisines.length})` : 'סוג'}
-          isSelected={selectedCuisines.length > 0}
-          hasDropdown
-          onClick={() => setIsCuisineSheetOpen(true)}
-          onClear={selectedCuisines.length > 0 ? () => setSelectedCuisines([]) : undefined}
-        />
+          {/* Cuisine filter */}
+          <FilterChip
+            label={selectedCuisines.length > 0 ? `סוג (${selectedCuisines.length})` : 'סוג'}
+            isSelected={selectedCuisines.length > 0}
+            hasDropdown
+            onClick={() => setIsCuisineSheetOpen(true)}
+            onClear={selectedCuisines.length > 0 ? () => setSelectedCuisines([]) : undefined}
+          />
 
-        {/* Price filter */}
-        <FilterChip
-          label={selectedPriceRanges.length > 0 ? `מחיר (${selectedPriceRanges.length})` : 'מחיר'}
-          isSelected={selectedPriceRanges.length > 0}
-          hasDropdown
-          onClick={() => setIsPriceSheetOpen(true)}
-          onClear={selectedPriceRanges.length > 0 ? () => setSelectedPriceRanges([]) : undefined}
-        />
-      </FilterBar>
+          {/* Price filter */}
+          <FilterChip
+            label={selectedPriceRanges.length > 0 ? `מחיר (${selectedPriceRanges.length})` : 'מחיר'}
+            isSelected={selectedPriceRanges.length > 0}
+            hasDropdown
+            onClick={() => setIsPriceSheetOpen(true)}
+            onClear={selectedPriceRanges.length > 0 ? () => setSelectedPriceRanges([]) : undefined}
+          />
+        </FilterBar>
+      </div>
 
       {/* Trending Section */}
-      <TrendingSection
-        restaurants={restaurants}
-        onRestaurantClick={handleRestaurantClick}
-        className="mt-2"
-      />
+      <div className="animate-fade-up stagger-section-2">
+        <TrendingSection
+          restaurants={restaurants}
+          onRestaurantClick={handleRestaurantClick}
+          className="mt-2"
+        />
+      </div>
 
       {/* Discovery Feed */}
-      <DiscoveryFeed
-        restaurants={filteredRestaurants}
-        onRestaurantClick={handleRestaurantClick}
-        showDistances={locationFilter.mode === 'nearby'}
-        userCoords={locationFilter.userCoords}
-        className="mt-6 pb-8"
-      />
+      <div className="animate-fade-up stagger-section-3">
+        <DiscoveryFeed
+          restaurants={filteredRestaurants}
+          onRestaurantClick={handleRestaurantClick}
+          showDistances={locationFilter.mode === 'nearby'}
+          userCoords={locationFilter.userCoords}
+          className="mt-6 pb-8"
+        />
+      </div>
 
       {/* Cuisine Filter Sheet */}
       <BottomSheet
