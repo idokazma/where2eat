@@ -400,6 +400,7 @@ def sync_sqlite_to_postgres():
     try:
         from database import get_database
         import importlib.util
+        import json
 
         # Load src/models/base.py explicitly (not api/models/)
         src_base_path = Path(__file__).parent.parent / "src" / "models" / "base.py"
@@ -493,6 +494,12 @@ def sync_sqlite_to_postgres():
                 lng = r.get('longitude') or location.get('lng')
                 place_id = r.get('google_place_id') or gp.get('place_id')
                 photos = r.get('photos')
+                # Ensure photos is a proper list (not a JSON string)
+                if isinstance(photos, str):
+                    try:
+                        photos = json.loads(photos)
+                    except (json.JSONDecodeError, TypeError):
+                        photos = []
                 image_url = r.get('image_url')
 
                 existing = session.query(RestaurantModel).filter_by(id=r['id']).first()
@@ -511,7 +518,7 @@ def sync_sqlite_to_postgres():
                     if not existing.image_url and image_url:
                         existing.image_url = image_url
                         changed = True
-                    if not existing.photos and photos:
+                    if photos and (not existing.photos or isinstance(existing.photos, str)):
                         existing.photos = photos
                         changed = True
                     if not existing.google_name and gp.get('google_name'):
