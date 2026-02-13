@@ -418,8 +418,21 @@ def sync_sqlite_to_postgres():
         if not src_restaurant_path.exists():
             print("[SYNC] src/models/restaurant.py not found, skipping sync")
             return
-        spec2 = importlib.util.spec_from_file_location("src_models_restaurant", src_restaurant_path)
+
+        # Register modules so relative import `from .base import Base` works
+        import types
+        import sys
+        models_package = types.ModuleType("models")
+        models_package.__path__ = [str(src_base_path.parent)]
+        models_package.__package__ = "models"
+        sys.modules["models"] = models_package
+        sys.modules["models.base"] = src_models_base
+        src_models_base.__package__ = "models"
+
+        spec2 = importlib.util.spec_from_file_location("models.restaurant", src_restaurant_path,
+                                                         submodule_search_locations=[])
         src_models_restaurant = importlib.util.module_from_spec(spec2)
+        src_models_restaurant.__package__ = "models"
         spec2.loader.exec_module(src_models_restaurant)
         EpisodeModel = src_models_restaurant.Episode
         RestaurantModel = src_models_restaurant.Restaurant
