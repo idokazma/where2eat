@@ -511,6 +511,9 @@ class Database:
         restaurant['menu_items'] = json.loads(restaurant.get('menu_items') or '[]')
         restaurant['special_features'] = json.loads(restaurant.get('special_features') or '[]')
         restaurant['photos'] = json.loads(restaurant.get('photos') or '[]')
+        # Handle double-encoded JSON (string inside JSON)
+        if isinstance(restaurant['photos'], str):
+            restaurant['photos'] = json.loads(restaurant['photos'])
 
         return restaurant
 
