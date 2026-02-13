@@ -1286,12 +1286,18 @@ app.post('/api/restaurants/:id/enrich', async (req, res) => {
       }
 
       if (placeDetails.photos && placeDetails.photos.length > 0) {
-        restaurant.photos = placeDetails.photos.slice(0, 3).map(photo => ({
-          photo_reference: photo.photo_reference,
-          photo_url: `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${photo.photo_reference}&key=${apiKey}`,
-          width: photo.width,
-          height: photo.height
-        }))
+        restaurant.photos = placeDetails.photos.slice(0, 3).map(photo => {
+          const ref = photo.photo_reference
+          const isNewApi = ref && ref.startsWith('places/') && ref.includes('/photos/')
+          return {
+            photo_reference: ref,
+            photo_url: isNewApi
+              ? `https://places.googleapis.com/v1/${ref}/media?maxWidthPx=400&key=${apiKey}`
+              : `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${ref}&key=${apiKey}`,
+            width: photo.width,
+            height: photo.height
+          }
+        })
       }
 
       if (placeDetails.opening_hours) {

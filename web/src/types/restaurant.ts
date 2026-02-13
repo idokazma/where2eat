@@ -26,6 +26,7 @@ export interface RestaurantPhoto {
 }
 
 export interface Restaurant {
+  id?: string;
   name_hebrew: string;
   name_english?: string | null;
   location?: Location;
@@ -34,6 +35,8 @@ export interface Restaurant {
   price_range?: 'budget' | 'mid-range' | 'expensive' | 'not_mentioned' | null;
   host_opinion?: 'positive' | 'negative' | 'mixed' | 'neutral' | null;
   host_comments?: string | null;
+  engaging_quote?: string | null;
+  mention_timestamp_seconds?: number | null;
   menu_items?: MenuItem[];
   special_features?: string[];
   contact_info?: ContactInfo;
