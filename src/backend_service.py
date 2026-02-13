@@ -339,6 +339,21 @@ class BackendService:
 
                     if update_data:
                         self.db.update_restaurant(restaurant['id'], **update_data)
+                        # Also update PostgreSQL
+                        try:
+                            from models.base import get_db_session
+                            from models.restaurant import Restaurant as RestaurantModel
+                            with get_db_session() as session:
+                                pg_restaurant = session.query(RestaurantModel).filter_by(id=restaurant['id']).first()
+                                if pg_restaurant:
+                                    for key, val in update_data.items():
+                                        if key == 'photos' and isinstance(val, str):
+                                            val = json.loads(val)
+                                        if hasattr(pg_restaurant, key):
+                                            setattr(pg_restaurant, key, val)
+                                    session.commit()
+                        except Exception as pg_err:
+                            print(f"[RE-ENRICH] PostgreSQL update failed for {restaurant.get('name_hebrew')}: {pg_err}")
                     stats['enriched'] += 1
                 else:
                     stats['failed'] += 1

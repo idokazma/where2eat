@@ -482,14 +482,51 @@ def sync_sqlite_to_postgres():
                 synced_episodes += 1
 
             # Sync restaurants
+            updated_restaurants = 0
             for r in restaurants:
-                existing = session.query(RestaurantModel).filter_by(id=r['id']).first()
-                if existing:
-                    continue
                 location = r.get('location', {})
                 contact = r.get('contact_info', {})
                 rating = r.get('rating', {})
                 gp = r.get('google_places', {}) or {}
+
+                lat = r.get('latitude') or location.get('lat')
+                lng = r.get('longitude') or location.get('lng')
+                place_id = r.get('google_place_id') or gp.get('place_id')
+                photos = r.get('photos')
+                image_url = r.get('image_url')
+
+                existing = session.query(RestaurantModel).filter_by(id=r['id']).first()
+                if existing:
+                    # Update existing records with enrichment data from SQLite
+                    changed = False
+                    if not existing.latitude and lat:
+                        existing.latitude = lat
+                        changed = True
+                    if not existing.longitude and lng:
+                        existing.longitude = lng
+                        changed = True
+                    if not existing.google_place_id and place_id:
+                        existing.google_place_id = place_id
+                        changed = True
+                    if not existing.image_url and image_url:
+                        existing.image_url = image_url
+                        changed = True
+                    if not existing.photos and photos:
+                        existing.photos = photos
+                        changed = True
+                    if not existing.google_name and gp.get('google_name'):
+                        existing.google_name = gp['google_name']
+                        changed = True
+                    if not existing.google_url and gp.get('google_url'):
+                        existing.google_url = gp['google_url']
+                        changed = True
+                    if not existing.google_rating and rating.get('google_rating'):
+                        existing.google_rating = rating['google_rating']
+                        changed = True
+                    if changed:
+                        updated_restaurants += 1
+                    continue
+
                 restaurant_model = RestaurantModel(
                     id=r['id'],
                     episode_id=r.get('episode_id'),
@@ -499,8 +536,8 @@ def sync_sqlite_to_postgres():
                     neighborhood=location.get('neighborhood'),
                     address=location.get('address'),
                     region=location.get('region', 'Center'),
-                    latitude=r.get('latitude') or location.get('lat'),
-                    longitude=r.get('longitude') or location.get('lng'),
+                    latitude=lat,
+                    longitude=lng,
                     cuisine_type=r.get('cuisine_type'),
                     status=r.get('status', 'open'),
                     price_range=r.get('price_range'),
@@ -514,13 +551,13 @@ def sync_sqlite_to_postgres():
                     business_news=r.get('business_news'),
                     mention_context=r.get('mention_context'),
                     mention_timestamp=r.get('mention_timestamp'),
-                    google_place_id=r.get('google_place_id') or gp.get('place_id'),
+                    google_place_id=place_id,
                     google_name=gp.get('google_name'),
                     google_url=gp.get('google_url'),
                     google_rating=rating.get('google_rating'),
                     google_user_ratings_total=rating.get('user_ratings_total'),
-                    photos=r.get('photos'),
-                    image_url=r.get('image_url'),
+                    photos=photos,
+                    image_url=image_url,
                 )
                 session.add(restaurant_model)
                 synced_restaurants += 1
@@ -528,6 +565,8 @@ def sync_sqlite_to_postgres():
             session.commit()
 
         print(f"[SYNC] Synced {synced_episodes} new episodes and {synced_restaurants} new restaurants to PostgreSQL")
+        if updated_restaurants > 0:
+            print(f"[SYNC] Updated {updated_restaurants} existing restaurants with enrichment data")
 
     except Exception as e:
         print(f"[SYNC] SQLite→PostgreSQL sync failed: {e}")
