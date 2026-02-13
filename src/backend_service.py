@@ -282,6 +282,73 @@ class BackendService:
 
         return {'success': False, 'error': result.get('error', 'Enrichment failed')}
 
+    def reenrich_all_restaurants(self) -> Dict:
+        """Re-enrich all restaurants that are missing Google Places data.
+
+        Finds restaurants without google_place_id and enriches them.
+
+        Returns:
+            Dict with enrichment stats
+        """
+        all_restaurants = self.db.get_all_restaurants(include_episode_info=False)
+        unenriched = [r for r in all_restaurants if not r.get('google_place_id')]
+
+        if not unenriched:
+            return {'success': True, 'total': len(all_restaurants), 'enriched': 0, 'message': 'All restaurants already enriched'}
+
+        stats = {'total': len(all_restaurants), 'unenriched': len(unenriched), 'enriched': 0, 'failed': 0}
+
+        try:
+            enricher = self._get_places_enricher()
+        except ImportError as e:
+            return {'success': False, 'error': str(e), **stats}
+
+        for restaurant in unenriched:
+            try:
+                enriched = enricher.enrich_restaurant(restaurant)
+                if enriched.get('google_places_enriched'):
+                    # Flatten for database update
+                    update_data = {}
+                    coords = enriched.get('location', {}).get('coordinates', {})
+                    if coords:
+                        update_data['latitude'] = coords.get('latitude')
+                        update_data['longitude'] = coords.get('longitude')
+                    gp = enriched.get('google_places', {})
+                    if gp and gp.get('place_id'):
+                        update_data['google_place_id'] = gp['place_id']
+                    rating = enriched.get('rating', {})
+                    if rating:
+                        update_data['google_rating'] = rating.get('google_rating')
+                        update_data['google_user_ratings_total'] = rating.get('total_reviews')
+                    photos = enriched.get('photos', [])
+                    if photos:
+                        update_data['photos'] = json.dumps(photos)
+                        if not enriched.get('image_url'):
+                            ref = photos[0].get('photo_reference')
+                            if ref:
+                                update_data['image_url'] = ref
+                        else:
+                            update_data['image_url'] = enriched.get('image_url')
+                    contact = enriched.get('contact_info', {})
+                    if contact.get('phone'):
+                        update_data['contact_phone'] = contact['phone']
+                    if contact.get('website'):
+                        update_data['contact_website'] = contact['website']
+                    if enriched.get('location', {}).get('full_address'):
+                        update_data['address'] = enriched['location']['full_address']
+
+                    if update_data:
+                        self.db.update_restaurant(restaurant['id'], **update_data)
+                    stats['enriched'] += 1
+                else:
+                    stats['failed'] += 1
+            except Exception as e:
+                print(f"[RE-ENRICH] Failed for {restaurant.get('name_hebrew')}: {e}")
+                stats['failed'] += 1
+
+        stats['success'] = True
+        return stats
+
     # ==================== Hallucination Filtering ====================
 
     def filter_restaurant_hallucinations(
@@ -482,6 +549,24 @@ class BackendService:
             if enrichment_result.get('success'):
                 restaurants = enrichment_result.get('restaurants', restaurants)
 
+            # Normalize enriched data for database storage
+            for r in restaurants:
+                # Flatten coordinates
+                coords = r.get('location', {}).get('coordinates', {})
+                if coords:
+                    r['latitude'] = coords.get('latitude')
+                    r['longitude'] = coords.get('longitude')
+                # Flatten google_place_id
+                gp = r.get('google_places', {})
+                if gp and gp.get('place_id'):
+                    r['google_place_id'] = gp['place_id']
+                # Set image_url from first photo reference
+                photos = r.get('photos', [])
+                if photos and not r.get('image_url'):
+                    ref = photos[0].get('photo_reference')
+                    if ref:
+                        r['image_url'] = ref
+
         # Step 5: Filter hallucinations
         if progress_callback:
             progress_callback('filtering_hallucinations', 0.7)
@@ -569,6 +654,7 @@ class BackendService:
                                 location = restaurant_data.get('location', {})
                                 contact = restaurant_data.get('contact_info', {})
                                 rating = restaurant_data.get('rating', {})
+                                gp = restaurant_data.get('google_places', {}) or {}
                                 r_model = RestaurantModel(
                                     id=rid,
                                     episode_id=episode_id,
@@ -578,6 +664,8 @@ class BackendService:
                                     neighborhood=restaurant_data.get('neighborhood') or location.get('neighborhood'),
                                     address=restaurant_data.get('address') or location.get('address'),
                                     region=restaurant_data.get('region') or location.get('region', 'Center'),
+                                    latitude=restaurant_data.get('latitude'),
+                                    longitude=restaurant_data.get('longitude'),
                                     cuisine_type=restaurant_data.get('cuisine_type'),
                                     status=restaurant_data.get('status', 'open'),
                                     price_range=restaurant_data.get('price_range'),
@@ -591,9 +679,12 @@ class BackendService:
                                     business_news=restaurant_data.get('business_news'),
                                     mention_context=restaurant_data.get('mention_context'),
                                     mention_timestamp=restaurant_data.get('mention_timestamp'),
-                                    google_place_id=restaurant_data.get('google_place_id'),
+                                    google_place_id=restaurant_data.get('google_place_id') or gp.get('place_id'),
+                                    google_name=gp.get('google_name'),
+                                    google_url=gp.get('google_url'),
                                     google_rating=restaurant_data.get('google_rating') or rating.get('google_rating'),
                                     google_user_ratings_total=restaurant_data.get('google_user_ratings_total') or rating.get('user_ratings_total'),
+                                    photos=restaurant_data.get('photos'),
                                     image_url=restaurant_data.get('image_url'),
                                 )
                                 session.add(r_model)

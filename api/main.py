@@ -473,6 +473,7 @@ def sync_sqlite_to_postgres():
                 location = r.get('location', {})
                 contact = r.get('contact_info', {})
                 rating = r.get('rating', {})
+                gp = r.get('google_places', {}) or {}
                 restaurant_model = RestaurantModel(
                     id=r['id'],
                     episode_id=r.get('episode_id'),
@@ -482,8 +483,8 @@ def sync_sqlite_to_postgres():
                     neighborhood=location.get('neighborhood'),
                     address=location.get('address'),
                     region=location.get('region', 'Center'),
-                    latitude=r.get('latitude'),
-                    longitude=r.get('longitude'),
+                    latitude=r.get('latitude') or location.get('lat'),
+                    longitude=r.get('longitude') or location.get('lng'),
                     cuisine_type=r.get('cuisine_type'),
                     status=r.get('status', 'open'),
                     price_range=r.get('price_range'),
@@ -497,9 +498,12 @@ def sync_sqlite_to_postgres():
                     business_news=r.get('business_news'),
                     mention_context=r.get('mention_context'),
                     mention_timestamp=r.get('mention_timestamp'),
-                    google_place_id=r.get('google_place_id'),
+                    google_place_id=r.get('google_place_id') or gp.get('place_id'),
+                    google_name=gp.get('google_name'),
+                    google_url=gp.get('google_url'),
                     google_rating=rating.get('google_rating'),
                     google_user_ratings_total=rating.get('user_ratings_total'),
+                    photos=r.get('photos'),
                     image_url=r.get('image_url'),
                 )
                 session.add(restaurant_model)

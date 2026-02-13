@@ -281,6 +281,12 @@ class Database:
                 )
             ''')
 
+            # Schema migrations - add new columns gracefully
+            try:
+                cursor.execute('ALTER TABLE restaurants ADD COLUMN photos TEXT')
+            except sqlite3.OperationalError:
+                pass  # Column already exists
+
             # Create indexes for common queries
             cursor.execute('CREATE INDEX IF NOT EXISTS idx_restaurants_city ON restaurants(city)')
             cursor.execute('CREATE INDEX IF NOT EXISTS idx_restaurants_cuisine ON restaurants(cuisine_type)')
@@ -429,8 +435,8 @@ class Database:
                     host_comments, menu_items, special_features, contact_hours,
                     contact_phone, contact_website, business_news, mention_context,
                     mention_timestamp, google_place_id, google_rating,
-                    google_user_ratings_total, latitude, longitude, image_url
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    google_user_ratings_total, latitude, longitude, image_url, photos
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ''', (
                 restaurant_id,
                 episode_id,
@@ -458,7 +464,8 @@ class Database:
                 google_user_ratings_total,
                 kwargs.get('latitude'),
                 kwargs.get('longitude'),
-                kwargs.get('image_url')
+                kwargs.get('image_url'),
+                json.dumps(kwargs.get('photos', []))
             ))
 
             return restaurant_id
@@ -477,12 +484,14 @@ class Database:
         """Convert database row to restaurant dict with nested structures."""
         restaurant = dict(row)
 
-        # Reconstruct nested location
+        # Reconstruct nested location (include lat/lng for API Location model)
         restaurant['location'] = {
             'city': restaurant.pop('city', None),
             'neighborhood': restaurant.pop('neighborhood', None),
             'address': restaurant.pop('address', None),
-            'region': restaurant.pop('region', 'Center')
+            'region': restaurant.pop('region', 'Center'),
+            'lat': restaurant.get('latitude'),
+            'lng': restaurant.get('longitude'),
         }
 
         # Reconstruct nested contact_info
@@ -501,6 +510,7 @@ class Database:
         # Parse JSON fields
         restaurant['menu_items'] = json.loads(restaurant.get('menu_items') or '[]')
         restaurant['special_features'] = json.loads(restaurant.get('special_features') or '[]')
+        restaurant['photos'] = json.loads(restaurant.get('photos') or '[]')
 
         return restaurant
 
@@ -707,9 +717,14 @@ class Database:
             kwargs.update({
                 'city': loc.get('city'),
                 'neighborhood': loc.get('neighborhood'),
-                'address': loc.get('address'),
-                'region': loc.get('region')
+                'address': loc.get('address') or loc.get('full_address'),
+                'region': loc.get('region'),
             })
+            # Flatten coordinates from nested location
+            coords = loc.get('coordinates', {})
+            if coords:
+                kwargs['latitude'] = coords.get('latitude')
+                kwargs['longitude'] = coords.get('longitude')
 
         if 'contact_info' in kwargs:
             contact = kwargs.pop('contact_info')
@@ -726,11 +741,18 @@ class Database:
                 'google_user_ratings_total': rating.get('user_ratings_total')
             })
 
+        if 'google_places' in kwargs:
+            gp = kwargs.pop('google_places')
+            if gp:
+                kwargs['google_place_id'] = gp.get('place_id')
+
         # Handle JSON fields
         if 'menu_items' in kwargs:
             kwargs['menu_items'] = json.dumps(kwargs['menu_items'])
         if 'special_features' in kwargs:
             kwargs['special_features'] = json.dumps(kwargs['special_features'])
+        if 'photos' in kwargs:
+            kwargs['photos'] = json.dumps(kwargs['photos'])
 
         # Build UPDATE query
         set_clause = ', '.join(f"{k} = ?" for k in kwargs.keys())
