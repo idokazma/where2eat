@@ -3,7 +3,7 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
-import { MapPin, Clock, Phone, Globe, Star, Heart, ChevronDown, ChevronUp } from "lucide-react"
+import { MapPin, Clock, Phone, Globe, Star, Heart, ChevronDown, ChevronUp, Play } from "lucide-react"
 import { Restaurant } from "@/types/restaurant"
 import { useFavorites } from "@/contexts/favorites-context"
 import { useLanguage } from "@/contexts/LanguageContext"
@@ -109,10 +109,30 @@ export function RestaurantCard({ restaurant }: RestaurantCardProps) {
             </h3>
             {/* Cuisine as subtle label */}
             <span className="text-caption block mt-1">{restaurant.cuisine_type}</span>
-            {restaurant.host_comments && (
+            {(restaurant.engaging_quote || restaurant.host_comments) && (
               <p className="text-muted-foreground text-sm italic text-right mt-2 line-clamp-2 leading-relaxed">
-                &ldquo;{restaurant.host_comments}&rdquo;
+                &ldquo;{restaurant.engaging_quote || restaurant.host_comments}&rdquo;
               </p>
+            )}
+            {restaurant.episode_info?.video_url && (
+              <a
+                href={(() => {
+                  const ts = restaurant.mention_timestamp_seconds;
+                  const base = restaurant.episode_info!.video_url;
+                  return ts && ts > 0 ? `${base}${base.includes('?') ? '&' : '?'}t=${ts}` : base;
+                })()}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
+                className="inline-flex items-center gap-1.5 mt-1.5 text-xs text-primary hover:text-primary/80 transition-colors"
+              >
+                <Play className="size-3 fill-current" />
+                <span>
+                  {restaurant.mention_timestamp_seconds && restaurant.mention_timestamp_seconds > 0
+                    ? `צפה מ-${Math.floor(restaurant.mention_timestamp_seconds / 60)}:${String(restaurant.mention_timestamp_seconds % 60).padStart(2, '0')}`
+                    : 'צפה בפודקאסט'}
+                </span>
+              </a>
             )}
           </div>
           <div className="flex flex-col items-end gap-3">

@@ -15,22 +15,23 @@ from dotenv import load_dotenv
 load_dotenv()
 
 class GooglePlacesEnricher:
-    """Enriches restaurant data using Google Places API"""
-    
+    """Enriches restaurant data using Google Places API (New API with legacy fallback)"""
+
     def __init__(self, api_key: Optional[str] = None):
         """
         Initialize with Google Places API key
-        
+
         Args:
             api_key: Google Places API key. If None, will try to get from environment
         """
         self.api_key = api_key or os.getenv('GOOGLE_PLACES_API_KEY')
         if not self.api_key:
             raise ValueError("Google Places API key required. Set GOOGLE_PLACES_API_KEY environment variable.")
-        
+
         self.base_url = "https://maps.googleapis.com/maps/api/place"
+        self.new_api_base_url = "https://places.googleapis.com/v1"
         self.logger = logging.getLogger(__name__)
-        
+
         # Set up logging
         if not self.logger.handlers:
             handler = logging.StreamHandler()
@@ -88,11 +89,173 @@ class GooglePlacesEnricher:
 
     def _search_restaurant(self, query: str) -> Optional[Dict]:
         """
-        Search for restaurant using Google Places Text Search API
-        
+        Search for restaurant using Google Places API.
+        Tries the new Places API first, falls back to legacy on error.
+
         Args:
             query: Search query string
-            
+
+        Returns:
+            Place details if found, None otherwise
+        """
+        # Try new API first
+        result = self._search_restaurant_new_api(query)
+        if result is not None:
+            return result
+
+        # Fall back to legacy API
+        self.logger.debug("New Places API returned no result, falling back to legacy API")
+        return self._search_restaurant_legacy(query)
+
+    def _search_restaurant_new_api(self, query: str) -> Optional[Dict]:
+        """
+        Search for restaurant using the new Google Places API (places.googleapis.com).
+
+        Args:
+            query: Search query string
+
+        Returns:
+            Place details in legacy-compatible format if found, None otherwise
+        """
+        try:
+            # Step 1: Text Search
+            search_url = f"{self.new_api_base_url}/places:searchText"
+            headers = {
+                'Content-Type': 'application/json',
+                'X-Goog-Api-Key': self.api_key,
+                'X-Goog-FieldMask': 'places.id,places.displayName,places.formattedAddress,places.location,places.rating,places.userRatingCount,places.priceLevel,places.photos,places.regularOpeningHours,places.internationalPhoneNumber,places.websiteUri,places.googleMapsUri'
+            }
+            body = {
+                'textQuery': query,
+                'includedType': 'restaurant',
+                'languageCode': 'he'
+            }
+
+            self.logger.debug(f"🔎 Searching new Places API for: {query}")
+
+            response = requests.post(search_url, headers=headers, json=body)
+            response.raise_for_status()
+
+            search_data = response.json()
+            places = search_data.get('places', [])
+
+            if not places:
+                self.logger.debug(f"No results from new API for query: {query}")
+                return None
+
+            place = places[0]
+            place_id = place.get('id')
+            if not place_id:
+                return None
+
+            # Step 2: Get detailed place information
+            time.sleep(0.1)
+
+            details_url = f"{self.new_api_base_url}/places/{place_id}"
+            details_headers = {
+                'X-Goog-Api-Key': self.api_key,
+                'X-Goog-FieldMask': 'id,displayName,formattedAddress,location,rating,userRatingCount,priceLevel,photos,regularOpeningHours,internationalPhoneNumber,websiteUri,googleMapsUri'
+            }
+
+            details_response = requests.get(details_url, headers=details_headers)
+            details_response.raise_for_status()
+
+            details_data = details_response.json()
+            return self._map_new_api_response(details_data)
+
+        except requests.RequestException as e:
+            self.logger.warning(f"New Places API error: {str(e)}")
+            return None
+        except Exception as e:
+            self.logger.warning(f"Unexpected error in new Places API search: {str(e)}")
+            return None
+
+    def _map_new_api_response(self, data: Dict) -> Dict:
+        """
+        Convert new Places API response format to legacy-compatible format.
+
+        Args:
+            data: New API response dict
+
+        Returns:
+            Dict in the same shape as legacy Place Details result
+        """
+        result = {
+            'place_id': data.get('id'),
+            'name': data.get('displayName', {}).get('text', ''),
+            'formatted_address': data.get('formattedAddress'),
+            'url': data.get('googleMapsUri'),
+        }
+
+        # Geometry / location
+        location = data.get('location')
+        if location:
+            result['geometry'] = {
+                'location': {
+                    'lat': location.get('latitude'),
+                    'lng': location.get('longitude')
+                }
+            }
+
+        # Rating
+        if data.get('rating') is not None:
+            result['rating'] = data['rating']
+        if data.get('userRatingCount') is not None:
+            result['user_ratings_total'] = data['userRatingCount']
+
+        # Price level - new API uses enum strings like PRICE_LEVEL_MODERATE
+        price_level_map = {
+            'PRICE_LEVEL_FREE': 0,
+            'PRICE_LEVEL_INEXPENSIVE': 1,
+            'PRICE_LEVEL_MODERATE': 2,
+            'PRICE_LEVEL_EXPENSIVE': 3,
+            'PRICE_LEVEL_VERY_EXPENSIVE': 4,
+        }
+        price_str = data.get('priceLevel')
+        if price_str and isinstance(price_str, str):
+            result['price_level'] = price_level_map.get(price_str)
+        elif isinstance(price_str, (int, float)):
+            result['price_level'] = int(price_str)
+
+        # Phone
+        if data.get('internationalPhoneNumber'):
+            result['formatted_phone_number'] = data['internationalPhoneNumber']
+
+        # Website
+        if data.get('websiteUri'):
+            result['website'] = data['websiteUri']
+
+        # Photos - new API uses `name` field instead of `photo_reference`
+        new_photos = data.get('photos', [])
+        if new_photos:
+            result['photos'] = []
+            for photo in new_photos:
+                photo_name = photo.get('name', '')
+                if photo_name:
+                    result['photos'].append({
+                        'photo_reference': photo_name,
+                        'width': photo.get('widthPx', 0),
+                        'height': photo.get('heightPx', 0),
+                        '_new_api': True,
+                    })
+
+        # Opening hours
+        hours = data.get('regularOpeningHours')
+        if hours:
+            result['opening_hours'] = {
+                'open_now': hours.get('openNow'),
+                'weekday_text': hours.get('weekdayDescriptions', [])
+            }
+
+        return result
+
+    def _search_restaurant_legacy(self, query: str) -> Optional[Dict]:
+        """
+        Search for restaurant using the legacy Google Places Text Search API.
+
+        Args:
+            query: Search query string
+
         Returns:
             Place details if found, None otherwise
         """
@@ -104,25 +267,25 @@ class GooglePlacesEnricher:
                 'type': 'restaurant',
                 'key': self.api_key
             }
-            
-            self.logger.debug(f"🔎 Searching Google Places for: {query}")
-            
+
+            self.logger.debug(f"🔎 Searching legacy Google Places for: {query}")
+
             response = requests.get(search_url, params=search_params)
             response.raise_for_status()
-            
+
             search_data = response.json()
-            
+
             if search_data.get('status') != 'OK' or not search_data.get('results'):
                 self.logger.debug(f"No results for query: {query}")
                 return None
-            
+
             # Get the first (most relevant) result
             place = search_data['results'][0]
             place_id = place.get('place_id')
-            
+
             if not place_id:
                 return None
-            
+
             # Step 2: Get detailed place information
             details_url = f"{self.base_url}/details/json"
             details_params = {
@@ -130,26 +293,26 @@ class GooglePlacesEnricher:
                 'fields': 'place_id,name,formatted_address,geometry,rating,user_ratings_total,price_level,photos,opening_hours,formatted_phone_number,website,url',
                 'key': self.api_key
             }
-            
+
             # Rate limiting - be respectful to Google's API
             time.sleep(0.1)
-            
+
             details_response = requests.get(details_url, params=details_params)
             details_response.raise_for_status()
-            
+
             details_data = details_response.json()
-            
+
             if details_data.get('status') == 'OK':
                 return details_data['result']
             else:
                 self.logger.warning(f"Google Places Details API error: {details_data.get('status')}")
                 return None
-                
+
         except requests.RequestException as e:
-            self.logger.error(f"Error calling Google Places API: {str(e)}")
+            self.logger.error(f"Error calling legacy Google Places API: {str(e)}")
             return None
         except Exception as e:
-            self.logger.error(f"Unexpected error in restaurant search: {str(e)}")
+            self.logger.error(f"Unexpected error in legacy restaurant search: {str(e)}")
             return None
 
     def _merge_google_data(self, original_data: Dict, google_data: Dict) -> Dict:
@@ -200,17 +363,21 @@ class GooglePlacesEnricher:
         if google_data.get('website'):
             enhanced_data['contact_info']['website'] = google_data['website']
         
-        # Add photos
+        # Add photos (supports both legacy photo_reference and new API name format)
         if google_data.get('photos'):
             enhanced_data['photos'] = []
             for photo in google_data['photos'][:3]:  # Limit to 3 photos
                 photo_reference = photo.get('photo_reference')
+                is_new_api = photo.get('_new_api', False)
                 if photo_reference:
-                    enhanced_data['photos'].append({
+                    photo_entry = {
                         'photo_reference': photo_reference,
                         'width': photo.get('width'),
                         'height': photo.get('height')
-                    })
+                    }
+                    if is_new_api:
+                        photo_entry['_new_api'] = True
+                    enhanced_data['photos'].append(photo_entry)
                     # Set image_url to first reference for database storage
                     if not enhanced_data.get('image_url') and photo_reference:
                         enhanced_data['image_url'] = photo_reference

@@ -295,6 +295,16 @@ EXTRACTION RULES:
 
 5. Hebrew transliteration: Provide accurate English transliteration (e.g., "צ'קולי" → "Chakoli", not "Tzkoli")
 
+6. ENGAGING QUOTES: For each restaurant, extract a vivid, colorful quote from the hosts about the restaurant.
+   - Capture the hosts' actual words or a close paraphrase - not a dry summary
+   - The quote should convey enthusiasm, emotion, or strong opinion
+   - Example of good: "אחי, הסטייק הזה נמס לי בפה, אני לא מאמין שזה קיים בארץ"
+   - Example of bad: "המנחה אמר שהסטייק טוב" (too dry, summarizes instead of quoting)
+
+7. TIMESTAMPS: Estimate how many seconds into the transcript each restaurant is first discussed.
+   - If the transcript has timing cues, use them
+   - Otherwise estimate based on position in the transcript (e.g., if mentioned at 30% of the text and the video is ~60min, estimate ~1080 seconds)
+
 Always respond with valid JSON only. No markdown formatting or additional text."""
 
     def _call_openai(self, prompt: str) -> List[Dict]:
@@ -554,6 +564,8 @@ OUTPUT FORMAT - Return a JSON object:
             "host_opinion": "חיובית מאוד/חיובית/ניטרלית/שלילית/מעורבת",
             "host_recommendation": true/false,
             "host_comments": "ציטוט ישיר או פרפרזה של דברי המנחה",
+            "engaging_quote": "ציטוט חי, צבעוני ומלא רגש מהמנחים על המסעדה - המילים שלהם ממש, לא תקציר יבש",
+            "mention_timestamp_seconds": 0,
             "signature_dishes": ["מנה מומלצת 1", "מנה מומלצת 2"],
             "menu_items": ["מנה שהוזכרה 1", "מנה שהוזכרה 2"],
             "special_features": ["תכונה מיוחדת", "אווירה", "נוף"],

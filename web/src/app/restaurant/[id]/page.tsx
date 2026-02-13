@@ -70,7 +70,7 @@ export default function RestaurantDetailPage() {
 
         if (data.restaurants) {
           const found = data.restaurants.find(
-            (r: Restaurant) => r.google_places?.place_id === restaurantId
+            (r: Restaurant) => r.google_places?.place_id === restaurantId || r.id === restaurantId
           );
           if (found) {
             setRestaurant(found);
@@ -317,41 +317,61 @@ export default function RestaurantDetailPage() {
           </div>
         )}
 
-        {/* Episode Badge */}
-        {restaurant.episode_info && (
-          <Link
-            href={restaurant.episode_info.video_url}
-            target="_blank"
-            className="block p-4 rounded-xl bg-gradient-to-l from-[var(--color-gold)]/10 to-transparent border border-[var(--color-gold)]/20"
-          >
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-[var(--color-gold)] flex items-center justify-center">
-                  <Play className="w-5 h-5 text-white fill-current" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-[var(--color-ink)]">
-                    הוזכר בפודקאסט
-                  </p>
-                  <p className="text-xs text-[var(--color-ink-muted)]">
-                    {new Date(restaurant.episode_info.analysis_date).toLocaleDateString('he-IL')}
-                  </p>
-                </div>
-              </div>
-              <ExternalLink className="w-5 h-5 text-[var(--color-gold)]" />
-            </div>
-          </Link>
-        )}
+        {/* Episode Badge with timed YouTube link */}
+        {restaurant.episode_info && (() => {
+          const ts = restaurant.mention_timestamp_seconds;
+          const timedUrl = ts && ts > 0
+            ? `${restaurant.episode_info.video_url}${restaurant.episode_info.video_url.includes('?') ? '&' : '?'}t=${ts}`
+            : restaurant.episode_info.video_url;
+          const timeLabel = ts && ts > 0
+            ? `${Math.floor(ts / 60)}:${String(ts % 60).padStart(2, '0')}`
+            : null;
 
-        {/* Host Opinion */}
-        {restaurant.host_comments && (
+          return (
+            <Link
+              href={timedUrl}
+              target="_blank"
+              className="block p-4 rounded-xl bg-gradient-to-l from-[var(--color-gold)]/10 to-transparent border border-[var(--color-gold)]/20"
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-[var(--color-gold)] flex items-center justify-center">
+                    <Play className="w-5 h-5 text-white fill-current" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-[var(--color-ink)]">
+                      הוזכר בפודקאסט
+                    </p>
+                    <p className="text-xs text-[var(--color-ink-muted)]">
+                      {new Date(restaurant.episode_info.analysis_date).toLocaleDateString('he-IL')}
+                      {timeLabel && (
+                        <span className="mr-2 text-[var(--color-gold)]">
+                          צפה מ-{timeLabel}
+                        </span>
+                      )}
+                    </p>
+                  </div>
+                </div>
+                <ExternalLink className="w-5 h-5 text-[var(--color-gold)]" />
+              </div>
+            </Link>
+          );
+        })()}
+
+        {/* Host Opinion / Engaging Quote */}
+        {(restaurant.engaging_quote || restaurant.host_comments) && (
           <div className="p-4 rounded-xl bg-[var(--color-surface)] border-r-4 border-r-[var(--color-gold)]">
             <h2 className="text-sm font-medium text-[var(--color-ink-muted)] mb-2">
               מה המארח אמר
             </h2>
             <p className="text-[var(--color-ink)] leading-relaxed text-[15px]">
-              &ldquo;{restaurant.host_comments}&rdquo;
+              &ldquo;{restaurant.engaging_quote || restaurant.host_comments}&rdquo;
             </p>
+            {restaurant.engaging_quote && restaurant.host_comments && restaurant.engaging_quote !== restaurant.host_comments && (
+              <p className="text-[var(--color-ink-muted)] text-sm mt-2 leading-relaxed">
+                {restaurant.host_comments}
+              </p>
+            )}
           </div>
         )}
 

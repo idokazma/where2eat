@@ -111,9 +111,11 @@ async def get_photo(
 ):
     """Proxy a Google Places photo to hide the API key."""
     api_key = get_api_key()
+    is_new_api = reference.startswith("places/") and "/photos/" in reference
     photo_url = (
-        f"https://maps.googleapis.com/maps/api/place/photo"
-        f"?maxwidth={maxwidth}&photoreference={reference}&key={api_key}"
+        f"https://places.googleapis.com/v1/{reference}/media?maxWidthPx={maxwidth}&key={api_key}"
+        if is_new_api
+        else f"https://maps.googleapis.com/maps/api/place/photo?maxwidth={maxwidth}&photoreference={reference}&key={api_key}"
     )
 
     async with httpx.AsyncClient(follow_redirects=True) as client:

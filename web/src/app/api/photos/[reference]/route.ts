@@ -5,6 +5,14 @@ const GOOGLE_PLACES_API_KEY =
   process.env.NEXT_PUBLIC_GOOGLE_PLACES_API_KEY ||
   '';
 
+/**
+ * Detect whether a photo reference is from the new Places API.
+ * New API references look like: "places/PLACE_ID/photos/PHOTO_ID"
+ */
+function isNewApiReference(reference: string): boolean {
+  return reference.startsWith('places/') && reference.includes('/photos/');
+}
+
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ reference: string }> }
@@ -22,7 +30,10 @@ export async function GET(
   const searchParams = request.nextUrl.searchParams;
   const maxWidth = searchParams.get('maxwidth') || '800';
 
-  const googleUrl = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=${maxWidth}&photoreference=${encodeURIComponent(reference)}&key=${GOOGLE_PLACES_API_KEY}`;
+  // Build the correct Google URL based on API format
+  const googleUrl = isNewApiReference(reference)
+    ? `https://places.googleapis.com/v1/${reference}/media?maxWidthPx=${maxWidth}&key=${GOOGLE_PLACES_API_KEY}`
+    : `https://maps.googleapis.com/maps/api/place/photo?maxwidth=${maxWidth}&photoreference=${encodeURIComponent(reference)}&key=${GOOGLE_PLACES_API_KEY}`;
 
   try {
     const response = await fetch(googleUrl, { redirect: 'follow' });
