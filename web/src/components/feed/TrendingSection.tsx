@@ -64,7 +64,7 @@ export function TrendingSection({
           <button
             key={restaurant.google_places?.place_id || restaurant.name_hebrew}
             onClick={() => onRestaurantClick?.(restaurant)}
-            className="trending-card text-right"
+            className={`trending-card text-right animate-fade-up stagger-${index + 1}`}
           >
             {/* Image/gradient area */}
             <div className={`trending-card-image ${getCuisineGradient(restaurant.cuisine_type)}`}>

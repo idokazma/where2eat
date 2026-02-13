@@ -183,7 +183,8 @@ export default function RestaurantDetailPage() {
         )}
 
         {/* Dark gradient overlay for text readability */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/10" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-black/10" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/20 to-transparent" />
 
         {/* Back button */}
         <div className="absolute top-4 right-4 z-10">
@@ -237,11 +238,14 @@ export default function RestaurantDetailPage() {
               {statusBadge.text}
             </span>
           )}
-          <h1 className="text-3xl sm:text-4xl font-bold text-white mb-1 drop-shadow-lg">
+          <h1
+            className="text-3xl sm:text-4xl font-black text-white mb-1"
+            style={{ textShadow: '0 2px 8px rgba(0,0,0,0.5), 0 1px 2px rgba(0,0,0,0.3)' }}
+          >
             {restaurant.name_hebrew}
           </h1>
           {restaurant.name_english && (
-            <p className="text-white/60 text-sm">{restaurant.name_english}</p>
+            <p className="text-white/60 text-sm font-accent">{restaurant.name_english}</p>
           )}
           <div className="flex items-center gap-3 mt-2">
             {restaurant.cuisine_type && (
@@ -255,7 +259,7 @@ export default function RestaurantDetailPage() {
               </span>
             )}
             {restaurant.rating?.google_rating && (
-              <span className="flex items-center gap-1 px-2.5 py-1 bg-[var(--color-gold)]/90 rounded-md text-white text-xs font-bold">
+              <span className="flex items-center gap-1 px-2.5 py-1 bg-[var(--color-gold)]/90 rounded-md text-white text-xs font-bold font-accent">
                 <Star className="w-3 h-3 fill-current" />
                 {restaurant.rating.google_rating.toFixed(1)}
               </span>

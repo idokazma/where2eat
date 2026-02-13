@@ -3,8 +3,8 @@
    Mobile-first, Editorial, Hebrew-native
    ============================================ */
 
-/* Typography - Heebo for urban Hebrew character */
-@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap');
+/* Typography - Heebo for urban Hebrew character + Space Grotesk for accent elements */
+@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@500;700&display=swap');
 
 @import "tailwindcss";
 @import "tw-animate-css";
@@ -17,6 +17,7 @@
   /* Typography */
   --font-display: 'Heebo', system-ui, sans-serif;
   --font-body: 'Heebo', system-ui, sans-serif;
+  --font-accent: 'Space Grotesk', system-ui, sans-serif;
   --font-mono: ui-monospace, 'Geist Mono', monospace;
 
   /* Type Scale */
@@ -256,6 +257,9 @@
 
   body {
     background-color: var(--color-paper);
+    background-image:
+      radial-gradient(ellipse at 85% 15%, rgba(230, 59, 46, 0.03) 0%, transparent 50%),
+      radial-gradient(ellipse at 15% 85%, rgba(212, 168, 75, 0.03) 0%, transparent 50%);
     color: var(--color-ink);
     font-family: var(--font-body);
     font-size: var(--text-body-md);
@@ -263,6 +267,12 @@
     direction: rtl;
     min-height: 100vh;
     min-height: 100dvh;
+  }
+
+  [data-theme="dark"] body, .dark body {
+    background-image:
+      radial-gradient(ellipse at 85% 15%, rgba(255, 90, 77, 0.02) 0%, transparent 50%),
+      radial-gradient(ellipse at 15% 85%, rgba(229, 184, 92, 0.02) 0%, transparent 50%);
   }
 
   [dir="ltr"] {
@@ -383,18 +393,28 @@
     height: 56px;
     padding-inline: var(--space-4);
     background: var(--color-paper);
-    border-bottom: 1px solid var(--color-border);
+    border-bottom: none;
     display: flex;
     align-items: center;
     justify-content: space-between;
     z-index: var(--z-sticky);
   }
 
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(to left, var(--color-accent) 30%, var(--color-border) 30%);
+  }
+
   .header-title {
-    font-family: var(--font-display);
+    font-family: var(--font-accent);
     font-size: var(--text-body-lg);
-    font-weight: 800;
-    color: var(--color-ink);
+    font-weight: 700;
+    color: var(--color-accent);
   }
 
   /* Filter Chip */
@@ -477,12 +497,19 @@
     border-radius: var(--radius-lg);
     overflow: hidden;
     border: 1px solid var(--color-border);
-    transition: all 300ms var(--ease-out);
+    transition: transform 300ms var(--ease-out), box-shadow 300ms var(--ease-out);
   }
 
   .restaurant-card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.1);
+    box-shadow:
+      0 12px 24px -8px rgba(0, 0, 0, 0.08),
+      0 4px 8px -2px rgba(0, 0, 0, 0.04);
+  }
+
+  .restaurant-card:active {
+    transform: scale(0.98);
+    transition: transform 100ms var(--ease-out);
   }
 
   .restaurant-card-image {
@@ -490,6 +517,14 @@
     aspect-ratio: 16 / 10;
     background: var(--color-surface);
     overflow: hidden;
+  }
+
+  .restaurant-card-image img {
+    transition: transform 500ms var(--ease-out);
+  }
+
+  .restaurant-card:hover .restaurant-card-image img {
+    transform: scale(1.04);
   }
 
   .restaurant-card-content {
@@ -609,6 +644,12 @@
   .trending-card {
     width: 140px;
     flex-shrink: 0;
+    transition: transform 300ms var(--ease-out);
+  }
+
+  .trending-card:active {
+    transform: scale(0.97);
+    transition: transform 100ms var(--ease-out);
   }
 
   .trending-card-image {
@@ -617,6 +658,14 @@
     border-radius: var(--radius-md);
     overflow: hidden;
     background: var(--color-surface);
+  }
+
+  .trending-card-image img {
+    transition: transform 500ms var(--ease-out);
+  }
+
+  .trending-card:hover .trending-card-image img {
+    transform: scale(1.04);
   }
 
   .trending-card-rank {
@@ -631,6 +680,7 @@
     background: var(--color-accent);
     color: white;
     border-radius: var(--radius-sm);
+    font-family: var(--font-accent);
     font-size: var(--text-body-sm);
     font-weight: 700;
   }
@@ -875,6 +925,17 @@
     overflow: hidden;
     border: 1px solid var(--color-border);
   }
+
+  /* Accent font utility */
+  .font-accent {
+    font-family: var(--font-accent);
+  }
+
+  /* Section stagger for orchestrated page load */
+  .stagger-section-1 { animation-delay: 0ms; }
+  .stagger-section-2 { animation-delay: 100ms; }
+  .stagger-section-3 { animation-delay: 200ms; }
+  .stagger-section-4 { animation-delay: 300ms; }
 
   /* Staggered animation delays */
   .stagger-1 { animation-delay: 0ms; }

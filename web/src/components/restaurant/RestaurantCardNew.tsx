@@ -229,7 +229,7 @@ export function RestaurantCardNew({
           {restaurant.rating?.google_rating && (
             <button className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[var(--color-surface)] text-sm font-medium">
               <Star className="w-4 h-4 text-[var(--color-gold)] fill-[var(--color-gold)]" />
-              <span>{restaurant.rating.google_rating.toFixed(1)}</span>
+              <span className="font-accent">{restaurant.rating.google_rating.toFixed(1)}</span>
             </button>
           )}
 
