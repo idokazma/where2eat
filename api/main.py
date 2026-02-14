@@ -168,7 +168,7 @@ async def fetch_default_video_on_startup():
             raise  # Re-raise to fall into the outer except block
 
         collector = YouTubeTranscriptCollector()
-        result = collector.get_transcript(DEFAULT_VIDEO_URL, languages=['he', 'iw', 'en'])
+        result = collector.get_transcript(DEFAULT_VIDEO_URL, languages=['iw', 'he', 'en'])
 
         if result:
             print(f"[STARTUP] Successfully fetched transcript for default video")

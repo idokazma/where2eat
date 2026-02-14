@@ -446,7 +446,7 @@ def test_fetch_transcript_integration(mock_collector_class, sample_transcript_da
     result = fetch_transcript(video_url)
     
     assert result == sample_transcript_data
-    mock_collector.get_transcript.assert_called_once_with(video_url, languages=['he', 'iw'])
+    mock_collector.get_transcript.assert_called_once_with(video_url, languages=['iw', 'he'])
 
 
 @patch('restaurant_analyzer.YouTubeTranscriptCollector')

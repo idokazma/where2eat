@@ -104,7 +104,7 @@ class RestaurantPodcastAnalyzer:
         self.logger.info(f"🎥 Fetching transcript from: {video_url}")
         
         # Try Hebrew first, then auto-detect
-        result = self.transcript_collector.get_transcript(video_url, languages=['he', 'iw'])
+        result = self.transcript_collector.get_transcript(video_url, languages=['iw', 'he'])
         if not result:
             self.logger.info("Hebrew transcript not found, trying auto-detect...")
             self.log_agent_call("YouTubeTranscriptCollector", "get_transcript_auto", {
