@@ -118,7 +118,7 @@ class YouTubeTranscriptCollector:
     def get_transcript_auto(self, video_url: str) -> Optional[Dict]:
         """
         Automatically fetch transcript in any available language.
-        Tries common languages first, then falls back to any available.
+        Uses a single list() call to discover available transcripts, then fetches the best one.
 
         Args:
             video_url: YouTube URL or video ID
@@ -132,38 +132,105 @@ class YouTubeTranscriptCollector:
             print(f"Error: Could not extract video ID from: {video_url}")
             return None
 
-        # Try common languages in order of preference (iw before he for YouTube compatibility)
-        common_languages = ['iw', 'he', 'en', 'es', 'fr', 'de', 'it', 'pt', 'ru', 'ar']
+        # Check cache first
+        if self.database:
+            cached_episode = self.database.get_episode(video_id=video_id)
+            if cached_episode and cached_episode.get('transcript'):
+                print(f"✓ Using cached transcript for video: {video_id}")
+                return {
+                    'video_id': video_id,
+                    'video_url': f'https://www.youtube.com/watch?v={video_id}',
+                    'transcript': cached_episode['transcript'],
+                    'segments': [],
+                    'language': cached_episode.get('language', 'unknown'),
+                    'segment_count': len(cached_episode['transcript'].split()),
+                    'cached': True
+                }
 
-        for lang in common_languages:
-            result = self.get_transcript(video_url, languages=[lang])
-            if result:
-                return result
+        self._wait_for_rate_limit()
 
-        # If no common language works, try to get any available transcript
+        # Preferred languages in priority order
+        preferred_languages = ['iw', 'he', 'en', 'es', 'fr', 'de', 'it', 'pt', 'ru', 'ar']
+
         try:
             api = YouTubeTranscriptApi()
             transcript_list = api.list(video_id)
-            for transcript in transcript_list:
-                try:
-                    data = transcript.fetch()
-                    full_text = ' '.join([snippet.text for snippet in data.snippets])
 
-                    return {
-                        'video_id': video_id,
-                        'video_url': f'https://www.youtube.com/watch?v={video_id}',
-                        'transcript': full_text,
-                        'segments': [{'text': snippet.text, 'start': snippet.start, 'duration': snippet.duration} for snippet in data.snippets],
-                        'language': transcript.language_code,
-                        'segment_count': len(data.snippets)
-                    }
-                except Exception:
-                    continue
+            # Collect available transcripts
+            available = list(transcript_list)
+            available_codes = [t.language_code for t in available]
+            print(f"[list] Available transcripts for {video_id}: {available_codes}")
 
+            # Pick the best transcript by preference order
+            chosen = None
+            for lang in preferred_languages:
+                for t in available:
+                    if t.language_code == lang:
+                        chosen = t
+                        break
+                if chosen:
+                    break
+
+            # If no preferred language matched, take the first available
+            if not chosen and available:
+                chosen = available[0]
+
+            if chosen:
+                data = chosen.fetch()
+                full_text = ' '.join([snippet.text for snippet in data.snippets])
+                source = 'youtube-transcript-api'
+                if chosen.is_generated:
+                    source = 'youtube-transcript-api-generated'
+
+                result = {
+                    'video_id': video_id,
+                    'video_url': f'https://www.youtube.com/watch?v={video_id}',
+                    'transcript': full_text,
+                    'segments': [{'text': snippet.text, 'start': snippet.start, 'duration': snippet.duration} for snippet in data.snippets],
+                    'language': chosen.language_code,
+                    'segment_count': len(data.snippets),
+                    'cached': False,
+                    'source': source
+                }
+
+                if self.database:
+                    try:
+                        self.database.create_episode(
+                            video_id=video_id,
+                            video_url=result['video_url'],
+                            transcript=full_text,
+                            language=result['language'],
+                            analysis_date=datetime.now().isoformat()
+                        )
+                    except Exception:
+                        pass
+
+                return result
+
+        except (TranscriptsDisabled, VideoUnavailable) as e:
+            print(f"Error: {type(e).__name__} for video: {video_id}")
+            return None
         except Exception as e:
-            print(f"Error: Could not fetch any transcript for {video_id}: {str(e)}")
+            print(f"[list] Failed for {video_id}: {str(e)}, trying yt-dlp...")
 
-        return None
+        # Fallback to yt-dlp if list() itself failed
+        result = self._get_transcript_via_ytdlp(video_id, preferred_languages[:3])
+        if result and self.database:
+            try:
+                self.database.create_episode(
+                    video_id=video_id,
+                    video_url=result['video_url'],
+                    transcript=result['transcript'],
+                    language=result['language'],
+                    analysis_date=datetime.now().isoformat()
+                )
+            except Exception:
+                pass
+
+        if result is None:
+            print(f"Error: Could not fetch any transcript for {video_id}")
+
+        return result
 
     def _wait_for_rate_limit(self):
         """Wait if necessary to respect rate limit."""
@@ -355,13 +422,15 @@ class YouTubeTranscriptCollector:
         languages: List[str] = ['iw', 'he', 'en']
     ) -> Optional[Dict]:
         """
-        Fetch transcript for a YouTube video with caching, rate limiting, and multi-tier fallback.
+        Fetch transcript for a YouTube video with caching, rate limiting, and smart fallback.
 
-        Fallback chain:
+        Strategy (list-first, no trial-and-error):
         1. Database cache (instant, no API call)
-        2. youtube-transcript-api (primary)
-        3. yt-dlp subtitle extraction (catches auto-generated captions the primary misses)
-        4. YouTube translation API (translates from any available language)
+        2. list() to discover available transcripts (single API call)
+        3. find_transcript() to pick the best language match (no API call)
+        4. fetch() only the chosen transcript (single API call)
+        5. If no match: translate from any available transcript
+        6. If list() itself fails: yt-dlp fallback
 
         Args:
             video_url: YouTube URL or video ID
@@ -382,12 +451,11 @@ class YouTubeTranscriptCollector:
             cached_episode = self.database.get_episode(video_id=video_id)
             if cached_episode and cached_episode.get('transcript'):
                 print(f"✓ Using cached transcript for video: {video_id}")
-                # Return cached data in the same format
                 return {
                     'video_id': video_id,
                     'video_url': f'https://www.youtube.com/watch?v={video_id}',
                     'transcript': cached_episode['transcript'],
-                    'segments': [],  # Segments not stored in cache for now
+                    'segments': [],
                     'language': cached_episode.get('language', 'unknown'),
                     'segment_count': len(cached_episode['transcript'].split()),
                     'cached': True
@@ -398,24 +466,95 @@ class YouTubeTranscriptCollector:
 
         result = None
 
-        # Tier 1: youtube-transcript-api (primary)
         try:
             api = YouTubeTranscriptApi()
-            transcript_data = api.fetch(video_id, languages=languages)
 
-            full_text = ' '.join([snippet.text for snippet in transcript_data.snippets])
-            segments = [{'text': snippet.text, 'start': snippet.start, 'duration': snippet.duration} for snippet in transcript_data.snippets]
+            # Step 1: List all available transcripts (single API call)
+            transcript_list = api.list(video_id)
+            available = list(transcript_list)
+            available_codes = [t.language_code for t in available]
 
-            result = {
-                'video_id': video_id,
-                'video_url': f'https://www.youtube.com/watch?v={video_id}',
-                'transcript': full_text,
-                'segments': segments,
-                'language': languages[0] if languages else 'en',
-                'segment_count': len(transcript_data.snippets),
-                'cached': False,
-                'source': 'youtube-transcript-api'
-            }
+            if available_codes:
+                print(f"[list] Available transcripts for {video_id}: {available_codes}")
+
+            # Step 2: Find the best match from requested languages
+            chosen = None
+            for lang in languages:
+                for t in available:
+                    if t.language_code == lang:
+                        chosen = t
+                        break
+                if chosen:
+                    break
+
+            # Step 3: Fetch the chosen transcript
+            if chosen:
+                data = chosen.fetch()
+                full_text = ' '.join([snippet.text for snippet in data.snippets])
+                segments = [{'text': snippet.text, 'start': snippet.start, 'duration': snippet.duration} for snippet in data.snippets]
+
+                source = 'youtube-transcript-api'
+                if chosen.is_generated:
+                    source = 'youtube-transcript-api-generated'
+
+                result = {
+                    'video_id': video_id,
+                    'video_url': f'https://www.youtube.com/watch?v={video_id}',
+                    'transcript': full_text,
+                    'segments': segments,
+                    'language': chosen.language_code,
+                    'segment_count': len(data.snippets),
+                    'cached': False,
+                    'source': source
+                }
+            else:
+                # Step 4: No match — try translation from any available transcript
+                print(f"No transcript for {video_id} in {languages} (available: {available_codes}), trying translation...")
+                for t in available:
+                    if t.is_translatable:
+                        for lang in languages:
+                            try:
+                                translated = t.translate(lang)
+                                data = translated.fetch()
+                                full_text = ' '.join([snippet.text for snippet in data.snippets])
+                                segments = [{'text': snippet.text, 'start': snippet.start, 'duration': snippet.duration} for snippet in data.snippets]
+
+                                print(f"[translate] Got {t.language_code}->{lang} transcript for {video_id}")
+                                result = {
+                                    'video_id': video_id,
+                                    'video_url': f'https://www.youtube.com/watch?v={video_id}',
+                                    'transcript': full_text,
+                                    'segments': segments,
+                                    'language': lang,
+                                    'segment_count': len(data.snippets),
+                                    'cached': False,
+                                    'source': f'translated-from-{t.language_code}'
+                                }
+                                break
+                            except Exception:
+                                continue
+                    if result:
+                        break
+
+                if result is None and available:
+                    # Last resort: fetch whatever is available even if not in preferred languages
+                    first = available[0]
+                    try:
+                        data = first.fetch()
+                        full_text = ' '.join([snippet.text for snippet in data.snippets])
+                        segments = [{'text': snippet.text, 'start': snippet.start, 'duration': snippet.duration} for snippet in data.snippets]
+                        result = {
+                            'video_id': video_id,
+                            'video_url': f'https://www.youtube.com/watch?v={video_id}',
+                            'transcript': full_text,
+                            'segments': segments,
+                            'language': first.language_code,
+                            'segment_count': len(data.snippets),
+                            'cached': False,
+                            'source': 'youtube-transcript-api'
+                        }
+                    except Exception:
+                        pass
 
         except TranscriptsDisabled:
             print(f"Error: Transcripts are disabled for video: {video_id}")
@@ -423,26 +562,22 @@ class YouTubeTranscriptCollector:
         except VideoUnavailable:
             print(f"Error: Video unavailable: {video_id}")
             return None
-        except NoTranscriptFound:
-            print(f"No transcript via API for {video_id} in {languages}, trying fallbacks...")
-
-            # Tier 2: yt-dlp fallback
+        except Exception as e:
+            # list() itself failed (e.g. network error, blocked IP)
+            print(f"[list] Failed for {video_id}: {str(e)}, trying yt-dlp...")
             result = self._get_transcript_via_ytdlp(video_id, languages)
 
-            # Tier 3: Translation fallback
-            if result is None:
-                result = self._get_transcript_via_translation(video_id, languages)
+        if result is None:
+            # yt-dlp as final fallback if nothing worked above
+            if not isinstance(result, dict):
+                result = self._get_transcript_via_ytdlp(video_id, languages)
 
-            if result is None:
-                print(f"Error: All transcript methods failed for video: {video_id}")
-                return None
-
-        except Exception as e:
-            print(f"Error fetching transcript for {video_id}: {str(e)}")
+        if result is None:
+            print(f"Error: All transcript methods failed for video: {video_id}")
             return None
 
         # Cache the result if database is available
-        if result and self.database:
+        if self.database:
             try:
                 self.database.create_episode(
                     video_id=video_id,
