@@ -182,12 +182,12 @@ class BackendService:
         try:
             analyzer = self._get_analyzer()
 
-            analysis_result = analyzer.analyze_transcript(
-                transcript_text=transcript_data.get('transcript', ''),
-                video_id=transcript_data.get('video_id'),
-                video_url=transcript_data.get('video_url'),
-                language=transcript_data.get('language', 'he')
-            )
+            analysis_result = analyzer.analyze_transcript({
+                'transcript': transcript_data.get('transcript', ''),
+                'video_id': transcript_data.get('video_id'),
+                'video_url': transcript_data.get('video_url'),
+                'language': transcript_data.get('language', 'he')
+            })
 
             return {
                 'success': True,
