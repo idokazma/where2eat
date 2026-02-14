@@ -518,6 +518,302 @@ class TestHealthCheck:
             assert 'error' in health
 
 
+class TestYtDlpFallback:
+    """Test cases for yt-dlp fallback transcript fetching"""
+
+    @pytest.fixture
+    def collector(self):
+        return YouTubeTranscriptCollector(rate_limit_seconds=0)
+
+    def test_ytdlp_fallback_on_no_transcript_found(self, collector):
+        """Test that yt-dlp is tried when youtube-transcript-api raises NoTranscriptFound"""
+        from youtube_transcript_api._errors import NoTranscriptFound
+
+        ytdlp_result = {
+            'video_id': 'test1234567',
+            'video_url': 'https://www.youtube.com/watch?v=test1234567',
+            'transcript': 'yt-dlp transcript text',
+            'segments': [{'text': 'yt-dlp transcript text', 'start': 0.0, 'duration': 5.0}],
+            'language': 'iw',
+            'segment_count': 1,
+            'cached': False,
+            'source': 'yt-dlp-auto'
+        }
+
+        with patch('youtube_transcript_collector.YouTubeTranscriptApi') as MockApi:
+            mock_instance = MockApi.return_value
+            mock_instance.fetch.side_effect = NoTranscriptFound('test1234567', ['iw'], [])
+
+            with patch.object(collector, '_get_transcript_via_ytdlp', return_value=ytdlp_result) as mock_ytdlp:
+                result = collector.get_transcript(
+                    "https://www.youtube.com/watch?v=test1234567",
+                    languages=['iw', 'he']
+                )
+
+                assert result is not None
+                assert result['transcript'] == 'yt-dlp transcript text'
+                assert result['source'] == 'yt-dlp-auto'
+                mock_ytdlp.assert_called_once_with('test1234567', ['iw', 'he'])
+
+    def test_translation_fallback_when_ytdlp_also_fails(self, collector):
+        """Test that translation fallback is tried when both primary and yt-dlp fail"""
+        from youtube_transcript_api._errors import NoTranscriptFound
+
+        translated_result = {
+            'video_id': 'test1234567',
+            'video_url': 'https://www.youtube.com/watch?v=test1234567',
+            'transcript': 'translated transcript text',
+            'segments': [{'text': 'translated transcript text', 'start': 0.0, 'duration': 5.0}],
+            'language': 'iw',
+            'segment_count': 1,
+            'cached': False,
+            'source': 'translated-from-en'
+        }
+
+        with patch('youtube_transcript_collector.YouTubeTranscriptApi') as MockApi:
+            mock_instance = MockApi.return_value
+            mock_instance.fetch.side_effect = NoTranscriptFound('test1234567', ['iw'], [])
+
+            with patch.object(collector, '_get_transcript_via_ytdlp', return_value=None) as mock_ytdlp, \
+                 patch.object(collector, '_get_transcript_via_translation', return_value=translated_result) as mock_translate:
+                result = collector.get_transcript(
+                    "https://www.youtube.com/watch?v=test1234567",
+                    languages=['iw', 'he']
+                )
+
+                assert result is not None
+                assert result['transcript'] == 'translated transcript text'
+                assert result['source'] == 'translated-from-en'
+                mock_ytdlp.assert_called_once()
+                mock_translate.assert_called_once_with('test1234567', ['iw', 'he'])
+
+    def test_all_fallbacks_fail_returns_none(self, collector):
+        """Test that None is returned when all methods fail"""
+        from youtube_transcript_api._errors import NoTranscriptFound
+
+        with patch('youtube_transcript_collector.YouTubeTranscriptApi') as MockApi:
+            mock_instance = MockApi.return_value
+            mock_instance.fetch.side_effect = NoTranscriptFound('test1234567', ['iw'], [])
+
+            with patch.object(collector, '_get_transcript_via_ytdlp', return_value=None), \
+                 patch.object(collector, '_get_transcript_via_translation', return_value=None):
+                result = collector.get_transcript(
+                    "https://www.youtube.com/watch?v=test1234567",
+                    languages=['iw', 'he']
+                )
+
+                assert result is None
+
+    def test_ytdlp_not_called_on_success(self, collector):
+        """Test that yt-dlp is not called when primary API succeeds"""
+        sample_data = [{'text': 'primary text', 'start': 0.0, 'duration': 1.0}]
+        mock_transcript_data = MockTranscriptData(sample_data)
+
+        with patch('youtube_transcript_collector.YouTubeTranscriptApi') as MockApi:
+            mock_instance = MockApi.return_value
+            mock_instance.fetch.return_value = mock_transcript_data
+
+            with patch.object(collector, '_get_transcript_via_ytdlp') as mock_ytdlp:
+                result = collector.get_transcript(
+                    "https://www.youtube.com/watch?v=test1234567",
+                    languages=['iw']
+                )
+
+                assert result is not None
+                assert result['source'] == 'youtube-transcript-api'
+                mock_ytdlp.assert_not_called()
+
+    def test_ytdlp_not_called_on_transcripts_disabled(self, collector):
+        """Test that yt-dlp is NOT tried when transcripts are explicitly disabled"""
+        from youtube_transcript_api._errors import TranscriptsDisabled
+
+        with patch('youtube_transcript_collector.YouTubeTranscriptApi') as MockApi:
+            mock_instance = MockApi.return_value
+            mock_instance.fetch.side_effect = TranscriptsDisabled('test1234567')
+
+            with patch.object(collector, '_get_transcript_via_ytdlp') as mock_ytdlp:
+                result = collector.get_transcript(
+                    "https://www.youtube.com/watch?v=test1234567",
+                    languages=['iw']
+                )
+
+                assert result is None
+                mock_ytdlp.assert_not_called()
+
+    def test_ytdlp_not_called_on_video_unavailable(self, collector):
+        """Test that yt-dlp is NOT tried when video is unavailable"""
+        from youtube_transcript_api._errors import VideoUnavailable
+
+        with patch('youtube_transcript_collector.YouTubeTranscriptApi') as MockApi:
+            mock_instance = MockApi.return_value
+            mock_instance.fetch.side_effect = VideoUnavailable('test1234567')
+
+            with patch.object(collector, '_get_transcript_via_ytdlp') as mock_ytdlp:
+                result = collector.get_transcript(
+                    "https://www.youtube.com/watch?v=test1234567",
+                    languages=['iw']
+                )
+
+                assert result is None
+                mock_ytdlp.assert_not_called()
+
+    def test_fallback_result_gets_cached(self, tmp_path):
+        """Test that results from fallback methods are cached in database"""
+        from youtube_transcript_api._errors import NoTranscriptFound
+        from database import Database
+
+        db = Database(str(tmp_path / "test_fallback_cache.db"))
+        collector = YouTubeTranscriptCollector(database=db, rate_limit_seconds=0)
+
+        ytdlp_result = {
+            'video_id': 'ytdlpcache1',
+            'video_url': 'https://www.youtube.com/watch?v=ytdlpcache1',
+            'transcript': 'yt-dlp cached text',
+            'segments': [],
+            'language': 'iw',
+            'segment_count': 1,
+            'cached': False,
+            'source': 'yt-dlp-auto'
+        }
+
+        with patch('youtube_transcript_collector.YouTubeTranscriptApi') as MockApi:
+            mock_instance = MockApi.return_value
+            mock_instance.fetch.side_effect = NoTranscriptFound('ytdlpcache1', ['iw'], [])
+
+            with patch.object(collector, '_get_transcript_via_ytdlp', return_value=ytdlp_result):
+                result = collector.get_transcript(
+                    "https://www.youtube.com/watch?v=ytdlpcache1",
+                    languages=['iw']
+                )
+
+                assert result is not None
+
+                # Verify it was cached
+                episode = db.get_episode(video_id='ytdlpcache1')
+                assert episode is not None
+                assert episode['transcript'] == 'yt-dlp cached text'
+
+
+class TestYtDlpDirectMethod:
+    """Test the _get_transcript_via_ytdlp method directly"""
+
+    @pytest.fixture
+    def collector(self):
+        return YouTubeTranscriptCollector(rate_limit_seconds=0)
+
+    def test_ytdlp_returns_none_when_not_installed(self, collector):
+        """Test graceful handling when yt-dlp is not installed"""
+        with patch.dict('sys.modules', {'yt_dlp': None}):
+            with patch('builtins.__import__', side_effect=ImportError("No module named 'yt_dlp'")):
+                result = collector._get_transcript_via_ytdlp('test1234567', ['iw'])
+                assert result is None
+
+    def test_ytdlp_returns_none_on_exception(self, collector):
+        """Test graceful handling when yt-dlp throws an exception"""
+        with patch('yt_dlp.YoutubeDL') as MockYDL:
+            mock_instance = MockYDL.return_value.__enter__ = Mock(side_effect=Exception("yt-dlp error"))
+            result = collector._get_transcript_via_ytdlp('test1234567', ['iw'])
+            assert result is None
+
+
+class TestTranslationFallback:
+    """Test the translation fallback method"""
+
+    @pytest.fixture
+    def collector(self):
+        return YouTubeTranscriptCollector(rate_limit_seconds=0)
+
+    def test_translation_returns_none_when_no_translatable_transcript(self, collector):
+        """Test that translation returns None when no transcript is translatable"""
+        with patch('youtube_transcript_collector.YouTubeTranscriptApi') as MockApi:
+            mock_instance = MockApi.return_value
+            mock_transcript = Mock()
+            mock_transcript.is_translatable = False
+            mock_instance.list.return_value = [mock_transcript]
+
+            result = collector._get_transcript_via_translation('test1234567', ['iw'])
+            assert result is None
+
+    def test_translation_returns_translated_transcript(self, collector):
+        """Test successful translation from English to Hebrew"""
+        sample_data = [
+            {'text': 'translated text', 'start': 0.0, 'duration': 2.0}
+        ]
+        mock_translated_data = MockTranscriptData(sample_data)
+
+        with patch('youtube_transcript_collector.YouTubeTranscriptApi') as MockApi:
+            mock_instance = MockApi.return_value
+
+            mock_transcript = Mock()
+            mock_transcript.is_translatable = True
+            mock_transcript.language_code = 'en'
+            mock_translated = Mock()
+            mock_translated.fetch.return_value = mock_translated_data
+            mock_transcript.translate.return_value = mock_translated
+
+            mock_instance.list.return_value = [mock_transcript]
+
+            result = collector._get_transcript_via_translation('test1234567', ['iw'])
+
+            assert result is not None
+            assert result['transcript'] == 'translated text'
+            assert result['language'] == 'iw'
+            assert 'translated-from-en' in result['source']
+            mock_transcript.translate.assert_called_with('iw')
+
+    def test_translation_returns_none_on_api_error(self, collector):
+        """Test that translation returns None when API list fails"""
+        with patch('youtube_transcript_collector.YouTubeTranscriptApi') as MockApi:
+            mock_instance = MockApi.return_value
+            mock_instance.list.side_effect = Exception("API Error")
+
+            result = collector._get_transcript_via_translation('test1234567', ['iw'])
+            assert result is None
+
+
+class TestDefaultLanguageOrder:
+    """Test that default language order is iw, he, en"""
+
+    def test_get_transcript_default_languages(self):
+        """Test that get_transcript defaults to ['iw', 'he', 'en']"""
+        import inspect
+        sig = inspect.signature(YouTubeTranscriptCollector.get_transcript)
+        default_languages = sig.parameters['languages'].default
+        assert default_languages == ['iw', 'he', 'en']
+
+    def test_get_transcripts_batch_default_languages(self):
+        """Test that get_transcripts_batch defaults to ['iw', 'he', 'en']"""
+        import inspect
+        sig = inspect.signature(YouTubeTranscriptCollector.get_transcripts_batch)
+        default_languages = sig.parameters['languages'].default
+        assert default_languages == ['iw', 'he', 'en']
+
+    def test_get_transcript_auto_language_order(self):
+        """Test that get_transcript_auto tries iw before he"""
+        collector = YouTubeTranscriptCollector(rate_limit_seconds=0)
+        sample_data = [{'text': 'test', 'start': 0.0, 'duration': 1.0}]
+        mock_transcript_data = MockTranscriptData(sample_data)
+
+        call_languages = []
+
+        with patch('youtube_transcript_collector.YouTubeTranscriptApi') as MockApi:
+            mock_instance = MockApi.return_value
+
+            def track_fetch(video_id, languages=None):
+                call_languages.append(languages)
+                from youtube_transcript_api._errors import NoTranscriptFound
+                if languages == ['iw']:
+                    return mock_transcript_data
+                raise NoTranscriptFound(video_id, languages, [])
+
+            mock_instance.fetch.side_effect = track_fetch
+
+            result = collector.get_transcript_auto("https://www.youtube.com/watch?v=test1234567")
+
+            # iw should be tried before he
+            assert call_languages[0] == ['iw']
+
+
 if __name__ == "__main__":
     # Run tests if script is executed directly
     pytest.main([__file__, "-v"])

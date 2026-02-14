@@ -1,4 +1,4 @@
-youtube-transcript-api>=1.0.0
+youtube-transcript-api>=1.2.3
 openai==1.54.4
 python-dotenv==1.0.0
 google-api-python-client==2.108.0
