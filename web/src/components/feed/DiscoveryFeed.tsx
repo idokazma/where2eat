@@ -1,7 +1,7 @@
 'use client';
 
-import { useMemo } from 'react';
-import { UtensilsCrossed } from 'lucide-react';
+import { useMemo, useRef, useEffect, useCallback } from 'react';
+import { UtensilsCrossed, Loader2 } from 'lucide-react';
 import { Restaurant, getCoordinates } from '@/types/restaurant';
 import { RestaurantCardNew } from '@/components/restaurant/RestaurantCardNew';
 import { SectionHeader } from '@/components/ui/SectionHeader';
@@ -12,6 +12,9 @@ interface DiscoveryFeedProps {
   onRestaurantClick?: (restaurant: Restaurant) => void;
   showDistances?: boolean;
   userCoords?: { lat: number; lng: number } | null;
+  hasMore?: boolean;
+  isLoadingMore?: boolean;
+  onLoadMore?: () => void;
   className?: string;
 }
 
@@ -40,8 +43,36 @@ export function DiscoveryFeed({
   onRestaurantClick,
   showDistances = false,
   userCoords,
+  hasMore = false,
+  isLoadingMore = false,
+  onLoadMore,
   className = '',
 }: DiscoveryFeedProps) {
+  const sentinelRef = useRef<HTMLDivElement>(null);
+
+  // Infinite scroll: observe sentinel element
+  const handleIntersection = useCallback(
+    (entries: IntersectionObserverEntry[]) => {
+      const [entry] = entries;
+      if (entry.isIntersecting && hasMore && !isLoadingMore && onLoadMore) {
+        onLoadMore();
+      }
+    },
+    [hasMore, isLoadingMore, onLoadMore]
+  );
+
+  useEffect(() => {
+    const sentinel = sentinelRef.current;
+    if (!sentinel) return;
+
+    const observer = new IntersectionObserver(handleIntersection, {
+      rootMargin: '200px',
+    });
+    observer.observe(sentinel);
+
+    return () => observer.disconnect();
+  }, [handleIntersection]);
+
   // Sort restaurants by distance when "Near Me" is active
   const sortedRestaurants = useMemo(() => {
     if (!showDistances || !userCoords) return restaurants;
@@ -120,6 +151,16 @@ export function DiscoveryFeed({
             </div>
           );
         })}
+
+        {/* Loading indicator */}
+        {isLoadingMore && (
+          <div className="flex justify-center py-6">
+            <Loader2 className="w-6 h-6 text-[var(--color-ink-muted)] animate-spin" />
+          </div>
+        )}
+
+        {/* Sentinel element for infinite scroll */}
+        <div ref={sentinelRef} className="h-1" />
       </div>
     </section>
   );
