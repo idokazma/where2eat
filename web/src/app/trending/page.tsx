@@ -49,13 +49,13 @@ export default function TrendingPage() {
     }
   };
 
-  // Filter restaurants by analysis_date based on selected time period
+  // Filter restaurants by episode date based on selected time period
   const trendingRestaurants = useMemo(() => {
     const threshold = getDateThreshold(timePeriod);
     const filtered = restaurants.filter((r) => {
-      const analysisDate = r.episode_info?.analysis_date;
-      if (!analysisDate) return true; // Include restaurants without dates (don't hide data)
-      return new Date(analysisDate) >= threshold;
+      const episodeDate = r.episode_info?.published_at || r.episode_info?.analysis_date;
+      if (!episodeDate) return true; // Include restaurants without dates (don't hide data)
+      return new Date(episodeDate) >= threshold;
     });
     return filtered
       .sort((a, b) => (b.rating?.google_rating ?? 0) - (a.rating?.google_rating ?? 0))
