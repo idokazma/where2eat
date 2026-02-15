@@ -48,8 +48,8 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
     return favorites.includes(restaurantId)
   }
 
-  const favoriteRestaurants = allRestaurants.filter(restaurant => 
-    isFavorite(restaurant.name_hebrew)
+  const favoriteRestaurants = allRestaurants.filter(restaurant =>
+    isFavorite(restaurant.google_places?.place_id || restaurant.name_hebrew)
   )
 
   const setAllRestaurants = useCallback((restaurants: Restaurant[]) => {

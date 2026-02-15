@@ -353,7 +353,7 @@ export default function RestaurantDetailPage() {
                       הוזכר בפודקאסט
                     </p>
                     <p className="text-xs text-[var(--color-ink-muted)]">
-                      {new Date(restaurant.episode_info.analysis_date).toLocaleDateString('he-IL')}
+                      {new Date(restaurant.episode_info.published_at || restaurant.episode_info.analysis_date).toLocaleDateString('he-IL')}
                       {timeLabel && (
                         <span className="mr-2 text-[var(--color-gold)]">
                           צפה מ-{timeLabel}

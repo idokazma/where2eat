@@ -494,7 +494,8 @@ class BackendService:
         language: str = 'he',
         save_to_db: bool = True,
         enrich_with_google: bool = False,
-        progress_callback: Callable[[str, float], None] = None
+        progress_callback: Callable[[str, float], None] = None,
+        published_at: str = None
     ) -> Dict:
         """Process a single YouTube video end-to-end.
 
@@ -628,7 +629,8 @@ class BackendService:
                     transcript=transcript_result.get('transcript'),
                     food_trends=analysis_result.get('food_trends', []),
                     episode_summary=analysis_result.get('episode_summary'),
-                    analysis_date=datetime.now().isoformat()
+                    analysis_date=datetime.now().isoformat(),
+                    published_at=published_at
                 )
                 result['episode_id'] = episode_id
 

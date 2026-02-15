@@ -4,7 +4,9 @@ import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { PageLayout } from '@/components/layout';
 import { endpoints } from '@/lib/config';
-import { MapPin, Loader2 } from 'lucide-react';
+import { MapPin, Loader2, Heart } from 'lucide-react';
+import { useFavorites } from '@/contexts/favorites-context';
+import { Button } from '@/components/ui/button';
 
 // Dynamic import to avoid SSR issues with Leaflet (uses window)
 const MapView = dynamic(() => import('@/components/map/MapView'), {
@@ -20,6 +22,8 @@ export default function MapPage() {
   const [restaurants, setRestaurants] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showSavedOnly, setShowSavedOnly] = useState(false);
+  const { favorites, setAllRestaurants } = useFavorites();
 
   useEffect(() => {
     fetch(endpoints.restaurants.list())
@@ -30,7 +34,9 @@ export default function MapPage() {
         return res.json();
       })
       .then(data => {
-        setRestaurants(data.restaurants || []);
+        const allRestaurants = data.restaurants || [];
+        setRestaurants(allRestaurants);
+        setAllRestaurants(allRestaurants);
         setLoading(false);
       })
       .catch(err => {
@@ -38,11 +44,19 @@ export default function MapPage() {
         setError('שגיאה בטעינת המסעדות');
         setLoading(false);
       });
-  }, []);
+  }, [setAllRestaurants]);
 
   const mappableRestaurants = restaurants.filter(
     (r: any) => r.location?.coordinates?.latitude && r.location?.coordinates?.longitude
   );
+
+  const displayedRestaurants = showSavedOnly
+    ? mappableRestaurants.filter((r: any) =>
+        favorites.includes(r.google_places?.place_id || r.name_hebrew)
+      )
+    : mappableRestaurants;
+
+  const favoriteIds = new Set(favorites);
 
   return (
     <PageLayout title="מפה" showHeader showBottomNav>
@@ -66,8 +80,34 @@ export default function MapPage() {
           </p>
         </div>
       ) : (
-        <div className="h-[calc(100vh-140px)]">
-          <MapView restaurants={mappableRestaurants} />
+        <div className="h-[calc(100vh-140px)] relative">
+          <div className="absolute top-3 right-3 z-[1000]">
+            <Button
+              onClick={() => setShowSavedOnly(!showSavedOnly)}
+              variant={showSavedOnly ? 'default' : 'outline'}
+              size="sm"
+              className={showSavedOnly
+                ? 'bg-red-500 hover:bg-red-600 text-white border-red-500 shadow-md'
+                : 'bg-white hover:bg-gray-100 text-[var(--color-ink)] border-gray-300 shadow-md'
+              }
+            >
+              <Heart className={`w-4 h-4 ml-1 ${showSavedOnly ? 'fill-current' : ''}`} />
+              {showSavedOnly ? 'שמורים בלבד' : 'שמורים'}
+            </Button>
+          </div>
+          {showSavedOnly && displayedRestaurants.length === 0 ? (
+            <div className="flex flex-col items-center justify-center h-full text-center px-4">
+              <Heart className="w-10 h-10 text-[var(--color-ink-muted)] mb-4" />
+              <h2 className="text-xl font-bold text-[var(--color-ink)] mb-2">
+                אין מסעדות שמורות עם מיקום
+              </h2>
+              <p className="text-[var(--color-ink-muted)] max-w-xs">
+                שמור מסעדות כדי לראות אותן על המפה
+              </p>
+            </div>
+          ) : (
+            <MapView restaurants={displayedRestaurants} favoriteIds={favoriteIds} />
+          )}
         </div>
       )}
     </PageLayout>

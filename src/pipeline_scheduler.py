@@ -297,7 +297,11 @@ class PipelineScheduler:
 
         try:
             backend = self._get_backend_service()
-            result = backend.process_video(video_url=video_url, enrich_with_google=True)
+            result = backend.process_video(
+                video_url=video_url,
+                enrich_with_google=True,
+                published_at=item.get('published_at'),
+            )
         except Exception as e:
             error_msg = f'BackendService error: {e}'
             logger.error("Error processing video %s: %s", video_id, e)
