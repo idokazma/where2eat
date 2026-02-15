@@ -707,7 +707,7 @@ class BackendService:
                                     contact_website=restaurant_data.get('contact_website') or contact.get('website'),
                                     business_news=restaurant_data.get('business_news'),
                                     mention_context=restaurant_data.get('mention_context'),
-                                    mention_timestamp=restaurant_data.get('mention_timestamp'),
+                                    mention_timestamp=restaurant_data.get('mention_timestamp') or restaurant_data.get('mention_timestamp_seconds'),
                                     google_place_id=restaurant_data.get('google_place_id') or gp.get('place_id'),
                                     google_name=gp.get('google_name'),
                                     google_url=gp.get('google_url'),

@@ -611,50 +611,195 @@ def start_pipeline_scheduler():
 _pipeline_scheduler = None
 
 
-@asynccontextmanager
 def backfill_mention_timestamps():
-    """Backfill mention_timestamp in SQLite from JSON files (one-time migration)."""
+    """Backfill mention_timestamp in SQLite from stored transcripts.
+
+    Matches each restaurant's mention_context against the episode transcript
+    segments to find the approximate timestamp where the restaurant is mentioned.
+    Also backfills published_at on episodes from YouTube metadata.
+    """
     try:
-        from routers.restaurants import _get_data_directory, _get_sqlite_db
+        from routers.restaurants import _get_sqlite_db
         import json as _json
-        import sqlite3
+        import re
 
         db = _get_sqlite_db()
         if not db:
             return
 
-        data_dir = _get_data_directory() / "restaurants"
-        if not data_dir.exists():
-            return
-
-        backfilled = 0
         with db.get_connection() as conn:
             # Check if any timestamps are already set
             cursor = conn.execute("SELECT COUNT(*) FROM restaurants WHERE mention_timestamp IS NOT NULL")
             if cursor.fetchone()[0] > 0:
-                return  # Already have timestamps, skip migration
+                print("[MIGRATION] Timestamps already exist, skipping backfill")
+                return
 
-            for json_file in data_dir.glob("*.json"):
-                try:
-                    with open(json_file, "r", encoding="utf-8") as f:
-                        data = _json.load(f)
-                    ts = data.get("mention_timestamp_seconds") or data.get("mention_timestamp")
-                    name = data.get("name_hebrew")
-                    if ts and name:
-                        cursor = conn.execute(
-                            "UPDATE restaurants SET mention_timestamp = ? WHERE name_hebrew = ? AND mention_timestamp IS NULL",
-                            (ts, name),
-                        )
-                        backfilled += cursor.rowcount
-                except Exception:
-                    continue
+            # First try: backfill from JSON files
+            data_dir = None
+            try:
+                from routers.restaurants import _get_data_directory
+                data_dir = _get_data_directory() / "restaurants"
+            except Exception:
+                pass
+
+            backfilled = 0
+            if data_dir and data_dir.exists():
+                for json_file in data_dir.glob("*.json"):
+                    try:
+                        with open(json_file, "r", encoding="utf-8") as f:
+                            data = _json.load(f)
+                        ts = data.get("mention_timestamp_seconds") or data.get("mention_timestamp")
+                        name = data.get("name_hebrew")
+                        if ts and name:
+                            cursor = conn.execute(
+                                "UPDATE restaurants SET mention_timestamp = ? WHERE name_hebrew = ? AND mention_timestamp IS NULL",
+                                (ts, name),
+                            )
+                            backfilled += cursor.rowcount
+                    except Exception:
+                        continue
+
+            # Second approach: extract from transcript segments
+            # Transcripts are stored as timed text with [HH:MM:SS] markers or
+            # as raw text from youtube-transcript-api with segment timestamps
+            if backfilled == 0:
+                # Get all episodes with transcripts
+                episodes = conn.execute(
+                    "SELECT id, video_id, transcript FROM episodes WHERE transcript IS NOT NULL"
+                ).fetchall()
+
+                for ep_id, video_id, transcript in episodes:
+                    if not transcript:
+                        continue
+
+                    # Get restaurants for this episode that need timestamps
+                    restaurants = conn.execute(
+                        "SELECT id, name_hebrew, mention_context FROM restaurants WHERE episode_id = ? AND mention_timestamp IS NULL",
+                        (ep_id,),
+                    ).fetchall()
+
+                    if not restaurants:
+                        continue
+
+                    # Try to parse transcript as JSON segments (youtube-transcript-api format)
+                    segments = None
+                    try:
+                        parsed = _json.loads(transcript)
+                        if isinstance(parsed, list) and len(parsed) > 0 and 'start' in parsed[0]:
+                            segments = parsed
+                    except (ValueError, TypeError, KeyError):
+                        pass
+
+                    if not segments:
+                        continue
+
+                    for r_id, name_hebrew, mention_context in restaurants:
+                        if not mention_context:
+                            continue
+
+                        # Search for mention_context text in transcript segments
+                        context_words = mention_context[:50].split()[:5]
+                        search_text = " ".join(context_words)
+
+                        best_ts = None
+                        # Also search for the restaurant name directly
+                        for seg in segments:
+                            seg_text = seg.get('text', '')
+                            seg_start = seg.get('start', 0)
+
+                            if name_hebrew in seg_text:
+                                best_ts = seg_start
+                                break
+
+                        if best_ts is None:
+                            # Try matching context words
+                            for seg in segments:
+                                seg_text = seg.get('text', '')
+                                seg_start = seg.get('start', 0)
+                                matching = sum(1 for w in context_words if w in seg_text)
+                                if matching >= 3:
+                                    best_ts = seg_start
+                                    break
+
+                        if best_ts is not None:
+                            conn.execute(
+                                "UPDATE restaurants SET mention_timestamp = ? WHERE id = ?",
+                                (best_ts, r_id),
+                            )
+                            backfilled += 1
 
             conn.commit()
 
         if backfilled > 0:
             print(f"[MIGRATION] Backfilled mention_timestamp for {backfilled} restaurants")
+        else:
+            print("[MIGRATION] No timestamps could be backfilled (no source data found)")
     except Exception as e:
         print(f"[MIGRATION] mention_timestamp backfill failed: {e}")
+        import traceback
+        traceback.print_exc()
+
+
+def backfill_episode_published_at():
+    """Backfill published_at on episodes by scraping YouTube video pages."""
+    try:
+        from routers.restaurants import _get_sqlite_db
+        import urllib.request
+        import re
+        import time
+
+        db = _get_sqlite_db()
+        if not db:
+            return
+
+        with db.get_connection() as conn:
+            # Get episodes missing published_at
+            episodes = conn.execute(
+                "SELECT id, video_id FROM episodes WHERE published_at IS NULL OR published_at = ''"
+            ).fetchall()
+
+            if not episodes:
+                return
+
+            backfilled = 0
+            for ep_id, video_id in episodes:
+                try:
+                    url = f"https://www.youtube.com/watch?v={video_id}"
+                    req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+                    with urllib.request.urlopen(req, timeout=10) as resp:
+                        html = resp.read().decode("utf-8", errors="ignore")
+
+                    # Extract datePublished from JSON-LD embedded in the page
+                    match = re.search(r'"datePublished":"([^"]+)"', html)
+                    if not match:
+                        match = re.search(r'"uploadDate":"([^"]+)"', html)
+
+                    if match:
+                        published_at = match.group(1)[:10]  # Take YYYY-MM-DD
+                        conn.execute(
+                            "UPDATE episodes SET published_at = ? WHERE id = ?",
+                            (published_at, ep_id),
+                        )
+                        conn.execute(
+                            "UPDATE restaurants SET published_at = ? WHERE episode_id = ? AND (published_at IS NULL OR published_at = '')",
+                            (published_at, ep_id),
+                        )
+                        backfilled += 1
+                        print(f"[MIGRATION] {video_id}: published_at={published_at}")
+
+                    time.sleep(0.5)  # Rate limit
+                except Exception as e:
+                    print(f"[MIGRATION] Failed to fetch date for {video_id}: {e}")
+                    continue
+
+            conn.commit()
+
+        if backfilled > 0:
+            print(f"[MIGRATION] Backfilled published_at for {backfilled} episodes")
+        else:
+            print("[MIGRATION] Could not backfill published_at")
+    except Exception as e:
+        print(f"[MIGRATION] published_at backfill failed: {e}")
 
 
 async def lifespan(app: FastAPI):
@@ -676,8 +821,10 @@ async def lifespan(app: FastAPI):
             print(f"[STARTUP] Database init failed: {e}")
     # Startup: fetch default video
     await fetch_default_video_on_startup()
-    # Backfill mention_timestamp from JSON files
+    # Backfill mention_timestamp from transcripts/JSON
     backfill_mention_timestamps()
+    # Backfill published_at from YouTube metadata
+    backfill_episode_published_at()
     # Sync SQLite data to PostgreSQL
     sync_sqlite_to_postgres()
     # Seed admin user and subscriptions if empty
