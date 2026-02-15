@@ -186,19 +186,18 @@ def load_all_restaurants_json() -> List[dict]:
 # ============================================================================
 
 def load_all_restaurants_db(db: Session) -> List[dict]:
-    """Load all restaurants from SQLAlchemy database."""
-    try:
-        import sys
-        src_path = Path(__file__).parent.parent.parent / "src"
-        if str(src_path) not in sys.path:
-            sys.path.insert(0, str(src_path))
-        from repositories import RestaurantRepository
-        repo = RestaurantRepository(db)
-        restaurants = repo.get_all_with_episodes(limit=1000)
-        return [r.to_dict() for r in restaurants]
-    except Exception as e:
-        print(f"Warning: Failed to load from database: {e}")
-        return []
+    """Load all restaurants from SQLAlchemy database.
+
+    Raises on failure so the caller can fall back to SQLite/JSON.
+    """
+    import sys
+    src_path = Path(__file__).parent.parent.parent / "src"
+    if str(src_path) not in sys.path:
+        sys.path.insert(0, str(src_path))
+    from repositories import RestaurantRepository
+    repo = RestaurantRepository(db)
+    restaurants = repo.get_all_with_episodes(limit=1000)
+    return [r.to_dict() for r in restaurants]
 
 
 def search_restaurants_db(
@@ -211,32 +210,31 @@ def search_restaurants_db(
     limit: int = 20,
     offset: int = 0,
 ) -> dict:
-    """Search restaurants using SQLAlchemy."""
-    try:
-        import sys
-        src_path = Path(__file__).parent.parent.parent / "src"
-        if str(src_path) not in sys.path:
-            sys.path.insert(0, str(src_path))
-        from repositories import RestaurantRepository
-        repo = RestaurantRepository(db)
-        result = repo.search(
-            city=city,
-            cuisine=cuisine,
-            price_range=price_range,
-            status=status,
-            query=query,
-            limit=limit,
-            offset=offset,
-        )
-        return {
-            'restaurants': [r.to_dict() for r in result['restaurants']],
-            'total': result['total'],
-            'limit': result['limit'],
-            'offset': result['offset'],
-        }
-    except Exception as e:
-        print(f"Warning: Failed to search database: {e}")
-        return {'restaurants': [], 'total': 0, 'limit': limit, 'offset': offset}
+    """Search restaurants using SQLAlchemy.
+
+    Raises on failure so the caller can fall back to SQLite/JSON.
+    """
+    import sys
+    src_path = Path(__file__).parent.parent.parent / "src"
+    if str(src_path) not in sys.path:
+        sys.path.insert(0, str(src_path))
+    from repositories import RestaurantRepository
+    repo = RestaurantRepository(db)
+    result = repo.search(
+        city=city,
+        cuisine=cuisine,
+        price_range=price_range,
+        status=status,
+        query=query,
+        limit=limit,
+        offset=offset,
+    )
+    return {
+        'restaurants': [r.to_dict() for r in result['restaurants']],
+        'total': result['total'],
+        'limit': result['limit'],
+        'offset': result['offset'],
+    }
 
 
 # ============================================================================
