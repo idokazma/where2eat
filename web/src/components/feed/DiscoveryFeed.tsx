@@ -2,7 +2,7 @@
 
 import { useMemo } from 'react';
 import { UtensilsCrossed } from 'lucide-react';
-import { Restaurant } from '@/types/restaurant';
+import { Restaurant, getCoordinates } from '@/types/restaurant';
 import { RestaurantCardNew } from '@/components/restaurant/RestaurantCardNew';
 import { SectionHeader } from '@/components/ui/SectionHeader';
 import { getRestaurantImage } from '@/lib/images';
@@ -46,20 +46,22 @@ export function DiscoveryFeed({
   const sortedRestaurants = useMemo(() => {
     if (!showDistances || !userCoords) return restaurants;
     return [...restaurants].sort((a, b) => {
-      const distA = a.location?.coordinates
+      const coordsA = getCoordinates(a.location);
+      const distA = coordsA
         ? calculateDistance(
             userCoords.lat,
             userCoords.lng,
-            a.location.coordinates.latitude,
-            a.location.coordinates.longitude
+            coordsA.latitude,
+            coordsA.longitude
           )
         : Infinity;
-      const distB = b.location?.coordinates
+      const coordsB = getCoordinates(b.location);
+      const distB = coordsB
         ? calculateDistance(
             userCoords.lat,
             userCoords.lng,
-            b.location.coordinates.latitude,
-            b.location.coordinates.longitude
+            coordsB.latitude,
+            coordsB.longitude
           )
         : Infinity;
       return distA - distB;
@@ -93,16 +95,14 @@ export function DiscoveryFeed({
         {sortedRestaurants.map((restaurant, index) => {
           // Calculate distance if user coords available
           let distanceMeters: number | undefined;
-          if (showDistances && userCoords && restaurant.location?.coordinates) {
-            const { latitude, longitude } = restaurant.location.coordinates;
-            if (latitude && longitude) {
-              distanceMeters = calculateDistance(
-                userCoords.lat,
-                userCoords.lng,
-                latitude,
-                longitude
-              );
-            }
+          const coords = getCoordinates(restaurant.location);
+          if (showDistances && userCoords && coords) {
+            distanceMeters = calculateDistance(
+              userCoords.lat,
+              userCoords.lng,
+              coords.latitude,
+              coords.longitude
+            );
           }
 
           return (

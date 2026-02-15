@@ -14,6 +14,24 @@ export interface Location {
     latitude: number;
     longitude: number;
   };
+  // Railway API returns lat/lng directly on location
+  lat?: number;
+  lng?: number;
+}
+
+/**
+ * Extract latitude/longitude from a location object.
+ * Handles both formats: { coordinates: { latitude, longitude } } and { lat, lng }
+ */
+export function getCoordinates(location?: { coordinates?: { latitude: number; longitude: number }; lat?: number; lng?: number } | null): { latitude: number; longitude: number } | null {
+  if (!location) return null;
+  if (location.coordinates?.latitude && location.coordinates?.longitude) {
+    return location.coordinates;
+  }
+  if (location.lat && location.lng) {
+    return { latitude: location.lat, longitude: location.lng };
+  }
+  return null;
 }
 
 export interface ContactInfo {
