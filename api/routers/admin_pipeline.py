@@ -237,6 +237,24 @@ async def pipeline_stats(
         }
 
 
+@router.post(
+    "/retry-all-failed",
+    summary="Retry all failed videos",
+    description="Reset all failed videos back to queued status. Requires admin role.",
+)
+async def retry_all_failed(
+    user: dict = Depends(require_role(["admin", "super_admin"])),
+):
+    """Retry all failed videos."""
+    queue_manager = _get_queue_manager()
+    result = queue_manager.retry_all_failed()
+    return {
+        "success": True,
+        "message": f"Requeued {result['count']} failed videos",
+        "count": result["count"],
+    }
+
+
 @router.get(
     "/{queue_id}/detail",
     summary="Get video detail with transcript",

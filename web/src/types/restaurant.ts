@@ -33,6 +33,7 @@ export interface Restaurant {
   id?: string;
   name_hebrew: string;
   name_english?: string | null;
+  google_name?: string | null;
   location?: Location;
   cuisine_type?: string | null;
   status?: 'open' | 'closed' | 'new_opening' | 'closing_soon' | 'reopening' | null;
@@ -77,6 +78,8 @@ export interface GooglePlacesInfo {
   google_name?: string;
   google_url?: string;
   enriched_at?: string;
+  name_match_confidence?: number;
+  potential_wrong_match?: boolean;
 }
 
 export interface Rating {

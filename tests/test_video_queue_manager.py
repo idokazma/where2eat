@@ -480,5 +480,57 @@ class TestQueueActions:
         assert video is None
 
 
+class TestRetryAllFailed:
+    """Test bulk retry of all failed videos."""
+
+    def test_retry_all_failed_resets_failed_videos(self, db, manager):
+        """retry_all_failed should reset all failed videos to queued status."""
+        entry1 = manager.enqueue(video_id='fail1', video_url='url1')
+        entry2 = manager.enqueue(video_id='fail2', video_url='url2')
+        entry3 = manager.enqueue(video_id='ok1', video_url='url3')
+
+        # Exhaust retries for entry1 and entry2 to make them permanently failed
+        now = datetime.utcnow().isoformat()
+        with db.get_connection() as conn:
+            conn.execute(
+                "UPDATE video_queue SET status = 'failed', attempt_count = 3, "
+                "error_message = 'Some error', processing_completed_at = ? WHERE id = ?",
+                (now, entry1['id'])
+            )
+            conn.execute(
+                "UPDATE video_queue SET status = 'failed', attempt_count = 3, "
+                "error_message = 'Another error', processing_completed_at = ? WHERE id = ?",
+                (now, entry2['id'])
+            )
+
+        # Complete entry3
+        manager.mark_completed(entry3['id'], restaurants_found=2)
+
+        result = manager.retry_all_failed()
+
+        assert result['count'] == 2
+
+        v1 = manager.get_video(entry1['id'])
+        v2 = manager.get_video(entry2['id'])
+        v3 = manager.get_video(entry3['id'])
+
+        assert v1['status'] == 'queued'
+        assert v1['attempt_count'] == 0
+        assert v1['error_message'] is None
+
+        assert v2['status'] == 'queued'
+        assert v2['attempt_count'] == 0
+
+        # Completed should be unchanged
+        assert v3['status'] == 'completed'
+
+    def test_retry_all_failed_returns_zero_when_no_failures(self, db, manager):
+        """retry_all_failed should return count=0 when no failed videos exist."""
+        manager.enqueue(video_id='ok1', video_url='url1')
+
+        result = manager.retry_all_failed()
+        assert result['count'] == 0
+
+
 if __name__ == '__main__':
     pytest.main([__file__, '-v'])

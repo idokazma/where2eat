@@ -629,6 +629,9 @@ export const pipelineApi = {
   async remove(id: string): Promise<void> {
     return apiFetch(`/api/admin/pipeline/${id}`, { method: 'DELETE' });
   },
+  async retryAllFailed(): Promise<{ success: boolean; message: string; count: number }> {
+    return apiFetch('/api/admin/pipeline/retry-all-failed', { method: 'POST' });
+  },
   async getVideoDetail(queueId: string): Promise<VideoDetail> {
     return apiFetch<VideoDetail>(`/api/admin/pipeline/${queueId}/detail`);
   },

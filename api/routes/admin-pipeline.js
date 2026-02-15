@@ -363,6 +363,48 @@ with db.get_connection() as conn:
 });
 
 /**
+ * POST /api/admin/pipeline/retry-all-failed
+ * Retry all failed videos
+ * Requires: admin role or higher
+ */
+router.post('/retry-all-failed', requireRole(['admin', 'super_admin']), async (req, res) => {
+  try {
+    const python = spawn('python', ['-c', `
+import sys
+import json
+sys.path.insert(0, '${path.join(__dirname, '..', '..')}')
+from src.database import Database
+from src.video_queue_manager import VideoQueueManager
+db = Database()
+mgr = VideoQueueManager(db)
+result = mgr.retry_all_failed()
+print(json.dumps({'success': True, 'message': f"Requeued {result['count']} failed videos", 'count': result['count']}))
+    `]);
+
+    let stdout = '';
+    let stderr = '';
+    python.stdout.on('data', (data) => stdout += data);
+    python.stderr.on('data', (data) => stderr += data);
+    python.on('close', (code) => {
+      if (code === 0) {
+        try {
+          res.json(JSON.parse(stdout));
+        } catch (err) {
+          console.error('Failed to parse retry-all output:', stdout);
+          res.status(500).json({ error: 'Failed to parse response' });
+        }
+      } else {
+        console.error('Failed to retry all failed videos:', stderr);
+        res.status(500).json({ error: 'Failed to retry all failed videos' });
+      }
+    });
+  } catch (error) {
+    console.error('Error retrying all failed videos:', error);
+    res.status(500).json({ error: 'Failed to retry all failed videos' });
+  }
+});
+
+/**
  * POST /api/admin/pipeline/:id/retry
  * Retry a failed video
  * Requires: admin role or higher
