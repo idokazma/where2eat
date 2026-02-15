@@ -1,0 +1,98 @@
+{
+  "name_hebrew": "שוק",
+  "name_english": "Shvk",
+  "location": {
+    "city": "לא צוין",
+    "neighborhood": "לא צוין",
+    "address": "נועם 3, תל אביב-יפו, ישראל",
+    "region": "לא צוין",
+    "coordinates": {
+      "latitude": 32.0518894,
+      "longitude": 34.7575296
+    },
+    "full_address": "נועם 3, תל אביב-יפו, ישראל"
+  },
+  "cuisine_type": "לא צוין",
+  "status": null,
+  "price_range": "not_mentioned",
+  "host_opinion": "neutral",
+  "host_comments": "לא צוין",
+  "menu_items": [],
+  "special_features": [],
+  "contact_info": {
+    "phone": "052-632-3233",
+    "website": "https://maps.google.com/?cid=2945684852655731250",
+    "social_media": "לא צוין"
+  },
+  "business_news": null,
+  "mention_context": "הוזכר בהקשר: שוק",
+  "episode_info": {
+    "video_id": "6jvskRWvQkg",
+    "video_url": "https://www.youtube.com/watch?v=6jvskRWvQkg",
+    "language": "he",
+    "analysis_date": "2026-01-01",
+    "total_restaurants_found": 25,
+    "processing_method": "claude_chunked"
+  },
+  "food_trends": [
+    "מסעדות בלא צוין",
+    "לא צוין פופולרי"
+  ],
+  "episode_summary": "ניתוח מבוסס Claude של 25 מסעדות מהסרטון 6jvskRWvQkg",
+  "google_places": {
+    "place_id": "ChIJQbJ4cvdNHRURMjLLPsQs4Sg",
+    "google_name": "הגפן - חצר יין מקומי.",
+    "google_url": "https://maps.google.com/?cid=2945684852655731250",
+    "enriched_at": "2026-02-15 09:10:02",
+    "formatted_address": "נועם 3, תל אביב-יפו, ישראל"
+  },
+  "rating": {
+    "google_rating": 4.1,
+    "total_reviews": 312,
+    "price_level": null
+  },
+  "photos": [
+    {
+      "photo_reference": "ATCDNfVhT4OZ9zhaSri7lQFk0Eed7JQimB227Bcrkr2XxhXUMIfTZLGWZj8ev2wr2f3v47bC2xOJawgx65tiBFZJp5lBSWirtiDd01UrsYdcUX94Q5R9BxOizVHe1cN0sb4xs1c6Ddt_e4Zjhq873t80tfr1ZNPwntN1915M528K4MxCDXF6pK1irkIeZ5IT6XFAVuZRNDEz8joHqMa5waHgD4lvR4e6nz_GDtGhCuKpu1Gc0YQCDo7oEUCe41FNIawWDbgPSxZPjqSOCCmLLBWzIBA465MT--DQ1euW9H2E7PuQ_A",
+      "width": 3024,
+      "height": 4032
+    },
+    {
+      "photo_reference": "ATCDNfWkVnK8qM2FMUmjdTOtRMOEfFRaMJoLwiLzX_3jD3Vzb9ywhnnzLMdFRIJQ3tLxH74LRtJIoOJstndRgU8G5aZQdwPu-J52Dfxp4fBixnq5HlcN8YdtT0UuB1i8gTYjDz_2atbrbwJYncJImHIrWwDpb9GlFd8ETFhYSqsh8GN7Bqh-oFluChIcip6s8xnMU1X6_Kkl7hDx7EKqVLZg71hXpgWXj_bdVT_PHaFA614OjxVMIlz2Me5-0FmxO0na50ADi96-Y7crvJs75PNYqVuN6rPMkT5GlPVhlKI9PqnCsw",
+      "width": 2048,
+      "height": 2048
+    },
+    {
+      "photo_reference": "ATCDNfWPVW977Hq3axklOgtJZcO4ZbVoZY29JEUB8qH5CHT7Gf-GglIONFNxExsacc1KNqC7yBEmmzw4qIS_fX-vRc1HlRhliuqIjfz1qVd5LbV9GXhxwMb9xwEDGQkLD8eSVXKFWre227zCsytaEpNe6R2ZCVoVP8QvdJ0-UZhkwt1-aUCZFPao0QIZy5jGMbsvTvHJ-enXO4iwPyj_yyVLXMC1CF_Id2pQnUukz8jbkkuySEd2C8udOir8QwzCc96nHR6t1zpgOC68hzvRTOXt2CG7YDsBoTgH0KsLihEEe99vLg",
+      "width": 1125,
+      "height": 633
+    },
+    {
+      "photo_reference": "ATCDNfX9Qkeg8tWbC5rICrZKuFXH832dGckriRWfUHSKXC24nz1edr9nvQwUEFnYg4dmxG267pSukQEf3X0pSuk_-EApLHtOdeL-Epu9hfOh47U0e8ubMDpXaZRO-nsIbhdxSW3p1UrO7Sr541uvBJdZmdRNVTlJ-WZi66TJz7MBIQTXwczX15LWKiSgBO86dhDNsvTnGdGzSj8qTASFQda3s_fNSrkJC1ayTGydVr1rin4wNSevsrenRV-tavcpbTrPWtx0L3hlsfp-vw9aZRcwjI3Ydtw3npET5O2FWi9JAdXq3Q",
+      "width": 3201,
+      "height": 4800
+    },
+    {
+      "photo_reference": "ATCDNfXvUKmH3JgCjLwAZrHqBcMPIpv9kQ7TKJB2625a4B-oVzHNAA684j6f7ONp_PRvYW0qMsgFAWOF5Xp2iBHb0pPD_L5SfhKB6xw9oDpcYR4BRJjqqBDhG3UuqgV59nevcgbYzMJd0PSRDk4FDsW-8VVFsI5Alk62R-87FQ42bBwwXEoVaVIjFNa5MboXWXm9uDJGVOs9irRbfE8YLlztE7op1hJh3ik1e8nL_Y-axu-ryPIvgCynpabo1OOWvKjJRW2WNyAbxpenxJAo1gmMpHJ_bteDMVwC8N_ghr9m7NY5fQ",
+      "width": 3201,
+      "height": 4800
+    }
+  ],
+  "business_hours": {
+    "open_now": false,
+    "weekday_text": [
+      "יום ראשון: 18:00–0:00",
+      "יום שני: 18:00–0:00",
+      "יום שלישי: 18:00–0:00",
+      "יום רביעי: 18:00–0:00",
+      "יום חמישי: 18:00–0:00",
+      "יום שישי: 12:00–0:00",
+      "יום שבת: 12:00–0:00"
+    ]
+  },
+  "google_places_enriched": true,
+  "google_places_attempted": true,
+  "id": "78b2e36742ef",
+  "mention_timestamp_seconds": 2455,
+  "engaging_quote": "מצאתי להרפתקה והיא הייתה באמת חתיכת הרפתקה עם כמה שורות לסכם את זה ובעצם הייתה לך מסעדה א שניעלת בשם שוק ומאז יש לך את המסעדה שלך שנקראת הגפן ובמלחמה בכלל עם כל אנטישמית החלטת להפוך"
+}

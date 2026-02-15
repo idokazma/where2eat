@@ -13,9 +13,9 @@
     "full_address": "HaShuk St 34, Afula, Israel"
   },
   "cuisine_type": "לא צוין",
-  "status": "לא צוין",
-  "price_range": "לא צוין",
-  "host_opinion": "לא צוין",
+  "status": null,
+  "price_range": "not_mentioned",
+  "host_opinion": "neutral",
   "host_comments": "לא צוין",
   "menu_items": [],
   "special_features": [],
@@ -53,19 +53,16 @@
   "photos": [
     {
       "photo_reference": "AZLasHpykyNClqTpwfGZKDHVv5R0xztmET-Mzgrhf-IhdND68jeAmnAPBbJU7mylxzisAGkfviaaC1tT9gWDPb39WAXGslwxK5rpzZJlgGARhXRoFl77FM0wBml4EKSV57tfV4FpMj62kQA6C_bCbSXh0xjmIx7YE3YZaJsM7XXYqizybUFEoL0wxWtD-dsCwqNCpHVmVdNA0UTzSbMQlrlI54awxhaAybjYv2ZC3oR5k57dvoKLHu8Tw8LjomeEG1Df34FbfHBII1KxD4oBqHHdCGokVh6dBuOJxDw9q_WUcmTHe27jZ2Sl5lhnajppk_dNhdQ61jwbte3BnHWo_SgMKKIUoJswnmlLoHLLrpj7gie9Ma-AB_M4Xg5tXyprmi8GR41HcTfLaIezumlgYJ7J1xLv5l3gcPSJ-iwgUu6ki__Z-w",
-      "photo_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AZLasHpykyNClqTpwfGZKDHVv5R0xztmET-Mzgrhf-IhdND68jeAmnAPBbJU7mylxzisAGkfviaaC1tT9gWDPb39WAXGslwxK5rpzZJlgGARhXRoFl77FM0wBml4EKSV57tfV4FpMj62kQA6C_bCbSXh0xjmIx7YE3YZaJsM7XXYqizybUFEoL0wxWtD-dsCwqNCpHVmVdNA0UTzSbMQlrlI54awxhaAybjYv2ZC3oR5k57dvoKLHu8Tw8LjomeEG1Df34FbfHBII1KxD4oBqHHdCGokVh6dBuOJxDw9q_WUcmTHe27jZ2Sl5lhnajppk_dNhdQ61jwbte3BnHWo_SgMKKIUoJswnmlLoHLLrpj7gie9Ma-AB_M4Xg5tXyprmi8GR41HcTfLaIezumlgYJ7J1xLv5l3gcPSJ-iwgUu6ki__Z-w&key=AIzaSyCo7o6jQghstjLaPIdPIJUB7pL8j_e8lcQ",
       "width": 4032,
       "height": 3024
     },
     {
       "photo_reference": "AZLasHptLyRtRahaGZW88yZyJxeDca39UAiduMszvIYZgFJpTfIgAOBCrV7PshY16sDj8I8Y8CmSl6rTid1fVA3OvJSRFCZ3C6ZKdVzTlwrSUsMA4ntef6iF9-JRqvXmWG38Vq4hOkAQvqY9DpuhPsYAoE74CUJS6IdrL7XebXCWySyAOOVCO07iBdMQQCZppAPlelXImWAkZj_4wOSwF8Qrv7nUUeDTgC799vjGzV4dktPVXKlt5Apgg6_zm2QWKiDMYzcofn8E6iNfBZTpGrI7ilm49a-6cdiVEMvdyMLm176wNFMp0mFbO2L0QECHRdc2gbAYwzWbPVUFjfuBWR3_27FyONl1UKzesRzr3AonpV0h3Z9Cj6y0-si7nzDRBAn-topSosDa1E717pl-8qGJEop80ReV4mdFmt3jF4b_BC1oMQ",
-      "photo_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AZLasHptLyRtRahaGZW88yZyJxeDca39UAiduMszvIYZgFJpTfIgAOBCrV7PshY16sDj8I8Y8CmSl6rTid1fVA3OvJSRFCZ3C6ZKdVzTlwrSUsMA4ntef6iF9-JRqvXmWG38Vq4hOkAQvqY9DpuhPsYAoE74CUJS6IdrL7XebXCWySyAOOVCO07iBdMQQCZppAPlelXImWAkZj_4wOSwF8Qrv7nUUeDTgC799vjGzV4dktPVXKlt5Apgg6_zm2QWKiDMYzcofn8E6iNfBZTpGrI7ilm49a-6cdiVEMvdyMLm176wNFMp0mFbO2L0QECHRdc2gbAYwzWbPVUFjfuBWR3_27FyONl1UKzesRzr3AonpV0h3Z9Cj6y0-si7nzDRBAn-topSosDa1E717pl-8qGJEop80ReV4mdFmt3jF4b_BC1oMQ&key=AIzaSyCo7o6jQghstjLaPIdPIJUB7pL8j_e8lcQ",
       "width": 4032,
       "height": 2268
     },
     {
       "photo_reference": "AZLasHr66sLytuplqB_R0ZEC8GtP-bZ89pw0vddwuGbw3PS78TXHk4FtpF4n1fS2XOpJXph7V4Ubl17LFSNqgnuZ2hgaqA_Q1P-5EcrwD88njytDuNvns52YLHo0_mChXOwOXi1XE_8SIDtJffqiDQEaHiieIroUv9T_JN-30BaD4wlObXEHNsE05k9jNpLj7zbGU4Jh5BmfS2zmdlQdZcNwvucYQPOZ39YYHDJUOQSaEwXH9X1G1ZnRK0TxDZN7e4dgTUstIW17ODuNlL_hzZuOZz-8bWTxxR0K4200AOplp0b97i3OxmxKQoGUmoeTQiFesDZ9l8MpgtqoshGxQQtxQPrCgQiqm_YJBLwDAepQgTYdTRpxxSuiFHfV5K91_ArWK9nKbleKS5XtkDfijrI4sUoDk7HQTeM4CqL_nu6r77E48Ylb",
-      "photo_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AZLasHr66sLytuplqB_R0ZEC8GtP-bZ89pw0vddwuGbw3PS78TXHk4FtpF4n1fS2XOpJXph7V4Ubl17LFSNqgnuZ2hgaqA_Q1P-5EcrwD88njytDuNvns52YLHo0_mChXOwOXi1XE_8SIDtJffqiDQEaHiieIroUv9T_JN-30BaD4wlObXEHNsE05k9jNpLj7zbGU4Jh5BmfS2zmdlQdZcNwvucYQPOZ39YYHDJUOQSaEwXH9X1G1ZnRK0TxDZN7e4dgTUstIW17ODuNlL_hzZuOZz-8bWTxxR0K4200AOplp0b97i3OxmxKQoGUmoeTQiFesDZ9l8MpgtqoshGxQQtxQPrCgQiqm_YJBLwDAepQgTYdTRpxxSuiFHfV5K91_ArWK9nKbleKS5XtkDfijrI4sUoDk7HQTeM4CqL_nu6r77E48Ylb&key=AIzaSyCo7o6jQghstjLaPIdPIJUB7pL8j_e8lcQ",
       "width": 4032,
       "height": 3024
     }

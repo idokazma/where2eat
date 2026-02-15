@@ -57,7 +57,7 @@ export function getPhotoProxyUrl(
   maxWidth: number = 800
 ): string {
   const base = config.apiUrl || '';
-  return `${base}/api/places/photo/${encodeURIComponent(photoReference)}?maxwidth=${maxWidth}`;
+  return `${base}/api/photos/${encodeURIComponent(photoReference)}?maxwidth=${maxWidth}`;
 }
 
 /**

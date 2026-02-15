@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Flame } from 'lucide-react';
 import { PageLayout } from '@/components/layout';
 import { RestaurantCardNew } from '@/components/restaurant';
@@ -10,6 +10,20 @@ import { endpoints } from '@/lib/config';
 import { getRestaurantImage } from '@/lib/images';
 
 type TimePeriod = 'week' | 'month' | '3months';
+
+const getDateThreshold = (period: TimePeriod): Date => {
+  const now = new Date();
+  switch (period) {
+    case 'week':
+      return new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    case 'month':
+      return new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+    case '3months':
+      return new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000);
+    default:
+      return new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+  }
+};
 
 export default function TrendingPage() {
   const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
@@ -35,8 +49,18 @@ export default function TrendingPage() {
     }
   };
 
-  // In a real app, this would filter by actual trending data
-  const trendingRestaurants = restaurants.slice(0, 20);
+  // Filter restaurants by analysis_date based on selected time period
+  const trendingRestaurants = useMemo(() => {
+    const threshold = getDateThreshold(timePeriod);
+    const filtered = restaurants.filter((r) => {
+      const analysisDate = r.episode_info?.analysis_date;
+      if (!analysisDate) return true; // Include restaurants without dates (don't hide data)
+      return new Date(analysisDate) >= threshold;
+    });
+    return filtered
+      .sort((a, b) => (b.rating?.google_rating ?? 0) - (a.rating?.google_rating ?? 0))
+      .slice(0, 20);
+  }, [restaurants, timePeriod]);
 
   if (isLoading) {
     return (
@@ -82,6 +106,11 @@ export default function TrendingPage() {
 
       {/* Trending list */}
       <div className="px-4 py-4 space-y-4">
+        {trendingRestaurants.length === 0 && (
+          <div className="text-center py-12">
+            <p className="text-[var(--color-ink-muted)]">אין מסעדות טרנדיות בתקופה זו</p>
+          </div>
+        )}
         {trendingRestaurants.map((restaurant, index) => (
           <div key={restaurant.google_places?.place_id || restaurant.name_hebrew}>
             {/* Rank indicator */}

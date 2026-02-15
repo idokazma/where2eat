@@ -10,6 +10,10 @@ export interface Location {
   neighborhood: string | null;
   address: string | null;
   region: 'North' | 'Center' | 'South' | null;
+  coordinates?: {
+    latitude: number;
+    longitude: number;
+  };
 }
 
 export interface ContactInfo {

@@ -1,0 +1,123 @@
+{
+  "name_hebrew": "פרינו",
+  "name_english": "Prino",
+  "location": {
+    "city": "אשדוד",
+    "neighborhood": "",
+    "address": "האשל 9, אשדוד, 7726306, ישראל",
+    "region": "דרום",
+    "coordinates": {
+      "latitude": 31.80729239999999,
+      "longitude": 34.6418874
+    },
+    "full_address": "האשל 9, אשדוד, 7726306, ישראל"
+  },
+  "cuisine_type": "איטלקי",
+  "status": "open",
+  "price_range": "mid-range",
+  "host_opinion": "positive",
+  "host_comments": "פיצריה נפוליטנית מעולה וטירמיסו",
+  "menu_items": [
+    {
+      "item_name": "פיצה",
+      "description": "",
+      "price": null,
+      "recommendation_level": "mentioned"
+    },
+    {
+      "item_name": "פוקצ'ה",
+      "description": "",
+      "price": null,
+      "recommendation_level": "mentioned"
+    },
+    {
+      "item_name": "טירמיסו",
+      "description": "",
+      "price": null,
+      "recommendation_level": "mentioned"
+    }
+  ],
+  "special_features": [
+    "אמן בצק",
+    "נפוליטני"
+  ],
+  "contact_info": {
+    "phone": "08-868-6292",
+    "website": "https://maps.google.com/?cid=9821995536788316042",
+    "social_media": ""
+  },
+  "business_news": null,
+  "mention_context": "הפיצריה הנפוליטנית של פרינו באשדוד",
+  "episode_info": {
+    "video_id": "6jvskRWvQkg",
+    "video_url": "https://www.youtube.com/watch?v=6jvskRWvQkg",
+    "language": "he",
+    "analysis_date": "2026-01-01",
+    "total_restaurants_found": 11,
+    "processing_method": "claude_chunked"
+  },
+  "food_trends": [
+    "פרסי פופולרי",
+    "מסעדות בקיסריה",
+    "אמריקאי פופולרי",
+    "תאילנדי פופולרי",
+    "מסעדות בחיפה"
+  ],
+  "episode_summary": "ניתוח מבוסס Claude של 11 מסעדות מהסרטון 6jvskRWvQkg",
+  "google_places": {
+    "place_id": "ChIJlZpdJZ6jAhURil-9y-a8Tog",
+    "google_name": "Farino pizza פארינו פיצה",
+    "google_url": "https://maps.google.com/?cid=9821995536788316042",
+    "enriched_at": "2026-02-15 09:09:56",
+    "formatted_address": "האשל 9, אשדוד, 7726306, ישראל"
+  },
+  "rating": {
+    "google_rating": 4.5,
+    "total_reviews": 567,
+    "price_level": null
+  },
+  "photos": [
+    {
+      "photo_reference": "ATCDNfUhY-J5J7SqN67UOb4nNgbf62eLGurJxoUX-93a40GpaljYdERgaM46Mgn_M5hRe61auWbOyOmJhqhU7vyf5C-MaXJdoeeR1_W84OKHiT8Qv0M0k2bdB90m7EwimFjQtbIhuinAYK4sIeGVOEN7G2CyuWZfSExggkivXIfJ77qCCq2QBZn6TfLM24hUxahmQjn1kLJjUrZfONV0SeT3HRGXcoNrVSNvxJYllluEzaGm4ZcaVBY1b57dz1zh7cXoKMb6E7moUFj065ppDda56Meez4mlcmEyoc9DQqAwpiLveccUnTBrFruw974WcaJ7VAqTuPPd6eG8js7iD7gkIw3EQUI7f2U1mpgEg1wxb84hFh_H6jqMeeka7efAQDlD7W_ytEqZddktkDf7zApnWtk4UkL7frOMm9quQRdqmYBYLZrg",
+      "width": 4032,
+      "height": 3024
+    },
+    {
+      "photo_reference": "ATCDNfUKtNEZXjpYk2_6om43HbyfFmBSzcNh_sRjPwV1TgxHfr6OkKyzz6xf5sNtot_m2MeLJQJMIuy3PL-X4OyiwxTQfN737V_NpQfYrcBJYj-qD-6nq6Ko20BvUvdNYEXJRrDtHeIDBm4g-BksxUtP6ndcmWHcsnjYEgyPOhX1s03iSKEwZAIekhFtkzVtHbYepb64OV35lrUf3X9YYn_ph6dsKZh4jxgM2GyKm3yCaMCZ3UC5Bnh6ox6SHKLoEnPlIVbD5ZpX08PUzxL6d0YSQAto8ziFqrFguc4Qf4gRBln2PQ",
+      "width": 4192,
+      "height": 2359
+    },
+    {
+      "photo_reference": "ATCDNfVtd82oP2W0-v6ck-hoYDLZh8ClFym6Np84YgDGrO3VconiIhizzrmzaUTIrYquOlU4sVo2gQUn1vy-YnwcHehn8rFr5lAb1WHDUrssqI8q1n6lwYboRHlnnR782o5pm78SlfRn0xKdYrIgLq809m1B7gcLjKhXHxys8T7uKzROF0NuBbRGgQ8-E8Wq99ZFwkX_xwJXk_fl8f0EYkEtkxEE8QZplqgecR1_oHrKIDIxLzcICViZ9bGWQBILwuazNwANJTy6ICvsRS1s32wbYqZKl7c3VcSpVnot_aqQ66ncQVAukMBuZw-QfLafJ_gxNx-kqdnpBtPvc8UsEUlHKZnMINbt_Up7TOYyvYq2UQJjQth2oHiEHWD2M98JjWeX7q8i11ZpV9O9MX_JoTulaIAv8w4s5iL8CjWLejUINCr95WX9",
+      "width": 3024,
+      "height": 4032
+    },
+    {
+      "photo_reference": "ATCDNfX0T6Q4FsM77sldqhzLh7xRLGiIUXiNOJCjOGL0d6PEQdUfYs_x1FPVCv2D4z5FTwUPLHqcs9pHIV3f0G-dTS_EG8_5mt3KfTyacqUPal1UiGVCJo8fwfZ8GnK33mkz-OldpxvdcYpNGVDvWIj1JIAkpVw0PQDMxXl9mx5Qbb-EIpgM7TBdgdmVcxrvA80J12Ned7bM4ZHmerHZvz889SvL8m9N6losLc5okv67-r1xb_7__O-VTPuYqoa0N7iVatB_PlXQfxmMB0RUAePVrGjPNAlicT9hHP9o7LPhYGRu8mFeMgs6a3FkpSaiJDTidgRYoOF-NYY-IEWNqeGRycTR-p-4jIfJV3C5y7UmzhG6NnSqderdplothZzH96b7FS5GFCxMG5Fa6GXZ37l1rGCh2EAk_UfBxXm5epD2QCI",
+      "width": 3024,
+      "height": 4032
+    },
+    {
+      "photo_reference": "ATCDNfU7IuYnUMGM_BtU9nkkoDb-44H7BGNH7bebEN38DvxnfwsdwyZ-MIkg9wozoSxrJhLjcbgUL6dYyb2XfqqkM8ourAKyP07TEnQvWyHB8icre8oRNxbDS7zvULOeM8Pz59G2khd966uR7SB2IHKqQQhCKn9knFchBuF-M4MDKHwVp9jagVS5bd2Duc9fo8HF1-rG9ECduFUQhydxXDpolzm7jIz3jFu6hXPzYylrU-F8t3K_3cCkTJDKtoVRc2LsaJKW6R607ve2Xl8CsF-gAjqucX-FJq69eN_UX0sJbMWLiac3ZyGp3G8N0Ng2Wxr64Kfy_J82aOrJWhdhvg0CXaN5JphRDcpVRa3ktXZAjgXwL6iRHU6Ti_rpDJ9WLqavNYVpJ-dpoCI0iGQdhU_cMIvIdrwYyWgrtscTxFfyfkom-A",
+      "width": 3024,
+      "height": 4032
+    }
+  ],
+  "business_hours": {
+    "open_now": false,
+    "weekday_text": [
+      "יום ראשון: 17:00–22:30",
+      "יום שני: 17:00–22:30",
+      "יום שלישי: 17:00–22:30",
+      "יום רביעי: 17:00–22:30",
+      "יום חמישי: 17:00–22:30",
+      "יום שישי: סגור",
+      "יום שבת: 19:30–22:30"
+    ]
+  },
+  "google_places_enriched": true,
+  "google_places_attempted": true,
+  "id": "3e91e3d2a80e",
+  "mention_timestamp_seconds": 1376,
+  "engaging_quote": "בעצם כל הקומפלקס הזה לא יודע איך להגדיר את הדבר הזה אז באמת הפיצריה הנפוליט של פרינו שהוא גם אמן ברמת הבצק אבל גם יותר מזה שילוב הטעמים היכולת שלו שם לפתח ביסים כל כך עוצמתיים וזכירים בסך הכל"
+}
