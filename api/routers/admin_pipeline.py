@@ -238,6 +238,94 @@ async def pipeline_stats(
 
 
 @router.post(
+    "/reset",
+    summary="Reset all restaurant data",
+    description="Delete all restaurants, episodes, video queue, and pipeline logs. "
+                "Keeps subscriptions and admin users intact. Requires super_admin role.",
+)
+async def reset_data(
+    user: dict = Depends(require_role(["super_admin"])),
+):
+    """Reset all restaurant data so videos can be re-analyzed from scratch."""
+    try:
+        import os
+        from database import get_database
+
+        db = get_database()
+        deleted = {"restaurants": 0, "episodes": 0, "video_queue": 0, "pipeline_logs": 0}
+
+        # 1. Clear SQLite tables (order matters due to foreign keys)
+        with db.get_connection() as conn:
+            cursor = conn.cursor()
+            for table in ["restaurants", "episodes", "video_queue", "pipeline_logs"]:
+                cursor.execute(f"SELECT COUNT(*) as cnt FROM {table}")
+                count = cursor.fetchone()["cnt"]
+                cursor.execute(f"DELETE FROM {table}")
+                deleted[table] = count
+
+        # 2. Clear PostgreSQL tables if DATABASE_URL is set
+        pg_cleared = False
+        if os.getenv("DATABASE_URL"):
+            try:
+                import importlib.util
+
+                src_base_path = Path("/app/src/models/base.py")
+                if not src_base_path.exists():
+                    src_base_path = Path(__file__).parent.parent.parent / "src" / "models" / "base.py"
+
+                if src_base_path.exists():
+                    spec = importlib.util.spec_from_file_location("src_models_base_reset", src_base_path)
+                    src_models_base = importlib.util.module_from_spec(spec)
+                    spec.loader.exec_module(src_models_base)
+                    get_db_session = src_models_base.get_db_session
+
+                    src_restaurant_path = src_base_path.parent / "restaurant.py"
+                    if src_restaurant_path.exists():
+                        import types
+                        models_package = types.ModuleType("models")
+                        models_package.__path__ = [str(src_base_path.parent)]
+                        models_package.__package__ = "models"
+                        sys.modules["models"] = models_package
+                        sys.modules["models.base"] = src_models_base
+                        src_models_base.__package__ = "models"
+
+                        spec2 = importlib.util.spec_from_file_location(
+                            "models.restaurant", src_restaurant_path,
+                            submodule_search_locations=[],
+                        )
+                        src_models_restaurant = importlib.util.module_from_spec(spec2)
+                        src_models_restaurant.__package__ = "models"
+                        spec2.loader.exec_module(src_models_restaurant)
+
+                        with get_db_session() as session:
+                            session.execute(
+                                src_models_restaurant.RestaurantHistory.__table__.delete()
+                            )
+                            session.execute(
+                                src_models_restaurant.Restaurant.__table__.delete()
+                            )
+                            session.execute(
+                                src_models_restaurant.Episode.__table__.delete()
+                            )
+                            session.commit()
+                        pg_cleared = True
+            except Exception as pg_err:
+                print(f"[RESET] PostgreSQL clear failed: {pg_err}")
+
+        return {
+            "success": True,
+            "message": "All restaurant data cleared. Use POST /api/admin/pipeline/poll to re-fetch and re-queue videos.",
+            "deleted": deleted,
+            "postgresql_cleared": pg_cleared,
+        }
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Reset failed: {str(e)}",
+        )
+
+
+@router.post(
     "/retry-all-failed",
     summary="Retry all failed videos",
     description="Reset all failed videos back to queued status. Requires admin role.",
