@@ -38,6 +38,7 @@ interface MapRestaurant {
   };
   google_places?: {
     place_id?: string;
+    google_name?: string;
   };
   host_opinion?: 'positive' | 'negative' | 'mixed' | 'neutral' | null;
 }
@@ -200,7 +201,7 @@ export default function MapView({ restaurants, favoriteIds }: MapViewProps) {
               >
                 <div className="text-right" dir="rtl">
                   <h3 className="text-lg font-bold text-[var(--color-primary)] mb-1">
-                    {restaurant.name_hebrew}
+                    {restaurant.google_places?.google_name || restaurant.name_hebrew}
                   </h3>
 
                   {restaurant.name_english && (
