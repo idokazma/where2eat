@@ -311,7 +311,7 @@ class RestaurantRepository(BaseRepository[Restaurant]):
             contact_social=contact.get('social_media'),
             business_news=data.get('business_news'),
             mention_context=data.get('mention_context'),
-            mention_timestamp=data.get('mention_timestamp'),
+            mention_timestamp=data.get('mention_timestamp') or data.get('mention_timestamp_seconds'),
             google_place_id=google_places.get('place_id'),
             google_name=google_places.get('google_name'),
             google_url=google_places.get('google_url'),

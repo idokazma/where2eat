@@ -269,7 +269,7 @@ async def search_restaurants(
     date_end: Optional[str] = Query(None, description="Filter by end date"),
     episode_id: Optional[str] = Query(None, description="Filter by episode ID"),
     query: Optional[str] = Query(None, description="Search query"),
-    sort_by: str = Query("analysis_date", description="Sort field"),
+    sort_by: str = Query("published_at", description="Sort field"),
     sort_direction: str = Query("desc", description="Sort direction (asc/desc)"),
     page: int = Query(1, ge=1, description="Page number"),
     limit: int = Query(20, ge=1, le=100, description="Items per page"),
@@ -414,6 +414,8 @@ async def search_restaurants(
             return r.get("cuisine_type") or ""
         elif sort_by == "rating":
             return (r.get("rating") or {}).get("google_rating", 0) or 0
+        elif sort_by == "published_at":
+            return r.get("published_at") or (r.get("episode_info") or {}).get("published_at") or (r.get("episode_info") or {}).get("analysis_date") or ""
         else:  # analysis_date
             return (r.get("episode_info") or {}).get("analysis_date") or ""
 
