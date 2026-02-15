@@ -329,11 +329,21 @@ class GooglePlacesEnricher:
         enhanced_data = original_data.copy()
         
         # Add Google Places specific data
+        google_name = google_data.get('name', '')
+        original_hebrew = original_data.get('name_hebrew', '')
+        original_english = original_data.get('name_english', '')
+
+        similarity_en = self._name_similarity_score(original_english, google_name)
+        similarity_he = self._name_similarity_score(original_hebrew, google_name)
+        best_similarity = max(similarity_en, similarity_he)
+
         enhanced_data['google_places'] = {
             'place_id': google_data.get('place_id'),
-            'google_name': google_data.get('name'),
+            'google_name': google_name,
             'google_url': google_data.get('url'),
-            'enriched_at': time.strftime('%Y-%m-%d %H:%M:%S')
+            'enriched_at': time.strftime('%Y-%m-%d %H:%M:%S'),
+            'name_match_confidence': round(best_similarity, 2),
+            'potential_wrong_match': best_similarity < 0.15,
         }
         
         # Enhance location data
@@ -394,6 +404,34 @@ class GooglePlacesEnricher:
         enhanced_data['google_places_attempted'] = True
         
         return enhanced_data
+
+    @staticmethod
+    def _name_similarity_score(name1: str, name2: str) -> float:
+        """Calculate simple similarity between two restaurant names.
+
+        Uses character overlap ratio. Returns 0.0-1.0.
+        Works with same-script names; cross-script (Hebrew vs English) returns low scores by design.
+        """
+        if not name1 or not name2:
+            return 0.0
+
+        n1 = name1.lower().strip()
+        n2 = name2.lower().strip()
+
+        # Direct containment check
+        if n1 in n2 or n2 in n1:
+            return 0.8
+
+        # Character set overlap (Jaccard similarity)
+        set1 = set(n1.replace(' ', ''))
+        set2 = set(n2.replace(' ', ''))
+
+        if not set1 or not set2:
+            return 0.0
+
+        intersection = set1 & set2
+        union = set1 | set2
+        return len(intersection) / len(union)
 
     def enrich_restaurant_file(self, file_path: str, output_path: Optional[str] = None) -> str:
         """

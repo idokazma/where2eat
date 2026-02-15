@@ -197,8 +197,10 @@ export function RestaurantCardNew({
 
       {/* Content Section */}
       <div className="restaurant-card-content">
-        {/* Title */}
-        <h3 className="restaurant-card-title">{restaurant.name_hebrew}</h3>
+        {/* Title - prefer Google Places corrected name when available */}
+        <h3 className="restaurant-card-title">
+          {restaurant.google_places?.google_name || restaurant.google_name || restaurant.name_hebrew}
+        </h3>
 
         {/* Meta line */}
         {metaItems.length > 0 && (

@@ -327,6 +327,36 @@ class VideoQueueManager:
             )
             return cursor.rowcount > 0
 
+    def retry_all_failed(self) -> dict:
+        """Reset all failed videos back to queued status.
+
+        Resets attempt_count to 0, clears error_message, and schedules
+        them for immediate processing.
+
+        Returns:
+            Dict with 'count' of retried videos.
+        """
+        now = datetime.utcnow().isoformat()
+
+        with self.db.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute(
+                """
+                UPDATE video_queue
+                SET status = 'queued',
+                    attempt_count = 0,
+                    error_message = NULL,
+                    processing_started_at = NULL,
+                    processing_completed_at = NULL,
+                    scheduled_for = ?
+                WHERE status = 'failed'
+                """,
+                (now,),
+            )
+            count = cursor.rowcount
+
+        return {"count": count}
+
     def prioritize(self, queue_id: str) -> bool:
         """Move a video to front of queue (priority=0, scheduled_for=now)."""
         now = datetime.utcnow().isoformat()

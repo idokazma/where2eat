@@ -287,6 +287,11 @@ class Database:
             except sqlite3.OperationalError:
                 pass  # Column already exists
 
+            try:
+                cursor.execute('ALTER TABLE restaurants ADD COLUMN google_name TEXT')
+            except sqlite3.OperationalError:
+                pass  # Column already exists
+
             # Create indexes for common queries
             cursor.execute('CREATE INDEX IF NOT EXISTS idx_restaurants_city ON restaurants(city)')
             cursor.execute('CREATE INDEX IF NOT EXISTS idx_restaurants_cuisine ON restaurants(cuisine_type)')
@@ -426,6 +431,11 @@ class Database:
         google_rating = kwargs.get('google_rating') or rating.get('google_rating')
         google_user_ratings_total = kwargs.get('google_user_ratings_total') or rating.get('user_ratings_total')
 
+        # Handle google_name from google_places dict or direct kwarg
+        google_places = kwargs.get('google_places', {}) or {}
+        google_name = kwargs.get('google_name') or google_places.get('google_name')
+        google_place_id = kwargs.get('google_place_id') or google_places.get('place_id')
+
         with self.get_connection() as conn:
             cursor = conn.cursor()
             cursor.execute('''
@@ -435,8 +445,9 @@ class Database:
                     host_comments, menu_items, special_features, contact_hours,
                     contact_phone, contact_website, business_news, mention_context,
                     mention_timestamp, google_place_id, google_rating,
-                    google_user_ratings_total, latitude, longitude, image_url, photos
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    google_user_ratings_total, latitude, longitude, image_url, photos,
+                    google_name
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ''', (
                 restaurant_id,
                 episode_id,
@@ -459,13 +470,14 @@ class Database:
                 kwargs.get('business_news'),
                 kwargs.get('mention_context'),
                 kwargs.get('mention_timestamp'),
-                kwargs.get('google_place_id'),
+                google_place_id,
                 google_rating,
                 google_user_ratings_total,
                 kwargs.get('latitude'),
                 kwargs.get('longitude'),
                 kwargs.get('image_url'),
-                json.dumps(kwargs.get('photos', []))
+                json.dumps(kwargs.get('photos', [])),
+                google_name,
             ))
 
             return restaurant_id
@@ -505,6 +517,12 @@ class Database:
         restaurant['rating'] = {
             'google_rating': restaurant.pop('google_rating', None),
             'user_ratings_total': restaurant.pop('google_user_ratings_total', None)
+        }
+
+        # Reconstruct google_places object
+        restaurant['google_places'] = {
+            'place_id': restaurant.get('google_place_id'),
+            'google_name': restaurant.pop('google_name', None),
         }
 
         # Parse JSON fields
@@ -748,6 +766,8 @@ class Database:
             gp = kwargs.pop('google_places')
             if gp:
                 kwargs['google_place_id'] = gp.get('place_id')
+                if gp.get('google_name'):
+                    kwargs['google_name'] = gp['google_name']
 
         # Handle JSON fields
         if 'menu_items' in kwargs:

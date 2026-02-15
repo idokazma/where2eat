@@ -129,6 +129,16 @@ export default function PipelinePage() {
     },
   });
 
+  // Retry all failed mutation
+  const retryAllFailedMutation = useMutation({
+    mutationFn: () => pipelineApi.retryAllFailed(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['pipeline-overview'] });
+      queryClient.invalidateQueries({ queryKey: ['pipeline-queue'] });
+      queryClient.invalidateQueries({ queryKey: ['pipeline-history'] });
+    },
+  });
+
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
     const now = new Date();
@@ -168,12 +178,23 @@ export default function PipelinePage() {
             Real-time view of video processing queue and activity
           </p>
         </div>
-        <Button asChild variant="outline">
-          <Link href="/dashboard/pipeline/logs">
-            <AlertCircle className="h-4 w-4 mr-2" />
-            View Logs
-          </Link>
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            variant="destructive"
+            size="sm"
+            onClick={() => retryAllFailedMutation.mutate()}
+            disabled={retryAllFailedMutation.isPending || !(overview?.failed_24h ?? 0)}
+          >
+            <RotateCcw className="h-4 w-4 mr-2" />
+            Retry All Failed
+          </Button>
+          <Button asChild variant="outline">
+            <Link href="/dashboard/pipeline/logs">
+              <AlertCircle className="h-4 w-4 mr-2" />
+              View Logs
+            </Link>
+          </Button>
+        </div>
       </div>
 
       {/* Overview Cards */}

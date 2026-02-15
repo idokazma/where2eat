@@ -581,10 +581,12 @@ class BackendService:
                 if coords:
                     r['latitude'] = coords.get('latitude')
                     r['longitude'] = coords.get('longitude')
-                # Flatten google_place_id
+                # Flatten google_place_id and google_name
                 gp = r.get('google_places', {})
                 if gp and gp.get('place_id'):
                     r['google_place_id'] = gp['place_id']
+                if gp and gp.get('google_name'):
+                    r['google_name'] = gp['google_name']
                 # Set image_url from first photo reference
                 photos = r.get('photos', [])
                 if photos and not r.get('image_url'):
