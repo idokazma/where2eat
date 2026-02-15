@@ -63,7 +63,7 @@ export function UnifiedSearch({ onSearchResults, onLoadingChange }: UnifiedSearc
     dateStart: '',
     dateEnd: '',
     episodeId: '',
-    sortBy: 'analysis_date',
+    sortBy: 'published_at',
     sortDirection: 'desc'
   })
 
@@ -201,7 +201,7 @@ export function UnifiedSearch({ onSearchResults, onLoadingChange }: UnifiedSearc
       dateStart: '',
       dateEnd: '',
       episodeId: '',
-      sortBy: 'analysis_date',
+      sortBy: 'published_at',
       sortDirection: 'desc'
     })
   }
@@ -228,7 +228,7 @@ export function UnifiedSearch({ onSearchResults, onLoadingChange }: UnifiedSearc
   // Trigger search when filters change (debounced)
   useEffect(() => {
     const timer = setTimeout(() => {
-      if (hasActiveFilters || filters.sortBy !== 'analysis_date') {
+      if (hasActiveFilters || filters.sortBy !== 'published_at') {
         performSearch()
       }
     }, 500)

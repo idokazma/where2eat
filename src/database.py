@@ -294,6 +294,22 @@ class Database:
                 pass  # Column already exists
 
             try:
+                cursor.execute('ALTER TABLE restaurants ADD COLUMN published_at TEXT')
+            except sqlite3.OperationalError:
+                pass  # Column already exists
+
+            # Backfill restaurants.published_at from episodes
+            try:
+                cursor.execute('''
+                    UPDATE restaurants SET published_at = (
+                        SELECT COALESCE(e.published_at, e.analysis_date)
+                        FROM episodes e WHERE e.id = restaurants.episode_id
+                    ) WHERE published_at IS NULL AND episode_id IS NOT NULL
+                ''')
+            except sqlite3.OperationalError:
+                pass
+
+            try:
                 cursor.execute('ALTER TABLE episodes ADD COLUMN published_at TEXT')
             except sqlite3.OperationalError:
                 pass  # Column already exists
@@ -313,6 +329,7 @@ class Database:
             cursor.execute('CREATE INDEX IF NOT EXISTS idx_restaurants_city ON restaurants(city)')
             cursor.execute('CREATE INDEX IF NOT EXISTS idx_restaurants_cuisine ON restaurants(cuisine_type)')
             cursor.execute('CREATE INDEX IF NOT EXISTS idx_restaurants_episode ON restaurants(episode_id)')
+            cursor.execute('CREATE INDEX IF NOT EXISTS idx_restaurants_published_at ON restaurants(published_at)')
             cursor.execute('CREATE INDEX IF NOT EXISTS idx_episodes_video_id ON episodes(video_id)')
             cursor.execute('CREATE INDEX IF NOT EXISTS idx_jobs_status ON jobs(status)')
             cursor.execute('CREATE INDEX IF NOT EXISTS idx_admin_users_email ON admin_users(email)')
@@ -465,8 +482,8 @@ class Database:
                     contact_phone, contact_website, business_news, mention_context,
                     mention_timestamp, google_place_id, google_rating,
                     google_user_ratings_total, latitude, longitude, image_url, photos,
-                    google_name
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    google_name, published_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ''', (
                 restaurant_id,
                 episode_id,
@@ -497,6 +514,7 @@ class Database:
                 kwargs.get('image_url'),
                 json.dumps(kwargs.get('photos', [])),
                 google_name,
+                kwargs.get('published_at'),
             ))
 
             return restaurant_id
@@ -566,7 +584,7 @@ class Database:
                            e.food_trends as episode_food_trends
                     FROM restaurants r
                     LEFT JOIN episodes e ON r.episode_id = e.id
-                    ORDER BY r.created_at DESC
+                    ORDER BY COALESCE(r.published_at, e.published_at, e.analysis_date) DESC
                 ''')
             else:
                 cursor.execute('SELECT * FROM restaurants ORDER BY created_at DESC')
@@ -600,7 +618,7 @@ class Database:
         date_start: str = None,
         date_end: str = None,
         episode_id: str = None,
-        sort_by: str = 'analysis_date',
+        sort_by: str = 'published_at',
         sort_direction: str = 'desc',
         page: int = 1,
         limit: int = 20
@@ -642,11 +660,11 @@ class Database:
                 params.append(episode_id)
 
             if date_start:
-                conditions.append("e.analysis_date >= ?")
+                conditions.append("COALESCE(r.published_at, e.published_at, e.analysis_date) >= ?")
                 params.append(date_start)
 
             if date_end:
-                conditions.append("e.analysis_date <= ?")
+                conditions.append("COALESCE(r.published_at, e.published_at, e.analysis_date) <= ?")
                 params.append(date_end)
 
             where_clause = " AND ".join(conditions) if conditions else "1=1"
@@ -668,7 +686,7 @@ class Database:
                     r.city,
                     r.price_range,
                     r.host_opinion,
-                    DATE(e.analysis_date) as analysis_day
+                    DATE(COALESCE(r.published_at, e.published_at, e.analysis_date)) as analysis_day
                 FROM restaurants r
                 LEFT JOIN episodes e ON r.episode_id = e.id
                 WHERE {where_clause}
@@ -706,8 +724,9 @@ class Database:
                 'location': 'r.city',
                 'cuisine': 'r.cuisine_type',
                 'rating': 'r.google_rating',
-                'analysis_date': 'e.analysis_date'
-            }.get(sort_by, 'e.analysis_date')
+                'analysis_date': 'e.analysis_date',
+                'published_at': 'COALESCE(r.published_at, e.published_at, e.analysis_date)'
+            }.get(sort_by, 'COALESCE(r.published_at, e.published_at, e.analysis_date)')
 
             sort_dir = 'DESC' if sort_direction.lower() == 'desc' else 'ASC'
 
