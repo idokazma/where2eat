@@ -7,6 +7,8 @@ import { Restaurant } from '@/types/restaurant';
 import { EpisodeBadge } from './EpisodeBadge';
 import { DistanceBadge } from './DistanceBadge';
 import { useFavorites } from '@/contexts/favorites-context';
+import { normalizeHostOpinion, getPriceDisplay } from '@/lib/data-normalizer';
+import { getTimedYouTubeUrl } from '@/lib/youtube';
 
 interface RestaurantCardNewProps {
   restaurant: Restaurant;
@@ -56,18 +58,7 @@ const getGradientClass = (cuisine: string | null | undefined): string => {
   return 'gradient-default';
 };
 
-const getPriceDisplay = (priceRange: string | null | undefined): string => {
-  switch (priceRange) {
-    case 'budget':
-      return '₪';
-    case 'mid-range':
-      return '₪₪';
-    case 'expensive':
-      return '₪₪₪';
-    default:
-      return '';
-  }
-};
+// Removed: now using getPriceDisplay from data-normalizer
 
 export function RestaurantCardNew({
   restaurant,
@@ -98,8 +89,12 @@ export function RestaurantCardNew({
 
   const handleWatchClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (restaurant.episode_info?.video_url) {
-      window.open(restaurant.episode_info.video_url, '_blank');
+    const videoUrl = restaurant.episode_info?.video_url;
+    if (videoUrl) {
+      window.open(
+        getTimedYouTubeUrl(videoUrl, restaurant.mention_timestamp_seconds),
+        '_blank'
+      );
     }
   };
 
@@ -182,6 +177,7 @@ export function RestaurantCardNew({
             episodeNumber={getEpisodeNumber()}
             showName="פודי"
             videoUrl={restaurant.episode_info?.video_url}
+            timestampSeconds={restaurant.mention_timestamp_seconds}
             size="sm"
           />
 
@@ -217,7 +213,7 @@ export function RestaurantCardNew({
         )}
 
         {/* Host quote */}
-        {restaurant.host_comments && restaurant.host_opinion === 'positive' && (
+        {restaurant.host_comments && normalizeHostOpinion(restaurant.host_opinion) === 'positive' && (
           <div className="restaurant-card-quote">
             &ldquo;{restaurant.host_comments}&rdquo;
           </div>

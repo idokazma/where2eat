@@ -13,14 +13,29 @@
     "full_address": "סי מול, הגדוד העברי 6, אשדוד, Israel"
   },
   "cuisine_type": "איטלקי",
-  "status": "פתוח",
-  "price_range": "בינוני",
-  "host_opinion": "חיובית מאוד",
+  "status": "open",
+  "price_range": "mid-range",
+  "host_opinion": "positive",
   "host_comments": "פיצריה נפוליטנית מעולה וטירמיסו",
   "menu_items": [
-    "פיצה",
-    "פוקצ'ה",
-    "טירמיסו"
+    {
+      "item_name": "פיצה",
+      "description": "",
+      "price": null,
+      "recommendation_level": "mentioned"
+    },
+    {
+      "item_name": "פוקצ'ה",
+      "description": "",
+      "price": null,
+      "recommendation_level": "mentioned"
+    },
+    {
+      "item_name": "טירמיסו",
+      "description": "",
+      "price": null,
+      "recommendation_level": "mentioned"
+    }
   ],
   "special_features": [
     "אמן בצק",
@@ -63,19 +78,16 @@
   "photos": [
     {
       "photo_reference": "AZLasHpxWFJd-n6q7oXqmp9RAmDOd-s0sIO4dbforo09CaMJIsRNjB9dntkpI2g3v_qyNPpkYUXY6KbKs-kaljy4A3Psj84xy9Cek0RMT8vYONjBk9iGEic_fyvwvkS5E0TcPpG1ie_hkI8V4pPQp7HSgR0o-Q7gLfveqEYg2L3WDy1W2-wdxMCaGWpG6MyvbEBEGYPqt6nc0u-q8aJ9Bf-naCoTnYbqhKXqB3hOpyDMn_D9Q2hnGGhuNloNIyhZNC9xw4EdQawpkUDEjJQ3zWR7italIwIcbatAr6f_7NAoSps",
-      "photo_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AZLasHpxWFJd-n6q7oXqmp9RAmDOd-s0sIO4dbforo09CaMJIsRNjB9dntkpI2g3v_qyNPpkYUXY6KbKs-kaljy4A3Psj84xy9Cek0RMT8vYONjBk9iGEic_fyvwvkS5E0TcPpG1ie_hkI8V4pPQp7HSgR0o-Q7gLfveqEYg2L3WDy1W2-wdxMCaGWpG6MyvbEBEGYPqt6nc0u-q8aJ9Bf-naCoTnYbqhKXqB3hOpyDMn_D9Q2hnGGhuNloNIyhZNC9xw4EdQawpkUDEjJQ3zWR7italIwIcbatAr6f_7NAoSps&key=AIzaSyCo7o6jQghstjLaPIdPIJUB7pL8j_e8lcQ",
       "width": 3024,
       "height": 4032
     },
     {
       "photo_reference": "AZLasHorL93_Kyrpovq6cyQlm-2oi3YsPRvuJ8nMU4kXDJ6sRvy7sIdKyu3hhmzA2yASen9ruDJesBKHgb6vm0H44SCMGL7JQBeMXgaOSOIa6KOEMTDBtcJnXzxPLN2an3kuybeb-fLolVqMhDuqEfJcGotjJp20mfmrj-iRjwnoTcabn-iWUDWSWkoD3oKONJUp_6NtmB3zT6H3pPULkziJ027L-sPmfJbZlozv-YtMSDE537mrK-NsmgeM8n6qLaB0vMdgPWuNnjo17AGglbHYpUD6egexyzbFj907RTgxNYU",
-      "photo_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AZLasHorL93_Kyrpovq6cyQlm-2oi3YsPRvuJ8nMU4kXDJ6sRvy7sIdKyu3hhmzA2yASen9ruDJesBKHgb6vm0H44SCMGL7JQBeMXgaOSOIa6KOEMTDBtcJnXzxPLN2an3kuybeb-fLolVqMhDuqEfJcGotjJp20mfmrj-iRjwnoTcabn-iWUDWSWkoD3oKONJUp_6NtmB3zT6H3pPULkziJ027L-sPmfJbZlozv-YtMSDE537mrK-NsmgeM8n6qLaB0vMdgPWuNnjo17AGglbHYpUD6egexyzbFj907RTgxNYU&key=AIzaSyCo7o6jQghstjLaPIdPIJUB7pL8j_e8lcQ",
       "width": 3600,
       "height": 4800
     },
     {
       "photo_reference": "AZLasHonf18ID5d68DicvHY6xSJapHF_6oouYfbs1D-qVKTDc75UOWPIEmVJiCMP7fLUK4pJzE1CLR1NlZm5x0F7Qb5mkWCiRHVGC81nfx_brmYMorjofnyPUG3r9AppoWlNOwJ-GSCZ8uEQFue0rggaY4N5cReA9C2qHzGSoujjleH4yvJQw4H6Si7qoEUHK8Ke_sGFyqs4q_OPWTDmxIorbmtCwmbipJdOjcVPo09Cz-HanqCxopp34A1MMG_guq6Ajv83XOaRYmT8OZcwdDH2-PK1drMs4CGDe9cs4BmGu7JktZr_-FRDwZzYIZhLquzZw4VGpYOV_65ITIE3ilHMZw8qsk8itS-KOAeMTRrt4al9M_P3nPyZ6gwuoDHl3bHDA4Ll0MhGcCSHVcAY7NQV4ZXZb_TS5mx-BQ9RQ6XllAvELyAr",
-      "photo_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AZLasHonf18ID5d68DicvHY6xSJapHF_6oouYfbs1D-qVKTDc75UOWPIEmVJiCMP7fLUK4pJzE1CLR1NlZm5x0F7Qb5mkWCiRHVGC81nfx_brmYMorjofnyPUG3r9AppoWlNOwJ-GSCZ8uEQFue0rggaY4N5cReA9C2qHzGSoujjleH4yvJQw4H6Si7qoEUHK8Ke_sGFyqs4q_OPWTDmxIorbmtCwmbipJdOjcVPo09Cz-HanqCxopp34A1MMG_guq6Ajv83XOaRYmT8OZcwdDH2-PK1drMs4CGDe9cs4BmGu7JktZr_-FRDwZzYIZhLquzZw4VGpYOV_65ITIE3ilHMZw8qsk8itS-KOAeMTRrt4al9M_P3nPyZ6gwuoDHl3bHDA4Ll0MhGcCSHVcAY7NQV4ZXZb_TS5mx-BQ9RQ6XllAvELyAr&key=AIzaSyCo7o6jQghstjLaPIdPIJUB7pL8j_e8lcQ",
       "width": 3024,
       "height": 4032
     }

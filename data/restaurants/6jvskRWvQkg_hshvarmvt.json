@@ -1,0 +1,98 @@
+{
+  "name_hebrew": "השוארמות",
+  "name_english": "Hshvarmvt",
+  "location": {
+    "city": "לא צוין",
+    "neighborhood": "לא צוין",
+    "address": "שדרות מוריה 52, חיפה, ישראל",
+    "region": "לא צוין",
+    "coordinates": {
+      "latitude": 32.7971514,
+      "longitude": 34.9840163
+    },
+    "full_address": "שדרות מוריה 52, חיפה, ישראל"
+  },
+  "cuisine_type": "לא צוין",
+  "status": null,
+  "price_range": "not_mentioned",
+  "host_opinion": "neutral",
+  "host_comments": "לא צוין",
+  "menu_items": [],
+  "special_features": [],
+  "contact_info": {
+    "phone": "052-632-3233",
+    "website": "https://maps.google.com/?cid=13053743364124753319",
+    "social_media": "לא צוין"
+  },
+  "business_news": null,
+  "mention_context": "הוזכר בהקשר: השוארמות",
+  "episode_info": {
+    "video_id": "6jvskRWvQkg",
+    "video_url": "https://www.youtube.com/watch?v=6jvskRWvQkg",
+    "language": "he",
+    "analysis_date": "2026-01-01",
+    "total_restaurants_found": 25,
+    "processing_method": "claude_chunked"
+  },
+  "food_trends": [
+    "מסעדות בלא צוין",
+    "לא צוין פופולרי"
+  ],
+  "episode_summary": "ניתוח מבוסס Claude של 25 מסעדות מהסרטון 6jvskRWvQkg",
+  "google_places": {
+    "place_id": "ChIJCYem6bm7HRURp73Ej202KLU",
+    "google_name": "שווארמה Shawarma 52",
+    "google_url": "https://maps.google.com/?cid=13053743364124753319",
+    "enriched_at": "2026-02-15 09:09:58",
+    "formatted_address": "שדרות מוריה 52, חיפה, ישראל"
+  },
+  "rating": {
+    "google_rating": 4.7,
+    "total_reviews": 568,
+    "price_level": null
+  },
+  "photos": [
+    {
+      "photo_reference": "ATCDNfVHADb0wWuJy7i3ibtvRqhfUbfJrBNFvmZT7cv02Ue4Oh6BJN8CFJMZb-kONryeHW8jYkWtzNPCTCfBdSElgZzUEHMf6IdrKfVguOvyJ_s-p5GEbdNszZw5LVfMBiV1UuDOFCJdTxva4qWj2J2tP1pKX6L9e3pWKDwwFFqeL7Bqjk3ClZgUidaZzbCH3aVQV1nWkxG-91B3XgYKsdc1ctdEAjS89dw_xRFlL6Ey-bUXdsz0D2LFpwWsfEmdJD6pdsaoznLkp5MPbnadhHHqpB1h5M8Wnrvfo1ymwjT2VnySS5l3zZ62p3N4o-rxNaCnKUcSjV3nhXR8r34zJNq7PSNheB6nFw_EQPTSHcnE--XBkCRdm5vvxYF6BMfcEClpmm-5aB27kidwcxCUmGdpkINU9vjL9D-g5Hnd2hvSD1Btjg",
+      "width": 3024,
+      "height": 4032
+    },
+    {
+      "photo_reference": "ATCDNfWVFU3hMgqgKiEhOLJgmT8QOfUYHvO1_wU4SGbDrVz5P_EX7TCeS8A7y6aOreh90x6h6LfW0RDBRb5IwI3XMqvJAR6Fic0h9ly7eCwygf1T5QmZlcIWU1N7wf0faacPkzOyMbym_McMvlc16r4sSFz8NRDZIIi-rb51K4cacm9RoknlfJlLCbTI9RHDRxpgHkNsTBLD_I5Wvnlw7CNqHJ6524IFUUZj-zeY7u8Edo-px4TtJyHIrhi4sGQR0X9LLAxcFq5adIW2_XSRcnmEB0okrRhfWF7Q9Efhv4ElBcd-GQ",
+      "width": 1080,
+      "height": 1080
+    },
+    {
+      "photo_reference": "ATCDNfV7LWyAEPaLjv3Eg-5Exs_-Q8-aT6PsTM1DZXblmtBsPkkcUjX_O80qwFvj3RrjA0aHQRr90QoMR_uEfICUyjQTyqPCc1k-YDj2U4JhzOvF64GvkSLL3tVvmKU1ZNg0FPrKpTyovlLmFQLI0bJWhI9xtk2yVlHYLcpgSBed7h3ZXYvTGuYIOIhAJAplqtNcvFQZo8SK0hh8moMwLIC2mMpVvxwnt7KdGhB2Ogqh30eSsds4DMvovwUvTYqBYCtxLuQOEIoXk54T9Wrx3pCE3J76VSB_Oym3bbAeYqnwJLfUz08F5nAvuJ0hNqN76r0vOUOZJzcKbZSvm1--93FAro8TtBNzxslDm5DWx_Y4a4legv7ndY1EKol0E1K0vERY1WXKBNxfCN1x-51ZoldLQoyb18o-NqSife21D_Ahrl0",
+      "width": 3000,
+      "height": 4000
+    },
+    {
+      "photo_reference": "ATCDNfXRuTB0CSiCUqu_z2J0nXBm-nSVPAodAjgPq9yp_rcfqIOiiL7v6ty0-gzFoh8XwIKsWbpsQguKzWYzCnXO7HspGBcSTcvzC0QC0C2kmP1yU2oWBWUs2WRoFhppCdFbDEh73fbsOct5YgME7QTTshY8dD0JRPEK35tA8MtUd2WKbu4HN_HV025bTDIGGi4SfT7R4ICzv3bmGneNRw6Dg4q6x-0G_ZnM2VzhQ730-vTAm2V6d660JCOvRfUPzKHOtdWRZul513Afc4BA_NXOg0PPxem3940ZU-XqUqc1fIq1hnv7Io74gp6j-H1VbgfZSNb8oyx5dHB7eH77jcQGywj9k8V5oBHk6dnoOI9nkLm-LEE9aVtbUFSd_RcjfytKvZ2W3kdJap_LZh-UHCPvhy5YVhdA4t0G7mQOGbjrjDgllNCe",
+      "width": 4032,
+      "height": 3024
+    },
+    {
+      "photo_reference": "ATCDNfUP8sOGQomEkxJBaHdWv5joNqE52P30mBx2lv4nya3DfLVNFqBbEKKPylDqPOcanbhHer-TQ407Dg9IkSHN7ZkqO4OzHmHaM7QoAbApNMqgAJlrqr5qqSDSnS9Y-ZAnyFu-u7h2J3uob0dFFQHzYARFOck2MNuh3jPVc0doJhaF72I1DiozOHztMWJEnfZCptExIc5OnSzKPxJpd2xICnY0RMr_SztCJqRmuygEyPoBcmUmrkcCziBVYFHFcrAFkCAGzLN0SQObtViZjSXpPldGdsMzFGQUNyCmLSYrTXuThuHJIWgplPD0xjCxxKhIWxZtWum96_ZYTZkjiyt0NJNUDgHMlE_5Od6IJkpG5xZjawJxlopD-edmSq1Xqr_aUma0fVUz8YqpApV0Sy7H-YFAvWEZ8VRxLRlbgW4uaiTKmw",
+      "width": 3000,
+      "height": 4000
+    }
+  ],
+  "business_hours": {
+    "open_now": false,
+    "weekday_text": [
+      "יום ראשון: 11:00–22:00",
+      "יום שני: 11:00–22:00",
+      "יום שלישי: 11:00–22:00",
+      "יום רביעי: 11:00–22:00",
+      "יום חמישי: 11:00–23:00",
+      "יום שישי: 11:00–21:00",
+      "יום שבת: 11:00–22:00"
+    ]
+  },
+  "google_places_enriched": true,
+  "google_places_attempted": true,
+  "id": "ecc4a123d56b",
+  "mention_timestamp_seconds": 947,
+  "engaging_quote": "הדיבור שלנו עליהם פה לא מעט אנשים שרובם וחלקם לפחות מביני עניין גדולים הגיעו לשם וטעמו ועפו זה היום בטופ של השוארמות בחיפה ולהיות בטופ של השוארמות בחיפה זה לא עניין של מה בכך"
+}

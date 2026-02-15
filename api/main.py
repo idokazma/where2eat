@@ -45,6 +45,7 @@ from routers import (
     analytics_router,
     analyze_router,
     places_router,
+    photos_router,
     health_router,
     admin_router,
     admin_subscriptions_router,
@@ -728,6 +729,7 @@ app.include_router(restaurants_router)
 app.include_router(analytics_router)
 app.include_router(analyze_router)
 app.include_router(places_router)
+app.include_router(photos_router)
 app.include_router(admin_router)
 app.include_router(admin_subscriptions_router)
 app.include_router(admin_pipeline_router)

@@ -17,7 +17,6 @@ import {
   Navigation,
   Share2,
   ExternalLink,
-  RefreshCw,
   Utensils,
   Camera,
 } from 'lucide-react';
@@ -25,18 +24,14 @@ import { useFavorites } from '@/contexts/favorites-context';
 import { endpoints } from '@/lib/config';
 import { getRestaurantImage, getRestaurantImages, getCuisineGradient } from '@/lib/images';
 import { PhotoGallery } from '@/components/restaurant/PhotoGallery';
+import { normalizeStatus, getPriceDisplay, normalizeMenuItems } from '@/lib/data-normalizer';
+import { getTimedYouTubeUrl } from '@/lib/youtube';
 
-function getPriceDisplay(priceRange?: string | null): string {
-  switch (priceRange) {
-    case 'budget': return '₪';
-    case 'mid-range': return '₪₪';
-    case 'expensive': return '₪₪₪';
-    default: return '';
-  }
-}
+// Removed: now using getPriceDisplay from data-normalizer
 
 function getStatusBadge(status?: string | null) {
-  switch (status) {
+  const normalized = normalizeStatus(status);
+  switch (normalized) {
     case 'new_opening':
       return { text: 'חדש!', className: 'bg-green-500 text-white' };
     case 'closing_soon':
@@ -65,6 +60,17 @@ export default function RestaurantDetailPage() {
       setIsLoading(true);
       setError(null);
       try {
+        // Try direct endpoint first (faster - fetches only one restaurant)
+        const directResponse = await fetch(endpoints.restaurants.byId(restaurantId));
+        if (directResponse.ok) {
+          const found = await directResponse.json();
+          if (found && !found.error) {
+            setRestaurant(found);
+            return;
+          }
+        }
+
+        // Fallback: search in full list
         const response = await fetch(endpoints.restaurants.list());
         const data = await response.json();
 
@@ -77,6 +83,8 @@ export default function RestaurantDetailPage() {
           } else {
             setError('המסעדה לא נמצאה');
           }
+        } else {
+          setError('המסעדה לא נמצאה');
         }
       } catch (err) {
         console.error('Failed to load restaurant:', err);
@@ -324,9 +332,7 @@ export default function RestaurantDetailPage() {
         {/* Episode Badge with timed YouTube link */}
         {restaurant.episode_info && (() => {
           const ts = restaurant.mention_timestamp_seconds;
-          const timedUrl = ts && ts > 0
-            ? `${restaurant.episode_info.video_url}${restaurant.episode_info.video_url.includes('?') ? '&' : '?'}t=${ts}`
-            : restaurant.episode_info.video_url;
+          const timedUrl = getTimedYouTubeUrl(restaurant.episode_info.video_url, ts);
           const timeLabel = ts && ts > 0
             ? `${Math.floor(ts / 60)}:${String(ts % 60).padStart(2, '0')}`
             : null;
@@ -412,45 +418,48 @@ export default function RestaurantDetailPage() {
         )}
 
         {/* Menu Items */}
-        {restaurant.menu_items && restaurant.menu_items.length > 0 && (
-          <div className="space-y-3">
-            <h2 className="text-lg font-bold text-[var(--color-ink)]">מנות מומלצות</h2>
-            <div className="space-y-2">
-              {restaurant.menu_items.map((item, index) => (
-                <div
-                  key={index}
-                  className="p-3 rounded-xl bg-[var(--color-surface)]"
-                >
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-start gap-2">
-                      <Utensils className="w-4 h-4 text-[var(--color-accent)] flex-shrink-0 mt-1" />
-                      <div>
-                        <p className="font-medium text-[var(--color-ink)]">
-                          {item.item_name}
-                        </p>
-                        {item.description && (
-                          <p className="text-sm text-[var(--color-ink-muted)] mt-1">
-                            {item.description}
+        {restaurant.menu_items && restaurant.menu_items.length > 0 && (() => {
+          const normalizedItems = normalizeMenuItems(restaurant.menu_items);
+          return (
+            <div className="space-y-3">
+              <h2 className="text-lg font-bold text-[var(--color-ink)]">מנות מומלצות</h2>
+              <div className="space-y-2">
+                {normalizedItems.map((item, index) => (
+                  <div
+                    key={index}
+                    className="p-3 rounded-xl bg-[var(--color-surface)]"
+                  >
+                    <div className="flex items-start justify-between">
+                      <div className="flex items-start gap-2">
+                        <Utensils className="w-4 h-4 text-[var(--color-accent)] flex-shrink-0 mt-1" />
+                        <div>
+                          <p className="font-medium text-[var(--color-ink)]">
+                            {item.item_name}
                           </p>
-                        )}
+                          {item.description && (
+                            <p className="text-sm text-[var(--color-ink-muted)] mt-1">
+                              {item.description}
+                            </p>
+                          )}
+                        </div>
                       </div>
+                      {item.price && (
+                        <span className="text-sm font-medium text-[var(--color-ink)] flex-shrink-0">
+                          {item.price}
+                        </span>
+                      )}
                     </div>
-                    {item.price && (
-                      <span className="text-sm font-medium text-[var(--color-ink)] flex-shrink-0">
-                        {item.price}
+                    {item.recommendation_level === 'highly_recommended' && (
+                      <span className="inline-block mt-2 px-2 py-0.5 bg-[var(--color-gold)]/10 text-[var(--color-gold)] text-xs rounded font-medium">
+                        מומלץ במיוחד
                       </span>
                     )}
                   </div>
-                  {item.recommendation_level === 'highly_recommended' && (
-                    <span className="inline-block mt-2 px-2 py-0.5 bg-[var(--color-gold)]/10 text-[var(--color-gold)] text-xs rounded font-medium">
-                      מומלץ במיוחד
-                    </span>
-                  )}
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
-        )}
+          );
+        })()}
 
         {/* Special Features */}
         {restaurant.special_features && restaurant.special_features.length > 0 && (

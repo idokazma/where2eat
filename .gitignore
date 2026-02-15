@@ -82,7 +82,7 @@ config/secrets.json
 *.pem
 
 # Generated data directories (keep structure, ignore content)
-data/restaurants/*.json
+# Note: data/restaurants/*.json is NOT ignored — clean restaurant data is committed
 data/transcripts/*.json
 data/transcripts/*.txt
 data/analyses/*.md

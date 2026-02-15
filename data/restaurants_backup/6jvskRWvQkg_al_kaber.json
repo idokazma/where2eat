@@ -13,12 +13,17 @@
     "full_address": "מצפה רונן, עין זיוון 1242600"
   },
   "cuisine_type": "אמריקאי",
-  "status": "פתוח",
-  "price_range": "בינוני",
-  "host_opinion": "חיובית",
+  "status": "open",
+  "price_range": "mid-range",
+  "host_opinion": "positive",
   "host_comments": "בייגל קריספי צ'יקן מעולה",
   "menu_items": [
-    "בייגל קריספי צ'יקן"
+    {
+      "item_name": "בייגל קריספי צ'יקן",
+      "description": "",
+      "price": null,
+      "recommendation_level": "mentioned"
+    }
   ],
   "special_features": [
     "עגלת קפה",
@@ -61,19 +66,16 @@
   "photos": [
     {
       "photo_reference": "AZLasHrWjO9qnE6XESq_jK2PYqSIer1Ev7Lzc5MWlLb9a9fVjgqaqaOMOS6RCOvsCDHRwuMmutwTTYOTrYkjVzQ8MX2KsGWA_YHhkucCOVQ9Uq0F9Gss-Hs0_piyc6j3GUG6gimSda6pxrD2gkXZj_X-xMy23-_5qD9pp5o0xa32luwBPDUkph_PEnYQxYBwLnZGZxE63xEwGdkXb6qlEEeryQELYSujvgxw3hXCIdiE5pIA3KPNQcBGKhwwu1ruPRDkzibMene6QOsEbMa6P8cvPQ4StWBMwPUyBQdjQE6PJ5Rs_g",
-      "photo_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AZLasHrWjO9qnE6XESq_jK2PYqSIer1Ev7Lzc5MWlLb9a9fVjgqaqaOMOS6RCOvsCDHRwuMmutwTTYOTrYkjVzQ8MX2KsGWA_YHhkucCOVQ9Uq0F9Gss-Hs0_piyc6j3GUG6gimSda6pxrD2gkXZj_X-xMy23-_5qD9pp5o0xa32luwBPDUkph_PEnYQxYBwLnZGZxE63xEwGdkXb6qlEEeryQELYSujvgxw3hXCIdiE5pIA3KPNQcBGKhwwu1ruPRDkzibMene6QOsEbMa6P8cvPQ4StWBMwPUyBQdjQE6PJ5Rs_g&key=AIzaSyCo7o6jQghstjLaPIdPIJUB7pL8j_e8lcQ",
       "width": 1200,
       "height": 1600
     },
     {
       "photo_reference": "AZLasHoSYxkExIRHpIR7tONZp6kErwubiy7fFokjhHsfFrLtDhLZoTGLWUBNOZ3jEaSnb4FM4p6B1xSWc8IJzjHM3OuWV-sKDn4FBajnxJ7KboHxgTGUtlx-sziYxYGCt7GTAfacJ_ehWex9UKXzNuoDDHMiGPdp_s_zwOxXaojJI3esyz6iOrKLc8JJnumhXVdBbj8snzKmE9xJvOHdRBBGPM0BzllA8ahvFtZOdnmS6i8mRDCBayN5m_XptYrQcRAxa8UjwxJuD5sDmb8WSHyrMwpkIOCRBdckTD3WPv4Ng5a-ig",
-      "photo_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AZLasHoSYxkExIRHpIR7tONZp6kErwubiy7fFokjhHsfFrLtDhLZoTGLWUBNOZ3jEaSnb4FM4p6B1xSWc8IJzjHM3OuWV-sKDn4FBajnxJ7KboHxgTGUtlx-sziYxYGCt7GTAfacJ_ehWex9UKXzNuoDDHMiGPdp_s_zwOxXaojJI3esyz6iOrKLc8JJnumhXVdBbj8snzKmE9xJvOHdRBBGPM0BzllA8ahvFtZOdnmS6i8mRDCBayN5m_XptYrQcRAxa8UjwxJuD5sDmb8WSHyrMwpkIOCRBdckTD3WPv4Ng5a-ig&key=AIzaSyCo7o6jQghstjLaPIdPIJUB7pL8j_e8lcQ",
       "width": 2720,
       "height": 3510
     },
     {
       "photo_reference": "AZLasHqwI8rNX7qPeIy4ZniKz1lf0zj7z-E6CkA4hJexI1BrepCrQrx12qsgahkDDW8-Dj3OJTxkVX5fGHa2BeKYEGNVpJ9oNpLHUZLz2eAtOIP9-wJlfuux4XydufWmDUTwcf4Kxqeq4uuseMF5rufxNvW1XoXpglYx-MvmsPNpCYhgly40WtPwhtX9ZvDXr03aIePDTJePfbaquf52zSXbKkQT_mQavXAE0fsqE1S4220OMtwrUakVW0mQXZxur3SLp4y7jPFkx0q1_5qRELjC9_XpUc3zW85RNkro7vJC7vqq6g",
-      "photo_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AZLasHqwI8rNX7qPeIy4ZniKz1lf0zj7z-E6CkA4hJexI1BrepCrQrx12qsgahkDDW8-Dj3OJTxkVX5fGHa2BeKYEGNVpJ9oNpLHUZLz2eAtOIP9-wJlfuux4XydufWmDUTwcf4Kxqeq4uuseMF5rufxNvW1XoXpglYx-MvmsPNpCYhgly40WtPwhtX9ZvDXr03aIePDTJePfbaquf52zSXbKkQT_mQavXAE0fsqE1S4220OMtwrUakVW0mQXZxur3SLp4y7jPFkx0q1_5qRELjC9_XpUc3zW85RNkro7vJC7vqq6g&key=AIzaSyCo7o6jQghstjLaPIdPIJUB7pL8j_e8lcQ",
       "width": 3000,
       "height": 4000
     }

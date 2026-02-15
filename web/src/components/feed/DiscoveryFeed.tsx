@@ -1,5 +1,6 @@
 'use client';
 
+import { useMemo } from 'react';
 import { UtensilsCrossed } from 'lucide-react';
 import { Restaurant } from '@/types/restaurant';
 import { RestaurantCardNew } from '@/components/restaurant/RestaurantCardNew';
@@ -41,6 +42,30 @@ export function DiscoveryFeed({
   userCoords,
   className = '',
 }: DiscoveryFeedProps) {
+  // Sort restaurants by distance when "Near Me" is active
+  const sortedRestaurants = useMemo(() => {
+    if (!showDistances || !userCoords) return restaurants;
+    return [...restaurants].sort((a, b) => {
+      const distA = a.location?.coordinates
+        ? calculateDistance(
+            userCoords.lat,
+            userCoords.lng,
+            a.location.coordinates.latitude,
+            a.location.coordinates.longitude
+          )
+        : Infinity;
+      const distB = b.location?.coordinates
+        ? calculateDistance(
+            userCoords.lat,
+            userCoords.lng,
+            b.location.coordinates.latitude,
+            b.location.coordinates.longitude
+          )
+        : Infinity;
+      return distA - distB;
+    });
+  }, [restaurants, showDistances, userCoords]);
+
   if (restaurants.length === 0) {
     return (
       <section className={`px-4 py-8 ${className}`}>
@@ -65,13 +90,19 @@ export function DiscoveryFeed({
       />
 
       <div className="px-4 space-y-4">
-        {restaurants.map((restaurant, index) => {
+        {sortedRestaurants.map((restaurant, index) => {
           // Calculate distance if user coords available
           let distanceMeters: number | undefined;
-          if (showDistances && userCoords) {
-            // For now, use a mock location since restaurants don't have coords
-            // In production, you'd use restaurant.google_places coordinates
-            distanceMeters = undefined; // Would calculate from restaurant coords
+          if (showDistances && userCoords && restaurant.location?.coordinates) {
+            const { latitude, longitude } = restaurant.location.coordinates;
+            if (latitude && longitude) {
+              distanceMeters = calculateDistance(
+                userCoords.lat,
+                userCoords.lng,
+                latitude,
+                longitude
+              );
+            }
           }
 
           return (

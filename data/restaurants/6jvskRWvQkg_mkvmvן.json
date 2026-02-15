@@ -1,6 +1,6 @@
 {
-  "name_hebrew": "השוארמות",
-  "name_english": "Hshvarmvt",
+  "name_hebrew": "מקומון",
+  "name_english": "Mkvmvן",
   "location": {
     "city": "לא צוין",
     "neighborhood": "לא צוין",
@@ -25,7 +25,7 @@
     "social_media": "לא צוין"
   },
   "business_news": null,
-  "mention_context": "הוזכר בהקשר: השוארמות",
+  "mention_context": "הוזכר בהקשר: מקומון",
   "episode_info": {
     "video_id": "6jvskRWvQkg",
     "video_url": "https://www.youtube.com/watch?v=6jvskRWvQkg",
@@ -43,7 +43,7 @@
     "place_id": "ChIJU4Ch2jpTHBUReaYjIVEL06A",
     "google_name": "HaShuk 34",
     "google_url": "https://maps.google.com/?cid=11588618709230659193",
-    "enriched_at": "2026-01-01 22:03:41"
+    "enriched_at": "2026-01-01 22:04:15"
   },
   "rating": {
     "google_rating": 4.5,
@@ -52,17 +52,17 @@
   },
   "photos": [
     {
-      "photo_reference": "AZLasHpZAT5ZPRx9LPUejmNUqzBFs5ICFpRRDZM5lPbN_rbDc9EJSIc7NIeP1NCFSKeQrmou89FZYpFjqoMCxIyB2p_KNiHVVnavdthVqe7MN3PV1xxLJXIurPVugTHYK2WV_9eOzl_kQEZkgnZtYtd6xdTIdFtaW6MMFPmWLBK1UVjuClz0wnTOqA1u0Jyxt4DH98RMeu9dCpxs5Zx7mykvztYYEUhw-wc_fcG6Cgxs-VNp7tAZPPTVfV0TgxDiRSLSE6CBLcUDOjSW4JBONMtZLfvLZ3k2xKs7qFTA3AtVZpA64HDUVjCcEziiZM6zQHbLkwBk-KU9jYDtn_pqZ011QBk9_U3mXezefSFZVAyRuilzcOZo8FM2E8pfZXWFM8gyQyfMBgoFsreF9Cnuphr2FhkyfQgCokeYTlgC2Y0gqvpCOg",
+      "photo_reference": "AZLasHpykyNClqTpwfGZKDHVv5R0xztmET-Mzgrhf-IhdND68jeAmnAPBbJU7mylxzisAGkfviaaC1tT9gWDPb39WAXGslwxK5rpzZJlgGARhXRoFl77FM0wBml4EKSV57tfV4FpMj62kQA6C_bCbSXh0xjmIx7YE3YZaJsM7XXYqizybUFEoL0wxWtD-dsCwqNCpHVmVdNA0UTzSbMQlrlI54awxhaAybjYv2ZC3oR5k57dvoKLHu8Tw8LjomeEG1Df34FbfHBII1KxD4oBqHHdCGokVh6dBuOJxDw9q_WUcmTHe27jZ2Sl5lhnajppk_dNhdQ61jwbte3BnHWo_SgMKKIUoJswnmlLoHLLrpj7gie9Ma-AB_M4Xg5tXyprmi8GR41HcTfLaIezumlgYJ7J1xLv5l3gcPSJ-iwgUu6ki__Z-w",
       "width": 4032,
       "height": 3024
     },
     {
-      "photo_reference": "AZLasHr1MPduvdBTged5UW4MDNf7jLuK-7mbAhAmcABiozgqXHH1u0MFCyl5DQNgxBfKhJUW4wOpzmU3EYppk26NUoHTO1ckbqDeodD8O9swRgWxthDMgbvuMEy-Q-7Qjtz-QTM9lRn-eLlAZZI5qWxukTRTdWAZf55iibfn9hXhgTw9E_DFaSNr43x3PsMsMuS_deLyKe0toB1a2FLelLSHdbbrMDqidhG0y_M2E7mXPiSoqxvkrIZa7t4-PYbkkjc0Jdm83SfibMSw8x19VUpoJqKw6YY2AL8e2xJDYOTcRMTPj4IZFwBL4gHJJKEUWNSspJWuHmHvgNPE9eY2b8kDFIRSbExPXA4GkU-haqyZENfSnjMo_8bFlX47iwvfSAZSa78Uy4CHdgnzrnvfsLbBdUV2O4j0KUSSvGVyoDlpPuZepw",
+      "photo_reference": "AZLasHptLyRtRahaGZW88yZyJxeDca39UAiduMszvIYZgFJpTfIgAOBCrV7PshY16sDj8I8Y8CmSl6rTid1fVA3OvJSRFCZ3C6ZKdVzTlwrSUsMA4ntef6iF9-JRqvXmWG38Vq4hOkAQvqY9DpuhPsYAoE74CUJS6IdrL7XebXCWySyAOOVCO07iBdMQQCZppAPlelXImWAkZj_4wOSwF8Qrv7nUUeDTgC799vjGzV4dktPVXKlt5Apgg6_zm2QWKiDMYzcofn8E6iNfBZTpGrI7ilm49a-6cdiVEMvdyMLm176wNFMp0mFbO2L0QECHRdc2gbAYwzWbPVUFjfuBWR3_27FyONl1UKzesRzr3AonpV0h3Z9Cj6y0-si7nzDRBAn-topSosDa1E717pl-8qGJEop80ReV4mdFmt3jF4b_BC1oMQ",
       "width": 4032,
       "height": 2268
     },
     {
-      "photo_reference": "AZLasHqBO6ZCghGPvBapfXNYP6hNZwBs3Hm_B0LeDZUogSXVxcZG31YaF82DN-VgshZMv3HxJ4MA2_UQjKnt65QIdZU81NcMfIISHMDnrm59mz5tE3_rP0pdcaZ8T-v-s1-ltV5uOEG4BkIVNgadoKq5CU_HoMGVAzzWfaaeIOo-A806a3CpEJMzW-S0WBjCLcIhD8N4836Ak3WiuwfvFJyXRkIGSuq7l3eKpxB9zHSIfPkmYZtNapIjdVTah1q1CPBr95ZipuJHjrQu2LGw5DwQuuSJq7cG2tX8xRpcMbnPOxmlfoYnkPj-Greii4U7Pkv-VzNlvV5uGBPEGTE4hpQQ2hgjJsYM4FqvDBOaIPggF3BgIJReL17DPVzRgjISelFz-bAbe0vpbQFt-yklZeJLVi1q4nHFG_qQ6ydczWl05Uzo0Fg4",
+      "photo_reference": "AZLasHr66sLytuplqB_R0ZEC8GtP-bZ89pw0vddwuGbw3PS78TXHk4FtpF4n1fS2XOpJXph7V4Ubl17LFSNqgnuZ2hgaqA_Q1P-5EcrwD88njytDuNvns52YLHo0_mChXOwOXi1XE_8SIDtJffqiDQEaHiieIroUv9T_JN-30BaD4wlObXEHNsE05k9jNpLj7zbGU4Jh5BmfS2zmdlQdZcNwvucYQPOZ39YYHDJUOQSaEwXH9X1G1ZnRK0TxDZN7e4dgTUstIW17ODuNlL_hzZuOZz-8bWTxxR0K4200AOplp0b97i3OxmxKQoGUmoeTQiFesDZ9l8MpgtqoshGxQQtxQPrCgQiqm_YJBLwDAepQgTYdTRpxxSuiFHfV5K91_ArWK9nKbleKS5XtkDfijrI4sUoDk7HQTeM4CqL_nu6r77E48Ylb",
       "width": 4032,
       "height": 3024
     }
@@ -80,5 +80,8 @@
     ]
   },
   "google_places_enriched": true,
-  "google_places_attempted": true
+  "google_places_attempted": true,
+  "id": "17b1341d2a26",
+  "mention_timestamp_seconds": 1402,
+  "engaging_quote": "בעצם אפשר לקרוא לזה צומת פת יונתן אתה מזג אה מצחיק כן כותרות כותרת של מקומון בירושלים זה היה עכשיו אף אחד לא יבין יש לנו"
 }

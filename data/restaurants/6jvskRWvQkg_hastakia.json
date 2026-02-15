@@ -1,0 +1,110 @@
+{
+  "name_hebrew": "הסתקיה",
+  "name_english": "Hastakia",
+  "location": {
+    "city": "ירושלים",
+    "neighborhood": "",
+    "address": "הדקל 1, ירושלים, ישראל",
+    "region": "ירושלים",
+    "coordinates": {
+      "latitude": 31.7852785,
+      "longitude": 35.2113499
+    },
+    "full_address": "הדקל 1, ירושלים, ישראל"
+  },
+  "cuisine_type": "ישראלי מודרני",
+  "status": "open",
+  "price_range": "expensive",
+  "host_opinion": "positive",
+  "host_comments": "חומוס חשויה מעולה",
+  "menu_items": [
+    {
+      "item_name": "חומוס חשויה",
+      "description": "",
+      "price": null,
+      "recommendation_level": "mentioned"
+    }
+  ],
+  "special_features": [
+    "של אסף גרנית"
+  ],
+  "contact_info": {
+    "phone": "02-533-3444",
+    "website": "https://maps.google.com/?cid=1334197678047376000",
+    "social_media": ""
+  },
+  "business_news": null,
+  "mention_context": "הסתקיה בירושלים של אסף גרנית ומחנה יהודה",
+  "episode_info": {
+    "video_id": "6jvskRWvQkg",
+    "video_url": "https://www.youtube.com/watch?v=6jvskRWvQkg",
+    "language": "he",
+    "analysis_date": "2026-01-01",
+    "total_restaurants_found": 11,
+    "processing_method": "claude_chunked"
+  },
+  "food_trends": [
+    "פרסי פופולרי",
+    "מסעדות בקיסריה",
+    "אמריקאי פופולרי",
+    "תאילנדי פופולרי",
+    "מסעדות בחיפה"
+  ],
+  "episode_summary": "ניתוח מבוסס Claude של 11 מסעדות מהסרטון 6jvskRWvQkg",
+  "google_places": {
+    "place_id": "ChIJf6EM_LvXAhURgDIqJLgFhBI",
+    "google_name": "steakiya סטקייה",
+    "google_url": "https://maps.google.com/?cid=1334197678047376000",
+    "enriched_at": "2026-02-15 09:09:55",
+    "formatted_address": "הדקל 1, ירושלים, ישראל"
+  },
+  "rating": {
+    "google_rating": 4.2,
+    "total_reviews": 1332,
+    "price_level": 3
+  },
+  "photos": [
+    {
+      "photo_reference": "ATCDNfUYQxNC2dq7cY1034MQLqeeeO3I9B1miNWvv_MBSpDm_xGf1GlT0n8RL0AUYSVmD5eVJ7hL_IaHKpck2riofGzd2Oebu_Gy9p-UVQLemaohuWho3P0F7T-MDEgohTuilFu1bjoMn_2kXhUR-poAaeo9bXivp8JQwdjBZftWlJwZWrhWAQ1xBo5iUs0fPThhp4ROuU14mjhgUwEHMFPZXjupkedOIpiAg8sRoepzU2rcyTeN9JEDyrUOGQVdmoD6EqD6LajYeI9wWxac4SWVBVDJvMhFpIMHXqkrCMpB-03ggg5dgb6BMZQMzxnucGjQxCv62nY7Or6_itXKtOttyvJxSgEHAbVtJJGIVQW3Lq2RO1MthK1lY8FxrkIPcqbeT8WFObkBDPjVzo1MvpK2bZCthLqnhJhdhjwv_ernFNvyiQ",
+      "width": 4032,
+      "height": 3024
+    },
+    {
+      "photo_reference": "ATCDNfUDGMPfHBFzS5T9hdYDv787INFt3PR_BYyN952qgKkEPH2WSWhHQHGSUWmSUWynTSC0GxwkrXjUeDRsi0ESkD_PY8pxTjFjmR_17PSrIi6WBef9LhdKfTQ3r0tPSGlCatkC8jztFvazQ3uHUMoOMkX8cFZ2-erZ43zyjObOoLpPjxzrLDMAA1lr8V4Ch2bUYxE6ul2gS1gRoQMYjEJv5WPZBIchdxUiWpc9B73ZsEhPO21oJOT_SoouTsawcRdF3sYU9PDTSStF4ZuRgRO78gn3MP-otvQKHL-fs1wx6_7qmQ",
+      "width": 3600,
+      "height": 4800
+    },
+    {
+      "photo_reference": "ATCDNfXnQwMBgeyAkOzUyzfy6mmiF7pxDDRf9tdGvyKYS0iyiADQuKPryU2gXpUjvau8wi22ZHYE4rKz5-kUmMLZ9QMoFAAWxjKQEIpF0kO6Ur65cAA1QCvQQcN6UhhjCYGtxXWm-ZOl1ixgeBLewMaCwk-fkIaFK_evbGtujoOJBo_YDyVev43vTco1nfbe8jHVBssUCRxYYjY8SEQm71IvuIS0DXRuj-sztPVtn3XIFfhfoXFPO71juKd-4e3h8ar6jr03-OIgoAa-Y7JS86qK7Goniozljj1mhDD3xNZNLCLOJqxICci00IaLN_EaRItWK0RiC7JE20DCW-197JLhA8o0aR2iYLMgLNNwMHdxDUiQvKknSVp5uiwNyZyu1ciP6XVMoorbAj8RIemekO9jG2DxNEhLnUDKdaXBzBAOWTiHwg",
+      "width": 3024,
+      "height": 4032
+    },
+    {
+      "photo_reference": "ATCDNfVvr1rJDfHNxJDFTZRzC0_AX6HTuTJ_HkwoQzdLNpWuIEAUFRj0oy1nsyrV-m8j4EptNappmO2J21V0nhg6CYhvsvbLsPJKokGkQgipU8JKmsuNsYVe_iSvHUtwxOwneYkW7INj62Ip4l860EgCvK9dSOKcdyTSrYP_Xi4zmG5Ynz1CorF0D5gryr4uUNFC_JQPW4tQrsZzLzISScESzi3kjhn__g2rRUEuPNeWyg-uutVLVRjESk7QwxuYceBfvNFNnQx6v9dLDasD0_3Xo6Ttg_h4LEUz4cjy0l8dUXuEKA-hFyge-VmitepJUA-KV9rO2GL7How23w92nvjeo5asEWDErLXEo39SFKE1ZL9XS0NlK_2ka9CqP6_jOcocgHO1UgDVU0Nm_LP2VdpVOVN80MJvVA7fm8eXQxvZIvLnjQ",
+      "width": 3739,
+      "height": 2804
+    },
+    {
+      "photo_reference": "ATCDNfVnrt2EwN7jhcvTFCMLQIIL3buMP3f_COPBCAU-bVodfPiega0FdfQaW3XyBtwmTV1EkqwaPxRefxMKg8xKr1R-a6U45X3DZwzBK0tC9kCUeNs8JGzftYFxjCdVIEYTkV6z8WmdtQFMS9Ysv0rsdILSobzJFKUUcBeoqptCR98df6g2BQuaQ0ZD59GSnai9GfY42CPXqixZA0em43PMwnqx_FUoOr0VR4MAlwR7jBgByu2AgrITNvE-3XCdHn44Xbuq5Ux47ZggUlLIWJO-lNoQSmusfC8HthC6b_cyRU-Nfv2ssWcGaZ4w6z-NnfklPSgS4C6SkMMfVKl-MPLqewjX4iW1uphhBYTVEhVkld43P_2FRSztEEe_k1gpIwo5KbJF-Z2hDmCAg3h4_zDzFyN24XsMqfmnskOmOdILuXZCC_k",
+      "width": 4032,
+      "height": 3024
+    }
+  ],
+  "business_hours": {
+    "open_now": false,
+    "weekday_text": [
+      "יום ראשון: 12:00–23:00",
+      "יום שני: 12:00–23:00",
+      "יום שלישי: 12:00–23:00",
+      "יום רביעי: 12:00–23:00",
+      "יום חמישי: 12:00–23:00",
+      "יום שישי: סגור",
+      "יום שבת: סגור"
+    ]
+  },
+  "google_places_enriched": true,
+  "google_places_attempted": true,
+  "id": "9be075ee1103",
+  "mention_timestamp_seconds": 707,
+  "engaging_quote": "שמגיע ממה שהגדרתי ואני עומד מאחורי ההגדרה הזאת המסעדה הכי טעימה של אסף גרנית וקבוצת מחנה יהודה הסתקיה בירושלים א יש שם באמת הרבה מאוד מנות מופלאות ויצירתיות מאוד. זאת אומרת מעבר לקבב"
+}
