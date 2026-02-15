@@ -531,6 +531,10 @@ def sync_sqlite_to_postgres():
                     if not existing.google_rating and rating.get('google_rating'):
                         existing.google_rating = rating['google_rating']
                         changed = True
+                    mention_ts = r.get('mention_timestamp') or r.get('mention_timestamp_seconds')
+                    if not existing.mention_timestamp and mention_ts:
+                        existing.mention_timestamp = mention_ts
+                        changed = True
                     if changed:
                         updated_restaurants += 1
                     continue
@@ -558,7 +562,7 @@ def sync_sqlite_to_postgres():
                     contact_website=contact.get('website'),
                     business_news=r.get('business_news'),
                     mention_context=r.get('mention_context'),
-                    mention_timestamp=r.get('mention_timestamp'),
+                    mention_timestamp=r.get('mention_timestamp') or r.get('mention_timestamp_seconds'),
                     google_place_id=place_id,
                     google_name=gp.get('google_name'),
                     google_url=gp.get('google_url'),
@@ -608,6 +612,51 @@ _pipeline_scheduler = None
 
 
 @asynccontextmanager
+def backfill_mention_timestamps():
+    """Backfill mention_timestamp in SQLite from JSON files (one-time migration)."""
+    try:
+        from routers.restaurants import _get_data_directory, _get_sqlite_db
+        import json as _json
+        import sqlite3
+
+        db = _get_sqlite_db()
+        if not db:
+            return
+
+        data_dir = _get_data_directory() / "restaurants"
+        if not data_dir.exists():
+            return
+
+        backfilled = 0
+        with db.get_connection() as conn:
+            # Check if any timestamps are already set
+            cursor = conn.execute("SELECT COUNT(*) FROM restaurants WHERE mention_timestamp IS NOT NULL")
+            if cursor.fetchone()[0] > 0:
+                return  # Already have timestamps, skip migration
+
+            for json_file in data_dir.glob("*.json"):
+                try:
+                    with open(json_file, "r", encoding="utf-8") as f:
+                        data = _json.load(f)
+                    ts = data.get("mention_timestamp_seconds") or data.get("mention_timestamp")
+                    name = data.get("name_hebrew")
+                    if ts and name:
+                        cursor = conn.execute(
+                            "UPDATE restaurants SET mention_timestamp = ? WHERE name_hebrew = ? AND mention_timestamp IS NULL",
+                            (ts, name),
+                        )
+                        backfilled += cursor.rowcount
+                except Exception:
+                    continue
+
+            conn.commit()
+
+        if backfilled > 0:
+            print(f"[MIGRATION] Backfilled mention_timestamp for {backfilled} restaurants")
+    except Exception as e:
+        print(f"[MIGRATION] mention_timestamp backfill failed: {e}")
+
+
 async def lifespan(app: FastAPI):
     """Lifespan context manager for startup and shutdown events."""
     global _pipeline_scheduler
@@ -627,6 +676,8 @@ async def lifespan(app: FastAPI):
             print(f"[STARTUP] Database init failed: {e}")
     # Startup: fetch default video
     await fetch_default_video_on_startup()
+    # Backfill mention_timestamp from JSON files
+    backfill_mention_timestamps()
     # Sync SQLite data to PostgreSQL
     sync_sqlite_to_postgres()
     # Seed admin user and subscriptions if empty
