@@ -193,9 +193,6 @@ export default function MapView({ restaurants, favoriteIds }: MapViewProps) {
               key={restaurantId}
               position={[latitude, longitude]}
               icon={createCustomIcon(restaurant.host_opinion, favoriteIds?.has(restaurant.google_places?.place_id || restaurant.name_hebrew))}
-              eventHandlers={{
-                click: () => handleMarkerClick(restaurant)
-              }}
             >
               <Popup
                 className="rtl-popup"
