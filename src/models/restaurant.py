@@ -170,6 +170,7 @@ class Restaurant(Base):
             },
             'business_news': self.business_news,
             'mention_context': self.mention_context,
+            'mention_timestamp_seconds': int(self.mention_timestamp) if self.mention_timestamp else None,
             'menu_items': self.menu_items or [],
             'special_features': self.special_features or [],
             'food_trends': self.episode.food_trends if self.episode else [],

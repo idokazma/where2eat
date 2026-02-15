@@ -505,7 +505,7 @@ class Database:
                 contact_website,
                 kwargs.get('business_news'),
                 kwargs.get('mention_context'),
-                kwargs.get('mention_timestamp'),
+                kwargs.get('mention_timestamp') or kwargs.get('mention_timestamp_seconds'),
                 google_place_id,
                 google_rating,
                 google_user_ratings_total,
@@ -561,6 +561,11 @@ class Database:
             'place_id': restaurant.get('google_place_id'),
             'google_name': restaurant.pop('google_name', None),
         }
+
+        # Map mention_timestamp column to mention_timestamp_seconds (frontend field name)
+        if 'mention_timestamp' in restaurant:
+            ts = restaurant.pop('mention_timestamp')
+            restaurant['mention_timestamp_seconds'] = int(ts) if ts else None
 
         # Parse JSON fields
         restaurant['menu_items'] = json.loads(restaurant.get('menu_items') or '[]')
