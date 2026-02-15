@@ -7,6 +7,7 @@ import { endpoints } from '@/lib/config';
 import { MapPin, Loader2, Heart } from 'lucide-react';
 import { useFavorites } from '@/contexts/favorites-context';
 import { Button } from '@/components/ui/button';
+import { getCoordinates } from '@/types/restaurant';
 
 // Dynamic import to avoid SSR issues with Leaflet (uses window)
 const MapView = dynamic(() => import('@/components/map/MapView'), {
@@ -47,7 +48,7 @@ export default function MapPage() {
   }, [setAllRestaurants]);
 
   const mappableRestaurants = restaurants.filter(
-    (r: any) => r.location?.coordinates?.latitude && r.location?.coordinates?.longitude
+    (r: any) => getCoordinates(r.location) !== null
   );
 
   const displayedRestaurants = showSavedOnly

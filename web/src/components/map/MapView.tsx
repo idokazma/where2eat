@@ -7,6 +7,7 @@ import 'leaflet/dist/leaflet.css';
 import { useRouter } from 'next/navigation';
 import { MapPin, Navigation, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { getCoordinates } from '@/types/restaurant';
 
 // Fix Leaflet default icon issue with Next.js/webpack
 // The default icons don't load properly in Next.js, so we use CDN
@@ -31,6 +32,8 @@ interface MapRestaurant {
       latitude: number;
       longitude: number;
     };
+    lat?: number;
+    lng?: number;
     city?: string | null;
   };
   google_places?: {
@@ -127,17 +130,17 @@ export default function MapView({ restaurants, favoriteIds }: MapViewProps) {
 
   // Filter restaurants that have coordinates
   const mappableRestaurants = restaurants.filter(
-    (r) => r.location?.coordinates?.latitude && r.location?.coordinates?.longitude
+    (r) => getCoordinates(r.location) !== null
   );
 
   useEffect(() => {
     // Fit map to show all markers when restaurants change
     if (mapRef.current && mappableRestaurants.length > 0) {
       const bounds = L.latLngBounds(
-        mappableRestaurants.map((r) => [
-          r.location!.coordinates!.latitude,
-          r.location!.coordinates!.longitude
-        ])
+        mappableRestaurants.map((r) => {
+          const coords = getCoordinates(r.location)!;
+          return [coords.latitude, coords.longitude];
+        })
       );
       mapRef.current.fitBounds(bounds, { padding: [50, 50] });
     }
@@ -182,7 +185,7 @@ export default function MapView({ restaurants, favoriteIds }: MapViewProps) {
 
         {/* Restaurant markers */}
         {mappableRestaurants.map((restaurant, index) => {
-          const { latitude, longitude } = restaurant.location!.coordinates!;
+          const { latitude, longitude } = getCoordinates(restaurant.location)!;
           const restaurantId = restaurant.google_places?.place_id || restaurant.id || `restaurant-${index}`;
 
           return (
