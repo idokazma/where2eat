@@ -70,6 +70,7 @@ class Database:
                     title TEXT,
                     language TEXT DEFAULT 'he',
                     analysis_date TEXT,
+                    published_at TEXT,
                     transcript TEXT,
                     food_trends TEXT,
                     episode_summary TEXT,
@@ -292,6 +293,22 @@ class Database:
             except sqlite3.OperationalError:
                 pass  # Column already exists
 
+            try:
+                cursor.execute('ALTER TABLE episodes ADD COLUMN published_at TEXT')
+            except sqlite3.OperationalError:
+                pass  # Column already exists
+
+            # Backfill published_at from video_queue where available
+            try:
+                cursor.execute('''
+                    UPDATE episodes SET published_at = (
+                        SELECT vq.published_at FROM video_queue vq
+                        WHERE vq.video_id = episodes.video_id AND vq.published_at IS NOT NULL
+                    ) WHERE published_at IS NULL
+                ''')
+            except sqlite3.OperationalError:
+                pass  # video_queue table may not exist yet
+
             # Create indexes for common queries
             cursor.execute('CREATE INDEX IF NOT EXISTS idx_restaurants_city ON restaurants(city)')
             cursor.execute('CREATE INDEX IF NOT EXISTS idx_restaurants_cuisine ON restaurants(cuisine_type)')
@@ -336,8 +353,8 @@ class Database:
             cursor = conn.cursor()
             cursor.execute('''
                 INSERT INTO episodes (id, video_id, video_url, channel_id, channel_name,
-                    title, language, analysis_date, transcript, food_trends, episode_summary)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    title, language, analysis_date, published_at, transcript, food_trends, episode_summary)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 ON CONFLICT(video_id) DO UPDATE SET
                     video_url = excluded.video_url,
                     channel_id = COALESCE(excluded.channel_id, episodes.channel_id),
@@ -345,6 +362,7 @@ class Database:
                     title = COALESCE(excluded.title, episodes.title),
                     language = COALESCE(excluded.language, episodes.language),
                     analysis_date = COALESCE(excluded.analysis_date, episodes.analysis_date),
+                    published_at = COALESCE(excluded.published_at, episodes.published_at),
                     transcript = COALESCE(excluded.transcript, episodes.transcript),
                     food_trends = COALESCE(excluded.food_trends, episodes.food_trends),
                     episode_summary = COALESCE(excluded.episode_summary, episodes.episode_summary),
@@ -358,6 +376,7 @@ class Database:
                 kwargs.get('title'),
                 kwargs.get('language', 'he'),
                 kwargs.get('analysis_date', datetime.now().isoformat()),
+                kwargs.get('published_at'),
                 kwargs.get('transcript'),
                 json.dumps(kwargs.get('food_trends', [])),
                 kwargs.get('episode_summary')
@@ -543,7 +562,8 @@ class Database:
             if include_episode_info:
                 cursor.execute('''
                     SELECT r.*, e.video_id, e.video_url, e.channel_name, e.title as episode_title,
-                           e.analysis_date, e.food_trends as episode_food_trends
+                           e.analysis_date, e.published_at as episode_published_at,
+                           e.food_trends as episode_food_trends
                     FROM restaurants r
                     LEFT JOIN episodes e ON r.episode_id = e.id
                     ORDER BY r.created_at DESC
@@ -561,7 +581,8 @@ class Database:
                         'video_url': restaurant.pop('video_url', None),
                         'channel_name': restaurant.pop('channel_name', None),
                         'title': restaurant.pop('episode_title', None),
-                        'analysis_date': restaurant.pop('analysis_date', None)
+                        'analysis_date': restaurant.pop('analysis_date', None),
+                        'published_at': restaurant.pop('episode_published_at', None)
                     }
                     restaurant.pop('episode_food_trends', None)
 
@@ -694,7 +715,8 @@ class Database:
             offset = (page - 1) * limit
             query = f'''
                 SELECT r.*, e.video_id, e.video_url, e.channel_name,
-                       e.title as episode_title, e.analysis_date
+                       e.title as episode_title, e.analysis_date,
+                       e.published_at as episode_published_at
                 FROM restaurants r
                 LEFT JOIN episodes e ON r.episode_id = e.id
                 WHERE {where_clause}
@@ -711,7 +733,8 @@ class Database:
                     'video_url': restaurant.pop('video_url', None),
                     'channel_name': restaurant.pop('channel_name', None),
                     'title': restaurant.pop('episode_title', None),
-                    'analysis_date': restaurant.pop('analysis_date', None)
+                    'analysis_date': restaurant.pop('analysis_date', None),
+                    'published_at': restaurant.pop('episode_published_at', None)
                 }
                 restaurants.append(restaurant)
 

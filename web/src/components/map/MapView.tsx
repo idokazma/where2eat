@@ -41,10 +41,11 @@ interface MapRestaurant {
 
 interface MapViewProps {
   restaurants: MapRestaurant[];
+  favoriteIds?: Set<string>;
 }
 
 // Custom marker icons based on host opinion
-const createCustomIcon = (opinion: MapRestaurant['host_opinion']) => {
+const createCustomIcon = (opinion: MapRestaurant['host_opinion'], isFavorite: boolean = false) => {
   const colors = {
     positive: '#4ade80',
     mixed: '#f59e0b',
@@ -52,14 +53,16 @@ const createCustomIcon = (opinion: MapRestaurant['host_opinion']) => {
     negative: '#ef4444'
   };
 
-  const color = (opinion && colors[opinion]) || colors.neutral;
+  const color = isFavorite ? '#ef4444' : (opinion && colors[opinion]) || colors.neutral;
+  const innerContent = isFavorite
+    ? `<path d="M16 26c-.3 0-.5-.1-.7-.3C14.6 25 8 19 8 14c0-4.4 3.6-8 8-8s8 3.6 8 8c0 5-6.6 11-7.3 11.7-.2.2-.4.3-.7.3z" fill="white"/><path d="M16 11c-1.7 0-3 1.3-3 3 0 2.2 3 5 3 5s3-2.8 3-5c0-1.7-1.3-3-3-3z" fill="${color}"/>`
+    : `<circle cx="16" cy="14" r="6" fill="white"/><text x="16" y="18" font-size="10" text-anchor="middle" fill="${color}">🍽️</text>`;
 
   const svgIcon = `
     <svg width="32" height="40" viewBox="0 0 32 40" xmlns="http://www.w3.org/2000/svg">
       <path d="M16 0C7.163 0 0 7.163 0 16c0 11 16 24 16 24s16-13 16-24C32 7.163 24.837 0 16 0z"
             fill="${color}" stroke="white" stroke-width="2"/>
-      <circle cx="16" cy="14" r="6" fill="white"/>
-      <text x="16" y="18" font-size="10" text-anchor="middle" fill="${color}">🍽️</text>
+      ${innerContent}
     </svg>
   `;
 
@@ -118,7 +121,7 @@ function LocationButton() {
   );
 }
 
-export default function MapView({ restaurants }: MapViewProps) {
+export default function MapView({ restaurants, favoriteIds }: MapViewProps) {
   const router = useRouter();
   const mapRef = useRef<L.Map | null>(null);
 
@@ -186,7 +189,7 @@ export default function MapView({ restaurants }: MapViewProps) {
             <Marker
               key={restaurantId}
               position={[latitude, longitude]}
-              icon={createCustomIcon(restaurant.host_opinion)}
+              icon={createCustomIcon(restaurant.host_opinion, favoriteIds?.has(restaurant.google_places?.place_id || restaurant.name_hebrew))}
               eventHandlers={{
                 click: () => handleMarkerClick(restaurant)
               }}

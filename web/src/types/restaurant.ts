@@ -61,6 +61,7 @@ export interface EpisodeInfo {
   video_url: string;
   language: string;
   analysis_date: string;
+  published_at?: string;
   total_restaurants_found?: number;
   processing_method?: string;
 }
