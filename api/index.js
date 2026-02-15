@@ -346,7 +346,7 @@ app.get('/api/restaurants/search', async (req, res) => {
       date_start,
       date_end,
       episode_id,
-      sort_by = 'analysis_date',
+      sort_by = 'published_at',
       sort_direction = 'desc',
       page = 1,
       limit = 20,
@@ -424,9 +424,9 @@ app.get('/api/restaurants/search', async (req, res) => {
 
       // Date range filtering
       if (date_start || date_end) {
-        const analysisDate = restaurant.episode_info?.analysis_date;
-        if (analysisDate) {
-          const restaurantDate = new Date(analysisDate);
+        const dateValue = restaurant.published_at || restaurant.episode_info?.published_at || restaurant.episode_info?.analysis_date;
+        if (dateValue) {
+          const restaurantDate = new Date(dateValue);
           if (date_start && restaurantDate < new Date(date_start)) return false;
           if (date_end && restaurantDate > new Date(date_end)) return false;
         }
@@ -472,8 +472,9 @@ app.get('/api/restaurants/search', async (req, res) => {
       }
 
       // Count by date
-      if (restaurant.episode_info?.analysis_date) {
-        const dateKey = new Date(restaurant.episode_info.analysis_date).toISOString().split('T')[0];
+      const dateVal = restaurant.published_at || restaurant.episode_info?.published_at || restaurant.episode_info?.analysis_date;
+      if (dateVal) {
+        const dateKey = new Date(dateVal).toISOString().split('T')[0];
         analytics.dateDistribution[dateKey] = (analytics.dateDistribution[dateKey] || 0) + 1;
       }
     });
@@ -500,9 +501,13 @@ app.get('/api/restaurants/search', async (req, res) => {
           bValue = b.rating?.google_rating || 0;
           break;
         case 'analysis_date':
-        default:
           aValue = a.episode_info?.analysis_date || '';
           bValue = b.episode_info?.analysis_date || '';
+          break;
+        case 'published_at':
+        default:
+          aValue = a.published_at || a.episode_info?.published_at || a.episode_info?.analysis_date || '';
+          bValue = b.published_at || b.episode_info?.published_at || b.episode_info?.analysis_date || '';
           break;
       }
 
@@ -523,8 +528,9 @@ app.get('/api/restaurants/search', async (req, res) => {
     const dateGroups = {};
 
     paginatedRestaurants.forEach(restaurant => {
-      if (restaurant.episode_info?.analysis_date) {
-        const dateKey = new Date(restaurant.episode_info.analysis_date).toISOString().split('T')[0];
+      const dateVal = restaurant.published_at || restaurant.episode_info?.published_at || restaurant.episode_info?.analysis_date;
+      if (dateVal) {
+        const dateKey = new Date(dateVal).toISOString().split('T')[0];
         if (!dateGroups[dateKey]) {
           dateGroups[dateKey] = [];
         }
@@ -534,7 +540,7 @@ app.get('/api/restaurants/search', async (req, res) => {
           cuisine_type: restaurant.cuisine_type,
           location: restaurant.location,
           host_opinion: restaurant.host_opinion,
-          episode_id: restaurant.episode_info.video_id
+          episode_id: restaurant.episode_info?.video_id
         });
       }
     });
@@ -579,7 +585,7 @@ app.get('/api/episodes/search', async (req, res) => {
       cuisine_filter,
       location_filter,
       min_restaurants = 1,
-      sort_by = 'analysis_date',
+      sort_by = 'published_at',
       sort_direction = 'desc',
       page = 1,
       limit = 20
@@ -621,9 +627,9 @@ app.get('/api/episodes/search', async (req, res) => {
     let episodes = Object.values(episodeGroups).filter(episode => {
       // Date filtering
       if (date_start || date_end) {
-        const analysisDate = episode.episode_info?.analysis_date;
-        if (analysisDate) {
-          const episodeDate = new Date(analysisDate);
+        const dateValue = episode.episode_info?.published_at || episode.episode_info?.analysis_date;
+        if (dateValue) {
+          const episodeDate = new Date(dateValue);
           if (date_start && episodeDate < new Date(date_start)) return false;
           if (date_end && episodeDate > new Date(date_end)) return false;
         }
@@ -667,9 +673,13 @@ app.get('/api/episodes/search', async (req, res) => {
           bValue = b.restaurants.length;
           break;
         case 'analysis_date':
-        default:
           aValue = a.episode_info?.analysis_date || '';
           bValue = b.episode_info?.analysis_date || '';
+          break;
+        case 'published_at':
+        default:
+          aValue = a.episode_info?.published_at || a.episode_info?.analysis_date || '';
+          bValue = b.episode_info?.published_at || b.episode_info?.analysis_date || '';
           break;
       }
 
@@ -737,9 +747,9 @@ app.get('/api/analytics/timeline', async (req, res) => {
         return false;
       }
       if (date_start || date_end) {
-        const analysisDate = restaurant.episode_info?.analysis_date;
-        if (analysisDate) {
-          const restaurantDate = new Date(analysisDate);
+        const dateValue = restaurant.published_at || restaurant.episode_info?.published_at || restaurant.episode_info?.analysis_date;
+        if (dateValue) {
+          const restaurantDate = new Date(dateValue);
           if (date_start && restaurantDate < new Date(date_start)) return false;
           if (date_end && restaurantDate > new Date(date_end)) return false;
         }
@@ -750,8 +760,9 @@ app.get('/api/analytics/timeline', async (req, res) => {
     // Group by time period
     const timelineGroups = {};
     filteredRestaurants.forEach(restaurant => {
-      if (restaurant.episode_info?.analysis_date) {
-        const date = new Date(restaurant.episode_info.analysis_date);
+      const dateValue = restaurant.published_at || restaurant.episode_info?.published_at || restaurant.episode_info?.analysis_date;
+      if (dateValue) {
+        const date = new Date(dateValue);
         let dateKey;
         
         switch (granularity) {
@@ -845,8 +856,8 @@ app.get('/api/analytics/timeline', async (req, res) => {
       .slice(0, 10);
 
     const dateRange = {
-      start: Math.min(...filteredRestaurants.map(r => new Date(r.episode_info?.analysis_date || 0).getTime())),
-      end: Math.max(...filteredRestaurants.map(r => new Date(r.episode_info?.analysis_date || 0).getTime()))
+      start: Math.min(...filteredRestaurants.map(r => new Date(r.published_at || r.episode_info?.published_at || r.episode_info?.analysis_date || 0).getTime())),
+      end: Math.max(...filteredRestaurants.map(r => new Date(r.published_at || r.episode_info?.published_at || r.episode_info?.analysis_date || 0).getTime()))
     };
 
     console.log(`📊 Timeline analytics: ${timeline.length} periods, ${filteredRestaurants.length} restaurants`);
@@ -911,8 +922,9 @@ app.get('/api/analytics/trends', async (req, res) => {
 
     // Filter restaurants within period
     const periodRestaurants = restaurants.filter(restaurant => {
-      if (restaurant.episode_info?.analysis_date) {
-        const restaurantDate = new Date(restaurant.episode_info.analysis_date);
+      const dateValue = restaurant.published_at || restaurant.episode_info?.published_at || restaurant.episode_info?.analysis_date;
+      if (dateValue) {
+        const restaurantDate = new Date(dateValue);
         return restaurantDate >= periodStartDate;
       }
       return false;
@@ -977,7 +989,8 @@ app.get('/api/analytics/trends', async (req, res) => {
     const cuisineTrends = {};
     periodRestaurants.forEach(restaurant => {
       const cuisine = restaurant.cuisine_type;
-      const date = new Date(restaurant.episode_info.analysis_date);
+      const dateValue = restaurant.published_at || restaurant.episode_info?.published_at || restaurant.episode_info?.analysis_date;
+      const date = new Date(dateValue);
       const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
 
       if (!cuisineTrends[cuisine]) {
