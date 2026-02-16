@@ -3,10 +3,23 @@ import { config } from '@/lib/config';
 
 /**
  * Get the best available photo URL for a restaurant.
- * Prefers proxy URL (hides API key), falls back to direct URL.
+ * Priority: owner photo > og:image > first Google photo > image_url fallback.
  */
 export function getRestaurantImage(restaurant: Restaurant): string | null {
-  // Try photos array first (from Google Places enrichment)
+  // Priority 1: Owner-attributed Google Places photo (highest quality)
+  if (restaurant.photos && restaurant.photos.length > 0) {
+    const ownerPhoto = restaurant.photos.find((p) => p.is_owner_photo);
+    if (ownerPhoto?.photo_reference) {
+      return getPhotoProxyUrl(ownerPhoto.photo_reference);
+    }
+  }
+
+  // Priority 2: og:image from restaurant website (curated hero image)
+  if (restaurant.og_image_url) {
+    return restaurant.og_image_url;
+  }
+
+  // Priority 3: First Google Places photo (any)
   if (restaurant.photos && restaurant.photos.length > 0) {
     const photo = restaurant.photos[0];
     if (photo.photo_reference) {
@@ -17,9 +30,8 @@ export function getRestaurantImage(restaurant: Restaurant): string | null {
     }
   }
 
-  // Fall back to image_url field
+  // Priority 4: image_url fallback
   if (restaurant.image_url) {
-    // If image_url looks like a photo reference (not a URL), build proxy URL
     if (!restaurant.image_url.startsWith('http')) {
       return getPhotoProxyUrl(restaurant.image_url);
     }
@@ -31,21 +43,33 @@ export function getRestaurantImage(restaurant: Restaurant): string | null {
 
 /**
  * Get all available photo URLs for a restaurant.
+ * Includes og:image in the gallery when available.
  */
 export function getRestaurantImages(restaurant: Restaurant): string[] {
-  if (!restaurant.photos || restaurant.photos.length === 0) {
-    const single = restaurant.image_url;
-    return single ? [single] : [];
+  const images: string[] = [];
+
+  // Add Google Places photos
+  if (restaurant.photos && restaurant.photos.length > 0) {
+    for (const photo of restaurant.photos) {
+      if (photo.photo_reference) {
+        images.push(getPhotoProxyUrl(photo.photo_reference));
+      } else if (photo.photo_url) {
+        images.push(photo.photo_url);
+      }
+    }
   }
 
-  return restaurant.photos
-    .map((photo) => {
-      if (photo.photo_reference) {
-        return getPhotoProxyUrl(photo.photo_reference);
-      }
-      return photo.photo_url;
-    })
-    .filter(Boolean);
+  // Add og:image if not already represented
+  if (restaurant.og_image_url) {
+    images.push(restaurant.og_image_url);
+  }
+
+  // Fallback to image_url if nothing else
+  if (images.length === 0 && restaurant.image_url) {
+    images.push(restaurant.image_url);
+  }
+
+  return images;
 }
 
 /**
