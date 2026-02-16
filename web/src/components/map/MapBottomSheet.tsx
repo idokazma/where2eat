@@ -75,7 +75,7 @@ function RowRenderer({
   ariaAttributes: Record<string, unknown>;
 }) {
   const entry = restaurants[index];
-  if (!entry) return null;
+  if (!entry) return <div style={style} />;
   const r = entry.item;
   const id = getRestaurantId(r);
 
