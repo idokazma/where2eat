@@ -17,7 +17,12 @@ jest.mock('react-leaflet', () => ({
   TileLayer: () => <div data-testid="tile-layer" />,
   Marker: ({ children }: { children: React.ReactNode }) => <div data-testid="marker">{children}</div>,
   Popup: ({ children }: { children: React.ReactNode }) => <div data-testid="popup">{children}</div>,
-  useMap: () => ({}),
+  useMap: () => ({
+    fitBounds: jest.fn(),
+    panTo: jest.fn(),
+    eachLayer: jest.fn(),
+    flyTo: jest.fn(),
+  }),
 }));
 
 // Mock leaflet
