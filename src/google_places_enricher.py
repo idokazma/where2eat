@@ -123,7 +123,7 @@ class GooglePlacesEnricher:
             headers = {
                 'Content-Type': 'application/json',
                 'X-Goog-Api-Key': self.api_key,
-                'X-Goog-FieldMask': 'places.id,places.displayName,places.formattedAddress,places.location,places.rating,places.userRatingCount,places.priceLevel,places.photos,places.regularOpeningHours,places.internationalPhoneNumber,places.websiteUri,places.googleMapsUri'
+                'X-Goog-FieldMask': 'places.id,places.displayName,places.formattedAddress,places.location,places.rating,places.userRatingCount,places.priceLevel,places.photos,places.photos.authorAttributions,places.regularOpeningHours,places.internationalPhoneNumber,places.websiteUri,places.googleMapsUri'
             }
             body = {
                 'textQuery': query,
@@ -154,7 +154,7 @@ class GooglePlacesEnricher:
             details_url = f"{self.new_api_base_url}/places/{place_id}"
             details_headers = {
                 'X-Goog-Api-Key': self.api_key,
-                'X-Goog-FieldMask': 'id,displayName,formattedAddress,location,rating,userRatingCount,priceLevel,photos,regularOpeningHours,internationalPhoneNumber,websiteUri,googleMapsUri'
+                'X-Goog-FieldMask': 'id,displayName,formattedAddress,location,rating,userRatingCount,priceLevel,photos,photos.authorAttributions,regularOpeningHours,internationalPhoneNumber,websiteUri,googleMapsUri'
             }
 
             details_response = requests.get(details_url, headers=details_headers)
@@ -226,17 +226,22 @@ class GooglePlacesEnricher:
             result['website'] = data['websiteUri']
 
         # Photos - new API uses `name` field instead of `photo_reference`
+        # Extract authorAttributions to identify owner-uploaded photos
         new_photos = data.get('photos', [])
         if new_photos:
             result['photos'] = []
             for photo in new_photos:
                 photo_name = photo.get('name', '')
                 if photo_name:
+                    # Check if photo has author attributions (owner photos typically have them)
+                    author_attributions = photo.get('authorAttributions', [])
+                    is_owner_photo = len(author_attributions) > 0
                     result['photos'].append({
                         'photo_reference': photo_name,
                         'width': photo.get('widthPx', 0),
                         'height': photo.get('heightPx', 0),
                         '_new_api': True,
+                        'is_owner_photo': is_owner_photo,
                     })
 
         # Opening hours
@@ -372,11 +377,26 @@ class GooglePlacesEnricher:
             
         if google_data.get('website'):
             enhanced_data['contact_info']['website'] = google_data['website']
-        
+            # Try to fetch og:image from restaurant website
+            try:
+                from website_image_scraper import fetch_og_image
+                og_image = fetch_og_image(google_data['website'])
+                if og_image:
+                    enhanced_data['og_image_url'] = og_image
+                    self.logger.info(f"📸 Found og:image for {original_data.get('name_hebrew', '')}")
+            except Exception as e:
+                self.logger.debug(f"Could not fetch og:image: {e}")
+
         # Add photos (supports both legacy photo_reference and new API name format)
+        # Sort owner-attributed photos first for better quality primary images
         if google_data.get('photos'):
+            # Sort: owner photos first, then regular photos
+            sorted_photos = sorted(
+                google_data['photos'],
+                key=lambda p: (not p.get('is_owner_photo', False)),
+            )
             enhanced_data['photos'] = []
-            for photo in google_data['photos'][:3]:  # Limit to 3 photos
+            for photo in sorted_photos[:5]:  # Keep top 5 from larger pool
                 photo_reference = photo.get('photo_reference')
                 is_new_api = photo.get('_new_api', False)
                 if photo_reference:
@@ -387,6 +407,8 @@ class GooglePlacesEnricher:
                     }
                     if is_new_api:
                         photo_entry['_new_api'] = True
+                    if photo.get('is_owner_photo'):
+                        photo_entry['is_owner_photo'] = True
                     enhanced_data['photos'].append(photo_entry)
                     # Set image_url to first reference for database storage
                     if not enhanced_data.get('image_url') and photo_reference:

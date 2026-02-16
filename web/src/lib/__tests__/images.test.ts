@@ -11,7 +11,37 @@ function makeRestaurant(overrides: Partial<Restaurant> = {}): Restaurant {
 }
 
 describe('getRestaurantImage', () => {
-  it('returns proxy URL when photo_reference exists', () => {
+  it('prefers owner photo over regular photo', () => {
+    const r = makeRestaurant({
+      photos: [
+        { photo_reference: 'regular1', photo_url: '', width: 400, height: 300 },
+        { photo_reference: 'owner1', photo_url: '', width: 400, height: 300, is_owner_photo: true },
+      ],
+    });
+    expect(getRestaurantImage(r)).toBe('/api/photos/owner1?maxwidth=800');
+  });
+
+  it('prefers owner photo over og:image', () => {
+    const r = makeRestaurant({
+      photos: [
+        { photo_reference: 'owner1', photo_url: '', width: 400, height: 300, is_owner_photo: true },
+      ],
+      og_image_url: 'https://restaurant.com/hero.jpg',
+    });
+    expect(getRestaurantImage(r)).toBe('/api/photos/owner1?maxwidth=800');
+  });
+
+  it('prefers og:image over regular photo when no owner photo', () => {
+    const r = makeRestaurant({
+      photos: [
+        { photo_reference: 'regular1', photo_url: '', width: 400, height: 300 },
+      ],
+      og_image_url: 'https://restaurant.com/hero.jpg',
+    });
+    expect(getRestaurantImage(r)).toBe('https://restaurant.com/hero.jpg');
+  });
+
+  it('falls back to first photo when no owner photo and no og:image', () => {
     const r = makeRestaurant({
       photos: [
         { photo_reference: 'ref123', photo_url: 'https://direct.com/img.jpg', width: 400, height: 300 },
@@ -29,7 +59,15 @@ describe('getRestaurantImage', () => {
     expect(getRestaurantImage(r)).toBe('https://direct.com/img.jpg');
   });
 
-  it('falls back to image_url when no photos', () => {
+  it('falls back to og:image when photos array is empty', () => {
+    const r = makeRestaurant({
+      photos: [],
+      og_image_url: 'https://restaurant.com/hero.jpg',
+    });
+    expect(getRestaurantImage(r)).toBe('https://restaurant.com/hero.jpg');
+  });
+
+  it('falls back to image_url when no photos and no og:image', () => {
     const r = makeRestaurant({ image_url: 'https://fallback.com/image.jpg' });
     expect(getRestaurantImage(r)).toBe('https://fallback.com/image.jpg');
   });
@@ -61,7 +99,29 @@ describe('getRestaurantImages', () => {
     expect(urls[2]).toBe('/api/photos/ref3?maxwidth=800');
   });
 
-  it('falls back to image_url when photos array is empty', () => {
+  it('includes og:image in gallery after Google photos', () => {
+    const r = makeRestaurant({
+      photos: [
+        { photo_reference: 'ref1', photo_url: '', width: 400, height: 300 },
+      ],
+      og_image_url: 'https://restaurant.com/hero.jpg',
+    });
+    const urls = getRestaurantImages(r);
+    expect(urls).toHaveLength(2);
+    expect(urls[0]).toBe('/api/photos/ref1?maxwidth=800');
+    expect(urls[1]).toBe('https://restaurant.com/hero.jpg');
+  });
+
+  it('returns og:image alone when no Google photos', () => {
+    const r = makeRestaurant({
+      photos: [],
+      og_image_url: 'https://restaurant.com/hero.jpg',
+    });
+    const urls = getRestaurantImages(r);
+    expect(urls).toEqual(['https://restaurant.com/hero.jpg']);
+  });
+
+  it('falls back to image_url when photos array is empty and no og:image', () => {
     const r = makeRestaurant({ photos: [], image_url: 'https://fallback.com/img.jpg' });
     expect(getRestaurantImages(r)).toEqual(['https://fallback.com/img.jpg']);
   });

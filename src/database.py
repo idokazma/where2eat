@@ -298,6 +298,11 @@ class Database:
             except sqlite3.OperationalError:
                 pass  # Column already exists
 
+            try:
+                cursor.execute('ALTER TABLE restaurants ADD COLUMN og_image_url TEXT')
+            except sqlite3.OperationalError:
+                pass  # Column already exists
+
             # Backfill restaurants.published_at from episodes
             try:
                 cursor.execute('''
@@ -482,8 +487,8 @@ class Database:
                     contact_phone, contact_website, business_news, mention_context,
                     mention_timestamp, google_place_id, google_rating,
                     google_user_ratings_total, latitude, longitude, image_url, photos,
-                    google_name, published_at
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    google_name, published_at, og_image_url
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ''', (
                 restaurant_id,
                 episode_id,
@@ -515,6 +520,7 @@ class Database:
                 json.dumps(kwargs.get('photos', [])),
                 google_name,
                 kwargs.get('published_at'),
+                kwargs.get('og_image_url'),
             ))
 
             return restaurant_id
