@@ -1,16 +1,20 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useRef, useMemo, useCallback } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import * as L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useRouter } from 'next/navigation';
-import { MapPin, Navigation, Star } from 'lucide-react';
+import { MapPin, Navigation, NavigationOff, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { getCoordinates } from '@/types/restaurant';
+import { UserLocationMarker } from './UserLocationMarker';
+import { HeatLegend } from './HeatLegend';
+import { dateToHeatColor, getDateRange } from '@/lib/color-utils';
+import { haversineDistance, formatDistance, GeoCoords } from '@/lib/geo-utils';
 
 // Fix Leaflet default icon issue with Next.js/webpack
-// The default icons don't load properly in Next.js, so we use CDN
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png',
@@ -18,7 +22,7 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
 });
 
-interface MapRestaurant {
+export interface MapRestaurant {
   id?: string;
   name_hebrew: string;
   name_english?: string | null;
@@ -41,69 +45,99 @@ interface MapRestaurant {
     google_name?: string;
   };
   host_opinion?: 'positive' | 'negative' | 'mixed' | 'neutral' | null;
+  episode_info?: {
+    published_at?: string;
+  };
 }
+
+export type ColorMode = 'heat' | 'opinion';
 
 interface MapViewProps {
   restaurants: MapRestaurant[];
   favoriteIds?: Set<string>;
+  userCoords?: GeoCoords | null;
+  userAccuracy?: number | null;
+  isWatching?: boolean;
+  onStartWatching?: () => void;
+  onStopWatching?: () => void;
+  colorMode?: ColorMode;
+  selectedRestaurantId?: string | null;
+  onMarkerClick?: (id: string) => void;
 }
 
-// Custom marker icons based on host opinion
-const createCustomIcon = (opinion: MapRestaurant['host_opinion'], isFavorite: boolean = false) => {
-  const colors = {
-    positive: '#4ade80',
-    mixed: '#f59e0b',
-    neutral: '#6b7280',
-    negative: '#ef4444'
-  };
+// Custom marker icon with configurable color and optional highlight
+const createCustomIcon = (
+  color: string,
+  isFavorite: boolean = false,
+  isHighlighted: boolean = false
+) => {
+  const size = isHighlighted ? 42 : 32;
+  const height = isHighlighted ? 52 : 40;
+  const cx = size / 2;
 
-  const color = isFavorite ? '#ef4444' : (opinion && colors[opinion]) || colors.neutral;
   const innerContent = isFavorite
-    ? `<path d="M16 26c-.3 0-.5-.1-.7-.3C14.6 25 8 19 8 14c0-4.4 3.6-8 8-8s8 3.6 8 8c0 5-6.6 11-7.3 11.7-.2.2-.4.3-.7.3z" fill="white"/><path d="M16 11c-1.7 0-3 1.3-3 3 0 2.2 3 5 3 5s3-2.8 3-5c0-1.7-1.3-3-3-3z" fill="${color}"/>`
-    : `<circle cx="16" cy="14" r="6" fill="white"/><text x="16" y="18" font-size="10" text-anchor="middle" fill="${color}">🍽️</text>`;
+    ? `<path d="M${cx} ${height * 0.65}c-.3 0-.5-.1-.7-.3C${cx - 1.4} ${height * 0.625} ${cx - 8} ${height * 0.475} ${cx - 8} ${height * 0.35}c0-4.4 3.6-8 8-8s8 3.6 8 8c0 5-6.6 11-7.3 11.7-.2.2-.4.3-.7.3z" fill="white"/>`
+    : `<circle cx="${cx}" cy="${height * 0.35}" r="${size * 0.19}" fill="white"/>`;
 
   const svgIcon = `
-    <svg width="32" height="40" viewBox="0 0 32 40" xmlns="http://www.w3.org/2000/svg">
-      <path d="M16 0C7.163 0 0 7.163 0 16c0 11 16 24 16 24s16-13 16-24C32 7.163 24.837 0 16 0z"
-            fill="${color}" stroke="white" stroke-width="2"/>
+    <svg width="${size}" height="${height}" viewBox="0 0 ${size} ${height}" xmlns="http://www.w3.org/2000/svg">
+      <path d="M${cx} 0C${cx * 0.45} 0 0 ${height * 0.18} 0 ${height * 0.4}c0 ${height * 0.275} ${cx} ${height * 0.6} ${cx} ${height * 0.6}s${cx}-${height * 0.325} ${cx}-${height * 0.6}C${size} ${height * 0.18} ${cx * 1.55} 0 ${cx} 0z"
+            fill="${color}" stroke="white" stroke-width="2"${isHighlighted ? ' filter="url(#glow)"' : ''}/>
       ${innerContent}
+      ${isHighlighted ? `<defs><filter id="glow"><feGaussianBlur stdDeviation="2" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>` : ''}
     </svg>
   `;
 
   return L.divIcon({
     html: svgIcon,
-    className: 'custom-marker',
-    iconSize: [32, 40],
-    iconAnchor: [16, 40],
-    popupAnchor: [0, -40]
+    className: `custom-marker${isHighlighted ? ' marker-highlighted' : ''}`,
+    iconSize: [size, height],
+    iconAnchor: [cx, height],
+    popupAnchor: [0, -height],
   });
 };
 
-// Component to handle "Center on me" button
-function LocationButton() {
-  const map = useMap();
-  const [isLocating, setIsLocating] = useState(false);
+// Get marker color based on mode
+function getMarkerColor(
+  restaurant: MapRestaurant,
+  colorMode: ColorMode,
+  dateRange: { min: Date; max: Date } | null,
+  isFavorite: boolean
+): string {
+  if (isFavorite) return '#ef4444';
 
-  const handleCenterOnMe = () => {
-    setIsLocating(true);
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          map.flyTo([latitude, longitude], 13, {
-            duration: 1.5
-          });
-          setIsLocating(false);
-        },
-        (error) => {
-          console.error('Error getting location:', error);
-          setIsLocating(false);
-          alert('לא ניתן לגשת למיקום הנוכחי שלך');
-        }
-      );
+  if (colorMode === 'heat') {
+    if (!dateRange) return '#9ca3af';
+    return dateToHeatColor(restaurant.episode_info?.published_at, dateRange.min, dateRange.max);
+  }
+
+  // Opinion mode
+  const colors: Record<string, string> = {
+    positive: '#4ade80',
+    mixed: '#f59e0b',
+    neutral: '#6b7280',
+    negative: '#ef4444',
+  };
+  return (restaurant.host_opinion && colors[restaurant.host_opinion]) || colors.neutral;
+}
+
+// Location tracking button
+function LocationButton({
+  isWatching,
+  isLoading,
+  onStart,
+  onStop,
+}: {
+  isWatching: boolean;
+  isLoading?: boolean;
+  onStart?: () => void;
+  onStop?: () => void;
+}) {
+  const handleClick = () => {
+    if (isWatching) {
+      onStop?.();
     } else {
-      setIsLocating(false);
-      alert('הדפדפן שלך לא תומך במיקום גיאוגרפי');
+      onStart?.();
     }
   };
 
@@ -111,48 +145,181 @@ function LocationButton() {
     <div className="leaflet-top leaflet-left" style={{ marginTop: '10px', marginLeft: '10px' }}>
       <div className="leaflet-control leaflet-bar">
         <Button
-          onClick={handleCenterOnMe}
-          disabled={isLocating}
-          className="bg-white hover:bg-gray-100 text-[var(--color-ink)] border border-gray-300 shadow-sm"
+          onClick={handleClick}
+          disabled={isLoading}
+          className={`border shadow-sm ${
+            isWatching
+              ? 'bg-blue-50 hover:bg-blue-100 text-blue-600 border-blue-300'
+              : 'bg-white hover:bg-gray-100 text-[var(--color-ink)] border-gray-300'
+          }`}
           size="sm"
           style={{ borderRadius: '4px', padding: '6px 12px' }}
         >
-          <Navigation className={`w-4 h-4 ml-1 ${isLocating ? 'animate-pulse' : ''}`} />
-          {isLocating ? 'מאתר...' : 'המיקום שלי'}
+          {isWatching ? (
+            <>
+              <NavigationOff className="w-4 h-4 ml-1" />
+              הפסק מעקב
+            </>
+          ) : (
+            <>
+              <Navigation className={`w-4 h-4 ml-1 ${isLoading ? 'animate-pulse' : ''}`} />
+              {isLoading ? 'מאתר...' : 'המיקום שלי'}
+            </>
+          )}
         </Button>
       </div>
     </div>
   );
 }
 
-export default function MapView({ restaurants, favoriteIds }: MapViewProps) {
+// Inner component that uses useMap() for smart zoom
+function SmartZoom({
+  restaurants,
+  userCoords,
+  nearestBounds,
+}: {
+  restaurants: MapRestaurant[];
+  userCoords?: GeoCoords | null;
+  nearestBounds?: [[number, number], [number, number]] | null;
+}) {
+  const map = useMap();
+  const hasZoomedToUserRef = useRef(false);
+
+  // When userCoords first become available, fly to nearest bounds
+  useEffect(() => {
+    if (userCoords && nearestBounds && !hasZoomedToUserRef.current) {
+      hasZoomedToUserRef.current = true;
+      const bounds = L.latLngBounds(nearestBounds);
+      map.fitBounds(bounds, {
+        padding: [50, 50],
+        paddingBottomRight: [50, 120],
+        maxZoom: 16,
+        animate: true,
+      });
+    }
+  }, [userCoords, nearestBounds, map]);
+
+  // If no user coords, fit to all restaurants
+  useEffect(() => {
+    if (!userCoords && restaurants.length > 0) {
+      const points = restaurants
+        .map((r) => getCoordinates(r.location))
+        .filter((c): c is { latitude: number; longitude: number } => c !== null);
+      if (points.length > 0) {
+        const bounds = L.latLngBounds(
+          points.map((c) => [c.latitude, c.longitude] as [number, number])
+        );
+        map.fitBounds(bounds, { padding: [50, 50] });
+      }
+    }
+  }, [restaurants, userCoords, map]);
+
+  return null;
+}
+
+// Pan to selected marker position
+function SelectedMarkerPan({
+  selectedId,
+  restaurants,
+}: {
+  selectedId?: string | null;
+  restaurants: MapRestaurant[];
+}) {
+  const map = useMap();
+
+  useEffect(() => {
+    if (!selectedId) return;
+
+    const restaurant = restaurants.find(
+      (r) => (r.google_places?.place_id || r.id) === selectedId
+    );
+    if (!restaurant) return;
+
+    const coords = getCoordinates(restaurant.location);
+    if (!coords) return;
+
+    map.panTo([coords.latitude, coords.longitude], { animate: true, duration: 0.5 });
+  }, [selectedId, restaurants, map]);
+
+  return null;
+}
+
+export default function MapView({
+  restaurants,
+  favoriteIds,
+  userCoords,
+  userAccuracy,
+  isWatching = false,
+  onStartWatching,
+  onStopWatching,
+  colorMode = 'heat',
+  selectedRestaurantId,
+  onMarkerClick,
+}: MapViewProps) {
   const router = useRouter();
   const mapRef = useRef<L.Map | null>(null);
 
-  // Filter restaurants that have coordinates
-  const mappableRestaurants = restaurants.filter(
-    (r) => getCoordinates(r.location) !== null
+  // Filter restaurants with coordinates
+  const mappableRestaurants = useMemo(
+    () => restaurants.filter((r) => getCoordinates(r.location) !== null),
+    [restaurants]
   );
 
-  useEffect(() => {
-    // Fit map to show all markers when restaurants change
-    if (mapRef.current && mappableRestaurants.length > 0) {
-      const bounds = L.latLngBounds(
-        mappableRestaurants.map((r) => {
-          const coords = getCoordinates(r.location)!;
-          return [coords.latitude, coords.longitude];
-        })
-      );
-      mapRef.current.fitBounds(bounds, { padding: [50, 50] });
-    }
-  }, [mappableRestaurants]);
+  // Compute date range for heat coloring
+  const dateRange = useMemo(() => getDateRange(mappableRestaurants), [mappableRestaurants]);
 
-  const handleMarkerClick = (restaurant: MapRestaurant) => {
-    const restaurantId = restaurant.google_places?.place_id || restaurant.id;
-    if (restaurantId) {
-      router.push(`/restaurant/${restaurantId}`);
+  // Build heat color map for sharing with bottom sheet
+  const heatColors = useMemo(() => {
+    const map = new Map<string, string>();
+    for (const r of mappableRestaurants) {
+      const id = r.google_places?.place_id || r.id || r.name_hebrew;
+      const isFav = favoriteIds?.has(r.google_places?.place_id || r.name_hebrew) ?? false;
+      map.set(id, getMarkerColor(r, colorMode, dateRange, isFav));
     }
-  };
+    return map;
+  }, [mappableRestaurants, colorMode, dateRange, favoriteIds]);
+
+  // Compute nearest bounds for smart zoom
+  const nearestBounds = useMemo(() => {
+    if (!userCoords) return null;
+
+    const withDist = mappableRestaurants
+      .map((r) => {
+        const c = getCoordinates(r.location);
+        if (!c) return null;
+        return { r, dist: haversineDistance(userCoords, { lat: c.latitude, lng: c.longitude }) };
+      })
+      .filter((x): x is { r: MapRestaurant; dist: number } => x !== null)
+      .sort((a, b) => a.dist - b.dist)
+      .slice(0, 10);
+
+    if (withDist.length === 0) return null;
+
+    let minLat = userCoords.lat, maxLat = userCoords.lat;
+    let minLng = userCoords.lng, maxLng = userCoords.lng;
+
+    for (const { r } of withDist) {
+      const c = getCoordinates(r.location)!;
+      if (c.latitude < minLat) minLat = c.latitude;
+      if (c.latitude > maxLat) maxLat = c.latitude;
+      if (c.longitude < minLng) minLng = c.longitude;
+      if (c.longitude > maxLng) maxLng = c.longitude;
+    }
+
+    return [[minLat, minLng], [maxLat, maxLng]] as [[number, number], [number, number]];
+  }, [userCoords, mappableRestaurants]);
+
+  const handleMarkerClick = useCallback(
+    (restaurant: MapRestaurant) => {
+      const restaurantId = restaurant.google_places?.place_id || restaurant.id;
+      if (restaurantId && onMarkerClick) {
+        onMarkerClick(restaurantId);
+      } else if (restaurantId) {
+        router.push(`/restaurant/${restaurantId}`);
+      }
+    },
+    [onMarkerClick, router]
+  );
 
   if (mappableRestaurants.length === 0) {
     return (
@@ -174,31 +341,61 @@ export default function MapView({ restaurants, favoriteIds }: MapViewProps) {
         zoomControl={true}
         scrollWheelZoom={true}
       >
-        {/* OpenStreetMap tiles - free, no API key needed */}
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           maxZoom={19}
         />
 
-        {/* Location button */}
-        <LocationButton />
+        {/* Smart zoom controller */}
+        <SmartZoom
+          restaurants={mappableRestaurants}
+          userCoords={userCoords}
+          nearestBounds={nearestBounds}
+        />
+
+        {/* Pan to selected marker */}
+        <SelectedMarkerPan
+          selectedId={selectedRestaurantId}
+          restaurants={mappableRestaurants}
+        />
+
+        {/* Location tracking button */}
+        <LocationButton
+          isWatching={isWatching}
+          onStart={onStartWatching}
+          onStop={onStopWatching}
+        />
+
+        {/* User location blue dot */}
+        {userCoords && (
+          <UserLocationMarker coords={userCoords} accuracy={userAccuracy} />
+        )}
 
         {/* Restaurant markers */}
         {mappableRestaurants.map((restaurant, index) => {
           const { latitude, longitude } = getCoordinates(restaurant.location)!;
           const restaurantId = restaurant.google_places?.place_id || restaurant.id || `restaurant-${index}`;
+          const isFavorite = favoriteIds?.has(restaurant.google_places?.place_id || restaurant.name_hebrew) ?? false;
+          const markerColor = heatColors.get(restaurantId) || '#6b7280';
+          const isSelected = selectedRestaurantId === restaurantId;
+
+          // Compute distance from user for popup
+          const distanceKm = userCoords
+            ? haversineDistance(userCoords, { lat: latitude, lng: longitude })
+            : null;
 
           return (
             <Marker
               key={restaurantId}
               position={[latitude, longitude]}
-              icon={createCustomIcon(restaurant.host_opinion, favoriteIds?.has(restaurant.google_places?.place_id || restaurant.name_hebrew))}
+              icon={createCustomIcon(markerColor, isFavorite, isSelected)}
+              zIndexOffset={isSelected ? 1000 : 0}
+              eventHandlers={{
+                click: () => handleMarkerClick(restaurant),
+              }}
             >
-              <Popup
-                className="rtl-popup"
-                maxWidth={300}
-              >
+              <Popup className="rtl-popup" maxWidth={300}>
                 <div className="text-right" dir="rtl">
                   <h3 className="text-lg font-bold text-[var(--color-primary)] mb-1">
                     {restaurant.google_places?.google_name || restaurant.name_hebrew}
@@ -223,6 +420,13 @@ export default function MapView({ restaurants, favoriteIds }: MapViewProps) {
                     </p>
                   )}
 
+                  {distanceKm !== null && (
+                    <p className="text-sm text-blue-600 mb-2">
+                      <Navigation className="inline w-3 h-3 ml-1" />
+                      {formatDistance(distanceKm)} ממך
+                    </p>
+                  )}
+
                   {restaurant.rating?.google_rating && (
                     <div className="flex items-center gap-1 mb-3">
                       <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
@@ -238,7 +442,10 @@ export default function MapView({ restaurants, favoriteIds }: MapViewProps) {
                   )}
 
                   <Button
-                    onClick={() => handleMarkerClick(restaurant)}
+                    onClick={() => {
+                      const id = restaurant.google_places?.place_id || restaurant.id;
+                      if (id) router.push(`/restaurant/${id}`);
+                    }}
                     className="w-full bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white"
                     size="sm"
                   >
@@ -251,6 +458,11 @@ export default function MapView({ restaurants, favoriteIds }: MapViewProps) {
         })}
       </MapContainer>
 
+      {/* Heat legend */}
+      {colorMode === 'heat' && (
+        <HeatLegend visible={mappableRestaurants.length > 0} />
+      )}
+
       {/* Map info overlay */}
       <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-lg shadow-md z-[1000]">
         <p className="text-sm text-[var(--color-ink)] font-semibold">
@@ -258,7 +470,7 @@ export default function MapView({ restaurants, favoriteIds }: MapViewProps) {
         </p>
       </div>
 
-      {/* Custom CSS for RTL popup */}
+      {/* Custom CSS */}
       <style jsx global>{`
         .leaflet-popup-content-wrapper {
           direction: rtl;
@@ -266,6 +478,25 @@ export default function MapView({ restaurants, favoriteIds }: MapViewProps) {
         .custom-marker {
           background: transparent;
           border: none;
+        }
+        .marker-highlighted {
+          z-index: 1000 !important;
+          filter: drop-shadow(0 0 6px rgba(66, 133, 244, 0.5));
+          animation: marker-bounce 0.5s ease-out;
+        }
+        @keyframes marker-bounce {
+          0% { transform: translateY(0); }
+          30% { transform: translateY(-8px); }
+          60% { transform: translateY(-2px); }
+          100% { transform: translateY(0); }
+        }
+        .user-location-pulse {
+          animation: location-pulse 2s ease-in-out infinite;
+        }
+        @keyframes location-pulse {
+          0% { opacity: 0.4; transform: scale(1); }
+          50% { opacity: 0.15; transform: scale(1.4); }
+          100% { opacity: 0.4; transform: scale(1); }
         }
         .leaflet-container {
           font-family: inherit;
