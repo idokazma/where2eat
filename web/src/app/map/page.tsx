@@ -39,8 +39,8 @@ export default function MapPage() {
   const { favorites, setAllRestaurants } = useFavorites();
   const bottomSheetRef = useRef<MapBottomSheetHandle>(null);
 
-  // Geolocation
-  const { coords: userCoords, accuracy, isWatching, watchPosition, stopWatching } = useGeolocation();
+  // Geolocation (one-time fetch)
+  const { coords: userCoords, accuracy, loading: locationLoading, getCurrentPosition } = useGeolocation();
 
   // Fetch restaurants
   useEffect(() => {
@@ -103,14 +103,12 @@ export default function MapPage() {
     setSelectedRestaurantId(id);
   }, []);
 
-  // Handle start/stop watching
-  const handleStartWatching = useCallback(() => {
-    watchPosition();
-  }, [watchPosition]);
-
-  const handleStopWatching = useCallback(() => {
-    stopWatching();
-  }, [stopWatching]);
+  // Handle one-time location fetch
+  const handleLocateMe = useCallback(() => {
+    getCurrentPosition().catch(() => {
+      // Error is already set in the hook state
+    });
+  }, [getCurrentPosition]);
 
   // Toggle color mode
   const toggleColorMode = useCallback(() => {
@@ -195,9 +193,8 @@ export default function MapPage() {
                 favoriteIds={favoriteIds}
                 userCoords={userCoords}
                 userAccuracy={accuracy}
-                isWatching={isWatching}
-                onStartWatching={handleStartWatching}
-                onStopWatching={handleStopWatching}
+                locationLoading={locationLoading}
+                onLocateMe={handleLocateMe}
                 colorMode={colorMode}
                 selectedRestaurantId={selectedRestaurantId}
                 onMarkerClick={handleMarkerClick}
