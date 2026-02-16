@@ -580,7 +580,8 @@ class TestAnalyzeEndpoints:
 
     def test_analyze_video_default_url(self, client):
         """Test video analysis uses default URL when not provided."""
-        response = client.post("/api/analyze", json={})
+        with patch("routers.analyze.run_video_analysis", return_value=None):
+            response = client.post("/api/analyze", json={})
 
         assert response.status_code == 202
         data = response.json()

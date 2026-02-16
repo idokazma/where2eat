@@ -161,7 +161,8 @@ def load_all_restaurants() -> List[dict]:
             except Exception as e:
                 print(f"Warning: SQLAlchemy error: {e}")
 
-    return []
+    # 3. Fallback to JSON files
+    return load_all_restaurants_json()
 
 
 def load_all_restaurants_json() -> List[dict]:
