@@ -5,7 +5,7 @@ import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import * as L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useRouter } from 'next/navigation';
-import { MapPin, Navigation, NavigationOff, Star } from 'lucide-react';
+import { MapPin, Navigation, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { getCoordinates } from '@/types/restaurant';
 import { UserLocationMarker } from './UserLocationMarker';
@@ -57,9 +57,8 @@ interface MapViewProps {
   favoriteIds?: Set<string>;
   userCoords?: GeoCoords | null;
   userAccuracy?: number | null;
-  isWatching?: boolean;
-  onStartWatching?: () => void;
-  onStopWatching?: () => void;
+  locationLoading?: boolean;
+  onLocateMe?: () => void;
   colorMode?: ColorMode;
   selectedRestaurantId?: string | null;
   onMarkerClick?: (id: string) => void;
@@ -102,10 +101,8 @@ function getMarkerColor(
   restaurant: MapRestaurant,
   colorMode: ColorMode,
   dateRange: { min: Date; max: Date } | null,
-  isFavorite: boolean
+  _isFavorite: boolean
 ): string {
-  if (isFavorite) return '#ef4444';
-
   if (colorMode === 'heat') {
     if (!dateRange) return '#9ca3af';
     return dateToHeatColor(restaurant.episode_info?.published_at, dateRange.min, dateRange.max);
@@ -121,51 +118,32 @@ function getMarkerColor(
   return (restaurant.host_opinion && colors[restaurant.host_opinion]) || colors.neutral;
 }
 
-// Location tracking button
+// One-time location fetch button
 function LocationButton({
-  isWatching,
+  hasLocation,
   isLoading,
-  onStart,
-  onStop,
+  onLocate,
 }: {
-  isWatching: boolean;
+  hasLocation: boolean;
   isLoading?: boolean;
-  onStart?: () => void;
-  onStop?: () => void;
+  onLocate?: () => void;
 }) {
-  const handleClick = () => {
-    if (isWatching) {
-      onStop?.();
-    } else {
-      onStart?.();
-    }
-  };
-
   return (
     <div className="leaflet-top leaflet-left" style={{ marginTop: '10px', marginLeft: '10px' }}>
       <div className="leaflet-control leaflet-bar">
         <Button
-          onClick={handleClick}
+          onClick={() => onLocate?.()}
           disabled={isLoading}
           className={`border shadow-sm ${
-            isWatching
+            hasLocation
               ? 'bg-blue-50 hover:bg-blue-100 text-blue-600 border-blue-300'
               : 'bg-white hover:bg-gray-100 text-[var(--color-ink)] border-gray-300'
           }`}
           size="sm"
           style={{ borderRadius: '4px', padding: '6px 12px' }}
         >
-          {isWatching ? (
-            <>
-              <NavigationOff className="w-4 h-4 ml-1" />
-              הפסק מעקב
-            </>
-          ) : (
-            <>
-              <Navigation className={`w-4 h-4 ml-1 ${isLoading ? 'animate-pulse' : ''}`} />
-              {isLoading ? 'מאתר...' : 'המיקום שלי'}
-            </>
-          )}
+          <Navigation className={`w-4 h-4 ml-1 ${isLoading ? 'animate-pulse' : ''}`} />
+          {isLoading ? 'מאתר...' : 'המיקום שלי'}
         </Button>
       </div>
     </div>
@@ -174,11 +152,9 @@ function LocationButton({
 
 // Inner component that uses useMap() for smart zoom
 function SmartZoom({
-  restaurants,
   userCoords,
   nearestBounds,
 }: {
-  restaurants: MapRestaurant[];
   userCoords?: GeoCoords | null;
   nearestBounds?: [[number, number], [number, number]] | null;
 }) {
@@ -198,21 +174,6 @@ function SmartZoom({
       });
     }
   }, [userCoords, nearestBounds, map]);
-
-  // If no user coords, fit to all restaurants
-  useEffect(() => {
-    if (!userCoords && restaurants.length > 0) {
-      const points = restaurants
-        .map((r) => getCoordinates(r.location))
-        .filter((c): c is { latitude: number; longitude: number } => c !== null);
-      if (points.length > 0) {
-        const bounds = L.latLngBounds(
-          points.map((c) => [c.latitude, c.longitude] as [number, number])
-        );
-        map.fitBounds(bounds, { padding: [50, 50] });
-      }
-    }
-  }, [restaurants, userCoords, map]);
 
   return null;
 }
@@ -249,9 +210,8 @@ export default function MapView({
   favoriteIds,
   userCoords,
   userAccuracy,
-  isWatching = false,
-  onStartWatching,
-  onStopWatching,
+  locationLoading = false,
+  onLocateMe,
   colorMode = 'heat',
   selectedRestaurantId,
   onMarkerClick,
@@ -333,8 +293,8 @@ export default function MapView({
   return (
     <div className="relative w-full h-full">
       <MapContainer
-        center={[31.5, 34.8]}
-        zoom={8}
+        center={[32.0853, 34.7818]}
+        zoom={13}
         className="w-full h-full"
         style={{ minHeight: '400px' }}
         ref={mapRef}
@@ -349,7 +309,6 @@ export default function MapView({
 
         {/* Smart zoom controller */}
         <SmartZoom
-          restaurants={mappableRestaurants}
           userCoords={userCoords}
           nearestBounds={nearestBounds}
         />
@@ -360,11 +319,11 @@ export default function MapView({
           restaurants={mappableRestaurants}
         />
 
-        {/* Location tracking button */}
+        {/* Location button */}
         <LocationButton
-          isWatching={isWatching}
-          onStart={onStartWatching}
-          onStop={onStopWatching}
+          hasLocation={!!userCoords}
+          isLoading={locationLoading}
+          onLocate={onLocateMe}
         />
 
         {/* User location blue dot */}
