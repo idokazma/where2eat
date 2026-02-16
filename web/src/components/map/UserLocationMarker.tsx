@@ -70,9 +70,6 @@ export function UserLocationMarker({ coords, accuracy }: UserLocationMarkerProps
       }).addTo(map);
     }
 
-    return () => {
-      // Cleanup on unmount
-    };
   }, [coords.lat, coords.lng, accuracy, map]);
 
   // Cleanup all layers on unmount

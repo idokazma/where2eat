@@ -64,14 +64,14 @@ export default function MapPage() {
 
   // Filter to restaurants that have coordinates
   const mappableRestaurants = useMemo(
-    () => restaurants.filter((r: any) => getCoordinates(r.location) !== null),
+    () => restaurants.filter((r) => getCoordinates(r.location) !== null),
     [restaurants]
   );
 
   // Apply saved filter
   const displayedRestaurants = useMemo(() => {
     if (!showSavedOnly) return mappableRestaurants;
-    return mappableRestaurants.filter((r: any) =>
+    return mappableRestaurants.filter((r) =>
       favorites.includes(r.google_places?.place_id || r.name_hebrew)
     );
   }, [mappableRestaurants, showSavedOnly, favorites]);

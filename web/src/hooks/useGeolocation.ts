@@ -50,7 +50,9 @@ export function useGeolocation(options: UseGeolocationOptions = {}) {
   });
 
   const watchIdRef = useRef<number | null>(null);
-  const mergedOptions = { ...defaultOptions, ...options };
+  const enableHighAccuracy = options.enableHighAccuracy ?? defaultOptions.enableHighAccuracy;
+  const timeout = options.timeout ?? defaultOptions.timeout;
+  const maximumAge = options.maximumAge ?? defaultOptions.maximumAge;
 
   const getCurrentPosition = useCallback((): Promise<GeolocationState['coords']> => {
     return new Promise((resolve, reject) => {
@@ -89,13 +91,13 @@ export function useGeolocation(options: UseGeolocationOptions = {}) {
           reject(new Error(errorMessage));
         },
         {
-          enableHighAccuracy: mergedOptions.enableHighAccuracy,
-          timeout: mergedOptions.timeout,
-          maximumAge: mergedOptions.maximumAge,
+          enableHighAccuracy: enableHighAccuracy,
+          timeout: timeout,
+          maximumAge: maximumAge,
         }
       );
     });
-  }, [mergedOptions.enableHighAccuracy, mergedOptions.timeout, mergedOptions.maximumAge]);
+  }, [enableHighAccuracy, timeout, maximumAge]);
 
   const watchPosition = useCallback(() => {
     if (!navigator.geolocation) {
@@ -139,12 +141,12 @@ export function useGeolocation(options: UseGeolocationOptions = {}) {
         }));
       },
       {
-        enableHighAccuracy: mergedOptions.enableHighAccuracy,
-        timeout: mergedOptions.timeout,
-        maximumAge: mergedOptions.maximumAge,
+        enableHighAccuracy: enableHighAccuracy,
+        timeout: timeout,
+        maximumAge: maximumAge,
       }
     );
-  }, [mergedOptions.enableHighAccuracy, mergedOptions.timeout, mergedOptions.maximumAge]);
+  }, [enableHighAccuracy, timeout, maximumAge]);
 
   const stopWatching = useCallback(() => {
     if (watchIdRef.current !== null) {

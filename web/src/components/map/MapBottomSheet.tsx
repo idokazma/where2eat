@@ -101,6 +101,7 @@ export const MapBottomSheet = forwardRef<MapBottomSheetHandle, MapBottomSheetPro
   function MapBottomSheet({ restaurants, selectedId, onSelect, favoriteIds, heatColors }, ref) {
     const listRef = useListRef(null);
     const scrollOffsetRef = useRef(0);
+    const lastFocusedIdRef = useRef<string | null>(null);
     const [viewportHeight, setViewportHeight] = useState(
       typeof window !== 'undefined' ? window.innerHeight : 800
     );
@@ -111,7 +112,6 @@ export const MapBottomSheet = forwardRef<MapBottomSheetHandle, MapBottomSheetPro
     const sheetHeight = useMotionValue(SNAP_COLLAPSED);
 
     const [snapState, setSnapState] = useState<'collapsed' | 'half' | 'full'>('collapsed');
-    const lastFocusedIdRef = useRef<string | null>(null);
 
     useEffect(() => {
       const onResize = () => setViewportHeight(window.innerHeight);
@@ -145,6 +145,9 @@ export const MapBottomSheet = forwardRef<MapBottomSheetHandle, MapBottomSheetPro
       },
     }), [restaurants, snapTo, snapHalf, listRef]);
 
+    // When selectedId changes externally (map marker tap), scroll list into view
+    // and expand sheet if collapsed. Uses requestAnimationFrame to avoid
+    // synchronous setState inside effect (react-hooks/set-state-in-effect).
     useEffect(() => {
       if (selectedId) {
         const idx = restaurants.findIndex((r) => getRestaurantId(r.item) === selectedId);
@@ -152,7 +155,7 @@ export const MapBottomSheet = forwardRef<MapBottomSheetHandle, MapBottomSheetPro
           listRef.current.scrollToRow({ index: idx, align: 'center' });
         }
         if (snapState === 'collapsed') {
-          snapTo(snapHalf);
+          requestAnimationFrame(() => snapTo(snapHalf));
         }
       }
     }, [selectedId, restaurants, snapState, snapTo, snapHalf, listRef]);
@@ -180,6 +183,22 @@ export const MapBottomSheet = forwardRef<MapBottomSheetHandle, MapBottomSheetPro
         snapTo(target);
       },
       [sheetHeight, snapHalf, snapFull, snapTo]
+    );
+
+    // Haptic feedback when visible row range changes
+    const handleRowsRendered = useCallback(
+      (visibleRows: { startIndex: number; stopIndex: number }) => {
+        const centerIndex = Math.floor((visibleRows.startIndex + visibleRows.stopIndex) / 2);
+        if (centerIndex >= 0 && centerIndex < restaurants.length) {
+          const id = getRestaurantId(restaurants[centerIndex].item);
+          if (id !== lastFocusedIdRef.current) {
+            lastFocusedIdRef.current = id;
+            triggerHaptic('light');
+            onSelect(id);
+          }
+        }
+      },
+      [restaurants, onSelect]
     );
 
     const translateY = useTransform(sheetHeight, (h: number) => viewportHeight - h);
@@ -239,6 +258,7 @@ export const MapBottomSheet = forwardRef<MapBottomSheetHandle, MapBottomSheetPro
             overscanCount={5}
             rowComponent={RowRenderer}
             rowProps={rowProps}
+            onRowsRendered={handleRowsRendered}
             style={{ height: listHeight }}
           />
         </div>

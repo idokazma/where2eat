@@ -14,6 +14,7 @@ import { dateToHeatColor, getDateRange } from '@/lib/color-utils';
 import { haversineDistance, formatDistance, GeoCoords } from '@/lib/geo-utils';
 
 // Fix Leaflet default icon issue with Next.js/webpack
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png',
@@ -216,30 +217,29 @@ function SmartZoom({
   return null;
 }
 
-// Highlight selected marker by managing z-index
-function MarkerHighlight({
+// Pan to selected marker position
+function SelectedMarkerPan({
   selectedId,
+  restaurants,
 }: {
   selectedId?: string | null;
+  restaurants: MapRestaurant[];
 }) {
   const map = useMap();
 
   useEffect(() => {
     if (!selectedId) return;
 
-    // Pan to selected marker
-    map.eachLayer((layer) => {
-      if (layer instanceof L.Marker) {
-        const el = layer.getElement();
-        if (el?.dataset?.restaurantId === selectedId) {
-          layer.setZIndexOffset(1000);
-          map.panTo(layer.getLatLng(), { animate: true, duration: 0.5 });
-        } else {
-          layer.setZIndexOffset(0);
-        }
-      }
-    });
-  }, [selectedId, map]);
+    const restaurant = restaurants.find(
+      (r) => (r.google_places?.place_id || r.id) === selectedId
+    );
+    if (!restaurant) return;
+
+    const coords = getCoordinates(restaurant.location);
+    if (!coords) return;
+
+    map.panTo([coords.latitude, coords.longitude], { animate: true, duration: 0.5 });
+  }, [selectedId, restaurants, map]);
 
   return null;
 }
@@ -354,8 +354,11 @@ export default function MapView({
           nearestBounds={nearestBounds}
         />
 
-        {/* Selected marker highlight */}
-        <MarkerHighlight selectedId={selectedRestaurantId} />
+        {/* Pan to selected marker */}
+        <SelectedMarkerPan
+          selectedId={selectedRestaurantId}
+          restaurants={mappableRestaurants}
+        />
 
         {/* Location tracking button */}
         <LocationButton
