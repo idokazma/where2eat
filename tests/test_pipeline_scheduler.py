@@ -459,3 +459,55 @@ class TestSchedulerLifecycle:
                 MockSchedulerClass.assert_not_called()
 
             assert sched._running is False
+
+
+# ---------------------------------------------------------------------------
+# TestVideoAgeFilter
+# ---------------------------------------------------------------------------
+class TestVideoAgeFilter:
+    """Test that old videos are filtered out during poll_subscriptions."""
+
+    def test_poll_skips_old_videos(self, scheduler, subscription, db):
+        """Videos older than PIPELINE_MAX_VIDEO_AGE_DAYS are not enqueued."""
+        old_date = (datetime.utcnow() - timedelta(days=120)).isoformat()
+        recent_date = (datetime.utcnow() - timedelta(days=10)).isoformat()
+
+        videos = [
+            {
+                'video_id': 'old_vid',
+                'video_url': 'https://www.youtube.com/watch?v=old_vid',
+                'video_title': 'Old Video',
+                'published_at': old_date,
+            },
+            {
+                'video_id': 'recent_vid',
+                'video_url': 'https://www.youtube.com/watch?v=recent_vid',
+                'video_title': 'Recent Video',
+                'published_at': recent_date,
+            },
+        ]
+
+        with patch.object(scheduler, '_fetch_channel_videos', return_value=videos):
+            scheduler.poll_subscriptions()
+
+        queue_mgr = VideoQueueManager(db)
+        depth = queue_mgr.get_queue_depth()
+        assert depth == 1  # Only recent_vid should be queued
+
+    def test_poll_allows_videos_without_date(self, scheduler, subscription, db):
+        """Videos with no published_at are still enqueued (assumed recent)."""
+        videos = [
+            {
+                'video_id': 'no_date_vid',
+                'video_url': 'https://www.youtube.com/watch?v=no_date_vid',
+                'video_title': 'No Date Video',
+                'published_at': '',
+            },
+        ]
+
+        with patch.object(scheduler, '_fetch_channel_videos', return_value=videos):
+            scheduler.poll_subscriptions()
+
+        queue_mgr = VideoQueueManager(db)
+        depth = queue_mgr.get_queue_depth()
+        assert depth == 1
