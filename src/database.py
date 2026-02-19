@@ -526,10 +526,15 @@ class Database:
             return restaurant_id
 
     def get_restaurant(self, restaurant_id: str) -> Optional[Dict]:
-        """Get restaurant by ID."""
+        """Get restaurant by ID or Google Place ID."""
         with self.get_connection() as conn:
             cursor = conn.cursor()
             cursor.execute('SELECT * FROM restaurants WHERE id = ?', (restaurant_id,))
+            row = cursor.fetchone()
+            if row:
+                return self._row_to_restaurant(row)
+            # Fallback: search by google_place_id (used when navigating from map)
+            cursor.execute('SELECT * FROM restaurants WHERE google_place_id = ?', (restaurant_id,))
             row = cursor.fetchone()
             if row:
                 return self._row_to_restaurant(row)

@@ -75,22 +75,24 @@ class PipelineScheduler:
         try:
             self._scheduler = BackgroundScheduler()
 
-            # Poll subscriptions for new videos
+            # Poll subscriptions for new videos (run immediately on startup)
             self._scheduler.add_job(
                 self.poll_subscriptions,
                 trigger='interval',
                 hours=PIPELINE_POLL_INTERVAL_HOURS,
                 id='poll_subscriptions',
                 name='Poll YouTube subscriptions for new videos',
+                next_run_time=datetime.utcnow(),
             )
 
-            # Process next queued video
+            # Process next queued video (run immediately on startup)
             self._scheduler.add_job(
                 self.process_next_video,
                 trigger='interval',
                 minutes=PIPELINE_PROCESS_INTERVAL_MINUTES,
                 id='process_next_video',
                 name='Process next video in queue',
+                next_run_time=datetime.utcnow(),
             )
 
             # Clean up stale processing jobs
