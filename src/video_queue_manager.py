@@ -15,6 +15,7 @@ from config import (
     PIPELINE_PROCESS_INTERVAL_MINUTES,
     PIPELINE_MAX_RETRY_ATTEMPTS,
     PIPELINE_STALE_TIMEOUT_HOURS,
+    PIPELINE_MAX_VIDEO_AGE_DAYS,
 )
 
 
@@ -45,6 +46,35 @@ class VideoQueueManager:
         - Calculates scheduled_for based on last scheduled item + PROCESS_INTERVAL_MINUTES
         - Returns the created queue entry dict
         """
+        # Check video age before any DB operations
+        if self._is_video_too_old(published_at):
+            queue_id = str(uuid.uuid4())
+            now = datetime.utcnow().isoformat()
+            with self.db.get_connection() as conn:
+                cursor = conn.cursor()
+                cursor.execute(
+                    """
+                    INSERT INTO video_queue
+                        (id, subscription_id, video_id, video_url, video_title,
+                         channel_name, published_at, discovered_at, status,
+                         priority, scheduled_for)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'skipped', ?, ?)
+                    """,
+                    (
+                        queue_id,
+                        subscription_id,
+                        video_id,
+                        video_url,
+                        video_title,
+                        channel_name,
+                        published_at,
+                        now,
+                        priority,
+                        now,
+                    ),
+                )
+            return self.get_video(queue_id)
+
         queue_id = str(uuid.uuid4())
         now = datetime.utcnow().isoformat()
 
@@ -489,6 +519,25 @@ class VideoQueueManager:
                 (now, cutoff),
             )
             return cursor.rowcount
+
+    @staticmethod
+    def _is_video_too_old(published_at: Optional[str]) -> bool:
+        """Check if a video's publish date exceeds the maximum age limit.
+
+        Returns False (not too old) when published_at is None, empty,
+        or unparseable — assumes the video is recent.
+        """
+        if not published_at:
+            return False
+        try:
+            video_date = datetime.fromisoformat(published_at.replace('Z', '+00:00'))
+            # Strip timezone info for comparison with utcnow
+            if video_date.tzinfo is not None:
+                video_date = video_date.replace(tzinfo=None)
+            cutoff = datetime.utcnow() - timedelta(days=PIPELINE_MAX_VIDEO_AGE_DAYS)
+            return video_date < cutoff
+        except (ValueError, AttributeError):
+            return False
 
     def _calculate_next_slot(self) -> str:
         """Calculate the next available processing slot.

@@ -22,6 +22,7 @@ from config import (
     PIPELINE_POLL_INTERVAL_HOURS,
     PIPELINE_PROCESS_INTERVAL_MINUTES,
     PIPELINE_MAX_INITIAL_VIDEOS,
+    PIPELINE_MAX_VIDEO_AGE_DAYS,
     PIPELINE_STALE_TIMEOUT_HOURS,
     PIPELINE_LOG_RETENTION_DAYS,
     PIPELINE_SCHEDULER_ENABLED,
@@ -216,6 +217,10 @@ class PipelineScheduler:
             for video in videos:
                 video_id = video.get('video_id')
                 if not video_id:
+                    continue
+
+                # Skip videos older than the configured age limit
+                if VideoQueueManager._is_video_too_old(video.get('published_at')):
                     continue
 
                 # Check if already in queue

@@ -9,6 +9,7 @@ import pytest
 import tempfile
 import json
 from datetime import datetime, timedelta
+from unittest.mock import patch
 import uuid
 
 # Add project paths
@@ -530,6 +531,93 @@ class TestRetryAllFailed:
 
         result = manager.retry_all_failed()
         assert result['count'] == 0
+
+
+class TestVideoAgeLimit:
+    """Test video age limit filtering in enqueue."""
+
+    def test_enqueue_skips_video_older_than_max_age(self, db, manager):
+        """Videos with published_at older than PIPELINE_MAX_VIDEO_AGE_DAYS are skipped."""
+        old_date = (datetime.utcnow() - timedelta(days=100)).isoformat()
+
+        entry = manager.enqueue(
+            video_id='old_vid',
+            video_url='https://youtube.com/watch?v=old_vid',
+            published_at=old_date,
+        )
+
+        assert entry['status'] == 'skipped'
+
+    def test_enqueue_accepts_recent_video(self, db, manager):
+        """Videos published within the age limit are enqueued normally."""
+        recent_date = (datetime.utcnow() - timedelta(days=30)).isoformat()
+
+        entry = manager.enqueue(
+            video_id='recent_vid',
+            video_url='https://youtube.com/watch?v=recent_vid',
+            published_at=recent_date,
+        )
+
+        assert entry['status'] == 'queued'
+
+    def test_enqueue_accepts_video_with_no_published_at(self, db, manager):
+        """Videos with no published_at are assumed recent and enqueued normally."""
+        entry = manager.enqueue(
+            video_id='no_date_vid',
+            video_url='https://youtube.com/watch?v=no_date_vid',
+        )
+
+        assert entry['status'] == 'queued'
+
+    def test_enqueue_respects_custom_max_age_config(self, db):
+        """The age limit respects the PIPELINE_MAX_VIDEO_AGE_DAYS config value."""
+        with patch('video_queue_manager.PIPELINE_MAX_VIDEO_AGE_DAYS', 30):
+            mgr = VideoQueueManager(db)
+
+            # 45 days old - should be skipped with a 30-day limit
+            old_date = (datetime.utcnow() - timedelta(days=45)).isoformat()
+            entry = mgr.enqueue(
+                video_id='custom_limit_vid',
+                video_url='https://youtube.com/watch?v=custom_limit_vid',
+                published_at=old_date,
+            )
+
+            assert entry['status'] == 'skipped'
+
+    def test_enqueue_accepts_video_at_boundary(self, db, manager):
+        """A video published exactly at the age limit boundary is accepted."""
+        # 89 days old (within 90-day default limit)
+        boundary_date = (datetime.utcnow() - timedelta(days=89)).isoformat()
+
+        entry = manager.enqueue(
+            video_id='boundary_vid',
+            video_url='https://youtube.com/watch?v=boundary_vid',
+            published_at=boundary_date,
+        )
+
+        assert entry['status'] == 'queued'
+
+    def test_enqueue_handles_date_only_format(self, db, manager):
+        """published_at in YYYY-MM-DD format (from yt-dlp) is handled correctly."""
+        old_date = (datetime.utcnow() - timedelta(days=120)).strftime('%Y-%m-%d')
+
+        entry = manager.enqueue(
+            video_id='date_only_vid',
+            video_url='https://youtube.com/watch?v=date_only_vid',
+            published_at=old_date,
+        )
+
+        assert entry['status'] == 'skipped'
+
+    def test_enqueue_handles_invalid_date_gracefully(self, db, manager):
+        """Videos with unparseable published_at are assumed recent."""
+        entry = manager.enqueue(
+            video_id='bad_date_vid',
+            video_url='https://youtube.com/watch?v=bad_date_vid',
+            published_at='not-a-date',
+        )
+
+        assert entry['status'] == 'queued'
 
 
 if __name__ == '__main__':
