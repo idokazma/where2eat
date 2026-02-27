@@ -371,8 +371,10 @@ class TestQueueQueries:
 
     def test_get_queue_items_paginated(self, db, manager):
         """get_queue returns paginated results with total count."""
+        from datetime import datetime
+        now = datetime.utcnow().isoformat()
         for i in range(5):
-            manager.enqueue(video_id=f'page{i:03d}', video_url=f'url{i}')
+            manager.enqueue(video_id=f'page{i:03d}', video_url=f'url{i}', published_at=now)
 
         result = manager.get_queue(page=1, limit=2)
         assert len(result['items']) == 2
