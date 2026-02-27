@@ -538,6 +538,45 @@ class VideoQueueManager:
 
         return {"items": items, "total": total}
 
+    # Columns returned by get_all_videos for the unified view.
+    _ALL_VIDEOS_UNION = """
+        SELECT
+            vq.id, vq.subscription_id, vq.video_id, vq.video_url,
+            vq.video_title, vq.channel_name, vq.published_at,
+            vq.discovered_at, vq.status, vq.priority,
+            vq.attempt_count, vq.max_attempts, vq.scheduled_for,
+            vq.processing_started_at, vq.processing_completed_at,
+            vq.restaurants_found, vq.error_message, vq.error_log,
+            vq.episode_id
+        FROM video_queue vq
+
+        UNION ALL
+
+        SELECT
+            e.id           AS id,
+            NULL           AS subscription_id,
+            e.video_id     AS video_id,
+            e.video_url    AS video_url,
+            e.title        AS video_title,
+            e.channel_name AS channel_name,
+            e.published_at AS published_at,
+            e.created_at   AS discovered_at,
+            'completed'    AS status,
+            0              AS priority,
+            0              AS attempt_count,
+            0              AS max_attempts,
+            NULL           AS scheduled_for,
+            NULL           AS processing_started_at,
+            e.analysis_date AS processing_completed_at,
+            (SELECT COUNT(*) FROM restaurants r WHERE r.episode_id = e.id)
+                           AS restaurants_found,
+            NULL           AS error_message,
+            NULL           AS error_log,
+            e.id           AS episode_id
+        FROM episodes e
+        WHERE e.video_id NOT IN (SELECT video_id FROM video_queue)
+    """
+
     def get_all_videos(
         self,
         page: int = 1,
@@ -546,6 +585,10 @@ class VideoQueueManager:
         search: Optional[str] = None,
     ) -> dict:
         """Get all videos regardless of status, with optional filtering.
+
+        Merges video_queue entries with episodes that were processed outside
+        the queue (e.g. via direct analysis). Episodes not in video_queue
+        appear as 'completed'.
 
         Returns {items: [...], total: int, status_summary: {queued: N, ...}}.
         Applies PIPELINE_MAX_VIDEO_AGE_DAYS cutoff on published_at.
@@ -557,6 +600,8 @@ class VideoQueueManager:
 
         with self.db.get_connection() as conn:
             cursor = conn.cursor()
+
+            base = f"({self._ALL_VIDEOS_UNION}) AS av"
 
             # Build WHERE clause
             conditions = [
@@ -579,9 +624,9 @@ class VideoQueueManager:
 
             # Status summary (always unfiltered by status/search, only age cutoff)
             cursor.execute(
-                """SELECT status, COUNT(*) as cnt FROM video_queue
-                   WHERE (published_at IS NULL OR published_at >= ?)
-                   GROUP BY status""",
+                f"""SELECT status, COUNT(*) as cnt FROM {base}
+                    WHERE (published_at IS NULL OR published_at >= ?)
+                    GROUP BY status""",
                 (cutoff,),
             )
             status_summary: Dict[str, int] = {}
@@ -590,14 +635,14 @@ class VideoQueueManager:
 
             # Total count for filtered results
             cursor.execute(
-                f"SELECT COUNT(*) as cnt FROM video_queue WHERE {where}",
+                f"SELECT COUNT(*) as cnt FROM {base} WHERE {where}",
                 params,
             )
             total = cursor.fetchone()["cnt"]
 
             # Paginated items
             cursor.execute(
-                f"""SELECT * FROM video_queue
+                f"""SELECT * FROM {base}
                     WHERE {where}
                     ORDER BY discovered_at DESC
                     LIMIT ? OFFSET ?""",

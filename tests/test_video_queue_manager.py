@@ -727,6 +727,58 @@ class TestGetAllVideos:
         assert summary.get('completed', 0) == 1
         assert summary.get('queued', 0) == 1
 
+    def test_get_all_videos_includes_episodes_outside_queue(self, db, manager):
+        """Episodes processed outside the queue appear as completed in get_all_videos."""
+        # Create an episode directly (not via queue)
+        episode_id = db.create_episode(
+            video_id='direct_vid',
+            video_url='https://youtube.com/watch?v=direct_vid',
+        )
+
+        result = manager.get_all_videos()
+        assert result['total'] == 1
+        assert len(result['items']) == 1
+        item = result['items'][0]
+        assert item['video_id'] == 'direct_vid'
+        assert item['status'] == 'completed'
+        assert item['episode_id'] == episode_id
+
+    def test_get_all_videos_no_duplicate_for_queued_and_episode(self, db, manager):
+        """A video in both video_queue and episodes should appear only once."""
+        now = datetime.utcnow().isoformat()
+        entry = manager.enqueue(
+            video_id='both_vid', video_url='u1', published_at=now,
+        )
+        episode_id = db.create_episode(
+            video_id='both_vid',
+            video_url='u1',
+        )
+        manager.mark_completed(entry['id'], restaurants_found=2, episode_id=episode_id)
+
+        result = manager.get_all_videos()
+        video_ids = [item['video_id'] for item in result['items']]
+        assert video_ids.count('both_vid') == 1
+
+    def test_get_all_videos_episode_restaurants_counted(self, db, manager):
+        """Episodes outside queue show correct restaurants_found count."""
+        episode_id = db.create_episode(
+            video_id='counted_vid',
+            video_url='https://youtube.com/watch?v=counted_vid',
+        )
+        # Add restaurants linked to this episode
+        db.create_restaurant(
+            name_hebrew='מסעדה א',
+            episode_id=episode_id,
+        )
+        db.create_restaurant(
+            name_hebrew='מסעדה ב',
+            episode_id=episode_id,
+        )
+
+        result = manager.get_all_videos()
+        item = next(i for i in result['items'] if i['video_id'] == 'counted_vid')
+        assert item['restaurants_found'] == 2
+
 
 if __name__ == '__main__':
     pytest.main([__file__, '-v'])
