@@ -79,6 +79,68 @@ async def pipeline_overview(
 
 
 @router.get(
+    "/debug-all-videos",
+    summary="Debug all-videos query (temporary)",
+    include_in_schema=False,
+)
+async def debug_all_videos():
+    """Temporary debug endpoint to inspect all-videos data on production."""
+    try:
+        from database import get_database
+        db = get_database()
+        with db.get_connection() as conn:
+            cursor = conn.cursor()
+
+            # Count episodes and video_queue
+            cursor.execute("SELECT COUNT(*) as cnt FROM episodes")
+            ep_count = cursor.fetchone()["cnt"]
+            cursor.execute("SELECT COUNT(*) as cnt FROM video_queue")
+            vq_count = cursor.fetchone()["cnt"]
+
+            # Sample episodes
+            cursor.execute(
+                "SELECT id, video_id, title, channel_name, published_at, created_at "
+                "FROM episodes ORDER BY created_at DESC LIMIT 3"
+            )
+            sample_episodes = [dict(r) for r in cursor.fetchall()]
+
+            # Sample video_queue
+            cursor.execute(
+                "SELECT id, video_id, video_title, status, published_at, discovered_at "
+                "FROM video_queue ORDER BY discovered_at DESC LIMIT 3"
+            )
+            sample_vq = [dict(r) for r in cursor.fetchall()]
+
+            # Episodes NOT in video_queue
+            cursor.execute(
+                "SELECT COUNT(*) as cnt FROM episodes "
+                "WHERE video_id NOT IN (SELECT video_id FROM video_queue)"
+            )
+            orphan_count = cursor.fetchone()["cnt"]
+
+            # Try the actual UNION query
+            queue_manager = _get_queue_manager()
+            result = queue_manager.get_all_videos(page=1, limit=3)
+
+        return {
+            "episodes_count": ep_count,
+            "video_queue_count": vq_count,
+            "orphan_episodes": orphan_count,
+            "sample_episodes": sample_episodes,
+            "sample_video_queue": sample_vq,
+            "get_all_videos_result": {
+                "total": result["total"],
+                "status_summary": result["status_summary"],
+                "items_count": len(result["items"]),
+                "first_item": result["items"][0] if result["items"] else None,
+            },
+        }
+    except Exception as e:
+        import traceback
+        return {"error": str(e), "traceback": traceback.format_exc()}
+
+
+@router.get(
     "/all-videos",
     summary="List all videos",
     description="Get paginated list of all videos with optional status and search filters.",
