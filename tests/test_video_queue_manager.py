@@ -759,6 +759,17 @@ class TestGetAllVideos:
         video_ids = [item['video_id'] for item in result['items']]
         assert video_ids.count('both_vid') == 1
 
+    def test_get_all_videos_empty_string_published_at(self, db, manager):
+        """Videos with empty string published_at are included (not excluded by age filter)."""
+        manager.enqueue(
+            video_id='empty_pub', video_url='u1', published_at='',
+            video_title='Empty Published',
+        )
+
+        result = manager.get_all_videos()
+        assert result['total'] == 1
+        assert result['items'][0]['video_id'] == 'empty_pub'
+
     def test_get_all_videos_episode_restaurants_counted(self, db, manager):
         """Episodes outside queue show correct restaurants_found count."""
         episode_id = db.create_episode(

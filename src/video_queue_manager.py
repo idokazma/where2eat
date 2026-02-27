@@ -604,9 +604,11 @@ class VideoQueueManager:
             base = f"({self._ALL_VIDEOS_UNION}) AS av"
 
             # Build WHERE clause
-            conditions = [
-                "(published_at IS NULL OR published_at >= ?)"
-            ]
+            # Treat empty string as NULL for published_at (some entries have "")
+            age_filter = (
+                "(published_at IS NULL OR published_at = '' OR published_at >= ?)"
+            )
+            conditions = [age_filter]
             params: list = [cutoff]
 
             if status:
@@ -625,7 +627,7 @@ class VideoQueueManager:
             # Status summary (always unfiltered by status/search, only age cutoff)
             cursor.execute(
                 f"""SELECT status, COUNT(*) as cnt FROM {base}
-                    WHERE (published_at IS NULL OR published_at >= ?)
+                    WHERE (published_at IS NULL OR published_at = '' OR published_at >= ?)
                     GROUP BY status""",
                 (cutoff,),
             )
