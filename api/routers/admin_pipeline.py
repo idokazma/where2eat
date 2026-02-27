@@ -79,6 +79,36 @@ async def pipeline_overview(
 
 
 @router.get(
+    "/all-videos",
+    summary="List all videos",
+    description="Get paginated list of all videos with optional status and search filters.",
+)
+async def list_all_videos(
+    page: int = Query(1, ge=1),
+    limit: int = Query(20, ge=1, le=100),
+    status: Optional[str] = Query(None, description="Filter by status"),
+    search: Optional[str] = Query(None, description="Search title or channel"),
+    user: dict = Depends(get_current_user),
+):
+    """List all videos regardless of status."""
+    queue_manager = _get_queue_manager()
+    result = queue_manager.get_all_videos(
+        page=page, limit=limit, status=status, search=search
+    )
+    total = result["total"]
+    return {
+        "videos": result["items"],
+        "status_summary": result["status_summary"],
+        "pagination": {
+            "page": page,
+            "limit": limit,
+            "total": total,
+            "total_pages": max(1, (total + limit - 1) // limit),
+        },
+    }
+
+
+@router.get(
     "/queue",
     summary="List queued videos",
     description="Get paginated list of videos in the processing queue.",

@@ -8,7 +8,7 @@ import { RefreshCw, Lock, LogOut } from "lucide-react"
 import { getApiUrl, endpoints } from "@/lib/config"
 import StatusStrip from "./components/StatusStrip"
 import PipelineView from "./components/PipelineView"
-import CompletedVideos from "./components/CompletedVideos"
+import AllVideos from "./components/AllVideos"
 
 interface PipelineOverview {
   queued: number
@@ -200,8 +200,8 @@ function AdminDashboard({
       {/* Separator */}
       <div className="border-t" />
 
-      {/* Completed Videos with extraction results */}
-      <CompletedVideos token={token} />
+      {/* All Videos with status filters and extraction results */}
+      <AllVideos token={token} />
     </div>
   )
 }

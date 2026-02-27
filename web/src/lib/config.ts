@@ -81,6 +81,10 @@ export const endpoints = {
         const query = params ? `?${new URLSearchParams(params).toString()}` : '';
         return getApiUrl(`/api/admin/pipeline/history${query}`);
       },
+      allVideos: (params?: Record<string, string>) => {
+        const query = params ? `?${new URLSearchParams(params).toString()}` : '';
+        return getApiUrl(`/api/admin/pipeline/all-videos${query}`);
+      },
       stats: () => getApiUrl('/api/admin/pipeline/stats'),
       logs: (params?: Record<string, string>) => {
         const query = params ? `?${new URLSearchParams(params).toString()}` : '';
