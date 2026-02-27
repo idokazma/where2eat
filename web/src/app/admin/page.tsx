@@ -1,24 +1,32 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
-import {
-  RefreshCw,
-  Lock,
-  LogOut,
-  LayoutDashboard,
-  Youtube,
-  UtensilsCrossed,
-  ListTodo,
-} from "lucide-react"
-import { getApiUrl } from "@/lib/config"
-import OverviewTab from "./components/OverviewTab"
-import VideosTab from "./components/VideosTab"
-import RestaurantsTab from "./components/RestaurantsTab"
-import QueueTab from "./components/QueueTab"
+import { RefreshCw, Lock, LogOut } from "lucide-react"
+import { getApiUrl, endpoints } from "@/lib/config"
+import StatusStrip from "./components/StatusStrip"
+import PipelineView from "./components/PipelineView"
+import CompletedVideos from "./components/CompletedVideos"
+
+interface PipelineOverview {
+  queued: number
+  processing: number
+  completed: number
+  failed: number
+  skipped: number
+  total: number
+}
+
+interface PipelineStats {
+  status_counts: Record<string, number>
+  avg_processing_seconds: number
+  completed_last_24h: number
+  completed_last_7d: number
+  failure_rate_percent: number
+  total_items: number
+}
 
 function AdminLoginForm({ onLogin }: { onLogin: (token: string) => void }) {
   const [email, setEmail] = useState("")
@@ -102,61 +110,98 @@ function AdminDashboard({
   token: string
   onLogout: () => void
 }) {
+  const [overview, setOverview] = useState<PipelineOverview | null>(null)
+  const [stats, setStats] = useState<PipelineStats | null>(null)
+  const [restaurantCount, setRestaurantCount] = useState(0)
+  const [isLoadingMeta, setIsLoadingMeta] = useState(true)
+  const [lastRefresh, setLastRefresh] = useState<Date | null>(null)
+
+  const authHeaders = {
+    Authorization: `Bearer ${token}`,
+    "Content-Type": "application/json",
+  }
+
+  const loadMeta = useCallback(async () => {
+    try {
+      const [overviewRes, statsRes, restaurantsRes] = await Promise.all([
+        fetch(endpoints.admin.pipeline.overview(), { headers: authHeaders }),
+        fetch(endpoints.admin.pipeline.stats(), { headers: authHeaders }),
+        fetch(endpoints.restaurants.list()),
+      ])
+
+      const [overviewData, statsData, restaurantsData] = await Promise.all([
+        overviewRes.json(),
+        statsRes.json(),
+        restaurantsRes.json(),
+      ])
+
+      if (overviewData.overview) setOverview(overviewData.overview)
+      if (statsData.stats) setStats(statsData.stats)
+
+      const total =
+        restaurantsData.restaurants?.length || restaurantsData.count || 0
+      setRestaurantCount(total)
+      setLastRefresh(new Date())
+    } catch (error) {
+      console.error("Failed to load dashboard meta:", error)
+    } finally {
+      setIsLoadingMeta(false)
+    }
+  }, [token])
+
+  useEffect(() => {
+    loadMeta()
+    const interval = setInterval(loadMeta, 15000)
+    return () => clearInterval(interval)
+  }, [loadMeta])
+
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight text-foreground">
-            Admin Dashboard
+    <div className="space-y-4 max-w-6xl mx-auto">
+      {/* Header: title + logout */}
+      <div className="flex items-center justify-between gap-4">
+        <div className="flex items-center gap-3 min-w-0">
+          <h1 className="text-lg font-bold tracking-tight text-foreground whitespace-nowrap">
+            Pipeline Control
           </h1>
-          <p className="text-muted-foreground mt-1">
-            Monitor system status, manage videos, and control the pipeline
-          </p>
+          {lastRefresh && (
+            <span className="text-[10px] text-muted-foreground whitespace-nowrap hidden sm:inline">
+              Updated {lastRefresh.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", second: "2-digit" })}
+            </span>
+          )}
         </div>
-        <Button variant="outline" size="sm" onClick={onLogout}>
-          <LogOut className="size-4 mr-2" />
-          Logout
-        </Button>
+        <div className="flex items-center gap-2 shrink-0">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={loadMeta}
+            className="h-7 w-7 p-0"
+            title="Refresh all"
+          >
+            <RefreshCw className={`size-3.5 ${isLoadingMeta ? "animate-spin" : ""}`} />
+          </Button>
+          <Button variant="ghost" size="sm" onClick={onLogout} className="h-7 px-2 text-xs">
+            <LogOut className="size-3.5 mr-1" />
+            Logout
+          </Button>
+        </div>
       </div>
 
-      {/* Tabbed Content */}
-      <Tabs defaultValue="overview">
-        <TabsList className="w-full md:w-auto">
-          <TabsTrigger value="overview">
-            <LayoutDashboard className="size-4 mr-1.5" />
-            Overview
-          </TabsTrigger>
-          <TabsTrigger value="videos">
-            <Youtube className="size-4 mr-1.5" />
-            Videos
-          </TabsTrigger>
-          <TabsTrigger value="restaurants">
-            <UtensilsCrossed className="size-4 mr-1.5" />
-            Restaurants
-          </TabsTrigger>
-          <TabsTrigger value="queue">
-            <ListTodo className="size-4 mr-1.5" />
-            Queue
-          </TabsTrigger>
-        </TabsList>
+      {/* Status Strip */}
+      <StatusStrip
+        overview={overview}
+        stats={stats}
+        restaurantCount={restaurantCount}
+        isLoading={isLoadingMeta}
+      />
 
-        <TabsContent value="overview">
-          <OverviewTab token={token} />
-        </TabsContent>
+      {/* Pipeline: Now Processing + Queue + Failed + Analyze */}
+      <PipelineView token={token} />
 
-        <TabsContent value="videos">
-          <VideosTab token={token} />
-        </TabsContent>
+      {/* Separator */}
+      <div className="border-t" />
 
-        <TabsContent value="restaurants">
-          <RestaurantsTab />
-        </TabsContent>
-
-        <TabsContent value="queue">
-          <QueueTab token={token} />
-        </TabsContent>
-      </Tabs>
+      {/* Completed Videos with extraction results */}
+      <CompletedVideos token={token} />
     </div>
   )
 }
@@ -185,7 +230,6 @@ export default function AdminPage() {
         })
         .finally(() => setIsChecking(false))
     } else {
-      // Intentional: set initial state when no stored token exists
       queueMicrotask(() => setIsChecking(false))
     }
   }, [])
