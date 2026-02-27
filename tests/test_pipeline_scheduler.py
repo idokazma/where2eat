@@ -6,6 +6,7 @@ stale job cleanup, and scheduler lifecycle management.
 TDD: Tests written first, implementation follows.
 """
 
+import json
 import os
 import sys
 import pytest
@@ -21,7 +22,7 @@ from database import Database
 from subscription_manager import SubscriptionManager
 from video_queue_manager import VideoQueueManager
 from pipeline_logger import PipelineLogger
-from config import PIPELINE_MAX_INITIAL_VIDEOS
+from config import PIPELINE_MAX_INITIAL_VIDEOS, PIPELINE_MAX_RECENT_VIDEOS
 
 
 @pytest.fixture
@@ -62,6 +63,25 @@ def _make_video_list(video_ids):
             'published_at': datetime.utcnow().isoformat(),
         }
         for vid in video_ids
+    ]
+
+
+def _make_dated_video_list(count, base_date=None):
+    """Helper to build a list of video dicts with sequential published dates.
+
+    Videos are created from oldest to newest (index 0 = oldest).
+    Each video is published 1 day after the previous one.
+    """
+    if base_date is None:
+        base_date = datetime(2025, 1, 1)
+    return [
+        {
+            'video_id': f'vid_{i:04d}',
+            'video_url': f'https://www.youtube.com/watch?v=vid_{i:04d}',
+            'video_title': f'Title for vid_{i:04d}',
+            'published_at': (base_date + timedelta(days=i)).isoformat(),
+        }
+        for i in range(count)
     ]
 
 
@@ -109,19 +129,18 @@ class TestPollSubscriptions:
         depth = queue_mgr.get_queue_depth()
         assert depth == 2  # vid_queued + vid_new
 
-    def test_poll_respects_max_initial_videos(self, scheduler, subscription, db):
-        """First poll caps at PIPELINE_MAX_INITIAL_VIDEOS."""
-        # Generate more videos than the cap
-        count = PIPELINE_MAX_INITIAL_VIDEOS + 20
-        video_ids = [f'vid_{i:04d}' for i in range(count)]
-        videos = _make_video_list(video_ids)
+    def test_poll_respects_max_recent_videos(self, scheduler, subscription, db):
+        """Poll only enqueues at most PIPELINE_MAX_RECENT_VIDEOS for analysis."""
+        # Generate more videos than the recent cap
+        count = PIPELINE_MAX_RECENT_VIDEOS + 20
+        videos = _make_dated_video_list(count)
 
         with patch.object(scheduler, '_fetch_channel_videos', return_value=videos):
             scheduler.poll_subscriptions()
 
         queue_mgr = VideoQueueManager(db)
         depth = queue_mgr.get_queue_depth()
-        assert depth == PIPELINE_MAX_INITIAL_VIDEOS
+        assert depth == PIPELINE_MAX_RECENT_VIDEOS
 
     def test_poll_updates_subscription_last_checked(self, scheduler, subscription, db):
         """last_checked_at is updated after poll."""
@@ -459,3 +478,236 @@ class TestSchedulerLifecycle:
                 MockSchedulerClass.assert_not_called()
 
             assert sched._running is False
+
+
+# ---------------------------------------------------------------------------
+# TestFilterByDate
+# ---------------------------------------------------------------------------
+class TestFilterByDate:
+    """Test date-based filtering: only the N most recent videos are analyzed,
+    older videos are enqueued as skipped for admin visibility."""
+
+    def test_poll_only_enqueues_recent_videos(self, scheduler, subscription, db):
+        """Only the PIPELINE_MAX_RECENT_VIDEOS most recent videos are enqueued
+        with status='queued'. Older videos should be skipped."""
+        # Create 15 videos (more than default 10)
+        videos = _make_dated_video_list(15)
+
+        with patch.object(scheduler, '_fetch_channel_videos', return_value=videos):
+            scheduler.poll_subscriptions()
+
+        queue_mgr = VideoQueueManager(db)
+
+        # Only the most recent 10 should be queued for processing
+        depth = queue_mgr.get_queue_depth()
+        assert depth == PIPELINE_MAX_RECENT_VIDEOS
+
+    def test_poll_skips_older_videos_with_reason(self, scheduler, subscription, db):
+        """Older videos (beyond the N most recent) are added as 'skipped'
+        with a reason visible to admins."""
+        videos = _make_dated_video_list(15)
+
+        with patch.object(scheduler, '_fetch_channel_videos', return_value=videos):
+            scheduler.poll_subscriptions()
+
+        # Check that older videos are in the queue with status='skipped'
+        with db.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute(
+                "SELECT * FROM video_queue WHERE status = 'skipped' ORDER BY published_at ASC"
+            )
+            skipped = [dict(row) for row in cursor.fetchall()]
+
+        # 15 total - 10 recent = 5 should be skipped
+        assert len(skipped) == 15 - PIPELINE_MAX_RECENT_VIDEOS
+
+        # Each skipped video should have an error_message explaining why
+        for item in skipped:
+            assert item['error_message'] is not None
+            assert 'recent' in item['error_message'].lower() or 'old' in item['error_message'].lower()
+
+    def test_poll_skipped_videos_are_the_oldest(self, scheduler, subscription, db):
+        """The skipped videos should be the oldest ones, not the newest."""
+        videos = _make_dated_video_list(15)
+
+        with patch.object(scheduler, '_fetch_channel_videos', return_value=videos):
+            scheduler.poll_subscriptions()
+
+        with db.get_connection() as conn:
+            cursor = conn.cursor()
+
+            # Get queued videos (the recent ones)
+            cursor.execute(
+                "SELECT published_at FROM video_queue WHERE status = 'queued' ORDER BY published_at ASC"
+            )
+            queued_dates = [row['published_at'] for row in cursor.fetchall()]
+
+            # Get skipped videos (the old ones)
+            cursor.execute(
+                "SELECT published_at FROM video_queue WHERE status = 'skipped' ORDER BY published_at DESC"
+            )
+            skipped_dates = [row['published_at'] for row in cursor.fetchall()]
+
+        # All skipped dates should be older than all queued dates
+        if skipped_dates and queued_dates:
+            newest_skipped = max(skipped_dates)
+            oldest_queued = min(queued_dates)
+            assert newest_skipped < oldest_queued
+
+    def test_poll_fewer_videos_than_limit_all_enqueued(self, scheduler, subscription, db):
+        """If fewer videos than PIPELINE_MAX_RECENT_VIDEOS, all are enqueued normally."""
+        videos = _make_dated_video_list(5)  # Less than 10
+
+        with patch.object(scheduler, '_fetch_channel_videos', return_value=videos):
+            scheduler.poll_subscriptions()
+
+        queue_mgr = VideoQueueManager(db)
+        depth = queue_mgr.get_queue_depth()
+        assert depth == 5
+
+        # No videos should be skipped
+        with db.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute(
+                "SELECT COUNT(*) as cnt FROM video_queue WHERE status = 'skipped'"
+            )
+            skipped_count = cursor.fetchone()['cnt']
+        assert skipped_count == 0
+
+    def test_poll_exact_limit_all_enqueued(self, scheduler, subscription, db):
+        """If exactly PIPELINE_MAX_RECENT_VIDEOS videos, all are enqueued normally."""
+        videos = _make_dated_video_list(PIPELINE_MAX_RECENT_VIDEOS)
+
+        with patch.object(scheduler, '_fetch_channel_videos', return_value=videos):
+            scheduler.poll_subscriptions()
+
+        queue_mgr = VideoQueueManager(db)
+        depth = queue_mgr.get_queue_depth()
+        assert depth == PIPELINE_MAX_RECENT_VIDEOS
+
+    def test_poll_logs_skipped_count(self, scheduler, subscription, db):
+        """The poll_completed log should include the count of skipped videos."""
+        videos = _make_dated_video_list(15)
+
+        with patch.object(scheduler, '_fetch_channel_videos', return_value=videos):
+            scheduler.poll_subscriptions()
+
+        pl = PipelineLogger(db)
+        logs = pl.get_logs(event_type='poll_completed')
+        assert logs['total'] >= 1
+
+        # Check the details of the log entry
+        log_entry = logs['items'][0]
+        details = json.loads(log_entry['details']) if isinstance(log_entry['details'], str) else log_entry['details']
+        assert 'skipped_old' in details
+        assert details['skipped_old'] == 5  # 15 - 10
+
+    def test_poll_videos_without_dates_are_treated_as_oldest(self, scheduler, subscription, db):
+        """Videos missing published_at are treated as oldest and thus skipped first."""
+        # Mix of dated and undated videos
+        videos = [
+            {'video_id': 'no_date_1', 'video_url': 'https://youtube.com/watch?v=no_date_1',
+             'video_title': 'No Date 1', 'published_at': None},
+            {'video_id': 'no_date_2', 'video_url': 'https://youtube.com/watch?v=no_date_2',
+             'video_title': 'No Date 2', 'published_at': ''},
+        ] + _make_dated_video_list(PIPELINE_MAX_RECENT_VIDEOS)
+
+        with patch.object(scheduler, '_fetch_channel_videos', return_value=videos):
+            scheduler.poll_subscriptions()
+
+        queue_mgr = VideoQueueManager(db)
+        # The 10 dated videos should be queued, the 2 undated should be skipped
+        depth = queue_mgr.get_queue_depth()
+        assert depth == PIPELINE_MAX_RECENT_VIDEOS
+
+        with db.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute(
+                "SELECT video_id FROM video_queue WHERE status = 'skipped'"
+            )
+            skipped_ids = [row['video_id'] for row in cursor.fetchall()]
+
+        assert 'no_date_1' in skipped_ids
+        assert 'no_date_2' in skipped_ids
+
+
+# ---------------------------------------------------------------------------
+# TestRefreshSubscription
+# ---------------------------------------------------------------------------
+class TestRefreshSubscription:
+    """Test the admin-triggered refresh_subscription method."""
+
+    def test_refresh_fetches_and_queues_recent_videos(self, scheduler, subscription, db):
+        """Refresh fetches videos, queues only the most recent ones."""
+        videos = _make_dated_video_list(15)
+
+        with patch.object(scheduler, '_fetch_channel_videos', return_value=videos):
+            result = scheduler.refresh_subscription(subscription['id'])
+
+        assert result['total_fetched'] == 15
+        assert result['enqueued'] == PIPELINE_MAX_RECENT_VIDEOS
+        assert result['skipped_old'] == 5
+
+    def test_refresh_skips_already_processed_videos(self, scheduler, subscription, db):
+        """Videos already in episodes DB are skipped during refresh."""
+        videos = _make_dated_video_list(5)
+
+        # Pre-process one video (add to episodes)
+        db.create_episode(
+            video_id='vid_0004',
+            video_url='https://www.youtube.com/watch?v=vid_0004',
+        )
+
+        with patch.object(scheduler, '_fetch_channel_videos', return_value=videos):
+            result = scheduler.refresh_subscription(subscription['id'])
+
+        assert result['enqueued'] == 4
+        assert result['skipped_existing'] == 1
+
+    def test_refresh_skips_already_queued_videos(self, scheduler, subscription, db):
+        """Videos already in the queue are skipped during refresh."""
+        videos = _make_dated_video_list(5)
+
+        # Pre-enqueue one video
+        queue_mgr = VideoQueueManager(db)
+        queue_mgr.enqueue(
+            video_id='vid_0004',
+            video_url='https://www.youtube.com/watch?v=vid_0004',
+        )
+
+        with patch.object(scheduler, '_fetch_channel_videos', return_value=videos):
+            result = scheduler.refresh_subscription(subscription['id'])
+
+        assert result['enqueued'] == 4
+        assert result['skipped_existing'] == 1
+
+    def test_refresh_raises_for_invalid_subscription(self, scheduler):
+        """Refresh raises ValueError for non-existent subscription."""
+        with pytest.raises(ValueError, match="not found"):
+            scheduler.refresh_subscription('nonexistent_id')
+
+    def test_refresh_logs_events(self, scheduler, subscription, db):
+        """Refresh logs start and completion events."""
+        videos = _make_dated_video_list(3)
+
+        with patch.object(scheduler, '_fetch_channel_videos', return_value=videos):
+            scheduler.refresh_subscription(subscription['id'])
+
+        pl = PipelineLogger(db)
+
+        started = pl.get_logs(event_type='refresh_started')
+        assert started['total'] >= 1
+
+        completed = pl.get_logs(event_type='refresh_completed')
+        assert completed['total'] >= 1
+
+    def test_refresh_updates_last_checked(self, scheduler, subscription, db):
+        """Refresh updates the subscription's last_checked_at."""
+        videos = _make_dated_video_list(3)
+
+        with patch.object(scheduler, '_fetch_channel_videos', return_value=videos):
+            scheduler.refresh_subscription(subscription['id'])
+
+        mgr = SubscriptionManager(db)
+        updated = mgr.get_subscription(subscription['id'])
+        assert updated['last_checked_at'] is not None

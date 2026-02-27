@@ -317,6 +317,66 @@ class VideoQueueManager:
 
             return True
 
+    def enqueue_as_skipped(
+        self,
+        video_id: str,
+        video_url: str,
+        subscription_id: str = None,
+        video_title: str = None,
+        channel_name: str = None,
+        published_at: str = None,
+        reason: str = None,
+    ) -> Optional[dict]:
+        """Add a video directly as 'skipped' for admin visibility.
+
+        Used for videos that are too old to analyze but should still
+        appear in the admin queue view so admins can see they were skipped.
+
+        Returns the created queue entry, or None if the video already exists.
+        """
+        # Check if video_id already exists in the queue
+        with self.db.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute(
+                "SELECT id FROM video_queue WHERE video_id = ?", (video_id,)
+            )
+            if cursor.fetchone():
+                return None
+
+        # Also skip silently if already in episodes
+        episode = self.db.get_episode(video_id=video_id)
+        if episode is not None:
+            return None
+
+        queue_id = str(uuid.uuid4())
+        now = datetime.utcnow().isoformat()
+
+        with self.db.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute(
+                """
+                INSERT INTO video_queue
+                    (id, subscription_id, video_id, video_url, video_title,
+                     channel_name, published_at, discovered_at, status,
+                     priority, scheduled_for, error_message)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'skipped', 5, ?, ?)
+                """,
+                (
+                    queue_id,
+                    subscription_id,
+                    video_id,
+                    video_url,
+                    video_title,
+                    channel_name,
+                    published_at,
+                    now,
+                    now,
+                    reason,
+                ),
+            )
+
+        return self.get_video(queue_id)
+
     def skip_video(self, queue_id: str) -> bool:
         """Mark a video as skipped."""
         with self.db.get_connection() as conn:
