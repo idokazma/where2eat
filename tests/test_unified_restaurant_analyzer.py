@@ -287,3 +287,129 @@ class TestCallClaudeWithRobustParsing:
         result = analyzer._call_claude("test prompt")
 
         assert isinstance(result, list)
+
+
+class TestLLMConfigGemini:
+    """Test Gemini provider configuration"""
+
+    def test_gemini_config_from_env(self):
+        """Test that Gemini configuration is loaded from environment variables"""
+        from llm_config import LLMConfig
+
+        with patch.dict('os.environ', {
+            'LLM_PROVIDER': 'gemini',
+            'GEMINI_API_KEY': 'test-gemini-key',
+            'GEMINI_MODEL': 'gemini-2.0-flash',
+        }):
+            config = LLMConfig.from_env()
+            assert config.provider == 'gemini'
+            assert config.gemini_api_key == 'test-gemini-key'
+            assert config.gemini_model == 'gemini-2.0-flash'
+
+    def test_gemini_config_validates_api_key(self):
+        """Test that Gemini config raises error when API key is missing"""
+        from llm_config import LLMConfig
+
+        config = LLMConfig(provider='gemini', gemini_api_key=None)
+        with pytest.raises(ValueError, match="Gemini API key not found"):
+            config.validate()
+
+    def test_gemini_config_active_methods(self):
+        """Test that active methods return Gemini values"""
+        from llm_config import LLMConfig
+
+        config = LLMConfig(
+            provider='gemini',
+            gemini_api_key='test-key',
+            gemini_model='gemini-2.0-flash',
+            gemini_temperature=0.2,
+            gemini_max_tokens=4096,
+        )
+        assert config.get_active_model() == 'gemini-2.0-flash'
+        assert config.get_active_api_key() == 'test-key'
+        assert config.get_active_temperature() == 0.2
+        assert config.get_active_max_tokens() == 4096
+
+    def test_gemini_default_provider(self):
+        """Test that default provider is now gemini"""
+        from llm_config import LLMConfig
+
+        with patch.dict('os.environ', {
+            'GEMINI_API_KEY': 'test-key',
+        }, clear=True):
+            config = LLMConfig.from_env()
+            assert config.provider == 'gemini'
+
+    def test_google_api_key_env_fallback(self):
+        """Test that GOOGLE_API_KEY is accepted as fallback for Gemini"""
+        from llm_config import LLMConfig
+
+        with patch.dict('os.environ', {
+            'LLM_PROVIDER': 'gemini',
+            'GOOGLE_API_KEY': 'google-key',
+        }, clear=True):
+            config = LLMConfig.from_env()
+            assert config.gemini_api_key == 'google-key'
+
+
+class TestCallGemini:
+    """Test Gemini API call integration"""
+
+    def test_call_gemini_parses_json_response(self):
+        """Test that _call_gemini handles valid JSON responses"""
+        from unified_restaurant_analyzer import UnifiedRestaurantAnalyzer
+
+        analyzer = UnifiedRestaurantAnalyzer.__new__(UnifiedRestaurantAnalyzer)
+        analyzer.logger = Mock()
+
+        analyzer.config = Mock()
+        analyzer.config.provider = 'gemini'
+        analyzer.config.get_active_model.return_value = 'gemini-2.0-flash'
+        analyzer.config.get_active_max_tokens.return_value = 8192
+        analyzer.config.get_active_temperature.return_value = 0.1
+
+        analyzer.client = Mock()
+
+        mock_response = Mock()
+        mock_response.text = '{"restaurants": [{"name_hebrew": "ביסטרו", "name_english": "Bistro"}]}'
+
+        analyzer.client.models.generate_content.return_value = mock_response
+
+        # Mock the google.genai.types module
+        mock_types = MagicMock()
+        with patch.dict('sys.modules', {'google': MagicMock(), 'google.genai': MagicMock(), 'google.genai.types': mock_types}):
+            with patch('unified_restaurant_analyzer.UnifiedRestaurantAnalyzer._get_system_prompt',
+                       return_value="system prompt"):
+                result = analyzer._call_gemini("test prompt")
+
+        assert isinstance(result, list)
+        assert len(result) == 1
+        assert result[0]['name_hebrew'] == 'ביסטרו'
+
+    def test_call_gemini_handles_truncated_response(self):
+        """Test that _call_gemini handles truncated JSON responses"""
+        from unified_restaurant_analyzer import UnifiedRestaurantAnalyzer
+
+        analyzer = UnifiedRestaurantAnalyzer.__new__(UnifiedRestaurantAnalyzer)
+        analyzer.logger = Mock()
+
+        analyzer.config = Mock()
+        analyzer.config.provider = 'gemini'
+        analyzer.config.get_active_model.return_value = 'gemini-2.0-flash'
+        analyzer.config.get_active_max_tokens.return_value = 8192
+        analyzer.config.get_active_temperature.return_value = 0.1
+
+        analyzer.client = Mock()
+
+        mock_response = Mock()
+        mock_response.text = '{"restaurants": [{"name_hebrew": "מסעדה", "name_english": "Restau'
+
+        analyzer.client.models.generate_content.return_value = mock_response
+
+        mock_types = MagicMock()
+        with patch.dict('sys.modules', {'google': MagicMock(), 'google.genai': MagicMock(), 'google.genai.types': mock_types}):
+            with patch('unified_restaurant_analyzer.UnifiedRestaurantAnalyzer._get_system_prompt',
+                       return_value="system prompt"):
+                result = analyzer._call_gemini("test prompt")
+
+        assert isinstance(result, list)

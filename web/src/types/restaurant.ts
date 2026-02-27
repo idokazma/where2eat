@@ -45,6 +45,7 @@ export interface RestaurantPhoto {
   photo_url: string;
   width: number;
   height: number;
+  is_owner_photo?: boolean;
 }
 
 export interface Restaurant {
@@ -72,6 +73,7 @@ export interface Restaurant {
   food_trends?: string[];
   photos?: RestaurantPhoto[];
   image_url?: string | null;
+  og_image_url?: string | null;
 }
 
 export interface EpisodeInfo {

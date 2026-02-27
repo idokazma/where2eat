@@ -532,5 +532,66 @@ class TestRetryAllFailed:
         assert result['count'] == 0
 
 
+class TestEnqueueAsSkipped:
+    """Test enqueue_as_skipped for admin-visible skipped videos."""
+
+    def test_enqueue_as_skipped_creates_skipped_entry(self, db, manager):
+        """enqueue_as_skipped inserts a video with status='skipped'."""
+        entry = manager.enqueue_as_skipped(
+            video_id='old_vid_1',
+            video_url='https://youtube.com/watch?v=old_vid_1',
+            video_title='Old Video',
+            reason='Not among the 10 most recent videos',
+        )
+
+        assert entry['status'] == 'skipped'
+        assert entry['video_id'] == 'old_vid_1'
+        assert entry['error_message'] == 'Not among the 10 most recent videos'
+
+    def test_enqueue_as_skipped_with_subscription_id(self, db_with_subscription):
+        """enqueue_as_skipped links to a subscription."""
+        db, sub_id = db_with_subscription
+        mgr = VideoQueueManager(db)
+
+        entry = mgr.enqueue_as_skipped(
+            video_id='old_vid_2',
+            video_url='https://youtube.com/watch?v=old_vid_2',
+            subscription_id=sub_id,
+            reason='Too old',
+        )
+
+        assert entry['subscription_id'] == sub_id
+        assert entry['status'] == 'skipped'
+
+    def test_enqueue_as_skipped_with_published_at(self, db, manager):
+        """enqueue_as_skipped stores the published_at date."""
+        entry = manager.enqueue_as_skipped(
+            video_id='old_vid_3',
+            video_url='https://youtube.com/watch?v=old_vid_3',
+            published_at='2024-01-15',
+            reason='Too old',
+        )
+
+        assert entry['published_at'] == '2024-01-15'
+
+    def test_enqueue_as_skipped_does_not_affect_queue_depth(self, db, manager):
+        """Skipped videos don't count in queue depth."""
+        manager.enqueue(video_id='queued_1', video_url='url1')
+        manager.enqueue_as_skipped(
+            video_id='skipped_1', video_url='url2', reason='old'
+        )
+
+        assert manager.get_queue_depth() == 1
+
+    def test_enqueue_as_skipped_skips_duplicate(self, db, manager):
+        """If video_id already in queue, enqueue_as_skipped returns None."""
+        manager.enqueue(video_id='dup_1', video_url='url1')
+
+        result = manager.enqueue_as_skipped(
+            video_id='dup_1', video_url='url1', reason='old'
+        )
+        assert result is None
+
+
 if __name__ == '__main__':
     pytest.main([__file__, '-v'])
