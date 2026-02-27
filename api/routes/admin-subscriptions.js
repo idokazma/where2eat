@@ -379,4 +379,57 @@ else:
   }
 });
 
+/**
+ * POST /api/admin/subscriptions/:id/refresh
+ * Refresh a subscription: fetch latest videos, queue new ones, skip old ones.
+ * Fetches the N most recent videos, skips already-processed ones, queues the rest.
+ * Requires: admin role or higher
+ */
+router.post('/:id/refresh', requireRole(['admin', 'super_admin']), async (req, res) => {
+  try {
+    const subscriptionId = req.params.id;
+    const python = spawn('python', ['-c', `
+import sys
+import json
+sys.path.insert(0, '${path.join(__dirname, '..', '..')}')
+sys.path.insert(0, '${path.join(__dirname, '..', '..', 'src')}')
+from pipeline_scheduler import PipelineScheduler
+scheduler = PipelineScheduler()
+try:
+    result = scheduler.refresh_subscription('${subscriptionId}')
+    print(json.dumps({'success': True, **result}))
+except ValueError as e:
+    print(json.dumps({'success': False, 'error': str(e)}))
+except Exception as e:
+    print(json.dumps({'success': False, 'error': str(e)}))
+    `]);
+
+    let stdout = '';
+    let stderr = '';
+    python.stdout.on('data', (data) => stdout += data);
+    python.stderr.on('data', (data) => stderr += data);
+    python.on('close', (code) => {
+      if (code === 0) {
+        try {
+          const result = JSON.parse(stdout);
+          if (!result.success) {
+            const status = result.error && result.error.includes('not found') ? 404 : 500;
+            return res.status(status).json({ error: result.error });
+          }
+          res.json(result);
+        } catch (err) {
+          console.error('Failed to parse refresh subscription output:', stdout);
+          res.status(500).json({ error: 'Failed to parse response' });
+        }
+      } else {
+        console.error('Failed to refresh subscription:', stderr);
+        res.status(500).json({ error: 'Failed to refresh subscription' });
+      }
+    });
+  } catch (error) {
+    console.error('Error refreshing subscription:', error);
+    res.status(500).json({ error: 'Failed to refresh subscription' });
+  }
+});
+
 module.exports = router;

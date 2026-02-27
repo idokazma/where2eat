@@ -217,3 +217,38 @@ async def check_subscription(
             status_code=500,
             detail=f"Failed to check subscription: {str(e)}"
         )
+
+
+@router.post(
+    "/{subscription_id}/refresh",
+    summary="Refresh subscription",
+    description=(
+        "Fetch the latest videos from YouTube, queue the most recent ones "
+        "for analysis, skip already-processed videos, and mark older videos "
+        "as skipped for admin visibility. Requires admin role."
+    ),
+)
+async def refresh_subscription(
+    subscription_id: str,
+    user: dict = Depends(require_role(["admin", "super_admin"])),
+):
+    """Refresh a subscription: fetch latest, queue new, skip old."""
+    manager = _get_subscription_manager()
+    subscription = manager.get_subscription(subscription_id)
+    if not subscription:
+        raise HTTPException(status_code=404, detail="Subscription not found")
+
+    try:
+        from pipeline_scheduler import PipelineScheduler
+        from database import get_database
+        db = get_database()
+        scheduler = PipelineScheduler(db=db)
+        result = scheduler.refresh_subscription(subscription_id)
+        return {"success": True, **result}
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to refresh subscription: {str(e)}"
+        )

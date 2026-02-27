@@ -22,6 +22,7 @@ from config import (
     PIPELINE_POLL_INTERVAL_HOURS,
     PIPELINE_PROCESS_INTERVAL_MINUTES,
     PIPELINE_MAX_INITIAL_VIDEOS,
+    PIPELINE_MAX_RECENT_VIDEOS,
     PIPELINE_STALE_TIMEOUT_HOURS,
     PIPELINE_LOG_RETENTION_DAYS,
     PIPELINE_SCHEDULER_ENABLED,
@@ -204,16 +205,18 @@ class PipelineScheduler:
                 )
                 continue
 
-            # Determine if this is a first poll (no videos previously found)
-            is_first_poll = (sub.get('total_videos_found', 0) == 0
-                            and sub.get('last_checked_at') is None)
+            # Sort videos by published_at descending (most recent first).
+            # Videos without a date are treated as oldest.
+            videos = self._sort_videos_by_date(videos)
 
-            # Cap the number of videos on first poll
-            if is_first_poll and len(videos) > PIPELINE_MAX_INITIAL_VIDEOS:
-                videos = videos[:PIPELINE_MAX_INITIAL_VIDEOS]
+            # Split into recent (to analyze) and old (to skip)
+            recent_videos = videos[:PIPELINE_MAX_RECENT_VIDEOS]
+            old_videos = videos[PIPELINE_MAX_RECENT_VIDEOS:]
 
             enqueued_count = 0
-            for video in videos:
+            skipped_old_count = 0
+
+            for video in recent_videos:
                 video_id = video.get('video_id')
                 if not video_id:
                     continue
@@ -252,6 +255,26 @@ class PipelineScheduler:
                 except Exception as e:
                     logger.warning("Failed to enqueue video %s: %s", video_id, e)
 
+            # Enqueue older videos as skipped for admin visibility
+            for video in old_videos:
+                video_id = video.get('video_id')
+                if not video_id:
+                    continue
+
+                try:
+                    result = self.queue_manager.enqueue_as_skipped(
+                        video_id=video_id,
+                        video_url=video.get('video_url', f'https://www.youtube.com/watch?v={video_id}'),
+                        subscription_id=sub_id,
+                        video_title=video.get('video_title'),
+                        published_at=video.get('published_at'),
+                        reason=f'Not among the {PIPELINE_MAX_RECENT_VIDEOS} most recent videos',
+                    )
+                    if result is not None:
+                        skipped_old_count += 1
+                except Exception as e:
+                    logger.warning("Failed to skip old video %s: %s", video_id, e)
+
             # Update subscription stats
             if enqueued_count > 0:
                 self.sub_manager.update_stats(
@@ -267,9 +290,13 @@ class PipelineScheduler:
 
             self.pipeline_logger.info(
                 'poll_completed',
-                f'Poll completed for {sub_name}: {enqueued_count} new videos enqueued',
+                f'Poll completed for {sub_name}: {enqueued_count} new videos enqueued, {skipped_old_count} old videos skipped',
                 subscription_id=sub_id,
-                details={'videos_found': len(videos), 'enqueued': enqueued_count},
+                details={
+                    'videos_found': len(videos),
+                    'enqueued': enqueued_count,
+                    'skipped_old': skipped_old_count,
+                },
             )
 
     def process_next_video(self):
@@ -380,6 +407,156 @@ class PipelineScheduler:
                 logger.info("Cleaned up %d old log entries", deleted_logs)
         except Exception as e:
             logger.error("Error cleaning up old logs: %s", e)
+
+    def refresh_subscription(self, subscription_id: str) -> dict:
+        """Refresh a subscription: fetch latest videos and queue new ones.
+
+        Admin-triggered flow that:
+        1. Fetches videos from the YouTube channel/playlist
+        2. Sorts by published date, takes the N most recent
+        3. Skips videos already processed successfully (in episodes DB)
+        4. Queues new ones for processing
+        5. Marks older videos as skipped for admin visibility
+
+        Args:
+            subscription_id: ID of the subscription to refresh.
+
+        Returns:
+            Dict with keys: enqueued, skipped_existing, skipped_old, total_fetched.
+        """
+        sub = self.sub_manager.get_subscription(subscription_id)
+        if sub is None:
+            raise ValueError(f"Subscription {subscription_id} not found")
+
+        sub_name = sub.get('source_name') or sub.get('source_id', 'unknown')
+
+        self.pipeline_logger.info(
+            'refresh_started',
+            f'Manual refresh for subscription: {sub_name}',
+            subscription_id=subscription_id,
+        )
+
+        try:
+            videos = self._fetch_channel_videos(sub)
+        except Exception as e:
+            self.pipeline_logger.error(
+                'refresh_error',
+                f'Failed to fetch videos for {sub_name}: {e}',
+                subscription_id=subscription_id,
+            )
+            raise
+
+        # Sort by date and split into recent vs old
+        videos = self._sort_videos_by_date(videos)
+        recent_videos = videos[:PIPELINE_MAX_RECENT_VIDEOS]
+        old_videos = videos[PIPELINE_MAX_RECENT_VIDEOS:]
+
+        enqueued = 0
+        skipped_existing = 0
+        skipped_old = 0
+
+        for video in recent_videos:
+            video_id = video.get('video_id')
+            if not video_id:
+                continue
+
+            # Skip if already processed successfully
+            existing_episode = self.db.get_episode(video_id=video_id)
+            if existing_episode is not None:
+                skipped_existing += 1
+                continue
+
+            # Skip if already in queue
+            try:
+                with self.db.get_connection() as conn:
+                    cursor = conn.cursor()
+                    cursor.execute(
+                        "SELECT id FROM video_queue WHERE video_id = ?",
+                        (video_id,),
+                    )
+                    if cursor.fetchone():
+                        skipped_existing += 1
+                        continue
+            except Exception:
+                pass
+
+            try:
+                self.queue_manager.enqueue(
+                    video_id=video_id,
+                    video_url=video.get('video_url', f'https://www.youtube.com/watch?v={video_id}'),
+                    subscription_id=subscription_id,
+                    video_title=video.get('video_title'),
+                    published_at=video.get('published_at'),
+                    priority=sub.get('priority', 5),
+                )
+                enqueued += 1
+            except ValueError:
+                skipped_existing += 1
+            except Exception as e:
+                logger.warning("Failed to enqueue video %s: %s", video_id, e)
+
+        # Enqueue older videos as skipped for admin visibility
+        for video in old_videos:
+            video_id = video.get('video_id')
+            if not video_id:
+                continue
+
+            try:
+                result = self.queue_manager.enqueue_as_skipped(
+                    video_id=video_id,
+                    video_url=video.get('video_url', f'https://www.youtube.com/watch?v={video_id}'),
+                    subscription_id=subscription_id,
+                    video_title=video.get('video_title'),
+                    published_at=video.get('published_at'),
+                    reason=f'Not among the {PIPELINE_MAX_RECENT_VIDEOS} most recent videos',
+                )
+                if result is not None:
+                    skipped_old += 1
+            except Exception as e:
+                logger.warning("Failed to skip old video %s: %s", video_id, e)
+
+        # Update subscription stats
+        if enqueued > 0:
+            self.sub_manager.update_stats(
+                subscription_id,
+                videos_found=enqueued,
+            )
+
+        self.sub_manager.update_subscription(
+            subscription_id,
+            last_checked_at=datetime.utcnow().isoformat(),
+        )
+
+        result = {
+            'total_fetched': len(videos),
+            'enqueued': enqueued,
+            'skipped_existing': skipped_existing,
+            'skipped_old': skipped_old,
+        }
+
+        self.pipeline_logger.info(
+            'refresh_completed',
+            f'Refresh completed for {sub_name}: {enqueued} queued, '
+            f'{skipped_existing} already processed, {skipped_old} old skipped',
+            subscription_id=subscription_id,
+            details=result,
+        )
+
+        return result
+
+    @staticmethod
+    def _sort_videos_by_date(videos: List[dict]) -> List[dict]:
+        """Sort videos by published_at descending (most recent first).
+
+        Videos without a valid published_at are placed at the end (treated as oldest).
+        """
+        def sort_key(v):
+            date_str = v.get('published_at') or ''
+            if not date_str:
+                return ''
+            return date_str
+
+        return sorted(videos, key=sort_key, reverse=True)
 
     def _fetch_channel_videos(self, subscription: dict) -> List[dict]:
         """Fetch videos from a YouTube channel or playlist using yt-dlp.
