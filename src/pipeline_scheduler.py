@@ -333,7 +333,9 @@ class PipelineScheduler:
                     restaurants_found=restaurants_found,
                 )
 
-            self.pipeline_logger.info(
+            log_level = 'info' if restaurants_found > 0 else 'warning'
+            log_method = getattr(self.pipeline_logger, log_level)
+            log_method(
                 'video_completed',
                 f'Video {video_id} processed: {restaurants_found} restaurants found',
                 video_queue_id=queue_id,
@@ -341,6 +343,7 @@ class PipelineScheduler:
                 details={
                     'restaurants_found': restaurants_found,
                     'episode_id': episode_id,
+                    'steps': result.get('steps', {}),
                 },
             )
         else:
@@ -411,7 +414,7 @@ class PipelineScheduler:
         playlist_url = f'https://www.youtube.com/playlist?list={playlist_id}'
         return self._fetch_videos_with_ytdlp(playlist_url)
 
-    def _fetch_videos_with_ytdlp(self, url: str) -> List[dict]:
+    def _fetch_videos_with_ytdlp(self, url: str, max_videos: int = None) -> List[dict]:
         """Fetch video list from a YouTube URL using yt-dlp.
 
         Works for playlists, channels, and any YouTube URL containing
@@ -419,6 +422,7 @@ class PipelineScheduler:
 
         Args:
             url: YouTube playlist or channel URL.
+            max_videos: Max videos to fetch. None = no limit (fetch all).
 
         Returns:
             List of video dicts with video_id, video_url, video_title, published_at.
@@ -430,8 +434,9 @@ class PipelineScheduler:
                 'extract_flat': True,
                 'quiet': True,
                 'no_warnings': True,
-                'playlistend': PIPELINE_MAX_INITIAL_VIDEOS,
             }
+            if max_videos is not None:
+                ydl_opts['playlistend'] = max_videos
 
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 info = ydl.extract_info(url, download=False)
