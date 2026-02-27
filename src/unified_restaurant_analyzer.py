@@ -52,30 +52,43 @@ class UnifiedRestaurantAnalyzer:
         # Initialize the appropriate LLM client
         if self.config.provider == "openai":
             self._init_openai_client()
+        elif self.config.provider == "gemini":
+            self._init_gemini_client()
         else:
             self._init_claude_client()
-    
+
     def _init_openai_client(self):
         """Initialize OpenAI client"""
         try:
             import openai
             self.client = openai.OpenAI(api_key=self.config.get_active_api_key())
-            self.logger.info(f"✅ Initialized OpenAI client with model: {self.config.get_active_model()}")
+            self.logger.info(f"Initialized OpenAI client with model: {self.config.get_active_model()}")
         except ImportError:
             raise ImportError("OpenAI package not installed. Run: pip install openai")
         except Exception as e:
             raise ValueError(f"Failed to initialize OpenAI client: {str(e)}")
-    
+
     def _init_claude_client(self):
         """Initialize Claude/Anthropic client"""
         try:
             import anthropic
             self.client = anthropic.Anthropic(api_key=self.config.get_active_api_key())
-            self.logger.info(f"✅ Initialized Claude client with model: {self.config.get_active_model()}")
+            self.logger.info(f"Initialized Claude client with model: {self.config.get_active_model()}")
         except ImportError:
             raise ImportError("Anthropic package not installed. Run: pip install anthropic")
         except Exception as e:
             raise ValueError(f"Failed to initialize Claude client: {str(e)}")
+
+    def _init_gemini_client(self):
+        """Initialize Google Gemini client"""
+        try:
+            from google import genai
+            self.client = genai.Client(api_key=self.config.get_active_api_key())
+            self.logger.info(f"Initialized Gemini client with model: {self.config.get_active_model()}")
+        except ImportError:
+            raise ImportError("Google GenAI package not installed. Run: pip install google-genai")
+        except Exception as e:
+            raise ValueError(f"Failed to initialize Gemini client: {str(e)}")
     
     def analyze_transcript(self, transcript_data: Dict) -> Dict:
         """
@@ -128,6 +141,8 @@ class UnifiedRestaurantAnalyzer:
             # Call the appropriate LLM
             if self.config.provider == "openai":
                 restaurants = self._call_openai(prompt)
+            elif self.config.provider == "gemini":
+                restaurants = self._call_gemini(prompt)
             else:
                 restaurants = self._call_claude(prompt)
 
@@ -372,6 +387,35 @@ Always respond with valid JSON only. No markdown formatting or additional text."
 
         except Exception as e:
             self.logger.error(f"Claude API call failed: {str(e)}")
+            raise e
+
+    def _call_gemini(self, prompt: str) -> List[Dict]:
+        """Call Google Gemini API to analyze transcript"""
+
+        self.logger.info(f"Calling Gemini API ({self.config.get_active_model()})")
+
+        try:
+            from google.genai import types
+
+            full_prompt = self._get_system_prompt() + "\n\n" + prompt
+
+            response = self.client.models.generate_content(
+                model=self.config.get_active_model(),
+                contents=full_prompt,
+                config=types.GenerateContentConfig(
+                    temperature=self.config.get_active_temperature(),
+                    max_output_tokens=self.config.get_active_max_tokens(),
+                    response_mime_type="application/json",
+                ),
+            )
+
+            content = response.text
+
+            # Use safe JSON parsing to handle truncated responses
+            return self._safe_parse_json(content)
+
+        except Exception as e:
+            self.logger.error(f"Gemini API call failed: {str(e)}")
             raise e
 
     def _safe_parse_json(self, content: str) -> List[Dict]:

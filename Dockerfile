@@ -11,6 +11,7 @@ RUN pip install --no-cache-dir \
     youtube-transcript-api \
     anthropic \
     openai \
+    google-genai \
     google-api-python-client \
     python-dotenv \
     httpx \

@@ -195,7 +195,7 @@ class TestFetchVideosWithYtdlp:
         assert result == []
 
     def test_passes_correct_options(self, scheduler):
-        """Verifies yt-dlp options include extract_flat and playlistend."""
+        """Verifies yt-dlp options include extract_flat; playlistend is optional."""
         mock_info = _mock_ytdlp_info([])
 
         mock_ydl = MagicMock()
@@ -209,7 +209,23 @@ class TestFetchVideosWithYtdlp:
         opts = mock_cls.call_args[0][0]
         assert opts['extract_flat'] is True
         assert opts['quiet'] is True
-        assert 'playlistend' in opts
+        # playlistend is only set when max_videos is explicitly passed
+        assert 'playlistend' not in opts
+
+    def test_passes_playlistend_when_max_videos_set(self, scheduler):
+        """Verifies playlistend is set when max_videos is passed."""
+        mock_info = _mock_ytdlp_info([])
+
+        mock_ydl = MagicMock()
+        mock_ydl.__enter__ = MagicMock(return_value=mock_ydl)
+        mock_ydl.__exit__ = MagicMock(return_value=False)
+        mock_ydl.extract_info.return_value = mock_info
+
+        with patch('yt_dlp.YoutubeDL', return_value=mock_ydl) as mock_cls:
+            scheduler._fetch_videos_with_ytdlp('https://www.youtube.com/playlist?list=PLtest', max_videos=25)
+
+        opts = mock_cls.call_args[0][0]
+        assert opts['playlistend'] == 25
 
     def test_fallback_url_when_entry_url_missing(self, scheduler):
         """If entry has no url field, builds it from video_id."""
