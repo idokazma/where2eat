@@ -378,6 +378,14 @@ class PipelineScheduler:
             details={'cleaned_count': cleaned},
         )
 
+        # Clean up old videos beyond the age cutoff
+        try:
+            deleted_old = self.queue_manager.cleanup_old_videos()
+            if deleted_old > 0:
+                logger.info("Cleaned up %d old video queue entries", deleted_old)
+        except Exception as e:
+            logger.error("Error cleaning up old videos: %s", e)
+
         # Also clean up old logs
         try:
             deleted_logs = self.pipeline_logger.cleanup(

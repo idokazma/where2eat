@@ -392,6 +392,7 @@ class TestCleanupStaleJobs:
         queue_mgr.enqueue(
             video_id='vid_stale',
             video_url='https://www.youtube.com/watch?v=vid_stale',
+            published_at=datetime.utcnow().isoformat(),
         )
         item = queue_mgr.dequeue()
         assert item is not None

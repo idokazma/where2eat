@@ -88,17 +88,21 @@ import sys
 import json
 sys.path.insert(0, '${path.join(__dirname, '..', '..')}')
 from src.database import Database
+from datetime import datetime, timedelta
 db = Database()
+cutoff = (datetime.utcnow() - timedelta(days=90)).isoformat()
 with db.get_connection() as conn:
     cursor = conn.cursor()
-    cursor.execute("SELECT COUNT(*) as count FROM video_queue WHERE status = 'queued'")
+    cursor.execute("SELECT COUNT(*) as count FROM video_queue WHERE status = 'queued' AND published_at IS NOT NULL AND published_at >= ?", (cutoff,))
     total = cursor.fetchone()['count']
     cursor.execute('''
         SELECT * FROM video_queue
         WHERE status = 'queued'
+          AND published_at IS NOT NULL
+          AND published_at >= ?
         ORDER BY priority DESC, created_at ASC
         LIMIT ? OFFSET ?
-    ''', (${limit}, ${offset}))
+    ''', (cutoff, ${limit}, ${offset}))
     items = [dict(row) for row in cursor.fetchall()]
     print(json.dumps({
         'queue': items,
@@ -150,17 +154,20 @@ import sys
 import json
 sys.path.insert(0, '${path.join(__dirname, '..', '..')}')
 from src.database import Database
+from datetime import datetime, timedelta
 db = Database()
+cutoff = (datetime.utcnow() - timedelta(days=90)).isoformat()
 with db.get_connection() as conn:
     cursor = conn.cursor()
-    cursor.execute("SELECT COUNT(*) as count FROM video_queue WHERE status IN ('completed', 'failed')")
+    cursor.execute("SELECT COUNT(*) as count FROM video_queue WHERE status IN ('completed', 'failed') AND (published_at IS NULL OR published_at >= ?)", (cutoff,))
     total = cursor.fetchone()['count']
     cursor.execute('''
         SELECT * FROM video_queue
         WHERE status IN ('completed', 'failed')
+          AND (published_at IS NULL OR published_at >= ?)
         ORDER BY updated_at DESC
         LIMIT ? OFFSET ?
-    ''', (${limit}, ${offset}))
+    ''', (cutoff, ${limit}, ${offset}))
     items = [dict(row) for row in cursor.fetchall()]
     print(json.dumps({
         'history': items,

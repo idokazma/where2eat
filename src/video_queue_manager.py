@@ -14,6 +14,7 @@ from database import Database
 from config import (
     PIPELINE_PROCESS_INTERVAL_MINUTES,
     PIPELINE_MAX_RETRY_ATTEMPTS,
+    PIPELINE_MAX_VIDEO_AGE_DAYS,
     PIPELINE_STALE_TIMEOUT_HOURS,
 )
 
@@ -452,14 +453,25 @@ class VideoQueueManager:
             return cursor.fetchone()["cnt"]
 
     def get_queue(self, page: int = 1, limit: int = 20) -> dict:
-        """Get paginated queue items. Returns {items: [...], total: int}."""
+        """Get paginated queue items. Returns {items: [...], total: int}.
+
+        Excludes videos older than PIPELINE_MAX_VIDEO_AGE_DAYS and videos
+        without a published_at date.
+        """
         offset = (page - 1) * limit
+        cutoff = (
+            datetime.utcnow() - timedelta(days=PIPELINE_MAX_VIDEO_AGE_DAYS)
+        ).isoformat()
 
         with self.db.get_connection() as conn:
             cursor = conn.cursor()
 
             cursor.execute(
-                "SELECT COUNT(*) as cnt FROM video_queue WHERE status = 'queued'"
+                """SELECT COUNT(*) as cnt FROM video_queue
+                   WHERE status = 'queued'
+                     AND published_at IS NOT NULL
+                     AND published_at >= ?""",
+                (cutoff,),
             )
             total = cursor.fetchone()["cnt"]
 
@@ -467,10 +479,12 @@ class VideoQueueManager:
                 """
                 SELECT * FROM video_queue
                 WHERE status = 'queued'
+                  AND published_at IS NOT NULL
+                  AND published_at >= ?
                 ORDER BY discovered_at DESC
                 LIMIT ? OFFSET ?
                 """,
-                (limit, offset),
+                (cutoff, limit, offset),
             )
             items = [dict(row) for row in cursor.fetchall()]
 
@@ -490,14 +504,23 @@ class VideoQueueManager:
             return [dict(row) for row in cursor.fetchall()]
 
     def get_history(self, page: int = 1, limit: int = 20) -> dict:
-        """Get completed+failed videos. Returns {items: [...], total: int}."""
+        """Get completed+failed videos. Returns {items: [...], total: int}.
+
+        Excludes videos older than PIPELINE_MAX_VIDEO_AGE_DAYS.
+        """
         offset = (page - 1) * limit
+        cutoff = (
+            datetime.utcnow() - timedelta(days=PIPELINE_MAX_VIDEO_AGE_DAYS)
+        ).isoformat()
 
         with self.db.get_connection() as conn:
             cursor = conn.cursor()
 
             cursor.execute(
-                "SELECT COUNT(*) as cnt FROM video_queue WHERE status IN ('completed', 'failed')"
+                """SELECT COUNT(*) as cnt FROM video_queue
+                   WHERE status IN ('completed', 'failed')
+                     AND (published_at IS NULL OR published_at >= ?)""",
+                (cutoff,),
             )
             total = cursor.fetchone()["cnt"]
 
@@ -505,10 +528,11 @@ class VideoQueueManager:
                 """
                 SELECT * FROM video_queue
                 WHERE status IN ('completed', 'failed')
+                  AND (published_at IS NULL OR published_at >= ?)
                 ORDER BY processing_completed_at DESC
                 LIMIT ? OFFSET ?
                 """,
-                (limit, offset),
+                (cutoff, limit, offset),
             )
             items = [dict(row) for row in cursor.fetchall()]
 
@@ -547,6 +571,30 @@ class VideoQueueManager:
                   AND processing_started_at < ?
                 """,
                 (now, cutoff),
+            )
+            return cursor.rowcount
+
+    def cleanup_old_videos(self) -> int:
+        """Delete queue entries for videos older than PIPELINE_MAX_VIDEO_AGE_DAYS.
+
+        Removes queued, skipped, and failed entries. Completed entries are kept
+        but hidden by get_history's age filter.
+
+        Returns count of deleted entries.
+        """
+        cutoff = (
+            datetime.utcnow() - timedelta(days=PIPELINE_MAX_VIDEO_AGE_DAYS)
+        ).isoformat()
+
+        with self.db.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute(
+                """
+                DELETE FROM video_queue
+                WHERE status IN ('queued', 'skipped', 'failed')
+                  AND (published_at IS NULL OR published_at < ?)
+                """,
+                (cutoff,),
             )
             return cursor.rowcount
 
