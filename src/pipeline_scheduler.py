@@ -11,7 +11,7 @@ PipelineLogger, and BackendService into a scheduled pipeline that:
 """
 
 import logging
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Optional, List, Dict
 
 from database import Database, get_database
@@ -22,6 +22,8 @@ from config import (
     PIPELINE_POLL_INTERVAL_HOURS,
     PIPELINE_PROCESS_INTERVAL_MINUTES,
     PIPELINE_MAX_INITIAL_VIDEOS,
+    PIPELINE_MAX_RECENT_VIDEOS,
+    PIPELINE_MAX_VIDEO_AGE_DAYS,
     PIPELINE_STALE_TIMEOUT_HOURS,
     PIPELINE_LOG_RETENTION_DAYS,
     PIPELINE_SCHEDULER_ENABLED,
@@ -75,22 +77,24 @@ class PipelineScheduler:
         try:
             self._scheduler = BackgroundScheduler()
 
-            # Poll subscriptions for new videos
+            # Poll subscriptions for new videos (run immediately on startup)
             self._scheduler.add_job(
                 self.poll_subscriptions,
                 trigger='interval',
                 hours=PIPELINE_POLL_INTERVAL_HOURS,
                 id='poll_subscriptions',
                 name='Poll YouTube subscriptions for new videos',
+                next_run_time=datetime.utcnow(),
             )
 
-            # Process next queued video
+            # Process next queued video (run immediately on startup)
             self._scheduler.add_job(
                 self.process_next_video,
                 trigger='interval',
                 minutes=PIPELINE_PROCESS_INTERVAL_MINUTES,
                 id='process_next_video',
                 name='Process next video in queue',
+                next_run_time=datetime.utcnow(),
             )
 
             # Clean up stale processing jobs
@@ -202,16 +206,18 @@ class PipelineScheduler:
                 )
                 continue
 
-            # Determine if this is a first poll (no videos previously found)
-            is_first_poll = (sub.get('total_videos_found', 0) == 0
-                            and sub.get('last_checked_at') is None)
+            # Filter out videos older than the age cutoff
+            videos = self._filter_by_age(videos)
 
-            # Cap the number of videos on first poll
-            if is_first_poll and len(videos) > PIPELINE_MAX_INITIAL_VIDEOS:
-                videos = videos[:PIPELINE_MAX_INITIAL_VIDEOS]
+            # Sort videos by published_at descending (most recent first).
+            videos = self._sort_videos_by_date(videos)
+
+            # Split into recent (to analyze) and old (beyond the recent cap)
+            recent_videos = videos[:PIPELINE_MAX_RECENT_VIDEOS]
 
             enqueued_count = 0
-            for video in videos:
+
+            for video in recent_videos:
                 video_id = video.get('video_id')
                 if not video_id:
                     continue
@@ -267,7 +273,10 @@ class PipelineScheduler:
                 'poll_completed',
                 f'Poll completed for {sub_name}: {enqueued_count} new videos enqueued',
                 subscription_id=sub_id,
-                details={'videos_found': len(videos), 'enqueued': enqueued_count},
+                details={
+                    'videos_found': len(videos),
+                    'enqueued': enqueued_count,
+                },
             )
 
     def process_next_video(self):
@@ -331,7 +340,9 @@ class PipelineScheduler:
                     restaurants_found=restaurants_found,
                 )
 
-            self.pipeline_logger.info(
+            log_level = 'info' if restaurants_found > 0 else 'warning'
+            log_method = getattr(self.pipeline_logger, log_level)
+            log_method(
                 'video_completed',
                 f'Video {video_id} processed: {restaurants_found} restaurants found',
                 video_queue_id=queue_id,
@@ -339,6 +350,7 @@ class PipelineScheduler:
                 details={
                     'restaurants_found': restaurants_found,
                     'episode_id': episode_id,
+                    'steps': result.get('steps', {}),
                 },
             )
         else:
@@ -376,6 +388,154 @@ class PipelineScheduler:
         except Exception as e:
             logger.error("Error cleaning up old logs: %s", e)
 
+    def refresh_subscription(self, subscription_id: str) -> dict:
+        """Refresh a subscription: fetch latest videos and queue new ones.
+
+        Admin-triggered flow that:
+        1. Fetches videos from the YouTube channel/playlist
+        2. Sorts by published date, takes the N most recent
+        3. Skips videos already processed successfully (in episodes DB)
+        4. Queues new ones for processing
+        5. Marks older videos as skipped for admin visibility
+
+        Args:
+            subscription_id: ID of the subscription to refresh.
+
+        Returns:
+            Dict with keys: enqueued, skipped_existing, skipped_old, total_fetched.
+        """
+        sub = self.sub_manager.get_subscription(subscription_id)
+        if sub is None:
+            raise ValueError(f"Subscription {subscription_id} not found")
+
+        sub_name = sub.get('source_name') or sub.get('source_id', 'unknown')
+
+        self.pipeline_logger.info(
+            'refresh_started',
+            f'Manual refresh for subscription: {sub_name}',
+            subscription_id=subscription_id,
+        )
+
+        try:
+            videos = self._fetch_channel_videos(sub)
+        except Exception as e:
+            self.pipeline_logger.error(
+                'refresh_error',
+                f'Failed to fetch videos for {sub_name}: {e}',
+                subscription_id=subscription_id,
+            )
+            raise
+
+        # Filter out videos older than the age cutoff, then sort
+        videos = self._filter_by_age(videos)
+        videos = self._sort_videos_by_date(videos)
+        recent_videos = videos[:PIPELINE_MAX_RECENT_VIDEOS]
+
+        enqueued = 0
+        skipped_existing = 0
+
+        for video in recent_videos:
+            video_id = video.get('video_id')
+            if not video_id:
+                continue
+
+            # Skip if already processed successfully
+            existing_episode = self.db.get_episode(video_id=video_id)
+            if existing_episode is not None:
+                skipped_existing += 1
+                continue
+
+            # Skip if already in queue
+            try:
+                with self.db.get_connection() as conn:
+                    cursor = conn.cursor()
+                    cursor.execute(
+                        "SELECT id FROM video_queue WHERE video_id = ?",
+                        (video_id,),
+                    )
+                    if cursor.fetchone():
+                        skipped_existing += 1
+                        continue
+            except Exception:
+                pass
+
+            try:
+                self.queue_manager.enqueue(
+                    video_id=video_id,
+                    video_url=video.get('video_url', f'https://www.youtube.com/watch?v={video_id}'),
+                    subscription_id=subscription_id,
+                    video_title=video.get('video_title'),
+                    published_at=video.get('published_at'),
+                    priority=sub.get('priority', 5),
+                )
+                enqueued += 1
+            except ValueError:
+                skipped_existing += 1
+            except Exception as e:
+                logger.warning("Failed to enqueue video %s: %s", video_id, e)
+
+        # Update subscription stats
+        if enqueued > 0:
+            self.sub_manager.update_stats(
+                subscription_id,
+                videos_found=enqueued,
+            )
+
+        self.sub_manager.update_subscription(
+            subscription_id,
+            last_checked_at=datetime.utcnow().isoformat(),
+        )
+
+        result = {
+            'total_fetched': len(videos),
+            'enqueued': enqueued,
+            'skipped_existing': skipped_existing,
+            'skipped_old': 0,
+        }
+
+        self.pipeline_logger.info(
+            'refresh_completed',
+            f'Refresh completed for {sub_name}: {enqueued} queued, '
+            f'{skipped_existing} already processed',
+            subscription_id=subscription_id,
+            details=result,
+        )
+
+        return result
+
+    @staticmethod
+    def _filter_by_age(videos: List[dict]) -> List[dict]:
+        """Filter out videos older than PIPELINE_MAX_VIDEO_AGE_DAYS.
+
+        Videos without a valid published_at are also excluded (unknown age).
+        """
+        cutoff = datetime.utcnow() - timedelta(days=PIPELINE_MAX_VIDEO_AGE_DAYS)
+        cutoff_str = cutoff.isoformat()
+
+        result = []
+        for video in videos:
+            date_str = video.get('published_at') or ''
+            if not date_str:
+                continue
+            # Compare ISO date strings (works for both date and datetime formats)
+            if date_str >= cutoff_str:
+                result.append(video)
+        return result
+
+    @staticmethod
+    def _sort_videos_by_date(videos: List[dict]) -> List[dict]:
+        """Sort videos by published_at descending (most recent first).
+
+        Videos without a valid published_at are placed at the end (treated as oldest).
+        """
+        def sort_key(v):
+            date_str = v.get('published_at') or ''
+            if not date_str:
+                return ''
+            return date_str
+
+        return sorted(videos, key=sort_key, reverse=True)
+
     def _fetch_channel_videos(self, subscription: dict) -> List[dict]:
         """Fetch videos from a YouTube channel or playlist using yt-dlp.
 
@@ -409,7 +569,7 @@ class PipelineScheduler:
         playlist_url = f'https://www.youtube.com/playlist?list={playlist_id}'
         return self._fetch_videos_with_ytdlp(playlist_url)
 
-    def _fetch_videos_with_ytdlp(self, url: str) -> List[dict]:
+    def _fetch_videos_with_ytdlp(self, url: str, max_videos: int = None) -> List[dict]:
         """Fetch video list from a YouTube URL using yt-dlp.
 
         Works for playlists, channels, and any YouTube URL containing
@@ -417,6 +577,7 @@ class PipelineScheduler:
 
         Args:
             url: YouTube playlist or channel URL.
+            max_videos: Max videos to fetch. None = no limit (fetch all).
 
         Returns:
             List of video dicts with video_id, video_url, video_title, published_at.
@@ -428,8 +589,9 @@ class PipelineScheduler:
                 'extract_flat': True,
                 'quiet': True,
                 'no_warnings': True,
-                'playlistend': PIPELINE_MAX_INITIAL_VIDEOS,
             }
+            if max_videos is not None:
+                ydl_opts['playlistend'] = max_videos
 
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 info = ydl.extract_info(url, download=False)
