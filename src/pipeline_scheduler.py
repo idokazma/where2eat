@@ -11,7 +11,7 @@ PipelineLogger, and BackendService into a scheduled pipeline that:
 """
 
 import logging
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Optional, List, Dict
 
 from database import Database, get_database
@@ -23,6 +23,7 @@ from config import (
     PIPELINE_PROCESS_INTERVAL_MINUTES,
     PIPELINE_MAX_INITIAL_VIDEOS,
     PIPELINE_MAX_RECENT_VIDEOS,
+    PIPELINE_MAX_VIDEO_AGE_DAYS,
     PIPELINE_STALE_TIMEOUT_HOURS,
     PIPELINE_LOG_RETENTION_DAYS,
     PIPELINE_SCHEDULER_ENABLED,
@@ -205,16 +206,16 @@ class PipelineScheduler:
                 )
                 continue
 
+            # Filter out videos older than the age cutoff
+            videos = self._filter_by_age(videos)
+
             # Sort videos by published_at descending (most recent first).
-            # Videos without a date are treated as oldest.
             videos = self._sort_videos_by_date(videos)
 
-            # Split into recent (to analyze) and old (to skip)
+            # Split into recent (to analyze) and old (beyond the recent cap)
             recent_videos = videos[:PIPELINE_MAX_RECENT_VIDEOS]
-            old_videos = videos[PIPELINE_MAX_RECENT_VIDEOS:]
 
             enqueued_count = 0
-            skipped_old_count = 0
 
             for video in recent_videos:
                 video_id = video.get('video_id')
@@ -255,26 +256,6 @@ class PipelineScheduler:
                 except Exception as e:
                     logger.warning("Failed to enqueue video %s: %s", video_id, e)
 
-            # Enqueue older videos as skipped for admin visibility
-            for video in old_videos:
-                video_id = video.get('video_id')
-                if not video_id:
-                    continue
-
-                try:
-                    result = self.queue_manager.enqueue_as_skipped(
-                        video_id=video_id,
-                        video_url=video.get('video_url', f'https://www.youtube.com/watch?v={video_id}'),
-                        subscription_id=sub_id,
-                        video_title=video.get('video_title'),
-                        published_at=video.get('published_at'),
-                        reason=f'Not among the {PIPELINE_MAX_RECENT_VIDEOS} most recent videos',
-                    )
-                    if result is not None:
-                        skipped_old_count += 1
-                except Exception as e:
-                    logger.warning("Failed to skip old video %s: %s", video_id, e)
-
             # Update subscription stats
             if enqueued_count > 0:
                 self.sub_manager.update_stats(
@@ -290,12 +271,11 @@ class PipelineScheduler:
 
             self.pipeline_logger.info(
                 'poll_completed',
-                f'Poll completed for {sub_name}: {enqueued_count} new videos enqueued, {skipped_old_count} old videos skipped',
+                f'Poll completed for {sub_name}: {enqueued_count} new videos enqueued',
                 subscription_id=sub_id,
                 details={
                     'videos_found': len(videos),
                     'enqueued': enqueued_count,
-                    'skipped_old': skipped_old_count,
                 },
             )
 
@@ -446,14 +426,13 @@ class PipelineScheduler:
             )
             raise
 
-        # Sort by date and split into recent vs old
+        # Filter out videos older than the age cutoff, then sort
+        videos = self._filter_by_age(videos)
         videos = self._sort_videos_by_date(videos)
         recent_videos = videos[:PIPELINE_MAX_RECENT_VIDEOS]
-        old_videos = videos[PIPELINE_MAX_RECENT_VIDEOS:]
 
         enqueued = 0
         skipped_existing = 0
-        skipped_old = 0
 
         for video in recent_videos:
             video_id = video.get('video_id')
@@ -495,26 +474,6 @@ class PipelineScheduler:
             except Exception as e:
                 logger.warning("Failed to enqueue video %s: %s", video_id, e)
 
-        # Enqueue older videos as skipped for admin visibility
-        for video in old_videos:
-            video_id = video.get('video_id')
-            if not video_id:
-                continue
-
-            try:
-                result = self.queue_manager.enqueue_as_skipped(
-                    video_id=video_id,
-                    video_url=video.get('video_url', f'https://www.youtube.com/watch?v={video_id}'),
-                    subscription_id=subscription_id,
-                    video_title=video.get('video_title'),
-                    published_at=video.get('published_at'),
-                    reason=f'Not among the {PIPELINE_MAX_RECENT_VIDEOS} most recent videos',
-                )
-                if result is not None:
-                    skipped_old += 1
-            except Exception as e:
-                logger.warning("Failed to skip old video %s: %s", video_id, e)
-
         # Update subscription stats
         if enqueued > 0:
             self.sub_manager.update_stats(
@@ -531,17 +490,36 @@ class PipelineScheduler:
             'total_fetched': len(videos),
             'enqueued': enqueued,
             'skipped_existing': skipped_existing,
-            'skipped_old': skipped_old,
+            'skipped_old': 0,
         }
 
         self.pipeline_logger.info(
             'refresh_completed',
             f'Refresh completed for {sub_name}: {enqueued} queued, '
-            f'{skipped_existing} already processed, {skipped_old} old skipped',
+            f'{skipped_existing} already processed',
             subscription_id=subscription_id,
             details=result,
         )
 
+        return result
+
+    @staticmethod
+    def _filter_by_age(videos: List[dict]) -> List[dict]:
+        """Filter out videos older than PIPELINE_MAX_VIDEO_AGE_DAYS.
+
+        Videos without a valid published_at are also excluded (unknown age).
+        """
+        cutoff = datetime.utcnow() - timedelta(days=PIPELINE_MAX_VIDEO_AGE_DAYS)
+        cutoff_str = cutoff.isoformat()
+
+        result = []
+        for video in videos:
+            date_str = video.get('published_at') or ''
+            if not date_str:
+                continue
+            # Compare ISO date strings (works for both date and datetime formats)
+            if date_str >= cutoff_str:
+                result.append(video)
         return result
 
     @staticmethod
