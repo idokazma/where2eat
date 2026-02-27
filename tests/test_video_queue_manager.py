@@ -595,5 +595,138 @@ class TestEnqueueAsSkipped:
         assert result is None
 
 
+class TestGetAllVideos:
+    """Test get_all_videos with pagination, filters, search, and status summary."""
+
+    def _seed_videos(self, db, manager, count=5):
+        """Seed videos with various statuses."""
+        now = datetime.utcnow().isoformat()
+        entries = []
+        for i in range(count):
+            entry = manager.enqueue(
+                video_id=f'all_vid_{i}',
+                video_url=f'https://youtube.com/watch?v=all_vid_{i}',
+                video_title=f'Video Title {i}',
+                channel_name=f'Channel {i % 2}',
+                published_at=now,
+            )
+            entries.append(entry)
+        return entries
+
+    def test_get_all_videos_returns_all_statuses(self, db, manager):
+        """get_all_videos returns videos regardless of status."""
+        now = datetime.utcnow().isoformat()
+        e1 = manager.enqueue(video_id='v1', video_url='u1', video_title='A', published_at=now)
+        e2 = manager.enqueue(video_id='v2', video_url='u2', video_title='B', published_at=now)
+        e3 = manager.enqueue(video_id='v3', video_url='u3', video_title='C', published_at=now)
+
+        manager.mark_completed(e1['id'], restaurants_found=3)
+        # Fail e2 permanently
+        with db.get_connection() as conn:
+            conn.execute(
+                "UPDATE video_queue SET status = 'failed', processing_completed_at = ? WHERE id = ?",
+                (now, e2['id'])
+            )
+
+        result = manager.get_all_videos(page=1, limit=20)
+        assert result['total'] == 3
+        assert len(result['items']) == 3
+        statuses = {item['status'] for item in result['items']}
+        assert 'completed' in statuses
+        assert 'failed' in statuses
+        assert 'queued' in statuses
+
+    def test_get_all_videos_pagination(self, db, manager):
+        """get_all_videos paginates correctly."""
+        entries = self._seed_videos(db, manager, count=5)
+
+        page1 = manager.get_all_videos(page=1, limit=2)
+        assert len(page1['items']) == 2
+        assert page1['total'] == 5
+
+        page2 = manager.get_all_videos(page=2, limit=2)
+        assert len(page2['items']) == 2
+
+        page3 = manager.get_all_videos(page=3, limit=2)
+        assert len(page3['items']) == 1
+
+    def test_get_all_videos_status_filter(self, db, manager):
+        """get_all_videos filters by status when provided."""
+        now = datetime.utcnow().isoformat()
+        e1 = manager.enqueue(video_id='sf1', video_url='u1', published_at=now)
+        e2 = manager.enqueue(video_id='sf2', video_url='u2', published_at=now)
+        manager.mark_completed(e1['id'], restaurants_found=1)
+
+        result = manager.get_all_videos(status='completed')
+        assert result['total'] == 1
+        assert result['items'][0]['status'] == 'completed'
+
+        result2 = manager.get_all_videos(status='queued')
+        assert result2['total'] == 1
+        assert result2['items'][0]['status'] == 'queued'
+
+    def test_get_all_videos_search(self, db, manager):
+        """get_all_videos filters by title/channel search."""
+        now = datetime.utcnow().isoformat()
+        manager.enqueue(
+            video_id='s1', video_url='u1', video_title='Best Restaurants',
+            channel_name='FoodShow', published_at=now,
+        )
+        manager.enqueue(
+            video_id='s2', video_url='u2', video_title='Travel Vlog',
+            channel_name='TravelCh', published_at=now,
+        )
+
+        result = manager.get_all_videos(search='Restaurant')
+        assert result['total'] == 1
+        assert result['items'][0]['video_id'] == 's1'
+
+        result2 = manager.get_all_videos(search='TravelCh')
+        assert result2['total'] == 1
+        assert result2['items'][0]['video_id'] == 's2'
+
+    def test_get_all_videos_age_cutoff(self, db, manager):
+        """get_all_videos excludes videos older than PIPELINE_MAX_VIDEO_AGE_DAYS."""
+        from config import PIPELINE_MAX_VIDEO_AGE_DAYS
+
+        recent = datetime.utcnow().isoformat()
+        old = (datetime.utcnow() - timedelta(days=PIPELINE_MAX_VIDEO_AGE_DAYS + 10)).isoformat()
+
+        manager.enqueue(video_id='recent1', video_url='u1', published_at=recent)
+        manager.enqueue(video_id='old1', video_url='u2', published_at=old)
+
+        result = manager.get_all_videos()
+        assert result['total'] == 1
+        assert result['items'][0]['video_id'] == 'recent1'
+
+    def test_get_all_videos_status_summary(self, db, manager):
+        """get_all_videos returns status_summary with counts per status."""
+        now = datetime.utcnow().isoformat()
+        e1 = manager.enqueue(video_id='ss1', video_url='u1', published_at=now)
+        e2 = manager.enqueue(video_id='ss2', video_url='u2', published_at=now)
+        e3 = manager.enqueue(video_id='ss3', video_url='u3', published_at=now)
+
+        manager.mark_completed(e1['id'], restaurants_found=2)
+        manager.mark_completed(e2['id'], restaurants_found=0)
+
+        result = manager.get_all_videos()
+        summary = result['status_summary']
+        assert summary.get('completed', 0) == 2
+        assert summary.get('queued', 0) == 1
+
+    def test_get_all_videos_status_summary_unaffected_by_filters(self, db, manager):
+        """status_summary counts are not affected by status/search filters."""
+        now = datetime.utcnow().isoformat()
+        e1 = manager.enqueue(video_id='su1', video_url='u1', published_at=now)
+        e2 = manager.enqueue(video_id='su2', video_url='u2', published_at=now)
+        manager.mark_completed(e1['id'], restaurants_found=1)
+
+        # Filter to completed only — summary should still include queued count
+        result = manager.get_all_videos(status='completed')
+        summary = result['status_summary']
+        assert summary.get('completed', 0) == 1
+        assert summary.get('queued', 0) == 1
+
+
 if __name__ == '__main__':
     pytest.main([__file__, '-v'])

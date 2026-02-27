@@ -538,6 +538,79 @@ class VideoQueueManager:
 
         return {"items": items, "total": total}
 
+    def get_all_videos(
+        self,
+        page: int = 1,
+        limit: int = 20,
+        status: Optional[str] = None,
+        search: Optional[str] = None,
+    ) -> dict:
+        """Get all videos regardless of status, with optional filtering.
+
+        Returns {items: [...], total: int, status_summary: {queued: N, ...}}.
+        Applies PIPELINE_MAX_VIDEO_AGE_DAYS cutoff on published_at.
+        """
+        offset = (page - 1) * limit
+        cutoff = (
+            datetime.utcnow() - timedelta(days=PIPELINE_MAX_VIDEO_AGE_DAYS)
+        ).isoformat()
+
+        with self.db.get_connection() as conn:
+            cursor = conn.cursor()
+
+            # Build WHERE clause
+            conditions = [
+                "(published_at IS NULL OR published_at >= ?)"
+            ]
+            params: list = [cutoff]
+
+            if status:
+                conditions.append("status = ?")
+                params.append(status)
+
+            if search:
+                conditions.append(
+                    "(video_title LIKE ? OR channel_name LIKE ?)"
+                )
+                search_pattern = f"%{search}%"
+                params.extend([search_pattern, search_pattern])
+
+            where = " AND ".join(conditions)
+
+            # Status summary (always unfiltered by status/search, only age cutoff)
+            cursor.execute(
+                """SELECT status, COUNT(*) as cnt FROM video_queue
+                   WHERE (published_at IS NULL OR published_at >= ?)
+                   GROUP BY status""",
+                (cutoff,),
+            )
+            status_summary: Dict[str, int] = {}
+            for row in cursor.fetchall():
+                status_summary[row["status"]] = row["cnt"]
+
+            # Total count for filtered results
+            cursor.execute(
+                f"SELECT COUNT(*) as cnt FROM video_queue WHERE {where}",
+                params,
+            )
+            total = cursor.fetchone()["cnt"]
+
+            # Paginated items
+            cursor.execute(
+                f"""SELECT * FROM video_queue
+                    WHERE {where}
+                    ORDER BY discovered_at DESC
+                    LIMIT ? OFFSET ?""",
+                params + [limit, offset],
+            )
+            items = [dict(row) for row in cursor.fetchall()]
+
+        return {
+            "items": items,
+            "total": total,
+            "status_summary": status_summary,
+        }
+
     def get_video(self, queue_id: str) -> Optional[dict]:
         """Get a single queue entry."""
         with self.db.get_connection() as conn:
