@@ -9,7 +9,7 @@ import { useFavorites } from '@/contexts/favorites-context';
 import { Button } from '@/components/ui/button';
 import { getCoordinates } from '@/types/restaurant';
 import { useGeolocation } from '@/hooks/useGeolocation';
-import { useNearestRestaurants } from '@/hooks/useNearestRestaurants';
+import { haversineDistance } from '@/lib/geo-utils';
 import type { ColorMode, MapRestaurant } from '@/components/map/MapView';
 import type { MapBottomSheetHandle } from '@/components/map/MapBottomSheet';
 import type { WithDistance } from '@/lib/geo-utils';
@@ -92,15 +92,24 @@ export default function MapPage() {
 
   const favoriteIds = useMemo(() => new Set(favorites), [favorites]);
 
-  // Nearest restaurants for bottom sheet
-  const { sorted: sortedRestaurants } = useNearestRestaurants(displayedRestaurants, userCoords);
-
-  // Build distance-aware list for bottom sheet
+  // Build distance-aware list for bottom sheet, sorted by proximity when location is available
   const restaurantsWithDistance: WithDistance<MapRestaurant>[] = useMemo(() => {
-    if (sortedRestaurants.length > 0) return sortedRestaurants;
-    // No user coords — show all without distance
-    return displayedRestaurants.map((item) => ({ item, distance: 0 }));
-  }, [sortedRestaurants, displayedRestaurants]);
+    if (!userCoords) {
+      // No location — keep API order (by date), no distances
+      return displayedRestaurants.map((item) => ({ item, distance: 0 }));
+    }
+    // Compute distances and sort closest-first
+    return displayedRestaurants
+      .map((item) => {
+        const coords = getCoordinates(item.location);
+        if (!coords) return { item, distance: 0 };
+        return {
+          item,
+          distance: haversineDistance(userCoords, { lat: coords.latitude, lng: coords.longitude }),
+        };
+      })
+      .sort((a, b) => a.distance - b.distance);
+  }, [displayedRestaurants, userCoords]);
 
   // Handle marker click from map — select and scroll bottom sheet
   const handleMarkerClick = useCallback(
