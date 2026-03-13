@@ -89,13 +89,13 @@ def find_mismatched_restaurants_sqlite(db_path):
     return mismatched
 
 
-def update_restaurant_sqlite(conn, restaurant_id, lat, lng, place_id, google_name, google_rating):
+def update_restaurant_sqlite(conn, restaurant_id, lat, lng, place_id):
     cursor = conn.cursor()
     cursor.execute("""
         UPDATE restaurants
-        SET latitude = ?, longitude = ?, google_place_id = ?, google_name = ?, google_rating = ?
+        SET latitude = ?, longitude = ?, google_place_id = ?
         WHERE id = ?
-    """, (lat, lng, place_id, google_name, google_rating, restaurant_id))
+    """, (lat, lng, place_id, restaurant_id))
     conn.commit()
 
 
@@ -256,21 +256,20 @@ def main():
                 logger.info(f"  Updating coords to ({new_lat}, {new_lng}) - {new_google_name}")
 
                 if use_api:
+                    # Only update coordinates and place_id, NOT google_name
+                    # (the search may find a nearby but different restaurant)
                     success = update_restaurant_api(args.api, restaurant, {
                         'location': {'lat': new_lat, 'lng': new_lng},
                         'latitude': new_lat,
                         'longitude': new_lng,
                         'google_place_id': new_place_id,
-                        'google_name': new_google_name,
-                        'google_rating': new_google_rating,
                     })
                     if success:
                         stats['fixed'] += 1
                     else:
                         stats['failed'] += 1
                 else:
-                    update_restaurant_sqlite(conn, restaurant['id'], new_lat, new_lng,
-                                             new_place_id, new_google_name, new_google_rating)
+                    update_restaurant_sqlite(conn, restaurant['id'], new_lat, new_lng, new_place_id)
                     stats['fixed'] += 1
             else:
                 logger.warning(f"  No valid Israel result found. Clearing wrong coordinates.")
