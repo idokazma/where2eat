@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { MapPin, ChevronDown, X } from 'lucide-react';
-import { useLocationFilter } from '@/hooks/useLocationFilter';
+import { useLocationFilter } from '@/contexts/location-filter-context';
 import { NearMeToggle } from './NearMeToggle';
 import { CityPicker } from './CityPicker';
 

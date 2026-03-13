@@ -8,8 +8,8 @@ import { FilterBar, FilterChip, LocationFilter } from '@/components/filters';
 import { TrendingSection, DiscoveryFeed } from '@/components/feed';
 import { BottomSheet } from '@/components/ui/BottomSheet';
 import { PageLoadingSkeleton } from '@/components/ui/skeleton';
-import { useLocationFilter } from '@/hooks/useLocationFilter';
-import { useSettings } from '@/hooks/useSettings';
+import { useLocationFilter } from '@/contexts/location-filter-context';
+import { useSettings } from '@/contexts/settings-context';
 import { useFavorites } from '@/contexts/favorites-context';
 import { endpoints } from '@/lib/config';
 
