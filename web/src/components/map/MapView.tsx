@@ -194,7 +194,7 @@ function SelectedMarkerPan({
     if (!selectedId) return;
 
     const restaurant = restaurants.find(
-      (r) => (r.google_places?.place_id || r.id) === selectedId
+      (r) => (r.google_places?.place_id || r.id || r.name_hebrew) === selectedId
     );
     if (!restaurant) return;
 
@@ -273,11 +273,12 @@ export default function MapView({
 
   const handleMarkerClick = useCallback(
     (restaurant: MapRestaurant) => {
-      const restaurantId = restaurant.google_places?.place_id || restaurant.id;
-      if (restaurantId && onMarkerClick) {
+      const restaurantId = restaurant.google_places?.place_id || restaurant.id || restaurant.name_hebrew;
+      if (onMarkerClick) {
         onMarkerClick(restaurantId);
-      } else if (restaurantId) {
-        router.push(`/restaurant/${restaurantId}`);
+      } else {
+        const navId = restaurant.google_places?.place_id || restaurant.id;
+        if (navId) router.push(`/restaurant/${navId}`);
       }
     },
     [onMarkerClick, router]
@@ -336,7 +337,7 @@ export default function MapView({
         {/* Restaurant markers */}
         {mappableRestaurants.map((restaurant, index) => {
           const { latitude, longitude } = getCoordinates(restaurant.location)!;
-          const restaurantId = restaurant.google_places?.place_id || restaurant.id || `restaurant-${index}`;
+          const restaurantId = restaurant.google_places?.place_id || restaurant.id || restaurant.name_hebrew;
           const isFavorite = favoriteIds?.has(restaurant.google_places?.place_id || restaurant.name_hebrew) ?? false;
           const markerColor = heatColors.get(restaurantId) || '#6b7280';
           const isSelected = selectedRestaurantId === restaurantId;

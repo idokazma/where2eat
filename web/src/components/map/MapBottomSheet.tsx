@@ -219,6 +219,13 @@ export const MapBottomSheet = forwardRef<MapBottomSheetHandle, MapBottomSheetPro
       heatColors,
     }), [restaurants, selectedId, onSelect, favoriteIds, heatColors]);
 
+    // Key that changes when data order changes, forcing react-window to re-render all rows
+    const listKey = useMemo(() => {
+      const first = restaurants[0] ? getRestaurantId(restaurants[0].item) : '';
+      const last = restaurants.length > 1 ? getRestaurantId(restaurants[restaurants.length - 1].item) : '';
+      return `${restaurants.length}-${first}-${last}`;
+    }, [restaurants]);
+
     return (
       <motion.div
         className="absolute inset-x-0 bottom-0 z-[1000] bg-white rounded-t-2xl shadow-[0_-4px_20px_rgba(0,0,0,0.15)]"
@@ -264,6 +271,7 @@ export const MapBottomSheet = forwardRef<MapBottomSheetHandle, MapBottomSheetPro
           }}
         >
           <List<RowExtraProps>
+            key={listKey}
             listRef={listRef}
             rowCount={restaurants.length}
             rowHeight={ITEM_HEIGHT}
