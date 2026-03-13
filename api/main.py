@@ -442,6 +442,22 @@ def sync_sqlite_to_postgres():
         # Ensure PostgreSQL tables exist
         src_models_base.init_db()
 
+        # Migrate: add published_at columns if missing (for existing PostgreSQL DBs)
+        try:
+            engine = src_models_base.get_engine()
+            from sqlalchemy import text, inspect as sa_inspect
+            inspector = sa_inspect(engine)
+            with engine.begin() as conn:
+                for table_name in ('episodes', 'restaurants'):
+                    cols = [c['name'] for c in inspector.get_columns(table_name)]
+                    if 'published_at' not in cols:
+                        conn.execute(text(
+                            f'ALTER TABLE {table_name} ADD COLUMN published_at VARCHAR(50)'
+                        ))
+                        print(f"[SYNC-MIGRATION] Added published_at to {table_name}")
+        except Exception as mig_err:
+            print(f"[SYNC-MIGRATION] published_at migration: {mig_err}")
+
         sqlite_db = get_database()
         episodes = sqlite_db.get_all_episodes()
         restaurants = sqlite_db.get_all_restaurants(include_episode_info=False)
@@ -780,21 +796,6 @@ async def lifespan(app: FastAPI):
                 src_models_base = importlib.util.module_from_spec(spec)
                 spec.loader.exec_module(src_models_base)
                 src_models_base.init_db()
-                # Migrate: add published_at columns if missing (for existing PostgreSQL DBs)
-                try:
-                    engine = src_models_base.get_engine()
-                    from sqlalchemy import text, inspect as sa_inspect
-                    inspector = sa_inspect(engine)
-                    with engine.begin() as conn:
-                        for table_name in ('episodes', 'restaurants'):
-                            cols = [c['name'] for c in inspector.get_columns(table_name)]
-                            if 'published_at' not in cols:
-                                conn.execute(text(
-                                    f'ALTER TABLE {table_name} ADD COLUMN published_at VARCHAR(50)'
-                                ))
-                                print(f"[MIGRATION] Added published_at to {table_name}")
-                except Exception as mig_err:
-                    print(f"[MIGRATION] published_at migration: {mig_err}")
         except Exception as e:
             print(f"[STARTUP] Database init failed: {e}")
     # Startup: fetch default video
