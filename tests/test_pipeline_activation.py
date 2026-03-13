@@ -9,6 +9,7 @@ Verifies:
 import os
 import sys
 import tempfile
+from datetime import datetime, timedelta
 from unittest.mock import patch, MagicMock
 
 import pytest
@@ -148,12 +149,13 @@ class TestPollSubscriptions:
         scheduler = PipelineScheduler(db=db)
 
         # Mock the yt-dlp fetch to return videos
+        recent_date = (datetime.utcnow() - timedelta(days=7)).strftime("%Y-%m-%d")
         mock_videos = [
             {
                 "video_id": "sched_vid_1",
                 "video_url": "https://www.youtube.com/watch?v=sched_vid_1",
                 "video_title": "Scheduler Episode",
-                "published_at": "2024-01-25",
+                "published_at": recent_date,
             },
         ]
 
