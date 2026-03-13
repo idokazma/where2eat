@@ -2,15 +2,32 @@
 
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { Restaurant } from '@/types/restaurant';
+import { Restaurant, getCoordinates } from '@/types/restaurant';
 import { PageLayout } from '@/components/layout';
 import { FilterBar, FilterChip, LocationFilter } from '@/components/filters';
 import { TrendingSection, DiscoveryFeed } from '@/components/feed';
 import { BottomSheet } from '@/components/ui/BottomSheet';
 import { PageLoadingSkeleton } from '@/components/ui/skeleton';
 import { useLocationFilter } from '@/hooks/useLocationFilter';
+import { useSettings } from '@/hooks/useSettings';
 import { useFavorites } from '@/contexts/favorites-context';
 import { endpoints } from '@/lib/config';
+
+// Israeli cities/regions for filtering
+const ISRAEL_REGIONS = ['צפון', 'מרכז', 'דרום', 'ירושלים', 'שרון', 'north', 'center', 'south', 'jerusalem', 'sharon'];
+const ISRAEL_CITIES = ['תל אביב', 'ירושלים', 'חיפה', 'באר שבע', 'אשדוד', 'נתניה', 'ראשון לציון', 'פתח תקווה', 'הרצליה', 'רמת גן', 'גבעתיים', 'כפר סבא', 'רעננה', 'הוד השרון', 'רמת השרון', 'בני ברק', 'חולון', 'בת ים', 'אילת', 'טבריה', 'עכו', 'נצרת', 'קיסריה', 'זכרון יעקב', 'יפו', 'רמלה', 'לוד', 'מודיעין', 'אשקלון', 'דימונה', 'ערד', 'עפולה', 'נהריה', 'כרמיאל'];
+
+function isInIsrael(restaurant: Restaurant): boolean {
+  const region = restaurant.location?.region?.toLowerCase();
+  if (region && ISRAEL_REGIONS.includes(region)) return true;
+  const city = restaurant.location?.city;
+  if (city && ISRAEL_CITIES.some(c => city.includes(c))) return true;
+  // Check by coordinates (rough Israel bounding box)
+  const lat = restaurant.location?.lat;
+  const lng = restaurant.location?.lng;
+  if (lat && lng && lat >= 29.5 && lat <= 33.4 && lng >= 34.2 && lng <= 35.9) return true;
+  return false;
+}
 
 const PAGE_SIZE = 20;
 
@@ -52,6 +69,9 @@ export function HomePageNew() {
 
   // Location filter
   const locationFilter = useLocationFilter();
+
+  // User settings
+  const { settings } = useSettings();
 
   // Favorites context
   const { setAllRestaurants: setFavoriteContext } = useFavorites();
@@ -173,13 +193,42 @@ export function HomePageNew() {
       );
     }
 
+    // Settings: show only Israel
+    if (settings.showOnlyIsrael) {
+      result = result.filter(isInIsrael);
+    }
+
+    // Settings: radius filter (when nearby mode is active)
+    if (locationFilter.mode === 'nearby' && locationFilter.userCoords) {
+      const maxMeters = settings.radiusKm * 1000;
+      const { lat, lng } = locationFilter.userCoords;
+      result = result.filter((r) => {
+        const coords = getCoordinates(r.location);
+        if (!coords) return false;
+        const R = 6371000;
+        const dLat = ((coords.latitude - lat) * Math.PI) / 180;
+        const dLon = ((coords.longitude - lng) * Math.PI) / 180;
+        const a =
+          Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+          Math.cos((lat * Math.PI) / 180) *
+            Math.cos((coords.latitude * Math.PI) / 180) *
+            Math.sin(dLon / 2) *
+            Math.sin(dLon / 2);
+        const dist = R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return dist <= maxMeters;
+      });
+    }
+
     return result;
   }, [
     restaurants,
     locationFilter.mode,
     locationFilter.neighborhood,
+    locationFilter.userCoords,
     selectedCuisines,
     selectedPriceRanges,
+    settings.showOnlyIsrael,
+    settings.radiusKm,
   ]);
 
   // Handle restaurant click
