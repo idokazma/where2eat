@@ -22,6 +22,7 @@ export interface EpisodeInfo {
   title: string;
   channel_name: string;
   analysis_date: string;
+  published_at?: string;
 }
 
 export interface MentionTimestamp {
@@ -63,6 +64,7 @@ export interface Restaurant {
     price_level: number;
   };
   food_trends?: string[];
+  published_at?: string;
   created_at?: string;
   updated_at?: string;
 }
@@ -81,9 +83,10 @@ export interface EditHistory {
   id: string;
   restaurant_id: string;
   restaurant_name: string;
+  admin_user_id: string;
   admin_email: string;
   admin_name: string;
   edit_type: 'create' | 'update' | 'delete' | 'approve' | 'reject';
-  changes: Record<string, any>;
+  changes: Record<string, any> | string;
   timestamp: string;
 }

@@ -22,7 +22,7 @@ export default function RestaurantsPage() {
     queryFn: () => restaurantsApi.list({
       page,
       limit: 25,
-      sort: '-created_at',
+      sort: '-published_at',
       filter: filters,
     }),
   });
