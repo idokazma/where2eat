@@ -3,7 +3,7 @@
 import { ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { PageLayout } from '@/components/layout';
-import { useSettings, RADIUS_OPTIONS } from '@/hooks/useSettings';
+import { useSettings, RADIUS_OPTIONS } from '@/contexts/settings-context';
 
 export default function SettingsPage() {
   const { settings, updateSetting, isInitialized } = useSettings();

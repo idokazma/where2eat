@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { FavoritesProvider } from "@/contexts/favorites-context";
+import { SettingsProvider } from "@/contexts/settings-context";
+import { LocationFilterProvider } from "@/contexts/location-filter-context";
 import { ClientLayout } from "@/components/client-layout";
 
 export const metadata: Metadata = {
@@ -44,9 +46,13 @@ export default function RootLayout({
       </head>
       <body className="antialiased">
         <ClientLayout>
-          <FavoritesProvider>
-            {children}
-          </FavoritesProvider>
+          <SettingsProvider>
+            <LocationFilterProvider>
+              <FavoritesProvider>
+                {children}
+              </FavoritesProvider>
+            </LocationFilterProvider>
+          </SettingsProvider>
         </ClientLayout>
       </body>
     </html>
