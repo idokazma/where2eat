@@ -128,7 +128,13 @@ class GooglePlacesEnricher:
             body = {
                 'textQuery': query,
                 'includedType': 'restaurant',
-                'languageCode': 'he'
+                'languageCode': 'he',
+                'locationBias': {
+                    'rectangle': {
+                        'low': {'latitude': 29.0, 'longitude': 34.0},
+                        'high': {'latitude': 33.5, 'longitude': 35.9}
+                    }
+                }
             }
 
             self.logger.debug(f"🔎 Searching new Places API for: {query}")
@@ -270,7 +276,10 @@ class GooglePlacesEnricher:
             search_params = {
                 'query': query,
                 'type': 'restaurant',
-                'key': self.api_key
+                'key': self.api_key,
+                'region': 'il',
+                'location': '31.5,34.8',
+                'radius': 200000,
             }
 
             self.logger.debug(f"🔎 Searching legacy Google Places for: {query}")
@@ -354,10 +363,30 @@ class GooglePlacesEnricher:
         # Enhance location data
         if 'geometry' in google_data and 'location' in google_data['geometry']:
             location = google_data['geometry']['location']
-            enhanced_data['location']['coordinates'] = {
-                'latitude': location.get('lat'),
-                'longitude': location.get('lng')
-            }
+            lat = location.get('lat')
+            lng = location.get('lng')
+            is_result_in_israel = lat and lng and 29.0 <= lat <= 33.5 and 34.0 <= lng <= 35.9
+
+            # Check if original restaurant claims to be in Israel
+            original_city = original_data.get('location', {}).get('city', '')
+            ISRAEL_CITIES = ['תל אביב', 'ירושלים', 'חיפה', 'באר שבע', 'אשדוד', 'נתניה', 'ראשון לציון',
+                             'פתח תקווה', 'הרצליה', 'רמת גן', 'גבעתיים', 'כפר סבא', 'רעננה', 'הוד השרון',
+                             'רמת השרון', 'בני ברק', 'חולון', 'בת ים', 'אילת', 'טבריה', 'עכו', 'נצרת',
+                             'קיסריה', 'זכרון יעקב', 'יפו', 'רמלה', 'לוד', 'מודיעין', 'אשקלון', 'נהריה',
+                             'כרמיאל', 'אבן יהודה', 'גללות', 'נוגה', 'קרית ענבים', 'שרון']
+            is_israeli_city = any(c in original_city for c in ISRAEL_CITIES) if original_city else False
+
+            if is_israeli_city and not is_result_in_israel:
+                # Wrong match - don't use these coordinates
+                self.logger.warning(
+                    f"⚠️ Location mismatch: {original_city} restaurant matched to non-Israel coords ({lat},{lng}), skipping coordinates"
+                )
+                enhanced_data['google_places']['potential_wrong_match'] = True
+            else:
+                enhanced_data['location']['coordinates'] = {
+                    'latitude': lat,
+                    'longitude': lng
+                }
         
         # Add full address if available
         if google_data.get('formatted_address'):

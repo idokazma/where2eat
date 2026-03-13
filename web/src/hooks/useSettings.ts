@@ -4,17 +4,17 @@ import { useState, useEffect, useCallback } from 'react';
 
 export interface UserSettings {
   showOnlyIsrael: boolean;
-  radiusKm: number;
+  radiusKm: number | null;
 }
 
 const STORAGE_KEY = 'where2eat-settings';
 
 const DEFAULTS: UserSettings = {
   showOnlyIsrael: false,
-  radiusKm: 5,
+  radiusKm: null,
 };
 
-export const RADIUS_OPTIONS = [1, 5, 20] as const;
+export const RADIUS_OPTIONS = [0, 1, 5, 20] as const;
 
 export function useSettings() {
   const [settings, setSettings] = useState<UserSettings>(DEFAULTS);

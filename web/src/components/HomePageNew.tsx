@@ -198,8 +198,8 @@ export function HomePageNew() {
       result = result.filter(isInIsrael);
     }
 
-    // Settings: radius filter (when nearby mode is active)
-    if (locationFilter.mode === 'nearby' && locationFilter.userCoords) {
+    // Settings: radius filter (when nearby mode is active and radius is set)
+    if (locationFilter.mode === 'nearby' && locationFilter.userCoords && settings.radiusKm) {
       const maxMeters = settings.radiusKm * 1000;
       const { lat, lng } = locationFilter.userCoords;
       result = result.filter((r) => {
