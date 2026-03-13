@@ -336,6 +336,8 @@ export default function RestaurantDetailPage() {
           const timeLabel = ts && ts > 0
             ? `${Math.floor(ts / 60)}:${String(ts % 60).padStart(2, '0')}`
             : null;
+          const episodeDate = restaurant.published_at || restaurant.episode_info.published_at || restaurant.episode_info.analysis_date;
+          const episodeTitle = restaurant.episode_info.title || restaurant.episode_info.channel_name || 'פודי';
 
           return (
             <Link
@@ -350,12 +352,12 @@ export default function RestaurantDetailPage() {
                   </div>
                   <div>
                     <p className="text-sm font-medium text-[var(--color-ink)]">
-                      הוזכר בפודקאסט
+                      {episodeTitle}
                     </p>
                     <p className="text-xs text-[var(--color-ink-muted)]">
-                      {new Date(restaurant.episode_info.published_at || restaurant.episode_info.analysis_date).toLocaleDateString('he-IL')}
+                      {episodeDate && new Date(episodeDate).toLocaleDateString('he-IL', { day: 'numeric', month: 'short', year: 'numeric' })}
                       {timeLabel && (
-                        <span className="mr-2 text-[var(--color-gold)]">
+                        <span className="mr-2 text-[var(--color-gold)] font-medium">
                           צפה מ-{timeLabel}
                         </span>
                       )}
