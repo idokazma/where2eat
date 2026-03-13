@@ -49,15 +49,26 @@ export default function TrendingPage() {
     }
   };
 
-  // Filter restaurants by episode date based on selected time period
+  // Filter restaurants by episode date, deduplicate, sort by rating
   const trendingRestaurants = useMemo(() => {
     const threshold = getDateThreshold(timePeriod);
     const filtered = restaurants.filter((r) => {
       const episodeDate = r.episode_info?.published_at || r.episode_info?.analysis_date;
-      if (!episodeDate) return true; // Include restaurants without dates (don't hide data)
+      if (!episodeDate) return true;
       return new Date(episodeDate) >= threshold;
     });
-    return filtered
+
+    // Deduplicate by google_place_id or name_hebrew, keeping highest-rated entry
+    const seen = new Map<string, Restaurant>();
+    for (const r of filtered) {
+      const key = r.google_places?.place_id || r.name_hebrew || r.name;
+      const existing = seen.get(key);
+      if (!existing || (r.rating?.google_rating ?? 0) > (existing.rating?.google_rating ?? 0)) {
+        seen.set(key, r);
+      }
+    }
+
+    return Array.from(seen.values())
       .sort((a, b) => (b.rating?.google_rating ?? 0) - (a.rating?.google_rating ?? 0))
       .slice(0, 20);
   }, [restaurants, timePeriod]);
