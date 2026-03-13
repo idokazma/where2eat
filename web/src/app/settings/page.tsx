@@ -61,20 +61,23 @@ export default function SettingsPage() {
             רדיוס תצוגה (בקרבת מקום)
           </h2>
           <div className="flex gap-2">
-            {RADIUS_OPTIONS.map((km) => (
-              <button
-                key={km}
-                onClick={() => updateSetting('radiusKm', km)}
-                className={`flex-1 p-3 rounded-lg font-medium text-sm transition-colors ${
-                  settings.radiusKm === km
-                    ? 'bg-[var(--color-ink)] text-[var(--color-paper)]'
-                    : 'bg-[var(--color-surface)] text-[var(--color-ink)]'
-                }`}
-                disabled={!isInitialized}
-              >
-                {km} ק&quot;מ
-              </button>
-            ))}
+            {RADIUS_OPTIONS.map((km) => {
+              const isSelected = km === 0 ? !settings.radiusKm : settings.radiusKm === km;
+              return (
+                <button
+                  key={km}
+                  onClick={() => updateSetting('radiusKm', km === 0 ? null : km)}
+                  className={`flex-1 p-3 rounded-lg font-medium text-sm transition-colors ${
+                    isSelected
+                      ? 'bg-[var(--color-ink)] text-[var(--color-paper)]'
+                      : 'bg-[var(--color-surface)] text-[var(--color-ink)]'
+                  }`}
+                  disabled={!isInitialized}
+                >
+                  {km === 0 ? 'ללא' : `${km} ק\u0022מ`}
+                </button>
+              );
+            })}
           </div>
           <p className="text-xs text-[var(--color-ink-muted)] mt-2">
             חל כאשר מסנן &quot;קרוב אליי&quot; פעיל
