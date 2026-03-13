@@ -189,6 +189,16 @@ class VideoQueueManager:
             )
             return cursor.rowcount > 0
 
+    def update_published_at(self, queue_id: str, published_at: str) -> bool:
+        """Update published_at for a queue item (resolved after enqueue)."""
+        with self.db.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute(
+                "UPDATE video_queue SET published_at = ? WHERE id = ?",
+                (published_at, queue_id),
+            )
+            return cursor.rowcount > 0
+
     # Error patterns that indicate permanent failures (no point retrying)
     PERMANENT_FAILURE_PATTERNS = [
         "Transcript not available",

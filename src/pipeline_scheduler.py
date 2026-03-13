@@ -296,6 +296,13 @@ class PipelineScheduler:
         video_url = item['video_url']
         video_id = item['video_id']
         subscription_id = item.get('subscription_id')
+        published_at = item.get('published_at')
+
+        # Resolve published_at if missing (flat playlist extraction doesn't return dates)
+        if not published_at:
+            published_at = self._resolve_video_date(video_id)
+            if published_at:
+                self.queue_manager.update_published_at(queue_id, published_at)
 
         self.pipeline_logger.info(
             'video_processing',
@@ -309,7 +316,7 @@ class PipelineScheduler:
             result = backend.process_video(
                 video_url=video_url,
                 enrich_with_google=True,
-                published_at=item.get('published_at'),
+                published_at=published_at,
             )
         except Exception as e:
             error_msg = f'BackendService error: {e}'
@@ -515,7 +522,8 @@ class PipelineScheduler:
     def _filter_by_age(videos: List[dict]) -> List[dict]:
         """Filter out videos older than PIPELINE_MAX_VIDEO_AGE_DAYS.
 
-        Videos without a valid published_at are also excluded (unknown age).
+        Videos without a valid published_at are INCLUDED (assumed recent,
+        since yt-dlp flat extraction doesn't return dates for playlist items).
         """
         cutoff = datetime.utcnow() - timedelta(days=PIPELINE_MAX_VIDEO_AGE_DAYS)
         cutoff_str = cutoff.isoformat()
@@ -524,6 +532,9 @@ class PipelineScheduler:
         for video in videos:
             date_str = video.get('published_at') or ''
             if not date_str:
+                # No date available (common with flat playlist extraction) —
+                # include it and let PIPELINE_MAX_RECENT_VIDEOS limit the count
+                result.append(video)
                 continue
             # Compare ISO date strings (works for both date and datetime formats)
             if date_str >= cutoff_str:
@@ -534,12 +545,13 @@ class PipelineScheduler:
     def _sort_videos_by_date(videos: List[dict]) -> List[dict]:
         """Sort videos by published_at descending (most recent first).
 
-        Videos without a valid published_at are placed at the end (treated as oldest).
+        Videos without a valid published_at are placed at the BEGINNING
+        (assumed newest, preserving playlist ordering from yt-dlp).
         """
         def sort_key(v):
             date_str = v.get('published_at') or ''
             if not date_str:
-                return ''
+                return '\xff'  # Sort to front (highest value, reversed)
             return date_str
 
         return sorted(videos, key=sort_key, reverse=True)
@@ -631,6 +643,28 @@ class PipelineScheduler:
         except Exception as e:
             logger.error("Error fetching videos from %s: %s", url, e)
             return []
+
+    @staticmethod
+    def _resolve_video_date(video_id: str) -> Optional[str]:
+        """Fetch upload date for a single video using yt-dlp.
+
+        Used when flat playlist extraction didn't provide a date.
+        Returns ISO date string (YYYY-MM-DD) or None.
+        """
+        try:
+            import yt_dlp
+            ydl_opts = {'quiet': True, 'no_warnings': True, 'skip_download': True}
+            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                info = ydl.extract_info(
+                    f'https://www.youtube.com/watch?v={video_id}',
+                    download=False,
+                )
+            upload_date = info.get('upload_date') or ''
+            if upload_date and len(upload_date) == 8:
+                return f'{upload_date[:4]}-{upload_date[4:6]}-{upload_date[6:8]}'
+        except Exception as e:
+            logger.warning("Failed to resolve date for video %s: %s", video_id, e)
+        return None
 
     def _get_backend_service(self):
         """Lazy-load BackendService (to avoid import issues in tests)."""

@@ -640,6 +640,9 @@ class BackendService:
                     # Make a copy to avoid modifying the original
                     data_copy = restaurant_data.copy()
                     name_hebrew = data_copy.pop('name_hebrew', 'Unknown')
+                    # Set published_at from episode's publish date
+                    if published_at and 'published_at' not in data_copy:
+                        data_copy['published_at'] = published_at
                     restaurant_id = self.db.create_restaurant(
                         name_hebrew=name_hebrew,
                         episode_id=episode_id,
@@ -671,6 +674,7 @@ class BackendService:
                                     food_trends=analysis_result.get('food_trends', []),
                                     episode_summary=analysis_result.get('episode_summary'),
                                     analysis_date=datetime.now(),
+                                    published_at=published_at,
                                 )
                                 session.add(ep_model)
                             # Upsert restaurants
@@ -715,6 +719,7 @@ class BackendService:
                                     google_user_ratings_total=restaurant_data.get('google_user_ratings_total') or rating.get('user_ratings_total'),
                                     photos=restaurant_data.get('photos'),
                                     image_url=restaurant_data.get('image_url'),
+                                    published_at=published_at,
                                 )
                                 session.add(r_model)
                             session.commit()

@@ -573,9 +573,13 @@ class TestFilterByDate:
         assert 'enqueued' in details
         assert details['enqueued'] == PIPELINE_MAX_RECENT_VIDEOS
 
-    def test_poll_videos_without_dates_are_excluded(self, scheduler, subscription, db):
-        """Videos missing published_at are excluded by the age filter."""
-        # Mix of dated and undated videos
+    def test_poll_videos_without_dates_are_included(self, scheduler, subscription, db):
+        """Videos missing published_at are included by the age filter (assumed recent).
+
+        Dateless videos are treated as newest and sort to the front, so they
+        occupy slots within the PIPELINE_MAX_RECENT_VIDEOS cap.
+        """
+        # 2 undated + 10 dated = 12 total, but cap is 10
         videos = [
             {'video_id': 'no_date_1', 'video_url': 'https://youtube.com/watch?v=no_date_1',
              'video_title': 'No Date 1', 'published_at': None},
@@ -587,16 +591,17 @@ class TestFilterByDate:
             scheduler.poll_subscriptions()
 
         queue_mgr = VideoQueueManager(db)
-        # The 10 dated videos should be queued, the 2 undated should be excluded entirely
+        # Cap still applies: only PIPELINE_MAX_RECENT_VIDEOS queued
         depth = queue_mgr.get_queue_depth()
         assert depth == PIPELINE_MAX_RECENT_VIDEOS
 
+        # But the undated videos ARE in the queue (they sort as newest)
         with db.get_connection() as conn:
             cursor = conn.cursor()
             cursor.execute(
                 "SELECT COUNT(*) as cnt FROM video_queue WHERE video_id IN ('no_date_1', 'no_date_2')"
             )
-            assert cursor.fetchone()['cnt'] == 0
+            assert cursor.fetchone()['cnt'] == 2
 
 
 # ---------------------------------------------------------------------------
@@ -764,8 +769,8 @@ class TestVideoAgeCutoff:
             cursor.execute("SELECT COUNT(*) as cnt FROM video_queue WHERE video_id LIKE 'ancient_%'")
             assert cursor.fetchone()['cnt'] == 0
 
-    def test_poll_videos_without_date_excluded_by_age_filter(self, scheduler, subscription, db):
-        """Videos without a published_at date are excluded by the age filter."""
+    def test_poll_videos_without_date_included_by_age_filter(self, scheduler, subscription, db):
+        """Videos without a published_at date are included by the age filter (assumed recent)."""
         now = datetime.utcnow()
         videos = [
             {'video_id': 'dated', 'video_url': 'https://youtube.com/watch?v=dated',
@@ -777,14 +782,14 @@ class TestVideoAgeCutoff:
         with patch.object(scheduler, '_fetch_channel_videos', return_value=videos):
             scheduler.poll_subscriptions()
 
-        # Only the dated video should be queued
+        # Both videos should be queued — dateless ones are assumed recent
         queue_mgr = VideoQueueManager(db)
-        assert queue_mgr.get_queue_depth() == 1
+        assert queue_mgr.get_queue_depth() == 2
 
         with db.get_connection() as conn:
             cursor = conn.cursor()
             cursor.execute("SELECT COUNT(*) as cnt FROM video_queue WHERE video_id = 'no_date'")
-            assert cursor.fetchone()['cnt'] == 0
+            assert cursor.fetchone()['cnt'] == 1
 
     def test_refresh_excludes_videos_older_than_max_age(self, scheduler, subscription, db):
         """refresh_subscription also applies the age cutoff."""

@@ -472,6 +472,7 @@ def sync_sqlite_to_postgres():
                     transcript=ep.get('transcript'),
                     food_trends=ep.get('food_trends'),
                     episode_summary=ep.get('episode_summary'),
+                    published_at=ep.get('published_at'),
                 )
                 if ep.get('analysis_date'):
                     try:
@@ -570,6 +571,7 @@ def sync_sqlite_to_postgres():
                     google_user_ratings_total=rating.get('user_ratings_total'),
                     photos=photos,
                     image_url=image_url,
+                    published_at=r.get('published_at'),
                 )
                 session.add(restaurant_model)
                 synced_restaurants += 1

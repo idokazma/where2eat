@@ -43,6 +43,7 @@ class Episode(Base):
     transcript: Mapped[Optional[str]] = mapped_column(Text)
     food_trends: Mapped[Optional[Dict]] = mapped_column(JSON)
     episode_summary: Mapped[Optional[str]] = mapped_column(Text)
+    published_at: Mapped[Optional[str]] = mapped_column(String(50))
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
@@ -60,6 +61,7 @@ class Episode(Base):
             'title': self.title,
             'language': self.language,
             'analysis_date': self.analysis_date.isoformat() if self.analysis_date else None,
+            'published_at': self.published_at,
             'food_trends': self.food_trends,
             'episode_summary': self.episode_summary,
             'created_at': self.created_at.isoformat() if self.created_at else None,
@@ -121,6 +123,9 @@ class Restaurant(Base):
     photos: Mapped[Optional[List]] = mapped_column(JSON)
     image_url: Mapped[Optional[str]] = mapped_column(String(500))
 
+    # Published date (from YouTube episode publish date)
+    published_at: Mapped[Optional[str]] = mapped_column(String(50))
+
     # Timestamps
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
@@ -158,10 +163,12 @@ class Restaurant(Base):
                 'google_rating': self.google_rating,
                 'review_count': self.google_user_ratings_total,
             },
+            'published_at': self.published_at or (self.episode.published_at if self.episode else None),
             'episode_info': {
                 'video_id': self.episode.video_id if self.episode else None,
                 'video_url': self.episode.video_url if self.episode else None,
                 'analysis_date': self.episode.analysis_date.strftime('%Y-%m-%d') if self.episode and self.episode.analysis_date else None,
+                'published_at': self.episode.published_at if self.episode else None,
             } if self.episode else {},
             'contact_info': {
                 'phone': self.contact_phone or 'לא צוין',
