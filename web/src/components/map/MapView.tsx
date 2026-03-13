@@ -64,6 +64,9 @@ interface MapViewProps {
   onMarkerClick?: (id: string) => void;
 }
 
+// Highlight color for selected marker
+const SELECTED_COLOR = '#4285F4';
+
 // Custom marker icon with configurable color and optional highlight
 const createCustomIcon = (
   color: string,
@@ -73,6 +76,7 @@ const createCustomIcon = (
   const size = isHighlighted ? 42 : 32;
   const height = isHighlighted ? 52 : 40;
   const cx = size / 2;
+  const fillColor = isHighlighted ? SELECTED_COLOR : color;
 
   const innerContent = isFavorite
     ? `<path d="M${cx} ${height * 0.65}c-.3 0-.5-.1-.7-.3C${cx - 1.4} ${height * 0.625} ${cx - 8} ${height * 0.475} ${cx - 8} ${height * 0.35}c0-4.4 3.6-8 8-8s8 3.6 8 8c0 5-6.6 11-7.3 11.7-.2.2-.4.3-.7.3z" fill="white"/>`
@@ -81,9 +85,8 @@ const createCustomIcon = (
   const svgIcon = `
     <svg width="${size}" height="${height}" viewBox="0 0 ${size} ${height}" xmlns="http://www.w3.org/2000/svg">
       <path d="M${cx} 0C${cx * 0.45} 0 0 ${height * 0.18} 0 ${height * 0.4}c0 ${height * 0.275} ${cx} ${height * 0.6} ${cx} ${height * 0.6}s${cx}-${height * 0.325} ${cx}-${height * 0.6}C${size} ${height * 0.18} ${cx * 1.55} 0 ${cx} 0z"
-            fill="${color}" stroke="white" stroke-width="2"${isHighlighted ? ' filter="url(#glow)"' : ''}/>
+            fill="${fillColor}" stroke="${isHighlighted ? '#ffffff' : 'white'}" stroke-width="${isHighlighted ? '3' : '2'}"/>
       ${innerContent}
-      ${isHighlighted ? `<defs><filter id="glow"><feGaussianBlur stdDeviation="2" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>` : ''}
     </svg>
   `;
 
@@ -118,7 +121,7 @@ function getMarkerColor(
   return (restaurant.host_opinion && colors[restaurant.host_opinion]) || colors.neutral;
 }
 
-// One-time location fetch button
+// One-time location fetch button — positioned below zoom controls
 function LocationButton({
   hasLocation,
   isLoading,
@@ -129,21 +132,20 @@ function LocationButton({
   onLocate?: () => void;
 }) {
   return (
-    <div className="leaflet-top leaflet-left" style={{ marginTop: '10px', marginLeft: '10px' }}>
-      <div className="leaflet-control leaflet-bar">
+    <div className="leaflet-top leaflet-left" style={{ marginTop: '80px', marginLeft: '10px' }}>
+      <div className="leaflet-control">
         <Button
           onClick={() => onLocate?.()}
           disabled={isLoading}
-          className={`border shadow-sm ${
+          className={`border shadow-sm !p-2 !min-w-0 ${
             hasLocation
               ? 'bg-blue-50 hover:bg-blue-100 text-blue-600 border-blue-300'
               : 'bg-white hover:bg-gray-100 text-[var(--color-ink)] border-gray-300'
           }`}
           size="sm"
-          style={{ borderRadius: '4px', padding: '6px 12px' }}
+          style={{ borderRadius: '4px', width: '34px', height: '34px' }}
         >
-          <Navigation className={`w-4 h-4 ml-1 ${isLoading ? 'animate-pulse' : ''}`} />
-          {isLoading ? 'מאתר...' : 'המיקום שלי'}
+          <Navigation className={`w-4 h-4 ${isLoading ? 'animate-pulse' : ''}`} />
         </Button>
       </div>
     </div>

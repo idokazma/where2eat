@@ -77,7 +77,7 @@ export const RestaurantListItem = memo(function RestaurantListItem({
             <span className="text-xs font-semibold">{googleRating.toFixed(1)}</span>
           </div>
         )}
-        {distance != null && (
+        {distance != null && distance > 0 && (
           <span className="text-[10px] text-[var(--color-ink-muted)]">
             {formatDistance(distance)}
           </span>
