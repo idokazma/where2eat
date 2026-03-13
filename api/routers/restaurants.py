@@ -683,6 +683,17 @@ async def update_restaurant(restaurant_id: str, restaurant: RestaurantUpdate):
 )
 async def delete_restaurant(restaurant_id: str):
     """Delete a restaurant."""
+    # Try native SQLite first
+    db = _get_sqlite_db()
+    if db:
+        try:
+            existing = db.get_restaurant(restaurant_id)
+            if existing:
+                if db.delete_restaurant(restaurant_id):
+                    return {"message": "Restaurant deleted successfully"}
+        except Exception as e:
+            print(f"Warning: SQLite delete error: {e}")
+
     # Try SQLAlchemy first
     if use_sqlalchemy():
         ctx = get_db_session()
