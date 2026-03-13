@@ -241,7 +241,12 @@ export default function RestaurantDetailPage() {
 
         {/* Restaurant info overlay */}
         <div className="absolute bottom-0 right-0 left-0 p-5">
-          {statusBadge && (
+          {restaurant.is_closing && (
+            <span className="inline-block px-3 py-1 rounded-md text-sm font-bold mb-2 bg-red-600 text-white">
+              נסגר לצמיתות
+            </span>
+          )}
+          {statusBadge && !restaurant.is_closing && (
             <span className={`inline-block px-2.5 py-1 rounded-md text-xs font-semibold mb-2 ${statusBadge.className}`}>
               {statusBadge.text}
             </span>
