@@ -605,6 +605,9 @@ async def update_restaurant(restaurant_id: str, restaurant: RestaurantUpdate):
     location = data.pop('location', None)
 
     update_data = {k: v for k, v in data.items() if v is not None}
+    # Map API field name to DB column name
+    if 'mention_timestamp_seconds' in update_data:
+        update_data['mention_timestamp'] = update_data.pop('mention_timestamp_seconds')
     if location:
         if location.get('city'):
             update_data['city'] = location['city']

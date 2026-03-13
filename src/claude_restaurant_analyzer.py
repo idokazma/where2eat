@@ -51,6 +51,36 @@ class ClaudeRestaurantAnalyzer:
             self.logger.addHandler(handler)
             self.logger.setLevel(logging.INFO)
 
+    @staticmethod
+    def _build_timestamped_transcript(transcript_data: Dict) -> str:
+        """Build transcript text with [MM:SS] markers from segments.
+
+        If the transcript data contains a 'segments' list with 'start' and 'text',
+        we interleave timestamp markers every ~30 seconds so the LLM can determine
+        when each restaurant discussion begins.  Falls back to the flat transcript
+        string when segments are unavailable.
+        """
+        segments = transcript_data.get('segments')
+        if not segments or not isinstance(segments, list):
+            return transcript_data.get('transcript', '')
+
+        parts: list[str] = []
+        last_marker = -30.0  # force first marker
+        for seg in segments:
+            start = seg.get('start', 0)
+            text = seg.get('text', '')
+            if not text:
+                continue
+            # Insert a timestamp marker roughly every 30 seconds
+            if start - last_marker >= 30:
+                minutes = int(start) // 60
+                seconds = int(start) % 60
+                parts.append(f"\n[{minutes:02d}:{seconds:02d}] ")
+                last_marker = start
+            parts.append(text.strip() + ' ')
+
+        return ''.join(parts).strip()
+
     def _validate_restaurant_name(self, name: str) -> bool:
         """Reject names that are likely transcript fragments."""
         if not name or not name.strip():
@@ -84,8 +114,8 @@ class ClaudeRestaurantAnalyzer:
                 return self._create_mock_analysis(transcript_data)
             
             # Process transcript in chunks if it's too long
-            transcript_text = transcript_data['transcript']
-            
+            transcript_text = self._build_timestamped_transcript(transcript_data)
+
             if len(transcript_text) > 25000:
                 return self._analyze_chunked_transcript(transcript_data)
             else:
@@ -97,13 +127,16 @@ class ClaudeRestaurantAnalyzer:
 
     def _analyze_single_transcript(self, transcript_data: Dict) -> Dict:
         """Analyze a single transcript chunk using Claude Task agent"""
-        
+
+        # Build timestamped transcript so the LLM can determine when discussions begin
+        timestamped_text = self._build_timestamped_transcript(transcript_data)
+
         # Create analysis prompt
-        analysis_prompt = self._create_analysis_prompt(transcript_data['transcript'], transcript_data)
-        
+        analysis_prompt = self._create_analysis_prompt(timestamped_text, transcript_data)
+
         try:
             # Use Task agent to analyze transcript for restaurants
-            restaurants = self._call_claude_task_agent(transcript_data['transcript'], analysis_prompt)
+            restaurants = self._call_claude_task_agent(timestamped_text, analysis_prompt)
             
             # Filter out invalid names and low confidence results
             restaurants = [r for r in restaurants if self._validate_restaurant_name(r.get('name_hebrew', ''))]
@@ -140,10 +173,11 @@ class ClaudeRestaurantAnalyzer:
     def _analyze_chunked_transcript(self, transcript_data: Dict) -> Dict:
         """Analyze transcript in chunks for comprehensive coverage"""
         
-        transcript_text = transcript_data['transcript']
+        # Use timestamped transcript for accurate mention_timestamp_seconds
+        transcript_text = self._build_timestamped_transcript(transcript_data)
         chunk_size = 25000
         overlap = 1000
-        
+
         # Split into chunks
         chunks = self._create_chunks(transcript_text, chunk_size, overlap)
         
@@ -153,7 +187,10 @@ class ClaudeRestaurantAnalyzer:
         for i, chunk in enumerate(chunks):
             chunk_data = transcript_data.copy()
             chunk_data['transcript'] = chunk
-            
+            # Clear segments so _build_timestamped_transcript falls back to
+            # the already-timestamped chunk text
+            chunk_data.pop('segments', None)
+
             # Analyze each chunk
             chunk_result = self._analyze_single_transcript(chunk_data)
             
@@ -347,6 +384,15 @@ Return a JSON array with this structure for each restaurant:
     "chef_name": "שם השף אם מוזכר",
     "mention_context": "ציטוט קצר מהתמליל"
 }}
+
+TIMESTAMP INSTRUCTIONS:
+The transcript contains [MM:SS] markers. For "mention_timestamp_seconds":
+- Find the [MM:SS] marker where the DISCUSSION about the restaurant BEGINS — this is often
+  BEFORE the restaurant name is said. The hosts typically describe the food, ambiance, or
+  location before stating the name.
+- Look ~30-60 seconds before the name mention for the start of the relevant discussion.
+- Convert [MM:SS] to total seconds (e.g., [12:30] = 750).
+- If no timestamp markers are present, use 0.
 
 CONFIDENCE LEVELS:
 - "high": שם מפורש עם הקשר ברור (e.g., "הלכנו למסעדת צ'קולי")
@@ -848,6 +894,15 @@ DO NOT EXTRACT:
         "mention_context": "ציטוט קצר מהתמליל שמזכיר את המסעדה"
     }}
 ]
+
+TIMESTAMP INSTRUCTIONS:
+The transcript contains [MM:SS] markers. For "mention_timestamp_seconds":
+- Find the [MM:SS] marker where the DISCUSSION about the restaurant BEGINS — this is often
+  BEFORE the restaurant name is said. The hosts typically describe the food, ambiance, or
+  location before stating the name.
+- Look ~30-60 seconds before the name mention for the start of the relevant discussion.
+- Convert [MM:SS] to total seconds (e.g., [12:30] = 750).
+- If no timestamp markers are present, use 0.
 
 CONFIDENCE LEVELS:
 - "high": שם מפורש עם הקשר ברור
