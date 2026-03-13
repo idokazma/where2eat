@@ -102,6 +102,8 @@ export const MapBottomSheet = forwardRef<MapBottomSheetHandle, MapBottomSheetPro
     const listRef = useListRef(null);
     const scrollOffsetRef = useRef(0);
     const lastFocusedIdRef = useRef<string | null>(null);
+    const isUserScrollingRef = useRef(false);
+    const scrollIdleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const [viewportHeight, setViewportHeight] = useState(
       typeof window !== 'undefined' ? window.innerHeight : 800
     );
@@ -148,10 +150,10 @@ export const MapBottomSheet = forwardRef<MapBottomSheetHandle, MapBottomSheetPro
     }), [restaurants, snapTo, snapHalf, listRef]);
 
     // When selectedId changes externally (map marker tap), scroll list into view
-    // and expand sheet if collapsed. Uses requestAnimationFrame to avoid
-    // synchronous setState inside effect (react-hooks/set-state-in-effect).
+    // and expand sheet if collapsed. Skip if the selection came from user scrolling
+    // the list (to avoid a feedback loop).
     useEffect(() => {
-      if (selectedId) {
+      if (selectedId && !isUserScrollingRef.current) {
         const idx = restaurants.findIndex((r) => getRestaurantId(r.item) === selectedId);
         if (idx >= 0 && listRef.current) {
           listRef.current.scrollToRow({ index: idx, align: 'center' });
@@ -187,9 +189,10 @@ export const MapBottomSheet = forwardRef<MapBottomSheetHandle, MapBottomSheetPro
       [sheetHeight, snapHalf, snapFull, snapTo]
     );
 
-    // Haptic feedback when visible row range changes
+    // Haptic feedback when visible row range changes — only during user scrolling
     const handleRowsRendered = useCallback(
       (visibleRows: { startIndex: number; stopIndex: number }) => {
+        if (!isUserScrollingRef.current) return;
         const centerIndex = Math.floor((visibleRows.startIndex + visibleRows.stopIndex) / 2);
         if (centerIndex >= 0 && centerIndex < restaurants.length) {
           const id = getRestaurantId(restaurants[centerIndex].item);
@@ -248,9 +251,16 @@ export const MapBottomSheet = forwardRef<MapBottomSheetHandle, MapBottomSheetPro
         <div
           style={{ height: `calc(100% - 48px)` }}
           onTouchStart={(e) => {
+            isUserScrollingRef.current = true;
+            if (scrollIdleTimerRef.current) clearTimeout(scrollIdleTimerRef.current);
             if (scrollOffsetRef.current > 0) {
               e.stopPropagation();
             }
+          }}
+          onTouchEnd={() => {
+            scrollIdleTimerRef.current = setTimeout(() => {
+              isUserScrollingRef.current = false;
+            }, 300);
           }}
         >
           <List<RowExtraProps>
