@@ -124,27 +124,26 @@ def find_mismatched_restaurants_api(api_url):
 
         if is_israeli_city(city) and lat and lng and not is_in_israel(lat, lng):
             mismatched.append({
-                'id': r.get('google_places', {}).get('place_id') or r.get('id', ''),
+                'id': r.get('id', ''),
                 'name_english': r.get('name_english', ''),
                 'name_hebrew': r.get('name_hebrew', ''),
                 'city': city,
                 'latitude': lat,
                 'longitude': lng,
                 'google_place_id': r.get('google_places', {}).get('place_id', ''),
-                '_api_restaurant': r,  # keep full record for update
             })
     return mismatched
 
 
 def update_restaurant_api(api_url, restaurant, new_data):
-    """Update restaurant via admin API."""
-    place_id = restaurant.get('google_place_id', '')
-    if not place_id:
-        logger.warning(f"  No place_id to update via API")
+    """Update restaurant via API."""
+    restaurant_id = restaurant.get('id', '')
+    if not restaurant_id:
+        logger.warning(f"  No restaurant id to update via API")
         return False
 
     resp = http_requests.put(
-        f"{api_url}/api/restaurants/{place_id}",
+        f"{api_url}/api/restaurants/{restaurant_id}",
         json=new_data,
         timeout=15,
     )
@@ -258,6 +257,7 @@ def main():
 
                 if use_api:
                     success = update_restaurant_api(args.api, restaurant, {
+                        'location': {'lat': new_lat, 'lng': new_lng},
                         'latitude': new_lat,
                         'longitude': new_lng,
                         'google_place_id': new_place_id,
@@ -275,10 +275,9 @@ def main():
             else:
                 logger.warning(f"  No valid Israel result found. Clearing wrong coordinates.")
                 if use_api:
-                    success = update_restaurant_api(args.api, restaurant, {
-                        'latitude': None,
-                        'longitude': None,
-                    })
+                    # Can't easily null coordinates via API, just skip
+                    logger.warning(f"  Skipping clear via API - coordinates can't be nulled remotely")
+                    stats['cleared'] += 1
                     if success:
                         stats['cleared'] += 1
                     else:

@@ -567,7 +567,35 @@ async def create_restaurant(restaurant: RestaurantCreate):
 )
 async def update_restaurant(restaurant_id: str, restaurant: RestaurantUpdate):
     """Update a restaurant."""
-    # Try SQLAlchemy first
+    data = restaurant.model_dump(exclude_unset=True)
+    location = data.pop('location', None)
+
+    update_data = {k: v for k, v in data.items() if v is not None}
+    if location:
+        if location.get('city'):
+            update_data['city'] = location['city']
+        if location.get('address'):
+            update_data['address'] = location['address']
+        if location.get('region'):
+            update_data['region'] = location['region']
+        if location.get('lat'):
+            update_data['latitude'] = location['lat']
+        if location.get('lng'):
+            update_data['longitude'] = location['lng']
+
+    # 1. Try native SQLite first (pipeline storage)
+    db = _get_sqlite_db()
+    if db:
+        try:
+            existing = db.get_restaurant(restaurant_id)
+            if existing:
+                success = db.update_restaurant(restaurant_id, **update_data)
+                if success:
+                    return db.get_restaurant(restaurant_id)
+        except Exception as e:
+            print(f"Warning: SQLite update error: {e}")
+
+    # 2. Try SQLAlchemy if configured
     if use_sqlalchemy():
         ctx = get_db_session()
         if ctx:
@@ -577,24 +605,8 @@ async def update_restaurant(restaurant_id: str, restaurant: RestaurantUpdate):
                 if str(src_path) not in sys.path:
                     sys.path.insert(0, str(src_path))
                 from repositories import RestaurantRepository
-                with ctx as db:
-                    repo = RestaurantRepository(db)
-                    data = restaurant.model_dump(exclude_unset=True)
-                    location = data.pop('location', None)
-
-                    update_data = {k: v for k, v in data.items() if v is not None}
-                    if location:
-                        if location.get('city'):
-                            update_data['city'] = location['city']
-                        if location.get('address'):
-                            update_data['address'] = location['address']
-                        if location.get('region'):
-                            update_data['region'] = location['region']
-                        if location.get('lat'):
-                            update_data['latitude'] = location['lat']
-                        if location.get('lng'):
-                            update_data['longitude'] = location['lng']
-
+                with ctx as db_session:
+                    repo = RestaurantRepository(db_session)
                     updated = repo.update(restaurant_id, **update_data)
                     if not updated:
                         raise HTTPException(status_code=404, detail="Restaurant not found")
@@ -604,7 +616,7 @@ async def update_restaurant(restaurant_id: str, restaurant: RestaurantUpdate):
             except Exception as e:
                 print(f"Warning: SQLAlchemy error, falling back to JSON: {e}")
 
-    # Fallback to JSON file
+    # 3. Fallback to JSON file
     file_path = DATA_DIR / f"{restaurant_id}.json"
     if not file_path.exists():
         raise HTTPException(status_code=404, detail="Restaurant not found")
