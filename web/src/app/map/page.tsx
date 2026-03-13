@@ -39,8 +39,18 @@ export default function MapPage() {
   const { favorites, setAllRestaurants } = useFavorites();
   const bottomSheetRef = useRef<MapBottomSheetHandle>(null);
 
-  // Geolocation (one-time fetch)
+  // Geolocation — auto-fetch on mount so distances are available immediately
   const { coords: userCoords, accuracy, loading: locationLoading, getCurrentPosition } = useGeolocation();
+  const hasRequestedLocation = useRef(false);
+
+  useEffect(() => {
+    if (!hasRequestedLocation.current) {
+      hasRequestedLocation.current = true;
+      getCurrentPosition().catch(() => {
+        // User denied or unavailable — distances just won't show
+      });
+    }
+  }, [getCurrentPosition]);
 
   // Fetch restaurants from last 3 months
   useEffect(() => {
