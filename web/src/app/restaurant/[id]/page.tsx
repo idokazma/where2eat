@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import Link from 'next/link';
 import Image from 'next/image';
 import type { Restaurant } from '@/types/restaurant';
 import {
@@ -13,7 +12,6 @@ import {
   Phone,
   Globe,
   Clock,
-  Play,
   Navigation,
   Share2,
   ExternalLink,
@@ -25,7 +23,7 @@ import { endpoints } from '@/lib/config';
 import { getRestaurantImage, getRestaurantImages, getCuisineGradient } from '@/lib/images';
 import { PhotoGallery } from '@/components/restaurant/PhotoGallery';
 import { normalizeStatus, getPriceDisplay, normalizeMenuItems } from '@/lib/data-normalizer';
-import { getTimedYouTubeUrl } from '@/lib/youtube';
+import { YouTubeEmbed } from '@/components/restaurant/YouTubeEmbed';
 
 // Removed: now using getPriceDisplay from data-normalizer
 
@@ -53,7 +51,7 @@ export default function RestaurantDetailPage() {
   const [heroImageError, setHeroImageError] = useState(false);
   const [heroImageLoading, setHeroImageLoading] = useState(true);
 
-  const restaurantId = params.id as string;
+  const restaurantId = decodeURIComponent(params.id as string);
 
   useEffect(() => {
     const loadRestaurant = async () => {
@@ -76,7 +74,10 @@ export default function RestaurantDetailPage() {
 
         if (data.restaurants) {
           const found = data.restaurants.find(
-            (r: Restaurant) => r.google_places?.place_id === restaurantId || r.id === restaurantId
+            (r: Restaurant) =>
+              r.google_places?.place_id === restaurantId ||
+              r.id === restaurantId ||
+              r.name_hebrew === restaurantId
           );
           if (found) {
             setRestaurant(found);
@@ -334,46 +335,15 @@ export default function RestaurantDetailPage() {
           </div>
         )}
 
-        {/* Episode Badge with timed YouTube link */}
-        {restaurant.episode_info && (() => {
-          const ts = restaurant.mention_timestamp_seconds;
-          const timedUrl = getTimedYouTubeUrl(restaurant.episode_info.video_url, ts);
-          const timeLabel = ts && ts > 0
-            ? `${Math.floor(ts / 60)}:${String(ts % 60).padStart(2, '0')}`
-            : null;
-          const episodeDate = restaurant.published_at || restaurant.episode_info.published_at || restaurant.episode_info.analysis_date;
-          const episodeTitle = restaurant.episode_info.title || restaurant.episode_info.channel_name || 'פודי';
-
-          return (
-            <Link
-              href={timedUrl}
-              target="_blank"
-              className="block p-4 rounded-xl bg-gradient-to-l from-[var(--color-gold)]/10 to-transparent border border-[var(--color-gold)]/20"
-            >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-[var(--color-gold)] flex items-center justify-center">
-                    <Play className="w-5 h-5 text-white fill-current" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-[var(--color-ink)]">
-                      {episodeTitle}
-                    </p>
-                    <p className="text-xs text-[var(--color-ink-muted)]">
-                      {episodeDate && new Date(episodeDate).toLocaleDateString('he-IL', { day: 'numeric', month: 'short', year: 'numeric' })}
-                      {timeLabel && (
-                        <span className="mr-2 text-[var(--color-gold)] font-medium">
-                          צפה מ-{timeLabel}
-                        </span>
-                      )}
-                    </p>
-                  </div>
-                </div>
-                <ExternalLink className="w-5 h-5 text-[var(--color-gold)]" />
-              </div>
-            </Link>
-          );
-        })()}
+        {/* Embedded YouTube player */}
+        {restaurant.episode_info?.video_url && (
+          <YouTubeEmbed
+            videoUrl={restaurant.episode_info.video_url}
+            timestampSeconds={restaurant.mention_timestamp_seconds}
+            title={restaurant.episode_info.title || restaurant.episode_info.channel_name || 'פודי'}
+            episodeDate={restaurant.published_at || restaurant.episode_info.published_at || restaurant.episode_info.analysis_date}
+          />
+        )}
 
         {/* Host Opinion / Engaging Quote */}
         {(restaurant.engaging_quote || restaurant.host_comments) && (

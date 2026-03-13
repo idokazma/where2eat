@@ -168,7 +168,8 @@ export function HomePageNew() {
 
   // Client-side filtering for neighborhood (not supported by API) and multi-value filters
   const filteredRestaurants = useMemo(() => {
-    let result = restaurants;
+    // Exclude closed restaurants
+    let result = restaurants.filter((r) => !r.is_closing && r.status !== 'closed');
 
     // Filter by neighborhood (API only filters by city)
     if (locationFilter.mode === 'manual' && locationFilter.neighborhood) {
@@ -233,9 +234,9 @@ export function HomePageNew() {
 
   // Handle restaurant click
   const handleRestaurantClick = (restaurant: Restaurant) => {
-    const id = restaurant.google_places?.place_id;
+    const id = restaurant.google_places?.place_id || restaurant.id;
     if (id) {
-      router.push(`/restaurant/${id}`);
+      router.push(`/restaurant/${encodeURIComponent(id)}`);
     }
   };
 
