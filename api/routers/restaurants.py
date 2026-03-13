@@ -509,9 +509,45 @@ async def get_restaurant(restaurant_id: str):
 )
 async def create_restaurant(restaurant: RestaurantCreate):
     """Create a new restaurant."""
-    restaurant_id = str(uuid.uuid4())
+    data = restaurant.model_dump()
+    restaurant_id = data.get('id') or str(uuid.uuid4())
 
-    # Try SQLAlchemy first
+    # 1. Try native SQLite first (matches GET endpoint pattern)
+    db = _get_sqlite_db()
+    if db:
+        try:
+            # Check for existing restaurant with same ID
+            existing = db.get_restaurant(restaurant_id)
+            if existing:
+                # Already exists — update instead of creating duplicate
+                flat = {}
+                location = data.get('location') or {}
+                for k, v in data.items():
+                    if k not in ('location', 'id') and v is not None:
+                        flat[k] = v
+                if location:
+                    if location.get('city'):
+                        flat['city'] = location['city']
+                    if location.get('lat'):
+                        flat['latitude'] = location['lat']
+                    if location.get('lng'):
+                        flat['longitude'] = location['lng']
+                db.update_restaurant(restaurant_id, **flat)
+                return db.get_restaurant(restaurant_id)
+
+            new_id = db.create_restaurant(
+                name_hebrew=data.get('name_hebrew', ''),
+                episode_id=data.get('episode_id'),
+                id=restaurant_id,
+                **{k: v for k, v in data.items() if k not in ('name_hebrew', 'episode_id', 'id')},
+            )
+            result = db.get_restaurant(new_id)
+            if result:
+                return result
+        except Exception as e:
+            print(f"Warning: SQLite create error: {e}")
+
+    # 2. Try SQLAlchemy if configured
     if use_sqlalchemy():
         ctx = get_db_session()
         if ctx:
@@ -521,9 +557,8 @@ async def create_restaurant(restaurant: RestaurantCreate):
                 if str(src_path) not in sys.path:
                     sys.path.insert(0, str(src_path))
                 from repositories import RestaurantRepository
-                with ctx as db:
-                    repo = RestaurantRepository(db)
-                    data = restaurant.model_dump()
+                with ctx as db_session:
+                    repo = RestaurantRepository(db_session)
                     location = data.pop('location', {}) or {}
 
                     new_restaurant = repo.create(
@@ -544,19 +579,18 @@ async def create_restaurant(restaurant: RestaurantCreate):
             except Exception as e:
                 print(f"Warning: SQLAlchemy error, falling back to JSON: {e}")
 
-    # Fallback to JSON file
+    # 3. Fallback to JSON file
     ensure_data_dir()
     file_path = DATA_DIR / f"{restaurant_id}.json"
 
-    restaurant_data = restaurant.model_dump()
-    restaurant_data["id"] = restaurant_id
-    restaurant_data["created_at"] = datetime.now().isoformat()
-    restaurant_data["updated_at"] = datetime.now().isoformat()
+    data["id"] = restaurant_id
+    data["created_at"] = datetime.now().isoformat()
+    data["updated_at"] = datetime.now().isoformat()
 
     with open(file_path, "w", encoding="utf-8") as f:
-        json.dump(restaurant_data, f, ensure_ascii=False, indent=2)
+        json.dump(data, f, ensure_ascii=False, indent=2)
 
-    return restaurant_data
+    return data
 
 
 @router.put(

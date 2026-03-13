@@ -77,6 +77,17 @@ class PipelineScheduler:
         try:
             self._scheduler = BackgroundScheduler()
 
+            # Add error listener to surface job failures
+            def _job_error_listener(event):
+                if event.exception:
+                    print(f"[SCHEDULER] Job {event.job_id} failed: {event.exception}", flush=True)
+                    logger.error("Scheduler job %s failed: %s", event.job_id, event.exception)
+                else:
+                    print(f"[SCHEDULER] Job {event.job_id} completed", flush=True)
+
+            from apscheduler.events import EVENT_JOB_ERROR, EVENT_JOB_EXECUTED
+            self._scheduler.add_listener(_job_error_listener, EVENT_JOB_ERROR | EVENT_JOB_EXECUTED)
+
             # Poll subscriptions for new videos (run immediately on startup)
             self._scheduler.add_job(
                 self.poll_subscriptions,
@@ -178,7 +189,9 @@ class PipelineScheduler:
         4. Update subscription stats and last_checked_at
         5. Log events
         """
+        print("[SCHEDULER] poll_subscriptions starting...", flush=True)
         subscriptions = self.sub_manager.list_subscriptions(active_only=True)
+        print(f"[SCHEDULER] Found {len(subscriptions)} active subscriptions", flush=True)
 
         for sub in subscriptions:
             sub_id = sub['id']
@@ -191,8 +204,11 @@ class PipelineScheduler:
             )
 
             try:
+                print(f"[SCHEDULER] Fetching videos for {sub_name}...", flush=True)
                 videos = self._fetch_channel_videos(sub)
+                print(f"[SCHEDULER] Fetched {len(videos)} videos from {sub_name}", flush=True)
             except Exception as e:
+                print(f"[SCHEDULER] Error fetching videos for {sub_name}: {e}", flush=True)
                 logger.error("Error fetching videos for subscription %s: %s", sub_id, e)
                 self.pipeline_logger.error(
                     'poll_error',
@@ -291,6 +307,8 @@ class PipelineScheduler:
         item = self.queue_manager.dequeue()
         if item is None:
             return
+
+        print(f"[SCHEDULER] Processing video: {item.get('video_id')} - {item.get('video_title', '')[:50]}", flush=True)
 
         queue_id = item['id']
         video_url = item['video_url']
