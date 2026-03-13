@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import { Heart, Star, Play, MapPin, ExternalLink, Camera } from 'lucide-react';
+import { Heart, Star, Play, MapPin, ExternalLink, Camera, Calendar } from 'lucide-react';
 import { Restaurant } from '@/types/restaurant';
 import { EpisodeBadge } from './EpisodeBadge';
 import { DistanceBadge } from './DistanceBadge';
@@ -126,6 +126,12 @@ export function RestaurantCardNew({
     metaItems.push(priceDisplay);
   }
 
+  // Format episode date
+  const episodeDate = restaurant.published_at || restaurant.episode_info?.published_at || restaurant.episode_info?.analysis_date;
+  const formattedDate = episodeDate
+    ? new Date(episodeDate).toLocaleDateString('he-IL', { day: 'numeric', month: 'short', year: 'numeric' })
+    : null;
+
   // Extract episode number from video URL if available
   const getEpisodeNumber = (): number | undefined => {
     // This would typically come from the API
@@ -211,6 +217,14 @@ export function RestaurantCardNew({
                 {item}
               </span>
             ))}
+          </div>
+        )}
+
+        {/* Episode date */}
+        {formattedDate && (
+          <div className="flex items-center gap-1 text-xs text-[var(--color-ink-muted)] mt-0.5">
+            <Calendar className="w-3 h-3" />
+            <span>{formattedDate}</span>
           </div>
         )}
 
