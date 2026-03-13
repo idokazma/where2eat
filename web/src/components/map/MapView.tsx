@@ -422,9 +422,9 @@ export default function MapView({
         <HeatLegend visible={mappableRestaurants.length > 0} />
       )}
 
-      {/* Map info overlay */}
-      <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-lg shadow-md z-[1000]">
-        <p className="text-sm text-[var(--color-ink)] font-semibold">
+      {/* Map info overlay — positioned above bottom sheet */}
+      <div className="absolute bottom-24 right-4 bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-md z-[999]">
+        <p className="text-xs text-[var(--color-ink)] font-semibold">
           {mappableRestaurants.length} מסעדות על המפה
         </p>
       </div>

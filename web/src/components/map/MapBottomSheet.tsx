@@ -110,6 +110,7 @@ export const MapBottomSheet = forwardRef<MapBottomSheetHandle, MapBottomSheetPro
     const snapFull = viewportHeight * SNAP_FULL_RATIO;
 
     const sheetHeight = useMotionValue(SNAP_COLLAPSED);
+    const [currentSnapHeight, setCurrentSnapHeight] = useState(SNAP_COLLAPSED);
 
     const [snapState, setSnapState] = useState<'collapsed' | 'half' | 'full'>('collapsed');
 
@@ -126,6 +127,7 @@ export const MapBottomSheet = forwardRef<MapBottomSheetHandle, MapBottomSheetPro
           stiffness: 400,
           damping: 35,
         });
+        setCurrentSnapHeight(target);
         if (target <= SNAP_COLLAPSED + 10) setSnapState('collapsed');
         else if (target < (snapHalf + snapFull) / 2) setSnapState('half');
         else setSnapState('full');
@@ -203,7 +205,7 @@ export const MapBottomSheet = forwardRef<MapBottomSheetHandle, MapBottomSheetPro
 
     const translateY = useTransform(sheetHeight, (h: number) => viewportHeight - h);
 
-    const listHeight = Math.max(100, sheetHeight.get() - 48);
+    const listHeight = Math.max(100, currentSnapHeight - 48);
 
     // Row props for react-window v2
     const rowProps = useMemo(() => ({

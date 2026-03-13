@@ -42,9 +42,13 @@ export default function MapPage() {
   // Geolocation (one-time fetch)
   const { coords: userCoords, accuracy, loading: locationLoading, getCurrentPosition } = useGeolocation();
 
-  // Fetch restaurants
+  // Fetch restaurants from last 3 months
   useEffect(() => {
-    fetch(endpoints.restaurants.list())
+    const threeMonthsAgo = new Date();
+    threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+    const dateStart = threeMonthsAgo.toISOString().split('T')[0];
+
+    fetch(endpoints.restaurants.search({ date_start: dateStart, sort_by: 'published_at', sort_direction: 'desc', limit: '100' }))
       .then((res) => {
         if (!res.ok) throw new Error('Failed to fetch restaurants');
         return res.json();
