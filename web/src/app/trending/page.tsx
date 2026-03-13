@@ -61,7 +61,7 @@ export default function TrendingPage() {
     // Deduplicate by google_place_id or name_hebrew, keeping highest-rated entry
     const seen = new Map<string, Restaurant>();
     for (const r of filtered) {
-      const key = r.google_places?.place_id || r.name_hebrew || r.name;
+      const key = r.google_places?.place_id || r.name_hebrew || r.name_english;
       const existing = seen.get(key);
       if (!existing || (r.rating?.google_rating ?? 0) > (existing.rating?.google_rating ?? 0)) {
         seen.set(key, r);
