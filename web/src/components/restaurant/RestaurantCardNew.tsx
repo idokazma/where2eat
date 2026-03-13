@@ -229,7 +229,7 @@ export function RestaurantCardNew({
         )}
 
         {/* Host quote */}
-        {restaurant.host_comments && normalizeHostOpinion(restaurant.host_opinion) === 'positive' && (
+        {restaurant.host_comments && (
           <div className="restaurant-card-quote">
             &ldquo;{restaurant.host_comments}&rdquo;
           </div>

@@ -83,6 +83,8 @@ export interface EpisodeInfo {
   language: string;
   analysis_date: string;
   published_at?: string;
+  title?: string | null;
+  channel_name?: string | null;
   total_restaurants_found?: number;
   processing_method?: string;
 }

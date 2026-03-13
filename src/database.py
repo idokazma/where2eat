@@ -526,18 +526,36 @@ class Database:
             return restaurant_id
 
     def get_restaurant(self, restaurant_id: str) -> Optional[Dict]:
-        """Get restaurant by ID or Google Place ID."""
+        """Get restaurant by ID or Google Place ID, including episode info."""
         with self.get_connection() as conn:
             cursor = conn.cursor()
-            cursor.execute('SELECT * FROM restaurants WHERE id = ?', (restaurant_id,))
+            query = '''
+                SELECT r.*, e.video_id, e.video_url, e.channel_name, e.title as episode_title,
+                       e.analysis_date, e.published_at as episode_published_at,
+                       e.food_trends as episode_food_trends
+                FROM restaurants r
+                LEFT JOIN episodes e ON r.episode_id = e.id
+                WHERE r.id = ?
+            '''
+            cursor.execute(query, (restaurant_id,))
             row = cursor.fetchone()
+            if not row:
+                # Fallback: search by google_place_id (used when navigating from map)
+                cursor.execute(query.replace('WHERE r.id = ?', 'WHERE r.google_place_id = ?'), (restaurant_id,))
+                row = cursor.fetchone()
             if row:
-                return self._row_to_restaurant(row)
-            # Fallback: search by google_place_id (used when navigating from map)
-            cursor.execute('SELECT * FROM restaurants WHERE google_place_id = ?', (restaurant_id,))
-            row = cursor.fetchone()
-            if row:
-                return self._row_to_restaurant(row)
+                restaurant = self._row_to_restaurant(row)
+                if 'video_id' in restaurant:
+                    restaurant['episode_info'] = {
+                        'video_id': restaurant.pop('video_id', None),
+                        'video_url': restaurant.pop('video_url', None),
+                        'channel_name': restaurant.pop('channel_name', None),
+                        'title': restaurant.pop('episode_title', None),
+                        'analysis_date': restaurant.pop('analysis_date', None),
+                        'published_at': restaurant.pop('episode_published_at', None)
+                    }
+                    restaurant.pop('episode_food_trends', None)
+                return restaurant
             return None
 
     def _row_to_restaurant(self, row: sqlite3.Row) -> Dict:
