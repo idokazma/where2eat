@@ -465,8 +465,8 @@ class VideoQueueManager:
     def get_queue(self, page: int = 1, limit: int = 20) -> dict:
         """Get paginated queue items. Returns {items: [...], total: int}.
 
-        Excludes videos older than PIPELINE_MAX_VIDEO_AGE_DAYS and videos
-        without a published_at date.
+        Excludes videos older than PIPELINE_MAX_VIDEO_AGE_DAYS.
+        Videos without a published_at date are included (assumed recent).
         """
         offset = (page - 1) * limit
         cutoff = (
@@ -479,8 +479,7 @@ class VideoQueueManager:
             cursor.execute(
                 """SELECT COUNT(*) as cnt FROM video_queue
                    WHERE status = 'queued'
-                     AND published_at IS NOT NULL
-                     AND published_at >= ?""",
+                     AND (published_at IS NULL OR published_at = '' OR published_at >= ?)""",
                 (cutoff,),
             )
             total = cursor.fetchone()["cnt"]
@@ -489,8 +488,7 @@ class VideoQueueManager:
                 """
                 SELECT * FROM video_queue
                 WHERE status = 'queued'
-                  AND published_at IS NOT NULL
-                  AND published_at >= ?
+                  AND (published_at IS NULL OR published_at = '' OR published_at >= ?)
                 ORDER BY discovered_at DESC
                 LIMIT ? OFFSET ?
                 """,
