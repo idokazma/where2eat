@@ -203,6 +203,13 @@ export function RestaurantCardNew({
 
       {/* Content Section */}
       <div className="restaurant-card-content">
+        {/* Closing badge */}
+        {restaurant.is_closing && (
+          <span className="inline-block px-2 py-0.5 mb-1 bg-red-500/10 text-red-600 text-xs font-semibold rounded">
+            נסגר לצמיתות
+          </span>
+        )}
+
         {/* Title - prefer Google Places corrected name when available */}
         <h3 className="restaurant-card-title">
           {restaurant.google_places?.google_name || restaurant.google_name || restaurant.name_hebrew}

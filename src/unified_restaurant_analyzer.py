@@ -620,6 +620,7 @@ OUTPUT FORMAT - Return a JSON object:
                 "instagram": "חשבון אינסטגרם"
             }},
             "business_news": "פתיחה/סגירה/שינויים/אירועים",
+            "is_closing": false,
             "mention_context": "ציטוט קצר מהתמליל שמזכיר את המסעדה",
             "timestamp_hint": "אם יש רמז לזמן בתמליל (התחלה/אמצע/סוף)"
         }}
@@ -631,6 +632,9 @@ CONFIDENCE LEVELS:
 - "high": שם מפורש עם הקשר ברור (e.g., "הלכנו למסעדת צ'קולי בנמל")
 - "medium": שם מוזכר אך הקשר חלקי (e.g., "צ'קולי היה טוב")
 - "low": שם לא ברור או נשמע חלקית (e.g., "משהו כמו צ'קו...")
+
+IMPORTANT - is_closing field:
+Set "is_closing": true ONLY if the podcast explicitly says the restaurant is permanently shutting down, going out of business, or closing for good. Examples: "סוגרים את המסעדה", "נסגר לצמיתות", "סגרו", "הולכים להיסגר". Do NOT set true for temporary closures, renovations, or day-off closures.
 
 Be thorough but precise. Extract ALL valid restaurants. Use null for truly unknown fields (not "לא צוין")."""
 

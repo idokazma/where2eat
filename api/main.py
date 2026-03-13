@@ -458,6 +458,19 @@ def sync_sqlite_to_postgres():
         except Exception as mig_err:
             print(f"[SYNC-MIGRATION] published_at migration: {mig_err}")
 
+        # Migrate: add is_closing column if missing
+        try:
+            engine = src_models_base.get_engine()
+            from sqlalchemy import text, inspect as sa_inspect
+            inspector = sa_inspect(engine)
+            cols = [c['name'] for c in inspector.get_columns('restaurants')]
+            if 'is_closing' not in cols:
+                with engine.begin() as conn:
+                    conn.execute(text('ALTER TABLE restaurants ADD COLUMN is_closing BOOLEAN DEFAULT FALSE'))
+                    print("[SYNC-MIGRATION] Added is_closing to restaurants")
+        except Exception as mig_err:
+            print(f"[SYNC-MIGRATION] is_closing migration: {mig_err}")
+
         sqlite_db = get_database()
         episodes = sqlite_db.get_all_episodes()
         restaurants = sqlite_db.get_all_restaurants(include_episode_info=False)
@@ -578,6 +591,7 @@ def sync_sqlite_to_postgres():
                     contact_phone=contact.get('phone'),
                     contact_website=contact.get('website'),
                     business_news=r.get('business_news'),
+                    is_closing=bool(r.get('is_closing', False)),
                     mention_context=r.get('mention_context'),
                     mention_timestamp=r.get('mention_timestamp') or r.get('mention_timestamp_seconds'),
                     google_place_id=place_id,

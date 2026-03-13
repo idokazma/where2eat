@@ -844,6 +844,7 @@ DO NOT EXTRACT:
             "instagram": "חשבון אינסטגרם"
         }},
         "business_news": "סגירה/פתיחה/שינויים",
+        "is_closing": false,
         "mention_context": "ציטוט קצר מהתמליל שמזכיר את המסעדה"
     }}
 ]
@@ -867,6 +868,9 @@ IMPORTANT - Use English values for these fields:
 - status: "open" | "closed" | "new_opening" | "closing_soon" | "reopening"
 - host_opinion: "positive" | "negative" | "mixed" | "neutral"
 - menu_items: Array of objects with {{item_name, description, price, recommendation_level}}
+
+IMPORTANT - is_closing field:
+Set "is_closing": true ONLY if the podcast explicitly says the restaurant is permanently shutting down, going out of business, or closing for good. Examples: "סוגרים את המסעדה", "נסגר לצמיתות", "סגרו", "הולכים להיסגר". Do NOT set true for temporary closures, renovations, or day-off closures.
 
 **Important:** Return ONLY the JSON array. Use null for truly unknown fields (not "לא צוין")."""
 

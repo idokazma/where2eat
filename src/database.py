@@ -101,6 +101,7 @@ class Database:
                     contact_phone TEXT,
                     contact_website TEXT,
                     business_news TEXT,
+                    is_closing INTEGER DEFAULT 0,
                     mention_context TEXT,
                     mention_timestamp REAL,
                     google_place_id TEXT,
@@ -303,6 +304,11 @@ class Database:
             except sqlite3.OperationalError:
                 pass  # Column already exists
 
+            try:
+                cursor.execute('ALTER TABLE restaurants ADD COLUMN is_closing INTEGER DEFAULT 0')
+            except sqlite3.OperationalError:
+                pass  # Column already exists
+
             # Backfill restaurants.published_at from episodes
             try:
                 cursor.execute('''
@@ -484,11 +490,11 @@ class Database:
                     id, episode_id, name_hebrew, name_english, city, neighborhood,
                     address, region, cuisine_type, status, price_range, host_opinion,
                     host_comments, menu_items, special_features, contact_hours,
-                    contact_phone, contact_website, business_news, mention_context,
+                    contact_phone, contact_website, business_news, is_closing, mention_context,
                     mention_timestamp, google_place_id, google_rating,
                     google_user_ratings_total, latitude, longitude, image_url, photos,
                     google_name, published_at, og_image_url
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ''', (
                 restaurant_id,
                 episode_id,
@@ -509,6 +515,7 @@ class Database:
                 contact_phone,
                 contact_website,
                 kwargs.get('business_news'),
+                1 if kwargs.get('is_closing') else 0,
                 kwargs.get('mention_context'),
                 kwargs.get('mention_timestamp') or kwargs.get('mention_timestamp_seconds'),
                 google_place_id,
@@ -595,6 +602,9 @@ class Database:
         if 'mention_timestamp' in restaurant:
             ts = restaurant.pop('mention_timestamp')
             restaurant['mention_timestamp_seconds'] = int(ts) if ts else None
+
+        # Convert is_closing from integer to boolean
+        restaurant['is_closing'] = bool(restaurant.get('is_closing', 0))
 
         # Parse JSON fields
         restaurant['menu_items'] = json.loads(restaurant.get('menu_items') or '[]')

@@ -108,6 +108,7 @@ class Restaurant(Base):
 
     # Additional info
     business_news: Mapped[Optional[str]] = mapped_column(Text)
+    is_closing: Mapped[bool] = mapped_column(default=False)
     mention_context: Mapped[Optional[str]] = mapped_column(Text)
     mention_timestamp: Mapped[Optional[float]] = mapped_column(Float)
 
@@ -176,6 +177,7 @@ class Restaurant(Base):
                 'social_media': self.contact_social or 'לא צוין',
             },
             'business_news': self.business_news,
+            'is_closing': bool(self.is_closing),
             'mention_context': self.mention_context,
             'mention_timestamp_seconds': int(self.mention_timestamp) if self.mention_timestamp else None,
             'menu_items': self.menu_items or [],
