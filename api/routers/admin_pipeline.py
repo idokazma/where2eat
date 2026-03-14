@@ -479,6 +479,31 @@ async def trigger_poll(
 
 
 @router.post(
+    "/reenrich",
+    summary="Re-enrich restaurants missing Google Places data",
+    description="Find restaurants without images or Google Places data and re-enrich them. "
+                "Requires admin role.",
+)
+async def reenrich_restaurants(
+    user: dict = Depends(require_role(["admin", "super_admin"])),
+):
+    """Re-enrich restaurants missing Google Places data."""
+    try:
+        from backend_service import BackendService
+        from database import get_database
+
+        db = get_database()
+        service = BackendService(db=db)
+        result = service.reenrich_all_restaurants()
+        return result
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Re-enrichment failed: {str(e)}",
+        )
+
+
+@router.post(
     "/upload-transcript",
     summary="Upload transcript for a video",
     description="Upload a locally-fetched transcript so the server can analyze it "
