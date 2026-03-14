@@ -74,6 +74,10 @@ interface Restaurant {
   host_comments?: string
   engaging_quote?: string
   is_hidden?: boolean
+  mention_timestamp?: number
+  mention_timestamp_seconds?: number
+  published_at?: string
+  episode_id?: string
 }
 
 interface AnalysisFile {
@@ -105,6 +109,8 @@ interface EpisodeListItem {
   title: string
   channel_name: string
   analysis_date: string | null
+  published_at?: string | null
+  queue_published_at?: string | null
   status?: string
   restaurant_count?: number
 }
@@ -433,20 +439,24 @@ function AnalysisRunSection({
 
 function RestaurantCard({
   restaurant,
+  videoId,
   onToggleVisibility,
   toggling,
 }: {
   restaurant: Restaurant
+  videoId?: string
   onToggleVisibility: (id: string, hidden: boolean) => void
   toggling: boolean
 }) {
   const r = restaurant
   const opinion = r.host_opinion ?? "neutral"
   const opinionCfg = OPINION_CONFIG[opinion] ?? OPINION_CONFIG.neutral
+  const timestamp = r.mention_timestamp_seconds ?? r.mention_timestamp ?? null
+  const timestampInt = timestamp != null ? Math.floor(Number(timestamp)) : null
 
   return (
     <div
-      className={`border rounded-lg p-4 space-y-2 transition-opacity ${
+      className={`border rounded-lg p-4 space-y-3 transition-opacity ${
         r.is_hidden
           ? "opacity-50 border-red-200 bg-red-50/30 dark:border-red-900 dark:bg-red-950/10"
           : ""
@@ -459,6 +469,11 @@ function RestaurantCard({
           </p>
           {r.name_hebrew && r.name_english && (
             <p className="text-xs text-muted-foreground">{r.name_english}</p>
+          )}
+          {r.published_at && (
+            <p className="text-[10px] text-muted-foreground mt-0.5">
+              Published: {formatDate(r.published_at)}
+            </p>
           )}
         </div>
 
@@ -536,6 +551,19 @@ function RestaurantCard({
         >
           &ldquo;{r.engaging_quote}&rdquo;
         </p>
+      )}
+
+      {/* YouTube embed with timestamp */}
+      {videoId && (
+        <div className="rounded-lg overflow-hidden border bg-black aspect-video">
+          <iframe
+            src={`https://www.youtube.com/embed/${videoId}${timestampInt != null && timestampInt > 0 ? `?start=${timestampInt}` : ''}`}
+            title={`${r.name_hebrew || r.name_english || 'Restaurant'} - video segment`}
+            className="w-full h-full"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          />
+        </div>
       )}
     </div>
   )
@@ -946,6 +974,7 @@ function EpisodeDetailPanel({
                     <RestaurantCard
                       key={r.id ?? i}
                       restaurant={r}
+                      videoId={videoId}
                       onToggleVisibility={handleToggleVisibility}
                       toggling={togglingId === r.id}
                     />
@@ -1093,7 +1122,12 @@ function EpisodesTab({
                       <span className="text-xs text-muted-foreground">
                         {ep.channel_name || "Unknown channel"}
                       </span>
-                      {ep.analysis_date && (
+                      {(ep.published_at || ep.queue_published_at) && (
+                        <span className="text-xs text-muted-foreground">
+                          · {formatDate(ep.published_at || ep.queue_published_at)}
+                        </span>
+                      )}
+                      {!ep.published_at && !ep.queue_published_at && ep.analysis_date && (
                         <span className="text-xs text-muted-foreground">
                           · {formatDate(ep.analysis_date)}
                         </span>
