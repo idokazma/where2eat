@@ -946,6 +946,76 @@ app.include_router(admin_subscriptions_router)
 app.include_router(admin_pipeline_router)
 
 
+@app.post("/api/deepdive/fix-data")
+async def fix_data():
+    """One-time fix: resolve raw photo references to URLs and fix wrong published_at dates."""
+    import requests as http_requests
+    from database import Database
+
+    db = Database()
+    api_key = os.getenv('GOOGLE_PLACES_API_KEY', '')
+    fixes = {'photo_fixes': 0, 'date_fixes': 0, 'errors': []}
+
+    with db.get_connection() as conn:
+        cursor = conn.cursor()
+
+        # Fix 1: Resolve raw photo references in image_url
+        cursor.execute("SELECT id, image_url, name_hebrew FROM restaurants WHERE image_url LIKE 'places/%'")
+        raw_photo_rows = cursor.fetchall()
+
+        for row in raw_photo_rows:
+            rid = row['id']
+            ref = row['image_url']
+            name = row['name_hebrew']
+            try:
+                url = f"https://places.googleapis.com/v1/{ref}/media"
+                params = {'maxWidthPx': '800', 'skipHttpRedirect': 'true', 'key': api_key}
+                resp = http_requests.get(url, params=params)
+                resp.raise_for_status()
+                photo_uri = resp.json().get('photoUri')
+                if photo_uri:
+                    cursor.execute("UPDATE restaurants SET image_url = ? WHERE id = ?", (photo_uri, rid))
+                    fixes['photo_fixes'] += 1
+                else:
+                    fixes['errors'].append(f"No photoUri for {name} ({rid})")
+            except Exception as e:
+                fixes['errors'].append(f"Photo fix error for {name}: {str(e)}")
+
+        # Fix 2: Fix restaurants with wrong published_at (using episode's video_queue published_at)
+        cursor.execute("""
+            SELECT r.id, r.name_hebrew, r.published_at as r_pub, r.episode_id,
+                   e.video_id, e.published_at as e_pub,
+                   vq.published_at as vq_pub
+            FROM restaurants r
+            LEFT JOIN episodes e ON r.episode_id = e.id
+            LEFT JOIN video_queue vq ON e.video_id = vq.video_id
+            WHERE vq.published_at IS NOT NULL
+              AND vq.published_at != ''
+              AND (r.published_at IS NULL
+                   OR r.published_at = ''
+                   OR r.published_at != vq.published_at)
+        """)
+        date_rows = cursor.fetchall()
+
+        for row in date_rows:
+            rid = row['id']
+            correct_date = row['vq_pub']
+            name = row['name_hebrew']
+            try:
+                cursor.execute("UPDATE restaurants SET published_at = ? WHERE id = ?", (correct_date, rid))
+                cursor.execute(
+                    "UPDATE episodes SET published_at = ? WHERE id = ? AND (published_at IS NULL OR published_at = '' OR published_at != ?)",
+                    (correct_date, row['episode_id'], correct_date)
+                )
+                fixes['date_fixes'] += 1
+            except Exception as e:
+                fixes['errors'].append(f"Date fix error for {name}: {str(e)}")
+
+        conn.commit()
+
+    return {"success": True, **fixes}
+
+
 @app.get("/", include_in_schema=False)
 async def root():
     """Root endpoint - redirects to docs."""
