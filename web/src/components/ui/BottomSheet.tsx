@@ -117,9 +117,8 @@ export function BottomSheet({
         ref={sheetRef}
         className={`bottom-sheet ${className}`}
         style={{
-          transform: `translateY(${dragY}px)`,
+          transform: dragY > 0 ? `translateY(${dragY}px)` : undefined,
           transition: isDragging ? 'none' : 'transform 300ms var(--spring)',
-          animation: dragY === 0 && !isDragging ? 'slide-up 300ms var(--spring) forwards' : 'none',
         }}
         role="dialog"
         aria-modal="true"

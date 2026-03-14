@@ -2,7 +2,7 @@
 
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { Home, Flame, Map, Heart, Menu } from 'lucide-react';
+import { Home, Map, Heart, Menu } from 'lucide-react';
 import { useFavorites } from '@/contexts/favorites-context';
 
 interface NavItem {
@@ -23,12 +23,6 @@ export function BottomNav() {
       label: 'Home',
       labelHe: 'בית',
       icon: <Home className="w-6 h-6" />,
-    },
-    {
-      href: '/trending',
-      label: 'Trending',
-      labelHe: 'טרנדי',
-      icon: <Flame className="w-6 h-6" />,
     },
     {
       href: '/map',

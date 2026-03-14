@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
+import { Search } from 'lucide-react';
 import { Restaurant, getCoordinates } from '@/types/restaurant';
 import { PageLayout } from '@/components/layout';
 import { FilterBar, FilterChip, LocationFilter } from '@/components/filters';
@@ -62,6 +63,7 @@ export function HomePageNew() {
   const [hasMore, setHasMore] = useState(true);
 
   // Filter state
+  const [searchQuery, setSearchQuery] = useState('');
   const [selectedCuisines, setSelectedCuisines] = useState<string[]>([]);
   const [selectedPriceRanges, setSelectedPriceRanges] = useState<string[]>([]);
   const [isCuisineSheetOpen, setIsCuisineSheetOpen] = useState(false);
@@ -171,6 +173,17 @@ export function HomePageNew() {
     // Exclude closed restaurants
     let result = restaurants.filter((r) => !r.is_closing && r.status !== 'closed');
 
+    // Search by name
+    if (searchQuery.trim()) {
+      const q = searchQuery.trim().toLowerCase();
+      result = result.filter(
+        (r) =>
+          r.name_hebrew?.toLowerCase().includes(q) ||
+          r.name_english?.toLowerCase().includes(q) ||
+          r.cuisine_type?.toLowerCase().includes(q)
+      );
+    }
+
     // Filter by neighborhood (API only filters by city)
     if (locationFilter.mode === 'manual' && locationFilter.neighborhood) {
       result = result.filter(
@@ -223,6 +236,7 @@ export function HomePageNew() {
     return result;
   }, [
     restaurants,
+    searchQuery,
     locationFilter.mode,
     locationFilter.neighborhood,
     locationFilter.userCoords,
@@ -287,9 +301,21 @@ export function HomePageNew() {
   }
 
   return (
-    <PageLayout showHeader showBottomNav>
-      {/* Filter Bar */}
+    <PageLayout showHeader showBottomNav showSearch={false}>
+      {/* Search + Filters */}
       <div className="animate-fade-up stagger-section-1">
+        <div className="px-4 pt-3 pb-1">
+          <div className="relative">
+            <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--color-ink-subtle)]" />
+            <input
+              type="text"
+              placeholder="חיפוש מסעדה..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pr-9 pl-4 py-2.5 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg text-sm text-[var(--color-ink)] placeholder:text-[var(--color-ink-subtle)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]"
+            />
+          </div>
+        </div>
         <FilterBar>
           <LocationFilter />
 
