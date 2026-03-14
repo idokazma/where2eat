@@ -29,6 +29,11 @@ import {
   Activity,
   ListOrdered,
   BookOpen,
+  Utensils,
+  ImageIcon,
+  Calendar as CalendarIcon,
+  Grid3X3,
+  Star,
 } from "lucide-react"
 import { getApiUrl } from "@/lib/config"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -82,6 +87,8 @@ interface Restaurant {
   mention_timestamp_seconds?: number
   published_at?: string
   episode_id?: string
+  image_url?: string
+  address?: string
 }
 
 interface AnalysisFile {
@@ -1199,20 +1206,276 @@ function EpisodesTab({
 }
 
 // ---------------------------------------------------------------------------
-// Restaurants tab (top-level — shows guidance to select an episode)
+// Restaurants tab (top-level — paginated list of all restaurants)
 // ---------------------------------------------------------------------------
 
+interface RestaurantsSearchResponse {
+  restaurants: Restaurant[]
+  pagination: Pagination
+}
+
 function RestaurantsTab() {
+  const [search, setSearch] = useState("")
+  const [debouncedSearch, setDebouncedSearch] = useState("")
+  const [page, setPage] = useState(1)
+  const [restaurants, setRestaurants] = useState<Restaurant[]>([])
+  const [pagination, setPagination] = useState<Pagination | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [togglingId, setTogglingId] = useState<string | null>(null)
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(search)
+      setPage(1)
+    }, 400)
+    return () => clearTimeout(timer)
+  }, [search])
+
+  const fetchRestaurants = useCallback(() => {
+    setLoading(true)
+    setError(null)
+
+    const params = new URLSearchParams({
+      page: String(page),
+      limit: "50",
+    })
+    if (debouncedSearch) params.set("q", debouncedSearch)
+
+    fetch(getApiUrl(`/api/restaurants/search?${params.toString()}`))
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`)
+        return res.json()
+      })
+      .then((data: RestaurantsSearchResponse) => {
+        setRestaurants(data.restaurants ?? [])
+        setPagination(data.pagination ?? null)
+      })
+      .catch((err: Error) => setError(err.message))
+      .finally(() => setLoading(false))
+  }, [debouncedSearch, page])
+
+  useEffect(() => {
+    fetchRestaurants()
+  }, [fetchRestaurants])
+
+  const handleToggleVisibility = useCallback(
+    async (id: string, isHidden: boolean) => {
+      setTogglingId(id)
+      try {
+        const res = await fetch(getApiUrl(`/api/restaurants/${id}`), {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ is_hidden: isHidden ? 1 : 0 }),
+        })
+        if (!res.ok) throw new Error(`HTTP ${res.status}`)
+        setRestaurants((prev) =>
+          prev.map((r) =>
+            r.id === id ? { ...r, is_hidden: isHidden } : r
+          )
+        )
+      } catch {
+        // Silently fail
+      } finally {
+        setTogglingId(null)
+      }
+    },
+    []
+  )
+
   return (
-    <div className="flex flex-col items-center justify-center py-20 gap-4 text-center">
-      <MapPin className="h-12 w-12 text-muted-foreground/30" />
-      <div>
-        <p className="font-medium text-sm">Select an episode to view restaurants</p>
-        <p className="text-xs text-muted-foreground mt-1">
-          Click any episode in the Episodes tab, then open the Restaurants tab
-          in the detail view.
-        </p>
+    <div className="flex flex-col gap-4">
+      {/* Search bar */}
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+        <Input
+          type="search"
+          placeholder="Search restaurants by name, city, cuisine..."
+          className="pl-9"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          aria-label="Search restaurants"
+        />
       </div>
+
+      {loading && (
+        <div className="flex items-center justify-center py-16">
+          <Loader2 className="h-7 w-7 animate-spin text-muted-foreground" />
+        </div>
+      )}
+
+      {error && !loading && (
+        <div className="flex flex-col items-center justify-center py-16 gap-3">
+          <AlertTriangle className="h-8 w-8 text-red-500" />
+          <p className="text-sm text-muted-foreground">
+            Failed to load restaurants: {error}
+          </p>
+          <Button variant="outline" size="sm" onClick={fetchRestaurants}>
+            <RefreshCw className="h-4 w-4" />
+            Retry
+          </Button>
+        </div>
+      )}
+
+      {!loading && !error && restaurants.length === 0 && (
+        <div className="flex flex-col items-center justify-center py-16 gap-3">
+          <MapPin className="h-10 w-10 text-muted-foreground/30" />
+          <p className="text-sm text-muted-foreground">No restaurants found</p>
+          {debouncedSearch && (
+            <p className="text-xs text-muted-foreground/60">
+              Try a different search term
+            </p>
+          )}
+        </div>
+      )}
+
+      {!loading && !error && restaurants.length > 0 && (
+        <>
+          {/* Table header */}
+          <div className="hidden sm:grid grid-cols-[2fr_1fr_1fr_1fr_1.5fr_1fr_auto] gap-3 px-4 py-2 text-[10px] font-semibold text-muted-foreground uppercase tracking-wide border-b">
+            <span>Name</span>
+            <span>City</span>
+            <span>Cuisine</span>
+            <span>Status</span>
+            <span>Opinion</span>
+            <span>Published</span>
+            <span>Actions</span>
+          </div>
+
+          <div className="flex flex-col gap-1">
+            {restaurants.map((r) => {
+              const opinion = r.host_opinion ?? "neutral"
+              const opinionCfg = OPINION_CONFIG[opinion] ?? OPINION_CONFIG.neutral
+
+              return (
+                <div
+                  key={r.id}
+                  className={`grid grid-cols-1 sm:grid-cols-[2fr_1fr_1fr_1fr_1.5fr_1fr_auto] gap-2 sm:gap-3 items-center px-4 py-3 rounded-lg border hover:bg-muted/30 transition-colors ${
+                    r.is_hidden
+                      ? "opacity-50 border-red-200 bg-red-50/30 dark:border-red-900 dark:bg-red-950/10"
+                      : ""
+                  }`}
+                >
+                  {/* Name */}
+                  <div className="min-w-0">
+                    <p className="font-medium text-sm truncate" dir="auto">
+                      {r.name_hebrew || r.name_english || "Unnamed"}
+                    </p>
+                    {r.name_hebrew && r.name_english && (
+                      <p className="text-xs text-muted-foreground truncate">
+                        {r.name_english}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* City */}
+                  <span className="text-xs text-muted-foreground truncate" dir="auto">
+                    {r.city || "---"}
+                  </span>
+
+                  {/* Cuisine */}
+                  <span className="text-xs text-muted-foreground truncate">
+                    {r.cuisine_type || "---"}
+                  </span>
+
+                  {/* Status */}
+                  <div>
+                    {r.status ? (
+                      <Badge variant="outline" className="text-[10px] h-5">
+                        {r.status}
+                      </Badge>
+                    ) : (
+                      <span className="text-xs text-muted-foreground">---</span>
+                    )}
+                  </div>
+
+                  {/* Opinion */}
+                  <div>
+                    <span
+                      className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold ${opinionCfg.badgeClass}`}
+                    >
+                      {opinionCfg.label}
+                    </span>
+                  </div>
+
+                  {/* Published date */}
+                  <span className="text-xs text-muted-foreground">
+                    {r.published_at ? formatDate(r.published_at) : "---"}
+                  </span>
+
+                  {/* Actions */}
+                  <div className="flex items-center gap-1">
+                    <button
+                      onClick={() => {
+                        if (r.id)
+                          handleToggleVisibility(r.id, !r.is_hidden)
+                      }}
+                      disabled={togglingId === r.id || !r.id}
+                      className={`p-1.5 rounded hover:bg-muted transition-colors disabled:opacity-50 ${
+                        r.is_hidden ? "text-red-500" : "text-muted-foreground"
+                      }`}
+                      title={r.is_hidden ? "Unhide" : "Hide"}
+                      aria-label={r.is_hidden ? "Unhide restaurant" : "Hide restaurant"}
+                    >
+                      {r.is_hidden ? (
+                        <EyeOff className="h-3.5 w-3.5" />
+                      ) : (
+                        <Eye className="h-3.5 w-3.5" />
+                      )}
+                    </button>
+                    {r.id && (
+                      <a
+                        href={`/restaurant/${r.id}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-1.5 rounded hover:bg-muted transition-colors text-muted-foreground"
+                        title="Edit restaurant"
+                        aria-label="Edit restaurant"
+                      >
+                        <Pencil className="h-3.5 w-3.5" />
+                      </a>
+                    )}
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </>
+      )}
+
+      {/* Pagination */}
+      {pagination && pagination.total_pages > 1 && (
+        <div className="flex items-center justify-between pt-2">
+          <p className="text-xs text-muted-foreground">
+            Page {pagination.page} of {pagination.total_pages} &middot;{" "}
+            {pagination.total} total
+          </p>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              disabled={page <= 1 || loading}
+              aria-label="Previous page"
+            >
+              <ChevronLeft className="h-4 w-4" />
+              Prev
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() =>
+                setPage((p) => Math.min(pagination.total_pages, p + 1))
+              }
+              disabled={page >= pagination.total_pages || loading}
+              aria-label="Next page"
+            >
+              Next
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
@@ -1230,6 +1493,10 @@ interface HealthData {
 function DashboardTab({ onNavigateToDeepDive }: { onNavigateToDeepDive: () => void }) {
   const [health, setHealth] = useState<HealthData | null>(null)
   const [healthLoading, setHealthLoading] = useState(true)
+  const [totalRestaurants, setTotalRestaurants] = useState<number | null>(null)
+  const [totalEpisodes, setTotalEpisodes] = useState<number | null>(null)
+  const [recentRestaurants, setRecentRestaurants] = useState<Restaurant[]>([])
+  const [statsLoading, setStatsLoading] = useState(true)
 
   useEffect(() => {
     fetch(getApiUrl("/health"))
@@ -1237,6 +1504,37 @@ function DashboardTab({ onNavigateToDeepDive }: { onNavigateToDeepDive: () => vo
       .then((data) => setHealth(data))
       .catch(() => setHealth(null))
       .finally(() => setHealthLoading(false))
+  }, [])
+
+  useEffect(() => {
+    let cancelled = false
+    setStatsLoading(true)
+
+    // Fetch restaurant count + recent restaurants, and episode count in parallel
+    Promise.all([
+      fetch(getApiUrl("/api/restaurants/search?page=1&limit=5"))
+        .then((r) => r.json())
+        .catch(() => null),
+      fetch(getApiUrl("/api/deepdive/episodes?limit=1"))
+        .then((r) => r.json())
+        .catch(() => null),
+    ]).then(([restaurantData, episodeData]) => {
+      if (cancelled) return
+      if (restaurantData?.pagination?.total != null) {
+        setTotalRestaurants(restaurantData.pagination.total)
+      }
+      if (restaurantData?.restaurants) {
+        setRecentRestaurants(restaurantData.restaurants)
+      }
+      if (episodeData?.pagination?.total != null) {
+        setTotalEpisodes(episodeData.pagination.total)
+      }
+      setStatsLoading(false)
+    })
+
+    return () => {
+      cancelled = true
+    }
   }, [])
 
   const pipelineStatus =
@@ -1261,13 +1559,47 @@ function DashboardTab({ onNavigateToDeepDive }: { onNavigateToDeepDive: () => vo
       </Card>
 
       {/* Stats row */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        {/* Total restaurants */}
+        <Card>
+          <CardContent className="pt-6 flex flex-col gap-2">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Utensils className="h-4 w-4" />
+              Restaurants
+            </div>
+            {statsLoading ? (
+              <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+            ) : totalRestaurants !== null ? (
+              <span className="text-2xl font-bold">{totalRestaurants}</span>
+            ) : (
+              <span className="text-xs text-muted-foreground">Unavailable</span>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Total episodes */}
+        <Card>
+          <CardContent className="pt-6 flex flex-col gap-2">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Youtube className="h-4 w-4" />
+              Episodes
+            </div>
+            {statsLoading ? (
+              <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+            ) : totalEpisodes !== null ? (
+              <span className="text-2xl font-bold">{totalEpisodes}</span>
+            ) : (
+              <span className="text-xs text-muted-foreground">Unavailable</span>
+            )}
+          </CardContent>
+        </Card>
+
         {/* Pipeline status */}
         <Card>
           <CardContent className="pt-6 flex flex-col gap-2">
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <Activity className="h-4 w-4" />
-              Pipeline status
+              Pipeline
             </div>
             {healthLoading ? (
               <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
@@ -1289,7 +1621,7 @@ function DashboardTab({ onNavigateToDeepDive }: { onNavigateToDeepDive: () => vo
           <CardContent className="pt-6 flex flex-col gap-2">
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <ListOrdered className="h-4 w-4" />
-              Queue depth
+              Queue Depth
             </div>
             {healthLoading ? (
               <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
@@ -1300,31 +1632,75 @@ function DashboardTab({ onNavigateToDeepDive }: { onNavigateToDeepDive: () => vo
             )}
           </CardContent>
         </Card>
-
-        {/* API docs link */}
-        <Card>
-          <CardContent className="pt-6 flex flex-col gap-2">
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <BookOpen className="h-4 w-4" />
-              API reference
-            </div>
-            <a
-              href={`${getApiUrl("/docs")}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline"
-            >
-              Open API Docs
-              <ExternalLink className="h-3 w-3" />
-            </a>
-          </CardContent>
-        </Card>
       </div>
+
+      {/* Recent restaurants */}
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base flex items-center gap-2">
+            <Star className="h-4 w-4" />
+            Recently Added Restaurants
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          {statsLoading ? (
+            <div className="flex items-center justify-center py-8">
+              <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+            </div>
+          ) : recentRestaurants.length === 0 ? (
+            <p className="text-sm text-muted-foreground text-center py-6">
+              No restaurants yet
+            </p>
+          ) : (
+            <div className="divide-y">
+              {recentRestaurants.map((r) => {
+                const opinion = r.host_opinion ?? "neutral"
+                const opinionCfg =
+                  OPINION_CONFIG[opinion] ?? OPINION_CONFIG.neutral
+                return (
+                  <div
+                    key={r.id}
+                    className="flex items-center justify-between gap-3 py-3 first:pt-0 last:pb-0"
+                  >
+                    <div className="min-w-0 flex-1">
+                      <p className="font-medium text-sm truncate" dir="auto">
+                        {r.name_hebrew || r.name_english || "Unnamed"}
+                      </p>
+                      <div className="flex items-center gap-2 mt-0.5 flex-wrap">
+                        {r.city && (
+                          <span className="text-xs text-muted-foreground">
+                            {r.city}
+                          </span>
+                        )}
+                        {r.cuisine_type && (
+                          <span className="text-xs text-muted-foreground">
+                            · {r.cuisine_type}
+                          </span>
+                        )}
+                        {r.published_at && (
+                          <span className="text-xs text-muted-foreground">
+                            · {formatDate(r.published_at)}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <span
+                      className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold shrink-0 ${opinionCfg.badgeClass}`}
+                    >
+                      {opinionCfg.label}
+                    </span>
+                  </div>
+                )
+              })}
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
       {/* Quick links */}
       <Card>
         <CardHeader className="pb-3">
-          <CardTitle className="text-base">Quick links</CardTitle>
+          <CardTitle className="text-base">Quick Links</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-wrap gap-3">
           <Button onClick={onNavigateToDeepDive} variant="outline" size="sm">
@@ -1344,6 +1720,327 @@ function DashboardTab({ onNavigateToDeepDive }: { onNavigateToDeepDive: () => vo
           </Button>
         </CardContent>
       </Card>
+    </div>
+  )
+}
+
+// ---------------------------------------------------------------------------
+// Cuisine gradient helper for feed cards
+// ---------------------------------------------------------------------------
+
+const CUISINE_GRADIENTS: Record<string, string> = {
+  italian: "from-red-400 to-orange-300",
+  japanese: "from-pink-400 to-red-300",
+  sushi: "from-pink-400 to-red-300",
+  asian: "from-amber-400 to-yellow-300",
+  chinese: "from-red-500 to-yellow-400",
+  thai: "from-green-400 to-emerald-300",
+  indian: "from-orange-500 to-yellow-400",
+  mexican: "from-green-500 to-lime-300",
+  french: "from-blue-400 to-indigo-300",
+  mediterranean: "from-cyan-400 to-blue-300",
+  middle_eastern: "from-amber-500 to-orange-300",
+  american: "from-blue-500 to-red-400",
+  burger: "from-yellow-500 to-red-400",
+  pizza: "from-red-400 to-yellow-300",
+  seafood: "from-cyan-500 to-blue-400",
+  default: "from-slate-400 to-slate-300",
+}
+
+function getCuisineGradient(cuisine?: string): string {
+  if (!cuisine) return CUISINE_GRADIENTS.default
+  const key = cuisine.toLowerCase().replace(/[\s-]/g, "_")
+  return CUISINE_GRADIENTS[key] ?? CUISINE_GRADIENTS.default
+}
+
+function getRestaurantImageUrl(imageUrl?: string): string | null {
+  if (!imageUrl) return null
+  if (imageUrl.startsWith("http")) return imageUrl
+  return `${getApiUrl("")}/api/photos/${encodeURIComponent(imageUrl)}?maxwidth=400`
+}
+
+// ---------------------------------------------------------------------------
+// Admin Feed tab — card-based view with admin actions
+// ---------------------------------------------------------------------------
+
+function AdminFeedTab() {
+  const [restaurants, setRestaurants] = useState<Restaurant[]>([])
+  const [page, setPage] = useState(1)
+  const [hasMore, setHasMore] = useState(true)
+  const [loading, setLoading] = useState(true)
+  const [loadingMore, setLoadingMore] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [togglingId, setTogglingId] = useState<string | null>(null)
+
+  const fetchPage = useCallback(
+    async (pageNum: number, append: boolean) => {
+      if (append) {
+        setLoadingMore(true)
+      } else {
+        setLoading(true)
+      }
+      setError(null)
+
+      try {
+        const res = await fetch(
+          getApiUrl(`/api/restaurants/search?page=${pageNum}&limit=20`)
+        )
+        if (!res.ok) throw new Error(`HTTP ${res.status}`)
+        const data: RestaurantsSearchResponse = await res.json()
+        const newItems = data.restaurants ?? []
+
+        if (append) {
+          setRestaurants((prev) => [...prev, ...newItems])
+        } else {
+          setRestaurants(newItems)
+        }
+
+        const pag = data.pagination
+        setHasMore(pag ? pag.page < pag.total_pages : false)
+      } catch (err: unknown) {
+        setError(err instanceof Error ? err.message : "Unknown error")
+      } finally {
+        setLoading(false)
+        setLoadingMore(false)
+      }
+    },
+    []
+  )
+
+  useEffect(() => {
+    fetchPage(1, false)
+  }, [fetchPage])
+
+  const handleLoadMore = () => {
+    const nextPage = page + 1
+    setPage(nextPage)
+    fetchPage(nextPage, true)
+  }
+
+  const handleToggleVisibility = useCallback(
+    async (id: string, isHidden: boolean) => {
+      setTogglingId(id)
+      try {
+        const res = await fetch(getApiUrl(`/api/restaurants/${id}`), {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ is_hidden: isHidden ? 1 : 0 }),
+        })
+        if (!res.ok) throw new Error(`HTTP ${res.status}`)
+        setRestaurants((prev) =>
+          prev.map((r) =>
+            r.id === id ? { ...r, is_hidden: isHidden } : r
+          )
+        )
+      } catch {
+        // Silently fail
+      } finally {
+        setTogglingId(null)
+      }
+    },
+    []
+  )
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <Loader2 className="h-7 w-7 animate-spin text-muted-foreground" />
+      </div>
+    )
+  }
+
+  if (error && restaurants.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20 gap-3">
+        <AlertTriangle className="h-8 w-8 text-red-500" />
+        <p className="text-sm text-muted-foreground">
+          Failed to load feed: {error}
+        </p>
+        <Button variant="outline" size="sm" onClick={() => fetchPage(1, false)}>
+          <RefreshCw className="h-4 w-4" />
+          Retry
+        </Button>
+      </div>
+    )
+  }
+
+  if (restaurants.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20 gap-3">
+        <Grid3X3 className="h-10 w-10 text-muted-foreground/30" />
+        <p className="text-sm text-muted-foreground">No restaurants in feed</p>
+      </div>
+    )
+  }
+
+  return (
+    <div className="space-y-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {restaurants.map((r) => {
+          const opinion = r.host_opinion ?? "neutral"
+          const opinionCfg = OPINION_CONFIG[opinion] ?? OPINION_CONFIG.neutral
+          const imgUrl = getRestaurantImageUrl(r.image_url)
+          const quote =
+            r.engaging_quote || r.host_comments
+              ? (r.engaging_quote || r.host_comments || "").slice(0, 120)
+              : null
+
+          return (
+            <div
+              key={r.id}
+              className={`group relative border rounded-xl overflow-hidden bg-white dark:bg-card shadow-sm hover:shadow-md transition-shadow ${
+                r.is_hidden
+                  ? "opacity-60 ring-2 ring-red-300 dark:ring-red-800"
+                  : ""
+              }`}
+            >
+              {/* Image / gradient placeholder */}
+              <div className="relative h-40 overflow-hidden">
+                {imgUrl ? (
+                  <img
+                    src={imgUrl}
+                    alt={r.name_hebrew || r.name_english || "Restaurant"}
+                    className="w-full h-full object-cover"
+                    loading="lazy"
+                  />
+                ) : (
+                  <div
+                    className={`w-full h-full bg-gradient-to-br ${getCuisineGradient(r.cuisine_type)} flex items-center justify-center`}
+                  >
+                    <Utensils className="h-10 w-10 text-white/60" />
+                  </div>
+                )}
+
+                {/* Hidden overlay */}
+                {r.is_hidden && (
+                  <div className="absolute inset-0 bg-red-900/30 flex items-center justify-center">
+                    <Badge className="bg-red-600 text-white text-xs">
+                      HIDDEN
+                    </Badge>
+                  </div>
+                )}
+
+                {/* Opinion badge on image */}
+                <div className="absolute top-2 right-2">
+                  <span
+                    className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold shadow-sm ${opinionCfg.badgeClass}`}
+                  >
+                    {opinionCfg.label}
+                  </span>
+                </div>
+              </div>
+
+              {/* Card content */}
+              <div className="p-4 space-y-2">
+                <div>
+                  <h3
+                    className="font-semibold text-sm leading-tight truncate"
+                    dir="auto"
+                  >
+                    {r.name_hebrew || r.name_english || "Unnamed"}
+                  </h3>
+                  {r.name_hebrew && r.name_english && (
+                    <p className="text-xs text-muted-foreground truncate">
+                      {r.name_english}
+                    </p>
+                  )}
+                </div>
+
+                <div className="flex items-center gap-2 flex-wrap">
+                  {r.city && (
+                    <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
+                      <MapPin className="h-3 w-3" />
+                      {r.city}
+                    </span>
+                  )}
+                  {r.cuisine_type && (
+                    <Badge variant="secondary" className="text-[10px] h-5">
+                      {r.cuisine_type}
+                    </Badge>
+                  )}
+                </div>
+
+                {quote && (
+                  <p
+                    className="text-xs italic text-foreground/70 border-l-2 border-primary/30 pl-2 line-clamp-2"
+                    dir="auto"
+                  >
+                    &ldquo;{quote}&rdquo;
+                  </p>
+                )}
+
+                {r.published_at && (
+                  <p className="text-[10px] text-muted-foreground flex items-center gap-1">
+                    <CalendarIcon className="h-3 w-3" />
+                    {formatDate(r.published_at)}
+                  </p>
+                )}
+
+                {/* Admin action buttons */}
+                <div className="flex items-center gap-2 pt-2 border-t border-border">
+                  <Button
+                    variant={r.is_hidden ? "destructive" : "outline"}
+                    size="sm"
+                    className="h-7 text-xs flex-1"
+                    onClick={() => {
+                      if (r.id) handleToggleVisibility(r.id, !r.is_hidden)
+                    }}
+                    disabled={togglingId === r.id || !r.id}
+                  >
+                    {r.is_hidden ? (
+                      <>
+                        <EyeOff className="h-3 w-3 mr-1" />
+                        Hidden
+                      </>
+                    ) : (
+                      <>
+                        <Eye className="h-3 w-3 mr-1" />
+                        Visible
+                      </>
+                    )}
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-7 text-xs flex-1"
+                    onClick={() => {
+                      if (r.id) alert(`Edit restaurant: ${r.id}`)
+                    }}
+                    disabled={!r.id}
+                  >
+                    <Pencil className="h-3 w-3 mr-1" />
+                    Edit
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )
+        })}
+      </div>
+
+      {/* Load more */}
+      {hasMore && (
+        <div className="flex justify-center pt-4">
+          <Button
+            variant="outline"
+            onClick={handleLoadMore}
+            disabled={loadingMore}
+          >
+            {loadingMore ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                Loading...
+              </>
+            ) : (
+              "Load More"
+            )}
+          </Button>
+        </div>
+      )}
+
+      {error && restaurants.length > 0 && (
+        <p className="text-sm text-red-500 text-center">{error}</p>
+      )}
     </div>
   )
 }
@@ -1381,12 +2078,16 @@ export default function AdminPage() {
         </div>
       </div>
 
-      {/* Top-level tabs: Dashboard / Deep Dive */}
+      {/* Top-level tabs: Dashboard / Feed / Deep Dive */}
       <Tabs value={topTab} onValueChange={setTopTab} className="flex flex-col gap-4">
         <TabsList className="justify-start">
           <TabsTrigger value="dashboard">
             <LayoutDashboard className="h-4 w-4 mr-1.5" />
             Dashboard
+          </TabsTrigger>
+          <TabsTrigger value="feed">
+            <Grid3X3 className="h-4 w-4 mr-1.5" />
+            Feed
           </TabsTrigger>
           <TabsTrigger value="deepdive">
             <Database className="h-4 w-4 mr-1.5" />
@@ -1397,6 +2098,11 @@ export default function AdminPage() {
         {/* Dashboard tab */}
         <TabsContent value="dashboard">
           <DashboardTab onNavigateToDeepDive={navigateToDeepDive} />
+        </TabsContent>
+
+        {/* Feed tab */}
+        <TabsContent value="feed">
+          <AdminFeedTab />
         </TabsContent>
 
         {/* Deep Dive tab */}
