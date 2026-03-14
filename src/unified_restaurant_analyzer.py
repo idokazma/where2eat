@@ -183,16 +183,13 @@ class UnifiedRestaurantAnalyzer:
             if not restaurants:
                 return self._build_result(transcript_data, [])
 
-            # Validate, resolve timestamps via Python, and process results
-            segments = transcript_data.get('segments', [])
+            # Validate and convert LLM timestamp estimates to seconds
             validated_restaurants = []
             for restaurant in restaurants:
                 restaurant = self._ensure_english_name(restaurant)
-                # Set timestamp from Python segment search, not LLM
-                name = restaurant.get('name_hebrew', '')
-                restaurant['mention_timestamp_seconds'] = self._find_mention_timestamp(
-                    transcript_text, name, segments
-                )
+                # Convert LLM's MM:SS estimate to seconds
+                mmss = restaurant.pop('mention_timestamp', None)
+                restaurant['mention_timestamp_seconds'] = self._mmss_to_seconds(mmss)
                 validated_restaurants.append(restaurant)
 
             # ── Stage 2: Verbatim quote extraction ──
@@ -709,7 +706,7 @@ OUTPUT FORMAT - Return a JSON object:
             "price_range": "זול/בינוני/יקר/יוקרתי",
             "host_opinion": "חיובית מאוד/חיובית/ניטרלית/שלילית/מעורבת",
             "host_comments": "תקציר קצר של מה שהמנחים אמרו על המסעדה — כתוב בגוף ראשון כאילו המנחה מדבר",
-            "mention_timestamp_seconds": "DO NOT SET — will be calculated automatically",
+            "mention_timestamp": "MM:SS — the [MM:SS] marker from the transcript closest to where this restaurant is first discussed",
             "signature_dishes": ["מנות שהמנחים ציינו כמומלצות"],
             "menu_items": ["מנות שהוזכרו"],
             "special_features": ["מה שמייחד את המקום"],
@@ -825,57 +822,21 @@ CRITICAL RULES:
         n = re.sub(r'\s+', ' ', n).strip()
         return n
 
-    def _find_mention_timestamp(self, transcript_text: str, restaurant_name: str, segments: List[Dict]) -> int:
-        """Find the timestamp (in seconds) where a restaurant is first mentioned.
-
-        Uses two strategies:
-        1. If segments with start times are available, search segment text directly.
-        2. If the transcript has inline [MM:SS] markers, find the nearest marker
-           before the restaurant name in the text.
+    @staticmethod
+    def _mmss_to_seconds(mmss: str) -> int:
+        """Convert a MM:SS string from the LLM to seconds.
 
         Args:
-            transcript_text: The transcript text (may contain [MM:SS] markers)
-            restaurant_name: Hebrew restaurant name to search for
-            segments: List of segment dicts with 'text' and 'start' keys
+            mmss: Timestamp string like "05:23" or "12:07"
 
         Returns:
-            Timestamp in seconds, or 0 if not found.
+            Timestamp in seconds, or 0 if parsing fails.
         """
-        if not restaurant_name:
+        if not mmss or not isinstance(mmss, str):
             return 0
-
-        # Strategy 1: Search segments directly (most accurate)
-        if segments:
-            # Try exact name match first, then normalized
-            name_lower = restaurant_name.strip().lower()
-            # Also try without common prefixes
-            name_variants = [name_lower]
-            norm = self._normalize_hebrew_name(restaurant_name)
-            if norm and norm != name_lower:
-                name_variants.append(norm)
-
-            for seg in segments:
-                seg_text = seg.get('text', '').lower()
-                for variant in name_variants:
-                    if variant and variant in seg_text:
-                        return int(seg.get('start', 0))
-
-        # Strategy 2: Parse [MM:SS] markers from the formatted transcript
-        if '[' in transcript_text:
-            pos = transcript_text.lower().find(restaurant_name.lower())
-            if pos == -1:
-                # Try normalized name
-                norm = self._normalize_hebrew_name(restaurant_name)
-                if norm:
-                    pos = transcript_text.lower().find(norm)
-            if pos > 0:
-                # Find the nearest [MM:SS] marker before this position
-                preceding = transcript_text[:pos]
-                markers = re.findall(r'\[(\d{2}):(\d{2})\]', preceding)
-                if markers:
-                    last = markers[-1]
-                    return int(last[0]) * 60 + int(last[1])
-
+        match = re.match(r'(\d{1,3}):(\d{2})', mmss.strip())
+        if match:
+            return int(match.group(1)) * 60 + int(match.group(2))
         return 0
 
     def _deduplicate_restaurants(self, restaurants: List[Dict]) -> List[Dict]:
