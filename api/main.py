@@ -1041,6 +1041,29 @@ async def fix_data():
             except Exception as e:
                 fixes['errors'].append(f"yt-dlp date fix error for {video_id}: {str(e)}")
 
+        # Fix 4: Backfill denormalized video/google columns from episodes
+        try:
+            cursor.execute("""
+                UPDATE restaurants SET
+                    video_url = (SELECT e.video_url FROM episodes e WHERE e.id = restaurants.episode_id),
+                    video_id = (SELECT e.video_id FROM episodes e WHERE e.id = restaurants.episode_id),
+                    channel_name = (SELECT e.channel_name FROM episodes e WHERE e.id = restaurants.episode_id)
+                WHERE episode_id IS NOT NULL AND (video_url IS NULL OR video_url = '')
+            """)
+            fixes['backfill_video'] = cursor.rowcount
+        except Exception as e:
+            fixes['errors'].append(f"Backfill video error: {str(e)}")
+
+        # Fix 5: Backfill google_url from google_place_id
+        cursor.execute("SELECT id, google_place_id FROM restaurants WHERE google_place_id IS NOT NULL AND (google_url IS NULL OR google_url = '')")
+        no_url_rows = cursor.fetchall()
+        google_url_fixes = 0
+        for row in no_url_rows:
+            gurl = f"https://www.google.com/maps/place/?q=place_id:{row['google_place_id']}"
+            cursor.execute("UPDATE restaurants SET google_url = ? WHERE id = ?", (gurl, row['id']))
+            google_url_fixes += 1
+        fixes['google_url_fixes'] = google_url_fixes
+
         conn.commit()
 
     return {"success": True, **fixes}

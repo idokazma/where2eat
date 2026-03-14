@@ -645,9 +645,16 @@ class BackendService:
                     # Make a copy to avoid modifying the original
                     data_copy = restaurant_data.copy()
                     name_hebrew = data_copy.pop('name_hebrew', 'Unknown')
-                    # Propagate episode published_at to each restaurant
+                    # Denormalize episode data onto each restaurant for self-containment
                     if published_at and not data_copy.get('published_at'):
                         data_copy['published_at'] = published_at
+                    if not data_copy.get('video_url'):
+                        data_copy['video_url'] = video_url
+                    if not data_copy.get('video_id'):
+                        data_copy['video_id'] = video_id
+                    # channel_name comes from transcript result
+                    if not data_copy.get('channel_name'):
+                        data_copy['channel_name'] = transcript_result.get('channel_name')
                     restaurant_id = self.db.create_restaurant(
                         name_hebrew=name_hebrew,
                         episode_id=episode_id,

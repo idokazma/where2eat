@@ -469,7 +469,7 @@ async def get_restaurant(restaurant_id: str):
         try:
             restaurant = db.get_restaurant(restaurant_id)
             if restaurant:
-                # Attach episode_info if the restaurant has an episode_id
+                # Fallback: attach episode_info from episodes table if denormalized columns are empty
                 if restaurant.get('episode_id') and not restaurant.get('episode_info'):
                     try:
                         episode = db.get_episode(episode_id=restaurant['episode_id'])

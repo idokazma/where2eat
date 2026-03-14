@@ -110,6 +110,12 @@ class Database:
                     longitude REAL,
                     image_url TEXT,
                     is_hidden INTEGER DEFAULT 0,
+                    is_closing INTEGER DEFAULT 0,
+                    video_url TEXT,
+                    video_id TEXT,
+                    channel_name TEXT,
+                    google_url TEXT,
+                    engaging_quote TEXT,
                     created_at TEXT DEFAULT CURRENT_TIMESTAMP,
                     updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
                     FOREIGN KEY (episode_id) REFERENCES episodes(id)
@@ -309,6 +315,19 @@ class Database:
             except sqlite3.OperationalError:
                 pass  # Column already exists
 
+            for col, col_type in [
+                ('is_closing', 'INTEGER DEFAULT 0'),
+                ('video_url', 'TEXT'),
+                ('video_id', 'TEXT'),
+                ('channel_name', 'TEXT'),
+                ('google_url', 'TEXT'),
+                ('engaging_quote', 'TEXT'),
+            ]:
+                try:
+                    cursor.execute(f'ALTER TABLE restaurants ADD COLUMN {col} {col_type}')
+                except sqlite3.OperationalError:
+                    pass  # Column already exists
+
             # Backfill restaurants.published_at from episodes
             try:
                 cursor.execute('''
@@ -335,6 +354,18 @@ class Database:
                 ''')
             except sqlite3.OperationalError:
                 pass  # video_queue table may not exist yet
+
+            # Backfill restaurants.video_url, video_id, channel_name from episodes
+            try:
+                cursor.execute('''
+                    UPDATE restaurants SET
+                        video_url = (SELECT e.video_url FROM episodes e WHERE e.id = restaurants.episode_id),
+                        video_id = (SELECT e.video_id FROM episodes e WHERE e.id = restaurants.episode_id),
+                        channel_name = (SELECT e.channel_name FROM episodes e WHERE e.id = restaurants.episode_id)
+                    WHERE episode_id IS NOT NULL AND video_url IS NULL
+                ''')
+            except sqlite3.OperationalError:
+                pass
 
             # Create indexes for common queries
             cursor.execute('CREATE INDEX IF NOT EXISTS idx_restaurants_city ON restaurants(city)')
@@ -482,6 +513,7 @@ class Database:
         google_places = kwargs.get('google_places', {}) or {}
         google_name = kwargs.get('google_name') or google_places.get('google_name')
         google_place_id = kwargs.get('google_place_id') or google_places.get('place_id')
+        google_url = kwargs.get('google_url') or google_places.get('google_url')
 
         with self.get_connection() as conn:
             cursor = conn.cursor()
@@ -493,8 +525,10 @@ class Database:
                     contact_phone, contact_website, business_news, mention_context,
                     mention_timestamp, google_place_id, google_rating,
                     google_user_ratings_total, latitude, longitude, image_url, photos,
-                    google_name, published_at, og_image_url
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    google_name, published_at, og_image_url,
+                    video_url, video_id, channel_name, google_url, engaging_quote,
+                    is_closing
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ''', (
                 restaurant_id,
                 episode_id,
@@ -527,6 +561,12 @@ class Database:
                 google_name,
                 kwargs.get('published_at'),
                 kwargs.get('og_image_url'),
+                kwargs.get('video_url'),
+                kwargs.get('video_id'),
+                kwargs.get('channel_name'),
+                google_url,
+                kwargs.get('engaging_quote'),
+                1 if kwargs.get('is_closing') else 0,
             ))
 
             return restaurant_id
@@ -574,15 +614,35 @@ class Database:
         }
 
         # Reconstruct google_places object
+        google_url = restaurant.pop('google_url', None)
         restaurant['google_places'] = {
             'place_id': restaurant.get('google_place_id'),
             'google_name': restaurant.pop('google_name', None),
+            'google_url': google_url,
         }
 
         # Map mention_timestamp column to mention_timestamp_seconds (frontend field name)
         if 'mention_timestamp' in restaurant:
             ts = restaurant.pop('mention_timestamp')
             restaurant['mention_timestamp_seconds'] = int(ts) if ts else None
+
+        # Build self-contained episode_info from denormalized columns
+        video_url = restaurant.get('video_url')
+        video_id = restaurant.get('video_id')
+        if video_url or video_id:
+            restaurant['episode_info'] = {
+                'video_id': video_id,
+                'video_url': video_url,
+                'channel_name': restaurant.get('channel_name'),
+                'published_at': restaurant.get('published_at'),
+            }
+
+        # Build timestamped YouTube link
+        ts_val = restaurant.get('mention_timestamp_seconds')
+        if video_url and ts_val:
+            restaurant['youtube_timestamped_url'] = f"{video_url}&t={ts_val}s"
+        elif video_url:
+            restaurant['youtube_timestamped_url'] = video_url
 
         # Parse JSON fields
         restaurant['menu_items'] = json.loads(restaurant.get('menu_items') or '[]')
@@ -601,9 +661,11 @@ class Database:
 
             if include_episode_info:
                 cursor.execute('''
-                    SELECT r.*, e.video_id, e.video_url, e.channel_name, e.title as episode_title,
-                           e.analysis_date, e.published_at as episode_published_at,
-                           e.food_trends as episode_food_trends
+                    SELECT r.*,
+                           e.video_id AS ep_video_id, e.video_url AS ep_video_url,
+                           e.channel_name AS ep_channel_name, e.title AS episode_title,
+                           e.analysis_date AS ep_analysis_date,
+                           e.published_at AS episode_published_at
                     FROM restaurants r
                     LEFT JOIN episodes e ON r.episode_id = e.id
                     ORDER BY COALESCE(r.published_at, e.published_at, e.analysis_date) DESC
@@ -615,16 +677,29 @@ class Database:
             for row in cursor.fetchall():
                 restaurant = self._row_to_restaurant(row)
 
-                if include_episode_info and 'video_id' in restaurant:
-                    restaurant['episode_info'] = {
-                        'video_id': restaurant.pop('video_id', None),
-                        'video_url': restaurant.pop('video_url', None),
-                        'channel_name': restaurant.pop('channel_name', None),
-                        'title': restaurant.pop('episode_title', None),
-                        'analysis_date': restaurant.pop('analysis_date', None),
-                        'published_at': restaurant.pop('episode_published_at', None)
-                    }
-                    restaurant.pop('episode_food_trends', None)
+                # Fill episode_info from join if not already set by denormalized columns
+                if include_episode_info:
+                    ep_video_id = restaurant.pop('ep_video_id', None)
+                    ep_video_url = restaurant.pop('ep_video_url', None)
+                    ep_channel_name = restaurant.pop('ep_channel_name', None)
+                    ep_title = restaurant.pop('episode_title', None)
+                    ep_analysis_date = restaurant.pop('ep_analysis_date', None)
+                    ep_published_at = restaurant.pop('episode_published_at', None)
+
+                    if not restaurant.get('episode_info'):
+                        if ep_video_id or ep_video_url:
+                            restaurant['episode_info'] = {
+                                'video_id': ep_video_id,
+                                'video_url': ep_video_url,
+                                'channel_name': ep_channel_name,
+                                'title': ep_title,
+                                'analysis_date': ep_analysis_date,
+                                'published_at': ep_published_at,
+                            }
+                    else:
+                        # Merge in title/analysis_date from episode join
+                        restaurant['episode_info'].setdefault('title', ep_title)
+                        restaurant['episode_info'].setdefault('analysis_date', ep_analysis_date)
 
                 restaurants.append(restaurant)
 
