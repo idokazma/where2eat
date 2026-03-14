@@ -354,7 +354,10 @@ EXPERTISE:
 - Familiar with common Hebrew restaurant naming patterns (e.g., "מסעדת X", "ביסטרו Y", "בית קפה Z")
 
 EXTRACTION RULES:
-1. Extract ONLY explicitly named establishments - restaurants, cafés, bistros, food trucks, bakeries, bars
+1. Extract ONLY restaurants that are actually REVIEWED or DISCUSSED in depth.
+   - The hosts must share an opinion, describe the food, talk about the experience, or recommend/criticize the place.
+   - DO NOT extract restaurants that are merely MENTIONED in passing (e.g., "we also stopped by X", "X is nearby", "like at X", name-dropped in a list without discussion).
+   - A good test: if the hosts spent less than ~15 seconds talking about a place and shared no opinion or food details, SKIP IT.
 2. DO NOT extract:
    - Generic food terms (e.g., "חומוס", "שווארמה", "פיצה")
    - Dish names that are not restaurant names
@@ -362,6 +365,7 @@ EXTRACTION RULES:
    - Supermarket chains (unless they have a restaurant section being discussed)
    - Chef names without their restaurant
    - Vague references like "מסעדה אחת" or "מקום מסוים"
+   - Restaurants only mentioned as comparisons (e.g., "it's like X but better") unless X is also reviewed
 
 3. For each restaurant, assess confidence:
    - HIGH: Name explicitly stated with clear context
@@ -650,19 +654,22 @@ Always respond with valid JSON only. No markdown formatting or additional text."
         if len(transcript_text) > max_transcript_length:
             truncated_transcript += "..."
 
-        return f"""Analyze this Hebrew food podcast transcript and extract ALL restaurants mentioned by name.
+        return f"""Analyze this Hebrew food podcast transcript and extract restaurants that are actually REVIEWED or DISCUSSED.
 
 TRANSCRIPT:
 {truncated_transcript}
 
-TASK: Extract every restaurant, café, bistro, food truck, bakery, or dining establishment mentioned by its actual name.
+TASK: Extract restaurants, cafés, bistros, food trucks, bakeries, or dining establishments that the hosts actually REVIEW — meaning they share opinions, describe the food, discuss the experience, or give recommendations. Do NOT extract places that are just mentioned in passing or name-dropped without discussion.
 
 EXTRACTION GUIDELINES:
 1. Look for Hebrew patterns: "במסעדת X", "מסעדת X", "ביסטרו X", "בית קפה X", "של X", "אצל X"
 2. Look for location patterns: "[name] בתל אביב", "[name] ברחוב X", "[name] במרכז"
 3. Include chef-owned restaurants: "המסעדה של [שף]", "[שף] פתח מסעדה"
+4. ONLY include if the hosts share meaningful content about the place (opinion, food description, recommendation, story)
 
-DO NOT EXTRACT (negative examples):
+DO NOT EXTRACT:
+- Restaurants only mentioned in passing without review or opinion
+- Restaurants used as comparisons ("it's like X but better") unless X is also reviewed
 - Generic food terms: "חומוס", "שווארמה", "פיצה", "סושי" (unless part of a restaurant name)
 - Food brands: "אסם", "תנובה", "שטראוס"
 - Dish names: "שקשוקה", "חומוס מסבחה" (unless it's a restaurant name)
@@ -723,7 +730,7 @@ CONFIDENCE LEVELS:
 - "medium": שם מוזכר אך הקשר חלקי (e.g., "צ'קולי היה טוב")
 - "low": שם לא ברור או נשמע חלקית (e.g., "משהו כמו צ'קו...")
 
-Be thorough but precise. Extract ALL valid restaurants. Use null for truly unknown fields (not "לא צוין")."""
+Be precise over thorough. Only extract restaurants that are genuinely reviewed or discussed — quality over quantity. Use null for truly unknown fields (not "לא צוין")."""
 
     def _ensure_english_name(self, restaurant: Dict) -> Dict:
         """Ensure restaurant has a proper English name"""
