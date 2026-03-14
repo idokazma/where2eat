@@ -89,6 +89,7 @@ interface Restaurant {
   episode_id?: string
   image_url?: string
   address?: string
+  price_range?: string
 }
 
 interface AnalysisFile {
@@ -1760,6 +1761,180 @@ function getRestaurantImageUrl(imageUrl?: string): string | null {
 }
 
 // ---------------------------------------------------------------------------
+// Edit Restaurant Dialog
+// ---------------------------------------------------------------------------
+
+function EditRestaurantDialog({
+  restaurant,
+  onClose,
+  onSaved,
+}: {
+  restaurant: Restaurant
+  onClose: () => void
+  onSaved: (updated: Restaurant) => void
+}) {
+  const [form, setForm] = useState({
+    name_hebrew: restaurant.name_hebrew || "",
+    name_english: restaurant.name_english || "",
+    city: restaurant.city || "",
+    cuisine_type: restaurant.cuisine_type || "",
+    price_range: restaurant.price_range || "",
+    host_opinion: restaurant.host_opinion || "",
+    host_comments: restaurant.host_comments || "",
+    engaging_quote: restaurant.engaging_quote || "",
+    status: restaurant.status || "open",
+    address: restaurant.address || "",
+  })
+  const [saving, setSaving] = useState(false)
+  const [saveError, setSaveError] = useState<string | null>(null)
+
+  const handleChange = (field: string, value: string) => {
+    setForm((prev) => ({ ...prev, [field]: value }))
+  }
+
+  const handleSave = async () => {
+    if (!restaurant.id) return
+    setSaving(true)
+    setSaveError(null)
+    try {
+      const body: Record<string, unknown> = {}
+      // Only send changed fields
+      if (form.name_hebrew !== (restaurant.name_hebrew || "")) body.name_hebrew = form.name_hebrew
+      if (form.name_english !== (restaurant.name_english || "")) body.name_english = form.name_english
+      if (form.cuisine_type !== (restaurant.cuisine_type || "")) body.cuisine_type = form.cuisine_type
+      if (form.price_range !== (restaurant.price_range || "")) body.price_range = form.price_range
+      if (form.host_opinion !== (restaurant.host_opinion || "")) body.host_opinion = form.host_opinion
+      if (form.host_comments !== (restaurant.host_comments || "")) body.host_comments = form.host_comments
+      if (form.engaging_quote !== (restaurant.engaging_quote || "")) body.engaging_quote = form.engaging_quote
+      if (form.status !== (restaurant.status || "open")) body.status = form.status
+      if (form.city !== (restaurant.city || "") || form.address !== (restaurant.address || "")) {
+        body.location = { city: form.city, address: form.address }
+      }
+
+      if (Object.keys(body).length === 0) {
+        onClose()
+        return
+      }
+
+      const res = await fetch(getApiUrl(`/api/restaurants/${restaurant.id}`), {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      })
+      if (!res.ok) throw new Error(`HTTP ${res.status}`)
+
+      // Merge changes into a copy and notify parent
+      const updated = { ...restaurant, ...form }
+      onSaved(updated)
+      onClose()
+    } catch (err: unknown) {
+      setSaveError(err instanceof Error ? err.message : "Failed to save")
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const fields: { key: string; label: string; type?: "text" | "select" | "textarea"; options?: { value: string; label: string }[] }[] = [
+    { key: "name_hebrew", label: "Name (Hebrew)" },
+    { key: "name_english", label: "Name (English)" },
+    { key: "city", label: "City" },
+    { key: "address", label: "Address" },
+    { key: "cuisine_type", label: "Cuisine Type" },
+    {
+      key: "price_range", label: "Price Range", type: "select",
+      options: [
+        { value: "", label: "—" },
+        { value: "budget", label: "Budget (₪)" },
+        { value: "mid-range", label: "Mid-range (₪₪)" },
+        { value: "expensive", label: "Expensive (₪₪₪)" },
+      ],
+    },
+    {
+      key: "host_opinion", label: "Host Opinion", type: "select",
+      options: [
+        { value: "", label: "—" },
+        { value: "positive", label: "Positive" },
+        { value: "negative", label: "Negative" },
+        { value: "mixed", label: "Mixed" },
+        { value: "neutral", label: "Neutral" },
+      ],
+    },
+    {
+      key: "status", label: "Status", type: "select",
+      options: [
+        { value: "open", label: "Open" },
+        { value: "closed", label: "Closed" },
+        { value: "new_opening", label: "New Opening" },
+        { value: "closing_soon", label: "Closing Soon" },
+      ],
+    },
+    { key: "host_comments", label: "Host Comments", type: "textarea" },
+    { key: "engaging_quote", label: "Engaging Quote", type: "textarea" },
+  ]
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={onClose}>
+      <div
+        className="bg-white dark:bg-card rounded-xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto m-4"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-center justify-between px-5 py-4 border-b">
+          <h2 className="font-semibold text-base">Edit Restaurant</h2>
+          <button onClick={onClose} className="text-muted-foreground hover:text-foreground text-lg px-2">×</button>
+        </div>
+
+        <div className="px-5 py-4 space-y-3">
+          {fields.map((f) => (
+            <div key={f.key}>
+              <label className="text-xs font-medium text-muted-foreground block mb-1">{f.label}</label>
+              {f.type === "select" ? (
+                <select
+                  value={(form as Record<string, string>)[f.key] || ""}
+                  onChange={(e) => handleChange(f.key, e.target.value)}
+                  className="w-full border rounded-lg px-3 py-2 text-sm bg-background"
+                >
+                  {f.options?.map((o) => (
+                    <option key={o.value} value={o.value}>{o.label}</option>
+                  ))}
+                </select>
+              ) : f.type === "textarea" ? (
+                <textarea
+                  value={(form as Record<string, string>)[f.key] || ""}
+                  onChange={(e) => handleChange(f.key, e.target.value)}
+                  className="w-full border rounded-lg px-3 py-2 text-sm bg-background resize-y min-h-[60px]"
+                  dir="auto"
+                  rows={2}
+                />
+              ) : (
+                <Input
+                  value={(form as Record<string, string>)[f.key] || ""}
+                  onChange={(e) => handleChange(f.key, e.target.value)}
+                  dir="auto"
+                />
+              )}
+            </div>
+          ))}
+
+          {saveError && (
+            <p className="text-sm text-red-500">{saveError}</p>
+          )}
+        </div>
+
+        <div className="flex items-center justify-end gap-2 px-5 py-4 border-t">
+          <Button variant="outline" size="sm" onClick={onClose} disabled={saving}>
+            Cancel
+          </Button>
+          <Button size="sm" onClick={handleSave} disabled={saving}>
+            {saving ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : null}
+            Save Changes
+          </Button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ---------------------------------------------------------------------------
 // Admin Feed tab — card-based view with admin actions
 // ---------------------------------------------------------------------------
 
@@ -1771,6 +1946,7 @@ function AdminFeedTab() {
   const [loadingMore, setLoadingMore] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [togglingId, setTogglingId] = useState<string | null>(null)
+  const [editingRestaurant, setEditingRestaurant] = useState<Restaurant | null>(null)
 
   const fetchPage = useCallback(
     async (pageNum: number, append: boolean) => {
@@ -2003,9 +2179,7 @@ function AdminFeedTab() {
                     variant="outline"
                     size="sm"
                     className="h-7 text-xs flex-1"
-                    onClick={() => {
-                      if (r.id) alert(`Edit restaurant: ${r.id}`)
-                    }}
+                    onClick={() => setEditingRestaurant(r)}
                     disabled={!r.id}
                   >
                     <Pencil className="h-3 w-3 mr-1" />
@@ -2017,6 +2191,19 @@ function AdminFeedTab() {
           )
         })}
       </div>
+
+      {/* Edit dialog */}
+      {editingRestaurant && (
+        <EditRestaurantDialog
+          restaurant={editingRestaurant}
+          onClose={() => setEditingRestaurant(null)}
+          onSaved={(updated) => {
+            setRestaurants((prev) =>
+              prev.map((r) => (r.id === updated.id ? updated : r))
+            )
+          }}
+        />
+      )}
 
       {/* Load more */}
       {hasMore && (
