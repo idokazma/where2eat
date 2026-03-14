@@ -104,12 +104,17 @@ class Database:
                     is_closing INTEGER DEFAULT 0,
                     mention_context TEXT,
                     mention_timestamp REAL,
+                    engaging_quote TEXT,
                     google_place_id TEXT,
                     google_rating REAL,
                     google_user_ratings_total INTEGER,
                     latitude REAL,
                     longitude REAL,
                     image_url TEXT,
+                    photos TEXT,
+                    google_name TEXT,
+                    published_at TEXT,
+                    og_image_url TEXT,
                     created_at TEXT DEFAULT CURRENT_TIMESTAMP,
                     updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
                     FOREIGN KEY (episode_id) REFERENCES episodes(id)
@@ -309,6 +314,11 @@ class Database:
             except sqlite3.OperationalError:
                 pass  # Column already exists
 
+            try:
+                cursor.execute('ALTER TABLE restaurants ADD COLUMN engaging_quote TEXT')
+            except sqlite3.OperationalError:
+                pass  # Column already exists
+
             # Backfill restaurants.published_at from episodes
             try:
                 cursor.execute('''
@@ -493,8 +503,8 @@ class Database:
                     contact_phone, contact_website, business_news, is_closing, mention_context,
                     mention_timestamp, google_place_id, google_rating,
                     google_user_ratings_total, latitude, longitude, image_url, photos,
-                    google_name, published_at, og_image_url
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    google_name, published_at, og_image_url, engaging_quote
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ''', (
                 restaurant_id,
                 episode_id,
@@ -528,6 +538,7 @@ class Database:
                 google_name,
                 kwargs.get('published_at'),
                 kwargs.get('og_image_url'),
+                kwargs.get('engaging_quote'),
             ))
 
             return restaurant_id

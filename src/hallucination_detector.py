@@ -448,6 +448,16 @@ class HallucinationDetector:
         if re.search(r'\s[א-ת]$', name_clean):
             return 0.8, f"Appears truncated: '{name_hebrew}'"
 
+        # Detect truncated Hebrew words that are likely missing a leading letter
+        # e.g., "פו" should be "יפו", "שדוד" should be "אשדוד"
+        # Single Hebrew words under 3 chars followed by a city name are suspicious
+        words = name_clean.split()
+        if len(words) >= 2:
+            first_word = words[0]
+            first_no_space = first_word.replace(' ', '')
+            if len(first_no_space) <= 2 and first_no_space not in {'אל', 'לה', 'דה', 'סן'}:
+                return 0.85, f"First word appears truncated: '{name_hebrew}' ('{first_word}' is likely missing letters)"
+
         return 0.0, None
 
     def _check_sentence_fragment(self, name_hebrew: str) -> Tuple[float, Optional[str]]:

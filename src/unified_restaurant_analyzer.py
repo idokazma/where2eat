@@ -375,24 +375,31 @@ class UnifiedRestaurantAnalyzer:
 
     def _get_system_prompt(self) -> str:
         """Get the system prompt for Stage 1: restaurant identification and detail extraction"""
-        return """You are an expert Hebrew food podcast analyst. Your job is to extract restaurants that the hosts ACTUALLY DISCUSS IN DEPTH — not every place they name-drop.
+        return """You are an expert Hebrew food podcast analyst. Your job is to extract restaurants that the hosts ACTUALLY REVIEW — not every place they name-drop.
 
-CRITICAL DISTINCTION — DISCUSSED vs MENTIONED:
-- DISCUSSED = The hosts talk about the restaurant for at least a few sentences. They share opinions, describe dishes, tell a story, give a recommendation, or debate its quality. This is what you extract.
-- MENTIONED = The hosts say the name in passing, as a comparison, as part of a list, or as quick context. "זה כמו ששמעתם על מסעדת X" or "בנוסף ל-Y" — these are NOT extracted.
+CRITICAL DISTINCTION — REVIEWED vs MENTIONED:
+- REVIEWED = The hosts dedicate a segment to the restaurant. They describe dishes they ate, share their personal opinion, rate the experience, compare it to past visits, or tell a story about dining there. Typically the discussion lasts 30+ seconds and includes specific details (dish names, flavors, prices, atmosphere). This is what you extract.
+- MENTIONED = The hosts say the name in passing, as a comparison, in a list, as a quick aside. Examples: "זה כמו ששמעתם על מסעדת X", "בנוסף ל-Y", listing places in a neighborhood without discussing each one. These are NOT extracted.
 
-If a restaurant appears only as a brief reference, comparison, or aside — DO NOT EXTRACT IT.
+THE GOLDEN RULE: If you cannot write at least 2-3 sentences about what the hosts specifically said about the restaurant's food/experience, it was NOT reviewed — do NOT extract it.
 
 EXTRACTION RULES:
-1. Extract ONLY restaurants the hosts substantively discuss — they share an opinion, describe a dish, tell a personal experience, or dedicate meaningful airtime.
-2. Each restaurant MUST have at least one concrete detail: a dish described, an opinion given, an experience shared.
-3. If you're unsure whether a restaurant was truly discussed vs just mentioned, DO NOT extract it. Err on the side of fewer, higher-quality extractions.
+1. Extract ONLY restaurants the hosts REVIEWED — they must describe at least one dish or share a clear personal opinion about the dining experience.
+2. Each restaurant MUST have: (a) at least one specific dish or food item discussed, AND (b) a clear host opinion or experience shared.
+3. When in doubt, DO NOT extract. 5 well-extracted restaurants are vastly better than 15 noisy ones.
 4. DO NOT extract:
    - Restaurants mentioned only in a list without individual discussion
-   - Restaurants used as comparisons ("זה כמו X")
-   - Generic food terms, dish names, brands, supermarkets
+   - Restaurants used only as comparisons ("זה כמו X")
+   - Restaurants where the hosts only say "go there" without describing the food
+   - Generic food terms, dish names, brands, supermarkets, food chains
    - Chef names without their restaurant
-   - Vague references
+   - Vague references ("מסעדה אחת", "מקום מסוים")
+   - Places the hosts haven't personally visited or tasted food from
+
+NAME ACCURACY:
+- Write the FULL, CORRECT Hebrew name of each restaurant. Do not truncate or abbreviate.
+- Common mistake: "פו" is NOT a restaurant name — it's likely "יפו" (Jaffa) or part of a longer name. Always write the complete name.
+- If unsure of the exact spelling, write it as closely as you heard it, but never drop leading letters.
 
 DEDUPLICATION:
 - If the same restaurant appears multiple times, consolidate into ONE entry.
@@ -680,14 +687,16 @@ TRANSCRIPT:
 {truncated_transcript}
 
 WHAT TO EXTRACT:
-A restaurant qualifies ONLY if the hosts dedicate real airtime to it — sharing opinions, describing dishes they ate, telling a story about their visit, or giving a recommendation. If a restaurant is just mentioned by name without substantive discussion, SKIP IT.
+A restaurant qualifies ONLY if the hosts REVIEW it — they describe specific dishes they ate, share a personal opinion about the experience, or tell a detailed story about dining there. The discussion should include concrete details (dish names, flavors, textures, prices, atmosphere). If a restaurant is just mentioned by name without a substantive food review, SKIP IT.
 
 WHAT TO SKIP:
 - Restaurants mentioned in a quick list without individual discussion
+- Restaurants where hosts only say the name or "go there" without describing the food
 - Restaurants used only as comparisons ("זה כמו X", "מזכיר את X")
-- Generic food terms, dish names, brands, supermarkets
+- Generic food terms, dish names, brands, supermarkets, food chains
 - Vague references ("מסעדה אחת", "מקום מסוים")
 - Chef names without their restaurant
+- Places the hosts haven't personally visited
 
 OUTPUT FORMAT - Return a JSON object:
 {{
@@ -722,7 +731,9 @@ IMPORTANT RULES:
 2. is_closing = true ONLY if the podcast explicitly says the restaurant is shutting down permanently.
 3. Use null for unknown fields, never "לא צוין".
 4. If the same restaurant is discussed multiple times, consolidate into ONE entry with merged details.
-5. Quality over quantity — 5 well-extracted restaurants are better than 15 with half being noise."""
+5. Quality over quantity — 5 well-reviewed restaurants are better than 15 with half being noise.
+6. Write FULL restaurant names — never truncate. "יפו" not "פו", "אשדוד" not "שדוד".
+7. menu_items MUST contain at least one specific dish for each restaurant — if no dish was discussed, the restaurant was not reviewed."""
 
     def _create_quote_extraction_prompt(self, transcript_text: str, restaurant_names: List[str]) -> str:
         """Create the Stage 2 prompt: extract verbatim quotes for identified restaurants"""
