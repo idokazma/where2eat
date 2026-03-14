@@ -429,19 +429,28 @@ class GooglePlacesEnricher:
                 photo_reference = photo.get('photo_reference')
                 is_new_api = photo.get('_new_api', False)
                 if photo_reference:
+                    # Convert new API resource name to actual photo URL
+                    if is_new_api and photo_reference.startswith('places/'):
+                        photo_url = self._get_photo_url(photo_reference)
+                    else:
+                        # Legacy API photo_reference
+                        photo_url = (
+                            f"{self.base_url}/photo"
+                            f"?maxwidth=800&photo_reference={photo_reference}"
+                            f"&key={self.api_key}"
+                        )
                     photo_entry = {
                         'photo_reference': photo_reference,
+                        'photo_url': photo_url,
                         'width': photo.get('width'),
                         'height': photo.get('height')
                     }
-                    if is_new_api:
-                        photo_entry['_new_api'] = True
                     if photo.get('is_owner_photo'):
                         photo_entry['is_owner_photo'] = True
                     enhanced_data['photos'].append(photo_entry)
-                    # Set image_url to first reference for database storage
-                    if not enhanced_data.get('image_url') and photo_reference:
-                        enhanced_data['image_url'] = photo_reference
+                    # Set image_url to resolved photo URL for database storage
+                    if not enhanced_data.get('image_url') and photo_url:
+                        enhanced_data['image_url'] = photo_url
         
         # Add opening hours
         if google_data.get('opening_hours'):
@@ -455,6 +464,28 @@ class GooglePlacesEnricher:
         enhanced_data['google_places_attempted'] = True
         
         return enhanced_data
+
+    def _get_photo_url(self, photo_resource_name: str, max_width: int = 800) -> str:
+        """Convert a new Places API photo resource name to a usable image URL.
+
+        The new API returns names like 'places/PLACE_ID/photos/PHOTO_REF'.
+        We use the media endpoint to get an actual image URL.
+        """
+        url = f"{self.new_api_base_url}/{photo_resource_name}/media"
+        params = {
+            'maxWidthPx': max_width,
+            'skipHttpRedirect': 'true',
+            'key': self.api_key,
+        }
+        try:
+            response = requests.get(url, params=params)
+            response.raise_for_status()
+            data = response.json()
+            return data.get('photoUri', '')
+        except Exception as e:
+            self.logger.warning(f"Failed to resolve photo URL for {photo_resource_name}: {e}")
+            # Fallback: construct direct URL (may redirect)
+            return f"{self.new_api_base_url}/{photo_resource_name}/media?maxWidthPx={max_width}&key={self.api_key}"
 
     @staticmethod
     def _name_similarity_score(name1: str, name2: str) -> float:

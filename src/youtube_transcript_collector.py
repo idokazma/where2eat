@@ -211,26 +211,8 @@ class YouTubeTranscriptCollector:
             print(f"Error: {type(e).__name__} for video: {video_id}")
             return None
         except Exception as e:
-            print(f"[list] Failed for {video_id}: {str(e)}, trying yt-dlp...")
-
-        # Fallback to yt-dlp if list() itself failed
-        result = self._get_transcript_via_ytdlp(video_id, preferred_languages[:3])
-        if result and self.database:
-            try:
-                self.database.create_episode(
-                    video_id=video_id,
-                    video_url=result['video_url'],
-                    transcript=result['transcript'],
-                    language=result['language'],
-                    analysis_date=datetime.now().isoformat()
-                )
-            except Exception:
-                pass
-
-        if result is None:
-            print(f"Error: Could not fetch any transcript for {video_id}")
-
-        return result
+            print(f"[list] Failed for {video_id}: {str(e)}")
+            return None
 
     def _wait_for_rate_limit(self):
         """Wait if necessary to respect rate limit."""
@@ -563,17 +545,10 @@ class YouTubeTranscriptCollector:
             print(f"Error: Video unavailable: {video_id}")
             return None
         except Exception as e:
-            # list() itself failed (e.g. network error, blocked IP)
-            print(f"[list] Failed for {video_id}: {str(e)}, trying yt-dlp...")
-            result = self._get_transcript_via_ytdlp(video_id, languages)
+            print(f"[list] Failed for {video_id}: {str(e)}")
 
         if result is None:
-            # yt-dlp as final fallback if nothing worked above
-            if not isinstance(result, dict):
-                result = self._get_transcript_via_ytdlp(video_id, languages)
-
-        if result is None:
-            print(f"Error: All transcript methods failed for video: {video_id}")
+            print(f"Error: Could not fetch transcript for video: {video_id}")
             return None
 
         # Cache the result if database is available

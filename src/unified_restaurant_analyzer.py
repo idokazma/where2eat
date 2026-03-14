@@ -283,42 +283,40 @@ class UnifiedRestaurantAnalyzer:
 
     def _get_system_prompt(self) -> str:
         """Get the enhanced system prompt for restaurant extraction"""
-        return """You are an expert Hebrew food podcast analyst specializing in extracting restaurant information from Israeli culinary content.
+        return """You are an expert Hebrew food podcast analyst. Your job is to extract restaurants that the hosts ACTUALLY DISCUSS IN DEPTH — not every place they name-drop.
 
-EXPERTISE:
-- Deep understanding of Israeli food culture, restaurant scene, and dining trends
-- Fluent in Hebrew food terminology, slang, and regional expressions
-- Knowledge of Israeli geography: cities, neighborhoods, and culinary districts
-- Familiar with common Hebrew restaurant naming patterns (e.g., "מסעדת X", "ביסטרו Y", "בית קפה Z")
+CRITICAL DISTINCTION — DISCUSSED vs MENTIONED:
+- DISCUSSED = The hosts talk about the restaurant for at least a few sentences. They share opinions, describe dishes, tell a story, give a recommendation, or debate its quality. This is what you extract.
+- MENTIONED = The hosts say the name in passing, as a comparison, as part of a list, or as quick context. "זה כמו ששמעתם על מסעדת X" or "בנוסף ל-Y" — these are NOT extracted.
+
+If a restaurant appears only as a brief reference, comparison, or aside — DO NOT EXTRACT IT.
 
 EXTRACTION RULES:
-1. Extract ONLY explicitly named establishments - restaurants, cafés, bistros, food trucks, bakeries, bars
-2. DO NOT extract:
-   - Generic food terms (e.g., "חומוס", "שווארמה", "פיצה")
-   - Dish names that are not restaurant names
-   - Food brands or products (e.g., "אסם", "תנובה")
-   - Supermarket chains (unless they have a restaurant section being discussed)
+1. Extract ONLY restaurants the hosts substantively discuss — they share an opinion, describe a dish, tell a personal experience, or dedicate meaningful airtime.
+2. Each restaurant MUST have at least one concrete detail: a dish described, an opinion given, an experience shared.
+3. If you're unsure whether a restaurant was truly discussed vs just mentioned, DO NOT extract it. Err on the side of fewer, higher-quality extractions.
+4. DO NOT extract:
+   - Restaurants mentioned only in a list without individual discussion
+   - Restaurants used as comparisons ("זה כמו X")
+   - Generic food terms, dish names, brands, supermarkets
    - Chef names without their restaurant
-   - Vague references like "מסעדה אחת" or "מקום מסוים"
+   - Vague references
 
-3. For each restaurant, assess confidence:
-   - HIGH: Name explicitly stated with clear context
-   - MEDIUM: Name mentioned but context is limited
-   - LOW: Name inferred or partially heard
+QUOTES — THIS IS CRUCIAL:
+For each restaurant, you MUST extract the hosts' actual words verbatim from the transcript.
+- Copy-paste their exact Hebrew words. Do not paraphrase or summarize.
+- The quote should capture their genuine reaction — excitement, criticism, surprise, humor.
+- Pick the most vivid, emotional, or descriptive moment about that restaurant.
+- GOOD: "אחי, הסטייק הזה נמס לי בפה, אני לא מאמין שזה קיים בארץ"
+- BAD: "המנחה חשב שהסטייק טוב" (this is a summary, not a quote)
+- BAD: "מסעדה מצוינת עם אוכל טוב" (this is generic, not their actual words)
 
-4. Handle duplicates: If the same restaurant is mentioned multiple times, consolidate into one entry with merged information.
+DEDUPLICATION:
+- If the same restaurant appears multiple times, consolidate into ONE entry.
+- Watch for spelling variants: "צ'קולי" and "צקולי" are the same place.
+- Merge all details, dishes, and quotes into a single rich entry.
 
-5. Hebrew transliteration: Provide accurate English transliteration (e.g., "צ'קולי" → "Chakoli", not "Tzkoli")
-
-6. ENGAGING QUOTES: For each restaurant, extract a vivid, colorful quote from the hosts about the restaurant.
-   - Capture the hosts' actual words or a close paraphrase - not a dry summary
-   - The quote should convey enthusiasm, emotion, or strong opinion
-   - Example of good: "אחי, הסטייק הזה נמס לי בפה, אני לא מאמין שזה קיים בארץ"
-   - Example of bad: "המנחה אמר שהסטייק טוב" (too dry, summarizes instead of quoting)
-
-7. TIMESTAMPS: Estimate how many seconds into the transcript each restaurant is first discussed.
-   - If the transcript has timing cues, use them
-   - Otherwise estimate based on position in the transcript (e.g., if mentioned at 30% of the text and the video is ~60min, estimate ~1080 seconds)
+Hebrew transliteration: Provide accurate English transliteration (e.g., "צ'קולי" → "Chakoli", not "Tzkoli")
 
 Always respond with valid JSON only. No markdown formatting or additional text."""
 
@@ -569,24 +567,20 @@ Always respond with valid JSON only. No markdown formatting or additional text."
         if len(transcript_text) > max_transcript_length:
             truncated_transcript += "..."
 
-        return f"""Analyze this Hebrew food podcast transcript and extract ALL restaurants mentioned by name.
+        return f"""Analyze this Hebrew food podcast transcript. Extract ONLY restaurants that the hosts SUBSTANTIVELY DISCUSS — not ones they merely name-drop or reference in passing.
 
 TRANSCRIPT:
 {truncated_transcript}
 
-TASK: Extract every restaurant, café, bistro, food truck, bakery, or dining establishment mentioned by its actual name.
+WHAT TO EXTRACT:
+A restaurant qualifies ONLY if the hosts dedicate real airtime to it — sharing opinions, describing dishes they ate, telling a story about their visit, or giving a recommendation. If a restaurant is just mentioned by name without substantive discussion, SKIP IT.
 
-EXTRACTION GUIDELINES:
-1. Look for Hebrew patterns: "במסעדת X", "מסעדת X", "ביסטרו X", "בית קפה X", "של X", "אצל X"
-2. Look for location patterns: "[name] בתל אביב", "[name] ברחוב X", "[name] במרכז"
-3. Include chef-owned restaurants: "המסעדה של [שף]", "[שף] פתח מסעדה"
-
-DO NOT EXTRACT (negative examples):
-- Generic food terms: "חומוס", "שווארמה", "פיצה", "סושי" (unless part of a restaurant name)
-- Food brands: "אסם", "תנובה", "שטראוס"
-- Dish names: "שקשוקה", "חומוס מסבחה" (unless it's a restaurant name)
-- Vague references: "מסעדה אחת", "מקום מסוים", "בית קפה ליד"
-- Supermarket chains: "רמי לוי", "שופרסל" (unless discussing their restaurant section)
+WHAT TO SKIP:
+- Restaurants mentioned in a quick list without individual discussion
+- Restaurants used only as comparisons ("זה כמו X", "מזכיר את X")
+- Generic food terms, dish names, brands, supermarkets
+- Vague references ("מסעדה אחת", "מקום מסוים")
+- Chef names without their restaurant
 
 OUTPUT FORMAT - Return a JSON object:
 {{
@@ -594,49 +588,35 @@ OUTPUT FORMAT - Return a JSON object:
         {{
             "name_hebrew": "שם המסעדה בעברית",
             "name_english": "Accurate English Transliteration",
-            "confidence": "high/medium/low",
             "location": {{
                 "city": "עיר",
-                "neighborhood": "שכונה",
-                "address": "כתובת מלאה אם מוזכרת",
+                "neighborhood": "שכונה (אם מוזכרת)",
+                "address": "כתובת (אם מוזכרת)",
                 "region": "צפון/מרכז/דרום/ירושלים/שרון"
             }},
-            "cuisine_type": "סוג מטבח (איטלקי/אסייתי/ים-תיכוני/וכו')",
-            "establishment_type": "מסעדה/ביסטרו/בית קפה/פוד טראק/מאפייה/בר",
+            "cuisine_type": "סוג מטבח",
             "status": "פתוח/סגור/חדש/עומד להיפתח",
             "price_range": "זול/בינוני/יקר/יוקרתי",
             "host_opinion": "חיובית מאוד/חיובית/ניטרלית/שלילית/מעורבת",
-            "host_recommendation": true/false,
-            "host_comments": "ציטוט ישיר או פרפרזה של דברי המנחה",
-            "engaging_quote": "ציטוט חי, צבעוני ומלא רגש מהמנחים על המסעדה - המילים שלהם ממש, לא תקציר יבש",
+            "host_comments": "תקציר קצר של מה שהמנחים אמרו על המסעדה",
+            "engaging_quote": "ציטוט מילה-במילה מהמנחים, בדיוק כמו שהם אמרו את זה בתמליל. העתק-הדבק מהטקסט. לא לנסח מחדש.",
             "mention_timestamp_seconds": 0,
-            "signature_dishes": ["מנה מומלצת 1", "מנה מומלצת 2"],
-            "menu_items": ["מנה שהוזכרה 1", "מנה שהוזכרה 2"],
-            "special_features": ["תכונה מיוחדת", "אווירה", "נוף"],
+            "signature_dishes": ["מנות שהמנחים ציינו כמומלצות"],
+            "menu_items": ["מנות שהוזכרו"],
+            "special_features": ["מה שמייחד את המקום"],
             "chef_name": "שם השף אם מוזכר",
-            "contact_info": {{
-                "phone": "טלפון",
-                "website": "אתר",
-                "instagram": "חשבון אינסטגרם"
-            }},
-            "business_news": "פתיחה/סגירה/שינויים/אירועים",
-            "is_closing": false,
-            "mention_context": "ציטוט קצר מהתמליל שמזכיר את המסעדה",
-            "timestamp_hint": "אם יש רמז לזמן בתמליל (התחלה/אמצע/סוף)"
+            "business_news": "פתיחה/סגירה/שינויים (אם יש)",
+            "is_closing": false
         }}
-    ],
-    "extraction_notes": "הערות על קושי בזיהוי או אי-ודאויות"
+    ]
 }}
 
-CONFIDENCE LEVELS:
-- "high": שם מפורש עם הקשר ברור (e.g., "הלכנו למסעדת צ'קולי בנמל")
-- "medium": שם מוזכר אך הקשר חלקי (e.g., "צ'קולי היה טוב")
-- "low": שם לא ברור או נשמע חלקית (e.g., "משהו כמו צ'קו...")
-
-IMPORTANT - is_closing field:
-Set "is_closing": true ONLY if the podcast explicitly says the restaurant is permanently shutting down, going out of business, or closing for good. Examples: "סוגרים את המסעדה", "נסגר לצמיתות", "סגרו", "הולכים להיסגר". Do NOT set true for temporary closures, renovations, or day-off closures.
-
-Be thorough but precise. Extract ALL valid restaurants. Use null for truly unknown fields (not "לא צוין")."""
+IMPORTANT RULES:
+1. engaging_quote MUST be the hosts' exact words copied from the transcript. Not a summary. Not a paraphrase. Their actual Hebrew words.
+2. is_closing = true ONLY if the podcast explicitly says the restaurant is shutting down permanently.
+3. Use null for unknown fields, never "לא צוין".
+4. If the same restaurant is discussed multiple times, consolidate into ONE entry with merged details.
+5. Quality over quantity — 5 well-extracted restaurants are better than 15 with half being noise."""
 
     def _ensure_english_name(self, restaurant: Dict) -> Dict:
         """Ensure restaurant has a proper English name"""
@@ -680,39 +660,64 @@ Be thorough but precise. Extract ALL valid restaurants. Use null for truly unkno
         
         return result if result else "Restaurant"
 
+    def _normalize_hebrew_name(self, name: str) -> str:
+        """Normalize Hebrew restaurant name for dedup comparison."""
+        if not name:
+            return ""
+        n = name.strip().lower()
+        # Remove common prefixes
+        for prefix in ["מסעדת ", "מסעדה ", "ביסטרו ", "בית קפה ", "בר ", "קפה ", "ה"]:
+            if n.startswith(prefix):
+                n = n[len(prefix):]
+        # Normalize geresh variants
+        n = n.replace("ז'", "ג'")
+        n = n.replace("צ'", "צ")
+        # Remove punctuation
+        n = re.sub(r'[^\u0590-\u05ffa-z0-9\s]', '', n)
+        n = re.sub(r'\s+', ' ', n).strip()
+        return n
+
     def _deduplicate_restaurants(self, restaurants: List[Dict]) -> List[Dict]:
         """
         Remove duplicate restaurants and merge data from multiple mentions.
 
-        When a restaurant appears in multiple chunks, we merge the data:
-        - Keep all unique menu items and special features
-        - Use the most detailed comments/context
-        - Preserve location info from first mention with location
+        Uses aggressive Hebrew name normalization to catch variants like
+        "מסעדת צ'קולי" and "צקולי" as the same place.
         """
-        merged = {}  # identifier -> merged restaurant data
+        merged = {}  # normalized identifier -> merged restaurant data
 
         for restaurant in restaurants:
             # Ensure English name is present and valid
             restaurant = self._ensure_english_name(restaurant)
 
-            # Create identifier from Hebrew name (primary) with fallback to English
-            name_hebrew = restaurant.get('name_hebrew', '').strip().lower()
-            name_english = restaurant.get('name_english', '').strip().lower()
+            name_hebrew = restaurant.get('name_hebrew', '').strip()
+            name_english = restaurant.get('name_english', '').strip()
 
             # Skip empty entries
             if not name_hebrew and not name_english:
                 continue
 
-            # Use Hebrew name as primary identifier, fallback to English
-            identifier = name_hebrew if name_hebrew else name_english
+            # Normalize for comparison
+            norm_hebrew = self._normalize_hebrew_name(name_hebrew)
+            norm_english = name_english.lower().strip()
+            identifier = norm_hebrew if norm_hebrew else norm_english
 
-            if identifier not in merged:
-                # First occurrence - store it
+            # Check if any existing entry matches
+            matched_key = None
+            for existing_key in merged:
+                if identifier == existing_key:
+                    matched_key = existing_key
+                    break
+                # Also check if one contains the other (partial match)
+                if len(identifier) >= 3 and len(existing_key) >= 3:
+                    if identifier in existing_key or existing_key in identifier:
+                        matched_key = existing_key
+                        break
+
+            if matched_key is None:
                 merged[identifier] = restaurant.copy()
             else:
-                # Merge with existing entry
-                existing = merged[identifier]
-                self._merge_restaurant_data(existing, restaurant)
+                self._merge_restaurant_data(merged[matched_key], restaurant)
 
         return list(merged.values())
 

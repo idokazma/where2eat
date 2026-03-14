@@ -344,14 +344,27 @@ def seed_initial_data():
                     json.dump(existing, f, indent=2)
                 print(f"[SEED] Created default admin user: {admin_email}")
             else:
-                # Always sync password from env var for existing admin
+                # Find or create admin user matching env email
+                found = False
                 for u in existing["users"]:
                     if u["email"] == admin_email:
                         u["password_hash"] = pwd_context.hash(admin_password)
+                        found = True
+                if not found:
+                    # No user with this email — add one
+                    existing["users"].append({
+                        "id": str(uuid.uuid4()),
+                        "email": admin_email,
+                        "name": "Admin",
+                        "role": "super_admin",
+                        "password_hash": pwd_context.hash(admin_password),
+                        "is_active": True,
+                        "created_at": datetime.now().isoformat(),
+                    })
                 data_dir.mkdir(parents=True, exist_ok=True)
                 with open(admin_db_path, "w") as f:
                     json.dump(existing, f, indent=2)
-                print(f"[SEED] Admin users synced ({len(existing['users'])} users)")
+                print(f"[SEED] Admin users synced ({len(existing['users'])} users, env user found={found})")
         except Exception as e:
             print(f"[SEED] Failed to seed admin user: {e}")
     else:
