@@ -38,6 +38,7 @@ router.get('/',
         'filter[status]': filterStatus,
         'filter[cuisine]': filterCuisine,
         'filter[city]': filterCity,
+        'filter[hidden]': filterHidden,
       } = req.query;
 
       // Read all restaurant files
@@ -79,6 +80,11 @@ router.get('/',
 
       if (filterCity) {
         filtered = filtered.filter(r => r.location?.city === filterCity);
+      }
+
+      if (filterHidden !== undefined) {
+        const showHidden = filterHidden === 'true';
+        filtered = filtered.filter(r => !!r.is_hidden === showHidden);
       }
 
       // Apply sorting
@@ -245,6 +251,38 @@ router.put('/:id',
     } catch (error) {
       console.error('Error updating restaurant:', error);
       res.status(500).json({ error: 'Failed to update restaurant' });
+    }
+  }
+);
+
+/**
+ * PATCH /api/admin/restaurants/:id/visibility
+ * Toggle restaurant visibility (hide/unhide)
+ * Requires: editor role or higher
+ */
+router.patch('/:id/visibility',
+  requireRole(['editor', 'admin', 'super_admin']),
+  [param('id').notEmpty()],
+  async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { is_hidden } = req.body;
+      const filePath = path.join(dataDir, `${id}.json`);
+
+      if (!(await fs.pathExists(filePath))) {
+        return res.status(404).json({ error: 'Restaurant not found' });
+      }
+
+      const data = await fs.readJson(filePath);
+      data.is_hidden = !!is_hidden;
+      data.updated_at = new Date().toISOString();
+
+      await fs.writeJson(filePath, data, { spaces: 2 });
+
+      res.json(data);
+    } catch (error) {
+      console.error('Error updating restaurant visibility:', error);
+      res.status(500).json({ error: 'Failed to update visibility' });
     }
   }
 );

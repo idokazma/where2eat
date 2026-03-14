@@ -329,6 +329,9 @@ app.get('/api/restaurants', async (req, res) => {
       }
     }
 
+    // Filter out hidden restaurants
+    restaurants = restaurants.filter(r => !r.is_hidden);
+
     res.json({ restaurants, count: restaurants.length })
   } catch (error) {
     console.error('Error loading restaurants:', error)
@@ -374,6 +377,9 @@ app.get('/api/restaurants/search', async (req, res) => {
     if (include_all !== 'true') {
       restaurants = filterHallucinations(restaurants, { strictMode: true })
     }
+
+    // Filter out hidden restaurants
+    restaurants = restaurants.filter(r => !r.is_hidden);
 
     // Apply filters
     let filteredRestaurants = restaurants.filter(restaurant => {
@@ -1050,6 +1056,9 @@ app.get('/api/restaurants/:id', async (req, res) => {
     
     if (await fs.pathExists(filePath)) {
       const data = await fs.readJson(filePath)
+      if (data.is_hidden) {
+        return res.status(404).json({ error: 'Restaurant not found' })
+      }
       res.json(data)
     } else {
       res.status(404).json({ error: 'Restaurant not found' })

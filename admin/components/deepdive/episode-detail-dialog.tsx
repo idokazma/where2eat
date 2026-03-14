@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { useQuery, useMutation } from '@tanstack/react-query';
-import { deepDiveApi } from '@/lib/api';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { deepDiveApi, restaurantsApi } from '@/lib/api';
 import { queryKeys } from '@/lib/constants';
 import {
   Dialog,
@@ -31,6 +31,9 @@ import {
   Quote,
   MapPin,
   Shield,
+  EyeOff,
+  Eye,
+  Pencil,
 } from 'lucide-react';
 import { formatDate } from '@/lib/formatters';
 
@@ -178,6 +181,16 @@ function AnalysisRunSection({ run, index }: { run: any; index: number }) {
 
 export function EpisodeDetailDialog({ videoId, onClose }: EpisodeDetailDialogProps) {
   const [showReprocessConfirm, setShowReprocessConfirm] = useState(false);
+
+  const queryClient = useQueryClient();
+
+  const toggleVisibility = useMutation({
+    mutationFn: ({ id, is_hidden }: { id: string; is_hidden: boolean }) =>
+      restaurantsApi.toggleVisibility(id, is_hidden),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['deepDive'] });
+    },
+  });
 
   const { data, isLoading, error } = useQuery({
     queryKey: queryKeys.deepDive.episodeDetail(videoId ?? ''),
@@ -385,7 +398,7 @@ export function EpisodeDetailDialog({ videoId, onClose }: EpisodeDetailDialogPro
                         const opinion = r.host_opinion ?? 'neutral';
                         const opinionCfg = OPINION_CONFIG[opinion] ?? OPINION_CONFIG.neutral;
                         return (
-                          <div key={r.id ?? i} className="border rounded-lg p-4 space-y-2">
+                          <div key={r.id ?? i} className={`border rounded-lg p-4 space-y-2 ${r.is_hidden ? 'opacity-50 border-red-200 bg-red-50/30' : ''}`}>
                             <div className="flex items-start justify-between gap-3 flex-wrap">
                               <div>
                                 <p className="font-semibold text-sm" dir="auto">
@@ -412,6 +425,30 @@ export function EpisodeDetailDialog({ videoId, onClose }: EpisodeDetailDialogPro
                                   <Badge variant="outline" className="text-[10px] h-5 font-mono">
                                     {Math.round(r.confidence_level * 100)}%
                                   </Badge>
+                                )}
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    if (r.id) toggleVisibility.mutate({ id: r.id, is_hidden: !r.is_hidden });
+                                  }}
+                                  className={`p-1 rounded hover:bg-muted transition-colors ${r.is_hidden ? 'text-red-500' : 'text-muted-foreground'}`}
+                                  title={r.is_hidden ? 'Unhide restaurant' : 'Hide restaurant'}
+                                >
+                                  {r.is_hidden ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
+                                </button>
+                                {r.id && (
+                                  <a
+                                    href={`/dashboard/restaurants/${r.id}/edit`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="p-1 rounded hover:bg-muted transition-colors text-muted-foreground"
+                                    title="Edit restaurant"
+                                    onClick={(e) => e.stopPropagation()}
+                                  >
+                                    <Pencil className="h-3.5 w-3.5" />
+                                  </a>
                                 )}
                               </div>
                             </div>

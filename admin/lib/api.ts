@@ -220,6 +220,13 @@ export const restaurantsApi = {
   async delete(id: string): Promise<void> {
     return apiFetch(`/api/admin/restaurants/${id}`, { method: 'DELETE' });
   },
+
+  async toggleVisibility(id: string, is_hidden: boolean): Promise<Restaurant> {
+    return apiFetch<Restaurant>(`/api/admin/restaurants/${id}/visibility`, {
+      method: 'PATCH',
+      body: JSON.stringify({ is_hidden }),
+    });
+  },
 };
 
 /**

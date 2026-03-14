@@ -3,22 +3,11 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { bulkApi } from '@/lib/api';
+import type { EditHistory } from '@/types/restaurant';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Search, FileEdit, Trash2, Plus, CheckCircle, XCircle, RefreshCw } from 'lucide-react';
-
-interface EditHistory {
-  id: string;
-  restaurant_id: string;
-  restaurant_name: string;
-  admin_user_id: string;
-  admin_name: string;
-  admin_email: string;
-  edit_type: 'create' | 'update' | 'delete' | 'approve' | 'reject';
-  changes: string;
-  timestamp: string;
-}
 
 export default function AuditLogPage() {
   const [searchRestaurant, setSearchRestaurant] = useState('');
@@ -80,13 +69,16 @@ export default function AuditLogPage() {
     }).format(date);
   };
 
-  const formatChanges = (changesStr: string) => {
-    try {
-      const changes = JSON.parse(changesStr);
-      return JSON.stringify(changes, null, 2);
-    } catch {
-      return changesStr;
+  const formatChanges = (changes: Record<string, any> | string) => {
+    if (typeof changes === 'string') {
+      try {
+        const parsed = JSON.parse(changes);
+        return JSON.stringify(parsed, null, 2);
+      } catch {
+        return changes;
+      }
     }
+    return JSON.stringify(changes, null, 2);
   };
 
   return (
