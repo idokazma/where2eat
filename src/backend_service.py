@@ -589,12 +589,16 @@ class BackendService:
                     r['google_place_id'] = gp['place_id']
                 if gp and gp.get('google_name'):
                     r['google_name'] = gp['google_name']
-                # Set image_url from first photo reference
+                # Set image_url from resolved photo URL (prefer resolved over raw reference)
                 photos = r.get('photos', [])
                 if photos and not r.get('image_url'):
-                    ref = photos[0].get('photo_reference')
-                    if ref:
-                        r['image_url'] = ref
+                    for photo in photos:
+                        resolved = photo.get('resolved_url')
+                        if resolved:
+                            r['image_url'] = resolved
+                            break
+                    # Fallback: if no resolved URL available, skip raw reference
+                    # (raw references like 'places/...' are not valid image URLs)
 
         # Step 5: Filter hallucinations
         if progress_callback:
@@ -641,6 +645,9 @@ class BackendService:
                     # Make a copy to avoid modifying the original
                     data_copy = restaurant_data.copy()
                     name_hebrew = data_copy.pop('name_hebrew', 'Unknown')
+                    # Propagate episode published_at to each restaurant
+                    if published_at and not data_copy.get('published_at'):
+                        data_copy['published_at'] = published_at
                     restaurant_id = self.db.create_restaurant(
                         name_hebrew=name_hebrew,
                         episode_id=episode_id,
