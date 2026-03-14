@@ -204,7 +204,7 @@ export function RestaurantCardNew({
       {/* Content Section */}
       <div className="restaurant-card-content">
         {/* Status badges */}
-        {restaurant.is_closing && (
+        {!!restaurant.is_closing && (
           <span className="inline-block px-2 py-0.5 mb-1 bg-red-500/10 text-red-600 text-xs font-semibold rounded">
             נסגר לצמיתות
           </span>

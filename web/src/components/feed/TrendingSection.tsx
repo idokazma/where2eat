@@ -91,7 +91,7 @@ export function TrendingSection({
             </div>
 
             {/* Status badge */}
-            {restaurant.is_closing && (
+            {!!restaurant.is_closing && (
               <span className="inline-block px-1.5 py-0.5 mt-1 bg-red-500/10 text-red-600 text-[10px] font-semibold rounded">
                 נסגר לצמיתות
               </span>
