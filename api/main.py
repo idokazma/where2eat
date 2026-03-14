@@ -325,10 +325,10 @@ def seed_initial_data():
                 with open(admin_db_path, "r") as f:
                     existing = json.load(f)
 
-            if not existing.get("users"):
-                from passlib.context import CryptContext
-                pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+            from passlib.context import CryptContext
+            pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
+            if not existing.get("users"):
                 admin_user = {
                     "id": str(uuid.uuid4()),
                     "email": admin_email,
@@ -344,7 +344,14 @@ def seed_initial_data():
                     json.dump(existing, f, indent=2)
                 print(f"[SEED] Created default admin user: {admin_email}")
             else:
-                print(f"[SEED] Admin users already exist ({len(existing['users'])} users)")
+                # Always sync password from env var for existing admin
+                for u in existing["users"]:
+                    if u["email"] == admin_email:
+                        u["password_hash"] = pwd_context.hash(admin_password)
+                data_dir.mkdir(parents=True, exist_ok=True)
+                with open(admin_db_path, "w") as f:
+                    json.dump(existing, f, indent=2)
+                print(f"[SEED] Admin users synced ({len(existing['users'])} users)")
         except Exception as e:
             print(f"[SEED] Failed to seed admin user: {e}")
     else:

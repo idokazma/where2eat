@@ -292,6 +292,14 @@ async def reset_data(
                 count = cursor.fetchone()["cnt"]
                 cursor.execute(f"DELETE FROM {table}")
                 deleted[table] = count
+            # Reset subscription stats so poll re-discovers videos
+            cursor.execute(
+                "UPDATE subscriptions SET "
+                "last_checked_at = NULL, "
+                "total_videos_found = 0, "
+                "total_videos_processed = 0, "
+                "total_restaurants_found = 0"
+            )
 
         # 2. Clear PostgreSQL tables if DATABASE_URL is set
         pg_cleared = False
