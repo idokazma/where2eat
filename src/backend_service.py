@@ -578,33 +578,23 @@ class BackendService:
 
             # Normalize enriched data for database storage
             for r in restaurants:
-                loc = r.get('location', {})
                 # Flatten coordinates
-                coords = loc.get('coordinates', {})
+                coords = r.get('location', {}).get('coordinates', {})
                 if coords:
                     r['latitude'] = coords.get('latitude')
                     r['longitude'] = coords.get('longitude')
-                # Flatten city, neighborhood, address from location dict
-                if not r.get('city') and loc.get('city'):
-                    r['city'] = loc['city']
-                if not r.get('neighborhood') and loc.get('neighborhood'):
-                    r['neighborhood'] = loc['neighborhood']
-                if not r.get('address') and loc.get('full_address'):
-                    r['address'] = loc['full_address']
-                if not r.get('region') and loc.get('region'):
-                    r['region'] = loc['region']
                 # Flatten google_place_id and google_name
                 gp = r.get('google_places', {})
                 if gp and gp.get('place_id'):
                     r['google_place_id'] = gp['place_id']
                 if gp and gp.get('google_name'):
                     r['google_name'] = gp['google_name']
-                # Set image_url from first resolved photo URL
+                # Set image_url from first photo reference
                 photos = r.get('photos', [])
                 if photos and not r.get('image_url'):
-                    url = photos[0].get('photo_url') or photos[0].get('photo_reference')
-                    if url:
-                        r['image_url'] = url
+                    ref = photos[0].get('photo_reference')
+                    if ref:
+                        r['image_url'] = ref
 
         # Step 5: Filter hallucinations
         if progress_callback:
@@ -651,9 +641,6 @@ class BackendService:
                     # Make a copy to avoid modifying the original
                     data_copy = restaurant_data.copy()
                     name_hebrew = data_copy.pop('name_hebrew', 'Unknown')
-                    # Set published_at from episode's publish date
-                    if published_at and 'published_at' not in data_copy:
-                        data_copy['published_at'] = published_at
                     restaurant_id = self.db.create_restaurant(
                         name_hebrew=name_hebrew,
                         episode_id=episode_id,
@@ -685,7 +672,6 @@ class BackendService:
                                     food_trends=analysis_result.get('food_trends', []),
                                     episode_summary=analysis_result.get('episode_summary'),
                                     analysis_date=datetime.now(),
-                                    published_at=published_at,
                                 )
                                 session.add(ep_model)
                             # Upsert restaurants
@@ -730,7 +716,6 @@ class BackendService:
                                     google_user_ratings_total=restaurant_data.get('google_user_ratings_total') or rating.get('user_ratings_total'),
                                     photos=restaurant_data.get('photos'),
                                     image_url=restaurant_data.get('image_url'),
-                                    published_at=published_at,
                                 )
                                 session.add(r_model)
                             session.commit()

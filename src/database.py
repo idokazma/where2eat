@@ -101,20 +101,15 @@ class Database:
                     contact_phone TEXT,
                     contact_website TEXT,
                     business_news TEXT,
-                    is_closing INTEGER DEFAULT 0,
                     mention_context TEXT,
                     mention_timestamp REAL,
-                    engaging_quote TEXT,
                     google_place_id TEXT,
                     google_rating REAL,
                     google_user_ratings_total INTEGER,
                     latitude REAL,
                     longitude REAL,
                     image_url TEXT,
-                    photos TEXT,
-                    google_name TEXT,
-                    published_at TEXT,
-                    og_image_url TEXT,
+                    is_hidden INTEGER DEFAULT 0,
                     created_at TEXT DEFAULT CURRENT_TIMESTAMP,
                     updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
                     FOREIGN KEY (episode_id) REFERENCES episodes(id)
@@ -310,12 +305,7 @@ class Database:
                 pass  # Column already exists
 
             try:
-                cursor.execute('ALTER TABLE restaurants ADD COLUMN is_closing INTEGER DEFAULT 0')
-            except sqlite3.OperationalError:
-                pass  # Column already exists
-
-            try:
-                cursor.execute('ALTER TABLE restaurants ADD COLUMN engaging_quote TEXT')
+                cursor.execute('ALTER TABLE restaurants ADD COLUMN is_hidden INTEGER DEFAULT 0')
             except sqlite3.OperationalError:
                 pass  # Column already exists
 
@@ -500,11 +490,11 @@ class Database:
                     id, episode_id, name_hebrew, name_english, city, neighborhood,
                     address, region, cuisine_type, status, price_range, host_opinion,
                     host_comments, menu_items, special_features, contact_hours,
-                    contact_phone, contact_website, business_news, is_closing, mention_context,
+                    contact_phone, contact_website, business_news, mention_context,
                     mention_timestamp, google_place_id, google_rating,
                     google_user_ratings_total, latitude, longitude, image_url, photos,
-                    google_name, published_at, og_image_url, engaging_quote
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    google_name, published_at, og_image_url
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ''', (
                 restaurant_id,
                 episode_id,
@@ -525,7 +515,6 @@ class Database:
                 contact_phone,
                 contact_website,
                 kwargs.get('business_news'),
-                1 if kwargs.get('is_closing') else 0,
                 kwargs.get('mention_context'),
                 kwargs.get('mention_timestamp') or kwargs.get('mention_timestamp_seconds'),
                 google_place_id,
@@ -538,42 +527,23 @@ class Database:
                 google_name,
                 kwargs.get('published_at'),
                 kwargs.get('og_image_url'),
-                kwargs.get('engaging_quote'),
             ))
 
             return restaurant_id
 
     def get_restaurant(self, restaurant_id: str) -> Optional[Dict]:
-        """Get restaurant by ID or Google Place ID, including episode info."""
+        """Get restaurant by ID or Google Place ID."""
         with self.get_connection() as conn:
             cursor = conn.cursor()
-            query = '''
-                SELECT r.*, e.video_id, e.video_url, e.channel_name, e.title as episode_title,
-                       e.analysis_date, e.published_at as episode_published_at,
-                       e.food_trends as episode_food_trends
-                FROM restaurants r
-                LEFT JOIN episodes e ON r.episode_id = e.id
-                WHERE r.id = ?
-            '''
-            cursor.execute(query, (restaurant_id,))
+            cursor.execute('SELECT * FROM restaurants WHERE id = ?', (restaurant_id,))
             row = cursor.fetchone()
-            if not row:
-                # Fallback: search by google_place_id (used when navigating from map)
-                cursor.execute(query.replace('WHERE r.id = ?', 'WHERE r.google_place_id = ?'), (restaurant_id,))
-                row = cursor.fetchone()
             if row:
-                restaurant = self._row_to_restaurant(row)
-                if 'video_id' in restaurant:
-                    restaurant['episode_info'] = {
-                        'video_id': restaurant.pop('video_id', None),
-                        'video_url': restaurant.pop('video_url', None),
-                        'channel_name': restaurant.pop('channel_name', None),
-                        'title': restaurant.pop('episode_title', None),
-                        'analysis_date': restaurant.pop('analysis_date', None),
-                        'published_at': restaurant.pop('episode_published_at', None)
-                    }
-                    restaurant.pop('episode_food_trends', None)
-                return restaurant
+                return self._row_to_restaurant(row)
+            # Fallback: search by google_place_id (used when navigating from map)
+            cursor.execute('SELECT * FROM restaurants WHERE google_place_id = ?', (restaurant_id,))
+            row = cursor.fetchone()
+            if row:
+                return self._row_to_restaurant(row)
             return None
 
     def _row_to_restaurant(self, row: sqlite3.Row) -> Dict:
@@ -613,9 +583,6 @@ class Database:
         if 'mention_timestamp' in restaurant:
             ts = restaurant.pop('mention_timestamp')
             restaurant['mention_timestamp_seconds'] = int(ts) if ts else None
-
-        # Convert is_closing from integer to boolean
-        restaurant['is_closing'] = bool(restaurant.get('is_closing', 0))
 
         # Parse JSON fields
         restaurant['menu_items'] = json.loads(restaurant.get('menu_items') or '[]')

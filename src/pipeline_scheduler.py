@@ -77,17 +77,6 @@ class PipelineScheduler:
         try:
             self._scheduler = BackgroundScheduler()
 
-            # Add error listener to surface job failures
-            def _job_error_listener(event):
-                if event.exception:
-                    print(f"[SCHEDULER] Job {event.job_id} failed: {event.exception}", flush=True)
-                    logger.error("Scheduler job %s failed: %s", event.job_id, event.exception)
-                else:
-                    print(f"[SCHEDULER] Job {event.job_id} completed", flush=True)
-
-            from apscheduler.events import EVENT_JOB_ERROR, EVENT_JOB_EXECUTED
-            self._scheduler.add_listener(_job_error_listener, EVENT_JOB_ERROR | EVENT_JOB_EXECUTED)
-
             # Poll subscriptions for new videos (run immediately on startup)
             self._scheduler.add_job(
                 self.poll_subscriptions,
@@ -189,9 +178,7 @@ class PipelineScheduler:
         4. Update subscription stats and last_checked_at
         5. Log events
         """
-        print("[SCHEDULER] poll_subscriptions starting...", flush=True)
         subscriptions = self.sub_manager.list_subscriptions(active_only=True)
-        print(f"[SCHEDULER] Found {len(subscriptions)} active subscriptions", flush=True)
 
         for sub in subscriptions:
             sub_id = sub['id']
@@ -204,11 +191,8 @@ class PipelineScheduler:
             )
 
             try:
-                print(f"[SCHEDULER] Fetching videos for {sub_name}...", flush=True)
                 videos = self._fetch_channel_videos(sub)
-                print(f"[SCHEDULER] Fetched {len(videos)} videos from {sub_name}", flush=True)
             except Exception as e:
-                print(f"[SCHEDULER] Error fetching videos for {sub_name}: {e}", flush=True)
                 logger.error("Error fetching videos for subscription %s: %s", sub_id, e)
                 self.pipeline_logger.error(
                     'poll_error',
@@ -308,19 +292,10 @@ class PipelineScheduler:
         if item is None:
             return
 
-        print(f"[SCHEDULER] Processing video: {item.get('video_id')} - {item.get('video_title', '')[:50]}", flush=True)
-
         queue_id = item['id']
         video_url = item['video_url']
         video_id = item['video_id']
         subscription_id = item.get('subscription_id')
-        published_at = item.get('published_at')
-
-        # Resolve published_at if missing (flat playlist extraction doesn't return dates)
-        if not published_at:
-            published_at = self._resolve_video_date(video_id)
-            if published_at:
-                self.queue_manager.update_published_at(queue_id, published_at)
 
         self.pipeline_logger.info(
             'video_processing',
@@ -334,7 +309,7 @@ class PipelineScheduler:
             result = backend.process_video(
                 video_url=video_url,
                 enrich_with_google=True,
-                published_at=published_at,
+                published_at=item.get('published_at'),
             )
         except Exception as e:
             error_msg = f'BackendService error: {e}'
@@ -540,8 +515,7 @@ class PipelineScheduler:
     def _filter_by_age(videos: List[dict]) -> List[dict]:
         """Filter out videos older than PIPELINE_MAX_VIDEO_AGE_DAYS.
 
-        Videos without a valid published_at are INCLUDED (assumed recent,
-        since yt-dlp flat extraction doesn't return dates for playlist items).
+        Videos without a valid published_at are also excluded (unknown age).
         """
         cutoff = datetime.utcnow() - timedelta(days=PIPELINE_MAX_VIDEO_AGE_DAYS)
         cutoff_str = cutoff.isoformat()
@@ -550,9 +524,6 @@ class PipelineScheduler:
         for video in videos:
             date_str = video.get('published_at') or ''
             if not date_str:
-                # No date available (common with flat playlist extraction) —
-                # include it and let PIPELINE_MAX_RECENT_VIDEOS limit the count
-                result.append(video)
                 continue
             # Compare ISO date strings (works for both date and datetime formats)
             if date_str >= cutoff_str:
@@ -563,13 +534,12 @@ class PipelineScheduler:
     def _sort_videos_by_date(videos: List[dict]) -> List[dict]:
         """Sort videos by published_at descending (most recent first).
 
-        Videos without a valid published_at are placed at the BEGINNING
-        (assumed newest, preserving playlist ordering from yt-dlp).
+        Videos without a valid published_at are placed at the end (treated as oldest).
         """
         def sort_key(v):
             date_str = v.get('published_at') or ''
             if not date_str:
-                return '\xff'  # Sort to front (highest value, reversed)
+                return ''
             return date_str
 
         return sorted(videos, key=sort_key, reverse=True)
@@ -661,28 +631,6 @@ class PipelineScheduler:
         except Exception as e:
             logger.error("Error fetching videos from %s: %s", url, e)
             return []
-
-    @staticmethod
-    def _resolve_video_date(video_id: str) -> Optional[str]:
-        """Fetch upload date for a single video using yt-dlp.
-
-        Used when flat playlist extraction didn't provide a date.
-        Returns ISO date string (YYYY-MM-DD) or None.
-        """
-        try:
-            import yt_dlp
-            ydl_opts = {'quiet': True, 'no_warnings': True, 'skip_download': True}
-            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                info = ydl.extract_info(
-                    f'https://www.youtube.com/watch?v={video_id}',
-                    download=False,
-                )
-            upload_date = info.get('upload_date') or ''
-            if upload_date and len(upload_date) == 8:
-                return f'{upload_date[:4]}-{upload_date[4:6]}-{upload_date[6:8]}'
-        except Exception as e:
-            logger.warning("Failed to resolve date for video %s: %s", video_id, e)
-        return None
 
     def _get_backend_service(self):
         """Lazy-load BackendService (to avoid import issues in tests)."""
