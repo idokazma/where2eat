@@ -589,12 +589,12 @@ class BackendService:
                     r['google_place_id'] = gp['place_id']
                 if gp and gp.get('google_name'):
                     r['google_name'] = gp['google_name']
-                # Set image_url from first photo reference
+                # Set image_url from first resolved photo URL
                 photos = r.get('photos', [])
                 if photos and not r.get('image_url'):
-                    ref = photos[0].get('photo_reference')
-                    if ref:
-                        r['image_url'] = ref
+                    url = photos[0].get('photo_url') or photos[0].get('photo_reference')
+                    if url:
+                        r['image_url'] = url
 
         # Step 5: Filter hallucinations
         if progress_callback:
