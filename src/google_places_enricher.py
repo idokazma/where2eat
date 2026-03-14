@@ -40,6 +40,57 @@ class GooglePlacesEnricher:
             self.logger.addHandler(handler)
             self.logger.setLevel(logging.INFO)
 
+    def _get_photo_url(self, photo_reference: str, max_width: int = 800) -> Optional[str]:
+        """Resolve a Google Places photo reference to an actual image URL.
+
+        Supports both new API (places/PLACE_ID/photos/PHOTO_REF) and
+        legacy photo_reference strings.
+
+        Args:
+            photo_reference: Photo reference string from Google Places API
+            max_width: Maximum image width in pixels
+
+        Returns:
+            Resolved photo URL or None on failure
+        """
+        if not photo_reference:
+            return None
+
+        try:
+            # New API format: places/{place_id}/photos/{photo_reference}
+            if photo_reference.startswith('places/'):
+                url = f"{self.new_api_base_url}/{photo_reference}/media"
+                params = {
+                    'maxWidthPx': str(max_width),
+                    'skipHttpRedirect': 'true',
+                    'key': self.api_key,
+                }
+                response = requests.get(url, params=params)
+                response.raise_for_status()
+                data = response.json()
+                photo_uri = data.get('photoUri')
+                if photo_uri:
+                    return photo_uri
+                return None
+            else:
+                # Legacy API format
+                url = f"{self.base_url}/photo"
+                params = {
+                    'maxwidth': str(max_width),
+                    'photo_reference': photo_reference,
+                    'key': self.api_key,
+                }
+                response = requests.get(url, params=params, allow_redirects=False)
+                if response.status_code in (301, 302):
+                    return response.headers.get('Location')
+                elif response.status_code == 200:
+                    # Sometimes the API returns the image directly
+                    return response.url
+                return None
+        except Exception as e:
+            self.logger.warning(f"Failed to resolve photo URL for {photo_reference[:50]}...: {e}")
+            return None
+
     def enrich_restaurant(self, restaurant_data: Dict) -> Dict:
         """
         Enrich a single restaurant with Google Places data
@@ -409,10 +460,17 @@ class GooglePlacesEnricher:
                         photo_entry['_new_api'] = True
                     if photo.get('is_owner_photo'):
                         photo_entry['is_owner_photo'] = True
+                    # Resolve photo reference to actual URL
+                    resolved_url = self._get_photo_url(photo_reference)
+                    if resolved_url:
+                        photo_entry['resolved_url'] = resolved_url
                     enhanced_data['photos'].append(photo_entry)
-                    # Set image_url to first reference for database storage
+                    # Set image_url to resolved URL (not raw reference)
                     if not enhanced_data.get('image_url') and photo_reference:
-                        enhanced_data['image_url'] = photo_reference
+                        if resolved_url:
+                            enhanced_data['image_url'] = resolved_url
+                        else:
+                            enhanced_data['image_url'] = photo_reference
         
         # Add opening hours
         if google_data.get('opening_hours'):
