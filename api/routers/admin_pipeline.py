@@ -671,6 +671,34 @@ async def prioritize_video(
     return {"success": True, "message": "Video moved to front of queue"}
 
 
+@router.post(
+    "/enqueue",
+    summary="Enqueue a video by ID",
+    description="Add a video to the processing queue by its YouTube video ID.",
+)
+async def enqueue_video(
+    body: dict,
+    user: dict = Depends(require_role(["admin", "super_admin"])),
+):
+    """Add a video to the queue for processing."""
+    video_id = body.get("video_id")
+    if not video_id:
+        raise HTTPException(status_code=400, detail="video_id is required")
+
+    priority = body.get("priority", 5)
+    queue_manager = _get_queue_manager()
+    video_url = f"https://www.youtube.com/watch?v={video_id}"
+
+    result = queue_manager.enqueue(
+        video_id=video_id,
+        video_url=video_url,
+        priority=priority,
+        video_title=body.get("title"),
+        published_at=body.get("published_at"),
+    )
+    return {"success": True, "message": f"Enqueued {video_id}", "item": result}
+
+
 @router.delete(
     "/{queue_id}",
     summary="Remove from queue",
