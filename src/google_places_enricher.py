@@ -42,23 +42,29 @@ class GooglePlacesEnricher:
 
     def enrich_restaurant(self, restaurant_data: Dict) -> Dict:
         """
-        Enrich a single restaurant with Google Places data
-        
+        Enrich a single restaurant with Google Places data.
+
+        Uses multiple search strategies including cuisine type and location
+        context to find the correct Google Places match.
+
         Args:
             restaurant_data: Original restaurant data dict
-            
+
         Returns:
             Enhanced restaurant data with Google Places information
         """
         restaurant_name = restaurant_data.get('name_english', '')
         hebrew_name = restaurant_data.get('name_hebrew', '')
-        city = restaurant_data.get('location', {}).get('city', '')
-        
+        location = restaurant_data.get('location', {})
+        city = location.get('city', '') if isinstance(location, dict) else ''
+        neighborhood = location.get('neighborhood', '') if isinstance(location, dict) else ''
+        cuisine = restaurant_data.get('cuisine_type', '')
+
         self.logger.info(f"🔍 Enriching restaurant: {restaurant_name} ({hebrew_name}) in {city}")
-        
+
         # Try multiple search strategies
         place_details = None
-        
+
         # Strategy 1: Hebrew name + city (most reliable for Israeli restaurants)
         if hebrew_name and city:
             place_details = self._search_restaurant(f"{hebrew_name} {city}")
@@ -67,22 +73,44 @@ class GooglePlacesEnricher:
         if not place_details and hebrew_name and city:
             place_details = self._search_restaurant(f"מסעדת {hebrew_name} {city}")
 
-        # Strategy 3: English name + city
+        # Strategy 3: Hebrew name + cuisine type + city (helps disambiguate)
+        if not place_details and hebrew_name and cuisine and city:
+            place_details = self._search_restaurant(f"{hebrew_name} {cuisine} {city}")
+
+        # Strategy 4: English name + city
         if not place_details and restaurant_name and city:
             place_details = self._search_restaurant(f"{restaurant_name} {city}")
 
-        # Strategy 4: English name + "restaurant" + city
+        # Strategy 5: English name + "restaurant" + city
         if not place_details and restaurant_name and city:
             place_details = self._search_restaurant(f"{restaurant_name} restaurant {city}")
 
-        # Strategy 5: Just the Hebrew name (broader search)
+        # Strategy 6: Hebrew name + neighborhood (more specific than city)
+        if not place_details and hebrew_name and neighborhood:
+            place_details = self._search_restaurant(f"{hebrew_name} {neighborhood}")
+
+        # Strategy 7: Cuisine type + city (for cases where name is garbled)
+        if not place_details and cuisine and city:
+            # Build a descriptive query from available context
+            menu_items = restaurant_data.get('menu_items', [])
+            if isinstance(menu_items, str):
+                try:
+                    import json as _json
+                    menu_items = _json.loads(menu_items)
+                except Exception:
+                    menu_items = []
+            dish_hint = menu_items[0] if menu_items else ''
+            if dish_hint:
+                place_details = self._search_restaurant(f"{cuisine} {dish_hint} {city}")
+
+        # Strategy 8: Just the Hebrew name (broader search)
         if not place_details and hebrew_name:
             place_details = self._search_restaurant(hebrew_name)
 
-        # Strategy 6: Just the English name (broadest)
+        # Strategy 9: Just the English name (broadest)
         if not place_details and restaurant_name:
             place_details = self._search_restaurant(restaurant_name)
-            
+
         if place_details:
             # Merge Google Places data with existing data
             enhanced_data = self._merge_google_data(restaurant_data, place_details)
@@ -366,6 +394,26 @@ class GooglePlacesEnricher:
             'name_match_confidence': round(best_similarity, 2),
             'potential_wrong_match': best_similarity < 0.15,
         }
+
+        # Name correction: when Google Places returns a Hebrew name that's
+        # clearly better than the auto-generated transcript name, use it.
+        # Auto-generated transcripts garble proper nouns (e.g., "הדבר" → "דנבר").
+        if google_name and not enhanced_data['google_places']['potential_wrong_match']:
+            # Check if Google name contains Hebrew characters
+            import re as _re
+            has_hebrew = bool(_re.search(r'[\u0590-\u05ff]', google_name))
+            if has_hebrew:
+                # Google returned a Hebrew name — use it if it's different
+                # Strip common suffixes like " - מסעדה" from Google name
+                corrected = self._strip_google_suffix(google_name)
+                if corrected and corrected != original_hebrew:
+                    self.logger.info(
+                        f"📝 Name correction: '{original_hebrew}' → '{corrected}' (from Google Places)"
+                    )
+                    enhanced_data['name_hebrew'] = corrected
+            elif best_similarity >= 0.15:
+                # Google returned an English name with decent match — use as name_english
+                enhanced_data['name_english'] = google_name
         
         # Ensure location dict exists
         if 'location' not in enhanced_data or not isinstance(enhanced_data.get('location'), dict):
@@ -499,6 +547,23 @@ class GooglePlacesEnricher:
             self.logger.warning(f"Failed to resolve photo URL for {photo_resource_name}: {e}")
             # Fallback: construct direct URL (may redirect)
             return f"{self.new_api_base_url}/{photo_resource_name}/media?maxWidthPx={max_width}&key={self.api_key}"
+
+    @staticmethod
+    def _strip_google_suffix(name: str) -> str:
+        """Strip common business-type suffixes from Google Places names."""
+        suffixes = [
+            " - מסעדת שף", " - מסעדה", " - בית קפה", " - ביסטרו",
+            " - בר", " - פיצריה", " - קונדיטוריה",
+            " Restaurant", " Cafe", " Bar", " Bistro",
+        ]
+        for suffix in suffixes:
+            if name.endswith(suffix):
+                name = name[: -len(suffix)]
+        # Also strip after " - " generically
+        if " - " in name:
+            parts = name.split(" - ", 1)
+            name = parts[0]
+        return name.strip()
 
     @staticmethod
     def _name_similarity_score(name1: str, name2: str) -> float:
