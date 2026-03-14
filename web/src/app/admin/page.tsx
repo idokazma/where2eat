@@ -25,6 +25,10 @@ import {
   ChevronRight,
   Youtube,
   Loader2,
+  LayoutDashboard,
+  Activity,
+  ListOrdered,
+  BookOpen,
 } from "lucide-react"
 import { getApiUrl } from "@/lib/config"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -1214,12 +1218,144 @@ function RestaurantsTab() {
 }
 
 // ---------------------------------------------------------------------------
+// Dashboard tab
+// ---------------------------------------------------------------------------
+
+interface HealthData {
+  status?: string
+  pipeline?: { status?: string; queue_depth?: number }
+  queue_depth?: number
+}
+
+function DashboardTab({ onNavigateToDeepDive }: { onNavigateToDeepDive: () => void }) {
+  const [health, setHealth] = useState<HealthData | null>(null)
+  const [healthLoading, setHealthLoading] = useState(true)
+
+  useEffect(() => {
+    fetch(getApiUrl("/health"))
+      .then((r) => r.json())
+      .then((data) => setHealth(data))
+      .catch(() => setHealth(null))
+      .finally(() => setHealthLoading(false))
+  }, [])
+
+  const pipelineStatus =
+    health?.pipeline?.status ?? health?.status ?? null
+  const queueDepth =
+    health?.pipeline?.queue_depth ?? health?.queue_depth ?? null
+  const isRunning = pipelineStatus === "running" || pipelineStatus === "ok"
+
+  return (
+    <div className="space-y-6">
+      {/* Welcome card */}
+      <Card>
+        <CardHeader className="pb-2">
+          <CardTitle className="flex items-center gap-2 text-xl">
+            <LayoutDashboard className="h-5 w-5" />
+            Admin Dashboard
+          </CardTitle>
+          <p className="text-sm text-muted-foreground">
+            Manage your Where2Eat content
+          </p>
+        </CardHeader>
+      </Card>
+
+      {/* Stats row */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {/* Pipeline status */}
+        <Card>
+          <CardContent className="pt-6 flex flex-col gap-2">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Activity className="h-4 w-4" />
+              Pipeline status
+            </div>
+            {healthLoading ? (
+              <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+            ) : pipelineStatus ? (
+              <Badge
+                variant={isRunning ? "default" : "secondary"}
+                className="w-fit"
+              >
+                {isRunning ? "Running" : "Stopped"}
+              </Badge>
+            ) : (
+              <span className="text-xs text-muted-foreground">Unavailable</span>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Queue depth */}
+        <Card>
+          <CardContent className="pt-6 flex flex-col gap-2">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <ListOrdered className="h-4 w-4" />
+              Queue depth
+            </div>
+            {healthLoading ? (
+              <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+            ) : queueDepth !== null ? (
+              <span className="text-2xl font-bold">{queueDepth}</span>
+            ) : (
+              <span className="text-xs text-muted-foreground">Unavailable</span>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* API docs link */}
+        <Card>
+          <CardContent className="pt-6 flex flex-col gap-2">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <BookOpen className="h-4 w-4" />
+              API reference
+            </div>
+            <a
+              href={`${getApiUrl("/docs")}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline"
+            >
+              Open API Docs
+              <ExternalLink className="h-3 w-3" />
+            </a>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Quick links */}
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base">Quick links</CardTitle>
+        </CardHeader>
+        <CardContent className="flex flex-wrap gap-3">
+          <Button onClick={onNavigateToDeepDive} variant="outline" size="sm">
+            <Database className="h-4 w-4 mr-2" />
+            Deep Dive
+          </Button>
+          <Button asChild variant="outline" size="sm">
+            <a
+              href={getApiUrl("/docs")}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <BookOpen className="h-4 w-4 mr-2" />
+              API Docs
+              <ExternalLink className="h-3 w-3 ml-1" />
+            </a>
+          </Button>
+        </CardContent>
+      </Card>
+    </div>
+  )
+}
+
+// ---------------------------------------------------------------------------
 // Root page component
 // ---------------------------------------------------------------------------
 
 export default function AdminPage() {
   const [selectedVideoId, setSelectedVideoId] = useState<string | null>(null)
-  const [activeTab, setActiveTab] = useState<string>("episodes")
+  const [topTab, setTopTab] = useState<string>("dashboard")
+  const [deepDiveTab, setDeepDiveTab] = useState<string>("episodes")
 
   const handleSelectEpisode = (videoId: string) => {
     setSelectedVideoId(videoId)
@@ -1229,45 +1365,66 @@ export default function AdminPage() {
     setSelectedVideoId(null)
   }
 
+  const navigateToDeepDive = () => {
+    setTopTab("deepdive")
+  }
+
   return (
     <div className="max-w-5xl mx-auto px-4 py-6 space-y-6">
       {/* Page header */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Deep Dive</h1>
+          <h1 className="text-2xl font-bold tracking-tight">Admin</h1>
           <p className="text-sm text-muted-foreground mt-0.5">
-            Pipeline debugging and content inspection
+            Where2Eat content management
           </p>
         </div>
       </div>
 
-      {/* Episode detail view (full-page inline) */}
-      {selectedVideoId ? (
-        <EpisodeDetailPanel
-          videoId={selectedVideoId}
-          onBack={handleBack}
-        />
-      ) : (
-        /* Top-level tabs */
-        <Tabs
-          value={activeTab}
-          onValueChange={setActiveTab}
-          className="flex flex-col gap-4"
-        >
-          <TabsList className="justify-start">
-            <TabsTrigger value="episodes">Episodes</TabsTrigger>
-            <TabsTrigger value="restaurants">Restaurants</TabsTrigger>
-          </TabsList>
+      {/* Top-level tabs: Dashboard / Deep Dive */}
+      <Tabs value={topTab} onValueChange={setTopTab} className="flex flex-col gap-4">
+        <TabsList className="justify-start">
+          <TabsTrigger value="dashboard">
+            <LayoutDashboard className="h-4 w-4 mr-1.5" />
+            Dashboard
+          </TabsTrigger>
+          <TabsTrigger value="deepdive">
+            <Database className="h-4 w-4 mr-1.5" />
+            Deep Dive
+          </TabsTrigger>
+        </TabsList>
 
-          <TabsContent value="episodes">
-            <EpisodesTab onSelectEpisode={handleSelectEpisode} />
-          </TabsContent>
+        {/* Dashboard tab */}
+        <TabsContent value="dashboard">
+          <DashboardTab onNavigateToDeepDive={navigateToDeepDive} />
+        </TabsContent>
 
-          <TabsContent value="restaurants">
-            <RestaurantsTab />
-          </TabsContent>
-        </Tabs>
-      )}
+        {/* Deep Dive tab */}
+        <TabsContent value="deepdive">
+          {selectedVideoId ? (
+            <EpisodeDetailPanel videoId={selectedVideoId} onBack={handleBack} />
+          ) : (
+            <Tabs
+              value={deepDiveTab}
+              onValueChange={setDeepDiveTab}
+              className="flex flex-col gap-4"
+            >
+              <TabsList className="justify-start">
+                <TabsTrigger value="episodes">Episodes</TabsTrigger>
+                <TabsTrigger value="restaurants">Restaurants</TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="episodes">
+                <EpisodesTab onSelectEpisode={handleSelectEpisode} />
+              </TabsContent>
+
+              <TabsContent value="restaurants">
+                <RestaurantsTab />
+              </TabsContent>
+            </Tabs>
+          )}
+        </TabsContent>
+      </Tabs>
     </div>
   )
 }

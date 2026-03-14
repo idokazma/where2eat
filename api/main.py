@@ -946,6 +946,164 @@ app.include_router(admin_subscriptions_router)
 app.include_router(admin_pipeline_router)
 
 
+@app.get("/api/deepdive/episodes")
+async def deepdive_episodes(
+    search: str = None,
+    status: str = None,
+    page: int = 1,
+    limit: int = 20,
+):
+    """List episodes with pipeline status. Supports search, status filter, and pagination."""
+    from database import Database
+
+    db = Database()
+    page = max(1, page)
+    limit = max(1, min(100, limit))
+    offset = (page - 1) * limit
+
+    conditions = []
+    params = []
+
+    if search:
+        conditions.append("(e.title LIKE ? OR e.channel_name LIKE ?)")
+        like = f"%{search}%"
+        params.extend([like, like])
+
+    if status:
+        conditions.append("vq.status = ?")
+        params.append(status)
+
+    where_sql = ("WHERE " + " AND ".join(conditions)) if conditions else ""
+
+    base_sql = f"""
+        SELECT e.id, e.video_id, e.video_url, e.title, e.channel_name, e.language,
+               e.analysis_date, e.created_at, e.published_at,
+               vq.status as queue_status, vq.priority as queue_priority,
+               vq.attempt_count, vq.error_message, vq.restaurants_found,
+               vq.processing_started_at, vq.processing_completed_at,
+               vq.published_at as queue_published_at
+        FROM episodes e
+        LEFT JOIN video_queue vq ON e.video_id = vq.video_id
+        {where_sql}
+    """
+
+    with db.get_connection() as conn:
+        cursor = conn.cursor()
+
+        count_cursor = conn.cursor()
+        count_cursor.execute(f"SELECT COUNT(*) FROM ({base_sql}) sub", params)
+        total = count_cursor.fetchone()[0]
+
+        cursor.execute(
+            base_sql
+            + " ORDER BY COALESCE(e.published_at, vq.published_at, e.analysis_date, e.created_at) DESC LIMIT ? OFFSET ?",
+            params + [limit, offset],
+        )
+        rows = cursor.fetchall()
+
+    episodes = [dict(row) for row in rows]
+    total_pages = (total + limit - 1) // limit
+
+    return {
+        "episodes": episodes,
+        "pagination": {
+            "page": page,
+            "limit": limit,
+            "total": total,
+            "total_pages": total_pages,
+        },
+    }
+
+
+@app.get("/api/deepdive/episodes/{video_id}")
+async def deepdive_episode_detail(video_id: str):
+    """Full episode deep dive: episode, restaurants, queue info, and pipeline logs."""
+    from database import Database
+
+    db = Database()
+
+    with db.get_connection() as conn:
+        cursor = conn.cursor()
+
+        # Episode
+        cursor.execute("SELECT * FROM episodes WHERE video_id = ?", (video_id,))
+        episode_row = cursor.fetchone()
+        if not episode_row:
+            from fastapi import HTTPException
+            raise HTTPException(status_code=404, detail="Episode not found")
+        episode = dict(episode_row)
+
+        # Restaurants linked to this episode
+        cursor.execute(
+            "SELECT * FROM restaurants WHERE episode_id = ? ORDER BY id",
+            (episode_row["id"],),
+        )
+        restaurants = [dict(r) for r in cursor.fetchall()]
+
+        # Queue info
+        cursor.execute("SELECT * FROM video_queue WHERE video_id = ?", (video_id,))
+        queue_row = cursor.fetchone()
+        queue_info = dict(queue_row) if queue_row else None
+
+        # Pipeline logs (keyed on queue id if available)
+        pipeline_logs = []
+        if queue_info:
+            cursor.execute(
+                "SELECT * FROM pipeline_logs WHERE video_queue_id = ? ORDER BY timestamp DESC",
+                (queue_info["id"],),
+            )
+            pipeline_logs = [dict(l) for l in cursor.fetchall()]
+
+    return {
+        "episode": episode,
+        "restaurants": restaurants,
+        "queue_info": queue_info,
+        "pipeline_logs": pipeline_logs,
+    }
+
+
+@app.get("/api/deepdive/restaurants/{restaurant_id}")
+async def deepdive_restaurant_detail(restaurant_id: str):
+    """Restaurant deep dive: restaurant record, related episode, and queue info."""
+    from database import Database
+
+    db = Database()
+
+    with db.get_connection() as conn:
+        cursor = conn.cursor()
+
+        # Restaurant
+        cursor.execute("SELECT * FROM restaurants WHERE id = ?", (restaurant_id,))
+        restaurant_row = cursor.fetchone()
+        if not restaurant_row:
+            from fastapi import HTTPException
+            raise HTTPException(status_code=404, detail="Restaurant not found")
+        restaurant = dict(restaurant_row)
+
+        # Related episode
+        episode = None
+        queue_info = None
+        episode_id = restaurant.get("episode_id")
+        if episode_id:
+            cursor.execute("SELECT * FROM episodes WHERE id = ?", (episode_id,))
+            episode_row = cursor.fetchone()
+            if episode_row:
+                episode = dict(episode_row)
+                video_id = episode.get("video_id")
+                if video_id:
+                    cursor.execute(
+                        "SELECT * FROM video_queue WHERE video_id = ?", (video_id,)
+                    )
+                    queue_row = cursor.fetchone()
+                    queue_info = dict(queue_row) if queue_row else None
+
+    return {
+        "restaurant": restaurant,
+        "episode": episode,
+        "queue_info": queue_info,
+    }
+
+
 @app.post("/api/deepdive/fix-data")
 async def fix_data():
     """One-time fix: resolve raw photo references to URLs and fix wrong published_at dates."""
