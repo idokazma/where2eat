@@ -95,7 +95,8 @@ class UnifiedRestaurantAnalyzer:
 
         If segments with start times are available, produces text like:
             [00:00] first segment text [00:15] second segment text ...
-        This lets the LLM accurately extract mention_timestamp_seconds.
+        Timestamps are used by _find_mention_timestamp() to locate restaurant
+        mentions in the transcript via Python string search.
 
         Falls back to plain transcript text if no segments are available.
         """
@@ -182,10 +183,17 @@ class UnifiedRestaurantAnalyzer:
             if not restaurants:
                 return self._build_result(transcript_data, [])
 
-            # Validate and process results
+            # Validate, resolve timestamps via Python, and process results
+            segments = transcript_data.get('segments', [])
             validated_restaurants = []
             for restaurant in restaurants:
-                validated_restaurants.append(self._ensure_english_name(restaurant))
+                restaurant = self._ensure_english_name(restaurant)
+                # Set timestamp from Python segment search, not LLM
+                name = restaurant.get('name_hebrew', '')
+                restaurant['mention_timestamp_seconds'] = self._find_mention_timestamp(
+                    transcript_text, name, segments
+                )
+                validated_restaurants.append(restaurant)
 
             # ── Stage 2: Verbatim quote extraction ──
             restaurant_names = [
@@ -701,7 +709,7 @@ OUTPUT FORMAT - Return a JSON object:
             "price_range": "זול/בינוני/יקר/יוקרתי",
             "host_opinion": "חיובית מאוד/חיובית/ניטרלית/שלילית/מעורבת",
             "host_comments": "תקציר קצר של מה שהמנחים אמרו על המסעדה — כתוב בגוף ראשון כאילו המנחה מדבר",
-            "mention_timestamp_seconds": 0,
+            "mention_timestamp_seconds": "DO NOT SET — will be calculated automatically",
             "signature_dishes": ["מנות שהמנחים ציינו כמומלצות"],
             "menu_items": ["מנות שהוזכרו"],
             "special_features": ["מה שמייחד את המקום"],
@@ -711,11 +719,6 @@ OUTPUT FORMAT - Return a JSON object:
         }}
     ]
 }}
-
-TIMESTAMPS:
-The transcript may contain [MM:SS] timestamp markers. Use these to set mention_timestamp_seconds accurately.
-For example, if a restaurant is first discussed after [05:23], set mention_timestamp_seconds to 323 (5*60+23).
-If no timestamps are present, set mention_timestamp_seconds to 0.
 
 IMPORTANT RULES:
 1. Do NOT include an engaging_quote field — quotes will be extracted separately.
@@ -821,6 +824,59 @@ CRITICAL RULES:
         n = re.sub(r'[^\u0590-\u05ffa-z0-9\s]', '', n)
         n = re.sub(r'\s+', ' ', n).strip()
         return n
+
+    def _find_mention_timestamp(self, transcript_text: str, restaurant_name: str, segments: List[Dict]) -> int:
+        """Find the timestamp (in seconds) where a restaurant is first mentioned.
+
+        Uses two strategies:
+        1. If segments with start times are available, search segment text directly.
+        2. If the transcript has inline [MM:SS] markers, find the nearest marker
+           before the restaurant name in the text.
+
+        Args:
+            transcript_text: The transcript text (may contain [MM:SS] markers)
+            restaurant_name: Hebrew restaurant name to search for
+            segments: List of segment dicts with 'text' and 'start' keys
+
+        Returns:
+            Timestamp in seconds, or 0 if not found.
+        """
+        if not restaurant_name:
+            return 0
+
+        # Strategy 1: Search segments directly (most accurate)
+        if segments:
+            # Try exact name match first, then normalized
+            name_lower = restaurant_name.strip().lower()
+            # Also try without common prefixes
+            name_variants = [name_lower]
+            norm = self._normalize_hebrew_name(restaurant_name)
+            if norm and norm != name_lower:
+                name_variants.append(norm)
+
+            for seg in segments:
+                seg_text = seg.get('text', '').lower()
+                for variant in name_variants:
+                    if variant and variant in seg_text:
+                        return int(seg.get('start', 0))
+
+        # Strategy 2: Parse [MM:SS] markers from the formatted transcript
+        if '[' in transcript_text:
+            pos = transcript_text.lower().find(restaurant_name.lower())
+            if pos == -1:
+                # Try normalized name
+                norm = self._normalize_hebrew_name(restaurant_name)
+                if norm:
+                    pos = transcript_text.lower().find(norm)
+            if pos > 0:
+                # Find the nearest [MM:SS] marker before this position
+                preceding = transcript_text[:pos]
+                markers = re.findall(r'\[(\d{2}):(\d{2})\]', preceding)
+                if markers:
+                    last = markers[-1]
+                    return int(last[0]) * 60 + int(last[1])
+
+        return 0
 
     def _deduplicate_restaurants(self, restaurants: List[Dict]) -> List[Dict]:
         """
