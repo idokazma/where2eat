@@ -2,7 +2,8 @@
 
 import { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { pipelineApi, type VideoDetail } from '@/lib/api';
+import { pipelineApi } from '@/lib/api';
+import type { VideoDetail } from '@/types';
 import {
   Dialog,
   DialogContent,

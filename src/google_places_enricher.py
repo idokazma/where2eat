@@ -42,75 +42,39 @@ class GooglePlacesEnricher:
 
     def enrich_restaurant(self, restaurant_data: Dict) -> Dict:
         """
-        Enrich a single restaurant with Google Places data.
-
-        Uses multiple search strategies including cuisine type and location
-        context to find the correct Google Places match.
-
+        Enrich a single restaurant with Google Places data
+        
         Args:
             restaurant_data: Original restaurant data dict
-
+            
         Returns:
             Enhanced restaurant data with Google Places information
         """
         restaurant_name = restaurant_data.get('name_english', '')
         hebrew_name = restaurant_data.get('name_hebrew', '')
-        location = restaurant_data.get('location', {})
-        city = location.get('city', '') if isinstance(location, dict) else ''
-        neighborhood = location.get('neighborhood', '') if isinstance(location, dict) else ''
-        cuisine = restaurant_data.get('cuisine_type', '')
-
+        city = restaurant_data.get('location', {}).get('city', '')
+        
         self.logger.info(f"🔍 Enriching restaurant: {restaurant_name} ({hebrew_name}) in {city}")
-
+        
         # Try multiple search strategies
         place_details = None
-
-        # Strategy 1: Hebrew name + city (most reliable for Israeli restaurants)
-        if hebrew_name and city:
-            place_details = self._search_restaurant(f"{hebrew_name} {city}")
-
-        # Strategy 2: Hebrew name + "מסעדה" + city
-        if not place_details and hebrew_name and city:
-            place_details = self._search_restaurant(f"מסעדת {hebrew_name} {city}")
-
-        # Strategy 3: Hebrew name + cuisine type + city (helps disambiguate)
-        if not place_details and hebrew_name and cuisine and city:
-            place_details = self._search_restaurant(f"{hebrew_name} {cuisine} {city}")
-
-        # Strategy 4: English name + city
-        if not place_details and restaurant_name and city:
+        
+        # Strategy 1: English name + city
+        if restaurant_name and city:
             place_details = self._search_restaurant(f"{restaurant_name} {city}")
-
-        # Strategy 5: English name + "restaurant" + city
+        
+        # Strategy 2: Hebrew name + city  
+        if not place_details and hebrew_name and city:
+            place_details = self._search_restaurant(f"{hebrew_name} {city}")
+            
+        # Strategy 3: English name + "restaurant" + city
         if not place_details and restaurant_name and city:
             place_details = self._search_restaurant(f"{restaurant_name} restaurant {city}")
-
-        # Strategy 6: Hebrew name + neighborhood (more specific than city)
-        if not place_details and hebrew_name and neighborhood:
-            place_details = self._search_restaurant(f"{hebrew_name} {neighborhood}")
-
-        # Strategy 7: Cuisine type + city (for cases where name is garbled)
-        if not place_details and cuisine and city:
-            # Build a descriptive query from available context
-            menu_items = restaurant_data.get('menu_items', [])
-            if isinstance(menu_items, str):
-                try:
-                    import json as _json
-                    menu_items = _json.loads(menu_items)
-                except Exception:
-                    menu_items = []
-            dish_hint = menu_items[0] if menu_items else ''
-            if dish_hint:
-                place_details = self._search_restaurant(f"{cuisine} {dish_hint} {city}")
-
-        # Strategy 8: Just the Hebrew name (broader search)
-        if not place_details and hebrew_name:
-            place_details = self._search_restaurant(hebrew_name)
-
-        # Strategy 9: Just the English name (broadest)
+        
+        # Strategy 4: Just the name (broader search)
         if not place_details and restaurant_name:
             place_details = self._search_restaurant(restaurant_name)
-
+            
         if place_details:
             # Merge Google Places data with existing data
             enhanced_data = self._merge_google_data(restaurant_data, place_details)
@@ -163,13 +127,8 @@ class GooglePlacesEnricher:
             }
             body = {
                 'textQuery': query,
-                'languageCode': 'he',
-                'locationBias': {
-                    'rectangle': {
-                        'low': {'latitude': 29.0, 'longitude': 34.0},
-                        'high': {'latitude': 33.5, 'longitude': 35.9}
-                    }
-                }
+                'includedType': 'restaurant',
+                'languageCode': 'he'
             }
 
             self.logger.debug(f"🔎 Searching new Places API for: {query}")
@@ -311,10 +270,7 @@ class GooglePlacesEnricher:
             search_params = {
                 'query': query,
                 'type': 'restaurant',
-                'key': self.api_key,
-                'region': 'il',
-                'location': '31.5,34.8',
-                'radius': 200000,
+                'key': self.api_key
             }
 
             self.logger.debug(f"🔎 Searching legacy Google Places for: {query}")
@@ -394,58 +350,14 @@ class GooglePlacesEnricher:
             'name_match_confidence': round(best_similarity, 2),
             'potential_wrong_match': best_similarity < 0.15,
         }
-
-        # Name correction: when Google Places returns a Hebrew name that's
-        # clearly better than the auto-generated transcript name, use it.
-        # Auto-generated transcripts garble proper nouns (e.g., "הדבר" → "דנבר").
-        if google_name and not enhanced_data['google_places']['potential_wrong_match']:
-            # Check if Google name contains Hebrew characters
-            import re as _re
-            has_hebrew = bool(_re.search(r'[\u0590-\u05ff]', google_name))
-            if has_hebrew:
-                # Google returned a Hebrew name — use it if it's different
-                # Strip common suffixes like " - מסעדה" from Google name
-                corrected = self._strip_google_suffix(google_name)
-                if corrected and corrected != original_hebrew:
-                    self.logger.info(
-                        f"📝 Name correction: '{original_hebrew}' → '{corrected}' (from Google Places)"
-                    )
-                    enhanced_data['name_hebrew'] = corrected
-            elif best_similarity >= 0.15:
-                # Google returned an English name with decent match — use as name_english
-                enhanced_data['name_english'] = google_name
         
-        # Ensure location dict exists
-        if 'location' not in enhanced_data or not isinstance(enhanced_data.get('location'), dict):
-            enhanced_data['location'] = {}
-
         # Enhance location data
         if 'geometry' in google_data and 'location' in google_data['geometry']:
             location = google_data['geometry']['location']
-            lat = location.get('lat')
-            lng = location.get('lng')
-            is_result_in_israel = lat and lng and 29.0 <= lat <= 33.5 and 34.0 <= lng <= 35.9
-
-            # Check if original restaurant claims to be in Israel
-            original_city = original_data.get('location', {}).get('city', '')
-            ISRAEL_CITIES = ['תל אביב', 'ירושלים', 'חיפה', 'באר שבע', 'אשדוד', 'נתניה', 'ראשון לציון',
-                             'פתח תקווה', 'הרצליה', 'רמת גן', 'גבעתיים', 'כפר סבא', 'רעננה', 'הוד השרון',
-                             'רמת השרון', 'בני ברק', 'חולון', 'בת ים', 'אילת', 'טבריה', 'עכו', 'נצרת',
-                             'קיסריה', 'זכרון יעקב', 'יפו', 'רמלה', 'לוד', 'מודיעין', 'אשקלון', 'נהריה',
-                             'כרמיאל', 'אבן יהודה', 'גללות', 'נוגה', 'קרית ענבים', 'שרון']
-            is_israeli_city = any(c in original_city for c in ISRAEL_CITIES) if original_city else False
-
-            if is_israeli_city and not is_result_in_israel:
-                # Wrong match - don't use these coordinates
-                self.logger.warning(
-                    f"⚠️ Location mismatch: {original_city} restaurant matched to non-Israel coords ({lat},{lng}), skipping coordinates"
-                )
-                enhanced_data['google_places']['potential_wrong_match'] = True
-            else:
-                enhanced_data['location']['coordinates'] = {
-                    'latitude': lat,
-                    'longitude': lng
-                }
+            enhanced_data['location']['coordinates'] = {
+                'latitude': location.get('lat'),
+                'longitude': location.get('lng')
+            }
         
         # Add full address if available
         if google_data.get('formatted_address'):
@@ -460,11 +372,9 @@ class GooglePlacesEnricher:
             }
         
         # Add contact information
-        if 'contact_info' not in enhanced_data or not isinstance(enhanced_data.get('contact_info'), dict):
-            enhanced_data['contact_info'] = {}
         if google_data.get('formatted_phone_number'):
             enhanced_data['contact_info']['phone'] = google_data['formatted_phone_number']
-
+            
         if google_data.get('website'):
             enhanced_data['contact_info']['website'] = google_data['website']
             # Try to fetch og:image from restaurant website
@@ -490,28 +400,19 @@ class GooglePlacesEnricher:
                 photo_reference = photo.get('photo_reference')
                 is_new_api = photo.get('_new_api', False)
                 if photo_reference:
-                    # Convert new API resource name to actual photo URL
-                    if is_new_api and photo_reference.startswith('places/'):
-                        photo_url = self._get_photo_url(photo_reference)
-                    else:
-                        # Legacy API photo_reference
-                        photo_url = (
-                            f"{self.base_url}/photo"
-                            f"?maxwidth=800&photo_reference={photo_reference}"
-                            f"&key={self.api_key}"
-                        )
                     photo_entry = {
                         'photo_reference': photo_reference,
-                        'photo_url': photo_url,
                         'width': photo.get('width'),
                         'height': photo.get('height')
                     }
+                    if is_new_api:
+                        photo_entry['_new_api'] = True
                     if photo.get('is_owner_photo'):
                         photo_entry['is_owner_photo'] = True
                     enhanced_data['photos'].append(photo_entry)
-                    # Set image_url to resolved photo URL for database storage
-                    if not enhanced_data.get('image_url') and photo_url:
-                        enhanced_data['image_url'] = photo_url
+                    # Set image_url to first reference for database storage
+                    if not enhanced_data.get('image_url') and photo_reference:
+                        enhanced_data['image_url'] = photo_reference
         
         # Add opening hours
         if google_data.get('opening_hours'):
@@ -525,45 +426,6 @@ class GooglePlacesEnricher:
         enhanced_data['google_places_attempted'] = True
         
         return enhanced_data
-
-    def _get_photo_url(self, photo_resource_name: str, max_width: int = 800) -> str:
-        """Convert a new Places API photo resource name to a usable image URL.
-
-        The new API returns names like 'places/PLACE_ID/photos/PHOTO_REF'.
-        We use the media endpoint to get an actual image URL.
-        """
-        url = f"{self.new_api_base_url}/{photo_resource_name}/media"
-        params = {
-            'maxWidthPx': max_width,
-            'skipHttpRedirect': 'true',
-            'key': self.api_key,
-        }
-        try:
-            response = requests.get(url, params=params)
-            response.raise_for_status()
-            data = response.json()
-            return data.get('photoUri', '')
-        except Exception as e:
-            self.logger.warning(f"Failed to resolve photo URL for {photo_resource_name}: {e}")
-            # Fallback: construct direct URL (may redirect)
-            return f"{self.new_api_base_url}/{photo_resource_name}/media?maxWidthPx={max_width}&key={self.api_key}"
-
-    @staticmethod
-    def _strip_google_suffix(name: str) -> str:
-        """Strip common business-type suffixes from Google Places names."""
-        suffixes = [
-            " - מסעדת שף", " - מסעדה", " - בית קפה", " - ביסטרו",
-            " - בר", " - פיצריה", " - קונדיטוריה",
-            " Restaurant", " Cafe", " Bar", " Bistro",
-        ]
-        for suffix in suffixes:
-            if name.endswith(suffix):
-                name = name[: -len(suffix)]
-        # Also strip after " - " generically
-        if " - " in name:
-            parts = name.split(" - ", 1)
-            name = parts[0]
-        return name.strip()
 
     @staticmethod
     def _name_similarity_score(name1: str, name2: str) -> float:

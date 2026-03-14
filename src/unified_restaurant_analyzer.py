@@ -95,8 +95,8 @@ class UnifiedRestaurantAnalyzer:
 
         If segments with start times are available, produces text like:
             [00:00] first segment text [00:15] second segment text ...
-        Timestamps are used by _find_mention_timestamp() to locate restaurant
-        mentions in the transcript via Python string search.
+        Timestamps are used by the LLM to determine when each restaurant
+        discussion begins in the transcript.
 
         Falls back to plain transcript text if no segments are available.
         """
@@ -121,6 +121,27 @@ class UnifiedRestaurantAnalyzer:
 
         return ' '.join(parts)
 
+    @staticmethod
+    def _mmss_to_seconds(mmss) -> int:
+        """Convert a MM:SS string from the LLM to seconds.
+
+        Args:
+            mmss: Timestamp string like "05:23" or "12:07", or an int
+
+        Returns:
+            Timestamp in seconds, or 0 if parsing fails.
+        """
+        if not mmss:
+            return 0
+        if isinstance(mmss, (int, float)):
+            return int(mmss)
+        if not isinstance(mmss, str):
+            return 0
+        match = re.match(r'(\d{1,3}):(\d{2})', str(mmss).strip())
+        if match:
+            return int(match.group(1)) * 60 + int(match.group(2))
+        return 0
+
     def analyze_transcript(self, transcript_data: Dict) -> Dict:
         """
         Analyze a YouTube transcript to extract restaurant information
@@ -137,7 +158,6 @@ class UnifiedRestaurantAnalyzer:
             # Store the formatted text back so chunks and prompts use it
             transcript_data = transcript_data.copy()
             transcript_data['transcript'] = transcript_text
-
             video_id = transcript_data.get('video_id', 'unknown')
 
             self.logger.info(f"═══════════════════════════════════════════════════════════")
@@ -159,111 +179,59 @@ class UnifiedRestaurantAnalyzer:
             return self._create_error_analysis(transcript_data, str(e))
 
     def _analyze_single_transcript(self, transcript_data: Dict) -> Dict:
-        """Analyze a single transcript using a two-stage LLM pipeline.
-
-        Stage 1: Identify restaurants and extract details (no quotes).
-        Stage 2: Extract verbatim quotes from the transcript for each restaurant.
-        """
+        """Analyze a single transcript using the configured LLM"""
 
         transcript_text = transcript_data['transcript']
         video_id = transcript_data.get('video_id', 'unknown')
 
-        # ── Stage 1: Restaurant identification & detail extraction ──
-        self.logger.info(f"  [Stage 1] Identifying restaurants...")
+        # Create analysis prompt
         prompt = self._create_analysis_prompt(transcript_text)
+        prompt_size = len(prompt)
 
+        self.logger.info(f"  Calling {self.config.provider.upper()} API...")
         self.logger.info(f"    ├─ Model: {self.config.get_active_model()}")
-        self.logger.info(f"    ├─ Prompt size: {len(prompt):,} characters")
+        self.logger.info(f"    ├─ Prompt size: {prompt_size:,} characters")
         self.logger.info(f"    └─ Max response tokens: {self.config.get_active_max_tokens():,}")
 
         try:
-            restaurants = self._call_llm(prompt, self._get_system_prompt())
-            self.logger.info(f"  [Stage 1] Found {len(restaurants)} restaurant(s)")
+            # Call the appropriate LLM
+            if self.config.provider == "openai":
+                restaurants = self._call_openai(prompt)
+            elif self.config.provider == "gemini":
+                restaurants = self._call_gemini(prompt)
+            else:
+                restaurants = self._call_claude(prompt)
 
-            if not restaurants:
-                return self._build_result(transcript_data, [])
+            self.logger.info(f"  API response received: {len(restaurants)} restaurant(s) extracted")
 
-            # Validate and convert LLM timestamp estimates to seconds
+            # Validate and process results
             validated_restaurants = []
             for restaurant in restaurants:
-                restaurant = self._ensure_english_name(restaurant)
-                # Convert LLM's MM:SS estimate to seconds
-                mmss = restaurant.pop('mention_timestamp', None)
-                restaurant['mention_timestamp_seconds'] = self._mmss_to_seconds(mmss)
-                validated_restaurants.append(restaurant)
+                validated_restaurant = self._ensure_english_name(restaurant)
+                # Convert LLM's MM:SS timestamp estimate to seconds
+                mmss = validated_restaurant.pop('mention_timestamp', None)
+                if mmss is not None:
+                    validated_restaurant['mention_timestamp_seconds'] = self._mmss_to_seconds(mmss)
+                validated_restaurants.append(validated_restaurant)
 
-            # ── Stage 2: Verbatim quote extraction ──
-            restaurant_names = [
-                r.get('name_hebrew', '') for r in validated_restaurants if r.get('name_hebrew')
-            ]
-            self.logger.info(f"  [Stage 2] Extracting verbatim quotes for {len(restaurant_names)} restaurants...")
-
-            quote_prompt = self._create_quote_extraction_prompt(transcript_text, restaurant_names)
-            self.logger.info(f"    ├─ Quote prompt size: {len(quote_prompt):,} characters")
-
-            quotes_result = self._call_llm(quote_prompt, self._get_quote_extraction_prompt())
-            self.logger.info(f"  [Stage 2] Got {len(quotes_result)} quote(s)")
-
-            # Build a lookup from restaurant name → quotes
-            quotes_map = {}
-            for q in quotes_result:
-                name = q.get('restaurant_name', '').strip()
-                if name:
-                    quotes_map[self._normalize_hebrew_name(name)] = q
-
-            # Merge quotes into restaurant data
-            for restaurant in validated_restaurants:
-                name = restaurant.get('name_hebrew', '')
-                norm_name = self._normalize_hebrew_name(name)
-                quote_data = quotes_map.get(norm_name)
-
-                # Try partial matching if exact match fails
-                if not quote_data:
-                    for qname, qdata in quotes_map.items():
-                        if norm_name and qname and (norm_name in qname or qname in norm_name):
-                            quote_data = qdata
-                            break
-
-                if quote_data:
-                    restaurant['engaging_quote'] = quote_data.get('engaging_quote', 'לא נמצא ציטוט ישיר')
-                    # Only override host_comments if Stage 2 provided a transcript-based one
-                    stage2_comments = quote_data.get('host_comments', '')
-                    if stage2_comments and stage2_comments != 'לא נמצא ציטוט ישיר':
-                        restaurant['host_comments'] = stage2_comments
-                else:
-                    restaurant['engaging_quote'] = 'לא נמצא ציטוט ישיר'
-
-            return self._build_result(transcript_data, validated_restaurants)
+            return {
+                'episode_info': {
+                    'video_id': transcript_data['video_id'],
+                    'video_url': transcript_data['video_url'],
+                    'language': transcript_data.get('language', 'he'),
+                    'analysis_date': datetime.now().strftime('%Y-%m-%d'),
+                    'total_restaurants_found': len(validated_restaurants),
+                    'processing_method': f'{self.config.provider}_{self.config.get_active_model()}',
+                    'llm_provider': self.config.provider
+                },
+                'restaurants': validated_restaurants,
+                'food_trends': self._extract_food_trends(validated_restaurants),
+                'episode_summary': f"ניתוח {self.config.provider.upper()} של {len(validated_restaurants)} מסעדות מהסרטון {transcript_data['video_id']}"
+            }
 
         except Exception as e:
             self.logger.error(f"{self.config.provider.upper()} analysis failed: {str(e)}")
             raise e
-
-    def _call_llm(self, prompt: str, system_prompt: str = None) -> List[Dict]:
-        """Call the configured LLM provider with the given prompt and system prompt."""
-        if self.config.provider == "openai":
-            return self._call_openai(prompt, system_prompt)
-        elif self.config.provider == "gemini":
-            return self._call_gemini(prompt, system_prompt)
-        else:
-            return self._call_claude(prompt, system_prompt)
-
-    def _build_result(self, transcript_data: Dict, restaurants: List[Dict]) -> Dict:
-        """Build the standard analysis result dictionary."""
-        return {
-            'episode_info': {
-                'video_id': transcript_data['video_id'],
-                'video_url': transcript_data['video_url'],
-                'language': transcript_data.get('language', 'he'),
-                'analysis_date': datetime.now().strftime('%Y-%m-%d'),
-                'total_restaurants_found': len(restaurants),
-                'processing_method': f'{self.config.provider}_{self.config.get_active_model()}',
-                'llm_provider': self.config.provider
-            },
-            'restaurants': restaurants,
-            'food_trends': self._extract_food_trends(restaurants),
-            'episode_summary': f"ניתוח {self.config.provider.upper()} של {len(restaurants)} מסעדות מהסרטון {transcript_data['video_id']}"
-        }
 
     def _analyze_chunked_transcript(self, transcript_data: Dict) -> Dict:
         """Analyze transcript in chunks for comprehensive coverage"""
@@ -374,70 +342,56 @@ class UnifiedRestaurantAnalyzer:
         return min(preferred_end, len(text))
 
     def _get_system_prompt(self) -> str:
-        """Get the system prompt for Stage 1: restaurant identification and detail extraction"""
-        return """You are an expert Hebrew food podcast analyst. Your job is to extract restaurants that the hosts ACTUALLY REVIEW — not every place they name-drop.
+        """Get the enhanced system prompt for restaurant extraction"""
+        return """You are an expert Hebrew food podcast analyst specializing in extracting restaurant information from Israeli culinary content.
 
-CRITICAL DISTINCTION — REVIEWED vs MENTIONED:
-- REVIEWED = The hosts dedicate a segment to the restaurant. They describe dishes they ate, share their personal opinion, rate the experience, compare it to past visits, or tell a story about dining there. Typically the discussion lasts 30+ seconds and includes specific details (dish names, flavors, prices, atmosphere). This is what you extract.
-- MENTIONED = The hosts say the name in passing, as a comparison, in a list, as a quick aside. Examples: "זה כמו ששמעתם על מסעדת X", "בנוסף ל-Y", listing places in a neighborhood without discussing each one. These are NOT extracted.
-
-THE GOLDEN RULE: If you cannot write at least 2-3 sentences about what the hosts specifically said about the restaurant's food/experience, it was NOT reviewed — do NOT extract it.
+EXPERTISE:
+- Deep understanding of Israeli food culture, restaurant scene, and dining trends
+- Fluent in Hebrew food terminology, slang, and regional expressions
+- Knowledge of Israeli geography: cities, neighborhoods, and culinary districts
+- Familiar with common Hebrew restaurant naming patterns (e.g., "מסעדת X", "ביסטרו Y", "בית קפה Z")
 
 EXTRACTION RULES:
-1. Extract ONLY restaurants the hosts REVIEWED — they must describe at least one dish or share a clear personal opinion about the dining experience.
-2. Each restaurant MUST have: (a) at least one specific dish or food item discussed, AND (b) a clear host opinion or experience shared.
-3. When in doubt, DO NOT extract. 5 well-extracted restaurants are vastly better than 15 noisy ones.
-4. DO NOT extract:
-   - Restaurants mentioned only in a list without individual discussion
-   - Restaurants used only as comparisons ("זה כמו X")
-   - Restaurants where the hosts only say "go there" without describing the food
-   - Generic food terms, dish names, brands, supermarkets, food chains
+1. Extract ONLY explicitly named establishments - restaurants, cafés, bistros, food trucks, bakeries, bars
+2. DO NOT extract:
+   - Generic food terms (e.g., "חומוס", "שווארמה", "פיצה")
+   - Dish names that are not restaurant names
+   - Food brands or products (e.g., "אסם", "תנובה")
+   - Supermarket chains (unless they have a restaurant section being discussed)
    - Chef names without their restaurant
-   - Vague references ("מסעדה אחת", "מקום מסוים")
-   - Places the hosts haven't personally visited or tasted food from
+   - Vague references like "מסעדה אחת" or "מקום מסוים"
 
-NAME ACCURACY:
-- Write the FULL, CORRECT Hebrew name of each restaurant. Do not truncate or abbreviate.
-- Common mistake: "פו" is NOT a restaurant name — it's likely "יפו" (Jaffa) or part of a longer name. Always write the complete name.
-- If unsure of the exact spelling, write it as closely as you heard it, but never drop leading letters.
+3. For each restaurant, assess confidence:
+   - HIGH: Name explicitly stated with clear context
+   - MEDIUM: Name mentioned but context is limited
+   - LOW: Name inferred or partially heard
 
-DEDUPLICATION:
-- If the same restaurant appears multiple times, consolidate into ONE entry.
-- Watch for spelling variants: "צ'קולי" and "צקולי" are the same place.
-- Merge all details, dishes, and quotes into a single rich entry.
+4. Handle duplicates: If the same restaurant is mentioned multiple times, consolidate into one entry with merged information.
 
-Hebrew transliteration: Provide accurate English transliteration (e.g., "צ'קולי" → "Chakoli", not "Tzkoli")
+5. Hebrew transliteration: Provide accurate English transliteration (e.g., "צ'קולי" → "Chakoli", not "Tzkoli")
 
-Always respond with valid JSON only. No markdown formatting or additional text."""
+6. ENGAGING QUOTES: For each restaurant, extract a vivid, colorful quote from the hosts about the restaurant.
+   - Capture the hosts' actual words or a close paraphrase - not a dry summary
+   - The quote should convey enthusiasm, emotion, or strong opinion
+   - Example of good: "אחי, הסטייק הזה נמס לי בפה, אני לא מאמין שזה קיים בארץ"
+   - Example of bad: "המנחה אמר שהסטייק טוב" (too dry, summarizes instead of quoting)
 
-    def _get_quote_extraction_prompt(self) -> str:
-        """Get the system prompt for Stage 2: verbatim quote extraction"""
-        return """You are a quote extraction specialist. You will receive a Hebrew podcast transcript and a list of restaurant names.
-
-YOUR ONLY JOB: Find the most interesting, vivid sentence the host said about each restaurant and COPY IT EXACTLY from the transcript.
-
-ABSOLUTE RULES:
-1. Every quote MUST appear WORD FOR WORD in the transcript. Copy-paste only.
-2. First person only. The host says "אכלתי", "טעמתי", "הלכתי" — these are their own words.
-3. NEVER write in third person ("המנחה אמר", "הוא ציין", "אמית סיפר").
-4. NEVER summarize or paraphrase. If the host said "אחי זה היה מטורף", write exactly that.
-5. Pick the most engaging/emotional/descriptive quote you can find for each restaurant.
-6. If you truly cannot find a direct quote for a restaurant, write "לא נמצא ציטוט ישיר".
-
-VERIFICATION: Before returning each quote, mentally check — can you point to the exact location in the transcript where these words appear? If not, it's not a real quote.
+7. TIMESTAMPS: Estimate how many seconds into the transcript each restaurant is first discussed.
+   - If the transcript has timing cues, use them
+   - Otherwise estimate based on position in the transcript (e.g., if mentioned at 30% of the text and the video is ~60min, estimate ~1080 seconds)
 
 Always respond with valid JSON only. No markdown formatting or additional text."""
 
-    def _call_openai(self, prompt: str, system_prompt: str = None) -> List[Dict]:
+    def _call_openai(self, prompt: str) -> List[Dict]:
         """Call OpenAI API to analyze transcript"""
 
-        self.logger.info(f"Calling OpenAI API ({self.config.get_active_model()})")
+        self.logger.info(f"🤖 Calling OpenAI API ({self.config.get_active_model()})")
 
         try:
             response = self.client.chat.completions.create(
                 model=self.config.get_active_model(),
                 messages=[
-                    {"role": "system", "content": system_prompt or self._get_system_prompt()},
+                    {"role": "system", "content": self._get_system_prompt()},
                     {"role": "user", "content": prompt}
                 ],
                 temperature=self.config.get_active_temperature(),
@@ -448,11 +402,9 @@ Always respond with valid JSON only. No markdown formatting or additional text."
             content = response.choices[0].message.content
             result = json.loads(content)
             
-            # Ensure we get a list
+            # Ensure we get a list of restaurants
             if isinstance(result, dict) and 'restaurants' in result:
                 return result['restaurants']
-            elif isinstance(result, dict) and 'quotes' in result:
-                return result['quotes']
             elif isinstance(result, list):
                 return result
             else:
@@ -463,17 +415,17 @@ Always respond with valid JSON only. No markdown formatting or additional text."
             self.logger.error(f"OpenAI API call failed: {str(e)}")
             raise e
 
-    def _call_claude(self, prompt: str, system_prompt: str = None) -> List[Dict]:
+    def _call_claude(self, prompt: str) -> List[Dict]:
         """Call Claude API to analyze transcript"""
 
-        self.logger.info(f"Calling Claude API ({self.config.get_active_model()})")
+        self.logger.info(f"🤖 Calling Claude API ({self.config.get_active_model()})")
 
         try:
             response = self.client.messages.create(
                 model=self.config.get_active_model(),
                 max_tokens=self.config.get_active_max_tokens(),
                 temperature=self.config.get_active_temperature(),
-                system=system_prompt or self._get_system_prompt(),
+                system=self._get_system_prompt(),
                 messages=[
                     {
                         "role": "user",
@@ -497,7 +449,7 @@ Always respond with valid JSON only. No markdown formatting or additional text."
             self.logger.error(f"Claude API call failed: {str(e)}")
             raise e
 
-    def _call_gemini(self, prompt: str, system_prompt: str = None) -> List[Dict]:
+    def _call_gemini(self, prompt: str) -> List[Dict]:
         """Call Google Gemini API to analyze transcript"""
 
         self.logger.info(f"Calling Gemini API ({self.config.get_active_model()})")
@@ -505,7 +457,7 @@ Always respond with valid JSON only. No markdown formatting or additional text."
         try:
             from google.genai import types
 
-            full_prompt = (system_prompt or self._get_system_prompt()) + "\n\n" + prompt
+            full_prompt = self._get_system_prompt() + "\n\n" + prompt
 
             response = self.client.models.generate_content(
                 model=self.config.get_active_model(),
@@ -553,8 +505,6 @@ Always respond with valid JSON only. No markdown formatting or additional text."
             result = json.loads(content)
             if isinstance(result, dict) and 'restaurants' in result:
                 return result['restaurants']
-            elif isinstance(result, dict) and 'quotes' in result:
-                return result['quotes']
             elif isinstance(result, list):
                 return result
             else:
@@ -572,12 +522,8 @@ Always respond with valid JSON only. No markdown formatting or additional text."
             result = json.loads(repaired_content)
             if isinstance(result, dict) and 'restaurants' in result:
                 restaurants = result['restaurants']
-                self.logger.info(f"Successfully repaired JSON, extracted {len(restaurants)} items")
+                self.logger.info(f"Successfully repaired JSON, extracted {len(restaurants)} restaurants")
                 return restaurants
-            elif isinstance(result, dict) and 'quotes' in result:
-                quotes = result['quotes']
-                self.logger.info(f"Successfully repaired JSON, extracted {len(quotes)} quotes")
-                return quotes
             elif isinstance(result, list):
                 self.logger.info(f"Successfully repaired JSON array, extracted {len(result)} restaurants")
                 return result
@@ -674,29 +620,33 @@ Always respond with valid JSON only. No markdown formatting or additional text."
         return restaurants
 
     def _create_analysis_prompt(self, transcript_text: str) -> str:
-        """Create the Stage 1 prompt: identify restaurants and extract details (no quotes)"""
+        """Create the analysis prompt for the LLM"""
 
+        # Use chunk_size from config to ensure we analyze the full transcript
+        # Previous bug: truncated to 8000 chars which missed most restaurants
         max_transcript_length = self.config.chunk_size
         truncated_transcript = transcript_text[:max_transcript_length]
         if len(transcript_text) > max_transcript_length:
             truncated_transcript += "..."
 
-        return f"""Analyze this Hebrew food podcast transcript. Extract ONLY restaurants that the hosts SUBSTANTIVELY DISCUSS — not ones they merely name-drop or reference in passing.
+        return f"""Analyze this Hebrew food podcast transcript and extract ALL restaurants mentioned by name.
 
 TRANSCRIPT:
 {truncated_transcript}
 
-WHAT TO EXTRACT:
-A restaurant qualifies ONLY if the hosts REVIEW it — they describe specific dishes they ate, share a personal opinion about the experience, or tell a detailed story about dining there. The discussion should include concrete details (dish names, flavors, textures, prices, atmosphere). If a restaurant is just mentioned by name without a substantive food review, SKIP IT.
+TASK: Extract every restaurant, café, bistro, food truck, bakery, or dining establishment mentioned by its actual name.
 
-WHAT TO SKIP:
-- Restaurants mentioned in a quick list without individual discussion
-- Restaurants where hosts only say the name or "go there" without describing the food
-- Restaurants used only as comparisons ("זה כמו X", "מזכיר את X")
-- Generic food terms, dish names, brands, supermarkets, food chains
-- Vague references ("מסעדה אחת", "מקום מסוים")
-- Chef names without their restaurant
-- Places the hosts haven't personally visited
+EXTRACTION GUIDELINES:
+1. Look for Hebrew patterns: "במסעדת X", "מסעדת X", "ביסטרו X", "בית קפה X", "של X", "אצל X"
+2. Look for location patterns: "[name] בתל אביב", "[name] ברחוב X", "[name] במרכז"
+3. Include chef-owned restaurants: "המסעדה של [שף]", "[שף] פתח מסעדה"
+
+DO NOT EXTRACT (negative examples):
+- Generic food terms: "חומוס", "שווארמה", "פיצה", "סושי" (unless part of a restaurant name)
+- Food brands: "אסם", "תנובה", "שטראוס"
+- Dish names: "שקשוקה", "חומוס מסבחה" (unless it's a restaurant name)
+- Vague references: "מסעדה אחת", "מקום מסוים", "בית קפה ליד"
+- Supermarket chains: "רמי לוי", "שופרסל" (unless discussing their restaurant section)
 
 OUTPUT FORMAT - Return a JSON object:
 {{
@@ -704,75 +654,54 @@ OUTPUT FORMAT - Return a JSON object:
         {{
             "name_hebrew": "שם המסעדה בעברית",
             "name_english": "Accurate English Transliteration",
+            "confidence": "high/medium/low",
             "location": {{
                 "city": "עיר",
-                "neighborhood": "שכונה (אם מוזכרת)",
-                "address": "כתובת (אם מוזכרת)",
+                "neighborhood": "שכונה",
+                "address": "כתובת מלאה אם מוזכרת",
                 "region": "צפון/מרכז/דרום/ירושלים/שרון"
             }},
-            "cuisine_type": "סוג מטבח",
+            "cuisine_type": "סוג מטבח (איטלקי/אסייתי/ים-תיכוני/וכו')",
+            "establishment_type": "מסעדה/ביסטרו/בית קפה/פוד טראק/מאפייה/בר",
             "status": "פתוח/סגור/חדש/עומד להיפתח",
             "price_range": "זול/בינוני/יקר/יוקרתי",
             "host_opinion": "חיובית מאוד/חיובית/ניטרלית/שלילית/מעורבת",
-            "host_comments": "תקציר קצר של מה שהמנחים אמרו על המסעדה — כתוב בגוף ראשון כאילו המנחה מדבר",
+            "host_recommendation": true/false,
+            "host_comments": "ציטוט ישיר או פרפרזה של דברי המנחה",
+            "engaging_quote": "ציטוט חי, צבעוני ומלא רגש מהמנחים על המסעדה - המילים שלהם ממש, לא תקציר יבש",
             "mention_timestamp": "MM:SS — the [MM:SS] marker from the transcript closest to where this restaurant is first discussed",
-            "signature_dishes": ["מנות שהמנחים ציינו כמומלצות"],
-            "menu_items": ["מנות שהוזכרו"],
-            "special_features": ["מה שמייחד את המקום"],
+            "signature_dishes": ["מנה מומלצת 1", "מנה מומלצת 2"],
+            "menu_items": ["מנה שהוזכרה 1", "מנה שהוזכרה 2"],
+            "special_features": ["תכונה מיוחדת", "אווירה", "נוף"],
             "chef_name": "שם השף אם מוזכר",
-            "business_news": "פתיחה/סגירה/שינויים (אם יש)",
-            "is_closing": false
+            "contact_info": {{
+                "phone": "טלפון",
+                "website": "אתר",
+                "instagram": "חשבון אינסטגרם"
+            }},
+            "business_news": "פתיחה/סגירה/שינויים/אירועים",
+            "mention_context": "ציטוט קצר מהתמליל שמזכיר את המסעדה",
+            "timestamp_hint": "אם יש רמז לזמן בתמליל (התחלה/אמצע/סוף)"
         }}
-    ]
+    ],
+    "extraction_notes": "הערות על קושי בזיהוי או אי-ודאויות"
 }}
 
-IMPORTANT RULES:
-1. Do NOT include an engaging_quote field — quotes will be extracted separately.
-2. is_closing = true ONLY if the podcast explicitly says the restaurant is shutting down permanently.
-3. Use null for unknown fields, never "לא צוין".
-4. If the same restaurant is discussed multiple times, consolidate into ONE entry with merged details.
-5. Quality over quantity — 5 well-reviewed restaurants are better than 15 with half being noise.
-6. Write FULL restaurant names — never truncate. "יפו" not "פו", "אשדוד" not "שדוד".
-7. menu_items MUST contain at least one specific dish for each restaurant — if no dish was discussed, the restaurant was not reviewed."""
+TIMESTAMP INSTRUCTIONS:
+The transcript contains [MM:SS] markers. For "mention_timestamp":
+- Find the [MM:SS] marker where the DISCUSSION about the restaurant BEGINS — this is often
+  BEFORE the restaurant name is said. The hosts typically describe the food, ambiance, or
+  location before stating the name.
+- Look ~30-60 seconds before the name mention for the start of the relevant discussion.
+- Return as "MM:SS" string (e.g., "12:30").
+- If no timestamp markers are present, use "00:00".
 
-    def _create_quote_extraction_prompt(self, transcript_text: str, restaurant_names: List[str]) -> str:
-        """Create the Stage 2 prompt: extract verbatim quotes for identified restaurants"""
+CONFIDENCE LEVELS:
+- "high": שם מפורש עם הקשר ברור (e.g., "הלכנו למסעדת צ'קולי בנמל")
+- "medium": שם מוזכר אך הקשר חלקי (e.g., "צ'קולי היה טוב")
+- "low": שם לא ברור או נשמע חלקית (e.g., "משהו כמו צ'קו...")
 
-        max_transcript_length = self.config.chunk_size
-        truncated_transcript = transcript_text[:max_transcript_length]
-        if len(transcript_text) > max_transcript_length:
-            truncated_transcript += "..."
-
-        names_list = "\n".join(f"- {name}" for name in restaurant_names)
-
-        return f"""Below is a Hebrew podcast transcript. I need you to find EXACT VERBATIM QUOTES from the hosts about each of the following restaurants.
-
-RESTAURANTS TO FIND QUOTES FOR:
-{names_list}
-
-TRANSCRIPT:
-{truncated_transcript}
-
-YOUR TASK:
-For each restaurant, scan the transcript and find the most interesting, vivid, or emotional sentence the host said about it. COPY THE EXACT WORDS from the transcript — do not change a single word.
-
-OUTPUT FORMAT - Return a JSON object:
-{{
-    "quotes": [
-        {{
-            "restaurant_name": "שם המסעדה",
-            "engaging_quote": "המשפט המדויק מהתמליל, מילה במילה, בגוף ראשון",
-            "host_comments": "עוד משפט או שניים מהתמליל שמתארים את חוויית המנחה"
-        }}
-    ]
-}}
-
-CRITICAL RULES:
-1. COPY-PASTE ONLY. Every word in engaging_quote must appear in the transcript above in the same order.
-2. First person only: "אכלתי", "טעמתי", "הזמנתי" — NOT "הוא אכל", "המנחה טעם".
-3. Pick the most colorful, emotional, or descriptive quote — excitement, surprise, criticism, humor.
-4. If you cannot find any direct quote for a restaurant, set engaging_quote to "לא נמצא ציטוט ישיר".
-5. host_comments should also be taken from the transcript — a brief passage describing the host's experience."""
+Be thorough but precise. Extract ALL valid restaurants. Use null for truly unknown fields (not "לא צוין")."""
 
     def _ensure_english_name(self, restaurant: Dict) -> Dict:
         """Ensure restaurant has a proper English name"""
@@ -816,81 +745,39 @@ CRITICAL RULES:
         
         return result if result else "Restaurant"
 
-    def _normalize_hebrew_name(self, name: str) -> str:
-        """Normalize Hebrew restaurant name for dedup comparison."""
-        if not name:
-            return ""
-        n = name.strip().lower()
-        # Remove common prefixes
-        for prefix in ["מסעדת ", "מסעדה ", "ביסטרו ", "בית קפה ", "בר ", "קפה ", "ה"]:
-            if n.startswith(prefix):
-                n = n[len(prefix):]
-        # Normalize geresh variants
-        n = n.replace("ז'", "ג'")
-        n = n.replace("צ'", "צ")
-        # Remove punctuation
-        n = re.sub(r'[^\u0590-\u05ffa-z0-9\s]', '', n)
-        n = re.sub(r'\s+', ' ', n).strip()
-        return n
-
-    @staticmethod
-    def _mmss_to_seconds(mmss: str) -> int:
-        """Convert a MM:SS string from the LLM to seconds.
-
-        Args:
-            mmss: Timestamp string like "05:23" or "12:07"
-
-        Returns:
-            Timestamp in seconds, or 0 if parsing fails.
-        """
-        if not mmss or not isinstance(mmss, str):
-            return 0
-        match = re.match(r'(\d{1,3}):(\d{2})', mmss.strip())
-        if match:
-            return int(match.group(1)) * 60 + int(match.group(2))
-        return 0
-
     def _deduplicate_restaurants(self, restaurants: List[Dict]) -> List[Dict]:
         """
         Remove duplicate restaurants and merge data from multiple mentions.
 
-        Uses aggressive Hebrew name normalization to catch variants like
-        "מסעדת צ'קולי" and "צקולי" as the same place.
+        When a restaurant appears in multiple chunks, we merge the data:
+        - Keep all unique menu items and special features
+        - Use the most detailed comments/context
+        - Preserve location info from first mention with location
         """
-        merged = {}  # normalized identifier -> merged restaurant data
+        merged = {}  # identifier -> merged restaurant data
 
         for restaurant in restaurants:
             # Ensure English name is present and valid
             restaurant = self._ensure_english_name(restaurant)
 
-            name_hebrew = restaurant.get('name_hebrew', '').strip()
-            name_english = restaurant.get('name_english', '').strip()
+            # Create identifier from Hebrew name (primary) with fallback to English
+            name_hebrew = restaurant.get('name_hebrew', '').strip().lower()
+            name_english = restaurant.get('name_english', '').strip().lower()
 
             # Skip empty entries
             if not name_hebrew and not name_english:
                 continue
 
-            # Normalize for comparison
-            norm_hebrew = self._normalize_hebrew_name(name_hebrew)
-            norm_english = name_english.lower().strip()
-            identifier = norm_hebrew if norm_hebrew else norm_english
+            # Use Hebrew name as primary identifier, fallback to English
+            identifier = name_hebrew if name_hebrew else name_english
 
-            # Check if any existing entry matches
-            matched_key = None
-            for existing_key in merged:
-                if identifier == existing_key:
-                    matched_key = existing_key
-                    break
-                # Also check if one contains the other (partial match)
-                if len(identifier) >= 3 and len(existing_key) >= 3:
-                    if identifier in existing_key or existing_key in identifier:
-                        matched_key = existing_key
-                        break
-
-            if matched_key is None:
+            if identifier not in merged:
+                # First occurrence - store it
                 merged[identifier] = restaurant.copy()
             else:
-                self._merge_restaurant_data(merged[matched_key], restaurant)
+                # Merge with existing entry
+                existing = merged[identifier]
+                self._merge_restaurant_data(existing, restaurant)
 
         return list(merged.values())
 

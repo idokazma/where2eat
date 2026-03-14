@@ -172,7 +172,7 @@ class ClaudeRestaurantAnalyzer:
 
     def _analyze_chunked_transcript(self, transcript_data: Dict) -> Dict:
         """Analyze transcript in chunks for comprehensive coverage"""
-        
+
         # Use timestamped transcript for accurate mention_timestamp_seconds
         transcript_text = self._build_timestamped_transcript(transcript_data)
         chunk_size = 25000
@@ -180,10 +180,10 @@ class ClaudeRestaurantAnalyzer:
 
         # Split into chunks
         chunks = self._create_chunks(transcript_text, chunk_size, overlap)
-        
+
         all_restaurants = []
         all_trends = []
-        
+
         for i, chunk in enumerate(chunks):
             chunk_data = transcript_data.copy()
             chunk_data['transcript'] = chunk
@@ -378,7 +378,7 @@ Return a JSON array with this structure for each restaurant:
     "host_recommendation": true/false,
     "host_comments": "ציטוט ישיר או פרפרזה",
     "engaging_quote": "ציטוט חי וצבעוני מהמנחים - המילים שלהם, לא תקציר",
-    "mention_timestamp_seconds": 0,
+    "mention_timestamp_seconds": "convert from [MM:SS] markers in transcript",
     "signature_dishes": ["מנה מומלצת"],
     "menu_items": ["מנה1", "מנה2"],
     "chef_name": "שם השף אם מוזכר",
@@ -879,7 +879,7 @@ DO NOT EXTRACT:
         "host_recommendation": true/false,
         "host_comments": "ציטוט ישיר או פרפרזה מהמנחה",
         "engaging_quote": "ציטוט חי וצבעוני מהמנחים - המילים שלהם, לא תקציר",
-        "mention_timestamp_seconds": 0,
+        "mention_timestamp_seconds": "convert from [MM:SS] markers in transcript",
         "signature_dishes": ["מנה מומלצת 1"],
         "menu_items": ["מנה 1", "מנה 2"],
         "special_features": ["תכונה מיוחדת 1", "תכונה מיוחדת 2"],
@@ -890,7 +890,6 @@ DO NOT EXTRACT:
             "instagram": "חשבון אינסטגרם"
         }},
         "business_news": "סגירה/פתיחה/שינויים",
-        "is_closing": false,
         "mention_context": "ציטוט קצר מהתמליל שמזכיר את המסעדה"
     }}
 ]
@@ -923,9 +922,6 @@ IMPORTANT - Use English values for these fields:
 - status: "open" | "closed" | "new_opening" | "closing_soon" | "reopening"
 - host_opinion: "positive" | "negative" | "mixed" | "neutral"
 - menu_items: Array of objects with {{item_name, description, price, recommendation_level}}
-
-IMPORTANT - is_closing field:
-Set "is_closing": true ONLY if the podcast explicitly says the restaurant is permanently shutting down, going out of business, or closing for good. Examples: "סוגרים את המסעדה", "נסגר לצמיתות", "סגרו", "הולכים להיסגר". Do NOT set true for temporary closures, renovations, or day-off closures.
 
 **Important:** Return ONLY the JSON array. Use null for truly unknown fields (not "לא צוין")."""
 

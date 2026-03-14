@@ -189,16 +189,6 @@ class VideoQueueManager:
             )
             return cursor.rowcount > 0
 
-    def update_published_at(self, queue_id: str, published_at: str) -> bool:
-        """Update published_at for a queue item (resolved after enqueue)."""
-        with self.db.get_connection() as conn:
-            cursor = conn.cursor()
-            cursor.execute(
-                "UPDATE video_queue SET published_at = ? WHERE id = ?",
-                (published_at, queue_id),
-            )
-            return cursor.rowcount > 0
-
     # Error patterns that indicate permanent failures (no point retrying)
     PERMANENT_FAILURE_PATTERNS = [
         "Transcript not available",
@@ -465,8 +455,8 @@ class VideoQueueManager:
     def get_queue(self, page: int = 1, limit: int = 20) -> dict:
         """Get paginated queue items. Returns {items: [...], total: int}.
 
-        Excludes videos older than PIPELINE_MAX_VIDEO_AGE_DAYS.
-        Videos without a published_at date are included (assumed recent).
+        Excludes videos older than PIPELINE_MAX_VIDEO_AGE_DAYS and videos
+        without a published_at date.
         """
         offset = (page - 1) * limit
         cutoff = (
@@ -479,7 +469,8 @@ class VideoQueueManager:
             cursor.execute(
                 """SELECT COUNT(*) as cnt FROM video_queue
                    WHERE status = 'queued'
-                     AND (published_at IS NULL OR published_at = '' OR published_at >= ?)""",
+                     AND published_at IS NOT NULL
+                     AND published_at >= ?""",
                 (cutoff,),
             )
             total = cursor.fetchone()["cnt"]
@@ -488,7 +479,8 @@ class VideoQueueManager:
                 """
                 SELECT * FROM video_queue
                 WHERE status = 'queued'
-                  AND (published_at IS NULL OR published_at = '' OR published_at >= ?)
+                  AND published_at IS NOT NULL
+                  AND published_at >= ?
                 ORDER BY discovered_at DESC
                 LIMIT ? OFFSET ?
                 """,

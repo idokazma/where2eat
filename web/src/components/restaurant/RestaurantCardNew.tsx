@@ -203,10 +203,20 @@ export function RestaurantCardNew({
 
       {/* Content Section */}
       <div className="restaurant-card-content">
-        {/* Closing badge */}
+        {/* Status badges */}
         {restaurant.is_closing && (
           <span className="inline-block px-2 py-0.5 mb-1 bg-red-500/10 text-red-600 text-xs font-semibold rounded">
             נסגר לצמיתות
+          </span>
+        )}
+        {restaurant.status === 'closing_soon' && !restaurant.is_closing && (
+          <span className="inline-block px-2 py-0.5 mb-1 bg-amber-500/10 text-amber-600 text-xs font-semibold rounded">
+            נסגר בקרוב
+          </span>
+        )}
+        {restaurant.status === 'new_opening' && (
+          <span className="inline-block px-2 py-0.5 mb-1 bg-emerald-500/10 text-emerald-600 text-xs font-semibold rounded">
+            חדש!
           </span>
         )}
 

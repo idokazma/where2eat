@@ -67,6 +67,7 @@ export interface Restaurant {
   published_at?: string;
   created_at?: string;
   updated_at?: string;
+  is_hidden?: boolean;
 }
 
 export interface RestaurantListResponse {

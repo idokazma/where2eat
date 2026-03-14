@@ -13,7 +13,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Save, ArrowLeft } from 'lucide-react';
+import { Save, ArrowLeft, EyeOff } from 'lucide-react';
 
 export default function EditRestaurantPage() {
   const params = useParams();
@@ -21,6 +21,7 @@ export default function EditRestaurantPage() {
   const queryClient = useQueryClient();
   const restaurantId = params.id as string;
   const [activeTab, setActiveTab] = useState('basic');
+  const [isHidden, setIsHidden] = useState(false);
 
   // Fetch restaurant data
   const { data: restaurant, isLoading } = useQuery<Restaurant>({
@@ -78,8 +79,18 @@ export default function EditRestaurantPage() {
         mention_context: restaurant.mention_context,
         food_trends: restaurant.food_trends || [],
       });
+      setIsHidden(!!restaurant.is_hidden);
     }
   }, [restaurant, form]);
+
+  const toggleVisibility = useMutation({
+    mutationFn: (hidden: boolean) =>
+      restaurantsApi.toggleVisibility(restaurantId, hidden),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['restaurant', restaurantId] });
+      queryClient.invalidateQueries({ queryKey: ['restaurants'] });
+    },
+  });
 
   // Update mutation
   const updateMutation = useMutation({
@@ -131,6 +142,21 @@ export default function EditRestaurantPage() {
             </p>
           </div>
         </div>
+        <div className="flex items-center gap-2">
+          {restaurantId !== 'new' && (
+            <Button
+              variant={isHidden ? 'destructive' : 'outline'}
+              onClick={() => {
+                const newVal = !isHidden;
+                setIsHidden(newVal);
+                toggleVisibility.mutate(newVal);
+              }}
+              disabled={toggleVisibility.isPending}
+            >
+              <EyeOff className="mr-2 h-4 w-4" />
+              {isHidden ? 'Hidden' : 'Hide'}
+            </Button>
+          )}
         <Button
           onClick={form.handleSubmit(onSubmit)}
           disabled={updateMutation.isPending}
@@ -147,6 +173,7 @@ export default function EditRestaurantPage() {
             </>
           )}
         </Button>
+        </div>
       </div>
 
       {/* Form Tabs */}
