@@ -1011,6 +1011,36 @@ async def fix_data():
             except Exception as e:
                 fixes['errors'].append(f"Date fix error for {name}: {str(e)}")
 
+        # Fix 3: For episodes without video_queue published_at, try yt-dlp
+        cursor.execute("""
+            SELECT DISTINCT e.id as episode_id, e.video_id, e.published_at as e_pub
+            FROM episodes e
+            LEFT JOIN video_queue vq ON e.video_id = vq.video_id
+            WHERE (vq.published_at IS NULL OR vq.published_at = '')
+        """)
+        missing_date_episodes = cursor.fetchall()
+
+        for ep in missing_date_episodes:
+            video_id = ep['video_id']
+            try:
+                import subprocess
+                result = subprocess.run(
+                    ['yt-dlp', '--skip-download', '--print', '%(upload_date)s', f'https://www.youtube.com/watch?v={video_id}'],
+                    capture_output=True, text=True, timeout=30
+                )
+                upload_date = result.stdout.strip()
+                if upload_date and len(upload_date) == 8:
+                    # Format: YYYYMMDD -> YYYY-MM-DD
+                    formatted = f"{upload_date[:4]}-{upload_date[4:6]}-{upload_date[6:8]}"
+                    cursor.execute("UPDATE episodes SET published_at = ? WHERE id = ?", (formatted, ep['episode_id']))
+                    cursor.execute("UPDATE restaurants SET published_at = ? WHERE episode_id = ?", (formatted, ep['episode_id']))
+                    # Also update video_queue if it exists
+                    cursor.execute("UPDATE video_queue SET published_at = ? WHERE video_id = ? AND (published_at IS NULL OR published_at = '')", (formatted, video_id))
+                    fixes['date_fixes'] += 1
+                    fixes.setdefault('yt_dlp_fixes', []).append(f"{video_id}: {formatted}")
+            except Exception as e:
+                fixes['errors'].append(f"yt-dlp date fix error for {video_id}: {str(e)}")
+
         conn.commit()
 
     return {"success": True, **fixes}
