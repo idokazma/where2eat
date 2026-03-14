@@ -479,6 +479,94 @@ async def trigger_poll(
 
 
 @router.post(
+    "/upload-transcript",
+    summary="Upload transcript for a video",
+    description="Upload a locally-fetched transcript so the server can analyze it "
+                "without calling YouTube. Requires admin role.",
+)
+async def upload_transcript(
+    request: dict,
+    user: dict = Depends(require_role(["admin", "super_admin"])),
+):
+    """Upload a transcript fetched locally for server-side analysis."""
+    video_id = request.get("video_id")
+    transcript = request.get("transcript")
+    language = request.get("language", "he")
+
+    if not video_id or not transcript:
+        raise HTTPException(status_code=400, detail="video_id and transcript are required")
+
+    try:
+        from database import get_database
+        db = get_database()
+
+        # Store the transcript as an episode so the pipeline can use it from cache
+        episode_id = db.create_episode(
+            video_id=video_id,
+            video_url=f"https://www.youtube.com/watch?v={video_id}",
+            language=language,
+            transcript=transcript,
+            analysis_date=None,
+        )
+
+        return {
+            "success": True,
+            "message": f"Transcript uploaded for {video_id}",
+            "episode_id": episode_id,
+            "transcript_length": len(transcript),
+        }
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Upload failed: {str(e)}",
+        )
+
+
+@router.post(
+    "/upload-transcripts-batch",
+    summary="Upload multiple transcripts",
+    description="Upload locally-fetched transcripts in bulk. Requires admin role.",
+)
+async def upload_transcripts_batch(
+    request: dict,
+    user: dict = Depends(require_role(["admin", "super_admin"])),
+):
+    """Upload multiple transcripts at once."""
+    transcripts = request.get("transcripts", [])
+    if not transcripts:
+        raise HTTPException(status_code=400, detail="transcripts array is required")
+
+    from database import get_database
+    db = get_database()
+
+    results = {"uploaded": 0, "failed": 0, "errors": []}
+    for item in transcripts:
+        video_id = item.get("video_id")
+        transcript = item.get("transcript")
+        language = item.get("language", "he")
+
+        if not video_id or not transcript:
+            results["failed"] += 1
+            results["errors"].append(f"Missing video_id or transcript")
+            continue
+
+        try:
+            db.create_episode(
+                video_id=video_id,
+                video_url=f"https://www.youtube.com/watch?v={video_id}",
+                language=language,
+                transcript=transcript,
+                analysis_date=None,
+            )
+            results["uploaded"] += 1
+        except Exception as e:
+            results["failed"] += 1
+            results["errors"].append(f"{video_id}: {str(e)}")
+
+    return {"success": True, **results}
+
+
+@router.post(
     "/{queue_id}/retry",
     summary="Retry failed video",
     description="Requeue a failed video for retry. Requires admin role.",
