@@ -49,14 +49,15 @@ with db.get_connection() as conn:
     cursor.execute(f'''
         SELECT
             e.id, e.video_id, e.video_url, e.title, e.channel_name, e.language,
-            e.analysis_date, e.created_at,
+            e.analysis_date, e.created_at, e.published_at,
             vq.status as queue_status, vq.priority as queue_priority,
             vq.attempt_count, vq.error_message, vq.restaurants_found,
-            vq.processing_started_at, vq.processing_completed_at
+            vq.processing_started_at, vq.processing_completed_at,
+            vq.published_at as queue_published_at
         FROM episodes e
         LEFT JOIN video_queue vq ON e.video_id = vq.video_id
         {where_sql}
-        ORDER BY e.created_at DESC
+        ORDER BY COALESCE(e.published_at, vq.published_at, e.analysis_date, e.created_at) DESC
         LIMIT ? OFFSET ?
     ''', params_with_limit)
     episodes = [dict(row) for row in cursor.fetchall()]
