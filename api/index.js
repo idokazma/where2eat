@@ -22,6 +22,7 @@ const adminAuditRoutes = require('./routes/admin-audit')
 const adminSubscriptionsRoutes = require('./routes/admin-subscriptions')
 const adminPipelineRoutes = require('./routes/admin-pipeline')
 const adminEpisodesRoutes = require('./routes/admin-episodes')
+const adminDeepDiveRoutes = require('./routes/admin-deepdive')
 const { filterHallucinations } = require('./utils/hallucination-filter')
 
 app.use(helmet())
@@ -299,6 +300,7 @@ app.use('/api/admin/audit', adminAuditRoutes)
 app.use('/api/admin/subscriptions', adminSubscriptionsRoutes)
 app.use('/api/admin/pipeline', adminPipelineRoutes)
 app.use('/api/admin/episodes', adminEpisodesRoutes)
+app.use('/api/admin/deepdive', adminDeepDiveRoutes)
 
 app.get('/api/restaurants', async (req, res) => {
   try {

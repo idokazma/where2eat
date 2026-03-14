@@ -593,6 +593,37 @@ export const pipelineApi = {
   },
 };
 
+/**
+ * Deep Dive API endpoints
+ */
+export const deepDiveApi = {
+  async listEpisodes(params?: {
+    search?: string;
+    status?: string;
+    page?: number;
+    limit?: number;
+  }): Promise<any> {
+    const qp = new URLSearchParams();
+    if (params?.search) qp.append('search', params.search);
+    if (params?.status) qp.append('status', params.status);
+    if (params?.page) qp.append('page', params.page.toString());
+    if (params?.limit) qp.append('limit', params.limit.toString());
+    return apiFetch(`/api/admin/deepdive?${qp}`);
+  },
+
+  async getEpisodeDetail(videoId: string): Promise<any> {
+    return apiFetch(`/api/admin/deepdive/${videoId}`);
+  },
+
+  async getRestaurantDetail(id: string): Promise<any> {
+    return apiFetch(`/api/admin/deepdive/restaurants/${id}`);
+  },
+
+  async reprocessEpisode(videoId: string): Promise<any> {
+    return apiFetch(`/api/admin/deepdive/${videoId}/reprocess`, { method: 'POST' });
+  },
+};
+
 export default {
   auth: authApi,
   users: usersApi,
@@ -604,4 +635,5 @@ export default {
   subscriptions: subscriptionsApi,
   episodes: episodesApi,
   pipeline: pipelineApi,
+  deepDive: deepDiveApi,
 };
