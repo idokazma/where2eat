@@ -367,6 +367,10 @@ class GooglePlacesEnricher:
             'potential_wrong_match': best_similarity < 0.15,
         }
         
+        # Ensure location dict exists
+        if 'location' not in enhanced_data or not isinstance(enhanced_data.get('location'), dict):
+            enhanced_data['location'] = {}
+
         # Enhance location data
         if 'geometry' in google_data and 'location' in google_data['geometry']:
             location = google_data['geometry']['location']
@@ -408,9 +412,11 @@ class GooglePlacesEnricher:
             }
         
         # Add contact information
+        if 'contact_info' not in enhanced_data or not isinstance(enhanced_data.get('contact_info'), dict):
+            enhanced_data['contact_info'] = {}
         if google_data.get('formatted_phone_number'):
             enhanced_data['contact_info']['phone'] = google_data['formatted_phone_number']
-            
+
         if google_data.get('website'):
             enhanced_data['contact_info']['website'] = google_data['website']
             # Try to fetch og:image from restaurant website
