@@ -59,19 +59,27 @@ class GooglePlacesEnricher:
         # Try multiple search strategies
         place_details = None
         
-        # Strategy 1: English name + city
-        if restaurant_name and city:
-            place_details = self._search_restaurant(f"{restaurant_name} {city}")
-        
-        # Strategy 2: Hebrew name + city  
-        if not place_details and hebrew_name and city:
+        # Strategy 1: Hebrew name + city (most reliable for Israeli restaurants)
+        if hebrew_name and city:
             place_details = self._search_restaurant(f"{hebrew_name} {city}")
-            
-        # Strategy 3: English name + "restaurant" + city
+
+        # Strategy 2: Hebrew name + "מסעדה" + city
+        if not place_details and hebrew_name and city:
+            place_details = self._search_restaurant(f"מסעדת {hebrew_name} {city}")
+
+        # Strategy 3: English name + city
+        if not place_details and restaurant_name and city:
+            place_details = self._search_restaurant(f"{restaurant_name} {city}")
+
+        # Strategy 4: English name + "restaurant" + city
         if not place_details and restaurant_name and city:
             place_details = self._search_restaurant(f"{restaurant_name} restaurant {city}")
-        
-        # Strategy 4: Just the name (broader search)
+
+        # Strategy 5: Just the Hebrew name (broader search)
+        if not place_details and hebrew_name:
+            place_details = self._search_restaurant(hebrew_name)
+
+        # Strategy 6: Just the English name (broadest)
         if not place_details and restaurant_name:
             place_details = self._search_restaurant(restaurant_name)
             
@@ -127,7 +135,6 @@ class GooglePlacesEnricher:
             }
             body = {
                 'textQuery': query,
-                'includedType': 'restaurant',
                 'languageCode': 'he',
                 'locationBias': {
                     'rectangle': {
