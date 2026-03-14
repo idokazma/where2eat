@@ -113,6 +113,14 @@ class HallucinationDetector:
         self.common_words = COMMON_HEBREW_WORDS
         self.fragment_patterns = [re.compile(p) for p in SENTENCE_FRAGMENT_PATTERNS]
 
+    @staticmethod
+    def _is_israeli(restaurant: Dict) -> bool:
+        """Check if a restaurant is Israeli based on country field."""
+        country = restaurant.get("country", "").strip().lower()
+        if country and country not in ("israel", "ישראל", ""):
+            return False
+        return True
+
     def detect(self, restaurant: Dict) -> HallucinationResult:
         """
         Detect if a restaurant extraction is a hallucination.
@@ -125,6 +133,7 @@ class HallucinationDetector:
         """
         reasons = []
         scores = []  # List of (score, weight) tuples
+        is_israeli = self._is_israeli(restaurant)
 
         name_hebrew = restaurant.get("name_hebrew", "").strip()
         name_english = restaurant.get("name_english", "").strip()
@@ -138,14 +147,22 @@ class HallucinationDetector:
             reasons.append(name_match_reason)
         scores.append((name_match_score, 0.4))  # 40% weight
 
-        # Check 2: Is it a common word?
-        common_word_score, common_word_reason = self._check_common_word(name_hebrew)
+        # Check 2: Is it a common word? (only for Israeli restaurants with Hebrew names)
+        if is_israeli:
+            common_word_score, common_word_reason = self._check_common_word(name_hebrew)
+        else:
+            # For non-Israeli restaurants, skip Hebrew common word detection
+            common_word_score, common_word_reason = 0.0, None
         if common_word_reason:
             reasons.append(common_word_reason)
         scores.append((common_word_score, 0.25))  # 25% weight
 
-        # Check 3: Is it a sentence fragment?
-        fragment_score, fragment_reason = self._check_sentence_fragment(name_hebrew)
+        # Check 3: Is it a sentence fragment? (only for Israeli restaurants with Hebrew names)
+        if is_israeli:
+            fragment_score, fragment_reason = self._check_sentence_fragment(name_hebrew)
+        else:
+            # For non-Israeli restaurants, skip Hebrew fragment detection
+            fragment_score, fragment_reason = 0.0, None
         if fragment_reason:
             reasons.append(fragment_reason)
         scores.append((fragment_score, 0.2))  # 20% weight

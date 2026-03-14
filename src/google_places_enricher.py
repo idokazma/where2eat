@@ -91,66 +91,112 @@ class GooglePlacesEnricher:
             self.logger.warning(f"Failed to resolve photo URL for {photo_reference[:50]}...: {e}")
             return None
 
+    def _is_israeli_restaurant(self, restaurant_data: Dict) -> bool:
+        """Check if restaurant is located in Israel based on country field or city names."""
+        country = restaurant_data.get('country', '').strip().lower()
+        if country and country not in ('israel', 'ישראל', ''):
+            return False
+        # If no country field, check if city is a known Israeli city
+        city = restaurant_data.get('location', {}).get('city', '')
+        israeli_cities = {
+            'תל אביב', 'ירושלים', 'חיפה', 'באר שבע', 'אילת', 'נתניה',
+            'הרצליה', 'רעננה', 'כפר סבא', 'פתח תקווה', 'ראשון לציון',
+            'חולון', 'בת ים', 'רמת גן', 'גבעתיים', 'קיסריה', 'עכו',
+            'נהריה', 'טבריה', 'צפת', 'אשדוד', 'אשקלון', 'נצרת',
+            'tel aviv', 'jerusalem', 'haifa', 'beer sheva', 'eilat',
+        }
+        if city and city.lower() in israeli_cities:
+            return True
+        # Default to Israeli if no country specified and city is Hebrew
+        if not country and city and any('\u0590' <= c <= '\u05ff' for c in city):
+            return True
+        return country in ('israel', 'ישראל', '')
+
     def enrich_restaurant(self, restaurant_data: Dict) -> Dict:
         """
         Enrich a single restaurant with Google Places data
-        
+
         Args:
             restaurant_data: Original restaurant data dict
-            
+
         Returns:
             Enhanced restaurant data with Google Places information
         """
         restaurant_name = restaurant_data.get('name_english', '')
         hebrew_name = restaurant_data.get('name_hebrew', '')
         city = restaurant_data.get('location', {}).get('city', '')
-        
-        self.logger.info(f"🔍 Enriching restaurant: {restaurant_name} ({hebrew_name}) in {city}")
-        
+        country = restaurant_data.get('country', '')
+        is_israeli = self._is_israeli_restaurant(restaurant_data)
+
+        self.logger.info(f"🔍 Enriching restaurant: {restaurant_name} ({hebrew_name}) in {city} [{'Israel' if is_israeli else country or 'unknown'}]")
+
         # Try multiple search strategies
         place_details = None
-        
-        # Strategy 1: English name + city
-        if restaurant_name and city:
-            place_details = self._search_restaurant(f"{restaurant_name} {city}")
-        
-        # Strategy 2: Hebrew name + city  
-        if not place_details and hebrew_name and city:
-            place_details = self._search_restaurant(f"{hebrew_name} {city}")
-            
-        # Strategy 3: English name + "restaurant" + city
-        if not place_details and restaurant_name and city:
-            place_details = self._search_restaurant(f"{restaurant_name} restaurant {city}")
-        
-        # Strategy 4: Just the name (broader search)
-        if not place_details and restaurant_name:
-            place_details = self._search_restaurant(restaurant_name)
-            
+
+        if is_israeli:
+            # Israeli restaurant: search with both English and Hebrew names
+            # Strategy 1: English name + city
+            if restaurant_name and city:
+                place_details = self._search_restaurant(f"{restaurant_name} {city}", language_code='he')
+
+            # Strategy 2: Hebrew name + city
+            if not place_details and hebrew_name and city:
+                place_details = self._search_restaurant(f"{hebrew_name} {city}", language_code='he')
+
+            # Strategy 3: English name + "restaurant" + city
+            if not place_details and restaurant_name and city:
+                place_details = self._search_restaurant(f"{restaurant_name} restaurant {city}", language_code='he')
+
+            # Strategy 4: Just the name (broader search)
+            if not place_details and restaurant_name:
+                place_details = self._search_restaurant(restaurant_name, language_code='he')
+        else:
+            # Non-Israeli restaurant: search in original language, include country for precision
+            primary_name = restaurant_name or hebrew_name  # For non-Israeli, hebrew_name IS the original name
+            search_location = f"{city}, {country}" if city and country else city or country or ''
+
+            # Strategy 1: Name + city + country
+            if primary_name and search_location:
+                place_details = self._search_restaurant(f"{primary_name} {search_location}", language_code='en')
+
+            # Strategy 2: Name + "restaurant" + location
+            if not place_details and primary_name and search_location:
+                place_details = self._search_restaurant(f"{primary_name} restaurant {search_location}", language_code='en')
+
+            # Strategy 3: Just name + country
+            if not place_details and primary_name and country:
+                place_details = self._search_restaurant(f"{primary_name} {country}", language_code='en')
+
+            # Strategy 4: Just the name
+            if not place_details and primary_name:
+                place_details = self._search_restaurant(primary_name, language_code='en')
+
         if place_details:
             # Merge Google Places data with existing data
             enhanced_data = self._merge_google_data(restaurant_data, place_details)
-            self.logger.info(f"✅ Successfully enriched {restaurant_name}")
+            self.logger.info(f"✅ Successfully enriched {restaurant_name or hebrew_name}")
             return enhanced_data
         else:
-            self.logger.warning(f"❌ Could not find Google Places data for {restaurant_name}")
+            self.logger.warning(f"❌ Could not find Google Places data for {restaurant_name or hebrew_name}")
             # Return original data with enrichment attempt flag
             restaurant_data['google_places_enriched'] = False
             restaurant_data['google_places_attempted'] = True
             return restaurant_data
 
-    def _search_restaurant(self, query: str) -> Optional[Dict]:
+    def _search_restaurant(self, query: str, language_code: str = 'he') -> Optional[Dict]:
         """
         Search for restaurant using Google Places API.
         Tries the new Places API first, falls back to legacy on error.
 
         Args:
             query: Search query string
+            language_code: Language for results (default 'he' for Hebrew, 'en' for English)
 
         Returns:
             Place details if found, None otherwise
         """
         # Try new API first
-        result = self._search_restaurant_new_api(query)
+        result = self._search_restaurant_new_api(query, language_code=language_code)
         if result is not None:
             return result
 
@@ -158,12 +204,13 @@ class GooglePlacesEnricher:
         self.logger.debug("New Places API returned no result, falling back to legacy API")
         return self._search_restaurant_legacy(query)
 
-    def _search_restaurant_new_api(self, query: str) -> Optional[Dict]:
+    def _search_restaurant_new_api(self, query: str, language_code: str = 'he') -> Optional[Dict]:
         """
         Search for restaurant using the new Google Places API (places.googleapis.com).
 
         Args:
             query: Search query string
+            language_code: Language for results ('he' or 'en')
 
         Returns:
             Place details in legacy-compatible format if found, None otherwise
@@ -178,9 +225,12 @@ class GooglePlacesEnricher:
             }
             body = {
                 'textQuery': query,
-                'includedType': 'restaurant',
-                'languageCode': 'he'
+                'languageCode': language_code
             }
+            # Only restrict to restaurant type for Hebrew searches (Israeli restaurants)
+            # For international searches, don't restrict type to avoid missing cafés/bakeries/etc.
+            if language_code == 'he':
+                body['includedType'] = 'restaurant'
 
             self.logger.debug(f"🔎 Searching new Places API for: {query}")
 

@@ -116,6 +116,7 @@ class Database:
                     channel_name TEXT,
                     google_url TEXT,
                     engaging_quote TEXT,
+                    country TEXT,
                     created_at TEXT DEFAULT CURRENT_TIMESTAMP,
                     updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
                     FOREIGN KEY (episode_id) REFERENCES episodes(id)
@@ -322,6 +323,7 @@ class Database:
                 ('channel_name', 'TEXT'),
                 ('google_url', 'TEXT'),
                 ('engaging_quote', 'TEXT'),
+                ('country', 'TEXT'),
             ]:
                 try:
                     cursor.execute(f'ALTER TABLE restaurants ADD COLUMN {col} {col_type}')
@@ -527,8 +529,8 @@ class Database:
                     google_user_ratings_total, latitude, longitude, image_url, photos,
                     google_name, published_at, og_image_url,
                     video_url, video_id, channel_name, google_url, engaging_quote,
-                    is_closing
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    is_closing, country
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ''', (
                 restaurant_id,
                 episode_id,
@@ -567,6 +569,7 @@ class Database:
                 google_url,
                 kwargs.get('engaging_quote'),
                 1 if kwargs.get('is_closing') else 0,
+                kwargs.get('country'),
             ))
 
             return restaurant_id

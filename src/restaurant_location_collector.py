@@ -23,7 +23,7 @@ class RestaurantLocation:
     street_address: Optional[str] = None
     city: Optional[str] = None
     postal_code: Optional[str] = None
-    country: str = "Israel"
+    country: str = ""
     full_address: Optional[str] = None
     
     # Coordinates for map plotting
