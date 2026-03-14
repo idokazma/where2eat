@@ -668,6 +668,13 @@ app.get('/api/restaurants', async (req, res) => {
     // Filter out hidden restaurants
     restaurants = restaurants.filter(r => !r.is_hidden);
 
+    // Sort by published_at (newest first)
+    restaurants.sort((a, b) => {
+      const aDate = a.published_at || a.episode_info?.published_at || a.episode_info?.analysis_date || '';
+      const bDate = b.published_at || b.episode_info?.published_at || b.episode_info?.analysis_date || '';
+      return bDate > aDate ? 1 : bDate < aDate ? -1 : 0;
+    });
+
     res.json({ restaurants, count: restaurants.length })
   } catch (error) {
     console.error('Error loading restaurants:', error)
