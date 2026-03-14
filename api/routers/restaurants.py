@@ -469,6 +469,21 @@ async def get_restaurant(restaurant_id: str):
         try:
             restaurant = db.get_restaurant(restaurant_id)
             if restaurant:
+                # Attach episode_info if the restaurant has an episode_id
+                if restaurant.get('episode_id') and not restaurant.get('episode_info'):
+                    try:
+                        episode = db.get_episode(episode_id=restaurant['episode_id'])
+                        if episode:
+                            restaurant['episode_info'] = {
+                                'video_id': episode.get('video_id'),
+                                'video_url': episode.get('video_url'),
+                                'channel_name': episode.get('channel_name'),
+                                'title': episode.get('title'),
+                                'analysis_date': episode.get('analysis_date'),
+                                'published_at': episode.get('published_at'),
+                            }
+                    except Exception:
+                        pass
                 return restaurant
         except Exception as e:
             print(f"Warning: SQLite error: {e}")
