@@ -22,6 +22,7 @@ class RestaurantInfo:
     neighborhood: Optional[str]
     address: Optional[str]
     region: str
+    country: str
     cuisine_type: str
     status: str
     price_range: str
@@ -343,12 +344,13 @@ class UnifiedRestaurantAnalyzer:
 
     def _get_system_prompt(self) -> str:
         """Get the enhanced system prompt for restaurant extraction"""
-        return """You are an expert Hebrew food podcast analyst specializing in extracting restaurant information from Israeli culinary content.
+        return """You are an expert Hebrew food podcast analyst specializing in extracting restaurant information from culinary content.
 
 EXPERTISE:
 - Deep understanding of Israeli food culture, restaurant scene, and dining trends
 - Fluent in Hebrew food terminology, slang, and regional expressions
 - Knowledge of Israeli geography: cities, neighborhoods, and culinary districts
+- Knowledge of international restaurants and cuisines when mentioned
 - Familiar with common Hebrew restaurant naming patterns (e.g., "מסעדת X", "ביסטרו Y", "בית קפה Z")
 
 EXTRACTION RULES:
@@ -368,15 +370,34 @@ EXTRACTION RULES:
 
 4. Handle duplicates: If the same restaurant is mentioned multiple times, consolidate into one entry with merged information.
 
-5. Hebrew transliteration: Provide accurate English transliteration (e.g., "צ'קולי" → "Chakoli", not "Tzkoli")
+5. NAME HANDLING - THIS IS CRITICAL:
+   - For ISRAELI restaurants: provide the Hebrew name in name_hebrew and English transliteration in name_english
+   - For NON-ISRAELI restaurants (Paris, NYC, London, Tokyo, etc.):
+     * name_hebrew should be the ORIGINAL name in the original language (e.g., "Ten Belles" stays "Ten Belles", NOT a Hebrew translation)
+     * name_english should also be the original name
+     * Do NOT translate foreign restaurant names to Hebrew
+   - Hebrew transliteration (for Israeli restaurants only): Provide accurate English transliteration (e.g., "צ'קולי" → "Chakoli", not "Tzkoli")
 
-6. ENGAGING QUOTES: For each restaurant, extract a vivid, colorful quote from the hosts about the restaurant.
+6. COUNTRY DETECTION:
+   - Determine which country the restaurant is in based on context clues
+   - Israeli cities: תל אביב, ירושלים, חיפה, באר שבע, etc.
+   - If the hosts discuss a trip abroad or mention foreign cities (Paris, New York, London, Tokyo, Bangkok, etc.), set country accordingly
+   - Use the actual country name in English (e.g., "Israel", "France", "USA", "Japan")
+
+7. TRANSCRIPT MISHEARING CORRECTION:
+   - Hebrew transcripts often mishear foreign restaurant names. Try to correct obvious errors.
+   - Example: "דבר" (davar) in כפר סבא is likely "Denver" (a burger restaurant)
+   - Example: "טן בל" might be "Ten Belles" (a Paris café)
+   - Use context clues (cuisine type, city, description) to correct garbled names
+   - If you suspect a name is misheard, provide your best guess for the correct name
+
+8. ENGAGING QUOTES: For each restaurant, extract a vivid, colorful quote from the hosts about the restaurant.
    - Capture the hosts' actual words or a close paraphrase - not a dry summary
    - The quote should convey enthusiasm, emotion, or strong opinion
    - Example of good: "אחי, הסטייק הזה נמס לי בפה, אני לא מאמין שזה קיים בארץ"
    - Example of bad: "המנחה אמר שהסטייק טוב" (too dry, summarizes instead of quoting)
 
-7. TIMESTAMPS: Estimate how many seconds into the transcript each restaurant is first discussed.
+9. TIMESTAMPS: Estimate how many seconds into the transcript each restaurant is first discussed.
    - If the transcript has timing cues, use them
    - Otherwise estimate based on position in the transcript (e.g., if mentioned at 30% of the text and the video is ~60min, estimate ~1080 seconds)
 
@@ -652,14 +673,15 @@ OUTPUT FORMAT - Return a JSON object:
 {{
     "restaurants": [
         {{
-            "name_hebrew": "שם המסעדה בעברית",
-            "name_english": "Accurate English Transliteration",
+            "name_hebrew": "For Israeli restaurants: שם בעברית. For non-Israeli: original name as-is (e.g. Ten Belles, NOT טן בלס)",
+            "name_english": "English name or transliteration",
             "confidence": "high/medium/low",
+            "country": "Israel/France/USA/Japan/etc. - the country where the restaurant is located",
             "location": {{
-                "city": "עיר",
-                "neighborhood": "שכונה",
+                "city": "עיר (Hebrew for Israeli cities, original language for foreign cities e.g. Paris, not פריז)",
+                "neighborhood": "שכונה or neighborhood name",
                 "address": "כתובת מלאה אם מוזכרת",
-                "region": "צפון/מרכז/דרום/ירושלים/שרון"
+                "region": "For Israel: צפון/מרכז/דרום/ירושלים/שרון. For other countries: null"
             }},
             "cuisine_type": "סוג מטבח (איטלקי/אסייתי/ים-תיכוני/וכו')",
             "establishment_type": "מסעדה/ביסטרו/בית קפה/פוד טראק/מאפייה/בר",
