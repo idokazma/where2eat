@@ -186,7 +186,8 @@ class BackendService:
                 'transcript': transcript_data.get('transcript', ''),
                 'video_id': transcript_data.get('video_id'),
                 'video_url': transcript_data.get('video_url'),
-                'language': transcript_data.get('language', 'he')
+                'language': transcript_data.get('language', 'he'),
+                'segments': transcript_data.get('segments', [])
             })
 
             return {

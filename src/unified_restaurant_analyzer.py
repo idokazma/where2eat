@@ -90,6 +90,36 @@ class UnifiedRestaurantAnalyzer:
         except Exception as e:
             raise ValueError(f"Failed to initialize Gemini client: {str(e)}")
     
+    def _format_timestamped_transcript(self, transcript_data: Dict) -> str:
+        """Format transcript with inline timestamp markers from segments.
+
+        If segments with start times are available, produces text like:
+            [00:00] first segment text [00:15] second segment text ...
+        This lets the LLM accurately extract mention_timestamp_seconds.
+
+        Falls back to plain transcript text if no segments are available.
+        """
+        segments = transcript_data.get('segments', [])
+        if not segments or not isinstance(segments, list):
+            return transcript_data.get('transcript', '')
+
+        # Check if segments have start times
+        if not segments[0].get('start') and segments[0].get('start') != 0:
+            return transcript_data.get('transcript', '')
+
+        parts = []
+        for seg in segments:
+            start = seg.get('start', 0)
+            text = seg.get('text', '').strip()
+            if not text:
+                continue
+            # Format as [MM:SS]
+            mins = int(start) // 60
+            secs = int(start) % 60
+            parts.append(f"[{mins:02d}:{secs:02d}] {text}")
+
+        return ' '.join(parts)
+
     def analyze_transcript(self, transcript_data: Dict) -> Dict:
         """
         Analyze a YouTube transcript to extract restaurant information
@@ -101,7 +131,12 @@ class UnifiedRestaurantAnalyzer:
             Dictionary containing episode_info, restaurants, food_trends, and episode_summary
         """
         try:
-            transcript_text = transcript_data['transcript']
+            # Use timestamped transcript if segments are available
+            transcript_text = self._format_timestamped_transcript(transcript_data)
+            # Store the formatted text back so chunks and prompts use it
+            transcript_data = transcript_data.copy()
+            transcript_data['transcript'] = transcript_text
+
             video_id = transcript_data.get('video_id', 'unknown')
 
             self.logger.info(f"═══════════════════════════════════════════════════════════")
@@ -123,55 +158,107 @@ class UnifiedRestaurantAnalyzer:
             return self._create_error_analysis(transcript_data, str(e))
 
     def _analyze_single_transcript(self, transcript_data: Dict) -> Dict:
-        """Analyze a single transcript using the configured LLM"""
+        """Analyze a single transcript using a two-stage LLM pipeline.
+
+        Stage 1: Identify restaurants and extract details (no quotes).
+        Stage 2: Extract verbatim quotes from the transcript for each restaurant.
+        """
 
         transcript_text = transcript_data['transcript']
         video_id = transcript_data.get('video_id', 'unknown')
 
-        # Create analysis prompt
+        # ── Stage 1: Restaurant identification & detail extraction ──
+        self.logger.info(f"  [Stage 1] Identifying restaurants...")
         prompt = self._create_analysis_prompt(transcript_text)
-        prompt_size = len(prompt)
 
-        self.logger.info(f"  Calling {self.config.provider.upper()} API...")
         self.logger.info(f"    ├─ Model: {self.config.get_active_model()}")
-        self.logger.info(f"    ├─ Prompt size: {prompt_size:,} characters")
+        self.logger.info(f"    ├─ Prompt size: {len(prompt):,} characters")
         self.logger.info(f"    └─ Max response tokens: {self.config.get_active_max_tokens():,}")
 
         try:
-            # Call the appropriate LLM
-            if self.config.provider == "openai":
-                restaurants = self._call_openai(prompt)
-            elif self.config.provider == "gemini":
-                restaurants = self._call_gemini(prompt)
-            else:
-                restaurants = self._call_claude(prompt)
+            restaurants = self._call_llm(prompt, self._get_system_prompt())
+            self.logger.info(f"  [Stage 1] Found {len(restaurants)} restaurant(s)")
 
-            self.logger.info(f"  API response received: {len(restaurants)} restaurant(s) extracted")
+            if not restaurants:
+                return self._build_result(transcript_data, [])
 
             # Validate and process results
             validated_restaurants = []
             for restaurant in restaurants:
-                validated_restaurant = self._ensure_english_name(restaurant)
-                validated_restaurants.append(validated_restaurant)
+                validated_restaurants.append(self._ensure_english_name(restaurant))
 
-            return {
-                'episode_info': {
-                    'video_id': transcript_data['video_id'],
-                    'video_url': transcript_data['video_url'],
-                    'language': transcript_data.get('language', 'he'),
-                    'analysis_date': datetime.now().strftime('%Y-%m-%d'),
-                    'total_restaurants_found': len(validated_restaurants),
-                    'processing_method': f'{self.config.provider}_{self.config.get_active_model()}',
-                    'llm_provider': self.config.provider
-                },
-                'restaurants': validated_restaurants,
-                'food_trends': self._extract_food_trends(validated_restaurants),
-                'episode_summary': f"ניתוח {self.config.provider.upper()} של {len(validated_restaurants)} מסעדות מהסרטון {transcript_data['video_id']}"
-            }
+            # ── Stage 2: Verbatim quote extraction ──
+            restaurant_names = [
+                r.get('name_hebrew', '') for r in validated_restaurants if r.get('name_hebrew')
+            ]
+            self.logger.info(f"  [Stage 2] Extracting verbatim quotes for {len(restaurant_names)} restaurants...")
+
+            quote_prompt = self._create_quote_extraction_prompt(transcript_text, restaurant_names)
+            self.logger.info(f"    ├─ Quote prompt size: {len(quote_prompt):,} characters")
+
+            quotes_result = self._call_llm(quote_prompt, self._get_quote_extraction_prompt())
+            self.logger.info(f"  [Stage 2] Got {len(quotes_result)} quote(s)")
+
+            # Build a lookup from restaurant name → quotes
+            quotes_map = {}
+            for q in quotes_result:
+                name = q.get('restaurant_name', '').strip()
+                if name:
+                    quotes_map[self._normalize_hebrew_name(name)] = q
+
+            # Merge quotes into restaurant data
+            for restaurant in validated_restaurants:
+                name = restaurant.get('name_hebrew', '')
+                norm_name = self._normalize_hebrew_name(name)
+                quote_data = quotes_map.get(norm_name)
+
+                # Try partial matching if exact match fails
+                if not quote_data:
+                    for qname, qdata in quotes_map.items():
+                        if norm_name and qname and (norm_name in qname or qname in norm_name):
+                            quote_data = qdata
+                            break
+
+                if quote_data:
+                    restaurant['engaging_quote'] = quote_data.get('engaging_quote', 'לא נמצא ציטוט ישיר')
+                    # Only override host_comments if Stage 2 provided a transcript-based one
+                    stage2_comments = quote_data.get('host_comments', '')
+                    if stage2_comments and stage2_comments != 'לא נמצא ציטוט ישיר':
+                        restaurant['host_comments'] = stage2_comments
+                else:
+                    restaurant['engaging_quote'] = 'לא נמצא ציטוט ישיר'
+
+            return self._build_result(transcript_data, validated_restaurants)
 
         except Exception as e:
             self.logger.error(f"{self.config.provider.upper()} analysis failed: {str(e)}")
             raise e
+
+    def _call_llm(self, prompt: str, system_prompt: str = None) -> List[Dict]:
+        """Call the configured LLM provider with the given prompt and system prompt."""
+        if self.config.provider == "openai":
+            return self._call_openai(prompt, system_prompt)
+        elif self.config.provider == "gemini":
+            return self._call_gemini(prompt, system_prompt)
+        else:
+            return self._call_claude(prompt, system_prompt)
+
+    def _build_result(self, transcript_data: Dict, restaurants: List[Dict]) -> Dict:
+        """Build the standard analysis result dictionary."""
+        return {
+            'episode_info': {
+                'video_id': transcript_data['video_id'],
+                'video_url': transcript_data['video_url'],
+                'language': transcript_data.get('language', 'he'),
+                'analysis_date': datetime.now().strftime('%Y-%m-%d'),
+                'total_restaurants_found': len(restaurants),
+                'processing_method': f'{self.config.provider}_{self.config.get_active_model()}',
+                'llm_provider': self.config.provider
+            },
+            'restaurants': restaurants,
+            'food_trends': self._extract_food_trends(restaurants),
+            'episode_summary': f"ניתוח {self.config.provider.upper()} של {len(restaurants)} מסעדות מהסרטון {transcript_data['video_id']}"
+        }
 
     def _analyze_chunked_transcript(self, transcript_data: Dict) -> Dict:
         """Analyze transcript in chunks for comprehensive coverage"""
@@ -282,7 +369,7 @@ class UnifiedRestaurantAnalyzer:
         return min(preferred_end, len(text))
 
     def _get_system_prompt(self) -> str:
-        """Get the enhanced system prompt for restaurant extraction"""
+        """Get the system prompt for Stage 1: restaurant identification and detail extraction"""
         return """You are an expert Hebrew food podcast analyst. Your job is to extract restaurants that the hosts ACTUALLY DISCUSS IN DEPTH — not every place they name-drop.
 
 CRITICAL DISTINCTION — DISCUSSED vs MENTIONED:
@@ -302,15 +389,6 @@ EXTRACTION RULES:
    - Chef names without their restaurant
    - Vague references
 
-QUOTES — THIS IS CRUCIAL:
-For each restaurant, you MUST extract the hosts' actual words verbatim from the transcript.
-- Copy-paste their exact Hebrew words. Do not paraphrase or summarize.
-- The quote should capture their genuine reaction — excitement, criticism, surprise, humor.
-- Pick the most vivid, emotional, or descriptive moment about that restaurant.
-- GOOD: "אחי, הסטייק הזה נמס לי בפה, אני לא מאמין שזה קיים בארץ"
-- BAD: "המנחה חשב שהסטייק טוב" (this is a summary, not a quote)
-- BAD: "מסעדה מצוינת עם אוכל טוב" (this is generic, not their actual words)
-
 DEDUPLICATION:
 - If the same restaurant appears multiple times, consolidate into ONE entry.
 - Watch for spelling variants: "צ'קולי" and "צקולי" are the same place.
@@ -320,16 +398,34 @@ Hebrew transliteration: Provide accurate English transliteration (e.g., "צ'קו
 
 Always respond with valid JSON only. No markdown formatting or additional text."""
 
-    def _call_openai(self, prompt: str) -> List[Dict]:
+    def _get_quote_extraction_prompt(self) -> str:
+        """Get the system prompt for Stage 2: verbatim quote extraction"""
+        return """You are a quote extraction specialist. You will receive a Hebrew podcast transcript and a list of restaurant names.
+
+YOUR ONLY JOB: Find the most interesting, vivid sentence the host said about each restaurant and COPY IT EXACTLY from the transcript.
+
+ABSOLUTE RULES:
+1. Every quote MUST appear WORD FOR WORD in the transcript. Copy-paste only.
+2. First person only. The host says "אכלתי", "טעמתי", "הלכתי" — these are their own words.
+3. NEVER write in third person ("המנחה אמר", "הוא ציין", "אמית סיפר").
+4. NEVER summarize or paraphrase. If the host said "אחי זה היה מטורף", write exactly that.
+5. Pick the most engaging/emotional/descriptive quote you can find for each restaurant.
+6. If you truly cannot find a direct quote for a restaurant, write "לא נמצא ציטוט ישיר".
+
+VERIFICATION: Before returning each quote, mentally check — can you point to the exact location in the transcript where these words appear? If not, it's not a real quote.
+
+Always respond with valid JSON only. No markdown formatting or additional text."""
+
+    def _call_openai(self, prompt: str, system_prompt: str = None) -> List[Dict]:
         """Call OpenAI API to analyze transcript"""
 
-        self.logger.info(f"🤖 Calling OpenAI API ({self.config.get_active_model()})")
+        self.logger.info(f"Calling OpenAI API ({self.config.get_active_model()})")
 
         try:
             response = self.client.chat.completions.create(
                 model=self.config.get_active_model(),
                 messages=[
-                    {"role": "system", "content": self._get_system_prompt()},
+                    {"role": "system", "content": system_prompt or self._get_system_prompt()},
                     {"role": "user", "content": prompt}
                 ],
                 temperature=self.config.get_active_temperature(),
@@ -340,9 +436,11 @@ Always respond with valid JSON only. No markdown formatting or additional text."
             content = response.choices[0].message.content
             result = json.loads(content)
             
-            # Ensure we get a list of restaurants
+            # Ensure we get a list
             if isinstance(result, dict) and 'restaurants' in result:
                 return result['restaurants']
+            elif isinstance(result, dict) and 'quotes' in result:
+                return result['quotes']
             elif isinstance(result, list):
                 return result
             else:
@@ -353,17 +451,17 @@ Always respond with valid JSON only. No markdown formatting or additional text."
             self.logger.error(f"OpenAI API call failed: {str(e)}")
             raise e
 
-    def _call_claude(self, prompt: str) -> List[Dict]:
+    def _call_claude(self, prompt: str, system_prompt: str = None) -> List[Dict]:
         """Call Claude API to analyze transcript"""
 
-        self.logger.info(f"🤖 Calling Claude API ({self.config.get_active_model()})")
+        self.logger.info(f"Calling Claude API ({self.config.get_active_model()})")
 
         try:
             response = self.client.messages.create(
                 model=self.config.get_active_model(),
                 max_tokens=self.config.get_active_max_tokens(),
                 temperature=self.config.get_active_temperature(),
-                system=self._get_system_prompt(),
+                system=system_prompt or self._get_system_prompt(),
                 messages=[
                     {
                         "role": "user",
@@ -387,7 +485,7 @@ Always respond with valid JSON only. No markdown formatting or additional text."
             self.logger.error(f"Claude API call failed: {str(e)}")
             raise e
 
-    def _call_gemini(self, prompt: str) -> List[Dict]:
+    def _call_gemini(self, prompt: str, system_prompt: str = None) -> List[Dict]:
         """Call Google Gemini API to analyze transcript"""
 
         self.logger.info(f"Calling Gemini API ({self.config.get_active_model()})")
@@ -395,7 +493,7 @@ Always respond with valid JSON only. No markdown formatting or additional text."
         try:
             from google.genai import types
 
-            full_prompt = self._get_system_prompt() + "\n\n" + prompt
+            full_prompt = (system_prompt or self._get_system_prompt()) + "\n\n" + prompt
 
             response = self.client.models.generate_content(
                 model=self.config.get_active_model(),
@@ -443,6 +541,8 @@ Always respond with valid JSON only. No markdown formatting or additional text."
             result = json.loads(content)
             if isinstance(result, dict) and 'restaurants' in result:
                 return result['restaurants']
+            elif isinstance(result, dict) and 'quotes' in result:
+                return result['quotes']
             elif isinstance(result, list):
                 return result
             else:
@@ -460,8 +560,12 @@ Always respond with valid JSON only. No markdown formatting or additional text."
             result = json.loads(repaired_content)
             if isinstance(result, dict) and 'restaurants' in result:
                 restaurants = result['restaurants']
-                self.logger.info(f"Successfully repaired JSON, extracted {len(restaurants)} restaurants")
+                self.logger.info(f"Successfully repaired JSON, extracted {len(restaurants)} items")
                 return restaurants
+            elif isinstance(result, dict) and 'quotes' in result:
+                quotes = result['quotes']
+                self.logger.info(f"Successfully repaired JSON, extracted {len(quotes)} quotes")
+                return quotes
             elif isinstance(result, list):
                 self.logger.info(f"Successfully repaired JSON array, extracted {len(result)} restaurants")
                 return result
@@ -558,10 +662,8 @@ Always respond with valid JSON only. No markdown formatting or additional text."
         return restaurants
 
     def _create_analysis_prompt(self, transcript_text: str) -> str:
-        """Create the analysis prompt for the LLM"""
+        """Create the Stage 1 prompt: identify restaurants and extract details (no quotes)"""
 
-        # Use chunk_size from config to ensure we analyze the full transcript
-        # Previous bug: truncated to 8000 chars which missed most restaurants
         max_transcript_length = self.config.chunk_size
         truncated_transcript = transcript_text[:max_transcript_length]
         if len(transcript_text) > max_transcript_length:
@@ -598,8 +700,7 @@ OUTPUT FORMAT - Return a JSON object:
             "status": "פתוח/סגור/חדש/עומד להיפתח",
             "price_range": "זול/בינוני/יקר/יוקרתי",
             "host_opinion": "חיובית מאוד/חיובית/ניטרלית/שלילית/מעורבת",
-            "host_comments": "תקציר קצר של מה שהמנחים אמרו על המסעדה",
-            "engaging_quote": "ציטוט מילה-במילה מהמנחים, בדיוק כמו שהם אמרו את זה בתמליל. העתק-הדבק מהטקסט. לא לנסח מחדש.",
+            "host_comments": "תקציר קצר של מה שהמנחים אמרו על המסעדה — כתוב בגוף ראשון כאילו המנחה מדבר",
             "mention_timestamp_seconds": 0,
             "signature_dishes": ["מנות שהמנחים ציינו כמומלצות"],
             "menu_items": ["מנות שהוזכרו"],
@@ -611,12 +712,56 @@ OUTPUT FORMAT - Return a JSON object:
     ]
 }}
 
+TIMESTAMPS:
+The transcript may contain [MM:SS] timestamp markers. Use these to set mention_timestamp_seconds accurately.
+For example, if a restaurant is first discussed after [05:23], set mention_timestamp_seconds to 323 (5*60+23).
+If no timestamps are present, set mention_timestamp_seconds to 0.
+
 IMPORTANT RULES:
-1. engaging_quote MUST be the hosts' exact words copied from the transcript. Not a summary. Not a paraphrase. Their actual Hebrew words.
+1. Do NOT include an engaging_quote field — quotes will be extracted separately.
 2. is_closing = true ONLY if the podcast explicitly says the restaurant is shutting down permanently.
 3. Use null for unknown fields, never "לא צוין".
 4. If the same restaurant is discussed multiple times, consolidate into ONE entry with merged details.
 5. Quality over quantity — 5 well-extracted restaurants are better than 15 with half being noise."""
+
+    def _create_quote_extraction_prompt(self, transcript_text: str, restaurant_names: List[str]) -> str:
+        """Create the Stage 2 prompt: extract verbatim quotes for identified restaurants"""
+
+        max_transcript_length = self.config.chunk_size
+        truncated_transcript = transcript_text[:max_transcript_length]
+        if len(transcript_text) > max_transcript_length:
+            truncated_transcript += "..."
+
+        names_list = "\n".join(f"- {name}" for name in restaurant_names)
+
+        return f"""Below is a Hebrew podcast transcript. I need you to find EXACT VERBATIM QUOTES from the hosts about each of the following restaurants.
+
+RESTAURANTS TO FIND QUOTES FOR:
+{names_list}
+
+TRANSCRIPT:
+{truncated_transcript}
+
+YOUR TASK:
+For each restaurant, scan the transcript and find the most interesting, vivid, or emotional sentence the host said about it. COPY THE EXACT WORDS from the transcript — do not change a single word.
+
+OUTPUT FORMAT - Return a JSON object:
+{{
+    "quotes": [
+        {{
+            "restaurant_name": "שם המסעדה",
+            "engaging_quote": "המשפט המדויק מהתמליל, מילה במילה, בגוף ראשון",
+            "host_comments": "עוד משפט או שניים מהתמליל שמתארים את חוויית המנחה"
+        }}
+    ]
+}}
+
+CRITICAL RULES:
+1. COPY-PASTE ONLY. Every word in engaging_quote must appear in the transcript above in the same order.
+2. First person only: "אכלתי", "טעמתי", "הזמנתי" — NOT "הוא אכל", "המנחה טעם".
+3. Pick the most colorful, emotional, or descriptive quote — excitement, surprise, criticism, humor.
+4. If you cannot find any direct quote for a restaurant, set engaging_quote to "לא נמצא ציטוט ישיר".
+5. host_comments should also be taken from the transcript — a brief passage describing the host's experience."""
 
     def _ensure_english_name(self, restaurant: Dict) -> Dict:
         """Ensure restaurant has a proper English name"""
