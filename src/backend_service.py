@@ -578,11 +578,21 @@ class BackendService:
 
             # Normalize enriched data for database storage
             for r in restaurants:
+                loc = r.get('location', {})
                 # Flatten coordinates
-                coords = r.get('location', {}).get('coordinates', {})
+                coords = loc.get('coordinates', {})
                 if coords:
                     r['latitude'] = coords.get('latitude')
                     r['longitude'] = coords.get('longitude')
+                # Flatten city, neighborhood, address from location dict
+                if not r.get('city') and loc.get('city'):
+                    r['city'] = loc['city']
+                if not r.get('neighborhood') and loc.get('neighborhood'):
+                    r['neighborhood'] = loc['neighborhood']
+                if not r.get('address') and loc.get('full_address'):
+                    r['address'] = loc['full_address']
+                if not r.get('region') and loc.get('region'):
+                    r['region'] = loc['region']
                 # Flatten google_place_id and google_name
                 gp = r.get('google_places', {})
                 if gp and gp.get('place_id'):
