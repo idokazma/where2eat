@@ -1127,6 +1127,50 @@ async def toggle_restaurant_visibility(restaurant_id: str, request: Request):
     return updated
 
 
+@app.post("/api/admin/deepdive/{video_id}/reprocess")
+@app.post("/api/deepdive/{video_id}/reprocess")
+async def reprocess_episode(video_id: str):
+    """Re-queue a video for full pipeline reprocessing."""
+    from database import Database
+
+    db = Database()
+    with db.get_connection() as conn:
+        cursor = conn.cursor()
+
+        # Look up the episode
+        cursor.execute('SELECT * FROM episodes WHERE video_id = ?', (video_id,))
+        episode_row = cursor.fetchone()
+        if not episode_row:
+            raise HTTPException(status_code=404, detail="Episode not found")
+
+        episode = dict(episode_row)
+
+        # Check existing queue entry
+        cursor.execute('SELECT * FROM video_queue WHERE video_id = ?', (video_id,))
+        queue_row = cursor.fetchone()
+        if queue_row:
+            queue_item = dict(queue_row)
+            if queue_item['status'] in ('queued', 'processing'):
+                return {"success": False, "error": f"Video is already {queue_item['status']}"}
+            # Re-queue existing entry
+            cursor.execute('''
+                UPDATE video_queue
+                SET status = 'queued', error_message = NULL,
+                    attempt_count = attempt_count + 1,
+                    updated_at = datetime('now')
+                WHERE video_id = ?
+            ''', (video_id,))
+        else:
+            # Insert new queue entry
+            cursor.execute('''
+                INSERT INTO video_queue (video_id, video_url, title, channel_name, status, priority, attempt_count, created_at, updated_at)
+                VALUES (?, ?, ?, ?, 'queued', 0, 1, datetime('now'), datetime('now'))
+            ''', (video_id, episode.get('video_url', ''), episode.get('title', ''), episode.get('channel_name', '')))
+        conn.commit()
+
+    return {"success": True, "message": "Video queued for reprocessing"}
+
+
 @app.post("/api/deepdive/fix-data")
 async def fix_data():
     """One-time fix: resolve raw photo references to URLs and fix wrong published_at dates."""
