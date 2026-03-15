@@ -251,6 +251,8 @@ def search_restaurants_db(
 async def list_restaurants():
     """Get all restaurants."""
     restaurants = load_all_restaurants()
+    # Filter out hidden restaurants from public listing
+    restaurants = [r for r in restaurants if not r.get("is_hidden")]
     return RestaurantList(restaurants=restaurants, count=len(restaurants))
 
 
@@ -319,6 +321,9 @@ async def search_restaurants(
 
     # Apply filters
     filtered = restaurants
+
+    # Filter out hidden restaurants from public search
+    filtered = [r for r in filtered if not r.get("is_hidden")]
 
     if location:
         filtered = [
@@ -484,7 +489,12 @@ async def get_restaurant(restaurant_id: str):
                             }
                     except Exception:
                         pass
+                # Return 404 for hidden restaurants on public endpoint
+                if restaurant.get("is_hidden"):
+                    raise HTTPException(status_code=404, detail="Restaurant not found")
                 return restaurant
+        except HTTPException:
+            raise
         except Exception as e:
             print(f"Warning: SQLite error: {e}")
 
@@ -689,6 +699,74 @@ async def update_restaurant(restaurant_id: str, restaurant: RestaurantUpdate):
         json.dump(existing, f, ensure_ascii=False, indent=2)
 
     return existing
+
+
+@router.post(
+    "/{restaurant_id}/reprocess",
+    summary="Reprocess restaurant",
+    description="Re-run Google Places enrichment for a restaurant using its current (possibly edited) fields.",
+)
+async def reprocess_restaurant(restaurant_id: str):
+    """Re-enrich a single restaurant via Google Places using its current DB fields."""
+    db = _get_sqlite_db()
+    if not db:
+        raise HTTPException(status_code=500, detail="Database not available")
+
+    restaurant = db.get_restaurant(restaurant_id)
+    if not restaurant:
+        raise HTTPException(status_code=404, detail="Restaurant not found")
+
+    try:
+        from google_places_enricher import GooglePlacesEnricher
+
+        api_key = os.getenv("GOOGLE_PLACES_API_KEY")
+        if not api_key:
+            raise HTTPException(status_code=500, detail="GOOGLE_PLACES_API_KEY not configured")
+
+        enricher = GooglePlacesEnricher(api_key)
+
+        # Clear previous enrichment so it re-runs fresh
+        restaurant.pop("google_place_id", None)
+        restaurant.pop("google_places_enriched", None)
+
+        enriched = enricher.enrich_restaurant(restaurant)
+
+        if enriched.get("google_places_enriched"):
+            update_data = {}
+            coords = enriched.get("location", {}).get("coordinates", {})
+            if coords:
+                update_data["latitude"] = coords.get("latitude")
+                update_data["longitude"] = coords.get("longitude")
+            gp = enriched.get("google_places", {})
+            if gp and gp.get("place_id"):
+                update_data["google_place_id"] = gp["place_id"]
+            rating = enriched.get("rating", {})
+            if rating:
+                update_data["google_rating"] = rating.get("google_rating")
+                update_data["google_user_ratings_total"] = rating.get("total_reviews")
+            if enriched.get("google_url"):
+                update_data["google_url"] = enriched["google_url"]
+            if enriched.get("image_url"):
+                update_data["image_url"] = enriched["image_url"]
+            if enriched.get("address") and enriched["address"] != restaurant.get("address"):
+                update_data["address"] = enriched["address"]
+
+            update_data["google_places_enriched"] = True
+
+            if update_data:
+                db.update_restaurant(restaurant_id, **update_data)
+
+            updated = db.get_restaurant(restaurant_id)
+            return {"success": True, "restaurant": updated}
+        else:
+            return {"success": False, "error": "Google Places enrichment found no match"}
+
+    except ImportError:
+        raise HTTPException(status_code=500, detail="google_places_enricher module not available")
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Enrichment failed: {str(e)}")
 
 
 @router.delete(

@@ -11,7 +11,7 @@ from datetime import datetime
 from pathlib import Path
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.base import BaseHTTPMiddleware
 from dotenv import load_dotenv
@@ -1102,6 +1102,29 @@ async def deepdive_restaurant_detail(restaurant_id: str):
         "episode": episode,
         "queue_info": queue_info,
     }
+
+
+@app.patch("/api/deepdive/restaurants/{restaurant_id}/visibility")
+async def toggle_restaurant_visibility(restaurant_id: str, request: Request):
+    """Toggle restaurant visibility (hide/unhide)."""
+    from database import Database
+
+    body = await request.json()
+    is_hidden = body.get("is_hidden", False)
+
+    db = Database()
+    restaurant = db.get_restaurant(restaurant_id)
+    if not restaurant:
+        raise HTTPException(status_code=404, detail="Restaurant not found")
+
+    # Convert truthy values to integer for SQLite
+    hidden_val = 1 if is_hidden else 0
+    success = db.update_restaurant(restaurant_id, is_hidden=hidden_val)
+    if not success:
+        raise HTTPException(status_code=500, detail="Failed to update visibility")
+
+    updated = db.get_restaurant(restaurant_id)
+    return updated
 
 
 @app.post("/api/deepdive/fix-data")
