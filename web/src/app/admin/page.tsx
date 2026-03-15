@@ -1786,6 +1786,7 @@ function EditRestaurantDialog({
     address: restaurant.address || "",
   })
   const [saving, setSaving] = useState(false)
+  const [reprocessing, setReprocessing] = useState(false)
   const [saveError, setSaveError] = useState<string | null>(null)
 
   const handleChange = (field: string, value: string) => {
@@ -1831,6 +1832,76 @@ function EditRestaurantDialog({
       setSaveError(err instanceof Error ? err.message : "Failed to save")
     } finally {
       setSaving(false)
+    }
+  }
+
+  const handleReprocess = async () => {
+    if (!restaurant.id) return
+    setReprocessing(true)
+    setSaveError(null)
+    try {
+      const res = await fetch(getApiUrl(`/api/restaurants/${restaurant.id}/reprocess`), {
+        method: "POST",
+      })
+      if (!res.ok) throw new Error(`HTTP ${res.status}`)
+      const data = await res.json()
+      if (data.success && data.restaurant) {
+        onSaved(data.restaurant)
+        onClose()
+      } else {
+        setSaveError(data.error || "Reprocess failed — no Google Places match found")
+      }
+    } catch (err: unknown) {
+      setSaveError(err instanceof Error ? err.message : "Reprocess failed")
+    } finally {
+      setReprocessing(false)
+    }
+  }
+
+  const handleSaveAndReprocess = async () => {
+    if (!restaurant.id) return
+    setReprocessing(true)
+    setSaveError(null)
+    try {
+      // 1. Save edited fields first
+      const body: Record<string, unknown> = {}
+      if (form.name_hebrew !== (restaurant.name_hebrew || "")) body.name_hebrew = form.name_hebrew
+      if (form.name_english !== (restaurant.name_english || "")) body.name_english = form.name_english
+      if (form.cuisine_type !== (restaurant.cuisine_type || "")) body.cuisine_type = form.cuisine_type
+      if (form.price_range !== (restaurant.price_range || "")) body.price_range = form.price_range
+      if (form.host_opinion !== (restaurant.host_opinion || "")) body.host_opinion = form.host_opinion
+      if (form.host_comments !== (restaurant.host_comments || "")) body.host_comments = form.host_comments
+      if (form.engaging_quote !== (restaurant.engaging_quote || "")) body.engaging_quote = form.engaging_quote
+      if (form.status !== (restaurant.status || "open")) body.status = form.status
+      if (form.city !== (restaurant.city || "") || form.address !== (restaurant.address || "")) {
+        body.location = { city: form.city, address: form.address }
+      }
+
+      if (Object.keys(body).length > 0) {
+        const saveRes = await fetch(getApiUrl(`/api/restaurants/${restaurant.id}`), {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        })
+        if (!saveRes.ok) throw new Error(`Save failed: HTTP ${saveRes.status}`)
+      }
+
+      // 2. Then reprocess with the updated fields
+      const res = await fetch(getApiUrl(`/api/restaurants/${restaurant.id}/reprocess`), {
+        method: "POST",
+      })
+      if (!res.ok) throw new Error(`Reprocess failed: HTTP ${res.status}`)
+      const data = await res.json()
+      if (data.success && data.restaurant) {
+        onSaved(data.restaurant)
+        onClose()
+      } else {
+        setSaveError(data.error || "Reprocess failed — no Google Places match found")
+      }
+    } catch (err: unknown) {
+      setSaveError(err instanceof Error ? err.message : "Save & Reprocess failed")
+    } finally {
+      setReprocessing(false)
     }
   }
 
@@ -1920,14 +1991,28 @@ function EditRestaurantDialog({
           )}
         </div>
 
-        <div className="flex items-center justify-end gap-2 px-5 py-4 border-t">
-          <Button variant="outline" size="sm" onClick={onClose} disabled={saving}>
-            Cancel
-          </Button>
-          <Button size="sm" onClick={handleSave} disabled={saving}>
-            {saving ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : null}
-            Save Changes
-          </Button>
+        <div className="flex items-center justify-between px-5 py-4 border-t">
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" onClick={handleReprocess} disabled={saving || reprocessing}>
+              {reprocessing ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : <RefreshCw className="h-4 w-4 mr-1" />}
+              Reprocess
+            </Button>
+            <Button variant="outline" size="sm" onClick={handleSaveAndReprocess} disabled={saving || reprocessing}
+              className="border-blue-300 text-blue-600 hover:bg-blue-50"
+            >
+              {reprocessing ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : <RefreshCw className="h-4 w-4 mr-1" />}
+              Save & Reprocess
+            </Button>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" onClick={onClose} disabled={saving || reprocessing}>
+              Cancel
+            </Button>
+            <Button size="sm" onClick={handleSave} disabled={saving || reprocessing}>
+              {saving ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : null}
+              Save Changes
+            </Button>
+          </div>
         </div>
       </div>
     </div>
