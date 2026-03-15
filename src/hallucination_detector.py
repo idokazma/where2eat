@@ -116,7 +116,7 @@ class HallucinationDetector:
     @staticmethod
     def _is_israeli(restaurant: Dict) -> bool:
         """Check if a restaurant is Israeli based on country field."""
-        country = restaurant.get("country", "").strip().lower()
+        country = (restaurant.get("country") or "").strip().lower()
         if country and country not in ("israel", "ישראל", ""):
             return False
         return True
@@ -135,9 +135,9 @@ class HallucinationDetector:
         scores = []  # List of (score, weight) tuples
         is_israeli = self._is_israeli(restaurant)
 
-        name_hebrew = restaurant.get("name_hebrew", "").strip()
-        name_english = restaurant.get("name_english", "").strip()
-        google_name = restaurant.get("google_places", {}).get("google_name", "")
+        name_hebrew = (restaurant.get("name_hebrew") or "").strip()
+        name_english = (restaurant.get("name_english") or "").strip()
+        google_name = (restaurant.get("google_places") or {}).get("google_name") or ""
 
         # Check 1: Name matches Google Places result
         name_match_score, name_match_reason = self._check_name_match(
