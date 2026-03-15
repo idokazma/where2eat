@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback, useRef } from "react"
 import {
   CheckCircle2,
   XCircle,
@@ -2033,6 +2033,7 @@ function AdminFeedTab() {
   const [error, setError] = useState<string | null>(null)
   const [togglingId, setTogglingId] = useState<string | null>(null)
   const [editingRestaurant, setEditingRestaurant] = useState<Restaurant | null>(null)
+  const sentinelRef = useRef<HTMLDivElement>(null)
 
   const fetchPage = useCallback(
     async (pageNum: number, append: boolean) => {
@@ -2045,7 +2046,7 @@ function AdminFeedTab() {
 
       try {
         const res = await fetch(
-          getApiUrl(`/api/restaurants/search?page=${pageNum}&limit=20&include_hidden=true`)
+          getApiUrl(`/api/restaurants/search?page=${pageNum}&limit=15&include_hidden=true`)
         )
         if (!res.ok) throw new Error(`HTTP ${res.status}`)
         const data: RestaurantsSearchResponse = await res.json()
@@ -2073,11 +2074,29 @@ function AdminFeedTab() {
     fetchPage(1, false)
   }, [fetchPage])
 
-  const handleLoadMore = () => {
+  const handleLoadMore = useCallback(() => {
+    if (loadingMore || !hasMore) return
     const nextPage = page + 1
     setPage(nextPage)
     fetchPage(nextPage, true)
-  }
+  }, [page, loadingMore, hasMore, fetchPage])
+
+  // Infinite scroll: load more when sentinel enters viewport
+  useEffect(() => {
+    const sentinel = sentinelRef.current
+    if (!sentinel) return
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && hasMore && !loadingMore) {
+          handleLoadMore()
+        }
+      },
+      { rootMargin: "300px" }
+    )
+    observer.observe(sentinel)
+    return () => observer.disconnect()
+  }, [hasMore, loadingMore, handleLoadMore])
 
   const handleToggleVisibility = useCallback(
     async (id: string, isHidden: boolean) => {
@@ -2291,25 +2310,13 @@ function AdminFeedTab() {
         />
       )}
 
-      {/* Load more */}
-      {hasMore && (
-        <div className="flex justify-center pt-4">
-          <Button
-            variant="outline"
-            onClick={handleLoadMore}
-            disabled={loadingMore}
-          >
-            {loadingMore ? (
-              <>
-                <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                Loading...
-              </>
-            ) : (
-              "Load More"
-            )}
-          </Button>
+      {/* Infinite scroll sentinel */}
+      {loadingMore && (
+        <div className="flex justify-center py-6">
+          <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
         </div>
       )}
+      <div ref={sentinelRef} className="h-1" />
 
       {error && restaurants.length > 0 && (
         <p className="text-sm text-red-500 text-center">{error}</p>
