@@ -6,6 +6,7 @@ Supports both SQLAlchemy (PostgreSQL/SQLite) and legacy JSON file storage.
 import json
 import uuid
 import os
+import traceback
 from pathlib import Path
 from typing import Optional, List
 from datetime import datetime
@@ -703,37 +704,38 @@ async def update_restaurant(restaurant_id: str, restaurant: RestaurantUpdate):
     return existing
 
 
-@router.post(
-    "/{restaurant_id}/reprocess",
-    summary="Reprocess restaurant",
-    description="Re-run Google Places enrichment for a restaurant using its current (possibly edited) fields.",
-)
-async def reprocess_restaurant(restaurant_id: str):
-    """Re-enrich a single restaurant via Google Places using its current DB fields."""
+def _run_enrichment(restaurant_id: str):
+    """Run Google Places enrichment synchronously (called from thread pool)."""
     db = _get_sqlite_db()
     if not db:
-        raise HTTPException(status_code=500, detail="Database not available")
+        return {"success": False, "error": "Database not available"}
 
     restaurant = db.get_restaurant(restaurant_id)
     if not restaurant:
-        raise HTTPException(status_code=404, detail="Restaurant not found")
+        return {"success": False, "error": "Restaurant not found"}
 
     try:
         from google_places_enricher import GooglePlacesEnricher
 
         api_key = os.getenv("GOOGLE_PLACES_API_KEY")
         if not api_key:
-            raise HTTPException(status_code=500, detail="GOOGLE_PLACES_API_KEY not configured")
+            return {"success": False, "error": "GOOGLE_PLACES_API_KEY not configured"}
 
         enricher = GooglePlacesEnricher(api_key)
 
         # Clear previous enrichment so it re-runs fresh
         restaurant.pop("google_place_id", None)
         restaurant.pop("google_places_enriched", None)
+        gp = restaurant.get("google_places")
+        if isinstance(gp, dict):
+            gp.pop("place_id", None)
 
         enriched = enricher.enrich_restaurant(restaurant)
 
-        if enriched.get("google_places_enriched"):
+        if enriched.get("google_places_enriched") or (
+            isinstance(enriched.get("google_places"), dict)
+            and enriched["google_places"].get("place_id")
+        ):
             update_data = {}
             coords = enriched.get("location", {}).get("coordinates", {})
             if coords:
@@ -742,18 +744,19 @@ async def reprocess_restaurant(restaurant_id: str):
             gp = enriched.get("google_places", {})
             if gp and gp.get("place_id"):
                 update_data["google_place_id"] = gp["place_id"]
+                update_data["google_name"] = gp.get("google_name")
+                update_data["google_url"] = gp.get("google_url")
             rating = enriched.get("rating", {})
             if rating:
                 update_data["google_rating"] = rating.get("google_rating")
-                update_data["google_user_ratings_total"] = rating.get("total_reviews")
-            if enriched.get("google_url"):
-                update_data["google_url"] = enriched["google_url"]
+                update_data["google_user_ratings_total"] = rating.get("total_reviews") or rating.get("user_ratings_total")
             if enriched.get("image_url"):
                 update_data["image_url"] = enriched["image_url"]
-            if enriched.get("address") and enriched["address"] != restaurant.get("address"):
-                update_data["address"] = enriched["address"]
+            loc = enriched.get("location", {})
+            if loc.get("full_address"):
+                update_data["address"] = loc["full_address"]
 
-            update_data["google_places_enriched"] = True
+            update_data["google_places_enriched"] = 1
 
             if update_data:
                 db.update_restaurant(restaurant_id, **update_data)
@@ -763,12 +766,31 @@ async def reprocess_restaurant(restaurant_id: str):
         else:
             return {"success": False, "error": "Google Places enrichment found no match"}
 
-    except ImportError:
-        raise HTTPException(status_code=500, detail="google_places_enricher module not available")
-    except HTTPException:
-        raise
+    except ImportError as e:
+        print(f"[REPROCESS] ImportError: {e}")
+        traceback.print_exc()
+        return {"success": False, "error": f"Module not available: {e}"}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Enrichment failed: {str(e)}")
+        print(f"[REPROCESS] Error enriching {restaurant_id}: {e}")
+        traceback.print_exc()
+        return {"success": False, "error": f"Enrichment failed: {str(e)}"}
+
+
+@router.post(
+    "/{restaurant_id}/reprocess",
+    summary="Reprocess restaurant",
+    description="Re-run Google Places enrichment for a restaurant using its current (possibly edited) fields.",
+)
+async def reprocess_restaurant(restaurant_id: str):
+    """Re-enrich a single restaurant via Google Places using its current DB fields."""
+    import asyncio
+    loop = asyncio.get_event_loop()
+    result = await loop.run_in_executor(None, _run_enrichment, restaurant_id)
+
+    if not result.get("success") and "not found" in result.get("error", "").lower():
+        raise HTTPException(status_code=404, detail=result["error"])
+
+    return result
 
 
 @router.delete(
