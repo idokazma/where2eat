@@ -1240,6 +1240,7 @@ function RestaurantsTab() {
     const params = new URLSearchParams({
       page: String(page),
       limit: "50",
+      include_hidden: "true",
     })
     if (debouncedSearch) params.set("q", debouncedSearch)
 
@@ -2044,7 +2045,7 @@ function AdminFeedTab() {
 
       try {
         const res = await fetch(
-          getApiUrl(`/api/restaurants/search?page=${pageNum}&limit=20`)
+          getApiUrl(`/api/restaurants/search?page=${pageNum}&limit=20&include_hidden=true`)
         )
         if (!res.ok) throw new Error(`HTTP ${res.status}`)
         const data: RestaurantsSearchResponse = await res.json()

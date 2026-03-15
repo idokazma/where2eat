@@ -276,6 +276,7 @@ async def search_restaurants(
     sort_direction: str = Query("desc", description="Sort direction (asc/desc)"),
     page: int = Query(1, ge=1, description="Page number"),
     limit: int = Query(20, ge=1, le=100, description="Items per page"),
+    include_hidden: bool = Query(False, description="Include hidden restaurants (for admin)"),
 ):
     """Search restaurants with filters."""
     offset = (page - 1) * limit
@@ -322,8 +323,9 @@ async def search_restaurants(
     # Apply filters
     filtered = restaurants
 
-    # Filter out hidden restaurants from public search
-    filtered = [r for r in filtered if not r.get("is_hidden")]
+    # Filter out hidden restaurants from public search (admin can override)
+    if not include_hidden:
+        filtered = [r for r in filtered if not r.get("is_hidden")]
 
     if location:
         filtered = [
