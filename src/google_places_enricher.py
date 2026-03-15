@@ -124,50 +124,69 @@ class GooglePlacesEnricher:
         """
         restaurant_name = restaurant_data.get('name_english') or ''
         hebrew_name = restaurant_data.get('name_hebrew') or ''
-        city = (restaurant_data.get('location') or {}).get('city') or ''
+        location = restaurant_data.get('location') or {}
+        city = location.get('city') or ''
+        address = location.get('address') or ''
+        neighborhood = location.get('neighborhood') or ''
         country = restaurant_data.get('country') or ''
         is_israeli = self._is_israeli_restaurant(restaurant_data)
 
-        self.logger.info(f"🔍 Enriching restaurant: {restaurant_name} ({hebrew_name}) in {city} [{'Israel' if is_israeli else country or 'unknown'}]")
+        self.logger.info(f"🔍 Enriching restaurant: {restaurant_name} ({hebrew_name}) in {city} addr={address} [{'Israel' if is_israeli else country or 'unknown'}]")
 
         # Try multiple search strategies
+        # When address is available from the transcript, use it for precise matching
         place_details = None
 
         if is_israeli:
-            # Israeli restaurant: search with both English and Hebrew names
-            # Strategy 1: English name + city
-            if restaurant_name and city:
+            # Strategy 1: Hebrew name + address (most precise — targets specific branch)
+            if not place_details and hebrew_name and address:
+                place_details = self._search_restaurant(f"{hebrew_name} {address} {city}".strip(), language_code='he')
+
+            # Strategy 2: English name + address
+            if not place_details and restaurant_name and address:
+                place_details = self._search_restaurant(f"{restaurant_name} {address} {city}".strip(), language_code='he')
+
+            # Strategy 3: Hebrew name + neighborhood + city
+            if not place_details and hebrew_name and neighborhood and city:
+                place_details = self._search_restaurant(f"{hebrew_name} {neighborhood} {city}", language_code='he')
+
+            # Strategy 4: English name + city
+            if not place_details and restaurant_name and city:
                 place_details = self._search_restaurant(f"{restaurant_name} {city}", language_code='he')
 
-            # Strategy 2: Hebrew name + city
+            # Strategy 5: Hebrew name + city
             if not place_details and hebrew_name and city:
                 place_details = self._search_restaurant(f"{hebrew_name} {city}", language_code='he')
 
-            # Strategy 3: English name + "restaurant" + city
+            # Strategy 6: English name + "restaurant" + city
             if not place_details and restaurant_name and city:
                 place_details = self._search_restaurant(f"{restaurant_name} restaurant {city}", language_code='he')
 
-            # Strategy 4: Just the name (broader search)
-            if not place_details and restaurant_name:
-                place_details = self._search_restaurant(restaurant_name, language_code='he')
+            # Strategy 7: Just the name (broadest search)
+            if not place_details and (restaurant_name or hebrew_name):
+                place_details = self._search_restaurant(restaurant_name or hebrew_name, language_code='he')
         else:
             # Non-Israeli restaurant: search in original language, include country for precision
             primary_name = restaurant_name or hebrew_name  # For non-Israeli, hebrew_name IS the original name
             search_location = f"{city}, {country}" if city and country else city or country or ''
 
-            # Strategy 1: Name + city + country
-            if primary_name and search_location:
+            # Strategy 1: Name + address + city (most precise)
+            if not place_details and primary_name and address:
+                place_details = self._search_restaurant(f"{primary_name} {address} {search_location}".strip(), language_code='en')
+
+            # Strategy 2: Name + city + country
+            if not place_details and primary_name and search_location:
                 place_details = self._search_restaurant(f"{primary_name} {search_location}", language_code='en')
 
-            # Strategy 2: Name + "restaurant" + location
+            # Strategy 3: Name + "restaurant" + location
             if not place_details and primary_name and search_location:
                 place_details = self._search_restaurant(f"{primary_name} restaurant {search_location}", language_code='en')
 
-            # Strategy 3: Just name + country
+            # Strategy 4: Just name + country
             if not place_details and primary_name and country:
                 place_details = self._search_restaurant(f"{primary_name} {country}", language_code='en')
 
-            # Strategy 4: Just the name
+            # Strategy 5: Just the name
             if not place_details and primary_name:
                 place_details = self._search_restaurant(primary_name, language_code='en')
 

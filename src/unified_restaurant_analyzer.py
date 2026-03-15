@@ -666,6 +666,12 @@ EXTRACTION GUIDELINES:
 2. Look for location patterns: "[name] בתל אביב", "[name] ברחוב X", "[name] במרכז"
 3. Include chef-owned restaurants: "המסעדה של [שף]", "[שף] פתח מסעדה"
 4. ONLY include if the hosts share meaningful content about the place (opinion, food description, recommendation, story)
+5. LOCATION EXTRACTION — THIS IS CRITICAL:
+   - Extract the SPECIFIC location discussed in the transcript: street name, neighborhood, or area
+   - Listen for: "ברחוב X", "בשכונת X", "ליד X", "באזור X", "פתח סניף ב-X"
+   - If a restaurant has multiple branches and the hosts discuss a SPECIFIC branch, extract THAT branch's location — not the original/main branch
+   - If the hosts say "פתח סניף חדש ב..." or "הסניף החדש שלהם ב...", use the NEW location
+   - Put the street address in the address field, not just the city
 
 DO NOT EXTRACT:
 - Restaurants only mentioned in passing without review or opinion
@@ -686,8 +692,8 @@ OUTPUT FORMAT - Return a JSON object:
             "country": "Israel/France/USA/Japan/etc. - the country where the restaurant is located",
             "location": {{
                 "city": "עיר (Hebrew for Israeli cities, original language for foreign cities e.g. Paris, not פריז)",
-                "neighborhood": "שכונה or neighborhood name",
-                "address": "כתובת מלאה אם מוזכרת",
+                "neighborhood": "שכונה or neighborhood name if mentioned",
+                "address": "Street address as mentioned in transcript (e.g., 'רחוב דיזנגוף 99', 'שדרות רוטשילד 22'). Extract the SPECIFIC location discussed — if they talk about a new branch, use the NEW address, not the original.",
                 "region": "For Israel: צפון/מרכז/דרום/ירושלים/שרון. For other countries: null"
             }},
             "cuisine_type": "סוג מטבח (איטלקי/אסייתי/ים-תיכוני/וכו')",
