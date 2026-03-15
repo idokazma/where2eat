@@ -93,11 +93,11 @@ class GooglePlacesEnricher:
 
     def _is_israeli_restaurant(self, restaurant_data: Dict) -> bool:
         """Check if restaurant is located in Israel based on country field or city names."""
-        country = restaurant_data.get('country', '').strip().lower()
+        country = (restaurant_data.get('country') or '').strip().lower()
         if country and country not in ('israel', 'ישראל', ''):
             return False
         # If no country field, check if city is a known Israeli city
-        city = restaurant_data.get('location', {}).get('city', '')
+        city = (restaurant_data.get('location') or {}).get('city') or ''
         israeli_cities = {
             'תל אביב', 'ירושלים', 'חיפה', 'באר שבע', 'אילת', 'נתניה',
             'הרצליה', 'רעננה', 'כפר סבא', 'פתח תקווה', 'ראשון לציון',
@@ -122,10 +122,10 @@ class GooglePlacesEnricher:
         Returns:
             Enhanced restaurant data with Google Places information
         """
-        restaurant_name = restaurant_data.get('name_english', '')
-        hebrew_name = restaurant_data.get('name_hebrew', '')
-        city = restaurant_data.get('location', {}).get('city', '')
-        country = restaurant_data.get('country', '')
+        restaurant_name = restaurant_data.get('name_english') or ''
+        hebrew_name = restaurant_data.get('name_hebrew') or ''
+        city = (restaurant_data.get('location') or {}).get('city') or ''
+        country = restaurant_data.get('country') or ''
         is_israeli = self._is_israeli_restaurant(restaurant_data)
 
         self.logger.info(f"🔍 Enriching restaurant: {restaurant_name} ({hebrew_name}) in {city} [{'Israel' if is_israeli else country or 'unknown'}]")
