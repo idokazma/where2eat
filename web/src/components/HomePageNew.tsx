@@ -30,7 +30,7 @@ function isInIsrael(restaurant: Restaurant): boolean {
   return false;
 }
 
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 15;
 
 // Available cuisines for filtering
 const CUISINES = [
