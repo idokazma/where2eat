@@ -1844,13 +1844,12 @@ function EditRestaurantDialog({
       const res = await fetch(getApiUrl(`/api/restaurants/${restaurant.id}/reprocess`), {
         method: "POST",
       })
-      if (!res.ok) throw new Error(`HTTP ${res.status}`)
       const data = await res.json()
       if (data.success && data.restaurant) {
         onSaved(data.restaurant)
         onClose()
       } else {
-        setSaveError(data.error || "Reprocess failed — no Google Places match found")
+        setSaveError(data.error || data.detail || `Reprocess failed (HTTP ${res.status})`)
       }
     } catch (err: unknown) {
       setSaveError(err instanceof Error ? err.message : "Reprocess failed")
@@ -1891,13 +1890,12 @@ function EditRestaurantDialog({
       const res = await fetch(getApiUrl(`/api/restaurants/${restaurant.id}/reprocess`), {
         method: "POST",
       })
-      if (!res.ok) throw new Error(`Reprocess failed: HTTP ${res.status}`)
       const data = await res.json()
       if (data.success && data.restaurant) {
         onSaved(data.restaurant)
         onClose()
       } else {
-        setSaveError(data.error || "Reprocess failed — no Google Places match found")
+        setSaveError(data.error || data.detail || `Reprocess failed (HTTP ${res.status})`)
       }
     } catch (err: unknown) {
       setSaveError(err instanceof Error ? err.message : "Save & Reprocess failed")
