@@ -598,24 +598,21 @@ export const pipelineApi = {
   }> {
     return apiFetch('/health');
   },
-  // Scheduler control methods (from admin-dashboard branch)
-  async schedulerStatus(): Promise<PipelineStatus> {
-    return apiFetch('/api/admin/pipeline/status');
+  // Scheduler control methods
+  async schedulerStatus(): Promise<any> {
+    return apiFetch('/api/admin/pipeline/scheduler/status');
   },
-  async schedulerStart(options?: { poll_interval_ms?: number; process_interval_ms?: number }): Promise<any> {
-    return apiFetch('/api/admin/pipeline/start', { method: 'POST', body: JSON.stringify(options || {}) });
+  async schedulerStart(): Promise<any> {
+    return apiFetch('/api/admin/pipeline/scheduler/start', { method: 'POST' });
   },
   async schedulerStop(): Promise<any> {
-    return apiFetch('/api/admin/pipeline/stop', { method: 'POST' });
-  },
-  async schedulerUpdateSettings(settings: { poll_interval_ms?: number; process_interval_ms?: number; enabled?: boolean }): Promise<any> {
-    return apiFetch('/api/admin/pipeline/settings', { method: 'PUT', body: JSON.stringify(settings) });
+    return apiFetch('/api/admin/pipeline/scheduler/stop', { method: 'POST' });
   },
   async schedulerPollNow(): Promise<any> {
-    return apiFetch('/api/admin/pipeline/poll-now', { method: 'POST' });
+    return apiFetch('/api/admin/pipeline/poll', { method: 'POST' });
   },
   async schedulerProcessNow(): Promise<any> {
-    return apiFetch('/api/admin/pipeline/process-now', { method: 'POST' });
+    return apiFetch('/api/admin/pipeline/scheduler/process-now', { method: 'POST' });
   },
 };
 

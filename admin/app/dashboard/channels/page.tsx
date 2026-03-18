@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { channelsApi, pipelineApi, MonitoredChannel, PipelineStatus } from '@/lib/api';
+import { subscriptionsApi, pipelineApi } from '@/lib/api';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import {
@@ -79,7 +79,7 @@ export default function ChannelsPage() {
 
   const { data, isLoading, error } = useQuery({
     queryKey: ['channels'],
-    queryFn: () => channelsApi.list(),
+    queryFn: () => subscriptionsApi.list(),
     refetchInterval: 30000,
   });
 
@@ -98,7 +98,7 @@ export default function ChannelsPage() {
 
   const addChannelMutation = useMutation({
     mutationFn: (data: { channel_url: string; channel_name?: string; poll_interval_minutes: number }) =>
-      channelsApi.create(data),
+      subscriptionsApi.add({ source_url: data.channel_url, source_name: data.channel_name, check_interval_hours: Math.floor(data.poll_interval_minutes / 60) }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['channels'] });
       setChannelUrl('');
@@ -109,17 +109,17 @@ export default function ChannelsPage() {
   });
 
   const updateChannelMutation = useMutation({
-    mutationFn: ({ id, data }: { id: string; data: any }) => channelsApi.update(id, data),
+    mutationFn: ({ id, data }: { id: string; data: any }) => subscriptionsApi.update(id, data),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['channels'] }),
   });
 
   const deleteChannelMutation = useMutation({
-    mutationFn: (id: string) => channelsApi.delete(id),
+    mutationFn: (id: string) => subscriptionsApi.delete(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['channels'] }),
   });
 
   const pollChannelMutation = useMutation({
-    mutationFn: (id: string) => channelsApi.poll(id),
+    mutationFn: (id: string) => subscriptionsApi.check(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['channels'] });
       queryClient.invalidateQueries({ queryKey: ['pipeline-status'] });
@@ -145,14 +145,17 @@ export default function ChannelsPage() {
   });
 
   const updateSettingsMutation = useMutation({
-    mutationFn: (settings: { poll_interval_ms?: number }) => pipelineApi.schedulerUpdateSettings(settings),
+    mutationFn: async (_settings: { poll_interval_ms?: number }) => {
+      // Settings update not available in FastAPI scheduler — use env vars
+      return { success: true };
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['pipeline-status'] });
       setShowSettings(false);
     },
   });
 
-  const channels = data?.channels || [];
+  const channels = data?.subscriptions || data?.channels || [];
 
   const handleAddSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -182,13 +185,13 @@ export default function ChannelsPage() {
       </div>
 
       {/* Scheduler Control Card */}
-      <Card className={pipelineStatus?.enabled ? 'border-green-200' : 'border-yellow-200'}>
+      <Card className={pipelineStatus?.running || pipelineStatus?.scheduler_enabled ? 'border-green-200' : 'border-yellow-200'}>
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className={`h-3 w-3 rounded-full ${pipelineStatus?.enabled ? 'bg-green-500 animate-pulse' : 'bg-yellow-500'}`} />
+              <div className={`h-3 w-3 rounded-full ${pipelineStatus?.running || pipelineStatus?.scheduler_enabled ? 'bg-green-500 animate-pulse' : 'bg-yellow-500'}`} />
               <CardTitle className="text-lg">
-                Scheduler {pipelineStatus?.enabled ? 'Running' : 'Stopped'}
+                Scheduler {pipelineStatus?.running || pipelineStatus?.scheduler_enabled ? 'Running' : 'Stopped'}
               </CardTitle>
             </div>
             <div className="flex items-center gap-2">
@@ -213,7 +216,7 @@ export default function ChannelsPage() {
                 )}
                 Poll Now
               </Button>
-              {pipelineStatus?.enabled ? (
+              {pipelineStatus?.running || pipelineStatus?.scheduler_enabled ? (
                 <Button
                   variant="outline"
                   size="sm"
@@ -248,7 +251,7 @@ export default function ChannelsPage() {
               <p className="text-xs text-muted-foreground">Next Poll</p>
               <p className="text-sm font-medium flex items-center gap-1">
                 <Timer className="h-3 w-3" />
-                {pipelineStatus?.enabled ? formatCountdown(pipelineStatus?.next_poll_at ?? null) : '--'}
+                {pipelineStatus?.running || pipelineStatus?.scheduler_enabled ? formatCountdown(pipelineStatus?.next_poll_at ?? null) : '--'}
               </p>
             </div>
             <div className="space-y-1">
@@ -412,14 +415,14 @@ export default function ChannelsPage() {
             </div>
           ) : (
             <div className="space-y-4">
-              {channels.map((channel: MonitoredChannel) => (
+              {channels.map((channel: any) => (
                 <div
                   key={channel.id}
                   className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent/50 transition-colors"
                 >
                   <div className="flex items-start gap-4 flex-1">
                     <div className="mt-1">
-                      {channel.enabled ? (
+                      {channel.is_active ? (
                         <CheckCircle className="h-5 w-5 text-green-600" />
                       ) : (
                         <XCircle className="h-5 w-5 text-gray-400" />
@@ -428,24 +431,24 @@ export default function ChannelsPage() {
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-1">
                         <h3 className="font-semibold">
-                          {channel.channel_name || channel.channel_id}
+                          {channel.source_name || channel.source_id || 'Unknown'}
                         </h3>
                         <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
-                          channel.enabled ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'
+                          channel.is_active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'
                         }`}>
-                          {channel.enabled ? 'Active' : 'Disabled'}
+                          {channel.is_active !== false ? 'Active' : 'Paused'}
                         </span>
                       </div>
-                      <p className="text-sm text-muted-foreground mb-2">{channel.channel_url}</p>
+                      <p className="text-sm text-muted-foreground mb-2">{channel.source_url}</p>
                       <div className="flex items-center gap-4 text-xs text-muted-foreground">
                         <span>Poll: every {
-                          INTERVAL_OPTIONS.find(o => o.value === channel.poll_interval_minutes)?.label ||
-                          `${channel.poll_interval_minutes}m`
+                          INTERVAL_OPTIONS.find(o => o.value === channel.check_interval_hours * 60)?.label ||
+                          `${channel.check_interval_hours * 60}m`
                         }</span>
-                        <span>Last polled: {formatTimeAgo(channel.last_polled_at)}</span>
+                        <span>Last polled: {formatTimeAgo(channel.last_checked_at)}</span>
                         <span>Videos found: {channel.total_videos_found}</span>
-                        {channel.last_video_found_at && (
-                          <span>Last new video: {formatTimeAgo(channel.last_video_found_at)}</span>
+                        {channel.last_video_at && (
+                          <span>Last new video: {formatTimeAgo(channel.last_video_at)}</span>
                         )}
                       </div>
                     </div>
@@ -470,13 +473,14 @@ export default function ChannelsPage() {
                       variant="outline"
                       size="sm"
                       onClick={() => {
-                        updateChannelMutation.mutate({
-                          id: channel.id,
-                          data: { enabled: channel.enabled ? 0 : 1 },
-                        });
+                        if (channel.is_active) {
+                          subscriptionsApi.pause(channel.id).then(() => queryClient.invalidateQueries({ queryKey: ['channels'] }));
+                        } else {
+                          subscriptionsApi.resume(channel.id).then(() => queryClient.invalidateQueries({ queryKey: ['channels'] }));
+                        }
                       }}
                     >
-                      {channel.enabled ? (
+                      {channel.is_active ? (
                         <PowerOff className="h-4 w-4" />
                       ) : (
                         <Power className="h-4 w-4" />

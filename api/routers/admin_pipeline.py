@@ -714,3 +714,105 @@ async def remove_from_queue(
     if not success:
         raise HTTPException(status_code=404, detail="Item not found")
     return {"success": True, "message": "Video removed from queue"}
+
+
+# ==================== Scheduler Control ====================
+
+def _get_scheduler():
+    """Get the global pipeline scheduler instance from main."""
+    try:
+        from main import _pipeline_scheduler
+        return _pipeline_scheduler
+    except (ImportError, AttributeError):
+        return None
+
+
+@router.get(
+    "/scheduler/status",
+    summary="Scheduler status",
+    description="Get detailed scheduler status including timing, intervals, and next run times.",
+)
+async def scheduler_status(
+    user: dict = Depends(get_current_user),
+):
+    """Get scheduler status with detailed timing info."""
+    scheduler = _get_scheduler()
+    if scheduler is None:
+        return {
+            "running": False,
+            "scheduler_enabled": False,
+            "error": "Scheduler not initialized",
+        }
+    return scheduler.get_status()
+
+
+@router.post(
+    "/scheduler/start",
+    summary="Start scheduler",
+    description="Start the pipeline scheduler. Requires admin role.",
+)
+async def scheduler_start(
+    user: dict = Depends(require_role(["admin", "super_admin"])),
+):
+    """Start the pipeline scheduler."""
+    scheduler = _get_scheduler()
+    if scheduler is None:
+        raise HTTPException(status_code=500, detail="Scheduler not initialized")
+
+    if scheduler._running:
+        return {"success": False, "message": "Scheduler is already running", "status": scheduler.get_status()}
+
+    scheduler.start()
+    return {"success": True, "message": "Scheduler started", "status": scheduler.get_status()}
+
+
+@router.post(
+    "/scheduler/stop",
+    summary="Stop scheduler",
+    description="Stop the pipeline scheduler. Requires admin role.",
+)
+async def scheduler_stop(
+    user: dict = Depends(require_role(["admin", "super_admin"])),
+):
+    """Stop the pipeline scheduler."""
+    scheduler = _get_scheduler()
+    if scheduler is None:
+        raise HTTPException(status_code=500, detail="Scheduler not initialized")
+
+    if not scheduler._running:
+        return {"success": False, "message": "Scheduler is not running", "status": scheduler.get_status()}
+
+    scheduler.stop()
+    return {"success": True, "message": "Scheduler stopped", "status": scheduler.get_status()}
+
+
+@router.post(
+    "/scheduler/process-now",
+    summary="Process next video now",
+    description="Trigger immediate processing of the next queued video. Requires admin role.",
+)
+async def scheduler_process_now(
+    user: dict = Depends(require_role(["admin", "super_admin"])),
+):
+    """Process the next queued video immediately."""
+    try:
+        from database import get_database
+        from pipeline_scheduler import PipelineScheduler
+
+        db = get_database()
+        scheduler = PipelineScheduler(db=db)
+        scheduler.process_next_video()
+
+        queue_manager = _get_queue_manager()
+        depth = queue_manager.get_queue_depth()
+
+        return {
+            "success": True,
+            "message": "Process completed",
+            "queue_depth": depth,
+        }
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Process failed: {str(e)}",
+        )
