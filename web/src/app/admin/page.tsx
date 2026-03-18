@@ -1981,6 +1981,454 @@ function SchedulerPanel() {
 }
 
 // ---------------------------------------------------------------------------
+// Pipeline Tab - Episode list with status, queue, and detail view
+// ---------------------------------------------------------------------------
+
+interface PipelineEpisode {
+  id: string
+  video_id: string
+  video_url: string
+  title: string | null
+  channel_name: string | null
+  language: string | null
+  analysis_date: string | null
+  published_at: string | null
+  queue_status: string | null
+  queue_priority: number | null
+  attempt_count: number | null
+  error_message: string | null
+  restaurants_found: number | null
+  processing_started_at: string | null
+  processing_completed_at: string | null
+}
+
+interface QueuedVideo {
+  id: string
+  video_id: string
+  video_url: string
+  video_title: string | null
+  status: string
+  priority: number
+  attempt_count: number
+  error_message: string | null
+  published_at: string | null
+  created_at: string
+  processing_started_at: string | null
+  processing_completed_at: string | null
+  restaurants_found: number | null
+}
+
+function PipelineTab() {
+  const [episodes, setEpisodes] = useState<PipelineEpisode[]>([])
+  const [queueItems, setQueueItems] = useState<QueuedVideo[]>([])
+  const [loading, setLoading] = useState(true)
+  const [selectedVideo, setSelectedVideo] = useState<string | null>(null)
+  const [detail, setDetail] = useState<any>(null)
+  const [detailLoading, setDetailLoading] = useState(false)
+  const [health, setHealth] = useState<any>(null)
+  const [polling, setPolling] = useState(false)
+
+  const fetchData = useCallback(() => {
+    Promise.all([
+      fetch(getApiUrl("/api/deepdive/episodes?limit=100")).then(r => r.json()).catch(() => null),
+      fetch(getApiUrl("/health")).then(r => r.json()).catch(() => null),
+      fetch(getApiUrl("/api/admin/pipeline/queue?limit=50")).then(r => r.json()).catch(() => ({ queue: [] })),
+    ]).then(([epData, healthData, queueData]) => {
+      if (epData?.episodes) setEpisodes(epData.episodes)
+      if (healthData) setHealth(healthData)
+      // Queue items that aren't already in episodes
+      const episodeVideoIds = new Set((epData?.episodes || []).map((e: PipelineEpisode) => e.video_id))
+      const queueOnly = (queueData?.queue || []).filter((q: QueuedVideo) => !episodeVideoIds.has(q.video_id))
+      setQueueItems(queueOnly)
+      setLoading(false)
+    })
+  }, [])
+
+  useEffect(() => {
+    fetchData()
+    const timer = setInterval(fetchData, 10000)
+    return () => clearInterval(timer)
+  }, [fetchData])
+
+  const handlePollNow = async () => {
+    setPolling(true)
+    try {
+      await fetch(getApiUrl("/api/admin/pipeline/poll"), { method: "POST" })
+      setTimeout(fetchData, 3000)
+    } catch { /* ignore */ }
+    finally { setPolling(false) }
+  }
+
+  const loadDetail = async (videoId: string) => {
+    setSelectedVideo(videoId)
+    setDetailLoading(true)
+    setDetail(null)
+    try {
+      const res = await fetch(getApiUrl(`/api/deepdive/episodes/${videoId}`))
+      if (res.ok) {
+        const data = await res.json()
+        setDetail(data)
+      }
+    } catch { /* ignore */ }
+    finally { setDetailLoading(false) }
+  }
+
+  if (selectedVideo) {
+    return (
+      <div className="space-y-4">
+        <Button variant="outline" size="sm" onClick={() => { setSelectedVideo(null); setDetail(null) }}>
+          <ChevronLeft className="h-4 w-4 mr-1" />
+          Back to episodes
+        </Button>
+
+        {detailLoading ? (
+          <div className="flex items-center justify-center py-20">
+            <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+          </div>
+        ) : detail ? (
+          <div className="space-y-4">
+            {/* Episode header */}
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg" dir="auto">
+                  {detail.episode?.title || detail.queue_info?.video_title || selectedVideo}
+                </CardTitle>
+                <div className="flex flex-wrap gap-3 text-xs text-muted-foreground">
+                  <a href={`https://www.youtube.com/watch?v=${selectedVideo}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-blue-600 hover:underline">
+                    <Youtube className="h-3 w-3" /> Watch on YouTube <ExternalLink className="h-3 w-3" />
+                  </a>
+                  {detail.episode?.language && <span>Language: {detail.episode.language}</span>}
+                  {detail.episode?.analysis_date && <span>Analyzed: {formatDate(detail.episode.analysis_date)}</span>}
+                  {detail.queue_info?.published_at && <span>Published: {formatDate(detail.queue_info.published_at)}</span>}
+                </div>
+              </CardHeader>
+            </Card>
+
+            {/* Processing timeline */}
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base">Processing Timeline</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {/* Queue status */}
+                  {detail.queue_info && (
+                    <>
+                      <TimelineRow
+                        label="Discovered"
+                        time={detail.queue_info.created_at}
+                        status="completed"
+                        detail={`Priority: ${detail.queue_info.priority}`}
+                      />
+                      <TimelineRow
+                        label="Transcript Fetch"
+                        time={detail.queue_info.processing_started_at}
+                        status={detail.queue_info.status === "completed" ? "completed" : detail.queue_info.status === "failed" ? "failed" : detail.queue_info.status === "processing" ? "processing" : "pending"}
+                        detail={detail.episode?.language ? `Language: ${detail.episode.language}` : undefined}
+                      />
+                      <TimelineRow
+                        label="AI Analysis"
+                        time={detail.queue_info.processing_completed_at || (detail.episode?.analysis_date)}
+                        status={detail.queue_info.status === "completed" ? "completed" : detail.queue_info.status === "failed" ? "failed" : "pending"}
+                        detail={detail.queue_info.restaurants_found != null ? `${detail.queue_info.restaurants_found} restaurants extracted` : undefined}
+                      />
+                      {detail.queue_info.error_message && (
+                        <div className="bg-red-50 border border-red-200 rounded-lg p-3 text-sm text-red-700">
+                          <strong>Error:</strong> {detail.queue_info.error_message}
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Restaurants found */}
+            {detail.restaurants && detail.restaurants.length > 0 && (
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-base">Restaurants Found ({detail.restaurants.length})</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="divide-y">
+                    {detail.restaurants.map((r: any) => (
+                      <div key={r.id} className="py-2 flex items-center justify-between">
+                        <div>
+                          <p className="font-medium text-sm" dir="auto">{r.name_hebrew || r.name_english || "Unnamed"}</p>
+                          <div className="flex gap-2 text-xs text-muted-foreground">
+                            {r.city && <span>{r.city}</span>}
+                            {r.cuisine_type && <span>· {r.cuisine_type}</span>}
+                            {r.host_opinion && <span>· {r.host_opinion}</span>}
+                          </div>
+                        </div>
+                        {r.google_rating && (
+                          <Badge variant="secondary" className="text-xs">{r.google_rating} ★</Badge>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Transcript preview */}
+            {detail.transcript && (
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-base">Transcript ({detail.transcript_length?.toLocaleString()} chars)</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <pre className="text-xs text-muted-foreground whitespace-pre-wrap max-h-60 overflow-y-auto" dir="auto">
+                    {detail.transcript.slice(0, 3000)}{detail.transcript.length > 3000 ? "..." : ""}
+                  </pre>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Pipeline logs */}
+            {detail.pipeline_logs && detail.pipeline_logs.length > 0 && (
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-base">Pipeline Logs</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2">
+                    {detail.pipeline_logs.map((log: any) => (
+                      <div key={log.id} className="flex items-start gap-2 text-xs">
+                        <span className={`px-1.5 py-0.5 rounded font-mono ${
+                          log.level === "error" ? "bg-red-100 text-red-700" :
+                          log.level === "warning" ? "bg-yellow-100 text-yellow-700" :
+                          "bg-gray-100 text-gray-600"
+                        }`}>{log.level}</span>
+                        <span className="text-muted-foreground">{formatDate(log.timestamp)}</span>
+                        <span className="flex-1">{log.message}</span>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+        ) : (
+          <Card>
+            <CardContent className="py-8 text-center text-muted-foreground">
+              Could not load episode details
+            </CardContent>
+          </Card>
+        )}
+      </div>
+    )
+  }
+
+  const pipeline = health?.pipeline
+  const isRunning = pipeline?.running
+
+  // Merge episodes and queue-only items into a single sorted list
+  type UnifiedItem = {
+    key: string
+    video_id: string
+    title: string
+    status: string
+    published_at: string | null
+    restaurants_found: number | null
+    processing_started_at: string | null
+    processing_completed_at: string | null
+    error_message: string | null
+    attempt_count: number | null
+    source: "episode" | "queue"
+  }
+
+  const unifiedList: UnifiedItem[] = [
+    ...episodes.map(ep => ({
+      key: `ep-${ep.video_id}`,
+      video_id: ep.video_id,
+      title: ep.title || ep.video_id,
+      status: ep.queue_status || "completed",
+      published_at: ep.published_at,
+      restaurants_found: ep.restaurants_found,
+      processing_started_at: ep.processing_started_at,
+      processing_completed_at: ep.processing_completed_at,
+      error_message: ep.error_message,
+      attempt_count: ep.attempt_count,
+      source: "episode" as const,
+    })),
+    ...queueItems.map(q => ({
+      key: `q-${q.video_id}`,
+      video_id: q.video_id,
+      title: q.video_title || q.video_id,
+      status: q.status,
+      published_at: q.published_at,
+      restaurants_found: q.restaurants_found,
+      processing_started_at: q.processing_started_at,
+      processing_completed_at: q.processing_completed_at,
+      error_message: q.error_message,
+      attempt_count: q.attempt_count,
+      source: "queue" as const,
+    })),
+  ]
+
+  // Sort: queued/processing first, then by published_at descending
+  const statusOrder: Record<string, number> = { processing: 0, queued: 1, failed: 2, completed: 3, skipped: 4 }
+  unifiedList.sort((a, b) => {
+    const sa = statusOrder[a.status] ?? 3
+    const sb = statusOrder[b.status] ?? 3
+    if (sa !== sb) return sa - sb
+    const da = a.published_at || ""
+    const db = b.published_at || ""
+    return db > da ? 1 : db < da ? -1 : 0
+  })
+
+  const statusIcon = (status: string) => {
+    switch (status) {
+      case "completed": return <CheckCircle2 className="h-4 w-4 text-green-600" />
+      case "failed": return <XCircle className="h-4 w-4 text-red-600" />
+      case "processing": return <Loader2 className="h-4 w-4 text-blue-600 animate-spin" />
+      case "queued": return <Clock className="h-4 w-4 text-yellow-600" />
+      case "skipped": return <SkipForward className="h-4 w-4 text-gray-400" />
+      default: return <Clock className="h-4 w-4 text-gray-400" />
+    }
+  }
+
+  const statusBadge = (status: string) => {
+    const colors: Record<string, string> = {
+      completed: "bg-green-100 text-green-800",
+      failed: "bg-red-100 text-red-800",
+      processing: "bg-blue-100 text-blue-800",
+      queued: "bg-yellow-100 text-yellow-800",
+      skipped: "bg-gray-100 text-gray-600",
+    }
+    return <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${colors[status] || "bg-gray-100 text-gray-600"}`}>{status}</span>
+  }
+
+  const counts = {
+    total: unifiedList.length,
+    completed: unifiedList.filter(i => i.status === "completed").length,
+    queued: unifiedList.filter(i => i.status === "queued").length,
+    processing: unifiedList.filter(i => i.status === "processing").length,
+    failed: unifiedList.filter(i => i.status === "failed").length,
+  }
+
+  return (
+    <div className="space-y-4">
+      {/* Pipeline status bar */}
+      <Card>
+        <CardContent className="py-3">
+          <div className="flex items-center justify-between flex-wrap gap-3">
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2">
+                <div className={`h-2.5 w-2.5 rounded-full ${isRunning ? "bg-green-500 animate-pulse" : "bg-yellow-500"}`} />
+                <span className="text-sm font-medium">Scheduler {isRunning ? "Running" : "Stopped"}</span>
+              </div>
+              {pipeline && (
+                <>
+                  <span className="text-xs text-muted-foreground">Queue: <strong>{pipeline.queue_depth}</strong></span>
+                  <span className="text-xs text-muted-foreground">Processing: <strong>{pipeline.currently_processing}</strong></span>
+                </>
+              )}
+            </div>
+            <Button variant="outline" size="sm" onClick={handlePollNow} disabled={polling}>
+              {polling ? <Loader2 className="h-3.5 w-3.5 animate-spin mr-1" /> : <RefreshCw className="h-3.5 w-3.5 mr-1" />}
+              Poll Now
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Stats */}
+      <div className="grid grid-cols-5 gap-3">
+        {[
+          { label: "Total", value: counts.total, color: "" },
+          { label: "Completed", value: counts.completed, color: "text-green-600" },
+          { label: "Queued", value: counts.queued, color: "text-yellow-600" },
+          { label: "Processing", value: counts.processing, color: "text-blue-600" },
+          { label: "Failed", value: counts.failed, color: "text-red-600" },
+        ].map(s => (
+          <Card key={s.label}>
+            <CardContent className="py-3 text-center">
+              <p className="text-xs text-muted-foreground">{s.label}</p>
+              <p className={`text-xl font-bold ${s.color}`}>{s.value}</p>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {/* Episode list */}
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base">Episodes ({unifiedList.length})</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {loading ? (
+            <div className="flex items-center justify-center py-12">
+              <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+            </div>
+          ) : unifiedList.length === 0 ? (
+            <p className="text-sm text-muted-foreground text-center py-8">No episodes found</p>
+          ) : (
+            <div className="divide-y">
+              {unifiedList.map(item => (
+                <button
+                  key={item.key}
+                  onClick={() => loadDetail(item.video_id)}
+                  className="w-full flex items-center gap-3 py-3 px-2 hover:bg-accent/50 rounded text-left transition-colors first:pt-0 last:pb-0"
+                >
+                  <div className="shrink-0">{statusIcon(item.status)}</div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-0.5">
+                      <p className="font-medium text-sm truncate" dir="auto">{item.title}</p>
+                      {statusBadge(item.status)}
+                    </div>
+                    <div className="flex items-center gap-3 text-xs text-muted-foreground flex-wrap">
+                      {item.published_at && <span>{formatDate(item.published_at)}</span>}
+                      {item.restaurants_found != null && item.restaurants_found > 0 && (
+                        <span className="text-green-600">{item.restaurants_found} restaurants</span>
+                      )}
+                      {item.processing_completed_at && (
+                        <span>Processed {formatDate(item.processing_completed_at)}</span>
+                      )}
+                      {item.error_message && (
+                        <span className="text-red-500 truncate max-w-[200px]">{item.error_message}</span>
+                      )}
+                    </div>
+                  </div>
+                  <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0" />
+                </button>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </div>
+  )
+}
+
+function TimelineRow({ label, time, status, detail: detailText }: {
+  label: string
+  time: string | null
+  status: "completed" | "failed" | "processing" | "pending"
+  detail?: string
+}) {
+  const colors = {
+    completed: "bg-green-500",
+    failed: "bg-red-500",
+    processing: "bg-blue-500 animate-pulse",
+    pending: "bg-gray-300",
+  }
+  return (
+    <div className="flex items-center gap-3">
+      <div className={`h-3 w-3 rounded-full shrink-0 ${colors[status]}`} />
+      <div className="flex-1">
+        <p className="text-sm font-medium">{label}</p>
+        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+          {time ? <span>{formatDate(time)}</span> : <span>--</span>}
+          {detailText && <span>· {detailText}</span>}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ---------------------------------------------------------------------------
 // Cuisine gradient helper for feed cards
 // ---------------------------------------------------------------------------
 
@@ -2610,12 +3058,16 @@ export default function AdminPage() {
         </div>
       </div>
 
-      {/* Top-level tabs: Dashboard / Feed / Deep Dive */}
+      {/* Top-level tabs */}
       <Tabs value={topTab} onValueChange={setTopTab} className="flex flex-col gap-4">
         <TabsList className="justify-start">
           <TabsTrigger value="dashboard">
             <LayoutDashboard className="h-4 w-4 mr-1.5" />
             Dashboard
+          </TabsTrigger>
+          <TabsTrigger value="pipeline">
+            <Activity className="h-4 w-4 mr-1.5" />
+            Pipeline
           </TabsTrigger>
           <TabsTrigger value="feed">
             <Grid3X3 className="h-4 w-4 mr-1.5" />
@@ -2630,6 +3082,11 @@ export default function AdminPage() {
         {/* Dashboard tab */}
         <TabsContent value="dashboard">
           <DashboardTab onNavigateToDeepDive={navigateToDeepDive} />
+        </TabsContent>
+
+        {/* Pipeline tab */}
+        <TabsContent value="pipeline">
+          <PipelineTab />
         </TabsContent>
 
         {/* Feed tab */}
