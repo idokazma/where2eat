@@ -20,6 +20,10 @@ const adminVideosRoutes = require('./routes/admin-videos')
 const adminBulkRoutes = require('./routes/admin-bulk')
 const adminAuditRoutes = require('./routes/admin-audit')
 const adminSystemRoutes = require('./routes/admin-system')
+const adminChannelsRoutes = require('./routes/admin-channels')
+const adminQueueRoutes = require('./routes/admin-queue')
+const adminPipelineRoutes = require('./routes/admin-pipeline')
+const { startScheduler, getSchedulerStatus } = require('./scheduler')
 
 app.use(helmet())
 app.use(cors({
@@ -189,7 +193,11 @@ async function initializeRestaurantData() {
 initializeRestaurantData()
 
 app.get('/health', (req, res) => {
-  res.json({ status: 'OK', timestamp: new Date().toISOString() })
+  res.json({
+    status: 'OK',
+    timestamp: new Date().toISOString(),
+    scheduler: getSchedulerStatus()
+  })
 })
 
 // YouTube Transcript Collector health check endpoint
@@ -294,6 +302,9 @@ app.use('/api/admin/videos', adminVideosRoutes)
 app.use('/api/admin/bulk', adminBulkRoutes)
 app.use('/api/admin/audit', adminAuditRoutes)
 app.use('/api/admin/system', adminSystemRoutes)
+app.use('/api/admin/channels', adminChannelsRoutes)
+app.use('/api/admin/queue', adminQueueRoutes)
+app.use('/api/admin/pipeline', adminPipelineRoutes)
 
 app.get('/api/restaurants', async (req, res) => {
   try {
@@ -1696,6 +1707,10 @@ app.use((error, req, res, next) => {
   console.error('Server error:', error)
   res.status(500).json({ error: 'Internal server error' })
 })
+
+// Auto-start scheduler on boot (built-in cron)
+startScheduler();
+console.log('[Scheduler] Auto-started on server boot');
 
 app.listen(port, () => {
   console.log(`Where2Eat API server running on http://localhost:${port}`)

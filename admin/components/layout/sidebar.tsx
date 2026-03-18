@@ -13,7 +13,9 @@ import {
   ChevronRight,
   FileSearch,
   X,
-  Activity
+  Activity,
+  Radio,
+  ListOrdered
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -24,6 +26,8 @@ const navigation = [
   { name: 'Restaurants', href: '/dashboard/restaurants', icon: UtensilsCrossed },
   { name: 'Articles', href: '/dashboard/articles', icon: FileText },
   { name: 'Videos', href: '/dashboard/videos', icon: Video },
+  { name: 'Channels', href: '/dashboard/channels', icon: Radio },
+  { name: 'Queue', href: '/dashboard/queue', icon: ListOrdered },
   { name: 'Analytics', href: '/dashboard/analytics', icon: BarChart3 },
   { name: 'System', href: '/dashboard/system', icon: Activity },
   { name: 'Audit Log', href: '/dashboard/audit', icon: FileSearch },

@@ -692,6 +692,143 @@ export const errorsApi = {
   },
 };
 
+// ==================== Channel Monitoring ====================
+
+export interface MonitoredChannel {
+  id: string;
+  channel_id: string;
+  channel_url: string;
+  channel_name: string | null;
+  playlist_id: string | null;
+  playlist_url: string | null;
+  enabled: number;
+  poll_interval_minutes: number;
+  last_polled_at: string | null;
+  last_video_found_at: string | null;
+  total_videos_found: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface QueueJob {
+  id: string;
+  job_type: string;
+  status: 'pending' | 'processing' | 'completed' | 'failed';
+  channel_url: string | null;
+  video_url: string | null;
+  progress_videos_completed: number;
+  progress_videos_total: number;
+  progress_videos_failed: number;
+  progress_restaurants_found: number;
+  current_step: string | null;
+  error_message: string | null;
+  started_at: string | null;
+  completed_at: string | null;
+  created_at: string;
+}
+
+export interface QueueStats {
+  pending: number;
+  processing: number;
+  completed: number;
+  failed: number;
+  total: number;
+}
+
+export interface PipelineStatus {
+  enabled: boolean;
+  is_polling: boolean;
+  is_processing: boolean;
+  poll_interval_ms: number;
+  process_interval_ms: number;
+  last_poll_at: string | null;
+  last_process_at: string | null;
+  next_poll_at: string | null;
+  next_process_at: string | null;
+  stats: {
+    polls_completed: number;
+    jobs_processed: number;
+    errors: number;
+  };
+}
+
+export const channelsApi = {
+  async list(): Promise<{ channels: MonitoredChannel[] }> {
+    return apiFetch('/api/admin/channels');
+  },
+  async create(data: { channel_url: string; channel_name?: string; poll_interval_minutes?: number }): Promise<any> {
+    return apiFetch('/api/admin/channels', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+  async update(id: string, data: Partial<MonitoredChannel>): Promise<any> {
+    return apiFetch(`/api/admin/channels/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+  },
+  async delete(id: string): Promise<void> {
+    return apiFetch(`/api/admin/channels/${id}`, { method: 'DELETE' });
+  },
+  async poll(id: string): Promise<any> {
+    return apiFetch(`/api/admin/channels/${id}/poll`, { method: 'POST' });
+  },
+  async getVideos(id: string): Promise<any> {
+    return apiFetch(`/api/admin/channels/${id}/videos`);
+  },
+};
+
+export const queueApi = {
+  async list(params?: { status?: string; limit?: number; offset?: number }): Promise<{ jobs: QueueJob[]; total: number }> {
+    const queryParams = new URLSearchParams();
+    if (params?.status) queryParams.append('status', params.status);
+    if (params?.limit) queryParams.append('limit', params.limit.toString());
+    if (params?.offset) queryParams.append('offset', params.offset.toString());
+    const query = queryParams.toString();
+    return apiFetch(`/api/admin/queue${query ? `?${query}` : ''}`);
+  },
+  async stats(): Promise<QueueStats> {
+    return apiFetch('/api/admin/queue/stats');
+  },
+  async processNext(): Promise<any> {
+    return apiFetch('/api/admin/queue/process', { method: 'POST' });
+  },
+  async getJob(id: string): Promise<QueueJob> {
+    return apiFetch(`/api/admin/queue/${id}`);
+  },
+  async deleteJob(id: string): Promise<void> {
+    return apiFetch(`/api/admin/queue/${id}`, { method: 'DELETE' });
+  },
+};
+
+export const pipelineApi = {
+  async status(): Promise<PipelineStatus> {
+    return apiFetch('/api/admin/pipeline/status');
+  },
+  async start(options?: { poll_interval_ms?: number; process_interval_ms?: number }): Promise<any> {
+    return apiFetch('/api/admin/pipeline/start', {
+      method: 'POST',
+      body: JSON.stringify(options || {}),
+    });
+  },
+  async stop(): Promise<any> {
+    return apiFetch('/api/admin/pipeline/stop', { method: 'POST' });
+  },
+  async updateSettings(settings: { poll_interval_ms?: number; process_interval_ms?: number; enabled?: boolean }): Promise<any> {
+    return apiFetch('/api/admin/pipeline/settings', {
+      method: 'PUT',
+      body: JSON.stringify(settings),
+    });
+  },
+  async pollNow(): Promise<any> {
+    return apiFetch('/api/admin/pipeline/poll-now', { method: 'POST' });
+  },
+  async processNow(): Promise<any> {
+    return apiFetch('/api/admin/pipeline/process-now', { method: 'POST' });
+  },
+};
+
 export default {
   auth: authApi,
   restaurants: restaurantsApi,
@@ -701,4 +838,7 @@ export default {
   bulk: bulkApi,
   system: systemApi,
   errors: errorsApi,
+  channels: channelsApi,
+  queue: queueApi,
+  pipeline: pipelineApi,
 };

@@ -256,6 +256,25 @@ class Database:
                 )
             ''')
 
+            # Monitored channels table
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS monitored_channels (
+                    id TEXT PRIMARY KEY,
+                    channel_id TEXT UNIQUE NOT NULL,
+                    channel_url TEXT NOT NULL,
+                    channel_name TEXT,
+                    playlist_id TEXT,
+                    playlist_url TEXT,
+                    enabled INTEGER DEFAULT 1,
+                    poll_interval_minutes INTEGER DEFAULT 360,
+                    last_polled_at TEXT,
+                    last_video_found_at TEXT,
+                    total_videos_found INTEGER DEFAULT 0,
+                    created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TEXT DEFAULT CURRENT_TIMESTAMP
+                )
+            ''')
+
             # Create indexes for common queries
             cursor.execute('CREATE INDEX IF NOT EXISTS idx_restaurants_city ON restaurants(city)')
             cursor.execute('CREATE INDEX IF NOT EXISTS idx_restaurants_cuisine ON restaurants(cuisine_type)')
@@ -276,6 +295,8 @@ class Database:
             cursor.execute('CREATE INDEX IF NOT EXISTS idx_error_logs_first_occurred ON error_logs(first_occurred)')
             cursor.execute('CREATE INDEX IF NOT EXISTS idx_connection_tests_service ON connection_tests(service)')
             cursor.execute('CREATE INDEX IF NOT EXISTS idx_system_metrics_type ON system_metrics(metric_type)')
+            cursor.execute('CREATE INDEX IF NOT EXISTS idx_monitored_channels_channel_id ON monitored_channels(channel_id)')
+            cursor.execute('CREATE INDEX IF NOT EXISTS idx_monitored_channels_enabled ON monitored_channels(enabled)')
 
     # ==================== Episode Operations ====================
 
@@ -1612,6 +1633,186 @@ class Database:
                 metrics.append(metric)
 
             return metrics
+
+    # ==================== Monitored Channels ====================
+
+    def create_monitored_channel(self, channel_id, channel_url, channel_name=None,
+                                playlist_id=None, playlist_url=None, poll_interval_minutes=360):
+        """Create a new monitored channel."""
+        mc_id = str(uuid.uuid4())
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute('''
+                INSERT INTO monitored_channels (id, channel_id, channel_url, channel_name,
+                    playlist_id, playlist_url, poll_interval_minutes)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+            ''', (mc_id, channel_id, channel_url, channel_name, playlist_id, playlist_url, poll_interval_minutes))
+        return mc_id
+
+    def get_monitored_channel(self, mc_id):
+        """Get a monitored channel by ID."""
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute('SELECT * FROM monitored_channels WHERE id = ?', (mc_id,))
+            row = cursor.fetchone()
+            return dict(row) if row else None
+
+    def get_monitored_channel_by_channel_id(self, channel_id):
+        """Get a monitored channel by YouTube channel ID."""
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute('SELECT * FROM monitored_channels WHERE channel_id = ?', (channel_id,))
+            row = cursor.fetchone()
+            return dict(row) if row else None
+
+    def list_monitored_channels(self, enabled_only=False):
+        """List all monitored channels."""
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+            if enabled_only:
+                cursor.execute('SELECT * FROM monitored_channels WHERE enabled = 1 ORDER BY created_at DESC')
+            else:
+                cursor.execute('SELECT * FROM monitored_channels ORDER BY created_at DESC')
+            return [dict(row) for row in cursor.fetchall()]
+
+    def update_monitored_channel(self, mc_id, **kwargs):
+        """Update a monitored channel."""
+        allowed = {'channel_name', 'playlist_id', 'playlist_url', 'enabled',
+                   'poll_interval_minutes', 'last_polled_at', 'last_video_found_at', 'total_videos_found'}
+        updates = {k: v for k, v in kwargs.items() if k in allowed}
+        if not updates:
+            return False
+        updates['updated_at'] = datetime.now().isoformat()
+        set_clause = ', '.join(f'{k} = ?' for k in updates.keys())
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute(f'UPDATE monitored_channels SET {set_clause} WHERE id = ?',
+                          (*updates.values(), mc_id))
+            return cursor.rowcount > 0
+
+    def delete_monitored_channel(self, mc_id):
+        """Delete a monitored channel."""
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute('DELETE FROM monitored_channels WHERE id = ?', (mc_id,))
+            return cursor.rowcount > 0
+
+    def get_channels_due_for_polling(self):
+        """Get channels that are due for polling based on their interval."""
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute('''
+                SELECT * FROM monitored_channels
+                WHERE enabled = 1
+                AND (last_polled_at IS NULL
+                     OR datetime(last_polled_at, '+' || poll_interval_minutes || ' minutes') <= datetime('now'))
+                ORDER BY last_polled_at ASC NULLS FIRST
+            ''')
+            return [dict(row) for row in cursor.fetchall()]
+
+    def update_channel_poll_result(self, mc_id, videos_found_count=0):
+        """Update channel after a poll."""
+        now = datetime.now().isoformat()
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+            if videos_found_count > 0:
+                cursor.execute('''
+                    UPDATE monitored_channels
+                    SET last_polled_at = ?, last_video_found_at = ?,
+                        total_videos_found = total_videos_found + ?, updated_at = ?
+                    WHERE id = ?
+                ''', (now, now, videos_found_count, now, mc_id))
+            else:
+                cursor.execute('''
+                    UPDATE monitored_channels
+                    SET last_polled_at = ?, updated_at = ?
+                    WHERE id = ?
+                ''', (now, now, mc_id))
+            return cursor.rowcount > 0
+
+    # ==================== Queue Helpers ====================
+
+    def get_pending_job(self):
+        """Get the oldest pending job."""
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute('''
+                SELECT * FROM jobs WHERE status = 'pending'
+                ORDER BY created_at ASC LIMIT 1
+            ''')
+            row = cursor.fetchone()
+            return dict(row) if row else None
+
+    def get_queue_stats(self):
+        """Get job queue statistics."""
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute('''
+                SELECT status, COUNT(*) as count FROM jobs GROUP BY status
+            ''')
+            stats = {'pending': 0, 'processing': 0, 'completed': 0, 'failed': 0}
+            for row in cursor.fetchall():
+                stats[row['status']] = row['count']
+            stats['total'] = sum(stats.values())
+            return stats
+
+    def list_jobs(self, status=None, limit=50, offset=0):
+        """List jobs with optional status filter."""
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+            if status:
+                cursor.execute('''
+                    SELECT * FROM jobs WHERE status = ?
+                    ORDER BY created_at DESC LIMIT ? OFFSET ?
+                ''', (status, limit, offset))
+            else:
+                cursor.execute('''
+                    SELECT * FROM jobs ORDER BY created_at DESC LIMIT ? OFFSET ?
+                ''', (limit, offset))
+            return [dict(row) for row in cursor.fetchall()]
+
+    def create_job(self, job_type, video_url=None, channel_url=None):
+        """Create a new processing job."""
+        job_id = str(uuid.uuid4())
+        now = datetime.now().isoformat()
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute('''
+                INSERT INTO jobs (id, job_type, status, video_url, channel_url, created_at)
+                VALUES (?, ?, 'pending', ?, ?, ?)
+            ''', (job_id, job_type, video_url, channel_url, now))
+        return job_id
+
+    def update_job_status(self, job_id, status, error_message=None, **kwargs):
+        """Update job status and optional fields."""
+        now = datetime.now().isoformat()
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+            if status in ('completed', 'failed'):
+                cursor.execute('''
+                    UPDATE jobs SET status = ?, error_message = ?, completed_at = ?
+                    WHERE id = ?
+                ''', (status, error_message, now, job_id))
+            elif status == 'processing':
+                cursor.execute('''
+                    UPDATE jobs SET status = ?, started_at = ?
+                    WHERE id = ?
+                ''', (status, now, job_id))
+            else:
+                cursor.execute('''
+                    UPDATE jobs SET status = ?
+                    WHERE id = ?
+                ''', (status, job_id))
+            # Update additional fields
+            allowed = {'current_step', 'current_video_id', 'current_video_title',
+                       'progress_videos_completed', 'progress_videos_total',
+                       'progress_videos_failed', 'progress_restaurants_found'}
+            updates = {k: v for k, v in kwargs.items() if k in allowed}
+            if updates:
+                set_clause = ', '.join(f'{k} = ?' for k in updates.keys())
+                cursor.execute(f'UPDATE jobs SET {set_clause} WHERE id = ?',
+                              (*updates.values(), job_id))
+            return cursor.rowcount > 0
 
 
 # Singleton instance for convenience
