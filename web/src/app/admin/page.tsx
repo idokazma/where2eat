@@ -1699,6 +1699,9 @@ function DashboardTab({ onNavigateToDeepDive }: { onNavigateToDeepDive: () => vo
         </CardContent>
       </Card>
 
+      {/* Scheduler & Subscriptions */}
+      <SchedulerPanel />
+
       {/* Quick links */}
       <Card>
         <CardHeader className="pb-3">
@@ -1723,6 +1726,257 @@ function DashboardTab({ onNavigateToDeepDive }: { onNavigateToDeepDive: () => vo
         </CardContent>
       </Card>
     </div>
+  )
+}
+
+// ---------------------------------------------------------------------------
+// Scheduler & Subscriptions Panel
+// ---------------------------------------------------------------------------
+
+interface SchedulerStatus {
+  running: boolean
+  scheduler_enabled: boolean
+  next_poll_at: string | null
+  next_process_at: string | null
+  queue_depth: number
+  currently_processing: number
+}
+
+interface Subscription {
+  id: string
+  source_url: string
+  source_name: string | null
+  source_id: string | null
+  source_type: string
+  is_active: boolean
+  priority: number
+  check_interval_hours: number
+  last_checked_at: string | null
+  total_videos_found: number
+  total_videos_processed: number
+  total_restaurants_found: number
+  created_at: string
+}
+
+function formatTimeAgo(dateStr: string | null): string {
+  if (!dateStr) return "Never"
+  const date = new Date(dateStr)
+  const now = new Date()
+  const diffMs = now.getTime() - date.getTime()
+  const diffMins = Math.floor(diffMs / 60000)
+  if (diffMins < 1) return "Just now"
+  if (diffMins < 60) return `${diffMins}m ago`
+  const diffHours = Math.floor(diffMins / 60)
+  if (diffHours < 24) return `${diffHours}h ago`
+  return `${Math.floor(diffHours / 24)}d ago`
+}
+
+function formatCountdown(dateStr: string | null): string {
+  if (!dateStr) return "--"
+  const target = new Date(dateStr)
+  const now = new Date()
+  const diffMs = target.getTime() - now.getTime()
+  if (diffMs <= 0) return "Now"
+  const mins = Math.floor(diffMs / 60000)
+  if (mins < 60) return `${mins}m`
+  const hours = Math.floor(mins / 60)
+  return `${hours}h ${mins % 60}m`
+}
+
+function SchedulerPanel() {
+  const [scheduler, setScheduler] = useState<SchedulerStatus | null>(null)
+  const [subs, setSubs] = useState<Subscription[]>([])
+  const [loading, setLoading] = useState(true)
+  const [polling, setPolling] = useState(false)
+  const [starting, setStarting] = useState(false)
+  const [stopping, setStopping] = useState(false)
+  const [, setTick] = useState(0)
+
+  const fetchData = useCallback(() => {
+    Promise.all([
+      fetch(getApiUrl("/health")).then(r => r.json()).catch(() => null),
+      fetch(getApiUrl("/api/admin/subscriptions")).then(r => r.json()).catch(() => null),
+    ]).then(([healthData, subsData]) => {
+      if (healthData?.pipeline) {
+        setScheduler(healthData.pipeline)
+      }
+      if (subsData?.subscriptions) {
+        setSubs(subsData.subscriptions)
+      } else if (Array.isArray(subsData)) {
+        setSubs(subsData)
+      }
+      setLoading(false)
+    })
+  }, [])
+
+  useEffect(() => {
+    fetchData()
+    const timer = setInterval(fetchData, 15000)
+    return () => clearInterval(timer)
+  }, [fetchData])
+
+  // Tick for countdown updates
+  useEffect(() => {
+    const timer = setInterval(() => setTick(t => t + 1), 1000)
+    return () => clearInterval(timer)
+  }, [])
+
+  const handlePollNow = async () => {
+    setPolling(true)
+    try {
+      await fetch(getApiUrl("/api/admin/pipeline/poll"), { method: "POST" })
+      setTimeout(fetchData, 2000)
+    } catch { /* ignore */ }
+    finally { setPolling(false) }
+  }
+
+  const handleStart = async () => {
+    setStarting(true)
+    try {
+      await fetch(getApiUrl("/api/admin/pipeline/scheduler/start"), { method: "POST" })
+      setTimeout(fetchData, 2000)
+    } catch { /* ignore */ }
+    finally { setStarting(false) }
+  }
+
+  const handleStop = async () => {
+    setStopping(true)
+    try {
+      await fetch(getApiUrl("/api/admin/pipeline/scheduler/stop"), { method: "POST" })
+      setTimeout(fetchData, 2000)
+    } catch { /* ignore */ }
+    finally { setStopping(false) }
+  }
+
+  const isRunning = scheduler?.running || scheduler?.scheduler_enabled
+
+  return (
+    <>
+      {/* Scheduler Control */}
+      <Card>
+        <CardHeader className="pb-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className={`h-2.5 w-2.5 rounded-full ${isRunning ? "bg-green-500 animate-pulse" : "bg-yellow-500"}`} />
+              <CardTitle className="text-base">
+                Scheduler {isRunning ? "Running" : "Stopped"}
+              </CardTitle>
+            </div>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handlePollNow}
+                disabled={polling}
+              >
+                {polling ? (
+                  <Loader2 className="h-3.5 w-3.5 animate-spin mr-1" />
+                ) : (
+                  <RefreshCw className="h-3.5 w-3.5 mr-1" />
+                )}
+                Poll Now
+              </Button>
+              {isRunning ? (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleStop}
+                  disabled={stopping}
+                  className="text-red-600"
+                >
+                  {stopping ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : "Disable"}
+                </Button>
+              ) : (
+                <Button
+                  size="sm"
+                  onClick={handleStart}
+                  disabled={starting}
+                >
+                  {starting ? <Loader2 className="h-3.5 w-3.5 animate-spin mr-1" /> : null}
+                  Enable
+                </Button>
+              )}
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          {loading ? (
+            <div className="flex items-center justify-center py-4">
+              <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+            </div>
+          ) : scheduler ? (
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
+              <div>
+                <p className="text-xs text-muted-foreground">Last Poll</p>
+                <p className="font-medium">{formatTimeAgo(scheduler.next_poll_at ? new Date(new Date(scheduler.next_poll_at).getTime() - 3 * 3600000).toISOString() : null)}</p>
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">Next Poll</p>
+                <p className="font-medium">{isRunning ? formatCountdown(scheduler.next_poll_at) : "--"}</p>
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">Queue Depth</p>
+                <p className="font-medium">{scheduler.queue_depth}</p>
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">Processing</p>
+                <p className="font-medium">{scheduler.currently_processing}</p>
+              </div>
+            </div>
+          ) : (
+            <p className="text-sm text-muted-foreground">Could not load scheduler status</p>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Subscriptions list */}
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base flex items-center gap-2">
+            <Youtube className="h-4 w-4" />
+            Monitored Channels ({subs.length})
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          {loading ? (
+            <div className="flex items-center justify-center py-6">
+              <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+            </div>
+          ) : subs.length === 0 ? (
+            <p className="text-sm text-muted-foreground text-center py-6">
+              No channels being monitored
+            </p>
+          ) : (
+            <div className="divide-y">
+              {subs.map((sub) => (
+                <div key={sub.id} className="flex items-center justify-between py-3 first:pt-0 last:pb-0">
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2">
+                      <p className="font-medium text-sm truncate">
+                        {sub.source_name || sub.source_id || "Unknown"}
+                      </p>
+                      <Badge
+                        variant={sub.is_active !== false ? "default" : "secondary"}
+                        className="text-[10px] px-1.5 py-0"
+                      >
+                        {sub.is_active !== false ? "Active" : "Paused"}
+                      </Badge>
+                    </div>
+                    <div className="flex items-center gap-3 mt-0.5 text-xs text-muted-foreground flex-wrap">
+                      <span>Every {sub.check_interval_hours}h</span>
+                      <span>Last: {formatTimeAgo(sub.last_checked_at)}</span>
+                      <span>{sub.total_videos_found} found</span>
+                      <span>{sub.total_videos_processed} processed</span>
+                      <span>{sub.total_restaurants_found} restaurants</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </>
   )
 }
 
