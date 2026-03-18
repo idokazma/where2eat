@@ -762,7 +762,7 @@ async def scheduler_start(
     if scheduler._running:
         return {"success": False, "message": "Scheduler is already running", "status": scheduler.get_status()}
 
-    scheduler.start()
+    scheduler.start(force=True)
     return {"success": True, "message": "Scheduler started", "status": scheduler.get_status()}
 
 
