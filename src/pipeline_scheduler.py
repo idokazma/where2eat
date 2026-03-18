@@ -60,13 +60,13 @@ class PipelineScheduler:
         self._running = False
         self._backend_service = None
 
-    def start(self):
+    def start(self, force=False):
         """Start the scheduler with APScheduler.
 
-        No-op if PIPELINE_SCHEDULER_ENABLED is False.
+        No-op if PIPELINE_SCHEDULER_ENABLED is False (unless force=True).
         Creates interval jobs for poll, process, and cleanup.
         """
-        if not PIPELINE_SCHEDULER_ENABLED:
+        if not force and not PIPELINE_SCHEDULER_ENABLED:
             logger.info("Pipeline scheduler is disabled by configuration")
             return
 
