@@ -946,6 +946,133 @@ app.include_router(admin_subscriptions_router)
 app.include_router(admin_pipeline_router)
 
 
+@app.get("/api/debug/pipeline")
+async def debug_pipeline():
+    """Temporary debug endpoint to diagnose pipeline polling issues."""
+    import traceback
+    result = {
+        "scheduler": None,
+        "config": {},
+        "subscriptions": [],
+        "poll_test": None,
+        "queue": [],
+        "recent_logs": [],
+    }
+
+    try:
+        from config import (
+            PIPELINE_POLL_INTERVAL_HOURS,
+            PIPELINE_PROCESS_INTERVAL_MINUTES,
+            PIPELINE_SCHEDULER_ENABLED,
+            PIPELINE_MAX_VIDEO_AGE_DAYS,
+            PIPELINE_MAX_RECENT_VIDEOS,
+        )
+        result["config"] = {
+            "poll_interval_hours": PIPELINE_POLL_INTERVAL_HOURS,
+            "process_interval_minutes": PIPELINE_PROCESS_INTERVAL_MINUTES,
+            "scheduler_enabled": PIPELINE_SCHEDULER_ENABLED,
+            "max_video_age_days": PIPELINE_MAX_VIDEO_AGE_DAYS,
+            "max_recent_videos": PIPELINE_MAX_RECENT_VIDEOS,
+            "env_poll_interval": os.getenv("PIPELINE_POLL_INTERVAL_HOURS", "not set"),
+            "env_scheduler_enabled": os.getenv("PIPELINE_SCHEDULER_ENABLED", "not set"),
+        }
+    except Exception as e:
+        result["config"] = {"error": str(e)}
+
+    try:
+        if _pipeline_scheduler:
+            result["scheduler"] = _pipeline_scheduler.get_status()
+    except Exception as e:
+        result["scheduler"] = {"error": str(e)}
+
+    try:
+        from database import get_database
+        from subscription_manager import SubscriptionManager
+        db = get_database()
+        mgr = SubscriptionManager(db)
+        subs = mgr.list_subscriptions(active_only=False)
+        result["subscriptions"] = [
+            {
+                "id": s["id"],
+                "source_name": s.get("source_name"),
+                "source_url": s.get("source_url"),
+                "source_type": s.get("source_type"),
+                "source_id": s.get("source_id"),
+                "is_active": s.get("is_active"),
+                "last_checked_at": s.get("last_checked_at"),
+                "total_videos_found": s.get("total_videos_found"),
+            }
+            for s in subs
+        ]
+    except Exception as e:
+        result["subscriptions"] = [{"error": str(e)}]
+
+    # Try fetching videos from the first subscription
+    try:
+        if result["subscriptions"] and not result["subscriptions"][0].get("error"):
+            from database import get_database
+            from pipeline_scheduler import PipelineScheduler
+            db = get_database()
+            scheduler = PipelineScheduler(db=db)
+
+            subs_raw = scheduler.sub_manager.list_subscriptions(active_only=True)
+            if subs_raw:
+                sub = subs_raw[0]
+                try:
+                    videos = scheduler._fetch_channel_videos(sub)
+                    filtered = scheduler._filter_by_age(videos)
+                    sorted_vids = scheduler._sort_videos_by_date(filtered)
+
+                    # Check which are already known
+                    existing_ids = set()
+                    with db.get_connection() as conn:
+                        cursor = conn.cursor()
+                        cursor.execute("SELECT video_id FROM episodes")
+                        existing_ids = {row["video_id"] for row in cursor.fetchall()}
+                        cursor.execute("SELECT video_id FROM video_queue")
+                        existing_ids |= {row["video_id"] for row in cursor.fetchall()}
+
+                    new_videos = [v for v in sorted_vids if v.get("video_id") not in existing_ids]
+
+                    result["poll_test"] = {
+                        "subscription": sub.get("source_name"),
+                        "raw_videos_fetched": len(videos),
+                        "after_age_filter": len(filtered),
+                        "sample_raw": videos[:3] if videos else [],
+                        "new_videos": len(new_videos),
+                        "sample_new": new_videos[:3] if new_videos else [],
+                        "existing_episode_count": len(existing_ids),
+                    }
+                except Exception as e:
+                    result["poll_test"] = {"error": str(e), "traceback": traceback.format_exc()}
+    except Exception as e:
+        result["poll_test"] = {"error": str(e)}
+
+    # Recent pipeline logs
+    try:
+        from database import get_database
+        from pipeline_logger import PipelineLogger
+        db = get_database()
+        pl = PipelineLogger(db)
+        logs = pl.get_logs(limit=10)
+        result["recent_logs"] = logs.get("items", [])[:10]
+    except Exception as e:
+        result["recent_logs"] = [{"error": str(e)}]
+
+    # Queue items
+    try:
+        from database import get_database
+        from video_queue_manager import VideoQueueManager
+        db = get_database()
+        qm = VideoQueueManager(db)
+        queue = qm.get_queue(page=1, limit=5)
+        result["queue"] = queue.get("items", [])
+    except Exception as e:
+        result["queue"] = [{"error": str(e)}]
+
+    return result
+
+
 @app.get("/api/deepdive/episodes")
 async def deepdive_episodes(
     search: str = None,
