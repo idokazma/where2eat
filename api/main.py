@@ -946,6 +946,20 @@ app.include_router(admin_subscriptions_router)
 app.include_router(admin_pipeline_router)
 
 
+@app.get("/api/subscriptions")
+async def public_subscriptions():
+    """Public read-only list of subscriptions for admin dashboard."""
+    try:
+        from database import get_database
+        from subscription_manager import SubscriptionManager
+        db = get_database()
+        mgr = SubscriptionManager(db)
+        subs = mgr.list_subscriptions(active_only=False)
+        return {"subscriptions": subs}
+    except Exception as e:
+        return {"subscriptions": [], "error": str(e)}
+
+
 @app.get("/api/debug/pipeline")
 async def debug_pipeline():
     """Temporary debug endpoint to diagnose pipeline polling issues."""
