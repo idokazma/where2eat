@@ -515,7 +515,8 @@ class PipelineScheduler:
     def _filter_by_age(videos: List[dict]) -> List[dict]:
         """Filter out videos older than PIPELINE_MAX_VIDEO_AGE_DAYS.
 
-        Videos without a valid published_at are also excluded (unknown age).
+        Videos without a valid published_at are INCLUDED (unknown age,
+        could be recent — yt-dlp flat extraction often omits dates).
         """
         cutoff = datetime.utcnow() - timedelta(days=PIPELINE_MAX_VIDEO_AGE_DAYS)
         cutoff_str = cutoff.isoformat()
@@ -524,6 +525,8 @@ class PipelineScheduler:
         for video in videos:
             date_str = video.get('published_at') or ''
             if not date_str:
+                # No date available — include by default (could be recent)
+                result.append(video)
                 continue
             # Compare ISO date strings (works for both date and datetime formats)
             if date_str >= cutoff_str:
