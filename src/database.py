@@ -2028,63 +2028,6 @@ class Database:
             stats['total'] = sum(stats.values())
             return stats
 
-    def list_jobs(self, status=None, limit=50, offset=0):
-        """List jobs with optional status filter."""
-        with self.get_connection() as conn:
-            cursor = conn.cursor()
-            if status:
-                cursor.execute('''
-                    SELECT * FROM jobs WHERE status = ?
-                    ORDER BY created_at DESC LIMIT ? OFFSET ?
-                ''', (status, limit, offset))
-            else:
-                cursor.execute('''
-                    SELECT * FROM jobs ORDER BY created_at DESC LIMIT ? OFFSET ?
-                ''', (limit, offset))
-            return [dict(row) for row in cursor.fetchall()]
-
-    def create_job(self, job_type, video_url=None, channel_url=None):
-        """Create a new processing job."""
-        job_id = str(uuid.uuid4())
-        now = datetime.now().isoformat()
-        with self.get_connection() as conn:
-            cursor = conn.cursor()
-            cursor.execute('''
-                INSERT INTO jobs (id, job_type, status, video_url, channel_url, created_at)
-                VALUES (?, ?, 'pending', ?, ?, ?)
-            ''', (job_id, job_type, video_url, channel_url, now))
-        return job_id
-
-    def update_job_status(self, job_id, status, error_message=None, **kwargs):
-        """Update job status and optional fields."""
-        now = datetime.now().isoformat()
-        with self.get_connection() as conn:
-            cursor = conn.cursor()
-            if status in ('completed', 'failed'):
-                cursor.execute('''
-                    UPDATE jobs SET status = ?, error_message = ?, completed_at = ?
-                    WHERE id = ?
-                ''', (status, error_message, now, job_id))
-            elif status == 'processing':
-                cursor.execute('''
-                    UPDATE jobs SET status = ?, started_at = ?
-                    WHERE id = ?
-                ''', (status, now, job_id))
-            else:
-                cursor.execute('''
-                    UPDATE jobs SET status = ?
-                    WHERE id = ?
-                ''', (status, job_id))
-            # Update additional fields
-            allowed = {'current_step', 'current_video_id', 'current_video_title',
-                       'progress_videos_completed', 'progress_videos_total',
-                       'progress_videos_failed', 'progress_restaurants_found'}
-            updates = {k: v for k, v in kwargs.items() if k in allowed}
-            if updates:
-                set_clause = ', '.join(f'{k} = ?' for k in updates.keys())
-                cursor.execute(f'UPDATE jobs SET {set_clause} WHERE id = ?',
-                              (*updates.values(), job_id))
-            return cursor.rowcount > 0
 
 
 # Singleton instance for convenience
