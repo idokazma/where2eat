@@ -1087,6 +1087,37 @@ async def debug_pipeline():
     return result
 
 
+@app.post("/api/debug/clear-and-repoll")
+async def debug_clear_and_repoll():
+    """Temporary: Clear queue and re-poll. Remove after debugging."""
+    try:
+        from database import get_database
+        from video_queue_manager import VideoQueueManager
+        from pipeline_scheduler import PipelineScheduler
+
+        db = get_database()
+        queue_manager = VideoQueueManager(db)
+
+        with db.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT COUNT(*) as count FROM video_queue WHERE status = 'queued'")
+            cleared = cursor.fetchone()["count"]
+            cursor.execute("DELETE FROM video_queue WHERE status = 'queued'")
+
+        scheduler = PipelineScheduler(db=db)
+        scheduler.poll_subscriptions()
+
+        depth = queue_manager.get_queue_depth()
+
+        return {
+            "success": True,
+            "cleared": cleared,
+            "new_queue_depth": depth,
+        }
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
 @app.get("/api/deepdive/episodes")
 async def deepdive_episodes(
     search: str = None,
@@ -1122,7 +1153,8 @@ async def deepdive_episodes(
                vq.status as queue_status, vq.priority as queue_priority,
                vq.attempt_count, vq.error_message, vq.restaurants_found,
                vq.processing_started_at, vq.processing_completed_at,
-               vq.published_at as queue_published_at
+               vq.published_at as queue_published_at,
+               vq.video_title
         FROM episodes e
         LEFT JOIN video_queue vq ON e.video_id = vq.video_id
         {where_sql}

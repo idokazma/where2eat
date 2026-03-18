@@ -381,6 +381,49 @@ async def retry_all_failed(
     }
 
 
+@router.post(
+    "/clear-and-repoll",
+    summary="Clear queue and re-poll",
+    description="Clear all queued (not completed/processing) items and trigger a fresh poll. Requires admin role.",
+)
+async def clear_and_repoll(
+    user: dict = Depends(require_role(["admin", "super_admin"])),
+):
+    """Clear queued items and re-poll subscriptions."""
+    try:
+        from database import get_database
+        from video_queue_manager import VideoQueueManager
+        from pipeline_scheduler import PipelineScheduler
+
+        db = get_database()
+        queue_manager = VideoQueueManager(db)
+
+        # Delete all queued items (not processing or completed)
+        with db.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT COUNT(*) as count FROM video_queue WHERE status = 'queued'")
+            cleared = cursor.fetchone()["count"]
+            cursor.execute("DELETE FROM video_queue WHERE status = 'queued'")
+
+        # Re-poll
+        scheduler = PipelineScheduler(db=db)
+        scheduler.poll_subscriptions()
+
+        depth = queue_manager.get_queue_depth()
+
+        return {
+            "success": True,
+            "cleared": cleared,
+            "new_queue_depth": depth,
+            "message": f"Cleared {cleared} queued items, re-polled. New queue depth: {depth}",
+        }
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Clear and re-poll failed: {str(e)}",
+        )
+
+
 @router.get(
     "/{queue_id}/detail",
     summary="Get video detail with transcript",

@@ -2000,6 +2000,7 @@ interface PipelineEpisode {
   restaurants_found: number | null
   processing_started_at: string | null
   processing_completed_at: string | null
+  video_title: string | null
 }
 
 interface QueuedVideo {
@@ -2242,7 +2243,7 @@ function PipelineTab() {
     ...episodes.map(ep => ({
       key: `ep-${ep.video_id}`,
       video_id: ep.video_id,
-      title: ep.title || ep.video_id,
+      title: ep.title || ep.video_title || ep.video_id,
       status: ep.queue_status || "completed",
       published_at: ep.published_at,
       restaurants_found: ep.restaurants_found,
