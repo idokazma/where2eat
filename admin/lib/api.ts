@@ -598,6 +598,25 @@ export const pipelineApi = {
   }> {
     return apiFetch('/health');
   },
+  // Scheduler control methods (from admin-dashboard branch)
+  async schedulerStatus(): Promise<PipelineStatus> {
+    return apiFetch('/api/admin/pipeline/status');
+  },
+  async schedulerStart(options?: { poll_interval_ms?: number; process_interval_ms?: number }): Promise<any> {
+    return apiFetch('/api/admin/pipeline/start', { method: 'POST', body: JSON.stringify(options || {}) });
+  },
+  async schedulerStop(): Promise<any> {
+    return apiFetch('/api/admin/pipeline/stop', { method: 'POST' });
+  },
+  async schedulerUpdateSettings(settings: { poll_interval_ms?: number; process_interval_ms?: number; enabled?: boolean }): Promise<any> {
+    return apiFetch('/api/admin/pipeline/settings', { method: 'PUT', body: JSON.stringify(settings) });
+  },
+  async schedulerPollNow(): Promise<any> {
+    return apiFetch('/api/admin/pipeline/poll-now', { method: 'POST' });
+  },
+  async schedulerProcessNow(): Promise<any> {
+    return apiFetch('/api/admin/pipeline/process-now', { method: 'POST' });
+  },
 };
 
 /**
@@ -631,6 +650,345 @@ export const deepDiveApi = {
   },
 };
 
+/**
+ * Connection status types
+ */
+export type ConnectionStatus = 'healthy' | 'degraded' | 'error' | 'unavailable' | 'timeout';
+
+export interface ConnectionTestResult {
+  service: string;
+  status: ConnectionStatus;
+  response_time_ms: number;
+  details: Record<string, any>;
+}
+
+export interface AllConnectionsResult {
+  overall_status: 'healthy' | 'degraded' | 'unhealthy';
+  services: Record<string, ConnectionTestResult>;
+  summary: {
+    total_services: number;
+    healthy: number;
+    degraded: number;
+    error: number;
+    unavailable: number;
+  };
+  total_time_ms: number;
+  timestamp: string;
+}
+
+export interface ErrorLog {
+  id: string;
+  error_id: string;
+  level: 'critical' | 'warning' | 'info' | 'debug';
+  service: string;
+  message: string;
+  stack_trace?: string;
+  context?: Record<string, any>;
+  job_id?: string;
+  video_id?: string;
+  first_occurred: string;
+  last_occurred: string;
+  occurrence_count: number;
+  resolved: boolean;
+  resolved_at?: string;
+  resolved_by?: string;
+  resolved_by_name?: string;
+  resolution_notes?: string;
+}
+
+export interface ErrorSummary {
+  period_hours: number;
+  total_errors: number;
+  total_occurrences: number;
+  unresolved: number;
+  by_level: Record<string, { count: number; occurrences: number }>;
+  by_service: Record<string, { count: number; occurrences: number }>;
+}
+
+export interface SystemHealth {
+  status: 'healthy' | 'degraded' | 'unhealthy';
+  backend: {
+    status: string;
+    checks: Record<string, boolean>;
+    timestamp: string;
+  };
+  server: {
+    uptime_seconds: number;
+    uptime_formatted: string;
+    memory_usage: {
+      rss: number;
+      heapTotal: number;
+      heapUsed: number;
+      external: number;
+    };
+    node_version: string;
+    platform: string;
+  };
+  timestamp: string;
+}
+
+export interface SystemStats {
+  database: {
+    restaurants: number;
+    episodes: number;
+    active_jobs: number;
+    unique_cities: number;
+    unique_cuisines: number;
+  };
+  system: {
+    memory: {
+      rss_bytes: number;
+      rss_mb: number;
+      vms_bytes: number;
+      vms_mb: number;
+      percent: number;
+    };
+    database: {
+      size_bytes: number;
+      size_mb: number;
+      path: string;
+    };
+    counts: Record<string, number>;
+    timestamp: string;
+  };
+  timestamp: string;
+}
+
+/**
+ * System API endpoints
+ */
+export const systemApi = {
+  /**
+   * Get all connection statuses
+   */
+  async getConnectionStatus(): Promise<AllConnectionsResult> {
+    return apiFetch('/api/admin/system/connections/status');
+  },
+
+  /**
+   * Test a specific service connection
+   */
+  async testConnection(service: string): Promise<ConnectionTestResult> {
+    return apiFetch('/api/admin/system/connections/test', {
+      method: 'POST',
+      body: JSON.stringify({ service }),
+    });
+  },
+
+  /**
+   * Get connection test history
+   */
+  async getConnectionHistory(params?: { service?: string; limit?: number; hours?: number }): Promise<{ history: any[] }> {
+    const queryParams = new URLSearchParams();
+    if (params?.service) queryParams.append('service', params.service);
+    if (params?.limit) queryParams.append('limit', params.limit.toString());
+    if (params?.hours) queryParams.append('hours', params.hours.toString());
+    const query = queryParams.toString();
+    return apiFetch(`/api/admin/system/connections/history${query ? `?${query}` : ''}`);
+  },
+
+  /**
+   * Get API key status (super_admin only)
+   */
+  async getApiKeyStatus(): Promise<{ api_keys: Record<string, { configured: boolean; masked_key: string | null; env_var: string }>; timestamp: string }> {
+    return apiFetch('/api/admin/system/api-keys/status');
+  },
+
+  /**
+   * Get system health
+   */
+  async getHealth(): Promise<SystemHealth> {
+    return apiFetch('/api/admin/system/health');
+  },
+
+  /**
+   * Get system statistics
+   */
+  async getStats(): Promise<SystemStats> {
+    return apiFetch('/api/admin/system/stats');
+  },
+
+  /**
+   * Get system metrics history
+   */
+  async getMetrics(params?: { type?: string; name?: string; hours?: number; limit?: number }): Promise<{ metrics: any[] }> {
+    const queryParams = new URLSearchParams();
+    if (params?.type) queryParams.append('type', params.type);
+    if (params?.name) queryParams.append('name', params.name);
+    if (params?.hours) queryParams.append('hours', params.hours.toString());
+    if (params?.limit) queryParams.append('limit', params.limit.toString());
+    const query = queryParams.toString();
+    return apiFetch(`/api/admin/system/metrics${query ? `?${query}` : ''}`);
+  },
+
+  /**
+   * Run database vacuum (super_admin only)
+   */
+  async runVacuum(): Promise<{ success: boolean; message: string; timestamp: string }> {
+    return apiFetch('/api/admin/system/maintenance/vacuum', { method: 'POST' });
+  },
+
+  /**
+   * Clear resolved errors (super_admin only)
+   */
+  async clearResolvedErrors(olderThanDays: number = 30): Promise<{ success: boolean; deleted: number; message: string }> {
+    return apiFetch('/api/admin/system/maintenance/clear-errors', {
+      method: 'POST',
+      body: JSON.stringify({ olderThanDays }),
+    });
+  },
+};
+
+/**
+ * Errors API endpoints
+ */
+export const errorsApi = {
+  /**
+   * Get error logs with filters
+   */
+  async list(params?: { level?: string; service?: string; resolved?: boolean; limit?: number; offset?: number }): Promise<{ errors: ErrorLog[]; total: number; limit: number; offset: number; total_pages: number }> {
+    const queryParams = new URLSearchParams();
+    if (params?.level) queryParams.append('level', params.level);
+    if (params?.service) queryParams.append('service', params.service);
+    if (params?.resolved !== undefined) queryParams.append('resolved', params.resolved.toString());
+    if (params?.limit) queryParams.append('limit', params.limit.toString());
+    if (params?.offset) queryParams.append('offset', params.offset.toString());
+    const query = queryParams.toString();
+    return apiFetch(`/api/admin/system/errors${query ? `?${query}` : ''}`);
+  },
+
+  /**
+   * Get error summary statistics
+   */
+  async getSummary(hours: number = 24): Promise<ErrorSummary> {
+    return apiFetch(`/api/admin/system/errors/summary?hours=${hours}`);
+  },
+
+  /**
+   * Resolve an error
+   */
+  async resolve(errorId: string, notes?: string): Promise<{ success: boolean; message: string }> {
+    return apiFetch(`/api/admin/system/errors/${errorId}/resolve`, {
+      method: 'POST',
+      body: JSON.stringify({ notes }),
+    });
+  },
+};
+
+// ==================== Channel Monitoring ====================
+
+export interface MonitoredChannel {
+  id: string;
+  channel_id: string;
+  channel_url: string;
+  channel_name: string | null;
+  playlist_id: string | null;
+  playlist_url: string | null;
+  enabled: number;
+  poll_interval_minutes: number;
+  last_polled_at: string | null;
+  last_video_found_at: string | null;
+  total_videos_found: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface QueueJob {
+  id: string;
+  job_type: string;
+  status: 'pending' | 'processing' | 'completed' | 'failed';
+  channel_url: string | null;
+  video_url: string | null;
+  progress_videos_completed: number;
+  progress_videos_total: number;
+  progress_videos_failed: number;
+  progress_restaurants_found: number;
+  current_step: string | null;
+  error_message: string | null;
+  started_at: string | null;
+  completed_at: string | null;
+  created_at: string;
+}
+
+export interface QueueStats {
+  pending: number;
+  processing: number;
+  completed: number;
+  failed: number;
+  total: number;
+}
+
+export interface PipelineStatus {
+  enabled: boolean;
+  is_polling: boolean;
+  is_processing: boolean;
+  poll_interval_ms: number;
+  process_interval_ms: number;
+  last_poll_at: string | null;
+  last_process_at: string | null;
+  next_poll_at: string | null;
+  next_process_at: string | null;
+  stats: {
+    polls_completed: number;
+    jobs_processed: number;
+    errors: number;
+  };
+}
+
+export const channelsApi = {
+  async list(): Promise<{ channels: MonitoredChannel[] }> {
+    return apiFetch('/api/admin/channels');
+  },
+  async create(data: { channel_url: string; channel_name?: string; poll_interval_minutes?: number }): Promise<any> {
+    return apiFetch('/api/admin/channels', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+  async update(id: string, data: Partial<MonitoredChannel>): Promise<any> {
+    return apiFetch(`/api/admin/channels/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+  },
+  async delete(id: string): Promise<void> {
+    return apiFetch(`/api/admin/channels/${id}`, { method: 'DELETE' });
+  },
+  async poll(id: string): Promise<any> {
+    return apiFetch(`/api/admin/channels/${id}/poll`, { method: 'POST' });
+  },
+  async getVideos(id: string): Promise<any> {
+    return apiFetch(`/api/admin/channels/${id}/videos`);
+  },
+};
+
+export const queueApi = {
+  async list(params?: { status?: string; limit?: number; offset?: number }): Promise<{ jobs: QueueJob[]; total: number }> {
+    const queryParams = new URLSearchParams();
+    if (params?.status) queryParams.append('status', params.status);
+    if (params?.limit) queryParams.append('limit', params.limit.toString());
+    if (params?.offset) queryParams.append('offset', params.offset.toString());
+    const query = queryParams.toString();
+    return apiFetch(`/api/admin/queue${query ? `?${query}` : ''}`);
+  },
+  async stats(): Promise<QueueStats> {
+    return apiFetch('/api/admin/queue/stats');
+  },
+  async processNext(): Promise<any> {
+    return apiFetch('/api/admin/queue/process', { method: 'POST' });
+  },
+  async getJob(id: string): Promise<QueueJob> {
+    return apiFetch(`/api/admin/queue/${id}`);
+  },
+  async deleteJob(id: string): Promise<void> {
+    return apiFetch(`/api/admin/queue/${id}`, { method: 'DELETE' });
+  },
+};
+
+// NOTE: pipelineApi is defined above with main's full implementation.
+// Scheduler control methods are added here as extensions.
+// Use pipelineApi.schedulerStatus(), pipelineApi.schedulerStart(), etc.
+
 export default {
   auth: authApi,
   users: usersApi,
@@ -639,6 +997,10 @@ export default {
   articles: articlesApi,
   videos: videosApi,
   bulk: bulkApi,
+  system: systemApi,
+  errors: errorsApi,
+  channels: channelsApi,
+  queue: queueApi,
   subscriptions: subscriptionsApi,
   episodes: episodesApi,
   pipeline: pipelineApi,

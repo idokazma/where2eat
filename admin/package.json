@@ -49,18 +49,18 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.18",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.3.1",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/jest": "^29.5.14",
     "@types/react-dom": "^19.2.3",
     "autoprefixer": "^10.4.23",
     "eslint": "^9.39.2",
     "eslint-config-next": "^16.1.1",
+    "jest": "^30.0.0",
+    "jest-environment-jsdom": "^30.0.0",
     "postcss": "^8.5.6",
     "tailwindcss": "^4.1.18",
-    "jest": "^30.0.0",
-    "@testing-library/react": "^16.3.1",
-    "@testing-library/jest-dom": "^6.6.3",
-    "@testing-library/user-event": "^14.6.1",
-    "jest-environment-jsdom": "^30.0.0",
-    "ts-jest": "^29.4.0",
-    "@types/jest": "^29.5.14"
+    "ts-jest": "^29.4.0"
   }
 }

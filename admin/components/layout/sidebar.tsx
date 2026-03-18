@@ -13,6 +13,9 @@ import {
   FileSearch,
   ShieldCheck,
   X,
+  Activity,
+  Radio,
+  ListOrdered,
   Rss,
   GitBranch,
   Microscope,
@@ -55,6 +58,8 @@ const sections: NavSection[] = [
     label: 'Pipeline',
     items: [
       { name: 'Pipeline', href: '/dashboard/pipeline', icon: GitBranch, badgeKey: 'processing' },
+      { name: 'Channels', href: '/dashboard/channels', icon: Radio },
+      { name: 'Queue', href: '/dashboard/queue', icon: ListOrdered },
       { name: 'Subscriptions', href: '/dashboard/subscriptions', icon: Rss },
       { name: 'Deep Dive', href: '/dashboard/deepdive', icon: Microscope },
     ],
@@ -70,6 +75,7 @@ const sections: NavSection[] = [
   {
     label: 'System',
     items: [
+      { name: 'System', href: '/dashboard/system', icon: Activity },
       { name: 'Settings', href: '/dashboard/settings', icon: Settings },
     ],
   },
