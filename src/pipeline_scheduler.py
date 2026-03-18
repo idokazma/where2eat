@@ -599,8 +599,9 @@ class PipelineScheduler:
                 'quiet': True,
                 'no_warnings': True,
             }
-            # Only fetch the N most recent videos from the playlist
-            fetch_limit = max_videos or PIPELINE_MAX_RECENT_VIDEOS
+            # Only fetch the N most recent videos from the playlist.
+            # Keep this small — we fetch individual metadata for each one.
+            fetch_limit = max_videos or 15
             ydl_opts_flat['playlistend'] = fetch_limit
 
             with yt_dlp.YoutubeDL(ydl_opts_flat) as ydl:
@@ -622,6 +623,7 @@ class PipelineScheduler:
                 'no_warnings': True,
                 'skip_download': True,
                 'no_playlist': True,
+                'socket_timeout': 10,
             }
 
             for entry in flat_entries:
