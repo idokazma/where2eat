@@ -1795,7 +1795,7 @@ function SchedulerPanel() {
   const fetchData = useCallback(() => {
     Promise.all([
       fetch(getApiUrl("/health")).then(r => r.json()).catch(() => null),
-      fetch(getApiUrl("/api/admin/subscriptions")).then(r => r.json()).catch(() => null),
+      fetch(getApiUrl("/api/subscriptions")).then(r => r.json()).catch(() => null),
     ]).then(([healthData, subsData]) => {
       if (healthData?.pipeline) {
         setScheduler(healthData.pipeline)
