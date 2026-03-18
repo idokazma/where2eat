@@ -85,7 +85,7 @@ export default function ChannelsPage() {
 
   const { data: pipelineStatus } = useQuery({
     queryKey: ['pipeline-status'],
-    queryFn: () => pipelineApi.status(),
+    queryFn: () => pipelineApi.schedulerStatus(),
     refetchInterval: 5000,
   });
 
@@ -127,17 +127,17 @@ export default function ChannelsPage() {
   });
 
   const startPipelineMutation = useMutation({
-    mutationFn: () => pipelineApi.start(),
+    mutationFn: () => pipelineApi.schedulerStart(),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['pipeline-status'] }),
   });
 
   const stopPipelineMutation = useMutation({
-    mutationFn: () => pipelineApi.stop(),
+    mutationFn: () => pipelineApi.schedulerStop(),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['pipeline-status'] }),
   });
 
   const pollNowMutation = useMutation({
-    mutationFn: () => pipelineApi.pollNow(),
+    mutationFn: () => pipelineApi.schedulerPollNow(),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['pipeline-status'] });
       queryClient.invalidateQueries({ queryKey: ['channels'] });
@@ -145,7 +145,7 @@ export default function ChannelsPage() {
   });
 
   const updateSettingsMutation = useMutation({
-    mutationFn: (settings: { poll_interval_ms?: number }) => pipelineApi.updateSettings(settings),
+    mutationFn: (settings: { poll_interval_ms?: number }) => pipelineApi.schedulerUpdateSettings(settings),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['pipeline-status'] });
       setShowSettings(false);

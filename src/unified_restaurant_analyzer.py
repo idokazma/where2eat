@@ -22,6 +22,7 @@ class RestaurantInfo:
     neighborhood: Optional[str]
     address: Optional[str]
     region: str
+    country: str
     cuisine_type: str
     status: str
     price_range: str
@@ -52,31 +53,96 @@ class UnifiedRestaurantAnalyzer:
         # Initialize the appropriate LLM client
         if self.config.provider == "openai":
             self._init_openai_client()
+        elif self.config.provider == "gemini":
+            self._init_gemini_client()
         else:
             self._init_claude_client()
-    
+
     def _init_openai_client(self):
         """Initialize OpenAI client"""
         try:
             import openai
             self.client = openai.OpenAI(api_key=self.config.get_active_api_key())
-            self.logger.info(f"✅ Initialized OpenAI client with model: {self.config.get_active_model()}")
+            self.logger.info(f"Initialized OpenAI client with model: {self.config.get_active_model()}")
         except ImportError:
             raise ImportError("OpenAI package not installed. Run: pip install openai")
         except Exception as e:
             raise ValueError(f"Failed to initialize OpenAI client: {str(e)}")
-    
+
     def _init_claude_client(self):
         """Initialize Claude/Anthropic client"""
         try:
             import anthropic
             self.client = anthropic.Anthropic(api_key=self.config.get_active_api_key())
-            self.logger.info(f"✅ Initialized Claude client with model: {self.config.get_active_model()}")
+            self.logger.info(f"Initialized Claude client with model: {self.config.get_active_model()}")
         except ImportError:
             raise ImportError("Anthropic package not installed. Run: pip install anthropic")
         except Exception as e:
             raise ValueError(f"Failed to initialize Claude client: {str(e)}")
+
+    def _init_gemini_client(self):
+        """Initialize Google Gemini client"""
+        try:
+            from google import genai
+            self.client = genai.Client(api_key=self.config.get_active_api_key())
+            self.logger.info(f"Initialized Gemini client with model: {self.config.get_active_model()}")
+        except ImportError:
+            raise ImportError("Google GenAI package not installed. Run: pip install google-genai")
+        except Exception as e:
+            raise ValueError(f"Failed to initialize Gemini client: {str(e)}")
     
+    def _format_timestamped_transcript(self, transcript_data: Dict) -> str:
+        """Format transcript with inline timestamp markers from segments.
+
+        If segments with start times are available, produces text like:
+            [00:00] first segment text [00:15] second segment text ...
+        Timestamps are used by the LLM to determine when each restaurant
+        discussion begins in the transcript.
+
+        Falls back to plain transcript text if no segments are available.
+        """
+        segments = transcript_data.get('segments', [])
+        if not segments or not isinstance(segments, list):
+            return transcript_data.get('transcript', '')
+
+        # Check if segments have start times
+        if not segments[0].get('start') and segments[0].get('start') != 0:
+            return transcript_data.get('transcript', '')
+
+        parts = []
+        for seg in segments:
+            start = seg.get('start', 0)
+            text = seg.get('text', '').strip()
+            if not text:
+                continue
+            # Format as [MM:SS]
+            mins = int(start) // 60
+            secs = int(start) % 60
+            parts.append(f"[{mins:02d}:{secs:02d}] {text}")
+
+        return ' '.join(parts)
+
+    @staticmethod
+    def _mmss_to_seconds(mmss) -> int:
+        """Convert a MM:SS string from the LLM to seconds.
+
+        Args:
+            mmss: Timestamp string like "05:23" or "12:07", or an int
+
+        Returns:
+            Timestamp in seconds, or 0 if parsing fails.
+        """
+        if not mmss:
+            return 0
+        if isinstance(mmss, (int, float)):
+            return int(mmss)
+        if not isinstance(mmss, str):
+            return 0
+        match = re.match(r'(\d{1,3}):(\d{2})', str(mmss).strip())
+        if match:
+            return int(match.group(1)) * 60 + int(match.group(2))
+        return 0
+
     def analyze_transcript(self, transcript_data: Dict) -> Dict:
         """
         Analyze a YouTube transcript to extract restaurant information
@@ -88,7 +154,11 @@ class UnifiedRestaurantAnalyzer:
             Dictionary containing episode_info, restaurants, food_trends, and episode_summary
         """
         try:
-            transcript_text = transcript_data['transcript']
+            # Use timestamped transcript if segments are available
+            transcript_text = self._format_timestamped_transcript(transcript_data)
+            # Store the formatted text back so chunks and prompts use it
+            transcript_data = transcript_data.copy()
+            transcript_data['transcript'] = transcript_text
             video_id = transcript_data.get('video_id', 'unknown')
 
             self.logger.info(f"═══════════════════════════════════════════════════════════")
@@ -128,6 +198,8 @@ class UnifiedRestaurantAnalyzer:
             # Call the appropriate LLM
             if self.config.provider == "openai":
                 restaurants = self._call_openai(prompt)
+            elif self.config.provider == "gemini":
+                restaurants = self._call_gemini(prompt)
             else:
                 restaurants = self._call_claude(prompt)
 
@@ -137,6 +209,10 @@ class UnifiedRestaurantAnalyzer:
             validated_restaurants = []
             for restaurant in restaurants:
                 validated_restaurant = self._ensure_english_name(restaurant)
+                # Convert LLM's MM:SS timestamp estimate to seconds
+                mmss = validated_restaurant.pop('mention_timestamp', None)
+                if mmss is not None:
+                    validated_restaurant['mention_timestamp_seconds'] = self._mmss_to_seconds(mmss)
                 validated_restaurants.append(validated_restaurant)
 
             return {
@@ -268,16 +344,20 @@ class UnifiedRestaurantAnalyzer:
 
     def _get_system_prompt(self) -> str:
         """Get the enhanced system prompt for restaurant extraction"""
-        return """You are an expert Hebrew food podcast analyst specializing in extracting restaurant information from Israeli culinary content.
+        return """You are an expert Hebrew food podcast analyst specializing in extracting restaurant information from culinary content.
 
 EXPERTISE:
 - Deep understanding of Israeli food culture, restaurant scene, and dining trends
 - Fluent in Hebrew food terminology, slang, and regional expressions
 - Knowledge of Israeli geography: cities, neighborhoods, and culinary districts
+- Knowledge of international restaurants and cuisines when mentioned
 - Familiar with common Hebrew restaurant naming patterns (e.g., "מסעדת X", "ביסטרו Y", "בית קפה Z")
 
 EXTRACTION RULES:
-1. Extract ONLY explicitly named establishments - restaurants, cafés, bistros, food trucks, bakeries, bars
+1. Extract ONLY restaurants that are actually REVIEWED or DISCUSSED in depth.
+   - The hosts must share an opinion, describe the food, talk about the experience, or recommend/criticize the place.
+   - DO NOT extract restaurants that are merely MENTIONED in passing (e.g., "we also stopped by X", "X is nearby", "like at X", name-dropped in a list without discussion).
+   - A good test: if the hosts spent less than ~15 seconds talking about a place and shared no opinion or food details, SKIP IT.
 2. DO NOT extract:
    - Generic food terms (e.g., "חומוס", "שווארמה", "פיצה")
    - Dish names that are not restaurant names
@@ -285,6 +365,7 @@ EXTRACTION RULES:
    - Supermarket chains (unless they have a restaurant section being discussed)
    - Chef names without their restaurant
    - Vague references like "מסעדה אחת" or "מקום מסוים"
+   - Restaurants only mentioned as comparisons (e.g., "it's like X but better") unless X is also reviewed
 
 3. For each restaurant, assess confidence:
    - HIGH: Name explicitly stated with clear context
@@ -293,7 +374,36 @@ EXTRACTION RULES:
 
 4. Handle duplicates: If the same restaurant is mentioned multiple times, consolidate into one entry with merged information.
 
-5. Hebrew transliteration: Provide accurate English transliteration (e.g., "צ'קולי" → "Chakoli", not "Tzkoli")
+5. NAME HANDLING - THIS IS CRITICAL:
+   - For ISRAELI restaurants: provide the Hebrew name in name_hebrew and English transliteration in name_english
+   - For NON-ISRAELI restaurants (Paris, NYC, London, Tokyo, etc.):
+     * name_hebrew should be the ORIGINAL name in the original language (e.g., "Ten Belles" stays "Ten Belles", NOT a Hebrew translation)
+     * name_english should also be the original name
+     * Do NOT translate foreign restaurant names to Hebrew
+   - Hebrew transliteration (for Israeli restaurants only): Provide accurate English transliteration (e.g., "צ'קולי" → "Chakoli", not "Tzkoli")
+
+6. COUNTRY DETECTION:
+   - Determine which country the restaurant is in based on context clues
+   - Israeli cities: תל אביב, ירושלים, חיפה, באר שבע, etc.
+   - If the hosts discuss a trip abroad or mention foreign cities (Paris, New York, London, Tokyo, Bangkok, etc.), set country accordingly
+   - Use the actual country name in English (e.g., "Israel", "France", "USA", "Japan")
+
+7. TRANSCRIPT MISHEARING CORRECTION:
+   - Hebrew transcripts often mishear foreign restaurant names. Try to correct obvious errors.
+   - Example: "דבר" (davar) in כפר סבא is likely "Denver" (a burger restaurant)
+   - Example: "טן בל" might be "Ten Belles" (a Paris café)
+   - Use context clues (cuisine type, city, description) to correct garbled names
+   - If you suspect a name is misheard, provide your best guess for the correct name
+
+8. ENGAGING QUOTES: For each restaurant, extract a vivid, colorful quote from the hosts about the restaurant.
+   - Capture the hosts' actual words or a close paraphrase - not a dry summary
+   - The quote should convey enthusiasm, emotion, or strong opinion
+   - Example of good: "אחי, הסטייק הזה נמס לי בפה, אני לא מאמין שזה קיים בארץ"
+   - Example of bad: "המנחה אמר שהסטייק טוב" (too dry, summarizes instead of quoting)
+
+9. TIMESTAMPS: Estimate how many seconds into the transcript each restaurant is first discussed.
+   - If the transcript has timing cues, use them
+   - Otherwise estimate based on position in the transcript (e.g., if mentioned at 30% of the text and the video is ~60min, estimate ~1080 seconds)
 
 Always respond with valid JSON only. No markdown formatting or additional text."""
 
@@ -362,6 +472,35 @@ Always respond with valid JSON only. No markdown formatting or additional text."
 
         except Exception as e:
             self.logger.error(f"Claude API call failed: {str(e)}")
+            raise e
+
+    def _call_gemini(self, prompt: str) -> List[Dict]:
+        """Call Google Gemini API to analyze transcript"""
+
+        self.logger.info(f"Calling Gemini API ({self.config.get_active_model()})")
+
+        try:
+            from google.genai import types
+
+            full_prompt = self._get_system_prompt() + "\n\n" + prompt
+
+            response = self.client.models.generate_content(
+                model=self.config.get_active_model(),
+                contents=full_prompt,
+                config=types.GenerateContentConfig(
+                    temperature=self.config.get_active_temperature(),
+                    max_output_tokens=self.config.get_active_max_tokens(),
+                    response_mime_type="application/json",
+                ),
+            )
+
+            content = response.text
+
+            # Use safe JSON parsing to handle truncated responses
+            return self._safe_parse_json(content)
+
+        except Exception as e:
+            self.logger.error(f"Gemini API call failed: {str(e)}")
             raise e
 
     def _safe_parse_json(self, content: str) -> List[Dict]:
@@ -515,19 +654,28 @@ Always respond with valid JSON only. No markdown formatting or additional text."
         if len(transcript_text) > max_transcript_length:
             truncated_transcript += "..."
 
-        return f"""Analyze this Hebrew food podcast transcript and extract ALL restaurants mentioned by name.
+        return f"""Analyze this Hebrew food podcast transcript and extract restaurants that are actually REVIEWED or DISCUSSED.
 
 TRANSCRIPT:
 {truncated_transcript}
 
-TASK: Extract every restaurant, café, bistro, food truck, bakery, or dining establishment mentioned by its actual name.
+TASK: Extract restaurants, cafés, bistros, food trucks, bakeries, or dining establishments that the hosts actually REVIEW — meaning they share opinions, describe the food, discuss the experience, or give recommendations. Do NOT extract places that are just mentioned in passing or name-dropped without discussion.
 
 EXTRACTION GUIDELINES:
 1. Look for Hebrew patterns: "במסעדת X", "מסעדת X", "ביסטרו X", "בית קפה X", "של X", "אצל X"
 2. Look for location patterns: "[name] בתל אביב", "[name] ברחוב X", "[name] במרכז"
 3. Include chef-owned restaurants: "המסעדה של [שף]", "[שף] פתח מסעדה"
+4. ONLY include if the hosts share meaningful content about the place (opinion, food description, recommendation, story)
+5. LOCATION EXTRACTION — THIS IS CRITICAL:
+   - Extract the SPECIFIC location discussed in the transcript: street name, neighborhood, or area
+   - Listen for: "ברחוב X", "בשכונת X", "ליד X", "באזור X", "פתח סניף ב-X"
+   - If a restaurant has multiple branches and the hosts discuss a SPECIFIC branch, extract THAT branch's location — not the original/main branch
+   - If the hosts say "פתח סניף חדש ב..." or "הסניף החדש שלהם ב...", use the NEW location
+   - Put the street address in the address field, not just the city
 
-DO NOT EXTRACT (negative examples):
+DO NOT EXTRACT:
+- Restaurants only mentioned in passing without review or opinion
+- Restaurants used as comparisons ("it's like X but better") unless X is also reviewed
 - Generic food terms: "חומוס", "שווארמה", "פיצה", "סושי" (unless part of a restaurant name)
 - Food brands: "אסם", "תנובה", "שטראוס"
 - Dish names: "שקשוקה", "חומוס מסבחה" (unless it's a restaurant name)
@@ -538,14 +686,15 @@ OUTPUT FORMAT - Return a JSON object:
 {{
     "restaurants": [
         {{
-            "name_hebrew": "שם המסעדה בעברית",
-            "name_english": "Accurate English Transliteration",
+            "name_hebrew": "For Israeli restaurants: שם בעברית. For non-Israeli: original name as-is (e.g. Ten Belles, NOT טן בלס)",
+            "name_english": "English name or transliteration",
             "confidence": "high/medium/low",
+            "country": "Israel/France/USA/Japan/etc. - the country where the restaurant is located",
             "location": {{
-                "city": "עיר",
-                "neighborhood": "שכונה",
-                "address": "כתובת מלאה אם מוזכרת",
-                "region": "צפון/מרכז/דרום/ירושלים/שרון"
+                "city": "עיר (Hebrew for Israeli cities, original language for foreign cities e.g. Paris, not פריז)",
+                "neighborhood": "שכונה or neighborhood name if mentioned",
+                "address": "Street address as mentioned in transcript (e.g., 'רחוב דיזנגוף 99', 'שדרות רוטשילד 22'). Extract the SPECIFIC location discussed — if they talk about a new branch, use the NEW address, not the original.",
+                "region": "For Israel: צפון/מרכז/דרום/ירושלים/שרון. For other countries: null"
             }},
             "cuisine_type": "סוג מטבח (איטלקי/אסייתי/ים-תיכוני/וכו')",
             "establishment_type": "מסעדה/ביסטרו/בית קפה/פוד טראק/מאפייה/בר",
@@ -554,6 +703,8 @@ OUTPUT FORMAT - Return a JSON object:
             "host_opinion": "חיובית מאוד/חיובית/ניטרלית/שלילית/מעורבת",
             "host_recommendation": true/false,
             "host_comments": "ציטוט ישיר או פרפרזה של דברי המנחה",
+            "engaging_quote": "ציטוט חי, צבעוני ומלא רגש מהמנחים על המסעדה - המילים שלהם ממש, לא תקציר יבש",
+            "mention_timestamp": "MM:SS — the [MM:SS] marker from the transcript closest to where this restaurant is first discussed",
             "signature_dishes": ["מנה מומלצת 1", "מנה מומלצת 2"],
             "menu_items": ["מנה שהוזכרה 1", "מנה שהוזכרה 2"],
             "special_features": ["תכונה מיוחדת", "אווירה", "נוף"],
@@ -571,12 +722,21 @@ OUTPUT FORMAT - Return a JSON object:
     "extraction_notes": "הערות על קושי בזיהוי או אי-ודאויות"
 }}
 
+TIMESTAMP INSTRUCTIONS:
+The transcript contains [MM:SS] markers. For "mention_timestamp":
+- Find the [MM:SS] marker where the DISCUSSION about the restaurant BEGINS — this is often
+  BEFORE the restaurant name is said. The hosts typically describe the food, ambiance, or
+  location before stating the name.
+- Look ~30-60 seconds before the name mention for the start of the relevant discussion.
+- Return as "MM:SS" string (e.g., "12:30").
+- If no timestamp markers are present, use "00:00".
+
 CONFIDENCE LEVELS:
 - "high": שם מפורש עם הקשר ברור (e.g., "הלכנו למסעדת צ'קולי בנמל")
 - "medium": שם מוזכר אך הקשר חלקי (e.g., "צ'קולי היה טוב")
 - "low": שם לא ברור או נשמע חלקית (e.g., "משהו כמו צ'קו...")
 
-Be thorough but precise. Extract ALL valid restaurants. Use null for truly unknown fields (not "לא צוין")."""
+Be precise over thorough. Only extract restaurants that are genuinely reviewed or discussed — quality over quantity. Use null for truly unknown fields (not "לא צוין")."""
 
     def _ensure_english_name(self, restaurant: Dict) -> Dict:
         """Ensure restaurant has a proper English name"""

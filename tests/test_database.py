@@ -291,6 +291,73 @@ class TestRestaurantOperations:
         assert restaurants[0]['episode_info']['channel_name'] == 'Food Channel'
 
 
+class TestGoogleNamePersistence:
+    """Test google_name storage and retrieval."""
+
+    @pytest.fixture
+    def db(self):
+        """Create a temporary test database."""
+        with tempfile.TemporaryDirectory() as temp_dir:
+            db_path = os.path.join(temp_dir, 'test.db')
+            yield Database(db_path)
+
+    def test_create_restaurant_with_google_name(self, db):
+        """google_name should be stored and retrievable."""
+        restaurant_id = db.create_restaurant(
+            name_hebrew='מלגוב מדבר',
+            name_english='Malgov Midbar',
+            google_name='Milgo Milbar',
+            google_place_id='ChIJ123',
+        )
+
+        restaurant = db.get_restaurant(restaurant_id)
+        assert restaurant['google_places']['google_name'] == 'Milgo Milbar'
+        assert restaurant['google_places']['place_id'] == 'ChIJ123'
+
+    def test_create_restaurant_with_google_places_dict(self, db):
+        """google_name extracted from google_places dict should be stored."""
+        restaurant_id = db.create_restaurant(
+            name_hebrew='קבקם',
+            google_places={
+                'place_id': 'ChIJ456',
+                'google_name': 'Kab Kem',
+                'google_url': 'https://maps.google.com/...',
+            }
+        )
+
+        restaurant = db.get_restaurant(restaurant_id)
+        assert restaurant['google_places']['google_name'] == 'Kab Kem'
+        assert restaurant['google_places']['place_id'] == 'ChIJ456'
+
+    def test_update_restaurant_preserves_google_name(self, db):
+        """update_restaurant with google_places dict should persist google_name."""
+        restaurant_id = db.create_restaurant(name_hebrew='מסעדה')
+
+        db.update_restaurant(restaurant_id, google_places={
+            'place_id': 'ChIJ789',
+            'google_name': 'The Restaurant',
+        })
+
+        restaurant = db.get_restaurant(restaurant_id)
+        assert restaurant['google_place_id'] == 'ChIJ789'
+        assert restaurant['google_places']['google_name'] == 'The Restaurant'
+
+    def test_google_name_none_when_not_set(self, db):
+        """google_name should be None when not provided."""
+        restaurant_id = db.create_restaurant(name_hebrew='מסעדה')
+
+        restaurant = db.get_restaurant(restaurant_id)
+        assert restaurant['google_places']['google_name'] is None
+
+    def test_google_name_column_exists(self, db):
+        """The google_name column should exist in the restaurants table."""
+        with db.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("PRAGMA table_info(restaurants)")
+            columns = [row['name'] for row in cursor.fetchall()]
+            assert 'google_name' in columns
+
+
 class TestRestaurantSearch:
     """Test restaurant search functionality."""
 

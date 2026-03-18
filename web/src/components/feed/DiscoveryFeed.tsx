@@ -1,15 +1,20 @@
 'use client';
 
-import { UtensilsCrossed } from 'lucide-react';
-import { Restaurant } from '@/types/restaurant';
+import { useMemo, useRef, useEffect, useCallback } from 'react';
+import { UtensilsCrossed, Loader2 } from 'lucide-react';
+import { Restaurant, getCoordinates } from '@/types/restaurant';
 import { RestaurantCardNew } from '@/components/restaurant/RestaurantCardNew';
 import { SectionHeader } from '@/components/ui/SectionHeader';
+import { getRestaurantImage } from '@/lib/images';
 
 interface DiscoveryFeedProps {
   restaurants: Restaurant[];
   onRestaurantClick?: (restaurant: Restaurant) => void;
   showDistances?: boolean;
   userCoords?: { lat: number; lng: number } | null;
+  hasMore?: boolean;
+  isLoadingMore?: boolean;
+  onLoadMore?: () => void;
   className?: string;
 }
 
@@ -38,8 +43,62 @@ export function DiscoveryFeed({
   onRestaurantClick,
   showDistances = false,
   userCoords,
+  hasMore = false,
+  isLoadingMore = false,
+  onLoadMore,
   className = '',
 }: DiscoveryFeedProps) {
+  const sentinelRef = useRef<HTMLDivElement>(null);
+
+  // Infinite scroll: observe sentinel element
+  const handleIntersection = useCallback(
+    (entries: IntersectionObserverEntry[]) => {
+      const [entry] = entries;
+      if (entry.isIntersecting && hasMore && !isLoadingMore && onLoadMore) {
+        onLoadMore();
+      }
+    },
+    [hasMore, isLoadingMore, onLoadMore]
+  );
+
+  useEffect(() => {
+    const sentinel = sentinelRef.current;
+    if (!sentinel) return;
+
+    const observer = new IntersectionObserver(handleIntersection, {
+      rootMargin: '200px',
+    });
+    observer.observe(sentinel);
+
+    return () => observer.disconnect();
+  }, [handleIntersection]);
+
+  // Sort restaurants by distance when "Near Me" is active
+  const sortedRestaurants = useMemo(() => {
+    if (!showDistances || !userCoords) return restaurants;
+    return [...restaurants].sort((a, b) => {
+      const coordsA = getCoordinates(a.location);
+      const distA = coordsA
+        ? calculateDistance(
+            userCoords.lat,
+            userCoords.lng,
+            coordsA.latitude,
+            coordsA.longitude
+          )
+        : Infinity;
+      const coordsB = getCoordinates(b.location);
+      const distB = coordsB
+        ? calculateDistance(
+            userCoords.lat,
+            userCoords.lng,
+            coordsB.latitude,
+            coordsB.longitude
+          )
+        : Infinity;
+      return distA - distB;
+    });
+  }, [restaurants, showDistances, userCoords]);
+
   if (restaurants.length === 0) {
     return (
       <section className={`px-4 py-8 ${className}`}>
@@ -64,30 +123,44 @@ export function DiscoveryFeed({
       />
 
       <div className="px-4 space-y-4">
-        {restaurants.map((restaurant, index) => {
+        {sortedRestaurants.map((restaurant, index) => {
           // Calculate distance if user coords available
           let distanceMeters: number | undefined;
-          if (showDistances && userCoords) {
-            // For now, use a mock location since restaurants don't have coords
-            // In production, you'd use restaurant.google_places coordinates
-            distanceMeters = undefined; // Would calculate from restaurant coords
+          const coords = getCoordinates(restaurant.location);
+          if (showDistances && userCoords && coords) {
+            distanceMeters = calculateDistance(
+              userCoords.lat,
+              userCoords.lng,
+              coords.latitude,
+              coords.longitude
+            );
           }
 
           return (
             <div
               key={restaurant.google_places?.place_id || `${restaurant.name_hebrew}-${index}`}
               className={`animate-fade-up stagger-${Math.min(index + 1, 8)}`}
-              style={{ opacity: 0 }}
             >
               <RestaurantCardNew
                 restaurant={restaurant}
                 showDistance={showDistances && !!distanceMeters}
                 distanceMeters={distanceMeters}
                 onTap={() => onRestaurantClick?.(restaurant)}
+                imageUrl={getRestaurantImage(restaurant) || undefined}
               />
             </div>
           );
         })}
+
+        {/* Loading indicator */}
+        {isLoadingMore && (
+          <div className="flex justify-center py-6">
+            <Loader2 className="w-6 h-6 text-[var(--color-ink-muted)] animate-spin" />
+          </div>
+        )}
+
+        {/* Sentinel element for infinite scroll */}
+        <div ref={sentinelRef} className="h-1" />
       </div>
     </section>
   );

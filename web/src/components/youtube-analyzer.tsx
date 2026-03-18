@@ -28,7 +28,7 @@ export function YoutubeAnalyzer() {
   const [analysisResult, setAnalysisResult] = useState<PodcastData | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [analysisType, setAnalysisType] = useState<"video" | "channel">("video")
-  const [channelJob, setChannelJob] = useState<any>(null)
+  const [channelJob, setChannelJob] = useState<{ jobId: string; status: string } | null>(null)
 
   const isValidYouTubeUrl = (url: string) => {
     const youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+$/

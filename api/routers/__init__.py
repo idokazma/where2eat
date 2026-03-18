@@ -4,14 +4,20 @@ from .restaurants import router as restaurants_router
 from .analytics import router as analytics_router
 from .analyze import router as analyze_router
 from .places import router as places_router
+from .photos import router as photos_router
 from .health import router as health_router
 from .admin import router as admin_router
+from .admin_subscriptions import router as admin_subscriptions_router
+from .admin_pipeline import router as admin_pipeline_router
 
 __all__ = [
     "restaurants_router",
     "analytics_router",
     "analyze_router",
     "places_router",
+    "photos_router",
     "health_router",
     "admin_router",
+    "admin_subscriptions_router",
+    "admin_pipeline_router",
 ]

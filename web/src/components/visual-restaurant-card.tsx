@@ -151,7 +151,7 @@ export function VisualRestaurantCard({
       <CardContent className="p-4">
         {restaurant.host_comments && (
           <p className="text-sm text-muted-foreground italic text-right line-clamp-2 mb-2">
-            "{restaurant.host_comments}"
+            &ldquo;{restaurant.host_comments}&rdquo;
           </p>
         )}
 

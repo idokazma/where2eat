@@ -62,7 +62,7 @@ function ToastItem({
   onDismiss
 }: {
   toast: Toast
-  Icon: any
+  Icon: React.ComponentType<{ className?: string }>
   colorClass: string
   onDismiss: (id: string) => void
 }) {

@@ -25,8 +25,11 @@ import {
   AlignCenter,
   AlignRight,
   UnderlineIcon,
+  Pilcrow,
+  ImageIcon,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useState, useCallback } from 'react';
 
 interface RichTextEditorProps {
   content: string;
@@ -35,6 +38,8 @@ interface RichTextEditorProps {
 }
 
 export function RichTextEditor({ content, onChange, placeholder = 'Start writing...' }: RichTextEditorProps) {
+  const [isRtl, setIsRtl] = useState(false);
+
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
@@ -68,19 +73,33 @@ export function RichTextEditor({ content, onChange, placeholder = 'Start writing
     editorProps: {
       attributes: {
         class: 'prose prose-sm sm:prose lg:prose-lg xl:prose-xl focus:outline-none min-h-[300px] max-w-none p-4',
+        dir: isRtl ? 'rtl' : 'ltr',
       },
     },
   });
+
+  const toggleRtl = useCallback(() => {
+    setIsRtl((prev) => !prev);
+    if (editor) {
+      // Update editor direction attribute
+      const editorEl = editor.view.dom;
+      editorEl.setAttribute('dir', isRtl ? 'ltr' : 'rtl');
+    }
+  }, [editor, isRtl]);
 
   if (!editor) {
     return null;
   }
 
   const addLink = () => {
-    const url = window.prompt('Enter URL:');
-    if (url) {
-      editor.chain().focus().setLink({ href: url }).run();
+    const previousUrl = editor.getAttributes('link').href;
+    const url = window.prompt('Enter URL:', previousUrl);
+    if (url === null) return;
+    if (url === '') {
+      editor.chain().focus().extendMarkRange('link').unsetLink().run();
+      return;
     }
+    editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run();
   };
 
   const addImage = () => {
@@ -90,10 +109,13 @@ export function RichTextEditor({ content, onChange, placeholder = 'Start writing
     }
   };
 
+  const charCount = editor.storage.characterCount?.characters?.() ?? editor.getText().length;
+  const wordCount = editor.getText().split(/\s+/).filter(Boolean).length;
+
   return (
     <div className="border rounded-lg overflow-hidden">
       {/* Toolbar */}
-      <div className="flex flex-wrap gap-1 p-2 border-b bg-muted/50">
+      <div className="flex flex-wrap items-center gap-1 p-2 border-b bg-muted/50">
         {/* Text Formatting */}
         <Button
           variant={editor.isActive('bold') ? 'default' : 'ghost'}
@@ -232,6 +254,19 @@ export function RichTextEditor({ content, onChange, placeholder = 'Start writing
 
         <div className="w-px h-8 bg-border mx-1" />
 
+        {/* RTL Toggle */}
+        <Button
+          variant={isRtl ? 'default' : 'ghost'}
+          size="sm"
+          onClick={toggleRtl}
+          title={isRtl ? 'Switch to LTR' : 'Switch to RTL'}
+        >
+          <Pilcrow className="h-4 w-4" />
+          <span className="ml-1 text-[10px]">{isRtl ? 'RTL' : 'LTR'}</span>
+        </Button>
+
+        <div className="w-px h-8 bg-border mx-1" />
+
         {/* Link & Image */}
         <Button
           variant={editor.isActive('link') ? 'default' : 'ghost'}
@@ -248,7 +283,7 @@ export function RichTextEditor({ content, onChange, placeholder = 'Start writing
           onClick={addImage}
           title="Add Image"
         >
-          <span className="text-xs font-medium">IMG</span>
+          <ImageIcon className="h-4 w-4" />
         </Button>
 
         <div className="w-px h-8 bg-border mx-1" />
@@ -277,6 +312,12 @@ export function RichTextEditor({ content, onChange, placeholder = 'Start writing
 
       {/* Editor */}
       <EditorContent editor={editor} />
+
+      {/* Character/Word Count Footer */}
+      <div className="flex items-center justify-end gap-3 px-3 py-1.5 border-t bg-muted/30 text-xs text-muted-foreground">
+        <span>{charCount.toLocaleString()} characters</span>
+        <span>{wordCount.toLocaleString()} words</span>
+      </div>
     </div>
   );
 }

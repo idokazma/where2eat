@@ -24,6 +24,7 @@ sys.path.insert(0, os.path.join(PROJECT_ROOT, 'src'))
 sys.path.insert(0, os.path.join(PROJECT_ROOT, 'scripts'))
 
 from database import Database, get_database
+from hallucination_detector import HallucinationDetector, filter_hallucinations
 
 
 class BackendService:
@@ -103,7 +104,7 @@ class BackendService:
 
         try:
             collector = self._get_transcript_collector()
-            transcript_data = collector.get_transcript(video_url, language=language)
+            transcript_data = collector.get_transcript(video_url, languages=[language])
 
             if transcript_data is None:
                 # Try auto-generated transcript
@@ -181,12 +182,13 @@ class BackendService:
         try:
             analyzer = self._get_analyzer()
 
-            analysis_result = analyzer.analyze_transcript(
-                transcript_text=transcript_data.get('transcript', ''),
-                video_id=transcript_data.get('video_id'),
-                video_url=transcript_data.get('video_url'),
-                language=transcript_data.get('language', 'he')
-            )
+            analysis_result = analyzer.analyze_transcript({
+                'transcript': transcript_data.get('transcript', ''),
+                'video_id': transcript_data.get('video_id'),
+                'video_url': transcript_data.get('video_url'),
+                'language': transcript_data.get('language', 'he'),
+                'segments': transcript_data.get('segments', [])
+            })
 
             return {
                 'success': True,
@@ -281,6 +283,210 @@ class BackendService:
 
         return {'success': False, 'error': result.get('error', 'Enrichment failed')}
 
+    def reenrich_all_restaurants(self) -> Dict:
+        """Re-enrich all restaurants that are missing Google Places data.
+
+        Finds restaurants without google_place_id and enriches them.
+
+        Returns:
+            Dict with enrichment stats
+        """
+        all_restaurants = self.db.get_all_restaurants(include_episode_info=False)
+        unenriched = [r for r in all_restaurants if not r.get('google_place_id')]
+
+        if not unenriched:
+            return {'success': True, 'total': len(all_restaurants), 'enriched': 0, 'message': 'All restaurants already enriched'}
+
+        stats = {'total': len(all_restaurants), 'unenriched': len(unenriched), 'enriched': 0, 'failed': 0}
+
+        try:
+            enricher = self._get_places_enricher()
+        except ImportError as e:
+            return {'success': False, 'error': str(e), **stats}
+
+        for restaurant in unenriched:
+            try:
+                enriched = enricher.enrich_restaurant(restaurant)
+                if enriched.get('google_places_enriched'):
+                    # Flatten for database update
+                    update_data = {}
+                    coords = enriched.get('location', {}).get('coordinates', {})
+                    if coords:
+                        update_data['latitude'] = coords.get('latitude')
+                        update_data['longitude'] = coords.get('longitude')
+                    gp = enriched.get('google_places', {})
+                    if gp and gp.get('place_id'):
+                        update_data['google_place_id'] = gp['place_id']
+                    rating = enriched.get('rating', {})
+                    if rating:
+                        update_data['google_rating'] = rating.get('google_rating')
+                        update_data['google_user_ratings_total'] = rating.get('total_reviews')
+                    photos = enriched.get('photos', [])
+                    if photos:
+                        update_data['photos'] = photos
+                        if not enriched.get('image_url'):
+                            ref = photos[0].get('photo_reference')
+                            if ref:
+                                update_data['image_url'] = ref
+                        else:
+                            update_data['image_url'] = enriched.get('image_url')
+                    contact = enriched.get('contact_info', {})
+                    if contact.get('phone'):
+                        update_data['contact_phone'] = contact['phone']
+                    if contact.get('website'):
+                        update_data['contact_website'] = contact['website']
+                    if enriched.get('location', {}).get('full_address'):
+                        update_data['address'] = enriched['location']['full_address']
+
+                    if update_data:
+                        self.db.update_restaurant(restaurant['id'], **update_data)
+                        # Also update PostgreSQL via raw SQL
+                        try:
+                            from models.base import get_engine
+                            from sqlalchemy import text
+                            engine = get_engine()
+                            pg_data = {}
+                            set_parts = []
+                            for key, val in update_data.items():
+                                if key == 'photos':
+                                    # photos is JSON column - pass string, cast in SQL
+                                    pg_data[key] = val if isinstance(val, str) else json.dumps(val)
+                                    set_parts.append(f"{key} = CAST(:{key} AS json)")
+                                else:
+                                    pg_data[key] = val
+                                    set_parts.append(f"{key} = :{key}")
+                            set_clauses = ", ".join(set_parts)
+                            pg_data['rid'] = restaurant['id']
+                            with engine.connect() as conn:
+                                conn.execute(
+                                    text(f"UPDATE restaurants SET {set_clauses} WHERE id = :rid"),
+                                    pg_data
+                                )
+                                conn.commit()
+                        except Exception as pg_err:
+                            print(f"[RE-ENRICH] PostgreSQL update failed for {restaurant.get('name_hebrew')}: {pg_err}")
+                    stats['enriched'] += 1
+                else:
+                    stats['failed'] += 1
+            except Exception as e:
+                print(f"[RE-ENRICH] Failed for {restaurant.get('name_hebrew')}: {e}")
+                stats['failed'] += 1
+
+        stats['success'] = True
+        return stats
+
+    # ==================== Hallucination Filtering ====================
+
+    def filter_restaurant_hallucinations(
+        self,
+        restaurants: List[Dict],
+        strict_mode: bool = True
+    ) -> Dict:
+        """Filter out hallucinated restaurant extractions.
+
+        Uses multiple signals to detect false extractions:
+        - Name matching with Google Places
+        - Common Hebrew word detection
+        - Sentence fragment detection
+        - Data completeness scoring
+
+        Args:
+            restaurants: List of restaurant dicts (ideally after Google enrichment)
+            strict_mode: If True, reject uncertain extractions
+
+        Returns:
+            Dict with filtered results and metadata
+        """
+        if not restaurants:
+            return {
+                'accepted': [],
+                'rejected': [],
+                'needs_review': [],
+                'all_with_metadata': [],
+                'accepted_count': 0,
+                'rejected_count': 0,
+                'review_count': 0
+            }
+
+        accepted, rejected, needs_review = filter_hallucinations(
+            restaurants,
+            strict_mode=strict_mode
+        )
+
+        # In strict mode, needs_review items are also rejected
+        if strict_mode:
+            rejected.extend(needs_review)
+            needs_review = []
+
+        return {
+            'accepted': accepted,
+            'rejected': rejected,
+            'needs_review': needs_review,
+            'all_with_metadata': accepted + rejected + needs_review,
+            'accepted_count': len(accepted),
+            'rejected_count': len(rejected),
+            'review_count': len(needs_review)
+        }
+
+    def get_hallucination_report(self, restaurants: List[Dict] = None) -> Dict:
+        """Generate a detailed hallucination report for admin review.
+
+        Args:
+            restaurants: Optional list of restaurants. If None, loads from database.
+
+        Returns:
+            Dict with detailed analysis of each restaurant
+        """
+        if restaurants is None:
+            # Load from database
+            restaurants = self.list_restaurants()
+
+        detector = HallucinationDetector(strict_mode=False)
+        report = {
+            'total': len(restaurants),
+            'accepted': 0,
+            'rejected': 0,
+            'needs_review': 0,
+            'restaurants': []
+        }
+
+        for restaurant in restaurants:
+            result = detector.detect(restaurant)
+
+            restaurant_report = {
+                'id': restaurant.get('id'),
+                'name_hebrew': restaurant.get('name_hebrew', ''),
+                'name_english': restaurant.get('name_english', ''),
+                'google_name': restaurant.get('google_places', {}).get('google_name', ''),
+                'city': restaurant.get('location', {}).get('city', ''),
+                'verification': {
+                    'is_hallucination': result.is_hallucination,
+                    'confidence': result.confidence,
+                    'recommendation': result.recommendation,
+                    'reasons': result.reasons
+                },
+                'episode_info': restaurant.get('episode_info', {}),
+                'mention_context': restaurant.get('mention_context', ''),
+                'extraction_date': restaurant.get('episode_info', {}).get('analysis_date', '')
+            }
+
+            report['restaurants'].append(restaurant_report)
+
+            if result.recommendation == 'accept':
+                report['accepted'] += 1
+            elif result.recommendation == 'reject':
+                report['rejected'] += 1
+            else:
+                report['needs_review'] += 1
+
+        # Sort by confidence (highest hallucination confidence first)
+        report['restaurants'].sort(
+            key=lambda r: r['verification']['confidence'],
+            reverse=True
+        )
+
+        return report
+
     # ==================== Full Pipeline ====================
 
     def process_video(
@@ -289,7 +495,8 @@ class BackendService:
         language: str = 'he',
         save_to_db: bool = True,
         enrich_with_google: bool = False,
-        progress_callback: Callable[[str, float], None] = None
+        progress_callback: Callable[[str, float], None] = None,
+        published_at: str = None
     ) -> Dict:
         """Process a single YouTube video end-to-end.
 
@@ -369,13 +576,54 @@ class BackendService:
             if enrichment_result.get('success'):
                 restaurants = enrichment_result.get('restaurants', restaurants)
 
+            # Normalize enriched data for database storage
+            for r in restaurants:
+                # Flatten coordinates
+                coords = r.get('location', {}).get('coordinates', {})
+                if coords:
+                    r['latitude'] = coords.get('latitude')
+                    r['longitude'] = coords.get('longitude')
+                # Flatten google_place_id and google_name
+                gp = r.get('google_places', {})
+                if gp and gp.get('place_id'):
+                    r['google_place_id'] = gp['place_id']
+                if gp and gp.get('google_name'):
+                    r['google_name'] = gp['google_name']
+                # Set image_url from resolved photo URL (prefer resolved over raw reference)
+                photos = r.get('photos', [])
+                if photos and not r.get('image_url'):
+                    for photo in photos:
+                        resolved = photo.get('resolved_url')
+                        if resolved:
+                            r['image_url'] = resolved
+                            break
+                    # Fallback: if no resolved URL available, skip raw reference
+                    # (raw references like 'places/...' are not valid image URLs)
+
+        # Step 5: Filter hallucinations
+        if progress_callback:
+            progress_callback('filtering_hallucinations', 0.7)
+
+        filter_result = self.filter_restaurant_hallucinations(restaurants)
+        result['steps']['hallucination_filter'] = {
+            'total_before': len(restaurants),
+            'accepted': filter_result['accepted_count'],
+            'rejected': filter_result['rejected_count'],
+            'needs_review': filter_result['review_count'],
+            'rejected_names': [r.get('name_hebrew', '') for r in filter_result['rejected']]
+        }
+
+        # Use only accepted restaurants for saving
+        restaurants = filter_result['accepted']
+        # Keep all restaurants (including rejected) in result for reporting
+        result['all_restaurants'] = filter_result['all_with_metadata']
         result['restaurants'] = restaurants
         result['restaurants_found'] = len(restaurants)
 
         if progress_callback:
             progress_callback('saving_results', 0.8)
 
-        # Step 4: Save to database
+        # Step 6: Save to database
         if save_to_db and restaurants:
             try:
                 # Create episode
@@ -386,7 +634,8 @@ class BackendService:
                     transcript=transcript_result.get('transcript'),
                     food_trends=analysis_result.get('food_trends', []),
                     episode_summary=analysis_result.get('episode_summary'),
-                    analysis_date=datetime.now().isoformat()
+                    analysis_date=datetime.now().isoformat(),
+                    published_at=published_at
                 )
                 result['episode_id'] = episode_id
 
@@ -396,6 +645,16 @@ class BackendService:
                     # Make a copy to avoid modifying the original
                     data_copy = restaurant_data.copy()
                     name_hebrew = data_copy.pop('name_hebrew', 'Unknown')
+                    # Denormalize episode data onto each restaurant for self-containment
+                    if published_at and not data_copy.get('published_at'):
+                        data_copy['published_at'] = published_at
+                    if not data_copy.get('video_url'):
+                        data_copy['video_url'] = video_url
+                    if not data_copy.get('video_id'):
+                        data_copy['video_id'] = video_id
+                    # channel_name comes from transcript result
+                    if not data_copy.get('channel_name'):
+                        data_copy['channel_name'] = transcript_result.get('channel_name')
                     restaurant_id = self.db.create_restaurant(
                         name_hebrew=name_hebrew,
                         episode_id=episode_id,
@@ -408,6 +667,79 @@ class BackendService:
                     'episode_id': episode_id,
                     'restaurant_ids': restaurant_ids
                 }
+
+                # Write-through to PostgreSQL if DATABASE_URL is set
+                if os.getenv('DATABASE_URL'):
+                    try:
+                        from models.base import get_db_session
+                        from models.restaurant import Episode as EpisodeModel, Restaurant as RestaurantModel
+                        with get_db_session() as session:
+                            # Upsert episode
+                            existing_ep = session.query(EpisodeModel).filter_by(video_id=video_id).first()
+                            if not existing_ep:
+                                ep_model = EpisodeModel(
+                                    id=episode_id,
+                                    video_id=video_id,
+                                    video_url=video_url,
+                                    language=transcript_result.get('language', language),
+                                    transcript=transcript_result.get('transcript'),
+                                    food_trends=analysis_result.get('food_trends', []),
+                                    episode_summary=analysis_result.get('episode_summary'),
+                                    analysis_date=datetime.now(),
+                                )
+                                session.add(ep_model)
+                            # Upsert restaurants
+                            for i, restaurant_data in enumerate(restaurants):
+                                rid = restaurant_ids[i] if i < len(restaurant_ids) else None
+                                if rid:
+                                    existing_r = session.query(RestaurantModel).filter_by(id=rid).first()
+                                    if existing_r:
+                                        continue
+                                location = restaurant_data.get('location', {})
+                                contact = restaurant_data.get('contact_info', {})
+                                rating = restaurant_data.get('rating', {})
+                                gp = restaurant_data.get('google_places', {}) or {}
+                                r_model = RestaurantModel(
+                                    id=rid,
+                                    episode_id=episode_id,
+                                    name_hebrew=restaurant_data.get('name_hebrew', 'Unknown'),
+                                    name_english=restaurant_data.get('name_english'),
+                                    city=restaurant_data.get('city') or location.get('city'),
+                                    neighborhood=restaurant_data.get('neighborhood') or location.get('neighborhood'),
+                                    address=restaurant_data.get('address') or location.get('address'),
+                                    region=restaurant_data.get('region') or location.get('region', 'Center'),
+                                    latitude=restaurant_data.get('latitude'),
+                                    longitude=restaurant_data.get('longitude'),
+                                    cuisine_type=restaurant_data.get('cuisine_type'),
+                                    status=restaurant_data.get('status', 'open'),
+                                    price_range=restaurant_data.get('price_range'),
+                                    host_opinion=restaurant_data.get('host_opinion'),
+                                    host_comments=restaurant_data.get('host_comments'),
+                                    menu_items=restaurant_data.get('menu_items'),
+                                    special_features=restaurant_data.get('special_features'),
+                                    contact_hours=restaurant_data.get('contact_hours') or contact.get('hours'),
+                                    contact_phone=restaurant_data.get('contact_phone') or contact.get('phone'),
+                                    contact_website=restaurant_data.get('contact_website') or contact.get('website'),
+                                    business_news=restaurant_data.get('business_news'),
+                                    mention_context=restaurant_data.get('mention_context'),
+                                    mention_timestamp=restaurant_data.get('mention_timestamp') or restaurant_data.get('mention_timestamp_seconds'),
+                                    google_place_id=restaurant_data.get('google_place_id') or gp.get('place_id'),
+                                    google_name=gp.get('google_name'),
+                                    google_url=gp.get('google_url'),
+                                    google_rating=restaurant_data.get('google_rating') or rating.get('google_rating'),
+                                    google_user_ratings_total=restaurant_data.get('google_user_ratings_total') or rating.get('user_ratings_total'),
+                                    photos=restaurant_data.get('photos'),
+                                    image_url=restaurant_data.get('image_url'),
+                                )
+                                session.add(r_model)
+                            session.commit()
+                        result['steps']['postgres_write_through'] = {'success': True}
+                    except Exception as pg_err:
+                        print(f"[PIPELINE] PostgreSQL write-through failed: {pg_err}")
+                        result['steps']['postgres_write_through'] = {
+                            'success': False,
+                            'error': str(pg_err)
+                        }
 
             except Exception as e:
                 result['steps']['database'] = {

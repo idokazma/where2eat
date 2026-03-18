@@ -27,6 +27,7 @@ export function ScrollReveal({
 
   useEffect(() => {
     if (inView && !hasAnimated) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setHasAnimated(true)
     }
   }, [inView, hasAnimated])

@@ -2,11 +2,13 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import { Heart, Star, Play, MapPin, ExternalLink } from 'lucide-react';
+import { Heart, Star, Play, MapPin, ExternalLink, Camera, Calendar } from 'lucide-react';
 import { Restaurant } from '@/types/restaurant';
 import { EpisodeBadge } from './EpisodeBadge';
 import { DistanceBadge } from './DistanceBadge';
 import { useFavorites } from '@/contexts/favorites-context';
+import { normalizeHostOpinion, getPriceDisplay } from '@/lib/data-normalizer';
+import { getTimedYouTubeUrl } from '@/lib/youtube';
 
 interface RestaurantCardNewProps {
   restaurant: Restaurant;
@@ -56,18 +58,7 @@ const getGradientClass = (cuisine: string | null | undefined): string => {
   return 'gradient-default';
 };
 
-const getPriceDisplay = (priceRange: string | null | undefined): string => {
-  switch (priceRange) {
-    case 'budget':
-      return '₪';
-    case 'mid-range':
-      return '₪₪';
-    case 'expensive':
-      return '₪₪₪';
-    default:
-      return '';
-  }
-};
+// Removed: now using getPriceDisplay from data-normalizer
 
 export function RestaurantCardNew({
   restaurant,
@@ -81,7 +72,9 @@ export function RestaurantCardNew({
   const { isFavorite, addFavorite, removeFavorite } = useFavorites();
   const [imageError, setImageError] = useState(false);
 
+  const [imageLoading, setImageLoading] = useState(true);
   const hasImage = imageUrl && !imageError;
+  const photoCount = restaurant.photos?.length || 0;
   const restaurantId = restaurant.google_places?.place_id || restaurant.name_hebrew;
   const isSaved = isFavorite(restaurantId);
 
@@ -96,8 +89,12 @@ export function RestaurantCardNew({
 
   const handleWatchClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (restaurant.episode_info?.video_url) {
-      window.open(restaurant.episode_info.video_url, '_blank');
+    const videoUrl = restaurant.episode_info?.video_url;
+    if (videoUrl) {
+      window.open(
+        getTimedYouTubeUrl(videoUrl, restaurant.mention_timestamp_seconds),
+        '_blank'
+      );
     }
   };
 
@@ -129,6 +126,12 @@ export function RestaurantCardNew({
     metaItems.push(priceDisplay);
   }
 
+  // Format episode date
+  const episodeDate = restaurant.published_at || restaurant.episode_info?.published_at || restaurant.episode_info?.analysis_date;
+  const formattedDate = episodeDate
+    ? new Date(episodeDate).toLocaleDateString('he-IL', { day: 'numeric', month: 'short', year: 'numeric' })
+    : null;
+
   // Extract episode number from video URL if available
   const getEpisodeNumber = (): number | undefined => {
     // This would typically come from the API
@@ -145,14 +148,22 @@ export function RestaurantCardNew({
       {/* Image Section */}
       <div className="restaurant-card-image">
         {hasImage ? (
-          <Image
-            src={imageUrl}
-            alt={restaurant.name_hebrew}
-            fill
-            className="object-cover"
-            onError={() => setImageError(true)}
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          />
+          <>
+            {imageLoading && (
+              <div className="absolute inset-0 shimmer bg-[var(--color-surface)]" />
+            )}
+            <Image
+              src={imageUrl}
+              alt={restaurant.name_hebrew}
+              fill
+              className={`object-cover transition-opacity duration-500 ${
+                imageLoading ? 'opacity-0' : 'opacity-100'
+              }`}
+              onError={() => setImageError(true)}
+              onLoad={() => setImageLoading(false)}
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            />
+          </>
         ) : (
           <div
             className={`absolute inset-0 typography-card-bg ${getGradientClass(
@@ -172,19 +183,47 @@ export function RestaurantCardNew({
             episodeNumber={getEpisodeNumber()}
             showName="פודי"
             videoUrl={restaurant.episode_info?.video_url}
+            timestampSeconds={restaurant.mention_timestamp_seconds}
             size="sm"
           />
 
-          {showDistance && distanceMeters && (
-            <DistanceBadge distanceMeters={distanceMeters} />
-          )}
+          <div className="flex items-center gap-2">
+            {photoCount > 1 && (
+              <span className="flex items-center gap-1 px-2 py-1 bg-black/50 backdrop-blur-sm rounded text-white text-xs font-medium">
+                <Camera className="w-3 h-3" />
+                {photoCount}
+              </span>
+            )}
+            {showDistance && distanceMeters && (
+              <DistanceBadge distanceMeters={distanceMeters} />
+            )}
+          </div>
         </div>
       </div>
 
       {/* Content Section */}
       <div className="restaurant-card-content">
-        {/* Title */}
-        <h3 className="restaurant-card-title">{restaurant.name_hebrew}</h3>
+        {/* Status badges */}
+        {!!restaurant.is_closing && (
+          <span className="inline-block px-2 py-0.5 mb-1 bg-red-500/10 text-red-600 text-xs font-semibold rounded">
+            נסגר לצמיתות
+          </span>
+        )}
+        {restaurant.status === 'closing_soon' && !restaurant.is_closing && (
+          <span className="inline-block px-2 py-0.5 mb-1 bg-amber-500/10 text-amber-600 text-xs font-semibold rounded">
+            נסגר בקרוב
+          </span>
+        )}
+        {restaurant.status === 'new_opening' && (
+          <span className="inline-block px-2 py-0.5 mb-1 bg-emerald-500/10 text-emerald-600 text-xs font-semibold rounded">
+            חדש!
+          </span>
+        )}
+
+        {/* Title - prefer Google Places corrected name when available */}
+        <h3 className="restaurant-card-title">
+          {restaurant.google_places?.google_name || restaurant.google_name || restaurant.name_hebrew}
+        </h3>
 
         {/* Meta line */}
         {metaItems.length > 0 && (
@@ -198,8 +237,16 @@ export function RestaurantCardNew({
           </div>
         )}
 
+        {/* Episode date */}
+        {formattedDate && (
+          <div className="flex items-center gap-1 text-xs text-[var(--color-ink-muted)] mt-0.5">
+            <Calendar className="w-3 h-3" />
+            <span>{formattedDate}</span>
+          </div>
+        )}
+
         {/* Host quote */}
-        {restaurant.host_comments && restaurant.host_opinion === 'positive' && (
+        {restaurant.host_comments && (
           <div className="restaurant-card-quote">
             &ldquo;{restaurant.host_comments}&rdquo;
           </div>
@@ -208,10 +255,10 @@ export function RestaurantCardNew({
         {/* Actions */}
         <div className="restaurant-card-actions">
           {/* Rating */}
-          {restaurant.rating?.google_rating && (
+          {restaurant.rating?.google_rating != null && restaurant.rating.google_rating > 0 && (
             <button className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[var(--color-surface)] text-sm font-medium">
               <Star className="w-4 h-4 text-[var(--color-gold)] fill-[var(--color-gold)]" />
-              <span>{restaurant.rating.google_rating.toFixed(1)}</span>
+              <span className="font-accent">{restaurant.rating.google_rating.toFixed(1)}</span>
             </button>
           )}
 

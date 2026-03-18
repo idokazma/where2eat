@@ -28,7 +28,7 @@ export default function QueuePage() {
 
   const { data: pipelineStatus } = useQuery({
     queryKey: ['pipeline-status'],
-    queryFn: () => pipelineApi.status(),
+    queryFn: () => pipelineApi.schedulerStatus(),
     refetchInterval: 10000,
   });
 

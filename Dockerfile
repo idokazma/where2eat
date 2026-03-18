@@ -11,13 +11,25 @@ RUN pip install --no-cache-dir \
     youtube-transcript-api \
     anthropic \
     openai \
+    google-genai \
     google-api-python-client \
     python-dotenv \
-    httpx
+    httpx \
+    apscheduler \
+    yt-dlp \
+    sqlalchemy \
+    psycopg2-binary
 
 # Copy source code
 COPY src ./src
 COPY api ./api
+
+# Copy restaurant backup data to a path OUTSIDE the /app/data volume mount
+# so it's always available for seeding even when a Railway volume is mounted
+COPY data/restaurants_backup ./seed/restaurants_backup
+
+# Also copy to the default data path (works when no volume is mounted)
+COPY data/restaurants_backup ./data/restaurants_backup
 
 # Set PYTHONPATH to include src directory for imports
 ENV PYTHONPATH="/app/src:${PYTHONPATH}"

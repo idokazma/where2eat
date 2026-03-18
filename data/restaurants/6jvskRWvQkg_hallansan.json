@@ -1,0 +1,108 @@
+{
+  "name_hebrew": "הלנסן",
+  "name_english": "Hallansan",
+  "location": {
+    "city": "תל אביב",
+    "neighborhood": "",
+    "address": "Via Guelfa, 98 R, 50129 Firenze FI, איטליה",
+    "region": "מרכז",
+    "coordinates": {
+      "latitude": 43.7780064,
+      "longitude": 11.2539528
+    },
+    "full_address": "Via Guelfa, 98 R, 50129 Firenze FI, איטליה"
+  },
+  "cuisine_type": "איטלקי",
+  "status": "open",
+  "price_range": "expensive",
+  "host_opinion": "positive",
+  "host_comments": "פיצ'יקו פפה מעולה",
+  "menu_items": [
+    {
+      "item_name": "פיצ'יקו פפה",
+      "description": "",
+      "price": null,
+      "recommendation_level": "mentioned"
+    }
+  ],
+  "special_features": [],
+  "contact_info": {
+    "phone": "052-703-5888",
+    "website": "https://maps.google.com/?cid=3870157025170907308",
+    "social_media": ""
+  },
+  "business_news": null,
+  "mention_context": "הפיצ'יקו פפה של הלנסן",
+  "episode_info": {
+    "video_id": "6jvskRWvQkg",
+    "video_url": "https://www.youtube.com/watch?v=6jvskRWvQkg",
+    "language": "he",
+    "analysis_date": "2026-01-01",
+    "total_restaurants_found": 11,
+    "processing_method": "claude_chunked"
+  },
+  "food_trends": [
+    "פרסי פופולרי",
+    "מסעדות בקיסריה",
+    "אמריקאי פופולרי",
+    "תאילנדי פופולרי",
+    "מסעדות בחיפה"
+  ],
+  "episode_summary": "ניתוח מבוסס Claude של 11 מסעדות מהסרטון 6jvskRWvQkg",
+  "google_places": {
+    "place_id": "ChIJeVxalJFVKhMRrGBLNk-PtTU",
+    "google_name": "Hallasan",
+    "google_url": "https://maps.google.com/?cid=3870157025170907308",
+    "enriched_at": "2026-02-15 09:08:15",
+    "formatted_address": "Via Guelfa, 98 R, 50129 Firenze FI, איטליה"
+  },
+  "rating": {
+    "google_rating": 4.6,
+    "total_reviews": 761,
+    "price_level": null
+  },
+  "photos": [
+    {
+      "photo_reference": "ATCDNfV55ssDFMCfqf2I0qYRoHwvrs0xdBeFQyQQ8OKyzcg9dEZstxhLnI5yQ-36VI1-XoRLmhkXZoYCVI7f2d058EsnJRxUlpetzn1cgQdcHL8ynVOkTVRt4ZGIQOxn3c5g4aJU4u9Se1haAcEpqh4-4S0J8mHQ6L6Br2v0PVANE8j5hZPlmL4Bdy-oeuRWy-esQKvyU39ETJJuQHzp0P0nugkbyoM6C_S-ZrlFJMLt0xUKX2l0pbkbIuoQJ4E1ODfxw9SqiOGJ1uOni-ohpCPqwASXWQX1GygmH6UFP-OJiz2DPZi4sloAIqoJ4sRqzlNhxmbv2kk1pCIOoXL4TYrAq6STL-Q38iL572uRjfwzGFYlIb1Sg6I48bDxS62LabnHlXqprQCq-29Aa_axg6Oqj0xuoSO69rjFxBfYDHZ_xoW-hA",
+      "width": 3920,
+      "height": 4800
+    },
+    {
+      "photo_reference": "ATCDNfWy_BB3ThJQxugFXlnDN0ac7kxUrcX8puMmYnu5-63YdjlAJacUqUU2LVMjgKOpKw2G-CEGF1tiUMKg97w2wxBHV5gwEOyMlFn1dlQIIFUJBRDega8MyaRjgAAYLrlrrZrma9yD7yaqbEZFB-hLljl_hNow1bMTWK_tUwc1aZWUOnBZyvzD7rZtK_p-Pfhxg6ejAYWewOBs7kdwwz9pFz7DrPb4BSwx9u4W3aBVGCgNciG6dYwOmtPyW9kvxQBogoMybnhN52H8d-Uvya8Gye4EeZO5C8J4hbx2HUfmlkOEK1qvmGy2rxxoqZdDOGJZjo0BOj54bumQsglnB-rcnPZ_Low9j7ef2lsMB-JrQzuLbE41XmCE8vTNg49s9ftO1gU8BZyaK8b46SZaSjEvKm_YLyObAeJ9cjkTGbzeKaJqT0t9uxP5EhQ3VXoS3o1o",
+      "width": 4000,
+      "height": 2252
+    },
+    {
+      "photo_reference": "ATCDNfX8N6Sq6VX8QWybZ3de_tcP6mCWAcL0XSdVZ9vz07jOt0-aa9fo_J1bEYuD-Hl8l_fsS-dWhv7jDmMAV_WIfDIVxf1B7i3ZfxdlbseWohYZXkRFi2s5BJVDqkEfMIZGIez_Lbb9PLCM2VRk7CdYKHg3ewcwguq-nhUd3U15s5SQ5DgOO6DnG5C6zyifXdIxBypDXCymMHqvjhHu25mtMzL-J4t3CYJP_KxgzLPj7PLqSLiVWUES6Y56TkGNeqFt0odxoHjn1FZq_UiK8O7NEY_NHhXfyxmwSCfWGGiNRljDFGOxVNTpGnGVYTE1KfsDNozdYo5bCawtc1DLt7JTQuiXby3LyGZ0E87-ZXvS6CNUakajOAsZJzLXithKwOaBiFnTO4b9YhjKXKtnNtOjeYrOtBTxg2kmss_K5qFj3xXV2qhbRNSMwZC1H9LuGQSx",
+      "width": 4800,
+      "height": 3600
+    },
+    {
+      "photo_reference": "ATCDNfVVrZE8Kep3MVjYaNBoTK3hekmE2mhqEOs7XqKWgK3XzCzlYeUqJ8nfet_k4aLxYjC5yyl24UiSXjABsLnx587FwNEJWNC2EG4cufMcQIw1pOZlfL0p0M1T5cz99YCGthS8vefpJOsed882whC7AJfd0UiQx1zXs2MNAnHJ1cS2Hecp1Pr1N6I_UtdQd4KDKP3nWlCUEIhdMk654jkaaRReBy1aFjcgBwDgglo_EBO9A7ZTl3GTKU5SMc8sYBOZ1AaKbd5KEUeuP_oyJjaR5pyDT31zCbjEOHvPqzofz9INZKx_Y_oDeJoK9rEp5Y8WLMT-z0HmhY9MDi_8mPNkiitnuvAyYZfockgJRJy4GiSXf-UrAk3EDgZIWU05BV6dptwe1Mk1YtaefW3lD8wGqQWC1rzOVjhciCTuJM2Q7CoBIo59y7ovKKo-81e_-Q",
+      "width": 3024,
+      "height": 4032
+    },
+    {
+      "photo_reference": "ATCDNfXuokF9XbRnSP0UrWYaHvyvD0iPvQ7aK1Vb2DXME7351PWLIyhzh0GiaTalUhhNd07o2x2koNHEb5qP3X9G6cZfIrnTJdcHw_ScXqRoWI-8wm1tZ3vKOaP5spJBNnDhodlVh9TWPNIO5OOrVZl4LBnSw_8KFm1K4oZQsjiqnTaV5kqisrbv1Vbqr_vM1kji8B-Ix8Mohkc2JsTyscnW1EpoobFlZc7B-voztl7Fay7Ii0NBguWAzb2Luk_VJLxcAsPVHqiMcporApusplrjFsNbVp6YcLFNyqh4SLoxFkQjGwaybj8jHwIAs9DRxTxj4KD1N4TBDYd3ulFyhGHhYg33OEBbPl985fMNO_E4Paiahxc1mguoVYD-BPg0pH9YBw2DvjYEQtH2R2A1HVM5G5oS0snTCwbgS4Dkxq21-_0PIaaNo6_-OEpS7qBZI1tO",
+      "width": 4032,
+      "height": 2268
+    }
+  ],
+  "business_hours": {
+    "open_now": false,
+    "weekday_text": [
+      "יום ראשון: 12:00–15:00, 18:30–23:00",
+      "יום שני: 12:00–15:00, 18:30–23:00",
+      "יום שלישי: 12:00–15:00, 18:30–23:00",
+      "יום רביעי: 12:00–15:00, 18:30–23:00",
+      "יום חמישי: 12:00–15:00, 18:30–23:00",
+      "יום שישי: 12:00–15:00, 18:30–23:00",
+      "יום שבת: 12:00–15:00, 18:30–23:00"
+    ]
+  },
+  "google_places_enriched": true,
+  "google_places_attempted": true,
+  "id": "e7f6a28e4e33",
+  "mention_timestamp_seconds": 856,
+  "engaging_quote": "לפני כמה פרקים החלטתי לחסוף אותו להשתף בהמלצה ולא לשמור רק לעצמי בדיבותיי חשוב לציין הפיצ'יקו פפה של הלנסן סנורסליברי נתן מקחקח כאן ומגחך כאן וכל מיני המשך יבוא בבקשה כן אני יודעת אה אז כמו"
+}

@@ -20,10 +20,21 @@ class Database:
 
         Args:
             db_path: Path to SQLite database file. Defaults to data/where2eat.db
+                     Can be overridden via DATABASE_DIR or DATABASE_PATH env vars.
         """
         if db_path is None:
-            project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-            db_path = os.path.join(project_root, 'data', 'where2eat.db')
+            # Check for explicit database path env var
+            db_path = os.getenv('DATABASE_PATH')
+
+            if not db_path:
+                # Check for DATABASE_DIR env var (Railway volume mount point)
+                db_dir = os.getenv('DATABASE_DIR')
+                if db_dir:
+                    db_path = os.path.join(db_dir, 'where2eat.db')
+                else:
+                    # Default: project_root/data/where2eat.db
+                    project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+                    db_path = os.path.join(project_root, 'data', 'where2eat.db')
 
         self.db_path = db_path
         os.makedirs(os.path.dirname(db_path), exist_ok=True)
@@ -59,6 +70,7 @@ class Database:
                     title TEXT,
                     language TEXT DEFAULT 'he',
                     analysis_date TEXT,
+                    published_at TEXT,
                     transcript TEXT,
                     food_trends TEXT,
                     episode_summary TEXT,
@@ -97,6 +109,14 @@ class Database:
                     latitude REAL,
                     longitude REAL,
                     image_url TEXT,
+                    is_hidden INTEGER DEFAULT 0,
+                    is_closing INTEGER DEFAULT 0,
+                    video_url TEXT,
+                    video_id TEXT,
+                    channel_name TEXT,
+                    google_url TEXT,
+                    engaging_quote TEXT,
+                    country TEXT,
                     created_at TEXT DEFAULT CURRENT_TIMESTAMP,
                     updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
                     FOREIGN KEY (episode_id) REFERENCES episodes(id)
@@ -275,10 +295,154 @@ class Database:
                 )
             ''')
 
+            # Subscriptions table (monitored YouTube channels/playlists)
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS subscriptions (
+                    id TEXT PRIMARY KEY,
+                    source_type TEXT NOT NULL CHECK(source_type IN ('channel', 'playlist')),
+                    source_url TEXT NOT NULL,
+                    source_id TEXT UNIQUE NOT NULL,
+                    source_name TEXT,
+                    is_active INTEGER DEFAULT 1,
+                    priority INTEGER DEFAULT 5,
+                    check_interval_hours INTEGER DEFAULT 12,
+                    last_checked_at TEXT,
+                    last_video_published_at TEXT,
+                    total_videos_found INTEGER DEFAULT 0,
+                    total_videos_processed INTEGER DEFAULT 0,
+                    total_restaurants_found INTEGER DEFAULT 0,
+                    created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TEXT DEFAULT CURRENT_TIMESTAMP
+                )
+            ''')
+
+            # Video queue table (videos waiting to be processed)
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS video_queue (
+                    id TEXT PRIMARY KEY,
+                    subscription_id TEXT,
+                    video_id TEXT UNIQUE NOT NULL,
+                    video_url TEXT NOT NULL,
+                    video_title TEXT,
+                    channel_name TEXT,
+                    published_at TEXT,
+                    discovered_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                    status TEXT DEFAULT 'queued' CHECK(status IN ('queued', 'processing', 'completed', 'failed', 'skipped')),
+                    priority INTEGER DEFAULT 5,
+                    attempt_count INTEGER DEFAULT 0,
+                    max_attempts INTEGER DEFAULT 3,
+                    scheduled_for TEXT,
+                    processing_started_at TEXT,
+                    processing_completed_at TEXT,
+                    restaurants_found INTEGER DEFAULT 0,
+                    error_message TEXT,
+                    error_log TEXT,
+                    episode_id TEXT,
+                    FOREIGN KEY (subscription_id) REFERENCES subscriptions(id),
+                    FOREIGN KEY (episode_id) REFERENCES episodes(id)
+                )
+            ''')
+
+            # Pipeline logs table (structured event log)
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS pipeline_logs (
+                    id TEXT PRIMARY KEY,
+                    timestamp TEXT DEFAULT CURRENT_TIMESTAMP,
+                    level TEXT NOT NULL CHECK(level IN ('info', 'warning', 'error')),
+                    event_type TEXT NOT NULL,
+                    subscription_id TEXT,
+                    video_queue_id TEXT,
+                    message TEXT NOT NULL,
+                    details TEXT,
+                    FOREIGN KEY (subscription_id) REFERENCES subscriptions(id),
+                    FOREIGN KEY (video_queue_id) REFERENCES video_queue(id)
+                )
+            ''')
+
+            # Schema migrations - add new columns gracefully
+            try:
+                cursor.execute('ALTER TABLE restaurants ADD COLUMN photos TEXT')
+            except sqlite3.OperationalError:
+                pass  # Column already exists
+
+            try:
+                cursor.execute('ALTER TABLE restaurants ADD COLUMN google_name TEXT')
+            except sqlite3.OperationalError:
+                pass  # Column already exists
+
+            try:
+                cursor.execute('ALTER TABLE restaurants ADD COLUMN published_at TEXT')
+            except sqlite3.OperationalError:
+                pass  # Column already exists
+
+            try:
+                cursor.execute('ALTER TABLE restaurants ADD COLUMN og_image_url TEXT')
+            except sqlite3.OperationalError:
+                pass  # Column already exists
+
+            try:
+                cursor.execute('ALTER TABLE restaurants ADD COLUMN is_hidden INTEGER DEFAULT 0')
+            except sqlite3.OperationalError:
+                pass  # Column already exists
+
+            for col, col_type in [
+                ('is_closing', 'INTEGER DEFAULT 0'),
+                ('video_url', 'TEXT'),
+                ('video_id', 'TEXT'),
+                ('channel_name', 'TEXT'),
+                ('google_url', 'TEXT'),
+                ('engaging_quote', 'TEXT'),
+                ('country', 'TEXT'),
+            ]:
+                try:
+                    cursor.execute(f'ALTER TABLE restaurants ADD COLUMN {col} {col_type}')
+                except sqlite3.OperationalError:
+                    pass  # Column already exists
+
+            # Backfill restaurants.published_at from episodes
+            try:
+                cursor.execute('''
+                    UPDATE restaurants SET published_at = (
+                        SELECT COALESCE(e.published_at, e.analysis_date)
+                        FROM episodes e WHERE e.id = restaurants.episode_id
+                    ) WHERE published_at IS NULL AND episode_id IS NOT NULL
+                ''')
+            except sqlite3.OperationalError:
+                pass
+
+            try:
+                cursor.execute('ALTER TABLE episodes ADD COLUMN published_at TEXT')
+            except sqlite3.OperationalError:
+                pass  # Column already exists
+
+            # Backfill published_at from video_queue where available
+            try:
+                cursor.execute('''
+                    UPDATE episodes SET published_at = (
+                        SELECT vq.published_at FROM video_queue vq
+                        WHERE vq.video_id = episodes.video_id AND vq.published_at IS NOT NULL
+                    ) WHERE published_at IS NULL
+                ''')
+            except sqlite3.OperationalError:
+                pass  # video_queue table may not exist yet
+
+            # Backfill restaurants.video_url, video_id, channel_name from episodes
+            try:
+                cursor.execute('''
+                    UPDATE restaurants SET
+                        video_url = (SELECT e.video_url FROM episodes e WHERE e.id = restaurants.episode_id),
+                        video_id = (SELECT e.video_id FROM episodes e WHERE e.id = restaurants.episode_id),
+                        channel_name = (SELECT e.channel_name FROM episodes e WHERE e.id = restaurants.episode_id)
+                    WHERE episode_id IS NOT NULL AND video_url IS NULL
+                ''')
+            except sqlite3.OperationalError:
+                pass
+
             # Create indexes for common queries
             cursor.execute('CREATE INDEX IF NOT EXISTS idx_restaurants_city ON restaurants(city)')
             cursor.execute('CREATE INDEX IF NOT EXISTS idx_restaurants_cuisine ON restaurants(cuisine_type)')
             cursor.execute('CREATE INDEX IF NOT EXISTS idx_restaurants_episode ON restaurants(episode_id)')
+            cursor.execute('CREATE INDEX IF NOT EXISTS idx_restaurants_published_at ON restaurants(published_at)')
             cursor.execute('CREATE INDEX IF NOT EXISTS idx_episodes_video_id ON episodes(video_id)')
             cursor.execute('CREATE INDEX IF NOT EXISTS idx_jobs_status ON jobs(status)')
             cursor.execute('CREATE INDEX IF NOT EXISTS idx_admin_users_email ON admin_users(email)')
@@ -297,6 +461,16 @@ class Database:
             cursor.execute('CREATE INDEX IF NOT EXISTS idx_system_metrics_type ON system_metrics(metric_type)')
             cursor.execute('CREATE INDEX IF NOT EXISTS idx_monitored_channels_channel_id ON monitored_channels(channel_id)')
             cursor.execute('CREATE INDEX IF NOT EXISTS idx_monitored_channels_enabled ON monitored_channels(enabled)')
+            cursor.execute('CREATE INDEX IF NOT EXISTS idx_subscriptions_is_active ON subscriptions(is_active)')
+            cursor.execute('CREATE INDEX IF NOT EXISTS idx_subscriptions_source_id ON subscriptions(source_id)')
+            cursor.execute('CREATE INDEX IF NOT EXISTS idx_video_queue_status ON video_queue(status)')
+            cursor.execute('CREATE INDEX IF NOT EXISTS idx_video_queue_video_id ON video_queue(video_id)')
+            cursor.execute('CREATE INDEX IF NOT EXISTS idx_video_queue_subscription_id ON video_queue(subscription_id)')
+            cursor.execute('CREATE INDEX IF NOT EXISTS idx_video_queue_scheduled_for ON video_queue(scheduled_for)')
+            cursor.execute('CREATE INDEX IF NOT EXISTS idx_pipeline_logs_timestamp ON pipeline_logs(timestamp)')
+            cursor.execute('CREATE INDEX IF NOT EXISTS idx_pipeline_logs_level ON pipeline_logs(level)')
+            cursor.execute('CREATE INDEX IF NOT EXISTS idx_pipeline_logs_event_type ON pipeline_logs(event_type)')
+            cursor.execute('CREATE INDEX IF NOT EXISTS idx_pipeline_logs_subscription_id ON pipeline_logs(subscription_id)')
 
     # ==================== Episode Operations ====================
 
@@ -317,8 +491,8 @@ class Database:
             cursor = conn.cursor()
             cursor.execute('''
                 INSERT INTO episodes (id, video_id, video_url, channel_id, channel_name,
-                    title, language, analysis_date, transcript, food_trends, episode_summary)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    title, language, analysis_date, published_at, transcript, food_trends, episode_summary)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 ON CONFLICT(video_id) DO UPDATE SET
                     video_url = excluded.video_url,
                     channel_id = COALESCE(excluded.channel_id, episodes.channel_id),
@@ -326,6 +500,7 @@ class Database:
                     title = COALESCE(excluded.title, episodes.title),
                     language = COALESCE(excluded.language, episodes.language),
                     analysis_date = COALESCE(excluded.analysis_date, episodes.analysis_date),
+                    published_at = COALESCE(excluded.published_at, episodes.published_at),
                     transcript = COALESCE(excluded.transcript, episodes.transcript),
                     food_trends = COALESCE(excluded.food_trends, episodes.food_trends),
                     episode_summary = COALESCE(excluded.episode_summary, episodes.episode_summary),
@@ -339,6 +514,7 @@ class Database:
                 kwargs.get('title'),
                 kwargs.get('language', 'he'),
                 kwargs.get('analysis_date', datetime.now().isoformat()),
+                kwargs.get('published_at'),
                 kwargs.get('transcript'),
                 json.dumps(kwargs.get('food_trends', [])),
                 kwargs.get('episode_summary')
@@ -412,6 +588,12 @@ class Database:
         google_rating = kwargs.get('google_rating') or rating.get('google_rating')
         google_user_ratings_total = kwargs.get('google_user_ratings_total') or rating.get('user_ratings_total')
 
+        # Handle google_name from google_places dict or direct kwarg
+        google_places = kwargs.get('google_places', {}) or {}
+        google_name = kwargs.get('google_name') or google_places.get('google_name')
+        google_place_id = kwargs.get('google_place_id') or google_places.get('place_id')
+        google_url = kwargs.get('google_url') or google_places.get('google_url')
+
         with self.get_connection() as conn:
             cursor = conn.cursor()
             cursor.execute('''
@@ -421,8 +603,11 @@ class Database:
                     host_comments, menu_items, special_features, contact_hours,
                     contact_phone, contact_website, business_news, mention_context,
                     mention_timestamp, google_place_id, google_rating,
-                    google_user_ratings_total, latitude, longitude, image_url
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    google_user_ratings_total, latitude, longitude, image_url, photos,
+                    google_name, published_at, og_image_url,
+                    video_url, video_id, channel_name, google_url, engaging_quote,
+                    is_closing, country
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ''', (
                 restaurant_id,
                 episode_id,
@@ -444,22 +629,38 @@ class Database:
                 contact_website,
                 kwargs.get('business_news'),
                 kwargs.get('mention_context'),
-                kwargs.get('mention_timestamp'),
-                kwargs.get('google_place_id'),
+                kwargs.get('mention_timestamp') or kwargs.get('mention_timestamp_seconds'),
+                google_place_id,
                 google_rating,
                 google_user_ratings_total,
                 kwargs.get('latitude'),
                 kwargs.get('longitude'),
-                kwargs.get('image_url')
+                kwargs.get('image_url'),
+                json.dumps(kwargs.get('photos', [])),
+                google_name,
+                kwargs.get('published_at'),
+                kwargs.get('og_image_url'),
+                kwargs.get('video_url'),
+                kwargs.get('video_id'),
+                kwargs.get('channel_name'),
+                google_url,
+                kwargs.get('engaging_quote'),
+                1 if kwargs.get('is_closing') else 0,
+                kwargs.get('country'),
             ))
 
             return restaurant_id
 
     def get_restaurant(self, restaurant_id: str) -> Optional[Dict]:
-        """Get restaurant by ID."""
+        """Get restaurant by ID or Google Place ID."""
         with self.get_connection() as conn:
             cursor = conn.cursor()
             cursor.execute('SELECT * FROM restaurants WHERE id = ?', (restaurant_id,))
+            row = cursor.fetchone()
+            if row:
+                return self._row_to_restaurant(row)
+            # Fallback: search by google_place_id (used when navigating from map)
+            cursor.execute('SELECT * FROM restaurants WHERE google_place_id = ?', (restaurant_id,))
             row = cursor.fetchone()
             if row:
                 return self._row_to_restaurant(row)
@@ -469,12 +670,14 @@ class Database:
         """Convert database row to restaurant dict with nested structures."""
         restaurant = dict(row)
 
-        # Reconstruct nested location
+        # Reconstruct nested location (include lat/lng for API Location model)
         restaurant['location'] = {
             'city': restaurant.pop('city', None),
             'neighborhood': restaurant.pop('neighborhood', None),
             'address': restaurant.pop('address', None),
-            'region': restaurant.pop('region', 'Center')
+            'region': restaurant.pop('region', 'Center'),
+            'lat': restaurant.get('latitude'),
+            'lng': restaurant.get('longitude'),
         }
 
         # Reconstruct nested contact_info
@@ -490,9 +693,44 @@ class Database:
             'user_ratings_total': restaurant.pop('google_user_ratings_total', None)
         }
 
+        # Reconstruct google_places object
+        google_url = restaurant.pop('google_url', None)
+        restaurant['google_places'] = {
+            'place_id': restaurant.get('google_place_id'),
+            'google_name': restaurant.pop('google_name', None),
+            'google_url': google_url,
+        }
+
+        # Map mention_timestamp column to mention_timestamp_seconds (frontend field name)
+        if 'mention_timestamp' in restaurant:
+            ts = restaurant.pop('mention_timestamp')
+            restaurant['mention_timestamp_seconds'] = int(ts) if ts else None
+
+        # Build self-contained episode_info from denormalized columns
+        video_url = restaurant.get('video_url')
+        video_id = restaurant.get('video_id')
+        if video_url or video_id:
+            restaurant['episode_info'] = {
+                'video_id': video_id,
+                'video_url': video_url,
+                'channel_name': restaurant.get('channel_name'),
+                'published_at': restaurant.get('published_at'),
+            }
+
+        # Build timestamped YouTube link
+        ts_val = restaurant.get('mention_timestamp_seconds')
+        if video_url and ts_val:
+            restaurant['youtube_timestamped_url'] = f"{video_url}&t={ts_val}s"
+        elif video_url:
+            restaurant['youtube_timestamped_url'] = video_url
+
         # Parse JSON fields
         restaurant['menu_items'] = json.loads(restaurant.get('menu_items') or '[]')
         restaurant['special_features'] = json.loads(restaurant.get('special_features') or '[]')
+        restaurant['photos'] = json.loads(restaurant.get('photos') or '[]')
+        # Handle double-encoded JSON (string inside JSON)
+        if isinstance(restaurant['photos'], str):
+            restaurant['photos'] = json.loads(restaurant['photos'])
 
         return restaurant
 
@@ -503,11 +741,14 @@ class Database:
 
             if include_episode_info:
                 cursor.execute('''
-                    SELECT r.*, e.video_id, e.video_url, e.channel_name, e.title as episode_title,
-                           e.analysis_date, e.food_trends as episode_food_trends
+                    SELECT r.*,
+                           e.video_id AS ep_video_id, e.video_url AS ep_video_url,
+                           e.channel_name AS ep_channel_name, e.title AS episode_title,
+                           e.analysis_date AS ep_analysis_date,
+                           e.published_at AS episode_published_at
                     FROM restaurants r
                     LEFT JOIN episodes e ON r.episode_id = e.id
-                    ORDER BY r.created_at DESC
+                    ORDER BY COALESCE(r.published_at, e.published_at, e.analysis_date) DESC
                 ''')
             else:
                 cursor.execute('SELECT * FROM restaurants ORDER BY created_at DESC')
@@ -516,15 +757,29 @@ class Database:
             for row in cursor.fetchall():
                 restaurant = self._row_to_restaurant(row)
 
-                if include_episode_info and 'video_id' in restaurant:
-                    restaurant['episode_info'] = {
-                        'video_id': restaurant.pop('video_id', None),
-                        'video_url': restaurant.pop('video_url', None),
-                        'channel_name': restaurant.pop('channel_name', None),
-                        'title': restaurant.pop('episode_title', None),
-                        'analysis_date': restaurant.pop('analysis_date', None)
-                    }
-                    restaurant.pop('episode_food_trends', None)
+                # Fill episode_info from join if not already set by denormalized columns
+                if include_episode_info:
+                    ep_video_id = restaurant.pop('ep_video_id', None)
+                    ep_video_url = restaurant.pop('ep_video_url', None)
+                    ep_channel_name = restaurant.pop('ep_channel_name', None)
+                    ep_title = restaurant.pop('episode_title', None)
+                    ep_analysis_date = restaurant.pop('ep_analysis_date', None)
+                    ep_published_at = restaurant.pop('episode_published_at', None)
+
+                    if not restaurant.get('episode_info'):
+                        if ep_video_id or ep_video_url:
+                            restaurant['episode_info'] = {
+                                'video_id': ep_video_id,
+                                'video_url': ep_video_url,
+                                'channel_name': ep_channel_name,
+                                'title': ep_title,
+                                'analysis_date': ep_analysis_date,
+                                'published_at': ep_published_at,
+                            }
+                    else:
+                        # Merge in title/analysis_date from episode join
+                        restaurant['episode_info'].setdefault('title', ep_title)
+                        restaurant['episode_info'].setdefault('analysis_date', ep_analysis_date)
 
                 restaurants.append(restaurant)
 
@@ -540,7 +795,7 @@ class Database:
         date_start: str = None,
         date_end: str = None,
         episode_id: str = None,
-        sort_by: str = 'analysis_date',
+        sort_by: str = 'published_at',
         sort_direction: str = 'desc',
         page: int = 1,
         limit: int = 20
@@ -582,11 +837,11 @@ class Database:
                 params.append(episode_id)
 
             if date_start:
-                conditions.append("e.analysis_date >= ?")
+                conditions.append("COALESCE(r.published_at, e.published_at, e.analysis_date) >= ?")
                 params.append(date_start)
 
             if date_end:
-                conditions.append("e.analysis_date <= ?")
+                conditions.append("COALESCE(r.published_at, e.published_at, e.analysis_date) <= ?")
                 params.append(date_end)
 
             where_clause = " AND ".join(conditions) if conditions else "1=1"
@@ -608,7 +863,7 @@ class Database:
                     r.city,
                     r.price_range,
                     r.host_opinion,
-                    DATE(e.analysis_date) as analysis_day
+                    DATE(COALESCE(r.published_at, e.published_at, e.analysis_date)) as analysis_day
                 FROM restaurants r
                 LEFT JOIN episodes e ON r.episode_id = e.id
                 WHERE {where_clause}
@@ -646,8 +901,9 @@ class Database:
                 'location': 'r.city',
                 'cuisine': 'r.cuisine_type',
                 'rating': 'r.google_rating',
-                'analysis_date': 'e.analysis_date'
-            }.get(sort_by, 'e.analysis_date')
+                'analysis_date': 'e.analysis_date',
+                'published_at': 'COALESCE(r.published_at, e.published_at, e.analysis_date)'
+            }.get(sort_by, 'COALESCE(r.published_at, e.published_at, e.analysis_date)')
 
             sort_dir = 'DESC' if sort_direction.lower() == 'desc' else 'ASC'
 
@@ -655,7 +911,8 @@ class Database:
             offset = (page - 1) * limit
             query = f'''
                 SELECT r.*, e.video_id, e.video_url, e.channel_name,
-                       e.title as episode_title, e.analysis_date
+                       e.title as episode_title, e.analysis_date,
+                       e.published_at as episode_published_at
                 FROM restaurants r
                 LEFT JOIN episodes e ON r.episode_id = e.id
                 WHERE {where_clause}
@@ -672,7 +929,8 @@ class Database:
                     'video_url': restaurant.pop('video_url', None),
                     'channel_name': restaurant.pop('channel_name', None),
                     'title': restaurant.pop('episode_title', None),
-                    'analysis_date': restaurant.pop('analysis_date', None)
+                    'analysis_date': restaurant.pop('analysis_date', None),
+                    'published_at': restaurant.pop('episode_published_at', None)
                 }
                 restaurants.append(restaurant)
 
@@ -699,9 +957,14 @@ class Database:
             kwargs.update({
                 'city': loc.get('city'),
                 'neighborhood': loc.get('neighborhood'),
-                'address': loc.get('address'),
-                'region': loc.get('region')
+                'address': loc.get('address') or loc.get('full_address'),
+                'region': loc.get('region'),
             })
+            # Flatten coordinates from nested location
+            coords = loc.get('coordinates', {})
+            if coords:
+                kwargs['latitude'] = coords.get('latitude')
+                kwargs['longitude'] = coords.get('longitude')
 
         if 'contact_info' in kwargs:
             contact = kwargs.pop('contact_info')
@@ -718,11 +981,20 @@ class Database:
                 'google_user_ratings_total': rating.get('user_ratings_total')
             })
 
+        if 'google_places' in kwargs:
+            gp = kwargs.pop('google_places')
+            if gp:
+                kwargs['google_place_id'] = gp.get('place_id')
+                if gp.get('google_name'):
+                    kwargs['google_name'] = gp['google_name']
+
         # Handle JSON fields
         if 'menu_items' in kwargs:
             kwargs['menu_items'] = json.dumps(kwargs['menu_items'])
         if 'special_features' in kwargs:
             kwargs['special_features'] = json.dumps(kwargs['special_features'])
+        if 'photos' in kwargs:
+            kwargs['photos'] = json.dumps(kwargs['photos'])
 
         # Build UPDATE query
         set_clause = ', '.join(f"{k} = ?" for k in kwargs.keys())

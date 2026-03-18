@@ -1,8 +1,10 @@
 'use client';
 
+import Image from 'next/image';
 import { Flame } from 'lucide-react';
 import { Restaurant } from '@/types/restaurant';
 import { SectionHeader } from '@/components/ui/SectionHeader';
+import { getRestaurantImage } from '@/lib/images';
 
 interface TrendingSectionProps {
   restaurants: Restaurant[];
@@ -62,16 +64,25 @@ export function TrendingSection({
           <button
             key={restaurant.google_places?.place_id || restaurant.name_hebrew}
             onClick={() => onRestaurantClick?.(restaurant)}
-            className="trending-card text-right"
+            className={`trending-card text-right animate-fade-up stagger-${index + 1}`}
           >
             {/* Image/gradient area */}
             <div className={`trending-card-image ${getCuisineGradient(restaurant.cuisine_type)}`}>
-              {/* Cuisine text as fallback */}
-              <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-white/80 text-lg font-light">
-                  {restaurant.cuisine_type || 'מסעדה'}
-                </span>
-              </div>
+              {getRestaurantImage(restaurant) ? (
+                <Image
+                  src={getRestaurantImage(restaurant)!}
+                  alt={restaurant.google_places?.google_name || restaurant.google_name || restaurant.name_hebrew}
+                  fill
+                  className="object-cover"
+                  sizes="140px"
+                />
+              ) : (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span className="text-white/80 text-lg font-light">
+                    {restaurant.cuisine_type || 'מסעדה'}
+                  </span>
+                </div>
+              )}
 
               {/* Rank badge */}
               <div className="trending-card-rank">
@@ -79,8 +90,25 @@ export function TrendingSection({
               </div>
             </div>
 
+            {/* Status badge */}
+            {!!restaurant.is_closing && (
+              <span className="inline-block px-1.5 py-0.5 mt-1 bg-red-500/10 text-red-600 text-[10px] font-semibold rounded">
+                נסגר לצמיתות
+              </span>
+            )}
+            {restaurant.status === 'closing_soon' && !restaurant.is_closing && (
+              <span className="inline-block px-1.5 py-0.5 mt-1 bg-amber-500/10 text-amber-600 text-[10px] font-semibold rounded">
+                נסגר בקרוב
+              </span>
+            )}
+            {restaurant.status === 'new_opening' && (
+              <span className="inline-block px-1.5 py-0.5 mt-1 bg-emerald-500/10 text-emerald-600 text-[10px] font-semibold rounded">
+                חדש!
+              </span>
+            )}
+
             {/* Title */}
-            <p className="trending-card-title">{restaurant.name_hebrew}</p>
+            <p className="trending-card-title">{restaurant.google_places?.google_name || restaurant.google_name || restaurant.name_hebrew}</p>
 
             {/* Meta */}
             <p className="trending-card-meta">

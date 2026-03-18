@@ -1,0 +1,111 @@
+{
+  "name_hebrew": "אלקבר",
+  "name_english": "Al-Kaber",
+  "location": {
+    "city": "עין זיוון",
+    "neighborhood": "רמת הגולן",
+    "address": "מצפה רונן, עין זיוון 1242600",
+    "region": "צפון",
+    "coordinates": {
+      "latitude": 33.0970891,
+      "longitude": 35.7980711
+    },
+    "full_address": "מצפה רונן, עין זיוון 1242600"
+  },
+  "cuisine_type": "אמריקאי",
+  "status": "open",
+  "price_range": "mid-range",
+  "host_opinion": "positive",
+  "host_comments": "בייגל קריספי צ'יקן מעולה",
+  "menu_items": [
+    {
+      "item_name": "בייגל קריספי צ'יקן",
+      "description": "",
+      "price": null,
+      "recommendation_level": "mentioned"
+    }
+  ],
+  "special_features": [
+    "עגלת קפה",
+    "פוד טרק"
+  ],
+  "contact_info": {
+    "phone": "052-690-4407",
+    "website": "https://maps.google.com/?cid=3432946334540759296",
+    "social_media": ""
+  },
+  "business_news": null,
+  "mention_context": "אלקבר ספק עגלת קפה ספק פוד טרק בכניסה לעין זיוון ברמת הגולן",
+  "episode_info": {
+    "video_id": "6jvskRWvQkg",
+    "video_url": "https://www.youtube.com/watch?v=6jvskRWvQkg",
+    "language": "he",
+    "analysis_date": "2026-01-01",
+    "total_restaurants_found": 11,
+    "processing_method": "claude_chunked"
+  },
+  "food_trends": [
+    "פרסי פופולרי",
+    "מסעדות בקיסריה",
+    "אמריקאי פופולרי",
+    "תאילנדי פופולרי",
+    "מסעדות בחיפה"
+  ],
+  "episode_summary": "ניתוח מבוסס Claude של 11 מסעדות מהסרטון 6jvskRWvQkg",
+  "google_places": {
+    "place_id": "ChIJc9l9-wKvHhURAAFIs4BGpC8",
+    "google_name": "אלקע בר - ELKA BAR",
+    "google_url": "https://maps.google.com/?cid=3432946334540759296",
+    "enriched_at": "2026-02-15 09:08:11",
+    "formatted_address": "מצפה רונן, עין זיוון 1242600"
+  },
+  "rating": {
+    "google_rating": 4.8,
+    "total_reviews": 234,
+    "price_level": null
+  },
+  "photos": [
+    {
+      "photo_reference": "ATCDNfV6DFlL01KUlTqK-E9fzU-n0da4NN185MQhXc6YJ18sIoKoWOwTaI0P-4mfeHQdBjI28gU0kwn-qSo8aBwFdxf32ok43zhlwUzpDqYCKplPm8fYIbZlx36ph-A3oagk2_vPgkIcM-aIxy7EOdRmFA_wiHaNiUr5peyzmMAcsjpJVNL2NStY6sSknl0Eifr1C32Zq9Tp3O1ccRityI-V423A9VyTxHHGNHXqgLro-Xzf0ghO60gDDVBcmcjSFa9lfYt60UN5RA768dMcERx42pmJWdcuSDz21FaVQ2oznpcd2w",
+      "width": 1200,
+      "height": 1600
+    },
+    {
+      "photo_reference": "ATCDNfXG4MWKwDS2DbygM1zQSBA8yZLBSn_-S9lpvNegGBJg51O49wjpsYys9laoX_QQnJgAFnr1T71ummWgaxm1tZ8MTkeYsgzHA4Cc95O84S_c0gLIDbI3K9AsradSPDJLZ3MWiOcct7kkoCsm9tW0T3192KrysKGxBRXjMJgaiyfW8YF06hWpICvUxm16gcxkcSAktBa0MDFfOOj9PmFSg_3lThZ7B1y2ZDEqsIsIEWzln2RQEtkiobo_JY0XDXPns2k7irdJvaYIDUmt2R6or1IcpsTJwds4jgWIUoffmLD05A",
+      "width": 2720,
+      "height": 3510
+    },
+    {
+      "photo_reference": "ATCDNfUFrc8S77BynYiN6U_ERLhzGr_KeUfCegZbseaiF1IQUtdI7vzTtyte1UI0Sk7ErVAT4-D7B0WVoXEZEQo-iN2xyhpv6j-hjtxJRiwTXMc51gA8LOa0NXZ2fKZ7sE3FJ6jfaVY3Sx-9gfrxnU2MnB0nh2RG_3ewvgBYiRPajCCfmrcBASFLqVWNZsTGKamCiGXl4YN3pRvIYyeJPH1O7wBXrCQoKqyVigZbQvpDssUYmIhkZNo8LnHMqHdUYlgajPAC1uug4F1DyZcbZT4xLMBwD-bkM09j_hqAnnQqhjD4Ww",
+      "width": 3000,
+      "height": 4000
+    },
+    {
+      "photo_reference": "ATCDNfXdWEyKFeqB8KlYVqEsm6qFcvD-tOIuMT5QOqtNTB9D7p_yT5hDIrbOHlSEYhUKPxba1_kROFO_t48rEZ8_njVNtu4EWYeWVP9dGjY1pXwtPkOJbm_Sd-tj2Oh8_D7SEXWEo10UMglHT0Y1hX4yia4NZV60uBxAw_CGkwBxNPiw2lWLdJMo8T3orWJDtxk7BaPbjH9ba6YgPznpFCeiYGU11f8FbUzEOnEyhkjulCfNwq8jcTjGJYKudKm1-ii1hV8EzWs3UpB8SNLJFNHlytKIOfAMd-LWKbug87tyr1MOqw",
+      "width": 3600,
+      "height": 4800
+    },
+    {
+      "photo_reference": "ATCDNfXBU0fWRlz8MezQXcAmRq_Q6BkK1oYAJHvNgRNVFmfCs1dpCr1qcp5sbQejVCqJT8EBYnXUIm6T8YI5DuwUU75PuUDO0_h40vIUexIQNUWGCpq6LnofcuMKCYIOHPhWSGj_aWkUoo7uyLim9pMHp_WpuVpYorJD07f7zeLM72zJImrixm9K6m_fa_vB_coVbjf4SE3MV3XCdyh90MZjDaX9tTqooIr-i6rxKzeWw2xX--64OVQH_DC34vldYg9ug6D3bJqLyqe9w9BBtWREULxptxwS1BQ50kCe75I84XVJ3CKlAgaG-qDUDEAXHtoNFN80KBzDsFQ1CAr0Ys_4jjcM_kESIq-ZX7dwHZyX1JpwiHM5l7lbp4GZkvVT_jCW9b3qSJg8tVW6yU0n5ML4leZXtPQpU4i7zpR35tawHUxZQ68",
+      "width": 4032,
+      "height": 3024
+    }
+  ],
+  "business_hours": {
+    "open_now": false,
+    "weekday_text": [
+      "יום ראשון: סגור",
+      "יום שני: סגור",
+      "יום שלישי: 9:00–15:00",
+      "יום רביעי: 9:00–15:00",
+      "יום חמישי: 9:00–15:00",
+      "יום שישי: 9:00–15:00",
+      "יום שבת: 9:00–15:00"
+    ]
+  },
+  "google_places_enriched": true,
+  "google_places_attempted": true,
+  "id": "ba6ae4c414ea",
+  "mention_timestamp_seconds": 596,
+  "engaging_quote": "מנסה לחזור לעצמו אי אפשר שלא להרים לפחות לעסק אחד משם מי שלא הרימו ידיים אנשים כמו דור ואילי הבעלים של אלקבר ספק עגלת קפה ספק פודרק בכניסה לאן זיוון ברמת הגולן שם אכלתי בייגל קריספי צ'יקן"
+}

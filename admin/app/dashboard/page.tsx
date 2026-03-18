@@ -2,10 +2,12 @@
 
 import { useAuth } from '@/lib/auth-context';
 import { useQuery } from '@tanstack/react-query';
-import { analyticsApi } from '@/lib/api';
+import { analyticsApi, pipelineApi } from '@/lib/api';
+import { queryKeys, REFETCH_INTERVALS } from '@/lib/constants';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { MetricCard } from '@/components/dashboard/metric-card';
 import { ActivityFeed } from '@/components/dashboard/activity-feed';
+import { StatusStrip } from '@/components/pipeline/status-strip';
 import { UtensilsCrossed, Video, FileText, Clock } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
@@ -15,18 +17,30 @@ export default function DashboardPage() {
 
   // Fetch overview analytics
   const { data: overview, isLoading: overviewLoading } = useQuery({
-    queryKey: ['analytics', 'overview'],
+    queryKey: queryKeys.analytics.overview(),
     queryFn: () => analyticsApi.getOverview(),
-    refetchInterval: 30000, // Refresh every 30 seconds
+    refetchInterval: REFETCH_INTERVALS.analytics,
   });
 
   // Fetch restaurant analytics for sparklines
   const { data: restaurantAnalytics } = useQuery({
-    queryKey: ['analytics', 'restaurants', '7'],
+    queryKey: queryKeys.analytics.restaurants('7'),
     queryFn: () => analyticsApi.getRestaurants({ period: '7' }),
   });
 
-  // Activities are now fetched within the ActivityFeed component
+  // Fetch pipeline overview for quick-status widget
+  const { data: pipelineOverview, isLoading: pipelineLoading } = useQuery({
+    queryKey: queryKeys.pipeline.overview(),
+    queryFn: () => pipelineApi.getOverview(),
+    refetchInterval: REFETCH_INTERVALS.pipeline,
+  });
+
+  // Fetch pipeline stats
+  const { data: pipelineStats } = useQuery({
+    queryKey: queryKeys.pipeline.stats(),
+    queryFn: () => pipelineApi.getStats(),
+    refetchInterval: REFETCH_INTERVALS.pipelineHistory,
+  });
 
   // Prepare sparkline data from growth data
   const sparklineData = restaurantAnalytics?.growthData?.slice(-7).map((d: any) => ({
@@ -43,10 +57,17 @@ export default function DashboardPage() {
         </p>
       </div>
 
+      {/* Pipeline Status Strip */}
+      <StatusStrip
+        overview={pipelineOverview?.overview ?? null}
+        stats={pipelineStats?.stats ?? null}
+        restaurantCount={overview?.overview?.totalRestaurants}
+        isLoading={pipelineLoading}
+      />
+
       {/* Metrics Grid */}
       <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
         {overviewLoading ? (
-          // Loading skeleton
           [...Array(4)].map((_, i) => (
             <Card key={i}>
               <CardHeader className="pb-2">
@@ -109,12 +130,18 @@ export default function DashboardPage() {
                 <p className="text-xs text-muted-foreground">Manually create a restaurant entry</p>
               </button>
 
-              <button className="w-full text-left px-4 py-3 rounded-lg border hover:bg-accent transition-colors">
+              <button
+                onClick={() => router.push('/dashboard/pipeline?tab=overview')}
+                className="w-full text-left px-4 py-3 rounded-lg border hover:bg-accent transition-colors"
+              >
                 <p className="font-medium text-sm">Process Video</p>
                 <p className="text-xs text-muted-foreground">Analyze a new YouTube video</p>
               </button>
 
-              <button className="w-full text-left px-4 py-3 rounded-lg border hover:bg-accent transition-colors">
+              <button
+                onClick={() => router.push('/dashboard/articles/new/edit')}
+                className="w-full text-left px-4 py-3 rounded-lg border hover:bg-accent transition-colors"
+              >
                 <p className="font-medium text-sm">Create Article</p>
                 <p className="text-xs text-muted-foreground">Write a new blog post</p>
               </button>
@@ -162,9 +189,9 @@ export default function DashboardPage() {
                   <div key={opinion} className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <span className="text-lg">
-                        {opinion === 'positive' ? '😍' :
-                         opinion === 'negative' ? '😞' :
-                         opinion === 'mixed' ? '🤔' : '😐'}
+                        {opinion === 'positive' ? '\u{1F60D}' :
+                         opinion === 'negative' ? '\u{1F61E}' :
+                         opinion === 'mixed' ? '\u{1F914}' : '\u{1F610}'}
                       </span>
                       <span className="text-sm capitalize">{opinion}</span>
                     </div>

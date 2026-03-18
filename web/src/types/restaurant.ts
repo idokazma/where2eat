@@ -10,6 +10,28 @@ export interface Location {
   neighborhood: string | null;
   address: string | null;
   region: 'North' | 'Center' | 'South' | null;
+  coordinates?: {
+    latitude: number;
+    longitude: number;
+  };
+  // Railway API returns lat/lng directly on location
+  lat?: number;
+  lng?: number;
+}
+
+/**
+ * Extract latitude/longitude from a location object.
+ * Handles both formats: { coordinates: { latitude, longitude } } and { lat, lng }
+ */
+export function getCoordinates(location?: { coordinates?: { latitude: number; longitude: number }; lat?: number; lng?: number } | null): { latitude: number; longitude: number } | null {
+  if (!location) return null;
+  if (location.coordinates?.latitude && location.coordinates?.longitude) {
+    return location.coordinates;
+  }
+  if (location.lat && location.lng) {
+    return { latitude: location.lat, longitude: location.lng };
+  }
+  return null;
 }
 
 export interface ContactInfo {
@@ -18,25 +40,42 @@ export interface ContactInfo {
   website: string | null;
 }
 
+export interface RestaurantPhoto {
+  photo_reference: string;
+  photo_url: string;
+  width: number;
+  height: number;
+  is_owner_photo?: boolean;
+}
+
 export interface Restaurant {
+  id?: string;
   name_hebrew: string;
   name_english?: string | null;
+  google_name?: string | null;
   location?: Location;
   cuisine_type?: string | null;
   status?: 'open' | 'closed' | 'new_opening' | 'closing_soon' | 'reopening' | null;
   price_range?: 'budget' | 'mid-range' | 'expensive' | 'not_mentioned' | null;
   host_opinion?: 'positive' | 'negative' | 'mixed' | 'neutral' | null;
   host_comments?: string | null;
+  engaging_quote?: string | null;
+  mention_timestamp_seconds?: number | null;
   menu_items?: MenuItem[];
   special_features?: string[];
   contact_info?: ContactInfo;
   business_news?: string | null;
+  is_closing?: boolean;
   mention_context?: 'new_opening' | 'review' | 'news' | 'recommendation' | 'comparison' | 'business_news' | null;
   episode_info?: EpisodeInfo;
   mention_timestamps?: MentionTimestamp[];
   google_places?: GooglePlacesInfo;
   rating?: Rating;
   food_trends?: string[];
+  photos?: RestaurantPhoto[];
+  image_url?: string | null;
+  og_image_url?: string | null;
+  published_at?: string | null;
 }
 
 export interface EpisodeInfo {
@@ -44,6 +83,9 @@ export interface EpisodeInfo {
   video_url: string;
   language: string;
   analysis_date: string;
+  published_at?: string;
+  title?: string | null;
+  channel_name?: string | null;
   total_restaurants_found?: number;
   processing_method?: string;
 }
@@ -61,6 +103,8 @@ export interface GooglePlacesInfo {
   google_name?: string;
   google_url?: string;
   enriched_at?: string;
+  name_match_confidence?: number;
+  potential_wrong_match?: boolean;
 }
 
 export interface Rating {

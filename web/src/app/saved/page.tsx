@@ -4,6 +4,7 @@ import { Heart } from 'lucide-react';
 import { PageLayout } from '@/components/layout';
 import { RestaurantCardNew } from '@/components/restaurant';
 import { useFavorites } from '@/contexts/favorites-context';
+import { getRestaurantImage } from '@/lib/images';
 
 export default function SavedPage() {
   const { favoriteRestaurants } = useFavorites();
@@ -23,7 +24,10 @@ export default function SavedPage() {
                   className="animate-fade-up"
                   style={{ animationDelay: `${index * 50}ms`, opacity: 0 }}
                 >
-                  <RestaurantCardNew restaurant={restaurant} />
+                  <RestaurantCardNew
+                    restaurant={restaurant}
+                    imageUrl={getRestaurantImage(restaurant) || undefined}
+                  />
                 </div>
               ))}
             </div>

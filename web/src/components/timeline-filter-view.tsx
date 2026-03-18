@@ -42,11 +42,12 @@ export function TimelineFilterView({ restaurants, onRestaurantSelect }: Timeline
 
     restaurants.forEach(restaurant => {
       if (restaurant.episode_info?.video_id) {
-        const key = `${restaurant.episode_info.video_id}_${restaurant.episode_info.analysis_date}`
-        
+        const episodeDate = restaurant.episode_info.published_at || restaurant.episode_info.analysis_date
+        const key = `${restaurant.episode_info.video_id}_${episodeDate}`
+
         if (!groupMap.has(key)) {
           groupMap.set(key, {
-            date: restaurant.episode_info.analysis_date,
+            date: episodeDate,
             episodeInfo: {
               video_id: restaurant.episode_info.video_id,
               video_url: restaurant.episode_info.video_url,

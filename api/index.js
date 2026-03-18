@@ -22,7 +22,11 @@ const adminAuditRoutes = require('./routes/admin-audit')
 const adminSystemRoutes = require('./routes/admin-system')
 const adminChannelsRoutes = require('./routes/admin-channels')
 const adminQueueRoutes = require('./routes/admin-queue')
+const adminSubscriptionsRoutes = require('./routes/admin-subscriptions')
 const adminPipelineRoutes = require('./routes/admin-pipeline')
+const adminEpisodesRoutes = require('./routes/admin-episodes')
+const adminDeepDiveRoutes = require('./routes/admin-deepdive')
+const { filterHallucinations } = require('./utils/hallucination-filter')
 const { startScheduler, getSchedulerStatus } = require('./scheduler')
 
 app.use(helmet())
@@ -293,6 +297,444 @@ except Exception as e:
   }
 })
 
+// ─── Public Deep Dive endpoints (read-only, no auth) ──────────────────────────
+
+/**
+ * GET /api/deepdive/episodes
+ * List episodes with their pipeline queue status.
+ * Query params: ?search=, ?status=, ?page=, ?limit=
+ */
+app.get('/api/deepdive/episodes', async (req, res) => {
+  try {
+    const { spawn } = require('child_process');
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 20;
+    const offset = (page - 1) * limit;
+    const search = req.query.search || '';
+    const status = req.query.status || '';
+
+    const python = spawn('python', ['-c', `
+import sys
+import json
+sys.path.insert(0, '${path.join(__dirname, '..')}')
+from src.database import Database
+db = Database()
+with db.get_connection() as conn:
+    cursor = conn.cursor()
+    where_clauses = []
+    params = []
+    search_filter = '${search.replace(/'/g, "\\'")}'
+    status_filter = '${status.replace(/'/g, "\\'")}'
+    if search_filter:
+        where_clauses.append('(e.title LIKE ? OR e.channel_name LIKE ?)')
+        params.append('%' + search_filter + '%')
+        params.append('%' + search_filter + '%')
+    if status_filter:
+        where_clauses.append('vq.status = ?')
+        params.append(status_filter)
+    where_sql = ''
+    if where_clauses:
+        where_sql = 'WHERE ' + ' AND '.join(where_clauses)
+    cursor.execute(f'SELECT COUNT(*) as count FROM episodes e LEFT JOIN video_queue vq ON e.video_id = vq.video_id {where_sql}', params)
+    total = cursor.fetchone()['count']
+    params_with_limit = params + [${limit}, ${offset}]
+    cursor.execute(f'''
+        SELECT
+            e.id, e.video_id, e.video_url, e.title, e.channel_name, e.language,
+            e.analysis_date, e.created_at, e.published_at,
+            vq.status as queue_status, vq.priority as queue_priority,
+            vq.attempt_count, vq.error_message, vq.restaurants_found,
+            vq.processing_started_at, vq.processing_completed_at,
+            vq.published_at as queue_published_at
+        FROM episodes e
+        LEFT JOIN video_queue vq ON e.video_id = vq.video_id
+        {where_sql}
+        ORDER BY COALESCE(e.published_at, vq.published_at, e.analysis_date, e.created_at) DESC
+        LIMIT ? OFFSET ?
+    ''', params_with_limit)
+    episodes = [dict(row) for row in cursor.fetchall()]
+    print(json.dumps({{
+        'episodes': episodes,
+        'pagination': {{
+            'page': ${page},
+            'limit': ${limit},
+            'total': total,
+            'total_pages': max(1, (total + ${limit} - 1) // ${limit})
+        }}
+    }}))
+    `]);
+
+    let stdout = '';
+    let stderr = '';
+    python.stdout.on('data', (data) => stdout += data);
+    python.stderr.on('data', (data) => stderr += data);
+    python.on('close', (code) => {
+      if (code === 0) {
+        try {
+          const result = JSON.parse(stdout);
+          res.json(result);
+        } catch (err) {
+          console.error('Failed to parse deepdive episodes output:', stdout);
+          res.status(500).json({ error: 'Failed to parse episodes data' });
+        }
+      } else {
+        console.error('Failed to fetch deepdive episodes:', stderr);
+        res.status(500).json({ error: 'Failed to fetch episodes' });
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching deepdive episodes:', error);
+    res.status(500).json({ error: 'Failed to fetch episodes' });
+  }
+});
+
+/**
+ * GET /api/deepdive/restaurants/:id
+ * Restaurant deep dive — restaurant record, related episode, and queue info.
+ * Defined before /:videoId so Express does not mistake "restaurants" as a videoId.
+ */
+app.get('/api/deepdive/restaurants/:id', async (req, res) => {
+  try {
+    const { spawn } = require('child_process');
+    const python = spawn('python', ['-c', `
+import sys
+import json
+sys.path.insert(0, '${path.join(__dirname, '..')}')
+from src.database import Database
+db = Database()
+with db.get_connection() as conn:
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM restaurants WHERE id = ?', ('${req.params.id}',))
+    restaurant_row = cursor.fetchone()
+    if not restaurant_row:
+        print(json.dumps({'found': False}))
+    else:
+        restaurant = dict(restaurant_row)
+        episode = None
+        queue_info = None
+        if restaurant.get('episode_id'):
+            cursor.execute('SELECT * FROM episodes WHERE id = ?', (restaurant['episode_id'],))
+            ep_row = cursor.fetchone()
+            if ep_row:
+                episode = dict(ep_row)
+                cursor.execute('SELECT * FROM video_queue WHERE video_id = ?', (episode['video_id'],))
+                q_row = cursor.fetchone()
+                queue_info = dict(q_row) if q_row else None
+        print(json.dumps({{'found': True, 'restaurant': restaurant, 'episode': episode, 'queue_info': queue_info}}))
+    `]);
+
+    let stdout = '';
+    let stderr = '';
+    python.stdout.on('data', (data) => stdout += data);
+    python.stderr.on('data', (data) => stderr += data);
+    python.on('close', (code) => {
+      if (code === 0) {
+        try {
+          const result = JSON.parse(stdout);
+          if (!result.found) {
+            return res.status(404).json({ error: 'Restaurant not found' });
+          }
+          res.json({
+            restaurant: result.restaurant,
+            episode: result.episode,
+            queue_info: result.queue_info
+          });
+        } catch (err) {
+          console.error('Failed to parse deepdive restaurant output:', stdout);
+          res.status(500).json({ error: 'Failed to parse restaurant data' });
+        }
+      } else {
+        console.error('Failed to fetch deepdive restaurant:', stderr);
+        res.status(500).json({ error: 'Failed to fetch restaurant deep dive' });
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching deepdive restaurant:', error);
+    res.status(500).json({ error: 'Failed to fetch restaurant deep dive' });
+  }
+});
+
+/**
+ * GET /api/deepdive/episodes/:videoId
+ * Full episode deep dive — episode, restaurants, queue info, pipeline logs,
+ * analysis files, and transcript files.
+ */
+app.get('/api/deepdive/episodes/:videoId', async (req, res) => {
+  try {
+    const { spawn } = require('child_process');
+    const videoId = req.params.videoId;
+    const projectRoot = path.join(__dirname, '..');
+
+    const python = spawn('python', ['-c', `
+import sys
+import json
+import glob
+import os
+sys.path.insert(0, '${path.join(__dirname, '..')}')
+from src.database import Database
+db = Database()
+
+video_id = '${videoId.replace(/'/g, "\\'")}'
+project_root = '${projectRoot.replace(/\\/g, '\\\\').replace(/'/g, "\\'")}'
+
+with db.get_connection() as conn:
+    cursor = conn.cursor()
+
+    # Full episode data
+    cursor.execute('SELECT * FROM episodes WHERE video_id = ?', (video_id,))
+    episode_row = cursor.fetchone()
+    episode = dict(episode_row) if episode_row else None
+
+    # Restaurants for this episode
+    restaurants = []
+    if episode:
+        cursor.execute('SELECT * FROM restaurants WHERE episode_id = ?', (episode['id'],))
+        restaurants = [dict(row) for row in cursor.fetchall()]
+
+    # Queue info
+    cursor.execute('SELECT * FROM video_queue WHERE video_id = ?', (video_id,))
+    queue_row = cursor.fetchone()
+    queue_info = dict(queue_row) if queue_row else None
+
+    # Pipeline logs via video_queue_id
+    pipeline_logs = []
+    if queue_info:
+        cursor.execute(
+            'SELECT * FROM pipeline_logs WHERE video_queue_id = ? ORDER BY timestamp ASC',
+            (queue_info['id'],)
+        )
+        pipeline_logs = [dict(row) for row in cursor.fetchall()]
+
+# Analysis files from filesystem
+analyses_dir = os.path.join(project_root, 'analyses')
+analysis_files = []
+request_files = sorted(glob.glob(os.path.join(analyses_dir, video_id + '_*_analysis_request.txt')))
+response_files = sorted(glob.glob(os.path.join(analyses_dir, video_id + '_*_claude_analysis.json')))
+
+# Build a map of timestamp -> files
+timestamp_map = {{}}
+for rf in request_files:
+    basename = os.path.basename(rf)
+    prefix = video_id + '_'
+    suffix = '_analysis_request.txt'
+    if basename.startswith(prefix) and basename.endswith(suffix):
+        ts = basename[len(prefix):-len(suffix)]
+        timestamp_map.setdefault(ts, {{}})['request_file'] = rf
+
+for rf in response_files:
+    basename = os.path.basename(rf)
+    prefix = video_id + '_'
+    suffix = '_claude_analysis.json'
+    if basename.startswith(prefix) and basename.endswith(suffix):
+        ts = basename[len(prefix):-len(suffix)]
+        timestamp_map.setdefault(ts, {{}})['response_file'] = rf
+
+for ts in sorted(timestamp_map.keys()):
+    entry = {{'timestamp': ts}}
+    req_path = timestamp_map[ts].get('request_file')
+    resp_path = timestamp_map[ts].get('response_file')
+    if req_path:
+        try:
+            with open(req_path, 'r', encoding='utf-8', errors='replace') as f:
+                entry['request'] = f.read()
+        except Exception:
+            entry['request'] = None
+    else:
+        entry['request'] = None
+    if resp_path:
+        try:
+            with open(resp_path, 'r', encoding='utf-8', errors='replace') as f:
+                entry['response'] = json.load(f)
+        except Exception:
+            entry['response'] = None
+    else:
+        entry['response'] = None
+    analysis_files.append(entry)
+
+# Transcript files from filesystem
+transcripts_dir = os.path.join(project_root, 'transcripts')
+transcript_files = []
+transcript_paths = sorted(glob.glob(os.path.join(transcripts_dir, video_id + '_*.json')))
+for tp in transcript_paths:
+    try:
+        with open(tp, 'r', encoding='utf-8', errors='replace') as f:
+            content = f.read()
+        transcript_files.append({{
+            'filename': os.path.basename(tp),
+            'content': content[:5000]
+        }})
+    except Exception:
+        pass
+
+print(json.dumps({{
+    'episode': episode,
+    'restaurants': restaurants,
+    'queue_info': queue_info,
+    'pipeline_logs': pipeline_logs,
+    'analysis_files': analysis_files,
+    'transcript_files': transcript_files
+}}))
+    `]);
+
+    let stdout = '';
+    let stderr = '';
+    python.stdout.on('data', (data) => stdout += data);
+    python.stderr.on('data', (data) => stderr += data);
+    python.on('close', (code) => {
+      if (code === 0) {
+        try {
+          const result = JSON.parse(stdout);
+          if (!result.episode) {
+            return res.status(404).json({ error: 'Episode not found' });
+          }
+          res.json(result);
+        } catch (err) {
+          console.error('Failed to parse deepdive episode output:', stdout);
+          res.status(500).json({ error: 'Failed to parse episode data' });
+        }
+      } else {
+        console.error('Failed to fetch deepdive episode:', stderr);
+        res.status(500).json({ error: 'Failed to fetch episode deep dive' });
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching deepdive episode:', error);
+    res.status(500).json({ error: 'Failed to fetch episode deep dive' });
+  }
+});
+
+/**
+ * PATCH /api/deepdive/restaurants/:id/visibility
+ * Toggle restaurant visibility (is_hidden) by writing directly to the JSON file.
+ * Body: { "is_hidden": true|false }
+ */
+app.patch('/api/deepdive/restaurants/:id/visibility', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { is_hidden } = req.body;
+    const filePath = path.join(dataDir, `${id}.json`);
+
+    if (!(await fs.pathExists(filePath))) {
+      return res.status(404).json({ error: 'Restaurant not found' });
+    }
+
+    const data = await fs.readJson(filePath);
+    data.is_hidden = !!is_hidden;
+    data.updated_at = new Date().toISOString();
+
+    await fs.writeJson(filePath, data, { spaces: 2 });
+
+    res.json(data);
+  } catch (error) {
+    console.error('Error updating restaurant visibility:', error);
+    res.status(500).json({ error: 'Failed to update visibility' });
+  }
+});
+
+/**
+ * POST /api/deepdive/fix-data
+ * One-time fix: resolve raw photo references to URLs and fix wrong published_at dates.
+ */
+app.post('/api/deepdive/fix-data', async (req, res) => {
+  try {
+    const { spawn } = require('child_process');
+    const python = spawn('python', ['-c', `
+import sys
+import json
+import requests
+import os
+sys.path.insert(0, '${path.join(__dirname, '..')}')
+from src.database import Database
+
+db = Database()
+api_key = os.getenv('GOOGLE_PLACES_API_KEY', '')
+fixes = {'photo_fixes': 0, 'date_fixes': 0, 'errors': []}
+
+with db.get_connection() as conn:
+    cursor = conn.cursor()
+
+    # Fix 1: Resolve raw photo references in image_url
+    cursor.execute("SELECT id, image_url, name_hebrew FROM restaurants WHERE image_url LIKE 'places/%'")
+    raw_photo_rows = cursor.fetchall()
+
+    for row in raw_photo_rows:
+        rid = row['id']
+        ref = row['image_url']
+        name = row['name_hebrew']
+        try:
+            url = f"https://places.googleapis.com/v1/{ref}/media"
+            params = {'maxWidthPx': '800', 'skipHttpRedirect': 'true', 'key': api_key}
+            resp = requests.get(url, params=params)
+            resp.raise_for_status()
+            photo_uri = resp.json().get('photoUri')
+            if photo_uri:
+                cursor.execute("UPDATE restaurants SET image_url = ? WHERE id = ?", (photo_uri, rid))
+                fixes['photo_fixes'] += 1
+            else:
+                fixes['errors'].append(f"No photoUri for {name} ({rid})")
+        except Exception as e:
+            fixes['errors'].append(f"Photo fix error for {name}: {str(e)}")
+
+    # Fix 2: Fix restaurants with wrong published_at (using episode's video_queue published_at)
+    cursor.execute("""
+        SELECT r.id, r.name_hebrew, r.published_at as r_pub, r.episode_id,
+               e.video_id, e.published_at as e_pub,
+               vq.published_at as vq_pub
+        FROM restaurants r
+        LEFT JOIN episodes e ON r.episode_id = e.id
+        LEFT JOIN video_queue vq ON e.video_id = vq.video_id
+        WHERE vq.published_at IS NOT NULL
+          AND vq.published_at != ''
+          AND (r.published_at IS NULL
+               OR r.published_at = ''
+               OR r.published_at != vq.published_at)
+    """)
+    date_rows = cursor.fetchall()
+
+    for row in date_rows:
+        rid = row['id']
+        correct_date = row['vq_pub']
+        name = row['name_hebrew']
+        try:
+            cursor.execute("UPDATE restaurants SET published_at = ? WHERE id = ?", (correct_date, rid))
+            # Also fix episode published_at if wrong
+            cursor.execute("UPDATE episodes SET published_at = ? WHERE id = ? AND (published_at IS NULL OR published_at = '' OR published_at != ?)",
+                          (correct_date, row['episode_id'], correct_date))
+            fixes['date_fixes'] += 1
+        except Exception as e:
+            fixes['errors'].append(f"Date fix error for {name}: {str(e)}")
+
+    conn.commit()
+
+print(json.dumps(fixes))
+    `]);
+
+    let stdout = '';
+    let stderr = '';
+    python.stdout.on('data', (data) => stdout += data);
+    python.stderr.on('data', (data) => stderr += data);
+    python.on('close', (code) => {
+      if (code === 0) {
+        try {
+          const result = JSON.parse(stdout);
+          res.json({ success: true, ...result });
+        } catch (err) {
+          console.error('Failed to parse fix-data output:', stdout, stderr);
+          res.status(500).json({ error: 'Failed to parse fix results', stderr });
+        }
+      } else {
+        console.error('Fix-data script failed:', stderr);
+        res.status(500).json({ error: 'Fix script failed', stderr });
+      }
+    });
+  } catch (error) {
+    console.error('Error in fix-data:', error);
+    res.status(500).json({ error: 'Failed to run fix script' });
+  }
+});
+
+// ──────────────────────────────────────────────────────────────────────────────
+
 // Admin routes
 app.use('/api/admin/auth', adminAuthRoutes)
 app.use('/api/admin/restaurants', adminRestaurantsRoutes)
@@ -304,15 +746,18 @@ app.use('/api/admin/audit', adminAuditRoutes)
 app.use('/api/admin/system', adminSystemRoutes)
 app.use('/api/admin/channels', adminChannelsRoutes)
 app.use('/api/admin/queue', adminQueueRoutes)
+app.use('/api/admin/subscriptions', adminSubscriptionsRoutes)
 app.use('/api/admin/pipeline', adminPipelineRoutes)
+app.use('/api/admin/episodes', adminEpisodesRoutes)
+app.use('/api/admin/deepdive', adminDeepDiveRoutes)
 
 app.get('/api/restaurants', async (req, res) => {
   try {
     await fs.ensureDir(dataDir)
     const files = await fs.readdir(dataDir)
     const jsonFiles = files.filter(file => file.endsWith('.json'))
-    
-    const restaurants = []
+
+    let restaurants = []
     for (const file of jsonFiles) {
       try {
         const filePath = path.join(dataDir, file)
@@ -322,7 +767,27 @@ app.get('/api/restaurants', async (req, res) => {
         console.warn(`Warning: Failed to read ${file}:`, err.message)
       }
     }
-    
+
+    // Filter out hallucinations (false extractions)
+    const includeAll = req.query.include_all === 'true'
+    if (!includeAll) {
+      const originalCount = restaurants.length
+      restaurants = filterHallucinations(restaurants, { strictMode: true })
+      if (originalCount !== restaurants.length) {
+        console.log(`[Hallucination Filter] Filtered ${originalCount - restaurants.length} of ${originalCount} restaurants`)
+      }
+    }
+
+    // Filter out hidden restaurants
+    restaurants = restaurants.filter(r => !r.is_hidden);
+
+    // Sort by published_at (newest first)
+    restaurants.sort((a, b) => {
+      const aDate = a.published_at || a.episode_info?.published_at || a.episode_info?.analysis_date || '';
+      const bDate = b.published_at || b.episode_info?.published_at || b.episode_info?.analysis_date || '';
+      return bDate > aDate ? 1 : bDate < aDate ? -1 : 0;
+    });
+
     res.json({ restaurants, count: restaurants.length })
   } catch (error) {
     console.error('Error loading restaurants:', error)
@@ -342,17 +807,18 @@ app.get('/api/restaurants/search', async (req, res) => {
       date_start,
       date_end,
       episode_id,
-      sort_by = 'analysis_date',
+      sort_by = 'published_at',
       sort_direction = 'desc',
       page = 1,
-      limit = 20
+      limit = 20,
+      include_all = 'false'
     } = req.query;
 
     await fs.ensureDir(dataDir)
     const files = await fs.readdir(dataDir)
     const jsonFiles = files.filter(file => file.endsWith('.json'))
-    
-    const restaurants = []
+
+    let restaurants = []
     for (const file of jsonFiles) {
       try {
         const filePath = path.join(dataDir, file)
@@ -362,6 +828,14 @@ app.get('/api/restaurants/search', async (req, res) => {
         console.warn(`Warning: Failed to read ${file}:`, err.message)
       }
     }
+
+    // Filter out hallucinations first (unless include_all is set)
+    if (include_all !== 'true') {
+      restaurants = filterHallucinations(restaurants, { strictMode: true })
+    }
+
+    // Filter out hidden restaurants
+    restaurants = restaurants.filter(r => !r.is_hidden);
 
     // Apply filters
     let filteredRestaurants = restaurants.filter(restaurant => {
@@ -414,9 +888,9 @@ app.get('/api/restaurants/search', async (req, res) => {
 
       // Date range filtering
       if (date_start || date_end) {
-        const analysisDate = restaurant.episode_info?.analysis_date;
-        if (analysisDate) {
-          const restaurantDate = new Date(analysisDate);
+        const dateValue = restaurant.published_at || restaurant.episode_info?.published_at || restaurant.episode_info?.analysis_date;
+        if (dateValue) {
+          const restaurantDate = new Date(dateValue);
           if (date_start && restaurantDate < new Date(date_start)) return false;
           if (date_end && restaurantDate > new Date(date_end)) return false;
         }
@@ -462,8 +936,9 @@ app.get('/api/restaurants/search', async (req, res) => {
       }
 
       // Count by date
-      if (restaurant.episode_info?.analysis_date) {
-        const dateKey = new Date(restaurant.episode_info.analysis_date).toISOString().split('T')[0];
+      const dateVal = restaurant.published_at || restaurant.episode_info?.published_at || restaurant.episode_info?.analysis_date;
+      if (dateVal) {
+        const dateKey = new Date(dateVal).toISOString().split('T')[0];
         analytics.dateDistribution[dateKey] = (analytics.dateDistribution[dateKey] || 0) + 1;
       }
     });
@@ -490,9 +965,13 @@ app.get('/api/restaurants/search', async (req, res) => {
           bValue = b.rating?.google_rating || 0;
           break;
         case 'analysis_date':
-        default:
           aValue = a.episode_info?.analysis_date || '';
           bValue = b.episode_info?.analysis_date || '';
+          break;
+        case 'published_at':
+        default:
+          aValue = a.published_at || a.episode_info?.published_at || a.episode_info?.analysis_date || '';
+          bValue = b.published_at || b.episode_info?.published_at || b.episode_info?.analysis_date || '';
           break;
       }
 
@@ -513,8 +992,9 @@ app.get('/api/restaurants/search', async (req, res) => {
     const dateGroups = {};
 
     paginatedRestaurants.forEach(restaurant => {
-      if (restaurant.episode_info?.analysis_date) {
-        const dateKey = new Date(restaurant.episode_info.analysis_date).toISOString().split('T')[0];
+      const dateVal = restaurant.published_at || restaurant.episode_info?.published_at || restaurant.episode_info?.analysis_date;
+      if (dateVal) {
+        const dateKey = new Date(dateVal).toISOString().split('T')[0];
         if (!dateGroups[dateKey]) {
           dateGroups[dateKey] = [];
         }
@@ -524,7 +1004,7 @@ app.get('/api/restaurants/search', async (req, res) => {
           cuisine_type: restaurant.cuisine_type,
           location: restaurant.location,
           host_opinion: restaurant.host_opinion,
-          episode_id: restaurant.episode_info.video_id
+          episode_id: restaurant.episode_info?.video_id
         });
       }
     });
@@ -569,7 +1049,7 @@ app.get('/api/episodes/search', async (req, res) => {
       cuisine_filter,
       location_filter,
       min_restaurants = 1,
-      sort_by = 'analysis_date',
+      sort_by = 'published_at',
       sort_direction = 'desc',
       page = 1,
       limit = 20
@@ -611,9 +1091,9 @@ app.get('/api/episodes/search', async (req, res) => {
     let episodes = Object.values(episodeGroups).filter(episode => {
       // Date filtering
       if (date_start || date_end) {
-        const analysisDate = episode.episode_info?.analysis_date;
-        if (analysisDate) {
-          const episodeDate = new Date(analysisDate);
+        const dateValue = episode.episode_info?.published_at || episode.episode_info?.analysis_date;
+        if (dateValue) {
+          const episodeDate = new Date(dateValue);
           if (date_start && episodeDate < new Date(date_start)) return false;
           if (date_end && episodeDate > new Date(date_end)) return false;
         }
@@ -657,9 +1137,13 @@ app.get('/api/episodes/search', async (req, res) => {
           bValue = b.restaurants.length;
           break;
         case 'analysis_date':
-        default:
           aValue = a.episode_info?.analysis_date || '';
           bValue = b.episode_info?.analysis_date || '';
+          break;
+        case 'published_at':
+        default:
+          aValue = a.episode_info?.published_at || a.episode_info?.analysis_date || '';
+          bValue = b.episode_info?.published_at || b.episode_info?.analysis_date || '';
           break;
       }
 
@@ -727,9 +1211,9 @@ app.get('/api/analytics/timeline', async (req, res) => {
         return false;
       }
       if (date_start || date_end) {
-        const analysisDate = restaurant.episode_info?.analysis_date;
-        if (analysisDate) {
-          const restaurantDate = new Date(analysisDate);
+        const dateValue = restaurant.published_at || restaurant.episode_info?.published_at || restaurant.episode_info?.analysis_date;
+        if (dateValue) {
+          const restaurantDate = new Date(dateValue);
           if (date_start && restaurantDate < new Date(date_start)) return false;
           if (date_end && restaurantDate > new Date(date_end)) return false;
         }
@@ -740,8 +1224,9 @@ app.get('/api/analytics/timeline', async (req, res) => {
     // Group by time period
     const timelineGroups = {};
     filteredRestaurants.forEach(restaurant => {
-      if (restaurant.episode_info?.analysis_date) {
-        const date = new Date(restaurant.episode_info.analysis_date);
+      const dateValue = restaurant.published_at || restaurant.episode_info?.published_at || restaurant.episode_info?.analysis_date;
+      if (dateValue) {
+        const date = new Date(dateValue);
         let dateKey;
         
         switch (granularity) {
@@ -835,8 +1320,8 @@ app.get('/api/analytics/timeline', async (req, res) => {
       .slice(0, 10);
 
     const dateRange = {
-      start: Math.min(...filteredRestaurants.map(r => new Date(r.episode_info?.analysis_date || 0).getTime())),
-      end: Math.max(...filteredRestaurants.map(r => new Date(r.episode_info?.analysis_date || 0).getTime()))
+      start: Math.min(...filteredRestaurants.map(r => new Date(r.published_at || r.episode_info?.published_at || r.episode_info?.analysis_date || 0).getTime())),
+      end: Math.max(...filteredRestaurants.map(r => new Date(r.published_at || r.episode_info?.published_at || r.episode_info?.analysis_date || 0).getTime()))
     };
 
     console.log(`📊 Timeline analytics: ${timeline.length} periods, ${filteredRestaurants.length} restaurants`);
@@ -901,8 +1386,9 @@ app.get('/api/analytics/trends', async (req, res) => {
 
     // Filter restaurants within period
     const periodRestaurants = restaurants.filter(restaurant => {
-      if (restaurant.episode_info?.analysis_date) {
-        const restaurantDate = new Date(restaurant.episode_info.analysis_date);
+      const dateValue = restaurant.published_at || restaurant.episode_info?.published_at || restaurant.episode_info?.analysis_date;
+      if (dateValue) {
+        const restaurantDate = new Date(dateValue);
         return restaurantDate >= periodStartDate;
       }
       return false;
@@ -967,7 +1453,8 @@ app.get('/api/analytics/trends', async (req, res) => {
     const cuisineTrends = {};
     periodRestaurants.forEach(restaurant => {
       const cuisine = restaurant.cuisine_type;
-      const date = new Date(restaurant.episode_info.analysis_date);
+      const dateValue = restaurant.published_at || restaurant.episode_info?.published_at || restaurant.episode_info?.analysis_date;
+      const date = new Date(dateValue);
       const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
 
       if (!cuisineTrends[cuisine]) {
@@ -1025,6 +1512,9 @@ app.get('/api/restaurants/:id', async (req, res) => {
     
     if (await fs.pathExists(filePath)) {
       const data = await fs.readJson(filePath)
+      if (data.is_hidden) {
+        return res.status(404).json({ error: 'Restaurant not found' })
+      }
       res.json(data)
     } else {
       res.status(404).json({ error: 'Restaurant not found' })
@@ -1276,12 +1766,18 @@ app.post('/api/restaurants/:id/enrich', async (req, res) => {
       }
 
       if (placeDetails.photos && placeDetails.photos.length > 0) {
-        restaurant.photos = placeDetails.photos.slice(0, 3).map(photo => ({
-          photo_reference: photo.photo_reference,
-          photo_url: `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${photo.photo_reference}&key=${apiKey}`,
-          width: photo.width,
-          height: photo.height
-        }))
+        restaurant.photos = placeDetails.photos.slice(0, 3).map(photo => {
+          const ref = photo.photo_reference
+          const isNewApi = ref && ref.startsWith('places/') && ref.includes('/photos/')
+          return {
+            photo_reference: ref,
+            photo_url: isNewApi
+              ? `https://places.googleapis.com/v1/${ref}/media?maxWidthPx=400&key=${apiKey}`
+              : `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${ref}&key=${apiKey}`,
+            width: photo.width,
+            height: photo.height
+          }
+        })
       }
 
       if (placeDetails.opening_hours) {

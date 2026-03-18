@@ -2,6 +2,7 @@
 
 import { ReactNode } from "react"
 import { useDrag } from "@use-gesture/react"
+import type { EventTypes } from "@use-gesture/react"
 import { motion, useSpring } from "framer-motion"
 
 interface GestureWrapperProps {
@@ -63,7 +64,7 @@ export function GestureWrapper({
     }
   )
 
-  const dragHandlers = bind() as any
+  const dragHandlers = bind() as ReturnType<typeof useDrag<EventTypes['drag']>>
 
   return (
     <motion.div

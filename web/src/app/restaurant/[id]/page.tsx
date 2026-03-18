@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import Link from 'next/link';
+import Image from 'next/image';
+import type { Restaurant } from '@/types/restaurant';
 import {
   ChevronRight,
   Star,
@@ -11,46 +12,24 @@ import {
   Phone,
   Globe,
   Clock,
-  Play,
   Navigation,
   Share2,
   ExternalLink,
-  RefreshCw,
   Utensils,
+  Camera,
 } from 'lucide-react';
-import { Restaurant } from '@/types/restaurant';
 import { useFavorites } from '@/contexts/favorites-context';
 import { endpoints } from '@/lib/config';
+import { getRestaurantImage, getRestaurantImages, getCuisineGradient } from '@/lib/images';
+import { PhotoGallery } from '@/components/restaurant/PhotoGallery';
+import { normalizeStatus, getPriceDisplay, normalizeMenuItems } from '@/lib/data-normalizer';
+import { YouTubeEmbed } from '@/components/restaurant/YouTubeEmbed';
 
-// Cuisine gradient mapping
-const cuisineGradients: Record<string, string> = {
-  'Italian': 'from-red-500 to-orange-400',
-  'Japanese': 'from-pink-400 to-red-500',
-  'Asian': 'from-amber-400 to-red-500',
-  'Mediterranean': 'from-blue-400 to-teal-400',
-  'Israeli': 'from-blue-500 to-white',
-  'Mexican': 'from-green-500 to-red-500',
-  'American': 'from-red-500 to-blue-500',
-  'French': 'from-blue-400 to-red-400',
-  'default': 'from-gray-600 to-gray-400',
-};
-
-function getGradient(cuisine?: string | null): string {
-  if (!cuisine) return cuisineGradients['default'];
-  return cuisineGradients[cuisine] || cuisineGradients['default'];
-}
-
-function getPriceDisplay(priceRange?: string | null): string {
-  switch (priceRange) {
-    case 'budget': return '₪';
-    case 'mid-range': return '₪₪';
-    case 'expensive': return '₪₪₪';
-    default: return '';
-  }
-}
+// Removed: now using getPriceDisplay from data-normalizer
 
 function getStatusBadge(status?: string | null) {
-  switch (status) {
+  const normalized = normalizeStatus(status);
+  switch (normalized) {
     case 'new_opening':
       return { text: 'חדש!', className: 'bg-green-500 text-white' };
     case 'closing_soon':
@@ -69,27 +48,44 @@ export default function RestaurantDetailPage() {
   const [restaurant, setRestaurant] = useState<Restaurant | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [heroImageError, setHeroImageError] = useState(false);
+  const [heroImageLoading, setHeroImageLoading] = useState(true);
 
-  const restaurantId = params.id as string;
+  const restaurantId = decodeURIComponent(params.id as string);
 
   useEffect(() => {
     const loadRestaurant = async () => {
       setIsLoading(true);
       setError(null);
       try {
-        // Fetch all restaurants and find by ID (place_id)
+        // Try direct endpoint first (faster - fetches only one restaurant)
+        const directResponse = await fetch(endpoints.restaurants.byId(restaurantId));
+        if (directResponse.ok) {
+          const found = await directResponse.json();
+          if (found && !found.error) {
+            setRestaurant(found);
+            return;
+          }
+        }
+
+        // Fallback: search in full list
         const response = await fetch(endpoints.restaurants.list());
         const data = await response.json();
 
         if (data.restaurants) {
           const found = data.restaurants.find(
-            (r: Restaurant) => r.google_places?.place_id === restaurantId
+            (r: Restaurant) =>
+              r.google_places?.place_id === restaurantId ||
+              r.id === restaurantId ||
+              r.name_hebrew === restaurantId
           );
           if (found) {
             setRestaurant(found);
           } else {
             setError('המסעדה לא נמצאה');
           }
+        } else {
+          setError('המסעדה לא נמצאה');
         }
       } catch (err) {
         console.error('Failed to load restaurant:', err);
@@ -131,8 +127,14 @@ export default function RestaurantDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[var(--color-paper)] flex items-center justify-center">
-        <RefreshCw className="w-8 h-8 animate-spin text-[var(--color-accent)]" />
+      <div className="min-h-screen bg-[var(--color-paper)]">
+        {/* Skeleton hero */}
+        <div className="relative h-72 sm:h-96 shimmer bg-[var(--color-surface)]" />
+        <div className="px-4 py-6 space-y-4">
+          <div className="h-8 w-48 skeleton rounded" />
+          <div className="h-4 w-32 skeleton rounded" />
+          <div className="h-20 skeleton rounded-xl" />
+        </div>
       </div>
     );
   }
@@ -156,23 +158,48 @@ export default function RestaurantDetailPage() {
     ? isFavorite(restaurant.google_places.place_id)
     : false;
 
+  const heroImage = getRestaurantImage(restaurant);
+  const allPhotos = getRestaurantImages(restaurant);
+  const hasHeroImage = heroImage && !heroImageError;
+
   return (
     <div className="min-h-screen bg-[var(--color-paper)]">
       {/* Hero Section */}
-      <div className="relative h-64 sm:h-80">
-        {/* Background gradient */}
-        <div
-          className={`absolute inset-0 bg-gradient-to-br ${getGradient(restaurant.cuisine_type)}`}
-        />
+      <div className="relative h-72 sm:h-96 overflow-hidden">
+        {/* Background: image or gradient */}
+        {hasHeroImage ? (
+          <>
+            {heroImageLoading && (
+              <div className="absolute inset-0 shimmer bg-[var(--color-surface)]" />
+            )}
+            <Image
+              src={heroImage}
+              alt={restaurant.name_hebrew}
+              fill
+              className={`object-cover transition-opacity duration-700 ${
+                heroImageLoading ? 'opacity-0' : 'opacity-100'
+              }`}
+              onError={() => setHeroImageError(true)}
+              onLoad={() => setHeroImageLoading(false)}
+              sizes="100vw"
+              priority
+            />
+          </>
+        ) : (
+          <div
+            className={`absolute inset-0 ${getCuisineGradient(restaurant.cuisine_type)}`}
+          />
+        )}
 
-        {/* Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+        {/* Dark gradient overlay for text readability */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-black/10" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/20 to-transparent" />
 
         {/* Back button */}
         <div className="absolute top-4 right-4 z-10">
           <button
             onClick={() => router.back()}
-            className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center"
+            className="w-10 h-10 rounded-full bg-black/30 backdrop-blur-md flex items-center justify-center border border-white/10"
           >
             <ChevronRight className="w-6 h-6 text-white" />
           </button>
@@ -182,7 +209,7 @@ export default function RestaurantDetailPage() {
         <div className="absolute top-4 left-4 z-10 flex gap-2">
           <button
             onClick={handleShare}
-            className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center"
+            className="w-10 h-10 rounded-full bg-black/30 backdrop-blur-md flex items-center justify-center border border-white/10"
           >
             <Share2 className="w-5 h-5 text-white" />
           </button>
@@ -197,7 +224,7 @@ export default function RestaurantDetailPage() {
                 }
               }
             }}
-            className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center"
+            className="w-10 h-10 rounded-full bg-black/30 backdrop-blur-md flex items-center justify-center border border-white/10"
           >
             <Heart
               className={`w-5 h-5 ${isSaved ? 'fill-red-500 text-red-500' : 'text-white'}`}
@@ -205,93 +232,133 @@ export default function RestaurantDetailPage() {
           </button>
         </div>
 
+        {/* Photo count badge */}
+        {allPhotos.length > 1 && (
+          <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10 flex items-center gap-1.5 px-3 py-1.5 bg-black/30 backdrop-blur-md rounded-full border border-white/10">
+            <Camera className="w-3.5 h-3.5 text-white" />
+            <span className="text-white text-xs font-medium">{allPhotos.length} תמונות</span>
+          </div>
+        )}
+
         {/* Restaurant info overlay */}
-        <div className="absolute bottom-0 right-0 left-0 p-4">
-          {statusBadge && (
-            <span className={`inline-block px-2 py-1 rounded text-xs font-medium mb-2 ${statusBadge.className}`}>
+        <div className="absolute bottom-0 right-0 left-0 p-5">
+          {!!restaurant.is_closing && (
+            <span className="inline-block px-3 py-1 rounded-md text-sm font-bold mb-2 bg-red-600 text-white">
+              נסגר לצמיתות
+            </span>
+          )}
+          {statusBadge && !restaurant.is_closing && (
+            <span className={`inline-block px-2.5 py-1 rounded-md text-xs font-semibold mb-2 ${statusBadge.className}`}>
               {statusBadge.text}
             </span>
           )}
-          <h1 className="text-2xl sm:text-3xl font-bold text-white mb-1">
-            {restaurant.name_hebrew}
+          <h1
+            className="text-3xl sm:text-4xl font-black text-white mb-1"
+            style={{ textShadow: '0 2px 8px rgba(0,0,0,0.5), 0 1px 2px rgba(0,0,0,0.3)' }}
+          >
+            {restaurant.google_places?.google_name || restaurant.google_name || restaurant.name_hebrew}
           </h1>
           {restaurant.name_english && (
-            <p className="text-white/70 text-sm">{restaurant.name_english}</p>
+            <p className="text-white/60 text-sm font-accent">{restaurant.name_english}</p>
           )}
           <div className="flex items-center gap-3 mt-2">
             {restaurant.cuisine_type && (
-              <span className="text-white/90 text-sm">{restaurant.cuisine_type}</span>
+              <span className="px-2.5 py-1 bg-white/15 backdrop-blur-sm rounded-md text-white text-xs font-medium">
+                {restaurant.cuisine_type}
+              </span>
             )}
             {restaurant.price_range && restaurant.price_range !== 'not_mentioned' && (
-              <span className="text-white/90 text-sm">
+              <span className="px-2.5 py-1 bg-white/15 backdrop-blur-sm rounded-md text-white text-xs font-medium">
                 {getPriceDisplay(restaurant.price_range)}
+              </span>
+            )}
+            {restaurant.rating?.google_rating && (
+              <span className="flex items-center gap-1 px-2.5 py-1 bg-[var(--color-gold)]/90 rounded-md text-white text-xs font-bold font-accent">
+                <Star className="w-3 h-3 fill-current" />
+                {restaurant.rating.google_rating.toFixed(1)}
               </span>
             )}
           </div>
         </div>
       </div>
 
+      {/* Photo Gallery */}
+      {allPhotos.length > 1 && (
+        <div className="py-4">
+          <PhotoGallery photos={allPhotos} restaurantName={restaurant.name_hebrew} />
+        </div>
+      )}
+
       {/* Content */}
-      <div className="px-4 py-6 space-y-6">
-        {/* Rating & Quick Actions */}
-        <div className="flex items-center justify-between">
-          {restaurant.rating?.google_rating && (
-            <div className="flex items-center gap-2">
-              <div className="flex items-center gap-1 bg-[var(--color-gold)] text-white px-3 py-1.5 rounded-full">
-                <Star className="w-4 h-4 fill-current" />
-                <span className="font-bold">{restaurant.rating.google_rating.toFixed(1)}</span>
-              </div>
-              {restaurant.rating.total_reviews && (
-                <span className="text-sm text-[var(--color-ink-muted)]">
-                  ({restaurant.rating.total_reviews} ביקורות)
-                </span>
-              )}
-            </div>
-          )}
+      <div className="px-4 py-4 space-y-5">
+        {/* Quick Actions Bar */}
+        <div className="flex items-center gap-3">
           <button
             onClick={handleNavigate}
-            className="flex items-center gap-2 bg-[var(--color-accent)] text-white px-4 py-2 rounded-full font-medium"
+            className="flex-1 flex items-center justify-center gap-2 bg-[var(--color-accent)] text-white py-3 rounded-xl font-semibold text-sm"
           >
             <Navigation className="w-4 h-4" />
-            <span>נווט</span>
+            <span>נווט למסעדה</span>
           </button>
+          {restaurant.contact_info?.phone && (
+            <a
+              href={`tel:${restaurant.contact_info.phone}`}
+              className="w-12 h-12 flex items-center justify-center rounded-xl bg-[var(--color-surface)] border border-[var(--color-border)]"
+            >
+              <Phone className="w-5 h-5 text-[var(--color-ink)]" />
+            </a>
+          )}
+          {restaurant.contact_info?.website && (
+            <a
+              href={restaurant.contact_info.website}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-12 h-12 flex items-center justify-center rounded-xl bg-[var(--color-surface)] border border-[var(--color-border)]"
+            >
+              <Globe className="w-5 h-5 text-[var(--color-ink)]" />
+            </a>
+          )}
         </div>
 
-        {/* Episode Badge */}
-        {restaurant.episode_info && (
-          <Link
-            href={restaurant.episode_info.video_url}
-            target="_blank"
-            className="block p-4 rounded-xl bg-gradient-to-l from-[var(--color-gold)]/10 to-transparent border border-[var(--color-gold)]/20"
-          >
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-[var(--color-gold)] flex items-center justify-center">
-                  <Play className="w-5 h-5 text-white fill-current" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-[var(--color-ink)]">
-                    הוזכר בפודקאסט
-                  </p>
-                  <p className="text-xs text-[var(--color-ink-muted)]">
-                    {new Date(restaurant.episode_info.analysis_date).toLocaleDateString('he-IL')}
-                  </p>
-                </div>
-              </div>
-              <ExternalLink className="w-5 h-5 text-[var(--color-gold)]" />
+        {/* Rating detail */}
+        {restaurant.rating?.google_rating && (
+          <div className="flex items-center gap-3 p-3 rounded-xl bg-[var(--color-surface)]">
+            <div className="flex items-center gap-1 text-[var(--color-gold)]">
+              <Star className="w-5 h-5 fill-current" />
+              <span className="text-lg font-bold">{restaurant.rating.google_rating.toFixed(1)}</span>
             </div>
-          </Link>
+            {restaurant.rating.total_reviews && (
+              <span className="text-sm text-[var(--color-ink-muted)]">
+                {restaurant.rating.total_reviews.toLocaleString()} ביקורות ב-Google
+              </span>
+            )}
+          </div>
         )}
 
-        {/* Host Opinion */}
-        {restaurant.host_comments && (
-          <div className="p-4 rounded-xl bg-[var(--color-surface)]">
+        {/* Embedded YouTube player */}
+        {restaurant.episode_info?.video_url && (
+          <YouTubeEmbed
+            videoUrl={restaurant.episode_info.video_url}
+            timestampSeconds={restaurant.mention_timestamp_seconds}
+            title={restaurant.episode_info.title || restaurant.episode_info.channel_name || 'פודי'}
+            episodeDate={restaurant.published_at || restaurant.episode_info.published_at || restaurant.episode_info.analysis_date}
+          />
+        )}
+
+        {/* Host Opinion / Engaging Quote */}
+        {(restaurant.engaging_quote || restaurant.host_comments) && (
+          <div className="p-4 rounded-xl bg-[var(--color-surface)] border-r-4 border-r-[var(--color-gold)]">
             <h2 className="text-sm font-medium text-[var(--color-ink-muted)] mb-2">
               מה המארח אמר
             </h2>
-            <p className="text-[var(--color-ink)] leading-relaxed">
-              &ldquo;{restaurant.host_comments}&rdquo;
+            <p className="text-[var(--color-ink)] leading-relaxed text-[15px]">
+              &ldquo;{restaurant.engaging_quote || restaurant.host_comments}&rdquo;
             </p>
+            {restaurant.engaging_quote && restaurant.host_comments && restaurant.engaging_quote !== restaurant.host_comments && (
+              <p className="text-[var(--color-ink-muted)] text-sm mt-2 leading-relaxed">
+                {restaurant.host_comments}
+              </p>
+            )}
           </div>
         )}
 
@@ -301,7 +368,7 @@ export default function RestaurantDetailPage() {
             <h2 className="text-lg font-bold text-[var(--color-ink)]">מיקום</h2>
             <button
               onClick={handleNavigate}
-              className="flex items-start gap-3 p-3 w-full text-right rounded-lg hover:bg-[var(--color-surface)] transition-colors"
+              className="flex items-start gap-3 p-3 w-full text-right rounded-xl bg-[var(--color-surface)] hover:bg-[var(--color-border)] transition-colors"
             >
               <MapPin className="w-5 h-5 text-[var(--color-accent)] flex-shrink-0 mt-0.5" />
               <div>
@@ -314,88 +381,62 @@ export default function RestaurantDetailPage() {
                   </p>
                 )}
               </div>
+              <ExternalLink className="w-4 h-4 text-[var(--color-ink-subtle)] mr-auto flex-shrink-0 mt-0.5" />
             </button>
           </div>
         )}
 
         {/* Contact Info */}
-        {restaurant.contact_info && (
-          <div className="space-y-3">
-            <h2 className="text-lg font-bold text-[var(--color-ink)]">פרטי קשר</h2>
-            <div className="space-y-2">
-              {restaurant.contact_info.phone && (
-                <a
-                  href={`tel:${restaurant.contact_info.phone}`}
-                  className="flex items-center gap-3 p-3 rounded-lg hover:bg-[var(--color-surface)] transition-colors"
-                >
-                  <Phone className="w-5 h-5 text-[var(--color-accent)]" />
-                  <span className="text-[var(--color-ink)]" dir="ltr">
-                    {restaurant.contact_info.phone}
-                  </span>
-                </a>
-              )}
-              {restaurant.contact_info.website && (
-                <a
-                  href={restaurant.contact_info.website}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-3 p-3 rounded-lg hover:bg-[var(--color-surface)] transition-colors"
-                >
-                  <Globe className="w-5 h-5 text-[var(--color-accent)]" />
-                  <span className="text-[var(--color-ink)]">אתר המסעדה</span>
-                  <ExternalLink className="w-4 h-4 text-[var(--color-ink-muted)] mr-auto" />
-                </a>
-              )}
-              {restaurant.contact_info.hours && (
-                <div className="flex items-start gap-3 p-3">
-                  <Clock className="w-5 h-5 text-[var(--color-accent)] flex-shrink-0 mt-0.5" />
-                  <span className="text-[var(--color-ink)]">{restaurant.contact_info.hours}</span>
-                </div>
-              )}
-            </div>
+        {restaurant.contact_info?.hours && (
+          <div className="flex items-start gap-3 p-3 rounded-xl bg-[var(--color-surface)]">
+            <Clock className="w-5 h-5 text-[var(--color-accent)] flex-shrink-0 mt-0.5" />
+            <span className="text-[var(--color-ink)] text-sm">{restaurant.contact_info.hours}</span>
           </div>
         )}
 
         {/* Menu Items */}
-        {restaurant.menu_items && restaurant.menu_items.length > 0 && (
-          <div className="space-y-3">
-            <h2 className="text-lg font-bold text-[var(--color-ink)]">מנות מומלצות</h2>
-            <div className="space-y-2">
-              {restaurant.menu_items.map((item, index) => (
-                <div
-                  key={index}
-                  className="p-3 rounded-lg bg-[var(--color-surface)]"
-                >
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-start gap-2">
-                      <Utensils className="w-4 h-4 text-[var(--color-accent)] flex-shrink-0 mt-1" />
-                      <div>
-                        <p className="font-medium text-[var(--color-ink)]">
-                          {item.item_name}
-                        </p>
-                        {item.description && (
-                          <p className="text-sm text-[var(--color-ink-muted)] mt-1">
-                            {item.description}
+        {restaurant.menu_items && restaurant.menu_items.length > 0 && (() => {
+          const normalizedItems = normalizeMenuItems(restaurant.menu_items);
+          return (
+            <div className="space-y-3">
+              <h2 className="text-lg font-bold text-[var(--color-ink)]">מנות מומלצות</h2>
+              <div className="space-y-2">
+                {normalizedItems.map((item, index) => (
+                  <div
+                    key={index}
+                    className="p-3 rounded-xl bg-[var(--color-surface)]"
+                  >
+                    <div className="flex items-start justify-between">
+                      <div className="flex items-start gap-2">
+                        <Utensils className="w-4 h-4 text-[var(--color-accent)] flex-shrink-0 mt-1" />
+                        <div>
+                          <p className="font-medium text-[var(--color-ink)]">
+                            {item.item_name}
                           </p>
-                        )}
+                          {item.description && (
+                            <p className="text-sm text-[var(--color-ink-muted)] mt-1">
+                              {item.description}
+                            </p>
+                          )}
+                        </div>
                       </div>
+                      {item.price && (
+                        <span className="text-sm font-medium text-[var(--color-ink)] flex-shrink-0">
+                          {item.price}
+                        </span>
+                      )}
                     </div>
-                    {item.price && (
-                      <span className="text-sm font-medium text-[var(--color-ink)]">
-                        {item.price}
+                    {item.recommendation_level === 'highly_recommended' && (
+                      <span className="inline-block mt-2 px-2 py-0.5 bg-[var(--color-gold)]/10 text-[var(--color-gold)] text-xs rounded font-medium">
+                        מומלץ במיוחד
                       </span>
                     )}
                   </div>
-                  {item.recommendation_level === 'highly_recommended' && (
-                    <span className="inline-block mt-2 px-2 py-0.5 bg-[var(--color-gold)]/10 text-[var(--color-gold)] text-xs rounded">
-                      מומלץ במיוחד
-                    </span>
-                  )}
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
-        )}
+          );
+        })()}
 
         {/* Special Features */}
         {restaurant.special_features && restaurant.special_features.length > 0 && (
@@ -405,7 +446,7 @@ export default function RestaurantDetailPage() {
               {restaurant.special_features.map((feature, index) => (
                 <span
                   key={index}
-                  className="px-3 py-1.5 bg-[var(--color-surface)] text-[var(--color-ink)] text-sm rounded-full"
+                  className="px-3 py-1.5 bg-[var(--color-surface)] text-[var(--color-ink)] text-sm rounded-full border border-[var(--color-border)]"
                 >
                   {feature}
                 </span>
@@ -421,7 +462,7 @@ export default function RestaurantDetailPage() {
               href={restaurant.google_places.google_url}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-center gap-2 p-3 rounded-lg bg-[var(--color-surface)] text-[var(--color-ink)]"
+              className="flex items-center justify-center gap-2 p-3 rounded-xl bg-[var(--color-surface)] text-[var(--color-ink)] hover:bg-[var(--color-border)] transition-colors"
             >
               <span>צפה ב-Google Maps</span>
               <ExternalLink className="w-4 h-4" />

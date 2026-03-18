@@ -1,15 +1,36 @@
 'use client';
 
-import { useState, useEffect, useMemo, useCallback } from 'react';
-import { Restaurant } from '@/types/restaurant';
+import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
+import { useRouter } from 'next/navigation';
+import { Search } from 'lucide-react';
+import { Restaurant, getCoordinates } from '@/types/restaurant';
 import { PageLayout } from '@/components/layout';
 import { FilterBar, FilterChip, LocationFilter } from '@/components/filters';
 import { TrendingSection, DiscoveryFeed } from '@/components/feed';
 import { BottomSheet } from '@/components/ui/BottomSheet';
 import { PageLoadingSkeleton } from '@/components/ui/skeleton';
-import { useLocationFilter } from '@/hooks/useLocationFilter';
+import { useLocationFilter } from '@/contexts/location-filter-context';
+import { useSettings } from '@/contexts/settings-context';
 import { useFavorites } from '@/contexts/favorites-context';
 import { endpoints } from '@/lib/config';
+
+// Israeli cities/regions for filtering
+const ISRAEL_REGIONS = ['צפון', 'מרכז', 'דרום', 'ירושלים', 'שרון', 'north', 'center', 'south', 'jerusalem', 'sharon'];
+const ISRAEL_CITIES = ['תל אביב', 'ירושלים', 'חיפה', 'באר שבע', 'אשדוד', 'נתניה', 'ראשון לציון', 'פתח תקווה', 'הרצליה', 'רמת גן', 'גבעתיים', 'כפר סבא', 'רעננה', 'הוד השרון', 'רמת השרון', 'בני ברק', 'חולון', 'בת ים', 'אילת', 'טבריה', 'עכו', 'נצרת', 'קיסריה', 'זכרון יעקב', 'יפו', 'רמלה', 'לוד', 'מודיעין', 'אשקלון', 'דימונה', 'ערד', 'עפולה', 'נהריה', 'כרמיאל'];
+
+function isInIsrael(restaurant: Restaurant): boolean {
+  const region = restaurant.location?.region?.toLowerCase();
+  if (region && ISRAEL_REGIONS.includes(region)) return true;
+  const city = restaurant.location?.city;
+  if (city && ISRAEL_CITIES.some(c => city.includes(c))) return true;
+  // Check by coordinates (rough Israel bounding box)
+  const lat = restaurant.location?.lat;
+  const lng = restaurant.location?.lng;
+  if (lat && lng && lat >= 29.5 && lat <= 33.4 && lng >= 34.2 && lng <= 35.9) return true;
+  return false;
+}
+
+const PAGE_SIZE = 15;
 
 // Available cuisines for filtering
 const CUISINES = [
@@ -31,12 +52,18 @@ const PRICE_RANGES = [
 ];
 
 export function HomePageNew() {
+  const router = useRouter();
+
   // Data state
   const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
 
   // Filter state
+  const [searchQuery, setSearchQuery] = useState('');
   const [selectedCuisines, setSelectedCuisines] = useState<string[]>([]);
   const [selectedPriceRanges, setSelectedPriceRanges] = useState<string[]>([]);
   const [isCuisineSheetOpen, setIsCuisineSheetOpen] = useState(false);
@@ -45,52 +72,127 @@ export function HomePageNew() {
   // Location filter
   const locationFilter = useLocationFilter();
 
+  // User settings
+  const { settings } = useSettings();
+
   // Favorites context
   const { setAllRestaurants: setFavoriteContext } = useFavorites();
 
-  // Load restaurants
+  // Ref to prevent duplicate fetches
+  const isFetchingRef = useRef(false);
+
+  // Build search params from current filters
+  const buildSearchParams = useCallback(
+    (page: number): Record<string, string> => {
+      const params: Record<string, string> = {
+        page: String(page),
+        limit: String(PAGE_SIZE),
+      };
+
+      if (locationFilter.mode === 'manual' && locationFilter.city) {
+        params.location = locationFilter.city;
+      }
+
+      if (selectedCuisines.length > 0) {
+        params.cuisine = selectedCuisines[0];
+      }
+
+      if (selectedPriceRanges.length > 0) {
+        params.price_range = selectedPriceRanges[0];
+      }
+
+      return params;
+    },
+    [locationFilter.mode, locationFilter.city, selectedCuisines, selectedPriceRanges]
+  );
+
+  // Load restaurants (first page)
   const loadRestaurants = useCallback(async () => {
+    if (isFetchingRef.current) return;
+    isFetchingRef.current = true;
     setIsLoading(true);
     setError(null);
     try {
-      const response = await fetch(endpoints.restaurants.list());
+      const params = buildSearchParams(1);
+      const response = await fetch(endpoints.restaurants.search(params));
       const data = await response.json();
 
       if (data.restaurants) {
         setRestaurants(data.restaurants);
         setFavoriteContext(data.restaurants);
+        setCurrentPage(1);
+        const totalPages = data.analytics?.total_pages ?? 1;
+        setHasMore(1 < totalPages);
       }
     } catch (err) {
       console.error('Failed to load restaurants:', err);
       setError('לא ניתן לטעון מסעדות');
     } finally {
       setIsLoading(false);
+      isFetchingRef.current = false;
     }
-  }, [setFavoriteContext]);
+  }, [buildSearchParams, setFavoriteContext]);
+
+  // Load more restaurants (next page)
+  const loadMore = useCallback(async () => {
+    if (isFetchingRef.current || !hasMore) return;
+    isFetchingRef.current = true;
+    setIsLoadingMore(true);
+    try {
+      const nextPage = currentPage + 1;
+      const params = buildSearchParams(nextPage);
+      const response = await fetch(endpoints.restaurants.search(params));
+      const data = await response.json();
+
+      if (data.restaurants?.length) {
+        setRestaurants((prev) => {
+          const updated = [...prev, ...data.restaurants];
+          setFavoriteContext(updated);
+          return updated;
+        });
+        setCurrentPage(nextPage);
+        const totalPages = data.analytics?.total_pages ?? 1;
+        setHasMore(nextPage < totalPages);
+      } else {
+        setHasMore(false);
+      }
+    } catch (err) {
+      console.error('Failed to load more restaurants:', err);
+    } finally {
+      setIsLoadingMore(false);
+      isFetchingRef.current = false;
+    }
+  }, [currentPage, hasMore, buildSearchParams, setFavoriteContext]);
 
   useEffect(() => {
     loadRestaurants();
   }, [loadRestaurants]);
 
-  // Filter restaurants
+  // Client-side filtering for neighborhood (not supported by API) and multi-value filters
   const filteredRestaurants = useMemo(() => {
-    let result = restaurants;
+    // Exclude closed restaurants
+    let result = restaurants.filter((r) => !r.is_closing && r.status !== 'closed');
 
-    // Filter by location
-    if (locationFilter.mode === 'manual' && locationFilter.city) {
-      result = result.filter((r) => {
-        if (locationFilter.neighborhood) {
-          return (
-            r.location?.city === locationFilter.city &&
-            r.location?.neighborhood === locationFilter.neighborhood
-          );
-        }
-        return r.location?.city === locationFilter.city;
-      });
+    // Search by name
+    if (searchQuery.trim()) {
+      const q = searchQuery.trim().toLowerCase();
+      result = result.filter(
+        (r) =>
+          r.name_hebrew?.toLowerCase().includes(q) ||
+          r.name_english?.toLowerCase().includes(q) ||
+          r.cuisine_type?.toLowerCase().includes(q)
+      );
     }
 
-    // Filter by cuisine
-    if (selectedCuisines.length > 0) {
+    // Filter by neighborhood (API only filters by city)
+    if (locationFilter.mode === 'manual' && locationFilter.neighborhood) {
+      result = result.filter(
+        (r) => r.location?.neighborhood === locationFilter.neighborhood
+      );
+    }
+
+    // Multi-cuisine filtering (API only supports one value; client handles the rest)
+    if (selectedCuisines.length > 1) {
       result = result.filter((r) =>
         selectedCuisines.some((c) =>
           r.cuisine_type?.toLowerCase().includes(c.toLowerCase())
@@ -98,27 +200,58 @@ export function HomePageNew() {
       );
     }
 
-    // Filter by price range
-    if (selectedPriceRanges.length > 0) {
+    // Multi-price-range filtering
+    if (selectedPriceRanges.length > 1) {
       result = result.filter((r) =>
         selectedPriceRanges.includes(r.price_range || '')
       );
     }
 
+    // Settings: show only Israel
+    if (settings.showOnlyIsrael) {
+      result = result.filter(isInIsrael);
+    }
+
+    // Settings: radius filter (when nearby mode is active and radius is set)
+    if (locationFilter.mode === 'nearby' && locationFilter.userCoords && settings.radiusKm) {
+      const maxMeters = settings.radiusKm * 1000;
+      const { lat, lng } = locationFilter.userCoords;
+      result = result.filter((r) => {
+        const coords = getCoordinates(r.location);
+        if (!coords) return false;
+        const R = 6371000;
+        const dLat = ((coords.latitude - lat) * Math.PI) / 180;
+        const dLon = ((coords.longitude - lng) * Math.PI) / 180;
+        const a =
+          Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+          Math.cos((lat * Math.PI) / 180) *
+            Math.cos((coords.latitude * Math.PI) / 180) *
+            Math.sin(dLon / 2) *
+            Math.sin(dLon / 2);
+        const dist = R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return dist <= maxMeters;
+      });
+    }
+
     return result;
   }, [
     restaurants,
+    searchQuery,
     locationFilter.mode,
-    locationFilter.city,
     locationFilter.neighborhood,
+    locationFilter.userCoords,
     selectedCuisines,
     selectedPriceRanges,
+    settings.showOnlyIsrael,
+    settings.radiusKm,
   ]);
 
   // Handle restaurant click
   const handleRestaurantClick = (restaurant: Restaurant) => {
-    // TODO: Navigate to restaurant detail page
-    console.log('Clicked restaurant:', restaurant.name_hebrew);
+    const id = restaurant.google_places?.place_id || restaurant.id;
+    if (id) {
+      router.push(`/restaurant/${encodeURIComponent(id)}`);
+    }
   };
 
   // Toggle cuisine selection
@@ -168,45 +301,66 @@ export function HomePageNew() {
   }
 
   return (
-    <PageLayout showHeader showBottomNav>
-      {/* Filter Bar */}
-      <FilterBar>
-        <LocationFilter />
+    <PageLayout showHeader showBottomNav showSearch={false}>
+      {/* Search + Filters */}
+      <div className="animate-fade-up stagger-section-1">
+        <div className="px-4 pt-3 pb-1">
+          <div className="relative">
+            <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--color-ink-subtle)]" />
+            <input
+              type="text"
+              placeholder="חיפוש מסעדה..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pr-9 pl-4 py-2.5 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg text-sm text-[var(--color-ink)] placeholder:text-[var(--color-ink-subtle)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]"
+            />
+          </div>
+        </div>
+        <FilterBar>
+          <LocationFilter />
 
-        {/* Cuisine filter */}
-        <FilterChip
-          label={selectedCuisines.length > 0 ? `סוג (${selectedCuisines.length})` : 'סוג'}
-          isSelected={selectedCuisines.length > 0}
-          hasDropdown
-          onClick={() => setIsCuisineSheetOpen(true)}
-          onClear={selectedCuisines.length > 0 ? () => setSelectedCuisines([]) : undefined}
-        />
+          {/* Cuisine filter */}
+          <FilterChip
+            label={selectedCuisines.length > 0 ? `סוג (${selectedCuisines.length})` : 'סוג'}
+            isSelected={selectedCuisines.length > 0}
+            hasDropdown
+            onClick={() => setIsCuisineSheetOpen(true)}
+            onClear={selectedCuisines.length > 0 ? () => setSelectedCuisines([]) : undefined}
+          />
 
-        {/* Price filter */}
-        <FilterChip
-          label={selectedPriceRanges.length > 0 ? `מחיר (${selectedPriceRanges.length})` : 'מחיר'}
-          isSelected={selectedPriceRanges.length > 0}
-          hasDropdown
-          onClick={() => setIsPriceSheetOpen(true)}
-          onClear={selectedPriceRanges.length > 0 ? () => setSelectedPriceRanges([]) : undefined}
-        />
-      </FilterBar>
+          {/* Price filter */}
+          <FilterChip
+            label={selectedPriceRanges.length > 0 ? `מחיר (${selectedPriceRanges.length})` : 'מחיר'}
+            isSelected={selectedPriceRanges.length > 0}
+            hasDropdown
+            onClick={() => setIsPriceSheetOpen(true)}
+            onClear={selectedPriceRanges.length > 0 ? () => setSelectedPriceRanges([]) : undefined}
+          />
+        </FilterBar>
+      </div>
 
       {/* Trending Section */}
-      <TrendingSection
-        restaurants={restaurants}
-        onRestaurantClick={handleRestaurantClick}
-        className="mt-2"
-      />
+      <div className="animate-fade-up stagger-section-2">
+        <TrendingSection
+          restaurants={restaurants}
+          onRestaurantClick={handleRestaurantClick}
+          className="mt-2"
+        />
+      </div>
 
       {/* Discovery Feed */}
-      <DiscoveryFeed
-        restaurants={filteredRestaurants}
-        onRestaurantClick={handleRestaurantClick}
-        showDistances={locationFilter.mode === 'nearby'}
-        userCoords={locationFilter.userCoords}
-        className="mt-6 pb-8"
-      />
+      <div className="animate-fade-up stagger-section-3">
+        <DiscoveryFeed
+          restaurants={filteredRestaurants}
+          onRestaurantClick={handleRestaurantClick}
+          showDistances={locationFilter.mode === 'nearby'}
+          userCoords={locationFilter.userCoords}
+          hasMore={hasMore}
+          isLoadingMore={isLoadingMore}
+          onLoadMore={loadMore}
+          className="mt-6 pb-8"
+        />
+      </div>
 
       {/* Cuisine Filter Sheet */}
       <BottomSheet

@@ -51,6 +51,54 @@ class ClaudeRestaurantAnalyzer:
             self.logger.addHandler(handler)
             self.logger.setLevel(logging.INFO)
 
+    @staticmethod
+    def _build_timestamped_transcript(transcript_data: Dict) -> str:
+        """Build transcript text with [MM:SS] markers from segments.
+
+        If the transcript data contains a 'segments' list with 'start' and 'text',
+        we interleave timestamp markers every ~30 seconds so the LLM can determine
+        when each restaurant discussion begins.  Falls back to the flat transcript
+        string when segments are unavailable.
+        """
+        segments = transcript_data.get('segments')
+        if not segments or not isinstance(segments, list):
+            return transcript_data.get('transcript', '')
+
+        parts: list[str] = []
+        last_marker = -30.0  # force first marker
+        for seg in segments:
+            start = seg.get('start', 0)
+            text = seg.get('text', '')
+            if not text:
+                continue
+            # Insert a timestamp marker roughly every 30 seconds
+            if start - last_marker >= 30:
+                minutes = int(start) // 60
+                seconds = int(start) % 60
+                parts.append(f"\n[{minutes:02d}:{seconds:02d}] ")
+                last_marker = start
+            parts.append(text.strip() + ' ')
+
+        return ''.join(parts).strip()
+
+    def _validate_restaurant_name(self, name: str) -> bool:
+        """Reject names that are likely transcript fragments."""
+        if not name or not name.strip():
+            return False
+        # Reject if > 4 words
+        if len(name.split()) > 4:
+            return False
+        # Reject common Hebrew words that aren't restaurant names
+        BLACKLIST = {'כל', 'כלל', 'שוק', 'דיוק', 'חיפה', 'תור', 'רים', 'וד', 'יע'}
+        if name.strip() in BLACKLIST:
+            return False
+        # Reject if it looks like a sentence (contains verbs/conjunctions)
+        SENTENCE_MARKERS = {'היא', 'הוא', 'שלי', 'שהיא', 'ולא', 'וזה', 'גם', 'בדיוק', 'יותר', 'שזו', 'הזה', 'ולפתוח', 'נוכל', 'מזכיר'}
+        words = set(name.split())
+        if len(words & SENTENCE_MARKERS) >= 2:
+            return False
+        return True
+
     def analyze_transcript(self, transcript_data: Dict) -> Dict:
         """
         Analyze a YouTube transcript to extract restaurant information
@@ -66,8 +114,8 @@ class ClaudeRestaurantAnalyzer:
                 return self._create_mock_analysis(transcript_data)
             
             # Process transcript in chunks if it's too long
-            transcript_text = transcript_data['transcript']
-            
+            transcript_text = self._build_timestamped_transcript(transcript_data)
+
             if len(transcript_text) > 25000:
                 return self._analyze_chunked_transcript(transcript_data)
             else:
@@ -79,14 +127,24 @@ class ClaudeRestaurantAnalyzer:
 
     def _analyze_single_transcript(self, transcript_data: Dict) -> Dict:
         """Analyze a single transcript chunk using Claude Task agent"""
-        
+
+        # Build timestamped transcript so the LLM can determine when discussions begin
+        timestamped_text = self._build_timestamped_transcript(transcript_data)
+
         # Create analysis prompt
-        analysis_prompt = self._create_analysis_prompt(transcript_data['transcript'], transcript_data)
-        
+        analysis_prompt = self._create_analysis_prompt(timestamped_text, transcript_data)
+
         try:
             # Use Task agent to analyze transcript for restaurants
-            restaurants = self._call_claude_task_agent(transcript_data['transcript'], analysis_prompt)
+            restaurants = self._call_claude_task_agent(timestamped_text, analysis_prompt)
             
+            # Filter out invalid names and low confidence results
+            restaurants = [r for r in restaurants if self._validate_restaurant_name(r.get('name_hebrew', ''))]
+            restaurants = [r for r in restaurants if r.get('confidence', 'medium') != 'low']
+
+            # Deduplicate by name and place_id
+            restaurants = self._deduplicate_restaurants(restaurants)
+
             # Process and validate results
             validated_restaurants = []
             for restaurant in restaurants:
@@ -114,21 +172,25 @@ class ClaudeRestaurantAnalyzer:
 
     def _analyze_chunked_transcript(self, transcript_data: Dict) -> Dict:
         """Analyze transcript in chunks for comprehensive coverage"""
-        
-        transcript_text = transcript_data['transcript']
+
+        # Use timestamped transcript for accurate mention_timestamp_seconds
+        transcript_text = self._build_timestamped_transcript(transcript_data)
         chunk_size = 25000
         overlap = 1000
-        
+
         # Split into chunks
         chunks = self._create_chunks(transcript_text, chunk_size, overlap)
-        
+
         all_restaurants = []
         all_trends = []
-        
+
         for i, chunk in enumerate(chunks):
             chunk_data = transcript_data.copy()
             chunk_data['transcript'] = chunk
-            
+            # Clear segments so _build_timestamped_transcript falls back to
+            # the already-timestamped chunk text
+            chunk_data.pop('segments', None)
+
             # Analyze each chunk
             chunk_result = self._analyze_single_transcript(chunk_data)
             
@@ -186,25 +248,55 @@ class ClaudeRestaurantAnalyzer:
         return min(preferred_end, len(text))
 
     def _deduplicate_restaurants(self, restaurants: List[Dict]) -> List[Dict]:
-        """Remove duplicate restaurants based on Hebrew and English names"""
-        seen = set()
+        """Remove duplicate restaurants, keeping the most complete entry.
+
+        Deduplicates by:
+        1. Normalized Hebrew name (stripped whitespace)
+        2. Google Places place_id (if two entries point to the same place)
+
+        When duplicates are found, the entry with more non-null fields is kept.
+        """
+        seen_names = {}
+        seen_place_ids = {}
         unique = []
-        
-        for restaurant in restaurants:
-            # Ensure English name is present and valid
-            restaurant = self._ensure_english_name(restaurant)
-            
-            # Create identifier from both Hebrew and English names
-            identifier = (
-                restaurant.get('name_hebrew', '').strip().lower(),
-                restaurant.get('name_english', '').strip().lower()
+
+        for r in restaurants:
+            key = r.get('name_hebrew', '').strip()
+            place_id = (
+                r.get('google_places', {}).get('place_id')
+                if isinstance(r.get('google_places'), dict)
+                else None
             )
-            
-            if identifier not in seen and identifier != ('', ''):
-                seen.add(identifier)
-                unique.append(restaurant)
-        
+
+            is_duplicate = False
+
+            # Check name duplicate
+            if key and key in seen_names:
+                existing_idx = seen_names[key]
+                if self._data_completeness(r) > self._data_completeness(unique[existing_idx]):
+                    unique[existing_idx] = r
+                is_duplicate = True
+
+            # Check place_id duplicate
+            if place_id and place_id in seen_place_ids:
+                existing_idx = seen_place_ids[place_id]
+                if self._data_completeness(r) > self._data_completeness(unique[existing_idx]):
+                    unique[existing_idx] = r
+                is_duplicate = True
+
+            if not is_duplicate:
+                idx = len(unique)
+                unique.append(r)
+                if key:
+                    seen_names[key] = idx
+                if place_id:
+                    seen_place_ids[place_id] = idx
+
         return unique
+
+    def _data_completeness(self, r: dict) -> int:
+        """Count non-null fields as a proxy for data quality."""
+        return sum(1 for v in r.values() if v is not None and v != '' and v != [])
 
     def _ensure_english_name(self, restaurant: Dict) -> Dict:
         """Ensure restaurant has a proper English name"""
@@ -285,16 +377,42 @@ Return a JSON array with this structure for each restaurant:
     "host_opinion": "חיובית מאוד/חיובית/ניטרלית/שלילית/מעורבת",
     "host_recommendation": true/false,
     "host_comments": "ציטוט ישיר או פרפרזה",
+    "engaging_quote": "ציטוט חי וצבעוני מהמנחים - המילים שלהם, לא תקציר",
+    "mention_timestamp_seconds": "convert from [MM:SS] markers in transcript",
     "signature_dishes": ["מנה מומלצת"],
     "menu_items": ["מנה1", "מנה2"],
     "chef_name": "שם השף אם מוזכר",
     "mention_context": "ציטוט קצר מהתמליל"
 }}
 
+TIMESTAMP INSTRUCTIONS:
+The transcript contains [MM:SS] markers. For "mention_timestamp_seconds":
+- Find the [MM:SS] marker where the DISCUSSION about the restaurant BEGINS — this is often
+  BEFORE the restaurant name is said. The hosts typically describe the food, ambiance, or
+  location before stating the name.
+- Look ~30-60 seconds before the name mention for the start of the relevant discussion.
+- Convert [MM:SS] to total seconds (e.g., [12:30] = 750).
+- If no timestamp markers are present, use 0.
+
 CONFIDENCE LEVELS:
 - "high": שם מפורש עם הקשר ברור (e.g., "הלכנו למסעדת צ'קולי")
 - "medium": שם מוזכר אך הקשר חלקי
 - "low": שם לא ברור או נשמע חלקית
+
+CRITICAL ANTI-HALLUCINATION RULES:
+1. A restaurant name MUST be a proper noun (business name), NOT a sentence fragment
+2. If a "name" contains more than 3 Hebrew words, it is likely a sentence fragment — SKIP IT
+3. If a "name" is a common Hebrew word (כל, שוק, דיוק, חיפה, תור), it is NOT a restaurant — SKIP IT
+4. Only extract names where the speaker clearly references a specific establishment
+5. Names like "השנה שלי שהיא מסעדה" are sentence fragments, NOT restaurant names
+6. If confidence is "low", DO NOT include the entry
+7. Each restaurant should have a clear, short business name (1-3 words typically)
+
+IMPORTANT - Use English values for these fields:
+- price_range: "budget" | "mid-range" | "expensive" | "not_mentioned"
+- status: "open" | "closed" | "new_opening" | "closing_soon" | "reopening"
+- host_opinion: "positive" | "negative" | "mixed" | "neutral"
+- menu_items: Array of objects with {{item_name, description, price, recommendation_level}}
 
 Be thorough but precise. Extract ALL valid restaurants. Use null for unknown fields."""
         
@@ -760,6 +878,8 @@ DO NOT EXTRACT:
         "host_opinion": "חיובית מאוד/חיובית/ניטרלית/שלילית/מעורבת",
         "host_recommendation": true/false,
         "host_comments": "ציטוט ישיר או פרפרזה מהמנחה",
+        "engaging_quote": "ציטוט חי וצבעוני מהמנחים - המילים שלהם, לא תקציר",
+        "mention_timestamp_seconds": "convert from [MM:SS] markers in transcript",
         "signature_dishes": ["מנה מומלצת 1"],
         "menu_items": ["מנה 1", "מנה 2"],
         "special_features": ["תכונה מיוחדת 1", "תכונה מיוחדת 2"],
@@ -774,10 +894,34 @@ DO NOT EXTRACT:
     }}
 ]
 
+TIMESTAMP INSTRUCTIONS:
+The transcript contains [MM:SS] markers. For "mention_timestamp_seconds":
+- Find the [MM:SS] marker where the DISCUSSION about the restaurant BEGINS — this is often
+  BEFORE the restaurant name is said. The hosts typically describe the food, ambiance, or
+  location before stating the name.
+- Look ~30-60 seconds before the name mention for the start of the relevant discussion.
+- Convert [MM:SS] to total seconds (e.g., [12:30] = 750).
+- If no timestamp markers are present, use 0.
+
 CONFIDENCE LEVELS:
 - "high": שם מפורש עם הקשר ברור
 - "medium": שם מוזכר אך הקשר חלקי
 - "low": שם לא ברור או נשמע חלקית
+
+CRITICAL ANTI-HALLUCINATION RULES:
+1. A restaurant name MUST be a proper noun (business name), NOT a sentence fragment
+2. If a "name" contains more than 3 Hebrew words, it is likely a sentence fragment — SKIP IT
+3. If a "name" is a common Hebrew word (כל, שוק, דיוק, חיפה, תור), it is NOT a restaurant — SKIP IT
+4. Only extract names where the speaker clearly references a specific establishment
+5. Names like "השנה שלי שהיא מסעדה" are sentence fragments, NOT restaurant names
+6. If confidence is "low", DO NOT include the entry
+7. Each restaurant should have a clear, short business name (1-3 words typically)
+
+IMPORTANT - Use English values for these fields:
+- price_range: "budget" | "mid-range" | "expensive" | "not_mentioned"
+- status: "open" | "closed" | "new_opening" | "closing_soon" | "reopening"
+- host_opinion: "positive" | "negative" | "mixed" | "neutral"
+- menu_items: Array of objects with {{item_name, description, price, recommendation_level}}
 
 **Important:** Return ONLY the JSON array. Use null for truly unknown fields (not "לא צוין")."""
 

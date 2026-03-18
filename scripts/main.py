@@ -60,6 +60,7 @@ class RestaurantPodcastAnalyzer:
         os.makedirs("demo_results", exist_ok=True)
         os.makedirs("transcripts", exist_ok=True)
         os.makedirs("analyses", exist_ok=True)
+        os.makedirs("logs", exist_ok=True)
         
         self.logger.info("🚀 RestaurantPodcastAnalyzer initialized")
     
@@ -103,7 +104,7 @@ class RestaurantPodcastAnalyzer:
         self.logger.info(f"🎥 Fetching transcript from: {video_url}")
         
         # Try Hebrew first, then auto-detect
-        result = self.transcript_collector.get_transcript(video_url, languages=['he', 'iw'])
+        result = self.transcript_collector.get_transcript(video_url, languages=['iw', 'he'])
         if not result:
             self.logger.info("Hebrew transcript not found, trying auto-detect...")
             self.log_agent_call("YouTubeTranscriptCollector", "get_transcript_auto", {

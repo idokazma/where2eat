@@ -222,4 +222,205 @@ router.post('/refresh', authenticateToken, async (req, res) => {
   }
 });
 
+/**
+ * PATCH /api/admin/auth/profile
+ * Update current user's profile (name)
+ */
+router.patch('/profile', authenticateToken, async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const { name } = req.body;
+
+    if (!name || !name.trim()) {
+      return res.status(400).json({ error: 'Name is required' });
+    }
+
+    const result = await callPythonAdminDB('update_user', {
+      user_id: userId,
+      updates: { name: name.trim() }
+    });
+
+    if (!result.success) {
+      return res.status(400).json({ error: result.error || 'Failed to update profile' });
+    }
+
+    res.json(result.user);
+  } catch (error) {
+    console.error('Update profile error:', error);
+    res.status(500).json({ error: 'Failed to update profile' });
+  }
+});
+
+/**
+ * PUT /api/admin/auth/password
+ * Change current user's password
+ */
+router.put('/password', authenticateToken,
+  [
+    body('current_password').notEmpty().withMessage('Current password is required'),
+    body('new_password').isLength({ min: 8 }).withMessage('New password must be at least 8 characters')
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    try {
+      const userId = req.user.userId;
+      const { current_password, new_password } = req.body;
+
+      // Verify current password
+      const userResult = await callPythonAdminDB('get_user', { user_id: userId });
+      if (!userResult.success || !userResult.user) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+
+      const verifyResult = await callPythonAdminDB('verify_password', {
+        user_id: userId,
+        password: current_password
+      });
+
+      if (!verifyResult.success) {
+        return res.status(401).json({ error: 'Current password is incorrect' });
+      }
+
+      // Update password
+      const updateResult = await callPythonAdminDB('update_password', {
+        user_id: userId,
+        new_password
+      });
+
+      if (!updateResult.success) {
+        return res.status(400).json({ error: updateResult.error || 'Failed to update password' });
+      }
+
+      res.json({ message: 'Password updated successfully' });
+    } catch (error) {
+      console.error('Change password error:', error);
+      res.status(500).json({ error: 'Failed to change password' });
+    }
+  }
+);
+
+/**
+ * GET /api/admin/users
+ * List all admin users (super_admin only)
+ */
+router.get('/users', authenticateToken, async (req, res) => {
+  try {
+    // Check if user is super_admin
+    const currentUser = await callPythonAdminDB('get_user', { user_id: req.user.userId });
+    if (!currentUser.success || currentUser.user.role !== 'super_admin') {
+      return res.status(403).json({ error: 'Forbidden: super_admin role required' });
+    }
+
+    const result = await callPythonAdminDB('list_users', {});
+
+    if (!result.success) {
+      return res.status(500).json({ error: 'Failed to fetch users' });
+    }
+
+    // Strip password hashes
+    const users = (result.users || []).map(u => ({
+      id: u.id,
+      email: u.email,
+      name: u.name,
+      role: u.role,
+      is_active: u.is_active,
+      created_at: u.created_at,
+      last_login: u.last_login,
+    }));
+
+    res.json({ users });
+  } catch (error) {
+    console.error('List users error:', error);
+    res.status(500).json({ error: 'Failed to list users' });
+  }
+});
+
+/**
+ * POST /api/admin/users
+ * Create a new admin user (super_admin only)
+ */
+router.post('/users', authenticateToken,
+  [
+    body('email').isEmail().withMessage('Valid email is required'),
+    body('password').isLength({ min: 8 }).withMessage('Password must be at least 8 characters'),
+    body('name').notEmpty().withMessage('Name is required'),
+    body('role').isIn(['viewer', 'editor', 'admin', 'super_admin']).withMessage('Invalid role')
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    try {
+      // Check if user is super_admin
+      const currentUser = await callPythonAdminDB('get_user', { user_id: req.user.userId });
+      if (!currentUser.success || currentUser.user.role !== 'super_admin') {
+        return res.status(403).json({ error: 'Forbidden: super_admin role required' });
+      }
+
+      const { email, password, name, role } = req.body;
+
+      const result = await callPythonAdminDB('create_user', {
+        email,
+        password,
+        name,
+        role
+      });
+
+      if (!result.success) {
+        return res.status(400).json({ error: result.error || 'Failed to create user' });
+      }
+
+      res.status(201).json(result.user);
+    } catch (error) {
+      console.error('Create user error:', error);
+      res.status(500).json({ error: 'Failed to create user' });
+    }
+  }
+);
+
+/**
+ * PATCH /api/admin/users/:id
+ * Update admin user role/status (super_admin only)
+ */
+router.patch('/users/:id', authenticateToken, async (req, res) => {
+  try {
+    // Check if user is super_admin
+    const currentUser = await callPythonAdminDB('get_user', { user_id: req.user.userId });
+    if (!currentUser.success || currentUser.user.role !== 'super_admin') {
+      return res.status(403).json({ error: 'Forbidden: super_admin role required' });
+    }
+
+    const { id } = req.params;
+    const updates = {};
+
+    if (req.body.role) updates.role = req.body.role;
+    if (req.body.is_active !== undefined) updates.is_active = req.body.is_active;
+    if (req.body.name) updates.name = req.body.name;
+
+    if (Object.keys(updates).length === 0) {
+      return res.status(400).json({ error: 'No updates provided' });
+    }
+
+    const result = await callPythonAdminDB('update_user', {
+      user_id: id,
+      updates
+    });
+
+    if (!result.success) {
+      return res.status(400).json({ error: result.error || 'Failed to update user' });
+    }
+
+    res.json(result.user);
+  } catch (error) {
+    console.error('Update user error:', error);
+    res.status(500).json({ error: 'Failed to update user' });
+  }
+});
+
 module.exports = router;

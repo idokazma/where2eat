@@ -662,5 +662,130 @@ class TestStats:
         assert 'unique_cities' in stats
 
 
+class TestAnalyzeTranscriptCallConvention:
+    """Test that BackendService.analyze_transcript passes correct args to UnifiedRestaurantAnalyzer.
+
+    Regression tests for a bug where analyze_transcript was called with keyword
+    arguments (transcript_text=, video_id=, ...) instead of a single dict, causing:
+        TypeError: analyze_transcript() got an unexpected keyword argument 'transcript_text'
+    """
+
+    @pytest.fixture
+    def service(self):
+        """Create service with temp database."""
+        with tempfile.TemporaryDirectory() as temp_dir:
+            db_path = os.path.join(temp_dir, 'test.db')
+            yield BackendService(db_path=db_path)
+
+    @pytest.fixture
+    def valid_transcript_data(self):
+        """Valid transcript data as returned by fetch_transcript."""
+        return {
+            'success': True,
+            'video_id': 'testVid1234',
+            'video_url': 'https://www.youtube.com/watch?v=testVid1234',
+            'language': 'he',
+            'transcript': 'היום נדבר על מסעדת צ\'קולי בתל אביב',
+            'segments': []
+        }
+
+    @patch('backend_service.BackendService._get_analyzer')
+    def test_analyze_transcript_passes_dict_not_kwargs(self, mock_get_analyzer, service, valid_transcript_data):
+        """Verify analyzer.analyze_transcript receives a single dict argument, not keyword args."""
+        mock_analyzer = Mock()
+        mock_analyzer.analyze_transcript.return_value = {
+            'restaurants': [{'name_hebrew': 'צ\'קולי', 'name_english': 'Chakoli'}],
+            'food_trends': [],
+            'episode_summary': 'test'
+        }
+        mock_get_analyzer.return_value = mock_analyzer
+
+        service.analyze_transcript(valid_transcript_data)
+
+        # Must have been called exactly once
+        mock_analyzer.analyze_transcript.assert_called_once()
+
+        # Must have been called with a single positional dict arg, not keyword args
+        args, kwargs = mock_analyzer.analyze_transcript.call_args
+        assert len(args) == 1, "analyze_transcript should receive exactly one positional argument"
+        assert isinstance(args[0], dict), "The argument should be a dictionary"
+        assert len(kwargs) == 0, "analyze_transcript should not receive keyword arguments"
+
+    @patch('backend_service.BackendService._get_analyzer')
+    def test_analyze_transcript_dict_contains_required_keys(self, mock_get_analyzer, service, valid_transcript_data):
+        """Verify the dict passed to analyzer contains the keys it expects."""
+        mock_analyzer = Mock()
+        mock_analyzer.analyze_transcript.return_value = {
+            'restaurants': [],
+            'food_trends': [],
+            'episode_summary': ''
+        }
+        mock_get_analyzer.return_value = mock_analyzer
+
+        service.analyze_transcript(valid_transcript_data)
+
+        args, _ = mock_analyzer.analyze_transcript.call_args
+        passed_dict = args[0]
+
+        # UnifiedRestaurantAnalyzer.analyze_transcript expects these keys
+        assert 'transcript' in passed_dict, "Dict must contain 'transcript' key"
+        assert 'video_id' in passed_dict, "Dict must contain 'video_id' key"
+        assert 'video_url' in passed_dict, "Dict must contain 'video_url' key"
+        assert 'language' in passed_dict, "Dict must contain 'language' key"
+
+        # Verify values are forwarded correctly
+        assert passed_dict['transcript'] == valid_transcript_data['transcript']
+        assert passed_dict['video_id'] == valid_transcript_data['video_id']
+        assert passed_dict['video_url'] == valid_transcript_data['video_url']
+        assert passed_dict['language'] == valid_transcript_data['language']
+
+    @patch('backend_service.BackendService._get_analyzer')
+    @patch('backend_service.BackendService._get_transcript_collector')
+    def test_process_video_analyze_step_receives_dict(
+        self, mock_collector, mock_get_analyzer, service
+    ):
+        """End-to-end: process_video calls analyzer.analyze_transcript with a dict."""
+        # Mock transcript collector
+        mock_transcript_instance = Mock()
+        mock_transcript_instance.get_transcript.return_value = {
+            'video_id': 'e2eTest1234',
+            'video_url': 'https://www.youtube.com/watch?v=e2eTest1234',
+            'language': 'he',
+            'transcript': 'מסעדת גורמי סבזי בירושלים מומלצת מאוד',
+            'segments': []
+        }
+        mock_collector.return_value = mock_transcript_instance
+
+        # Mock analyzer
+        mock_analyzer = Mock()
+        mock_analyzer.analyze_transcript.return_value = {
+            'restaurants': [
+                {
+                    'name_hebrew': 'גורמי סבזי',
+                    'name_english': 'Gormi Sabzi',
+                    'location': {'city': 'ירושלים', 'region': 'Center'},
+                    'cuisine_type': 'Persian'
+                }
+            ],
+            'food_trends': ['פרסי פופולרי'],
+            'episode_summary': 'סקירת מסעדה פרסית'
+        }
+        mock_get_analyzer.return_value = mock_analyzer
+
+        result = service.process_video(
+            video_url='https://www.youtube.com/watch?v=e2eTest1234'
+        )
+
+        # Pipeline should succeed (not crash with TypeError)
+        assert result['success'] is True
+        assert result['restaurants_found'] == 1
+
+        # Verify the analyzer was called with a dict, not kwargs
+        args, kwargs = mock_analyzer.analyze_transcript.call_args
+        assert len(args) == 1 and isinstance(args[0], dict)
+        assert args[0]['transcript'] == 'מסעדת גורמי סבזי בירושלים מומלצת מאוד'
+        assert args[0]['video_id'] == 'e2eTest1234'
+
+
 if __name__ == '__main__':
     pytest.main([__file__, '-v'])

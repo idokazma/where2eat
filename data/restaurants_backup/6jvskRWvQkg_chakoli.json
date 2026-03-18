@@ -13,13 +13,23 @@
     "full_address": "Retsif Herbert Samuel St 3, Tel Aviv-Yafo, Israel"
   },
   "cuisine_type": "ספרדי ים תיכוני",
-  "status": "פתוח",
-  "price_range": "יקר",
-  "host_opinion": "חיובית מאוד",
+  "status": "open",
+  "price_range": "expensive",
+  "host_opinion": "positive",
   "host_comments": "מסעדת השנה, מקום עם נוף לים",
   "menu_items": [
-    "דגים",
-    "פירות ים"
+    {
+      "item_name": "דגים",
+      "description": "",
+      "price": null,
+      "recommendation_level": "mentioned"
+    },
+    {
+      "item_name": "פירות ים",
+      "description": "",
+      "price": null,
+      "recommendation_level": "mentioned"
+    }
   ],
   "special_features": [
     "נוף לים",
@@ -62,19 +72,16 @@
   "photos": [
     {
       "photo_reference": "AZLasHolV5PWBks0wfW9z8YxaSvMfH3gsamh-xFlqIWkPwJ7IKWCzdpLwOMVI4x3BbgtKw9vEUHiJ3lu1SN_MVBGHJeYaIk_lwMhwOaQb_cOv9EeM13R0m-sxhYgfK9VtKTa5lnx55uwhAesxd6TjN5Bk_Mbpxip_L0Snt7vg15fqNrg1EvD0EKZLHn4bCgqe2GD9SdM7_BGyqJ6PUZPenSUPk3cYcN3I0DboqlrBBNVCaDmO7JcZbSINKze4_Jots6aA7pNE5HirHdAGmRQhCPOxmrdh-ZzF5Vj9eqas4V_uOHJzA",
-      "photo_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AZLasHolV5PWBks0wfW9z8YxaSvMfH3gsamh-xFlqIWkPwJ7IKWCzdpLwOMVI4x3BbgtKw9vEUHiJ3lu1SN_MVBGHJeYaIk_lwMhwOaQb_cOv9EeM13R0m-sxhYgfK9VtKTa5lnx55uwhAesxd6TjN5Bk_Mbpxip_L0Snt7vg15fqNrg1EvD0EKZLHn4bCgqe2GD9SdM7_BGyqJ6PUZPenSUPk3cYcN3I0DboqlrBBNVCaDmO7JcZbSINKze4_Jots6aA7pNE5HirHdAGmRQhCPOxmrdh-ZzF5Vj9eqas4V_uOHJzA&key=AIzaSyCo7o6jQghstjLaPIdPIJUB7pL8j_e8lcQ",
       "width": 3201,
       "height": 4800
     },
     {
       "photo_reference": "AZLasHoCIiUcVjBCmY7KPaHbR-ExnJVqyTTQqkGX-jafPFQvXiLByBw3763DNb7xdHpkclhgr6dlriDrCLY2HxrBCqDcP2JdEOaprZSd3NlbnYxDFh4ZOTh-AwZV6LnXRLJfaIe2QF0-QRbx8yCbXcPhIkWHKcN0iDp0dtnnNvgf0TKYr0szmpajwM6E3rltl2-8BCLOjqW73fNsPA2uBdi4gXShOQrTdBaTGaVX6fopr9KdciCTexgB5Grw6wcG3UFxhbCZOBZwVjetH9omeYUJUX8Cb6BMbmfiNm1CWailYKaHNA",
-      "photo_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AZLasHoCIiUcVjBCmY7KPaHbR-ExnJVqyTTQqkGX-jafPFQvXiLByBw3763DNb7xdHpkclhgr6dlriDrCLY2HxrBCqDcP2JdEOaprZSd3NlbnYxDFh4ZOTh-AwZV6LnXRLJfaIe2QF0-QRbx8yCbXcPhIkWHKcN0iDp0dtnnNvgf0TKYr0szmpajwM6E3rltl2-8BCLOjqW73fNsPA2uBdi4gXShOQrTdBaTGaVX6fopr9KdciCTexgB5Grw6wcG3UFxhbCZOBZwVjetH9omeYUJUX8Cb6BMbmfiNm1CWailYKaHNA&key=AIzaSyCo7o6jQghstjLaPIdPIJUB7pL8j_e8lcQ",
       "width": 4800,
       "height": 3201
     },
     {
       "photo_reference": "AZLasHrRh9uXO4irQ-inpkggAWdNqQyFY-tLNx8_flTn6wNbMXUhk_7CK025vXUuBtjWC_XCVwFnvOVbKcsf4STrD5H1rc9G0Ev1Eu6AdTf5QB2DBdcGwcrS-wDWZmL6-JYE4-JqrRfyBL0Ofl1kueT5rFUOlMmCZWNuXNhV1r2Hcw4cSqD_W5kAIf4M877b5ye7QICAo7PkCxno9gFeShWNTCpxnPC7uUOMAkmF03ah8gt1MefdRPZCFDmeKqW_lx8xnKnwJ1CizDXV1tbnOV2WU22B_aEvgwKCh7uFIwk88WEpEA",
-      "photo_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AZLasHrRh9uXO4irQ-inpkggAWdNqQyFY-tLNx8_flTn6wNbMXUhk_7CK025vXUuBtjWC_XCVwFnvOVbKcsf4STrD5H1rc9G0Ev1Eu6AdTf5QB2DBdcGwcrS-wDWZmL6-JYE4-JqrRfyBL0Ofl1kueT5rFUOlMmCZWNuXNhV1r2Hcw4cSqD_W5kAIf4M877b5ye7QICAo7PkCxno9gFeShWNTCpxnPC7uUOMAkmF03ah8gt1MefdRPZCFDmeKqW_lx8xnKnwJ1CizDXV1tbnOV2WU22B_aEvgwKCh7uFIwk88WEpEA&key=AIzaSyCo7o6jQghstjLaPIdPIJUB7pL8j_e8lcQ",
       "width": 3201,
       "height": 4800
     }

@@ -17,9 +17,14 @@ interface RestaurantMapProps {
 // Google Maps types
 declare global {
   interface Window {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     google: any
     initMap: () => void
   }
+}
+
+interface GoogleMapsPhoto {
+  getUrl: (options?: { maxWidth?: number; maxHeight?: number }) => string
 }
 
 interface PlaceDetails {
@@ -34,7 +39,7 @@ interface PlaceDetails {
   }
   rating?: number
   price_level?: number
-  photos?: any[]
+  photos?: GoogleMapsPhoto[]
   formatted_phone_number?: string
   website?: string
   opening_hours?: {
@@ -43,11 +48,113 @@ interface PlaceDetails {
   }
 }
 
-export function RestaurantMap({ restaurants, selectedRestaurant, onRestaurantSelect }: RestaurantMapProps) {
+interface GoogleMap {
+  setCenter: (location: { lat: number; lng: number }) => void
+  setZoom: (zoom: number) => void
+  fitBounds: (bounds: unknown) => void
+}
+
+interface GoogleMarker {
+  setMap: (map: GoogleMap | null) => void
+  addListener: (event: string, handler: () => void) => void
+  getPosition: () => { lat: () => number; lng: () => number }
+  getTitle: () => string
+  infoWindow?: { close: () => void; open: (map: GoogleMap, marker: GoogleMarker) => void }
+}
+
+interface GooglePlacesService {
+  getDetails: (request: { placeId: string }, callback: (result: PlaceDetails | null, status: string) => void) => void
+}
+
+// Helper functions defined outside component to avoid re-declaration
+const getMarkerIcon = (opinion: Restaurant['host_opinion']) => {
+  const baseUrl = "data:image/svg+xml;charset=UTF-8,"
+  const colors = {
+    positive: '%234ade80', // green
+    mixed: '%23f59e0b',    // amber
+    neutral: '%236b7280',  // gray
+    negative: '%23ef4444'  // red
+  }
+
+  const color = (opinion && colors[opinion]) || colors.neutral
+
+  return baseUrl + encodeURIComponent(`
+    <svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="20" cy="20" r="18" fill="${color}" stroke="white" stroke-width="3"/>
+      <text x="20" y="26" font-family="Arial" font-size="16" text-anchor="middle" fill="white">🍽️</text>
+    </svg>
+  `)
+}
+
+const getOpinionColor = (opinion: Restaurant['host_opinion']) => {
+  const colors = {
+    positive: '#4ade80',
+    mixed: '#f59e0b',
+    neutral: '#6b7280',
+    negative: '#ef4444'
+  }
+  return (opinion && colors[opinion]) || colors.neutral
+}
+
+const getOpinionText = (opinion: Restaurant['host_opinion']) => {
+  const texts = {
+    positive: 'מומלץ',
+    mixed: 'מעורב',
+    neutral: 'רגיל',
+    negative: 'לא מומלץ'
+  }
+  return (opinion && texts[opinion]) || texts.neutral
+}
+
+const getPriceDisplay = (priceRange: string | null | undefined) => {
+  if (!priceRange || priceRange === 'not_mentioned') return ''
+  const prices = {
+    'budget': '₪',
+    'mid-range': '₪₪',
+    'expensive': '₪₪₪'
+  }
+  return prices[priceRange as keyof typeof prices] || ''
+}
+
+const createInfoWindowContent = (restaurant: Restaurant, placeDetails: PlaceDetails) => {
+  return `
+    <div style="max-width: 300px; direction: rtl; font-family: Arial, sans-serif;">
+      <h3 style="margin: 0 0 8px 0; color: #ea580c; font-size: 18px;">${restaurant.name_hebrew}</h3>
+      ${restaurant.name_english ? `<p style="margin: 0 0 8px 0; color: #6b7280; font-size: 14px;">${restaurant.name_english}</p>` : ''}
+
+      <div style="margin: 8px 0;">
+        <span style="background: ${getOpinionColor(restaurant.host_opinion)}; color: white; padding: 2px 8px; border-radius: 12px; font-size: 12px;">
+          ${getOpinionText(restaurant.host_opinion)}
+        </span>
+        <span style="margin-right: 8px; color: #f59e0b; font-size: 14px;">
+          ${getPriceDisplay(restaurant.price_range)}
+        </span>
+      </div>
+
+      <p style="margin: 8px 0; color: #4b5563; font-size: 14px;">
+        ${placeDetails.formatted_address}
+      </p>
+
+      ${placeDetails.rating ? `
+        <div style="margin: 8px 0; color: #f59e0b; font-size: 14px;">
+          ⭐ ${placeDetails.rating.toFixed(1)}
+        </div>
+      ` : ''}
+
+      <a href="https://www.google.com/maps/place/?q=place_id:${placeDetails.place_id}"
+         target="_blank"
+         style="display: inline-block; margin-top: 8px; color: #ea580c; text-decoration: none; font-size: 14px;">
+        פתח ב-Google Maps →
+      </a>
+    </div>
+  `
+}
+
+export function RestaurantMap({ restaurants, onRestaurantSelect }: RestaurantMapProps) {
   const mapRef = useRef<HTMLDivElement>(null)
-  const [map, setMap] = useState<any>(null)
-  const [markers, setMarkers] = useState<any[]>([])
-  const [placesService, setPlacesService] = useState<any>(null)
+  const [map, setMap] = useState<GoogleMap | null>(null)
+  const [markers, setMarkers] = useState<GoogleMarker[]>([])
+  const [placesService, setPlacesService] = useState<GooglePlacesService | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [enrichedRestaurants, setEnrichedRestaurants] = useState<(Restaurant & { placeDetails?: PlaceDetails })[]>([])
@@ -104,10 +211,10 @@ export function RestaurantMap({ restaurants, selectedRestaurant, onRestaurantSel
 
         const placesServiceInstance = new window.google.maps.places.PlacesService(mapInstance)
         
-        setMap(mapInstance)
-        setPlacesService(placesServiceInstance)
+        setMap(mapInstance as unknown as GoogleMap)
+        setPlacesService(placesServiceInstance as unknown as GooglePlacesService)
         setIsLoading(false)
-      } catch (err) {
+      } catch {
         setError('Failed to initialize map')
         setIsLoading(false)
       }
@@ -125,8 +232,30 @@ export function RestaurantMap({ restaurants, selectedRestaurant, onRestaurantSel
       markers.forEach(marker => marker.setMap(null))
       setMarkers([])
 
-      const newMarkers: any[] = []
+      const newMarkers: GoogleMarker[] = []
       const enriched: (Restaurant & { placeDetails?: PlaceDetails })[] = []
+
+      const searchRestaurantPlace = async (restaurant: Restaurant): Promise<PlaceDetails | null> => {
+        return new Promise((resolve) => {
+          if (!placesService) {
+            resolve(null)
+            return
+          }
+
+          const searchQuery = `${restaurant.name_hebrew} ${restaurant.location?.city || ''} Israel`
+
+          placesService.getDetails(
+            { placeId: searchQuery },
+            (result: PlaceDetails | null, status: string) => {
+              if (status === 'OK' && result) {
+                resolve(result)
+              } else {
+                resolve(null)
+              }
+            }
+          )
+        })
+      }
 
       for (const restaurant of restaurants) {
         try {
@@ -188,127 +317,6 @@ export function RestaurantMap({ restaurants, selectedRestaurant, onRestaurantSel
 
     searchAndMarkRestaurants()
   }, [map, placesService, restaurants])
-
-  const searchRestaurantPlace = async (restaurant: Restaurant): Promise<PlaceDetails | null> => {
-    try {
-      // First try with Hebrew name
-      const query = `${restaurant.name_hebrew} ${restaurant.location?.city || ''} restaurant`
-      const response = await fetch(endpoints.places.search(query))
-
-      if (response.ok) {
-        const data = await response.json()
-        if (data.places && data.places.length > 0) {
-          return data.places[0] as PlaceDetails
-        }
-      }
-
-      // Try with English name if available
-      if (restaurant.name_english) {
-        const altQuery = `${restaurant.name_english} ${restaurant.location?.city || ''} restaurant`
-        const altResponse = await fetch(endpoints.places.search(altQuery))
-
-        if (altResponse.ok) {
-          const altData = await altResponse.json()
-          if (altData.places && altData.places.length > 0) {
-            return altData.places[0] as PlaceDetails
-          }
-        }
-      }
-
-      return null
-    } catch (error) {
-      console.error('Error searching for restaurant:', error)
-      return null
-    }
-  }
-
-  const getMarkerIcon = (opinion: Restaurant['host_opinion']) => {
-    const baseUrl = "data:image/svg+xml;charset=UTF-8,"
-    const colors = {
-      positive: '%234ade80', // green
-      mixed: '%23f59e0b',    // amber
-      neutral: '%236b7280',  // gray
-      negative: '%23ef4444'  // red
-    }
-    
-    const color = (opinion && colors[opinion]) || colors.neutral
-    
-    return baseUrl + encodeURIComponent(`
-      <svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="20" cy="20" r="18" fill="${color}" stroke="white" stroke-width="3"/>
-        <text x="20" y="26" font-family="Arial" font-size="16" text-anchor="middle" fill="white">🍽️</text>
-      </svg>
-    `)
-  }
-
-  const createInfoWindowContent = (restaurant: Restaurant, placeDetails: PlaceDetails) => {
-    return `
-      <div style="max-width: 300px; direction: rtl; font-family: Arial, sans-serif;">
-        <h3 style="margin: 0 0 8px 0; color: #ea580c; font-size: 18px;">${restaurant.name_hebrew}</h3>
-        ${restaurant.name_english ? `<p style="margin: 0 0 8px 0; color: #6b7280; font-size: 14px;">${restaurant.name_english}</p>` : ''}
-        
-        <div style="margin: 8px 0;">
-          <span style="background: ${getOpinionColor(restaurant.host_opinion)}; color: white; padding: 2px 8px; border-radius: 12px; font-size: 12px;">
-            ${getOpinionText(restaurant.host_opinion)}
-          </span>
-          <span style="margin-right: 8px; color: #f59e0b; font-size: 14px;">
-            ${getPriceDisplay(restaurant.price_range)}
-          </span>
-        </div>
-        
-        <p style="margin: 8px 0; color: #4b5563; font-size: 14px;">
-          📍 ${placeDetails.formatted_address || restaurant.location?.city || 'מיקום לא צוין'}
-        </p>
-        
-        ${placeDetails.rating ? `
-          <p style="margin: 8px 0; color: #4b5563; font-size: 14px;">
-            ⭐ ${placeDetails.rating}/5
-          </p>
-        ` : ''}
-        
-        ${restaurant.host_comments ? `
-          <p style="margin: 8px 0; color: #6b7280; font-size: 13px; font-style: italic;">
-            "${restaurant.host_comments.substring(0, 100)}${restaurant.host_comments.length > 100 ? '...' : ''}"
-          </p>
-        ` : ''}
-        
-        <button onclick="window.open('https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(placeDetails.formatted_address || restaurant.name_hebrew)}')" 
-                style="background: #ea580c; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; margin-top: 8px;">
-          פתח ב-Google Maps
-        </button>
-      </div>
-    `
-  }
-
-  const getOpinionColor = (opinion: Restaurant['host_opinion']) => {
-    const colors = {
-      positive: '#22c55e',
-      mixed: '#f59e0b',
-      neutral: '#6b7280',
-      negative: '#ef4444'
-    }
-    return (opinion && colors[opinion]) || colors.neutral
-  }
-
-  const getOpinionText = (opinion: Restaurant['host_opinion']) => {
-    const texts = {
-      positive: 'מומלץ',
-      mixed: 'מעורב',
-      neutral: 'ניטרלי',
-      negative: 'לא מומלץ'
-    }
-    return (opinion && texts[opinion]) || 'לא צוין'
-  }
-
-  const getPriceDisplay = (priceRange: Restaurant['price_range']) => {
-    const displays = {
-      budget: '₪',
-      'mid-range': '₪₪',
-      expensive: '₪₪₪',
-      not_mentioned: '-'
-    }
-    return (priceRange && displays[priceRange]) || '-'
-  }
 
   const centerOnRestaurant = (restaurant: Restaurant & { placeDetails?: PlaceDetails }) => {
     if (!map || !restaurant.placeDetails) return

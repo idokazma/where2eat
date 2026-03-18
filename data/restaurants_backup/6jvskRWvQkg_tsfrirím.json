@@ -13,12 +13,17 @@
     "full_address": "Tsafririm St 1, Haifa, Israel"
   },
   "cuisine_type": "ישראלי",
-  "status": "פתוח",
-  "price_range": "בינוני",
-  "host_opinion": "חיובית",
+  "status": "open",
+  "price_range": "mid-range",
+  "host_opinion": "positive",
   "host_comments": "שוארמה מעולה",
   "menu_items": [
-    "שוארמה"
+    {
+      "item_name": "שוארמה",
+      "description": "",
+      "price": null,
+      "recommendation_level": "mentioned"
+    }
   ],
   "special_features": [
     "ביסטרו ותיק"
@@ -60,19 +65,16 @@
   "photos": [
     {
       "photo_reference": "AZLasHrMnlIY1BNGoT8mFKYj79Eake061FzxeY0ojmvQxBEhaOOQLcmYjU61q2pyP0Wl_OSU94MNHKzJ_xwKWRl_O0FZFDbtg_m4sg1Af5mMqqTbuRe-feyS4JmxBjemS0GDEiU8bzQqBnJswuil7jVgry4l4sMaUYYp0XGkP1x1O4KwaGm7nBXMnn_7O6-GialSQWGxoi6zp0fDc0pk8JI6W6xCcDDd0Ei3pg8QeHybabXRmQjUsA11McgFXsLuWCbsZ_26eBrDiqw8AyJm8xXfNKR8BCVwxD4e1vs3UMHAuNkLjw",
-      "photo_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AZLasHrMnlIY1BNGoT8mFKYj79Eake061FzxeY0ojmvQxBEhaOOQLcmYjU61q2pyP0Wl_OSU94MNHKzJ_xwKWRl_O0FZFDbtg_m4sg1Af5mMqqTbuRe-feyS4JmxBjemS0GDEiU8bzQqBnJswuil7jVgry4l4sMaUYYp0XGkP1x1O4KwaGm7nBXMnn_7O6-GialSQWGxoi6zp0fDc0pk8JI6W6xCcDDd0Ei3pg8QeHybabXRmQjUsA11McgFXsLuWCbsZ_26eBrDiqw8AyJm8xXfNKR8BCVwxD4e1vs3UMHAuNkLjw&key=AIzaSyCo7o6jQghstjLaPIdPIJUB7pL8j_e8lcQ",
       "width": 2048,
       "height": 1365
     },
     {
       "photo_reference": "AZLasHr8uRHt2hdH7PGca8zeFBR8-pLOoO0qGqDRbXJU0WIuK7SPwOxJww0lTl2MDkZ7RUeWooLVmi59J7_pzZrxWDcqWZCfCiP3rsY1S49siIdIGiTM5GPLztVQc7saAfXvajR9X8I4nQiuXlKzX0KoUKBYWEBOdk8TdZHZQwbPEXMtkIAozdKWcNzzyNV5KSNvKTWoEjUtjWo1PXUIboNvKJKTNNSC8ZsahzBhQoFPe8e7ETdAahbMy6QGAfZxZI0_Izc4PnKa-899u4zXyg6xxJJ_3lRyX4bmhMadnBtK6lNHcw",
-      "photo_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AZLasHr8uRHt2hdH7PGca8zeFBR8-pLOoO0qGqDRbXJU0WIuK7SPwOxJww0lTl2MDkZ7RUeWooLVmi59J7_pzZrxWDcqWZCfCiP3rsY1S49siIdIGiTM5GPLztVQc7saAfXvajR9X8I4nQiuXlKzX0KoUKBYWEBOdk8TdZHZQwbPEXMtkIAozdKWcNzzyNV5KSNvKTWoEjUtjWo1PXUIboNvKJKTNNSC8ZsahzBhQoFPe8e7ETdAahbMy6QGAfZxZI0_Izc4PnKa-899u4zXyg6xxJJ_3lRyX4bmhMadnBtK6lNHcw&key=AIzaSyCo7o6jQghstjLaPIdPIJUB7pL8j_e8lcQ",
       "width": 4000,
       "height": 3000
     },
     {
       "photo_reference": "AZLasHrbHZYmX5JlFO5RW7fzRFiGZm0zWCvuktxj0xiwQGA31Q7rYwqiDcHFDO0TS11wdiMWdfDDzLL9-r70ZDfoSt43LFPbEnQsUZomQtXfdo-Qy7YPr3XOyWzigDGZRyOJI1FCpJLLeK9mm9bbdwTDqIPS-RSKoQFovPNIJAsM4CPYIbeIzBbeeuzkLOO7rsawU0C1xFgP8aqxQdMtZVR8VroMrA1D4VVbWlM2w3IGaU1zV2mexnVwzHJKgecuE8ckd3fh9dXetm1vYAywM5ccrPjv0Pf5T0OCz5wtaoVED3ufUscNME8VNMrKjyM8Fce1H6n3PEmqEH9uWhb6EV4IiBm8xt0cxpI7GBe3NCm1YdV9PO52HFPDTbkBt_e_25vyDqa-vW7V3p_ETQ56hEM9UgMkfls9PKwQ2OpjWlQQiS78i-19",
-      "photo_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AZLasHrbHZYmX5JlFO5RW7fzRFiGZm0zWCvuktxj0xiwQGA31Q7rYwqiDcHFDO0TS11wdiMWdfDDzLL9-r70ZDfoSt43LFPbEnQsUZomQtXfdo-Qy7YPr3XOyWzigDGZRyOJI1FCpJLLeK9mm9bbdwTDqIPS-RSKoQFovPNIJAsM4CPYIbeIzBbeeuzkLOO7rsawU0C1xFgP8aqxQdMtZVR8VroMrA1D4VVbWlM2w3IGaU1zV2mexnVwzHJKgecuE8ckd3fh9dXetm1vYAywM5ccrPjv0Pf5T0OCz5wtaoVED3ufUscNME8VNMrKjyM8Fce1H6n3PEmqEH9uWhb6EV4IiBm8xt0cxpI7GBe3NCm1YdV9PO52HFPDTbkBt_e_25vyDqa-vW7V3p_ETQ56hEM9UgMkfls9PKwQ2OpjWlQQiS78i-19&key=AIzaSyCo7o6jQghstjLaPIdPIJUB7pL8j_e8lcQ",
       "width": 4032,
       "height": 3024
     }

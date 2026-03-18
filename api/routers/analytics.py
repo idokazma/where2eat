@@ -70,7 +70,7 @@ async def search_episodes(
         episodes = [
             ep for ep in episodes
             if any(
-                cuisine_filter.lower() in r.get("cuisine_type", "").lower()
+                cuisine_filter.lower() in (r.get("cuisine_type") or "").lower()
                 for r in ep["restaurants"]
             )
         ]
@@ -80,7 +80,7 @@ async def search_episodes(
         episodes = [
             ep for ep in episodes
             if any(
-                location_filter.lower() in r.get("location", {}).get("city", "").lower()
+                location_filter.lower() in ((r.get("location") or {}).get("city") or "").lower()
                 for r in ep["restaurants"]
             )
         ]
@@ -136,13 +136,13 @@ async def get_timeline(
     if cuisine_filter:
         filtered = [
             r for r in filtered
-            if cuisine_filter.lower() in r.get("cuisine_type", "").lower()
+            if cuisine_filter.lower() in (r.get("cuisine_type") or "").lower()
         ]
 
     if location_filter:
         filtered = [
             r for r in filtered
-            if location_filter.lower() in r.get("location", {}).get("city", "").lower()
+            if location_filter.lower() in ((r.get("location") or {}).get("city") or "").lower()
         ]
 
     if date_start or date_end:
@@ -204,7 +204,7 @@ async def get_timeline(
         if r.get("cuisine_type"):
             ct = r["cuisine_type"]
             analytics["cuisine_distribution"][ct] = analytics["cuisine_distribution"].get(ct, 0) + 1
-        if r.get("location", {}).get("city"):
+        if (r.get("location") or {}).get("city"):
             city = r["location"]["city"]
             analytics["location_distribution"][city] = analytics["location_distribution"].get(city, 0) + 1
         if r.get("host_opinion"):
@@ -314,8 +314,8 @@ async def get_trends(
     }
 
     for r in period_restaurants:
-        region = r.get("location", {}).get("region", "Center")
-        city = r.get("location", {}).get("city")
+        region = (r.get("location") or {}).get("region", "Center")
+        city = (r.get("location") or {}).get("city")
         cuisine = r.get("cuisine_type")
         rating = r.get("rating", {}).get("google_rating")
 

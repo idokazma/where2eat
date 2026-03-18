@@ -16,6 +16,14 @@ sys.path.insert(0, os.path.join(PROJECT_ROOT, 'src'))
 sys.path.insert(0, os.path.join(PROJECT_ROOT, 'scripts'))
 
 
+@pytest.fixture(autouse=True)
+def _restore_cwd():
+    """Automatically save and restore cwd for every test."""
+    original_cwd = os.getcwd()
+    yield
+    os.chdir(original_cwd)
+
+
 @pytest.fixture(scope="session")
 def project_root():
     """Get the project root directory"""

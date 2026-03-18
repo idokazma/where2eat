@@ -1,6 +1,24 @@
-youtube-transcript-api>=1.0.0
+youtube-transcript-api>=1.2.3
 openai==1.54.4
+google-genai>=1.0.0
 python-dotenv==1.0.0
 google-api-python-client==2.108.0
 google-auth-httplib2==0.2.0
 google-auth-oauthlib==1.1.0
+
+# YouTube video listing (no API key needed)
+yt-dlp>=2024.0.0
+
+# Scheduler
+apscheduler>=3.10.0
+
+# Database
+sqlalchemy>=2.0.0
+psycopg2-binary>=2.9.9
+alembic>=1.13.0
+
+# FastAPI (for API server and testing)
+fastapi>=0.109.0
+uvicorn[standard]>=0.27.0
+python-multipart>=0.0.6
+httpx>=0.26.0

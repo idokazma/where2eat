@@ -41,9 +41,15 @@ interface RegionalInsights {
   topRestaurants: Restaurant[]
 }
 
+interface TrendsData {
+  topCuisines: Array<{ cuisine: string; count: number }>
+  topCities: Array<{ city: string; count: number }>
+  priceDistribution: Record<string, number>
+}
+
 export function TrendingAnalytics({ restaurants, onRestaurantFilter }: TrendingAnalyticsProps) {
   const [timeframe, setTimeframe] = useState<'1month' | '3months' | '6months' | '1year'>('3months')
-  const [trendsData, setTrendsData] = useState<any>(null)
+  const [trendsData, setTrendsData] = useState<TrendsData | null>(null)
   const [isLoading, setIsLoading] = useState(false)
 
   // Calculate timeframe-filtered restaurants
@@ -68,9 +74,9 @@ export function TrendingAnalytics({ restaurants, onRestaurantFilter }: TrendingA
     }
     
     return restaurants.filter(restaurant => {
-      if (restaurant.episode_info?.analysis_date) {
-        const analysisDate = new Date(restaurant.episode_info.analysis_date)
-        return analysisDate >= cutoffDate
+      const episodeDate = restaurant.episode_info?.published_at || restaurant.episode_info?.analysis_date
+      if (episodeDate) {
+        return new Date(episodeDate) >= cutoffDate
       }
       return false
     })
@@ -97,7 +103,7 @@ export function TrendingAnalytics({ restaurants, onRestaurantFilter }: TrendingA
       else if (restaurant.host_opinion === 'negative') score -= 2
       
       // Recent mentions get higher score
-      const daysSinceAnalysis = (Date.now() - new Date(restaurant.episode_info?.analysis_date || 0).getTime()) / (1000 * 60 * 60 * 24)
+      const daysSinceAnalysis = (Date.now() - new Date(restaurant.episode_info?.published_at || restaurant.episode_info?.analysis_date || 0).getTime()) / (1000 * 60 * 60 * 24)
       score += Math.max(0, 30 - daysSinceAnalysis) / 10 // More recent = higher score
       
       // Google rating adds score
@@ -112,15 +118,15 @@ export function TrendingAnalytics({ restaurants, onRestaurantFilter }: TrendingA
       .map(([name, data]) => {
         const mentions = data.mentions
         const avgScore = data.scores.reduce((sum, s) => sum + s, 0) / data.scores.length
-        const latestMention = mentions.sort((a, b) => 
-          new Date(b.episode_info?.analysis_date || 0).getTime() - 
-          new Date(a.episode_info?.analysis_date || 0).getTime()
+        const latestMention = mentions.sort((a, b) =>
+          new Date(b.episode_info?.published_at || b.episode_info?.analysis_date || 0).getTime() -
+          new Date(a.episode_info?.published_at || a.episode_info?.analysis_date || 0).getTime()
         )[0]
-        
+
         return {
           restaurant: latestMention,
           mentions: mentions.length,
-          lastMentioned: latestMention.episode_info?.analysis_date || '',
+          lastMentioned: latestMention.episode_info?.published_at || latestMention.episode_info?.analysis_date || '',
           avgRating: latestMention.rating?.google_rating,
           trendScore: avgScore * mentions.length // Multiple mentions amplify trend score
         }
@@ -178,7 +184,7 @@ export function TrendingAnalytics({ restaurants, onRestaurantFilter }: TrendingA
     const monthlyData = new Map<string, Map<string, number>>()
     
     timeframeRestaurants.forEach(restaurant => {
-      const date = new Date(restaurant.episode_info?.analysis_date || '')
+      const date = new Date(restaurant.episode_info?.published_at || restaurant.episode_info?.analysis_date || '')
       const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`
       const cuisine = restaurant.cuisine_type || 'לא צוין'
 
@@ -246,7 +252,7 @@ export function TrendingAnalytics({ restaurants, onRestaurantFilter }: TrendingA
                   key={period}
                   variant={timeframe === period ? "secondary" : "outline"}
                   size="sm"
-                  onClick={() => setTimeframe(period as any)}
+                  onClick={() => setTimeframe(period as '1month' | '3months' | '6months' | '1year')}
                   className={timeframe === period ? "bg-white text-primary" : "border-white text-white hover:bg-white/20"}
                 >
                   {getTimeframeLabel(period)}
@@ -376,7 +382,7 @@ export function TrendingAnalytics({ restaurants, onRestaurantFilter }: TrendingA
                 </CardHeader>
                 <CardContent className="p-4 space-y-4">
                   <div className="flex justify-between items-center">
-                    <span className="text-sm text-muted-foreground">סה"כ מסעדות:</span>
+                    <span className="text-sm text-muted-foreground">סה&quot;כ מסעדות:</span>
                     <Badge className="bg-muted text-muted-foreground">{region.totalRestaurants}</Badge>
                   </div>
 

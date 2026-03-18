@@ -28,7 +28,7 @@ def fetch_transcript(video_url):
     collector = YouTubeTranscriptCollector()
     
     # Try Hebrew first, then auto-detect
-    result = collector.get_transcript(video_url, languages=['he', 'iw'])
+    result = collector.get_transcript(video_url, languages=['iw', 'he'])
     if not result:
         print("Hebrew transcript not found, trying auto-detect...")
         result = collector.get_transcript_auto(video_url)

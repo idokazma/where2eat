@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
+import type { Variants } from "framer-motion"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Filter, X } from "lucide-react"
@@ -11,16 +12,19 @@ import { PriceFilter } from "./price-filter"
 import { Restaurant } from "@/types/restaurant"
 import { useLanguage } from "@/contexts/LanguageContext"
 
+interface FilterState {
+  selectedCity: string
+  selectedRegion: string
+  selectedNeighborhood: string
+  selectedCuisines: string[]
+  selectedPriceRanges: string[]
+  searchTerm: string
+}
+
 interface AnimatedFiltersProps {
   restaurants: Restaurant[]
-  filters: {
-    selectedCity: string
-    selectedRegion: string
-    selectedNeighborhood: string
-    selectedCuisines: string[]
-    selectedPriceRanges: string[]
-  }
-  onFiltersChange: (filters: any) => void
+  filters: FilterState
+  onFiltersChange: (filters: FilterState) => void
   onClear: () => void
 }
 
@@ -33,21 +37,21 @@ export function AnimatedFilters({
   const { t } = useLanguage()
   const [isOpen, setIsOpen] = useState(false)
 
-  const containerVariants = {
-    hidden: { opacity: 0, height: 0 } as any,
+  const containerVariants: Variants = {
+    hidden: { opacity: 0, height: 0 },
     visible: {
       opacity: 1,
       height: "auto",
       transition: {
         height: {
-          type: "spring" as const,
+          type: "spring",
           stiffness: 300,
           damping: 30
         },
         opacity: { duration: 0.2 },
         staggerChildren: 0.1
       }
-    } as any,
+    },
     exit: {
       opacity: 0,
       height: 0,
@@ -55,20 +59,20 @@ export function AnimatedFilters({
         height: { duration: 0.3 },
         opacity: { duration: 0.2 }
       }
-    } as any
+    }
   }
 
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 } as any,
+  const itemVariants: Variants = {
+    hidden: { opacity: 0, y: 20 },
     visible: {
       opacity: 1,
       y: 0,
       transition: {
-        type: "spring" as const,
+        type: "spring",
         stiffness: 300,
         damping: 24
       }
-    } as any
+    }
   }
 
   return (

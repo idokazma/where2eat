@@ -1,14 +1,29 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Flame } from 'lucide-react';
 import { PageLayout } from '@/components/layout';
 import { RestaurantCardNew } from '@/components/restaurant';
 import { RestaurantCardSkeleton, FilterChipSkeleton } from '@/components/ui/skeleton';
 import { Restaurant } from '@/types/restaurant';
 import { endpoints } from '@/lib/config';
+import { getRestaurantImage } from '@/lib/images';
 
 type TimePeriod = 'week' | 'month' | '3months';
+
+const getDateThreshold = (period: TimePeriod): Date => {
+  const now = new Date();
+  switch (period) {
+    case 'week':
+      return new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    case 'month':
+      return new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+    case '3months':
+      return new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000);
+    default:
+      return new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+  }
+};
 
 export default function TrendingPage() {
   const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
@@ -34,8 +49,29 @@ export default function TrendingPage() {
     }
   };
 
-  // In a real app, this would filter by actual trending data
-  const trendingRestaurants = restaurants.slice(0, 20);
+  // Filter restaurants by episode date, deduplicate, sort by rating
+  const trendingRestaurants = useMemo(() => {
+    const threshold = getDateThreshold(timePeriod);
+    const filtered = restaurants.filter((r) => {
+      const episodeDate = r.episode_info?.published_at || r.episode_info?.analysis_date;
+      if (!episodeDate) return true;
+      return new Date(episodeDate) >= threshold;
+    });
+
+    // Deduplicate by google_place_id or name_hebrew, keeping highest-rated entry
+    const seen = new Map<string, Restaurant>();
+    for (const r of filtered) {
+      const key = r.google_places?.place_id || r.name_hebrew || r.name_english || '';
+      const existing = seen.get(key);
+      if (!existing || (r.rating?.google_rating ?? 0) > (existing.rating?.google_rating ?? 0)) {
+        seen.set(key, r);
+      }
+    }
+
+    return Array.from(seen.values())
+      .sort((a, b) => (b.rating?.google_rating ?? 0) - (a.rating?.google_rating ?? 0))
+      .slice(0, 20);
+  }, [restaurants, timePeriod]);
 
   if (isLoading) {
     return (
@@ -81,6 +117,11 @@ export default function TrendingPage() {
 
       {/* Trending list */}
       <div className="px-4 py-4 space-y-4">
+        {trendingRestaurants.length === 0 && (
+          <div className="text-center py-12">
+            <p className="text-[var(--color-ink-muted)]">אין מסעדות טרנדיות בתקופה זו</p>
+          </div>
+        )}
         {trendingRestaurants.map((restaurant, index) => (
           <div key={restaurant.google_places?.place_id || restaurant.name_hebrew}>
             {/* Rank indicator */}
@@ -96,6 +137,7 @@ export default function TrendingPage() {
             <RestaurantCardNew
               restaurant={restaurant}
               variant={index === 0 ? 'featured' : 'default'}
+              imageUrl={getRestaurantImage(restaurant) || undefined}
             />
 
             {index > 0 && index < 5 && (

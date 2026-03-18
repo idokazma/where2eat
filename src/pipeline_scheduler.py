@@ -1,0 +1,640 @@
+"""
+Pipeline Scheduler for Where2Eat.
+Orchestrates automatic video discovery and processing.
+
+This module ties together SubscriptionManager, VideoQueueManager,
+PipelineLogger, and BackendService into a scheduled pipeline that:
+1. Polls subscriptions for new YouTube videos
+2. Enqueues discovered videos for processing
+3. Processes queued videos through the analysis pipeline
+4. Cleans up stale jobs and old logs
+"""
+
+import logging
+from datetime import datetime, timedelta
+from typing import Optional, List, Dict
+
+from database import Database, get_database
+from subscription_manager import SubscriptionManager
+from video_queue_manager import VideoQueueManager
+from pipeline_logger import PipelineLogger
+from config import (
+    PIPELINE_POLL_INTERVAL_HOURS,
+    PIPELINE_PROCESS_INTERVAL_MINUTES,
+    PIPELINE_MAX_INITIAL_VIDEOS,
+    PIPELINE_MAX_RECENT_VIDEOS,
+    PIPELINE_MAX_VIDEO_AGE_DAYS,
+    PIPELINE_STALE_TIMEOUT_HOURS,
+    PIPELINE_LOG_RETENTION_DAYS,
+    PIPELINE_SCHEDULER_ENABLED,
+)
+
+try:
+    from apscheduler.schedulers.background import BackgroundScheduler
+except ImportError:
+    BackgroundScheduler = None
+
+logger = logging.getLogger(__name__)
+
+
+class PipelineScheduler:
+    """Orchestrates automatic YouTube video discovery and processing.
+
+    Uses APScheduler to run periodic jobs:
+    - poll_subscriptions: checks YouTube channels for new videos
+    - process_next_video: processes the next queued video
+    - cleanup_stale_jobs: cleans up stuck processing jobs and old logs
+    """
+
+    def __init__(self, db: Database = None):
+        """Initialize the pipeline scheduler.
+
+        Args:
+            db: Database instance. If None, uses the default database.
+        """
+        self.db = db or get_database()
+        self.sub_manager = SubscriptionManager(self.db)
+        self.queue_manager = VideoQueueManager(self.db)
+        self.pipeline_logger = PipelineLogger(self.db)
+        self._scheduler = None
+        self._running = False
+        self._backend_service = None
+
+    def start(self):
+        """Start the scheduler with APScheduler.
+
+        No-op if PIPELINE_SCHEDULER_ENABLED is False.
+        Creates interval jobs for poll, process, and cleanup.
+        """
+        if not PIPELINE_SCHEDULER_ENABLED:
+            logger.info("Pipeline scheduler is disabled by configuration")
+            return
+
+        if BackgroundScheduler is None:
+            logger.error("APScheduler is not installed; cannot start scheduler")
+            return
+
+        try:
+            self._scheduler = BackgroundScheduler()
+
+            # Poll subscriptions for new videos (run immediately on startup)
+            self._scheduler.add_job(
+                self.poll_subscriptions,
+                trigger='interval',
+                hours=PIPELINE_POLL_INTERVAL_HOURS,
+                id='poll_subscriptions',
+                name='Poll YouTube subscriptions for new videos',
+                next_run_time=datetime.utcnow(),
+            )
+
+            # Process next queued video (run immediately on startup)
+            self._scheduler.add_job(
+                self.process_next_video,
+                trigger='interval',
+                minutes=PIPELINE_PROCESS_INTERVAL_MINUTES,
+                id='process_next_video',
+                name='Process next video in queue',
+                next_run_time=datetime.utcnow(),
+            )
+
+            # Clean up stale processing jobs
+            self._scheduler.add_job(
+                self.cleanup_stale_jobs,
+                trigger='interval',
+                hours=PIPELINE_STALE_TIMEOUT_HOURS,
+                id='cleanup_stale_jobs',
+                name='Clean up stale processing jobs',
+            )
+
+            self._scheduler.start()
+            self._running = True
+            logger.info("Pipeline scheduler started")
+        except Exception as e:
+            logger.error("Failed to start pipeline scheduler: %s", e)
+            self._running = False
+
+    def stop(self):
+        """Stop the scheduler gracefully."""
+        if self._scheduler is not None:
+            try:
+                self._scheduler.shutdown()
+                logger.info("Pipeline scheduler stopped")
+            except Exception as e:
+                logger.error("Error shutting down scheduler: %s", e)
+        self._running = False
+        self._scheduler = None
+
+    def get_status(self) -> dict:
+        """Return scheduler status.
+
+        Returns:
+            Dict with keys: running, scheduler_enabled, next_poll_at,
+            next_process_at, queue_depth, currently_processing.
+        """
+        next_poll_at = None
+        next_process_at = None
+
+        if self._scheduler is not None and self._running:
+            try:
+                poll_job = self._scheduler.get_job('poll_subscriptions')
+                if poll_job and poll_job.next_run_time:
+                    next_poll_at = poll_job.next_run_time.isoformat()
+            except Exception:
+                pass
+
+            try:
+                process_job = self._scheduler.get_job('process_next_video')
+                if process_job and process_job.next_run_time:
+                    next_process_at = process_job.next_run_time.isoformat()
+            except Exception:
+                pass
+
+        try:
+            queue_depth = self.queue_manager.get_queue_depth()
+        except Exception:
+            queue_depth = 0
+
+        try:
+            currently_processing = len(self.queue_manager.get_processing())
+        except Exception:
+            currently_processing = 0
+
+        return {
+            'running': self._running,
+            'scheduler_enabled': PIPELINE_SCHEDULER_ENABLED,
+            'next_poll_at': next_poll_at,
+            'next_process_at': next_process_at,
+            'queue_depth': queue_depth,
+            'currently_processing': currently_processing,
+        }
+
+    def poll_subscriptions(self):
+        """Check all active subscriptions for new videos.
+
+        For each active subscription:
+        1. Fetch video list from YouTube (mock-friendly via _fetch_channel_videos)
+        2. Filter out already-known videos (in episodes or queue)
+        3. Enqueue new videos with subscription priority
+        4. Update subscription stats and last_checked_at
+        5. Log events
+        """
+        subscriptions = self.sub_manager.list_subscriptions(active_only=True)
+
+        for sub in subscriptions:
+            sub_id = sub['id']
+            sub_name = sub.get('source_name') or sub.get('source_id', 'unknown')
+
+            self.pipeline_logger.info(
+                'poll_started',
+                f'Polling subscription: {sub_name}',
+                subscription_id=sub_id,
+            )
+
+            try:
+                videos = self._fetch_channel_videos(sub)
+            except Exception as e:
+                logger.error("Error fetching videos for subscription %s: %s", sub_id, e)
+                self.pipeline_logger.error(
+                    'poll_error',
+                    f'Failed to fetch videos for {sub_name}: {e}',
+                    subscription_id=sub_id,
+                )
+                # Update last_checked_at even on failure so we don't hammer it
+                self.sub_manager.update_subscription(
+                    sub_id,
+                    last_checked_at=datetime.utcnow().isoformat(),
+                )
+                continue
+
+            # Filter out videos older than the age cutoff
+            videos = self._filter_by_age(videos)
+
+            # Sort videos by published_at descending (most recent first).
+            videos = self._sort_videos_by_date(videos)
+
+            # Split into recent (to analyze) and old (beyond the recent cap)
+            recent_videos = videos[:PIPELINE_MAX_RECENT_VIDEOS]
+
+            enqueued_count = 0
+
+            for video in recent_videos:
+                video_id = video.get('video_id')
+                if not video_id:
+                    continue
+
+                # Check if already in queue
+                try:
+                    with self.db.get_connection() as conn:
+                        cursor = conn.cursor()
+                        cursor.execute(
+                            "SELECT id FROM video_queue WHERE video_id = ?",
+                            (video_id,),
+                        )
+                        if cursor.fetchone():
+                            continue
+                except Exception:
+                    pass
+
+                # Check if already in episodes
+                existing_episode = self.db.get_episode(video_id=video_id)
+                if existing_episode is not None:
+                    continue
+
+                try:
+                    self.queue_manager.enqueue(
+                        video_id=video_id,
+                        video_url=video.get('video_url', f'https://www.youtube.com/watch?v={video_id}'),
+                        subscription_id=sub_id,
+                        video_title=video.get('video_title'),
+                        published_at=video.get('published_at'),
+                        priority=sub.get('priority', 5),
+                    )
+                    enqueued_count += 1
+                except ValueError:
+                    # Video is already in queue (race condition guard)
+                    pass
+                except Exception as e:
+                    logger.warning("Failed to enqueue video %s: %s", video_id, e)
+
+            # Update subscription stats
+            if enqueued_count > 0:
+                self.sub_manager.update_stats(
+                    sub_id,
+                    videos_found=enqueued_count,
+                )
+
+            # Update last_checked_at
+            self.sub_manager.update_subscription(
+                sub_id,
+                last_checked_at=datetime.utcnow().isoformat(),
+            )
+
+            self.pipeline_logger.info(
+                'poll_completed',
+                f'Poll completed for {sub_name}: {enqueued_count} new videos enqueued',
+                subscription_id=sub_id,
+                details={
+                    'videos_found': len(videos),
+                    'enqueued': enqueued_count,
+                },
+            )
+
+    def process_next_video(self):
+        """Process the next video in the queue.
+
+        1. Dequeue highest-priority ready video
+        2. Call BackendService.process_video()
+        3. Mark completed or failed
+        4. Update subscription stats
+        5. Log events
+        """
+        item = self.queue_manager.dequeue()
+        if item is None:
+            return
+
+        queue_id = item['id']
+        video_url = item['video_url']
+        video_id = item['video_id']
+        subscription_id = item.get('subscription_id')
+
+        self.pipeline_logger.info(
+            'video_processing',
+            f'Processing video: {video_id}',
+            video_queue_id=queue_id,
+            subscription_id=subscription_id,
+        )
+
+        try:
+            backend = self._get_backend_service()
+            result = backend.process_video(
+                video_url=video_url,
+                enrich_with_google=True,
+                published_at=item.get('published_at'),
+            )
+        except Exception as e:
+            error_msg = f'BackendService error: {e}'
+            logger.error("Error processing video %s: %s", video_id, e)
+            self.queue_manager.mark_failed(queue_id, error_msg)
+            self.pipeline_logger.error(
+                'video_failed',
+                f'Video {video_id} processing failed: {error_msg}',
+                video_queue_id=queue_id,
+                subscription_id=subscription_id,
+            )
+            return
+
+        if result.get('success'):
+            restaurants_found = result.get('restaurants_found', 0)
+            episode_id = result.get('episode_id')
+
+            self.queue_manager.mark_completed(
+                queue_id,
+                restaurants_found=restaurants_found,
+                episode_id=episode_id,
+            )
+
+            if subscription_id:
+                self.sub_manager.update_stats(
+                    subscription_id,
+                    videos_processed=1,
+                    restaurants_found=restaurants_found,
+                )
+
+            log_level = 'info' if restaurants_found > 0 else 'warning'
+            log_method = getattr(self.pipeline_logger, log_level)
+            log_method(
+                'video_completed',
+                f'Video {video_id} processed: {restaurants_found} restaurants found',
+                video_queue_id=queue_id,
+                subscription_id=subscription_id,
+                details={
+                    'restaurants_found': restaurants_found,
+                    'episode_id': episode_id,
+                    'steps': result.get('steps', {}),
+                },
+            )
+        else:
+            error_msg = result.get('error', 'Unknown processing error')
+            self.queue_manager.mark_failed(queue_id, error_msg)
+
+            self.pipeline_logger.error(
+                'video_failed',
+                f'Video {video_id} failed: {error_msg}',
+                video_queue_id=queue_id,
+                subscription_id=subscription_id,
+            )
+
+    def cleanup_stale_jobs(self):
+        """Clean up stale processing jobs and old logs."""
+        try:
+            cleaned = self.queue_manager.cleanup_stale()
+        except Exception as e:
+            logger.error("Error cleaning up stale jobs: %s", e)
+            cleaned = 0
+
+        self.pipeline_logger.info(
+            'stale_cleanup',
+            f'Stale job cleanup: {cleaned} entries cleaned',
+            details={'cleaned_count': cleaned},
+        )
+
+        # Clean up old videos beyond the age cutoff
+        try:
+            deleted_old = self.queue_manager.cleanup_old_videos()
+            if deleted_old > 0:
+                logger.info("Cleaned up %d old video queue entries", deleted_old)
+        except Exception as e:
+            logger.error("Error cleaning up old videos: %s", e)
+
+        # Also clean up old logs
+        try:
+            deleted_logs = self.pipeline_logger.cleanup(
+                retention_days=PIPELINE_LOG_RETENTION_DAYS,
+            )
+            if deleted_logs > 0:
+                logger.info("Cleaned up %d old log entries", deleted_logs)
+        except Exception as e:
+            logger.error("Error cleaning up old logs: %s", e)
+
+    def refresh_subscription(self, subscription_id: str) -> dict:
+        """Refresh a subscription: fetch latest videos and queue new ones.
+
+        Admin-triggered flow that:
+        1. Fetches videos from the YouTube channel/playlist
+        2. Sorts by published date, takes the N most recent
+        3. Skips videos already processed successfully (in episodes DB)
+        4. Queues new ones for processing
+        5. Marks older videos as skipped for admin visibility
+
+        Args:
+            subscription_id: ID of the subscription to refresh.
+
+        Returns:
+            Dict with keys: enqueued, skipped_existing, skipped_old, total_fetched.
+        """
+        sub = self.sub_manager.get_subscription(subscription_id)
+        if sub is None:
+            raise ValueError(f"Subscription {subscription_id} not found")
+
+        sub_name = sub.get('source_name') or sub.get('source_id', 'unknown')
+
+        self.pipeline_logger.info(
+            'refresh_started',
+            f'Manual refresh for subscription: {sub_name}',
+            subscription_id=subscription_id,
+        )
+
+        try:
+            videos = self._fetch_channel_videos(sub)
+        except Exception as e:
+            self.pipeline_logger.error(
+                'refresh_error',
+                f'Failed to fetch videos for {sub_name}: {e}',
+                subscription_id=subscription_id,
+            )
+            raise
+
+        # Filter out videos older than the age cutoff, then sort
+        videos = self._filter_by_age(videos)
+        videos = self._sort_videos_by_date(videos)
+        recent_videos = videos[:PIPELINE_MAX_RECENT_VIDEOS]
+
+        enqueued = 0
+        skipped_existing = 0
+
+        for video in recent_videos:
+            video_id = video.get('video_id')
+            if not video_id:
+                continue
+
+            # Skip if already processed successfully
+            existing_episode = self.db.get_episode(video_id=video_id)
+            if existing_episode is not None:
+                skipped_existing += 1
+                continue
+
+            # Skip if already in queue
+            try:
+                with self.db.get_connection() as conn:
+                    cursor = conn.cursor()
+                    cursor.execute(
+                        "SELECT id FROM video_queue WHERE video_id = ?",
+                        (video_id,),
+                    )
+                    if cursor.fetchone():
+                        skipped_existing += 1
+                        continue
+            except Exception:
+                pass
+
+            try:
+                self.queue_manager.enqueue(
+                    video_id=video_id,
+                    video_url=video.get('video_url', f'https://www.youtube.com/watch?v={video_id}'),
+                    subscription_id=subscription_id,
+                    video_title=video.get('video_title'),
+                    published_at=video.get('published_at'),
+                    priority=sub.get('priority', 5),
+                )
+                enqueued += 1
+            except ValueError:
+                skipped_existing += 1
+            except Exception as e:
+                logger.warning("Failed to enqueue video %s: %s", video_id, e)
+
+        # Update subscription stats
+        if enqueued > 0:
+            self.sub_manager.update_stats(
+                subscription_id,
+                videos_found=enqueued,
+            )
+
+        self.sub_manager.update_subscription(
+            subscription_id,
+            last_checked_at=datetime.utcnow().isoformat(),
+        )
+
+        result = {
+            'total_fetched': len(videos),
+            'enqueued': enqueued,
+            'skipped_existing': skipped_existing,
+            'skipped_old': 0,
+        }
+
+        self.pipeline_logger.info(
+            'refresh_completed',
+            f'Refresh completed for {sub_name}: {enqueued} queued, '
+            f'{skipped_existing} already processed',
+            subscription_id=subscription_id,
+            details=result,
+        )
+
+        return result
+
+    @staticmethod
+    def _filter_by_age(videos: List[dict]) -> List[dict]:
+        """Filter out videos older than PIPELINE_MAX_VIDEO_AGE_DAYS.
+
+        Videos without a valid published_at are also excluded (unknown age).
+        """
+        cutoff = datetime.utcnow() - timedelta(days=PIPELINE_MAX_VIDEO_AGE_DAYS)
+        cutoff_str = cutoff.isoformat()
+
+        result = []
+        for video in videos:
+            date_str = video.get('published_at') or ''
+            if not date_str:
+                continue
+            # Compare ISO date strings (works for both date and datetime formats)
+            if date_str >= cutoff_str:
+                result.append(video)
+        return result
+
+    @staticmethod
+    def _sort_videos_by_date(videos: List[dict]) -> List[dict]:
+        """Sort videos by published_at descending (most recent first).
+
+        Videos without a valid published_at are placed at the end (treated as oldest).
+        """
+        def sort_key(v):
+            date_str = v.get('published_at') or ''
+            if not date_str:
+                return ''
+            return date_str
+
+        return sorted(videos, key=sort_key, reverse=True)
+
+    def _fetch_channel_videos(self, subscription: dict) -> List[dict]:
+        """Fetch videos from a YouTube channel or playlist using yt-dlp.
+
+        Returns list of dicts: [{video_id, video_url, video_title, published_at}, ...]
+
+        This method is separated to be easily mockable in tests.
+        Dispatches to _fetch_playlist_videos for playlist subscriptions,
+        or uses _fetch_videos_with_ytdlp for channel subscriptions.
+
+        No API key required — uses yt-dlp for all fetching.
+        """
+        if subscription.get('source_type') == 'playlist':
+            return self._fetch_playlist_videos(subscription)
+
+        source_url = subscription.get('source_url', '')
+        if not source_url:
+            logger.warning("No source_url for subscription %s", subscription.get('id'))
+            return []
+        return self._fetch_videos_with_ytdlp(source_url)
+
+    def _fetch_playlist_videos(self, subscription: dict) -> List[dict]:
+        """Fetch videos from a YouTube playlist using yt-dlp (no API key needed).
+
+        Args:
+            subscription: Subscription dict with 'source_id' (playlist ID).
+
+        Returns:
+            List of video dicts with video_id, video_url, video_title, published_at.
+        """
+        playlist_id = subscription.get('source_id', '')
+        playlist_url = f'https://www.youtube.com/playlist?list={playlist_id}'
+        return self._fetch_videos_with_ytdlp(playlist_url)
+
+    def _fetch_videos_with_ytdlp(self, url: str, max_videos: int = None) -> List[dict]:
+        """Fetch video list from a YouTube URL using yt-dlp.
+
+        Works for playlists, channels, and any YouTube URL containing
+        multiple videos. Uses flat extraction (no download, no API key).
+
+        Args:
+            url: YouTube playlist or channel URL.
+            max_videos: Max videos to fetch. None = no limit (fetch all).
+
+        Returns:
+            List of video dicts with video_id, video_url, video_title, published_at.
+        """
+        try:
+            import yt_dlp
+
+            ydl_opts = {
+                'extract_flat': True,
+                'quiet': True,
+                'no_warnings': True,
+            }
+            if max_videos is not None:
+                ydl_opts['playlistend'] = max_videos
+
+            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                info = ydl.extract_info(url, download=False)
+
+            if not info:
+                logger.warning("yt-dlp returned no info for %s", url)
+                return []
+
+            videos = []
+            for entry in (info.get('entries') or []):
+                video_id = entry.get('id')
+                if video_id:
+                    # yt-dlp returns upload_date as YYYYMMDD; convert to ISO
+                    upload_date = entry.get('upload_date') or ''
+                    if upload_date and len(upload_date) == 8:
+                        upload_date = f'{upload_date[:4]}-{upload_date[4:6]}-{upload_date[6:8]}'
+
+                    videos.append({
+                        'video_id': video_id,
+                        'video_url': entry.get('url') or f'https://www.youtube.com/watch?v={video_id}',
+                        'video_title': entry.get('title', ''),
+                        'published_at': upload_date,
+                    })
+
+            return videos
+        except ImportError:
+            logger.error("yt-dlp is not installed. Install with: pip install yt-dlp")
+            return []
+        except Exception as e:
+            logger.error("Error fetching videos from %s: %s", url, e)
+            return []
+
+    def _get_backend_service(self):
+        """Lazy-load BackendService (to avoid import issues in tests)."""
+        if self._backend_service is None:
+            from backend_service import BackendService
+            self._backend_service = BackendService(db=self.db)
+        return self._backend_service

@@ -169,6 +169,22 @@ export function RestaurantTable({
           return <span className="text-2xl">{emojis[opinion] || '😐'}</span>;
         },
       }),
+      columnHelper.accessor(
+        (row) => row.published_at || row.episode_info?.published_at || row.episode_info?.analysis_date,
+        {
+          id: 'episode_date',
+          header: 'Episode Date',
+          cell: (info) => {
+            const dateStr = info.getValue();
+            if (!dateStr) return <span className="text-muted-foreground">-</span>;
+            return (
+              <span className="text-sm">
+                {new Date(dateStr).toLocaleDateString('en-IL', { day: 'numeric', month: 'short', year: 'numeric' })}
+              </span>
+            );
+          },
+        }
+      ),
       columnHelper.accessor('price_range', {
         header: 'Price',
         cell: (info) => {

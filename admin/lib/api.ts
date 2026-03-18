@@ -2,6 +2,18 @@
  * API client for Where2Eat Admin Dashboard
  */
 
+import type {
+  PipelineOverview,
+  PipelineStats,
+  QueueItem,
+  HistoryItem,
+  VideoItem,
+  VideoDetail,
+  VideoRestaurant,
+  Pagination,
+} from '@/types';
+import type { Restaurant, RestaurantListResponse, EditHistory } from '@/types/restaurant';
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
 export interface LoginCredentials {
@@ -59,11 +71,11 @@ export function clearAuthToken() {
 }
 
 /**
- * Make authenticated API request
+ * Make authenticated API request with optional abort signal
  */
 export async function apiFetch<T>(
   endpoint: string,
-  options: RequestInit = {}
+  options: RequestInit & { signal?: AbortSignal } = {}
 ): Promise<T> {
   const token = getAuthToken();
 
@@ -71,7 +83,6 @@ export async function apiFetch<T>(
     'Content-Type': 'application/json',
   };
 
-  // Add Authorization header if token exists
   if (token) {
     headers['Authorization'] = `Bearer ${token}`;
   }
@@ -82,7 +93,7 @@ export async function apiFetch<T>(
       ...headers,
       ...(options.headers || {}),
     },
-    credentials: 'include', // Include cookies for httpOnly cookie
+    credentials: 'include',
   });
 
   const data = await response.json();
@@ -98,119 +109,122 @@ export async function apiFetch<T>(
  * Auth API endpoints
  */
 export const authApi = {
-  /**
-   * Login with email and password
-   */
   async login(credentials: LoginCredentials): Promise<LoginResponse> {
     const data = await apiFetch<LoginResponse>('/api/admin/auth/login', {
       method: 'POST',
       body: JSON.stringify(credentials),
     });
-
-    // Store token in localStorage
     setAuthToken(data.token);
-
     return data;
   },
 
-  /**
-   * Logout and clear session
-   */
   async logout(): Promise<void> {
     try {
-      await apiFetch('/api/admin/auth/logout', {
-        method: 'POST',
-      });
+      await apiFetch('/api/admin/auth/logout', { method: 'POST' });
     } finally {
-      // Always clear token, even if API call fails
       clearAuthToken();
     }
   },
 
-  /**
-   * Get current user info
-   */
   async me(): Promise<AdminUser> {
     return apiFetch<AdminUser>('/api/admin/auth/me');
   },
 
-  /**
-   * Refresh authentication token
-   */
   async refresh(): Promise<{ token: string }> {
     const data = await apiFetch<{ token: string }>('/api/admin/auth/refresh', {
       method: 'POST',
     });
-
-    // Update stored token
     setAuthToken(data.token);
-
     return data;
+  },
+
+  async updateProfile(data: { name: string }): Promise<AdminUser> {
+    return apiFetch<AdminUser>('/api/admin/auth/profile', {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    });
+  },
+
+  async changePassword(data: { current_password: string; new_password: string }): Promise<{ message: string }> {
+    return apiFetch<{ message: string }>('/api/admin/auth/password', {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
   },
 };
 
 /**
- * Restaurants API endpoints (to be implemented in Sprint 2)
+ * Users API endpoints (super_admin only)
+ */
+export const usersApi = {
+  async list(): Promise<{ users: AdminUser[] }> {
+    return apiFetch<{ users: AdminUser[] }>('/api/admin/auth/users');
+  },
+
+  async create(data: { email: string; password: string; name: string; role: string }): Promise<AdminUser> {
+    return apiFetch<AdminUser>('/api/admin/auth/users', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+
+  async update(id: string, data: { role?: string; is_active?: boolean; name?: string }): Promise<AdminUser> {
+    return apiFetch<AdminUser>(`/api/admin/auth/users/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    });
+  },
+};
+
+/**
+ * Restaurants API endpoints
  */
 export const restaurantsApi = {
-  /**
-   * Get all restaurants with pagination and filters
-   */
   async list(params?: {
     page?: number;
     limit?: number;
     sort?: string;
     filter?: Record<string, string>;
-  }): Promise<any> {
+  }): Promise<RestaurantListResponse> {
     const queryParams = new URLSearchParams();
-
     if (params?.page) queryParams.append('page', params.page.toString());
     if (params?.limit) queryParams.append('limit', params.limit.toString());
     if (params?.sort) queryParams.append('sort', params.sort);
-
     if (params?.filter) {
       Object.entries(params.filter).forEach(([key, value]) => {
         queryParams.append(`filter[${key}]`, value);
       });
     }
-
     const query = queryParams.toString();
-    return apiFetch(`/api/admin/restaurants${query ? `?${query}` : ''}`);
+    return apiFetch<RestaurantListResponse>(`/api/admin/restaurants${query ? `?${query}` : ''}`);
   },
 
-  /**
-   * Get restaurant by ID
-   */
-  async get(id: string): Promise<any> {
-    return apiFetch(`/api/admin/restaurants/${id}`);
+  async get(id: string): Promise<Restaurant> {
+    return apiFetch<Restaurant>(`/api/admin/restaurants/${id}`);
   },
 
-  /**
-   * Create new restaurant
-   */
-  async create(data: any): Promise<any> {
-    return apiFetch('/api/admin/restaurants', {
+  async create(data: Partial<Restaurant>): Promise<Restaurant> {
+    return apiFetch<Restaurant>('/api/admin/restaurants', {
       method: 'POST',
       body: JSON.stringify(data),
     });
   },
 
-  /**
-   * Update restaurant
-   */
-  async update(id: string, data: any): Promise<any> {
-    return apiFetch(`/api/admin/restaurants/${id}`, {
+  async update(id: string, data: Partial<Restaurant>): Promise<Restaurant> {
+    return apiFetch<Restaurant>(`/api/admin/restaurants/${id}`, {
       method: 'PUT',
       body: JSON.stringify(data),
     });
   },
 
-  /**
-   * Delete restaurant
-   */
   async delete(id: string): Promise<void> {
-    return apiFetch(`/api/admin/restaurants/${id}`, {
-      method: 'DELETE',
+    return apiFetch(`/api/admin/restaurants/${id}`, { method: 'DELETE' });
+  },
+
+  async toggleVisibility(id: string, is_hidden: boolean): Promise<Restaurant> {
+    return apiFetch<Restaurant>(`/api/admin/restaurants/${id}/visibility`, {
+      method: 'PATCH',
+      body: JSON.stringify({ is_hidden }),
     });
   },
 };
@@ -219,16 +233,10 @@ export const restaurantsApi = {
  * Analytics API endpoints
  */
 export const analyticsApi = {
-  /**
-   * Get overview analytics
-   */
   async getOverview(): Promise<any> {
     return apiFetch('/api/admin/analytics/overview');
   },
 
-  /**
-   * Get restaurant analytics
-   */
   async getRestaurants(params?: { period?: string }): Promise<any> {
     const queryParams = new URLSearchParams();
     if (params?.period) queryParams.append('period', params.period);
@@ -236,9 +244,6 @@ export const analyticsApi = {
     return apiFetch(`/api/admin/analytics/restaurants${query ? `?${query}` : ''}`);
   },
 
-  /**
-   * Get activity feed
-   */
   async getActivities(params?: { limit?: number }): Promise<any> {
     const queryParams = new URLSearchParams();
     if (params?.limit) queryParams.append('limit', params.limit.toString());
@@ -246,9 +251,6 @@ export const analyticsApi = {
     return apiFetch(`/api/admin/analytics/activities${query ? `?${query}` : ''}`);
   },
 
-  /**
-   * Get system health metrics
-   */
   async getSystemHealth(): Promise<any> {
     return apiFetch('/api/admin/analytics/system');
   },
@@ -258,16 +260,10 @@ export const analyticsApi = {
  * Videos API endpoints
  */
 export const videosApi = {
-  /**
-   * Get all video processing jobs
-   */
   async list(): Promise<any> {
     return apiFetch('/api/admin/videos');
   },
 
-  /**
-   * Process a new YouTube video
-   */
   async process(videoUrl: string): Promise<any> {
     return apiFetch('/api/admin/videos', {
       method: 'POST',
@@ -275,20 +271,97 @@ export const videosApi = {
     });
   },
 
-  /**
-   * Get job details
-   */
   async get(id: string): Promise<any> {
     return apiFetch(`/api/admin/videos/${id}`);
   },
 
-  /**
-   * Delete job
-   */
   async delete(id: string): Promise<void> {
-    return apiFetch(`/api/admin/videos/${id}`, {
-      method: 'DELETE',
-    });
+    return apiFetch(`/api/admin/videos/${id}`, { method: 'DELETE' });
+  },
+};
+
+/**
+ * Verification API types
+ */
+export interface VerificationResult {
+  is_hallucination: boolean;
+  confidence: number;
+  recommendation: 'accept' | 'reject' | 'review';
+  reasons: string[];
+}
+
+export interface RestaurantVerification {
+  id: string;
+  name_hebrew: string;
+  name_english: string;
+  google_name: string;
+  city: string;
+  cuisine_type: string;
+  verification: VerificationResult;
+  episode_info: {
+    video_id: string;
+    video_url: string;
+    analysis_date: string;
+  };
+  mention_context: string;
+  host_comments: string;
+  data_completeness: {
+    has_location: boolean;
+    has_cuisine: boolean;
+    has_google_data: boolean;
+    has_photos: boolean;
+    has_rating: boolean;
+  };
+}
+
+export interface VerificationReport {
+  generated_at: string;
+  total: number;
+  summary: {
+    accepted: number;
+    rejected: number;
+    needs_review: number;
+  };
+  restaurants: RestaurantVerification[];
+}
+
+/**
+ * Verification API endpoints
+ */
+export const verificationApi = {
+  async getReport(): Promise<VerificationReport> {
+    return apiFetch<VerificationReport>('/api/admin/verification/report');
+  },
+
+  async revalidate(): Promise<{
+    message: string;
+    results: {
+      total: number;
+      accepted: number;
+      rejected: number;
+      needs_review: number;
+    };
+    rejected_names: string[];
+  }> {
+    return apiFetch('/api/admin/verification/revalidate', { method: 'POST' });
+  },
+
+  async getRestaurant(id: string): Promise<{
+    restaurant: {
+      name_hebrew: string;
+      name_english: string;
+      google_name: string;
+      city: string;
+    };
+    verification: VerificationResult;
+    details: {
+      mention_context: string;
+      host_comments: string;
+      episode_video_id: string;
+      analysis_date: string;
+    };
+  }> {
+    return apiFetch(`/api/admin/verification/restaurant/${id}`);
   },
 };
 
@@ -296,9 +369,6 @@ export const videosApi = {
  * Articles API endpoints
  */
 export const articlesApi = {
-  /**
-   * Get all articles with pagination and filters
-   */
   async list(params?: {
     page?: number;
     limit?: number;
@@ -307,27 +377,19 @@ export const articlesApi = {
     search?: string;
   }): Promise<any> {
     const queryParams = new URLSearchParams();
-
     if (params?.page) queryParams.append('page', params.page.toString());
     if (params?.limit) queryParams.append('limit', params.limit.toString());
     if (params?.status) queryParams.append('status', params.status);
     if (params?.author_id) queryParams.append('author_id', params.author_id);
     if (params?.search) queryParams.append('search', params.search);
-
     const query = queryParams.toString();
     return apiFetch(`/api/admin/articles${query ? `?${query}` : ''}`);
   },
 
-  /**
-   * Get article by ID
-   */
   async get(id: string): Promise<any> {
     return apiFetch(`/api/admin/articles/${id}`);
   },
 
-  /**
-   * Create new article
-   */
   async create(data: any): Promise<any> {
     return apiFetch('/api/admin/articles', {
       method: 'POST',
@@ -335,9 +397,6 @@ export const articlesApi = {
     });
   },
 
-  /**
-   * Update article
-   */
   async update(id: string, data: any): Promise<any> {
     return apiFetch(`/api/admin/articles/${id}`, {
       method: 'PUT',
@@ -345,31 +404,16 @@ export const articlesApi = {
     });
   },
 
-  /**
-   * Delete article
-   */
   async delete(id: string): Promise<void> {
-    return apiFetch(`/api/admin/articles/${id}`, {
-      method: 'DELETE',
-    });
+    return apiFetch(`/api/admin/articles/${id}`, { method: 'DELETE' });
   },
 
-  /**
-   * Publish article
-   */
   async publish(id: string): Promise<any> {
-    return apiFetch(`/api/admin/articles/${id}/publish`, {
-      method: 'POST',
-    });
+    return apiFetch(`/api/admin/articles/${id}/publish`, { method: 'POST' });
   },
 
-  /**
-   * Unpublish article
-   */
   async unpublish(id: string): Promise<any> {
-    return apiFetch(`/api/admin/articles/${id}/unpublish`, {
-      method: 'POST',
-    });
+    return apiFetch(`/api/admin/articles/${id}/unpublish`, { method: 'POST' });
   },
 };
 
@@ -377,9 +421,6 @@ export const articlesApi = {
  * Bulk operations API endpoints
  */
 export const bulkApi = {
-  /**
-   * Bulk delete restaurants
-   */
   async deleteRestaurants(ids: string[]): Promise<any> {
     return apiFetch('/api/admin/bulk/restaurants/delete', {
       method: 'POST',
@@ -387,9 +428,6 @@ export const bulkApi = {
     });
   },
 
-  /**
-   * Bulk update restaurants
-   */
   async updateRestaurants(ids: string[], updates: any): Promise<any> {
     return apiFetch('/api/admin/bulk/restaurants/update', {
       method: 'POST',
@@ -397,32 +435,19 @@ export const bulkApi = {
     });
   },
 
-  /**
-   * Export restaurants
-   */
   async exportRestaurants(format: 'json' | 'csv' = 'json', ids?: string[]): Promise<Blob> {
     const params = new URLSearchParams({ format });
     if (ids && ids.length > 0) {
       ids.forEach(id => params.append('ids', id));
     }
-
     const response = await fetch(`${API_URL}/api/admin/bulk/restaurants/export?${params}`, {
-      headers: {
-        Authorization: `Bearer ${getAuthToken()}`,
-      },
+      headers: { Authorization: `Bearer ${getAuthToken()}` },
       credentials: 'include',
     });
-
-    if (!response.ok) {
-      throw new Error('Export failed');
-    }
-
+    if (!response.ok) throw new Error('Export failed');
     return response.blob();
   },
 
-  /**
-   * Import restaurants
-   */
   async importRestaurants(restaurants: any[]): Promise<any> {
     return apiFetch('/api/admin/bulk/restaurants/import', {
       method: 'POST',
@@ -430,40 +455,198 @@ export const bulkApi = {
     });
   },
 
-  /**
-   * Export articles
-   */
   async exportArticles(ids?: string[]): Promise<Blob> {
     const params = new URLSearchParams();
     if (ids && ids.length > 0) {
       ids.forEach(id => params.append('ids', id));
     }
-
     const response = await fetch(`${API_URL}/api/admin/bulk/articles/export?${params}`, {
-      headers: {
-        Authorization: `Bearer ${getAuthToken()}`,
-      },
+      headers: { Authorization: `Bearer ${getAuthToken()}` },
       credentials: 'include',
     });
-
-    if (!response.ok) {
-      throw new Error('Export failed');
-    }
-
+    if (!response.ok) throw new Error('Export failed');
     return response.blob();
   },
 
-  /**
-   * Get audit log / edit history
-   */
-  async getEditHistory(filters?: { restaurant_id?: string; admin_user_id?: string; limit?: number }): Promise<any> {
+  async getEditHistory(filters?: { restaurant_id?: string; admin_user_id?: string; limit?: number }): Promise<{ history: EditHistory[] }> {
     const params = new URLSearchParams();
     if (filters?.restaurant_id) params.append('restaurant_id', filters.restaurant_id);
     if (filters?.admin_user_id) params.append('admin_user_id', filters.admin_user_id);
     if (filters?.limit) params.append('limit', filters.limit.toString());
+    return apiFetch<{ history: EditHistory[] }>(`/api/admin/audit/history?${params}`);
+  },
+};
 
-    const response = await apiFetch(`/api/admin/audit/history?${params}`);
-    return response;
+/**
+ * Subscriptions API endpoints
+ */
+export const subscriptionsApi = {
+  async list(): Promise<any> {
+    return apiFetch('/api/admin/subscriptions');
+  },
+  async get(id: string): Promise<any> {
+    return apiFetch(`/api/admin/subscriptions/${id}`);
+  },
+  async add(data: { source_url: string; source_name?: string; priority?: number; check_interval_hours?: number }): Promise<any> {
+    return apiFetch('/api/admin/subscriptions', { method: 'POST', body: JSON.stringify(data) });
+  },
+  async update(id: string, data: any): Promise<any> {
+    return apiFetch(`/api/admin/subscriptions/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  },
+  async delete(id: string): Promise<void> {
+    return apiFetch(`/api/admin/subscriptions/${id}`, { method: 'DELETE' });
+  },
+  async pause(id: string): Promise<any> {
+    return apiFetch(`/api/admin/subscriptions/${id}/pause`, { method: 'POST' });
+  },
+  async resume(id: string): Promise<any> {
+    return apiFetch(`/api/admin/subscriptions/${id}/resume`, { method: 'POST' });
+  },
+  async check(id: string): Promise<any> {
+    return apiFetch(`/api/admin/subscriptions/${id}/check`, { method: 'POST' });
+  },
+};
+
+/**
+ * Episodes API endpoints
+ */
+export const episodesApi = {
+  async list(params?: { search?: string; page?: number; limit?: number }): Promise<any> {
+    const qp = new URLSearchParams();
+    if (params?.search) qp.append('search', params.search);
+    if (params?.page) qp.append('page', params.page.toString());
+    if (params?.limit) qp.append('limit', params.limit.toString());
+    return apiFetch(`/api/admin/episodes?${qp}`);
+  },
+
+  async getRestaurants(episodeId: string): Promise<{ restaurants: VideoRestaurant[] }> {
+    return apiFetch<{ restaurants: VideoRestaurant[] }>(`/api/admin/episodes/${episodeId}/restaurants`);
+  },
+};
+
+/**
+ * Pipeline API endpoints
+ */
+export const pipelineApi = {
+  async getOverview(): Promise<{ overview: PipelineOverview }> {
+    return apiFetch<{ overview: PipelineOverview }>('/api/admin/pipeline');
+  },
+  async getQueue(page = 1, limit = 20): Promise<{ items: QueueItem[]; queue: QueueItem[]; total: number; total_pages: number }> {
+    return apiFetch(`/api/admin/pipeline/queue?page=${page}&limit=${limit}`);
+  },
+  async getHistory(page = 1, limit = 20): Promise<{ items: HistoryItem[]; history: HistoryItem[]; total: number; total_pages: number }> {
+    return apiFetch(`/api/admin/pipeline/history?page=${page}&limit=${limit}`);
+  },
+  async getLogs(params?: { level?: string; event_type?: string; page?: number; limit?: number }): Promise<any> {
+    const qp = new URLSearchParams();
+    if (params?.level) qp.append('level', params.level);
+    if (params?.event_type) qp.append('event_type', params.event_type);
+    if (params?.page) qp.append('page', params.page.toString());
+    if (params?.limit) qp.append('limit', params.limit.toString());
+    return apiFetch(`/api/admin/pipeline/logs?${qp}`);
+  },
+  async getStats(): Promise<{ stats: PipelineStats }> {
+    return apiFetch<{ stats: PipelineStats }>('/api/admin/pipeline/stats');
+  },
+  async getAllVideos(params?: { page?: number; limit?: number; status?: string; search?: string }): Promise<{
+    videos: VideoItem[];
+    pagination: Pagination;
+    status_summary: Record<string, number>;
+  }> {
+    const qp = new URLSearchParams();
+    if (params?.page) qp.append('page', params.page.toString());
+    if (params?.limit) qp.append('limit', (params.limit || 20).toString());
+    if (params?.status && params.status !== 'all') qp.append('status', params.status);
+    if (params?.search) qp.append('search', params.search);
+    return apiFetch(`/api/admin/pipeline/all-videos?${qp}`);
+  },
+  async retry(id: string): Promise<any> {
+    return apiFetch(`/api/admin/pipeline/${id}/retry`, { method: 'POST' });
+  },
+  async skip(id: string): Promise<any> {
+    return apiFetch(`/api/admin/pipeline/${id}/skip`, { method: 'POST' });
+  },
+  async prioritize(id: string): Promise<any> {
+    return apiFetch(`/api/admin/pipeline/${id}/prioritize`, { method: 'POST' });
+  },
+  async remove(id: string): Promise<void> {
+    return apiFetch(`/api/admin/pipeline/${id}`, { method: 'DELETE' });
+  },
+  async retryAllFailed(): Promise<{ success: boolean; message: string; count: number }> {
+    return apiFetch('/api/admin/pipeline/retry-all-failed', { method: 'POST' });
+  },
+  async getVideoDetail(queueId: string): Promise<VideoDetail> {
+    return apiFetch<VideoDetail>(`/api/admin/pipeline/${queueId}/detail`);
+  },
+  async analyzeVideo(url: string): Promise<any> {
+    return apiFetch('/api/analyze', {
+      method: 'POST',
+      body: JSON.stringify({ url }),
+    });
+  },
+  async getHealth(): Promise<{
+    status: string;
+    timestamp: string;
+    pipeline: {
+      running: boolean;
+      scheduler_enabled: boolean;
+      next_poll_at: string | null;
+      next_process_at: string | null;
+      queue_depth: number;
+      currently_processing: number;
+    };
+  }> {
+    return apiFetch('/health');
+  },
+  // Scheduler control methods (from admin-dashboard branch)
+  async schedulerStatus(): Promise<PipelineStatus> {
+    return apiFetch('/api/admin/pipeline/status');
+  },
+  async schedulerStart(options?: { poll_interval_ms?: number; process_interval_ms?: number }): Promise<any> {
+    return apiFetch('/api/admin/pipeline/start', { method: 'POST', body: JSON.stringify(options || {}) });
+  },
+  async schedulerStop(): Promise<any> {
+    return apiFetch('/api/admin/pipeline/stop', { method: 'POST' });
+  },
+  async schedulerUpdateSettings(settings: { poll_interval_ms?: number; process_interval_ms?: number; enabled?: boolean }): Promise<any> {
+    return apiFetch('/api/admin/pipeline/settings', { method: 'PUT', body: JSON.stringify(settings) });
+  },
+  async schedulerPollNow(): Promise<any> {
+    return apiFetch('/api/admin/pipeline/poll-now', { method: 'POST' });
+  },
+  async schedulerProcessNow(): Promise<any> {
+    return apiFetch('/api/admin/pipeline/process-now', { method: 'POST' });
+  },
+};
+
+/**
+ * Deep Dive API endpoints
+ */
+export const deepDiveApi = {
+  async listEpisodes(params?: {
+    search?: string;
+    status?: string;
+    page?: number;
+    limit?: number;
+  }): Promise<any> {
+    const qp = new URLSearchParams();
+    if (params?.search) qp.append('search', params.search);
+    if (params?.status) qp.append('status', params.status);
+    if (params?.page) qp.append('page', params.page.toString());
+    if (params?.limit) qp.append('limit', params.limit.toString());
+    return apiFetch(`/api/admin/deepdive?${qp}`);
+  },
+
+  async getEpisodeDetail(videoId: string): Promise<any> {
+    return apiFetch(`/api/admin/deepdive/${videoId}`);
+  },
+
+  async getRestaurantDetail(id: string): Promise<any> {
+    return apiFetch(`/api/admin/deepdive/restaurants/${id}`);
+  },
+
+  async reprocessEpisode(videoId: string): Promise<any> {
+    return apiFetch(`/api/admin/deepdive/${videoId}/reprocess`, { method: 'POST' });
   },
 };
 
@@ -802,35 +985,13 @@ export const queueApi = {
   },
 };
 
-export const pipelineApi = {
-  async status(): Promise<PipelineStatus> {
-    return apiFetch('/api/admin/pipeline/status');
-  },
-  async start(options?: { poll_interval_ms?: number; process_interval_ms?: number }): Promise<any> {
-    return apiFetch('/api/admin/pipeline/start', {
-      method: 'POST',
-      body: JSON.stringify(options || {}),
-    });
-  },
-  async stop(): Promise<any> {
-    return apiFetch('/api/admin/pipeline/stop', { method: 'POST' });
-  },
-  async updateSettings(settings: { poll_interval_ms?: number; process_interval_ms?: number; enabled?: boolean }): Promise<any> {
-    return apiFetch('/api/admin/pipeline/settings', {
-      method: 'PUT',
-      body: JSON.stringify(settings),
-    });
-  },
-  async pollNow(): Promise<any> {
-    return apiFetch('/api/admin/pipeline/poll-now', { method: 'POST' });
-  },
-  async processNow(): Promise<any> {
-    return apiFetch('/api/admin/pipeline/process-now', { method: 'POST' });
-  },
-};
+// NOTE: pipelineApi is defined above with main's full implementation.
+// Scheduler control methods are added here as extensions.
+// Use pipelineApi.schedulerStatus(), pipelineApi.schedulerStart(), etc.
 
 export default {
   auth: authApi,
+  users: usersApi,
   restaurants: restaurantsApi,
   analytics: analyticsApi,
   articles: articlesApi,
@@ -840,5 +1001,8 @@ export default {
   errors: errorsApi,
   channels: channelsApi,
   queue: queueApi,
+  subscriptions: subscriptionsApi,
+  episodes: episodesApi,
   pipeline: pipelineApi,
+  deepDive: deepDiveApi,
 };
