@@ -40,6 +40,33 @@ jobs:
           working-directory: ./web
           vercel-args: '--prod'
 
+  deploy-admin-vercel:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check Vercel secrets
+        id: check-secrets
+        run: |
+          if [ -z "${{ secrets.VERCEL_TOKEN }}" ] || [ -z "${{ secrets.VERCEL_ADMIN_PROJECT_ID }}" ]; then
+            echo "skip=true" >> $GITHUB_OUTPUT
+            echo "::notice::Skipping admin Vercel deploy - VERCEL_TOKEN or VERCEL_ADMIN_PROJECT_ID not configured."
+          else
+            echo "skip=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Deploy Admin to Vercel
+        if: steps.check-secrets.outputs.skip != 'true'
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_ADMIN_PROJECT_ID }}
+          working-directory: ./admin
+          vercel-args: '--prod'
+
   deploy-api-railway:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
