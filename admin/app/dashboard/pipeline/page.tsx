@@ -7,9 +7,18 @@ import { queryKeys, REFETCH_INTERVALS } from '@/lib/constants';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { RotateCcw, AlertCircle, RefreshCw, Clock, Radio } from 'lucide-react';
+import {
+  RotateCcw,
+  AlertCircle,
+  RefreshCw,
+  Clock,
+  Radio,
+  Rss,
+  Play,
+  Zap,
+} from 'lucide-react';
 import type { PipelineOverview, PipelineStats, QueueItem, HistoryItem } from '@/types';
-import { StatusStrip } from '@/components/pipeline/status-strip';
+import { PipelineFlow } from '@/components/pipeline/pipeline-flow';
 import { NowProcessing } from '@/components/pipeline/now-processing';
 import { QueueTable } from '@/components/pipeline/queue-table';
 import { FailedItems } from '@/components/pipeline/failed-items';
@@ -75,6 +84,22 @@ export default function PipelinePage() {
     },
   });
 
+  // Poll now
+  const pollNowMutation = useMutation({
+    mutationFn: () => pipelineApi.schedulerPollNow(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.pipeline.all });
+    },
+  });
+
+  // Process now
+  const processNowMutation = useMutation({
+    mutationFn: () => pipelineApi.schedulerProcessNow(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.pipeline.all });
+    },
+  });
+
   const handleQueueAction = async (id: string, action: 'prioritize' | 'skip' | 'remove') => {
     const key = `${id}-${action}`;
     setActionLoading(key);
@@ -104,6 +129,7 @@ export default function PipelinePage() {
   };
 
   const failedCount = overview?.failed_24h ?? overview?.failed ?? failedItems.length;
+  const schedulerRunning = healthData?.pipeline?.running ?? false;
 
   return (
     <div className="space-y-6 p-6">
@@ -112,10 +138,38 @@ export default function PipelinePage() {
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Pipeline Monitor</h1>
           <p className="text-muted-foreground mt-1">
-            Real-time view of video processing queue and activity
+            Track videos from discovery through analysis — last 3 months
           </p>
         </div>
         <div className="flex gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => pollNowMutation.mutate()}
+            disabled={pollNowMutation.isPending}
+            title="Check YouTube for new videos now"
+          >
+            {pollNowMutation.isPending ? (
+              <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+            ) : (
+              <Rss className="h-4 w-4 mr-2" />
+            )}
+            Poll Now
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => processNowMutation.mutate()}
+            disabled={processNowMutation.isPending || (overview?.queued ?? 0) === 0}
+            title="Process the next queued video now"
+          >
+            {processNowMutation.isPending ? (
+              <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+            ) : (
+              <Play className="h-4 w-4 mr-2" />
+            )}
+            Process Next
+          </Button>
           <Button
             variant="destructive"
             size="sm"
@@ -123,68 +177,88 @@ export default function PipelinePage() {
             disabled={retryAllFailedMutation.isPending || !failedCount}
           >
             <RotateCcw className="h-4 w-4 mr-2" />
-            Retry All Failed
+            Retry Failed
           </Button>
-          <Button asChild variant="outline">
+          <Button asChild variant="outline" size="sm">
             <Link href="/dashboard/pipeline/logs">
               <AlertCircle className="h-4 w-4 mr-2" />
-              View Logs
+              Logs
             </Link>
           </Button>
         </div>
       </div>
 
-      {/* Status Strip */}
-      <StatusStrip
-        overview={overview}
-        stats={stats}
-        isLoading={overviewLoading || statsLoading}
-      />
-
-      {/* Scheduler Status */}
-      {healthData?.pipeline && (
-        <div className="flex items-center gap-4 rounded-lg border bg-card p-3 text-sm">
-          <div className="flex items-center gap-1.5">
-            <Radio className={`h-3.5 w-3.5 ${healthData.pipeline.running ? 'text-green-500' : 'text-red-500'}`} />
-            <span className="font-medium">
-              Scheduler {healthData.pipeline.running ? 'Active' : 'Stopped'}
-            </span>
-          </div>
-          <span className="text-muted-foreground">|</span>
-          <div className="flex items-center gap-1.5 text-muted-foreground">
-            <Clock className="h-3.5 w-3.5" />
-            <span>Next poll: {healthData.pipeline.next_poll_at
-              ? new Date(healthData.pipeline.next_poll_at).toLocaleString()
-              : 'N/A'}</span>
-          </div>
-          <span className="text-muted-foreground">|</span>
-          <div className="flex items-center gap-1.5 text-muted-foreground">
-            <Clock className="h-3.5 w-3.5" />
-            <span>Next process: {healthData.pipeline.next_process_at
-              ? new Date(healthData.pipeline.next_process_at).toLocaleString()
-              : 'N/A'}</span>
-          </div>
+      {/* Scheduler Status Bar */}
+      <div className="flex items-center gap-4 rounded-lg border bg-card px-4 py-2.5 text-sm">
+        <div className="flex items-center gap-1.5">
+          <Radio className={`h-3.5 w-3.5 ${schedulerRunning ? 'text-green-500' : 'text-red-500'}`} />
+          <span className="font-medium">
+            Scheduler {schedulerRunning ? 'Active' : 'Stopped'}
+          </span>
         </div>
-      )}
+        <span className="text-muted-foreground">|</span>
+        <div className="flex items-center gap-1.5 text-muted-foreground">
+          <Clock className="h-3.5 w-3.5" />
+          <span>
+            Next poll:{' '}
+            {healthData?.pipeline?.next_poll_at
+              ? new Date(healthData.pipeline.next_poll_at).toLocaleString()
+              : 'N/A'}
+          </span>
+        </div>
+        <span className="text-muted-foreground">|</span>
+        <div className="flex items-center gap-1.5 text-muted-foreground">
+          <Zap className="h-3.5 w-3.5" />
+          <span>
+            Next process:{' '}
+            {healthData?.pipeline?.next_process_at
+              ? new Date(healthData.pipeline.next_process_at).toLocaleString()
+              : 'N/A'}
+          </span>
+        </div>
+        {healthData?.pipeline && (
+          <>
+            <span className="text-muted-foreground">|</span>
+            <span className="text-muted-foreground">
+              Queue depth: <strong className="text-foreground">{healthData.pipeline.queue_depth}</strong>
+            </span>
+          </>
+        )}
+      </div>
+
+      {/* Pipeline Flow Visualization */}
+      <PipelineFlow overview={overview} stats={stats} />
 
       {/* Tabs */}
-      <Tabs defaultValue="overview" className="space-y-4">
+      <Tabs defaultValue="all-videos" className="space-y-4">
         <TabsList>
+          <TabsTrigger value="all-videos">
+            All Videos
+            {(overview?.total ?? 0) > 0 && (
+              <Badge variant="secondary" className="ml-1.5 h-5 min-w-5 px-1 text-[10px]">
+                {overview?.total}
+              </Badge>
+            )}
+          </TabsTrigger>
           <TabsTrigger value="overview">
-            Overview
+            Queue & Processing
             {(overview?.processing ?? 0) > 0 && (
               <Badge variant="secondary" className="ml-1.5 h-5 min-w-5 px-1 text-[10px]">
                 {overview?.processing}
               </Badge>
             )}
           </TabsTrigger>
-          <TabsTrigger value="all-videos">All Videos</TabsTrigger>
           <TabsTrigger value="logs">
             <Link href="/dashboard/pipeline/logs" className="flex items-center">
               Logs
             </Link>
           </TabsTrigger>
         </TabsList>
+
+        {/* All Videos Tab (now default) */}
+        <TabsContent value="all-videos">
+          <AllVideosTable />
+        </TabsContent>
 
         {/* Overview Tab */}
         <TabsContent value="overview" className="space-y-5">
@@ -210,11 +284,6 @@ export default function PipelinePage() {
 
           {/* Analyze Input */}
           <AnalyzeInput />
-        </TabsContent>
-
-        {/* All Videos Tab */}
-        <TabsContent value="all-videos">
-          <AllVideosTable />
         </TabsContent>
 
         {/* Logs Tab - redirects to logs sub-page */}

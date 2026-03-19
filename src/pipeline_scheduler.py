@@ -11,8 +11,12 @@ PipelineLogger, and BackendService into a scheduled pipeline that:
 """
 
 import logging
+import time
+import xml.etree.ElementTree as ET
 from datetime import datetime, timedelta
 from typing import Optional, List, Dict
+from urllib.request import urlopen, Request
+from urllib.error import URLError
 
 from database import Database, get_database
 from subscription_manager import SubscriptionManager
@@ -180,6 +184,16 @@ class PipelineScheduler:
         """
         subscriptions = self.sub_manager.list_subscriptions(active_only=True)
 
+        if not subscriptions:
+            logger.warning("No active subscriptions found — nothing to poll")
+            self.pipeline_logger.warning(
+                'poll_empty',
+                'No active subscriptions configured. Add subscriptions via admin panel.',
+            )
+            return
+
+        logger.info("Polling %d active subscription(s)", len(subscriptions))
+
         for sub in subscriptions:
             sub_id = sub['id']
             sub_name = sub.get('source_name') or sub.get('source_id', 'unknown')
@@ -205,6 +219,19 @@ class PipelineScheduler:
                     last_checked_at=datetime.utcnow().isoformat(),
                 )
                 continue
+
+            if not videos:
+                logger.warning(
+                    "Subscription %s (%s) returned 0 videos — "
+                    "both RSS and yt-dlp may be failing",
+                    sub_name, sub_id,
+                )
+                self.pipeline_logger.warning(
+                    'poll_no_videos',
+                    f'No videos returned for {sub_name} ({sub_id}). '
+                    f'Check if the playlist/channel ID is correct.',
+                    subscription_id=sub_id,
+                )
 
             # Filter out videos older than the age cutoff
             videos = self._filter_by_age(videos)
@@ -538,48 +565,169 @@ class PipelineScheduler:
     def _sort_videos_by_date(videos: List[dict]) -> List[dict]:
         """Sort videos by published_at descending (most recent first).
 
-        Videos without a valid published_at are placed at the end (treated as oldest).
+        Videos without a valid published_at are placed at the FRONT
+        (treated as most recent), since yt-dlp often cannot retrieve
+        dates for playlist videos and their position implies recency.
         """
         def sort_key(v):
             date_str = v.get('published_at') or ''
             if not date_str:
-                return ''
+                # Sort undated videos to the front by using a far-future date
+                return '9999-12-31T23:59:59'
             return date_str
 
         return sorted(videos, key=sort_key, reverse=True)
 
     def _fetch_channel_videos(self, subscription: dict) -> List[dict]:
-        """Fetch videos from a YouTube channel or playlist using yt-dlp.
+        """Fetch videos from a YouTube channel or playlist.
 
         Returns list of dicts: [{video_id, video_url, video_title, published_at}, ...]
 
         This method is separated to be easily mockable in tests.
-        Dispatches to _fetch_playlist_videos for playlist subscriptions,
-        or uses _fetch_videos_with_ytdlp for channel subscriptions.
 
-        No API key required — uses yt-dlp for all fetching.
+        Strategy: Try YouTube RSS feed first (works reliably from data
+        centers), fall back to yt-dlp if RSS fails or returns no results.
         """
-        if subscription.get('source_type') == 'playlist':
-            return self._fetch_playlist_videos(subscription)
+        source_type = subscription.get('source_type', '')
+        source_id = subscription.get('source_id', '')
 
-        source_url = subscription.get('source_url', '')
-        if not source_url:
-            logger.warning("No source_url for subscription %s", subscription.get('id'))
-            return []
-        return self._fetch_videos_with_ytdlp(source_url)
+        if not source_id:
+            source_url = subscription.get('source_url', '')
+            if not source_url:
+                logger.warning("No source_id or source_url for subscription %s",
+                               subscription.get('id'))
+                return []
+            # Fall back to yt-dlp for unresolved URLs
+            return self._fetch_videos_with_ytdlp(source_url)
 
-    def _fetch_playlist_videos(self, subscription: dict) -> List[dict]:
-        """Fetch videos from a YouTube playlist using yt-dlp (no API key needed).
+        # Try RSS first (reliable from data centers, no API key needed)
+        videos = self._fetch_videos_from_rss(source_type, source_id)
+        if videos:
+            logger.info("RSS feed returned %d videos for %s (%s)",
+                        len(videos), source_id, source_type)
+            return videos
+
+        # Fall back to yt-dlp
+        logger.info("RSS returned 0 videos for %s, falling back to yt-dlp", source_id)
+        if source_type == 'playlist':
+            url = f'https://www.youtube.com/playlist?list={source_id}'
+        else:
+            url = subscription.get('source_url', '')
+            if not url:
+                url = f'https://www.youtube.com/channel/{source_id}'
+        return self._fetch_videos_with_ytdlp(url)
+
+    def _fetch_videos_from_rss(self, source_type: str, source_id: str,
+                                max_retries: int = 3) -> List[dict]:
+        """Fetch videos from YouTube's public RSS/Atom feed.
+
+        YouTube exposes RSS feeds for both channels and playlists:
+        - Channel: https://www.youtube.com/feeds/videos.xml?channel_id=CHANNEL_ID
+        - Playlist: https://www.youtube.com/feeds/videos.xml?playlist_id=PLAYLIST_ID
+
+        These feeds are NOT blocked by YouTube's anti-bot measures (unlike
+        yt-dlp scraping), making them reliable from data center IPs.
+
+        Returns up to 15 most recent videos (YouTube RSS limit).
 
         Args:
-            subscription: Subscription dict with 'source_id' (playlist ID).
+            source_type: 'channel' or 'playlist'.
+            source_id: YouTube channel or playlist ID.
+            max_retries: Number of retry attempts for transient failures.
 
         Returns:
-            List of video dicts with video_id, video_url, video_title, published_at.
+            List of video dicts, or empty list on failure.
         """
-        playlist_id = subscription.get('source_id', '')
-        playlist_url = f'https://www.youtube.com/playlist?list={playlist_id}'
-        return self._fetch_videos_with_ytdlp(playlist_url)
+        if source_type == 'playlist':
+            feed_url = f'https://www.youtube.com/feeds/videos.xml?playlist_id={source_id}'
+        elif source_type == 'channel':
+            feed_url = f'https://www.youtube.com/feeds/videos.xml?channel_id={source_id}'
+        else:
+            logger.warning("RSS not supported for source_type=%s", source_type)
+            return []
+
+        for attempt in range(max_retries):
+            try:
+                req = Request(feed_url, headers={
+                    'User-Agent': 'Where2Eat/1.0 (restaurant discovery)',
+                })
+                with urlopen(req, timeout=30) as response:
+                    xml_data = response.read()
+
+                return self._parse_youtube_rss(xml_data)
+
+            except URLError as e:
+                logger.warning("RSS fetch attempt %d/%d failed for %s: %s",
+                               attempt + 1, max_retries, source_id, e)
+                if attempt < max_retries - 1:
+                    time.sleep(2 ** attempt)  # 1s, 2s backoff
+            except ET.ParseError as e:
+                logger.error("RSS XML parse error for %s: %s", source_id, e)
+                return []
+            except Exception as e:
+                logger.error("RSS unexpected error for %s: %s", source_id, e)
+                if attempt < max_retries - 1:
+                    time.sleep(2 ** attempt)
+
+        logger.warning("All %d RSS fetch attempts failed for %s", max_retries, source_id)
+        return []
+
+    @staticmethod
+    def _parse_youtube_rss(xml_data: bytes) -> List[dict]:
+        """Parse YouTube Atom feed XML into video dicts.
+
+        YouTube's feed uses the Atom namespace with media extensions.
+        Each <entry> contains the video ID in <yt:videoId>, title in <title>,
+        and publication date in <published>.
+        """
+        ns = {
+            'atom': 'http://www.w3.org/2005/Atom',
+            'yt': 'http://www.youtube.com/xml/schemas/2015',
+            'media': 'http://search.yahoo.com/mrss/',
+        }
+
+        root = ET.fromstring(xml_data)
+        videos = []
+
+        for entry in root.findall('atom:entry', ns):
+            video_id_elem = entry.find('yt:videoId', ns)
+            title_elem = entry.find('atom:title', ns)
+            published_elem = entry.find('atom:published', ns)
+
+            if video_id_elem is None:
+                continue
+
+            video_id = video_id_elem.text.strip()
+            title = title_elem.text.strip() if title_elem is not None and title_elem.text else ''
+
+            published_at = ''
+            if published_elem is not None and published_elem.text:
+                # Convert '2024-01-15T10:30:00+00:00' to '2024-01-15T10:30:00'
+                raw = published_elem.text.strip()
+                # Remove timezone suffix for consistency with yt-dlp format
+                if '+' in raw:
+                    published_at = raw[:raw.rfind('+')]
+                elif raw.endswith('Z'):
+                    published_at = raw[:-1]
+                else:
+                    published_at = raw
+
+            videos.append({
+                'video_id': video_id,
+                'video_url': f'https://www.youtube.com/watch?v={video_id}',
+                'video_title': title,
+                'published_at': published_at,
+            })
+
+        return videos
+
+    def _fetch_playlist_videos(self, subscription: dict) -> List[dict]:
+        """Fetch videos from a YouTube playlist.
+
+        Kept for backward compatibility with tests that mock this method.
+        Delegates to _fetch_channel_videos which handles RSS + yt-dlp fallback.
+        """
+        return self._fetch_channel_videos(subscription)
 
     def _fetch_videos_with_ytdlp(self, url: str, max_videos: int = None) -> List[dict]:
         """Fetch video list from a YouTube URL using yt-dlp.
@@ -587,9 +735,11 @@ class PipelineScheduler:
         Works for playlists, channels, and any YouTube URL containing
         multiple videos. Uses flat extraction (no download, no API key).
 
+        This is the fallback method when RSS feeds don't work.
+
         Args:
             url: YouTube playlist or channel URL.
-            max_videos: Max videos to fetch. None = no limit (fetch all).
+            max_videos: Max videos to fetch. None = use default (15).
 
         Returns:
             List of video dicts with video_id, video_url, video_title, published_at.
@@ -597,15 +747,11 @@ class PipelineScheduler:
         try:
             import yt_dlp
 
-            # Flat extraction — fast, gets video IDs and titles.
-            # Dates are often unavailable for playlist videos; we rely on
-            # playlist position (newest first) + a small fetch limit instead.
             ydl_opts = {
                 'extract_flat': True,
                 'quiet': True,
                 'no_warnings': True,
             }
-            # Only fetch the most recent N videos from the playlist.
             fetch_limit = max_videos or 15
             ydl_opts['playlistend'] = fetch_limit
 
@@ -631,12 +777,13 @@ class PipelineScheduler:
                         'published_at': upload_date,
                     })
 
+            logger.info("yt-dlp returned %d videos for %s", len(videos), url)
             return videos
         except ImportError:
             logger.error("yt-dlp is not installed. Install with: pip install yt-dlp")
             return []
         except Exception as e:
-            logger.error("Error fetching videos from %s: %s", url, e)
+            logger.error("yt-dlp error fetching videos from %s: %s", url, e)
             return []
 
     def _get_backend_service(self):
