@@ -14,6 +14,7 @@ import tempfile
 import uuid
 from datetime import datetime, timedelta
 from unittest.mock import Mock, patch, MagicMock
+from urllib.error import URLError
 
 # Add project paths
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
@@ -181,7 +182,7 @@ class TestPollSubscriptions:
         assert logs['total'] >= 1
 
     def test_poll_handles_playlist_subscription(self, scheduler, db):
-        """Playlist subscriptions use _fetch_playlist_videos."""
+        """Playlist subscriptions fetch videos correctly."""
         mgr = SubscriptionManager(db)
         sub = mgr.add_subscription(
             source_url='https://www.youtube.com/playlist?list=PLtest123',
@@ -191,16 +192,21 @@ class TestPollSubscriptions:
 
         videos = _make_video_list(['pl_vid_1', 'pl_vid_2'])
 
+        # Mock _fetch_channel_videos since it's the top-level dispatch
         with patch.object(
-            scheduler, '_fetch_playlist_videos', return_value=videos
-        ) as mock_fetch_playlist:
+            scheduler, '_fetch_channel_videos', return_value=videos
+        ) as mock_fetch:
             scheduler.poll_subscriptions()
 
-        # _fetch_playlist_videos should have been called (via _fetch_channel_videos dispatch)
-        mock_fetch_playlist.assert_called_once()
-        call_arg = mock_fetch_playlist.call_args[0][0]
-        assert call_arg['source_type'] == 'playlist'
-        assert call_arg['source_id'] == 'PLtest123'
+        # Should have been called with the playlist subscription
+        assert mock_fetch.call_count >= 1
+        # Find the call for our playlist subscription
+        playlist_calls = [
+            c for c in mock_fetch.call_args_list
+            if c[0][0].get('source_id') == 'PLtest123'
+        ]
+        assert len(playlist_calls) == 1
+        assert playlist_calls[0][0][0]['source_type'] == 'playlist'
 
         # Videos should be enqueued
         queue_mgr = VideoQueueManager(db)
@@ -843,3 +849,151 @@ class TestVideoAgeCutoff:
 
         assert 'boundary' in queued
         assert 'past' not in queued
+
+
+# ---------------------------------------------------------------------------
+# TestRSSFeedFetching
+# ---------------------------------------------------------------------------
+class TestRSSFeedFetching:
+    """Test the YouTube RSS feed fetching and parsing."""
+
+    SAMPLE_RSS_XML = b"""<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns:yt="http://www.youtube.com/xml/schemas/2015"
+      xmlns:media="http://search.yahoo.com/mrss/"
+      xmlns="http://www.w3.org/2005/Atom">
+  <title>Test Channel</title>
+  <entry>
+    <yt:videoId>abc123</yt:videoId>
+    <title>First Video</title>
+    <published>2026-03-01T10:00:00+00:00</published>
+  </entry>
+  <entry>
+    <yt:videoId>def456</yt:videoId>
+    <title>Second Video</title>
+    <published>2026-02-28T15:30:00+00:00</published>
+  </entry>
+  <entry>
+    <yt:videoId>ghi789</yt:videoId>
+    <title>Third Video</title>
+    <published>2026-02-20T08:00:00Z</published>
+  </entry>
+</feed>"""
+
+    def test_parse_youtube_rss_extracts_videos(self, scheduler):
+        """RSS parser extracts video_id, title, and published_at from Atom feed."""
+        from pipeline_scheduler import PipelineScheduler
+
+        videos = PipelineScheduler._parse_youtube_rss(self.SAMPLE_RSS_XML)
+
+        assert len(videos) == 3
+        assert videos[0]['video_id'] == 'abc123'
+        assert videos[0]['video_title'] == 'First Video'
+        assert videos[0]['published_at'] == '2026-03-01T10:00:00'
+        assert videos[0]['video_url'] == 'https://www.youtube.com/watch?v=abc123'
+
+    def test_parse_youtube_rss_handles_z_timezone(self, scheduler):
+        """RSS parser handles Z-suffix UTC timestamps."""
+        from pipeline_scheduler import PipelineScheduler
+
+        videos = PipelineScheduler._parse_youtube_rss(self.SAMPLE_RSS_XML)
+
+        # Third entry has 'Z' suffix
+        assert videos[2]['video_id'] == 'ghi789'
+        assert videos[2]['published_at'] == '2026-02-20T08:00:00'
+
+    def test_parse_youtube_rss_empty_feed(self, scheduler):
+        """RSS parser returns empty list for feed with no entries."""
+        from pipeline_scheduler import PipelineScheduler
+
+        xml = b"""<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns:yt="http://www.youtube.com/xml/schemas/2015"
+      xmlns="http://www.w3.org/2005/Atom">
+  <title>Empty Channel</title>
+</feed>"""
+        videos = PipelineScheduler._parse_youtube_rss(xml)
+        assert videos == []
+
+    def test_fetch_channel_videos_tries_rss_first(self, scheduler, db):
+        """_fetch_channel_videos tries RSS before yt-dlp."""
+        mgr = SubscriptionManager(db)
+        sub = mgr.add_subscription(
+            source_url='https://www.youtube.com/playlist?list=PLtest_rss',
+            source_name='RSS Test Playlist',
+        )
+
+        rss_videos = _make_video_list(['rss_v1', 'rss_v2'])
+
+        with patch.object(scheduler, '_fetch_videos_from_rss', return_value=rss_videos) as mock_rss, \
+             patch.object(scheduler, '_fetch_videos_with_ytdlp') as mock_ytdlp:
+            result = scheduler._fetch_channel_videos(sub)
+
+        # RSS should be called, yt-dlp should NOT
+        mock_rss.assert_called_once_with('playlist', 'PLtest_rss')
+        mock_ytdlp.assert_not_called()
+        assert len(result) == 2
+
+    def test_fetch_channel_videos_falls_back_to_ytdlp(self, scheduler, db):
+        """If RSS returns empty, _fetch_channel_videos falls back to yt-dlp."""
+        mgr = SubscriptionManager(db)
+        sub = mgr.add_subscription(
+            source_url='https://www.youtube.com/playlist?list=PLtest_fallback',
+            source_name='Fallback Test',
+        )
+
+        ytdlp_videos = _make_video_list(['yt_v1'])
+
+        with patch.object(scheduler, '_fetch_videos_from_rss', return_value=[]) as mock_rss, \
+             patch.object(scheduler, '_fetch_videos_with_ytdlp', return_value=ytdlp_videos) as mock_ytdlp:
+            result = scheduler._fetch_channel_videos(sub)
+
+        mock_rss.assert_called_once()
+        mock_ytdlp.assert_called_once()
+        assert len(result) == 1
+
+    def test_fetch_rss_retries_on_network_error(self, scheduler):
+        """_fetch_videos_from_rss retries on transient network errors."""
+        with patch('pipeline_scheduler.urlopen') as mock_urlopen:
+            mock_urlopen.side_effect = URLError('Connection refused')
+
+            result = scheduler._fetch_videos_from_rss('playlist', 'PLtest_retry', max_retries=2)
+
+        assert result == []
+        assert mock_urlopen.call_count == 2
+
+    def test_fetch_rss_succeeds_on_retry(self, scheduler):
+        """_fetch_videos_from_rss succeeds on second attempt after transient failure."""
+        mock_response = MagicMock()
+        mock_response.read.return_value = self.SAMPLE_RSS_XML
+        mock_response.__enter__ = Mock(return_value=mock_response)
+        mock_response.__exit__ = Mock(return_value=False)
+
+        with patch('pipeline_scheduler.urlopen') as mock_urlopen:
+            mock_urlopen.side_effect = [
+                URLError('Temporary failure'),
+                mock_response,
+            ]
+
+            result = scheduler._fetch_videos_from_rss('playlist', 'PLtest_retry2', max_retries=3)
+
+        assert len(result) == 3
+        assert mock_urlopen.call_count == 2
+
+    def test_poll_logs_warning_when_no_videos_found(self, scheduler, subscription, db):
+        """Poll logs a warning when fetch returns 0 videos."""
+        with patch.object(scheduler, '_fetch_channel_videos', return_value=[]):
+            scheduler.poll_subscriptions()
+
+        pl = PipelineLogger(db)
+        logs = pl.get_logs(event_type='poll_no_videos')
+        assert logs['total'] >= 1
+
+    def test_poll_logs_warning_when_no_subscriptions(self, db):
+        """Poll logs a warning when there are no active subscriptions."""
+        from pipeline_scheduler import PipelineScheduler
+        sched = PipelineScheduler(db=db)
+
+        sched.poll_subscriptions()
+
+        pl = PipelineLogger(db)
+        logs = pl.get_logs(event_type='poll_empty')
+        assert logs['total'] >= 1
