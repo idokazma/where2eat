@@ -643,7 +643,7 @@ def start_pipeline_scheduler():
     try:
         from pipeline_scheduler import PipelineScheduler
         scheduler = PipelineScheduler()
-        scheduler.start(force=True)
+        scheduler.start()
         status = scheduler.get_status()
         if status['running']:
             print(f"[SCHEDULER] Pipeline scheduler started")

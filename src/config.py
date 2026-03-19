@@ -17,4 +17,5 @@ PIPELINE_MAX_RECENT_VIDEOS = int(os.getenv('PIPELINE_MAX_RECENT_VIDEOS', '10'))
 PIPELINE_MAX_VIDEO_AGE_DAYS = int(os.getenv('PIPELINE_MAX_VIDEO_AGE_DAYS', '90'))
 PIPELINE_STALE_TIMEOUT_HOURS = int(os.getenv('PIPELINE_STALE_TIMEOUT_HOURS', '2'))
 PIPELINE_LOG_RETENTION_DAYS = int(os.getenv('PIPELINE_LOG_RETENTION_DAYS', '30'))
-PIPELINE_SCHEDULER_ENABLED = os.getenv('PIPELINE_SCHEDULER_ENABLED', 'true').lower() == 'true'
+# PIPELINE_SCHEDULER_ENABLED removed — scheduler state is now persisted in
+# the 'settings' DB table (key='scheduler_enabled') and controlled via admin panel.

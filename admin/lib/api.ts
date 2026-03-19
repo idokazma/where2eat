@@ -11,6 +11,8 @@ import type {
   VideoDetail,
   VideoRestaurant,
   Pagination,
+  SubscriptionDetail,
+  SubscriptionVideosResponse,
 } from '@/types';
 import type { Restaurant, RestaurantListResponse, EditHistory } from '@/types/restaurant';
 
@@ -548,7 +550,7 @@ export const pipelineApi = {
   async getStats(): Promise<{ stats: PipelineStats }> {
     return apiFetch<{ stats: PipelineStats }>('/api/admin/pipeline/stats');
   },
-  async getAllVideos(params?: { page?: number; limit?: number; status?: string; search?: string }): Promise<{
+  async getAllVideos(params?: { page?: number; limit?: number; status?: string; search?: string; subscription_id?: string }): Promise<{
     videos: VideoItem[];
     pagination: Pagination;
     status_summary: Record<string, number>;
@@ -558,7 +560,13 @@ export const pipelineApi = {
     if (params?.limit) qp.append('limit', (params.limit || 20).toString());
     if (params?.status && params.status !== 'all') qp.append('status', params.status);
     if (params?.search) qp.append('search', params.search);
+    if (params?.subscription_id) qp.append('subscription_id', params.subscription_id);
     return apiFetch(`/api/admin/pipeline/all-videos?${qp}`);
+  },
+  async getSubscriptionVideos(subscriptionId: string, page = 1, limit = 20, status?: string): Promise<SubscriptionVideosResponse> {
+    const qp = new URLSearchParams({ page: page.toString(), limit: limit.toString() });
+    if (status && status !== 'all') qp.append('status', status);
+    return apiFetch<SubscriptionVideosResponse>(`/api/admin/pipeline/subscription/${subscriptionId}/videos?${qp}`);
   },
   async retry(id: string): Promise<any> {
     return apiFetch(`/api/admin/pipeline/${id}/retry`, { method: 'POST' });

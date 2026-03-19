@@ -30,7 +30,6 @@ from config import (
     PIPELINE_MAX_VIDEO_AGE_DAYS,
     PIPELINE_STALE_TIMEOUT_HOURS,
     PIPELINE_LOG_RETENTION_DAYS,
-    PIPELINE_SCHEDULER_ENABLED,
 )
 
 try:
@@ -64,14 +63,44 @@ class PipelineScheduler:
         self._running = False
         self._backend_service = None
 
-    def start(self, force=False):
+    def _get_db_enabled(self) -> bool:
+        """Read scheduler_enabled from the settings table (default: True)."""
+        try:
+            with self.db.get_connection() as conn:
+                cursor = conn.cursor()
+                cursor.execute(
+                    "SELECT value FROM settings WHERE key = 'scheduler_enabled'"
+                )
+                row = cursor.fetchone()
+                if row is None:
+                    return True  # default: enabled
+                return row['value'].lower() == 'true'
+        except Exception:
+            return True
+
+    def _set_db_enabled(self, enabled: bool):
+        """Persist scheduler_enabled to the settings table."""
+        try:
+            with self.db.get_connection() as conn:
+                cursor = conn.cursor()
+                cursor.execute(
+                    """INSERT INTO settings (key, value, updated_at)
+                       VALUES ('scheduler_enabled', ?, datetime('now'))
+                       ON CONFLICT(key) DO UPDATE SET value = excluded.value,
+                                                      updated_at = excluded.updated_at""",
+                    ('true' if enabled else 'false',),
+                )
+        except Exception as e:
+            logger.error("Failed to persist scheduler_enabled: %s", e)
+
+    def start(self):
         """Start the scheduler with APScheduler.
 
-        No-op if PIPELINE_SCHEDULER_ENABLED is False (unless force=True).
+        No-op if scheduler_enabled is False in the DB settings.
         Creates interval jobs for poll, process, and cleanup.
         """
-        if not force and not PIPELINE_SCHEDULER_ENABLED:
-            logger.info("Pipeline scheduler is disabled by configuration")
+        if not self._get_db_enabled():
+            logger.info("Pipeline scheduler is disabled (persisted setting)")
             return
 
         if BackgroundScheduler is None:
@@ -118,7 +147,7 @@ class PipelineScheduler:
             self._running = False
 
     def stop(self):
-        """Stop the scheduler gracefully."""
+        """Stop the scheduler gracefully and persist disabled state."""
         if self._scheduler is not None:
             try:
                 self._scheduler.shutdown()
@@ -127,6 +156,7 @@ class PipelineScheduler:
                 logger.error("Error shutting down scheduler: %s", e)
         self._running = False
         self._scheduler = None
+        self._set_db_enabled(False)
 
     def get_status(self) -> dict:
         """Return scheduler status.
@@ -165,7 +195,7 @@ class PipelineScheduler:
 
         return {
             'running': self._running,
-            'scheduler_enabled': PIPELINE_SCHEDULER_ENABLED,
+            'scheduler_enabled': self._get_db_enabled(),
             'next_poll_at': next_poll_at,
             'next_process_at': next_process_at,
             'queue_depth': queue_depth,
@@ -341,7 +371,7 @@ class PipelineScheduler:
         except Exception as e:
             error_msg = f'BackendService error: {e}'
             logger.error("Error processing video %s: %s", video_id, e)
-            self.queue_manager.mark_failed(queue_id, error_msg)
+            self.queue_manager.mark_failed(queue_id, error_msg, processing_steps=None)
             self.pipeline_logger.error(
                 'video_failed',
                 f'Video {video_id} processing failed: {error_msg}',
@@ -353,11 +383,13 @@ class PipelineScheduler:
         if result.get('success'):
             restaurants_found = result.get('restaurants_found', 0)
             episode_id = result.get('episode_id')
+            steps = result.get('steps', {})
 
             self.queue_manager.mark_completed(
                 queue_id,
                 restaurants_found=restaurants_found,
                 episode_id=episode_id,
+                processing_steps=steps if steps else None,
             )
 
             if subscription_id:
@@ -382,7 +414,8 @@ class PipelineScheduler:
             )
         else:
             error_msg = result.get('error', 'Unknown processing error')
-            self.queue_manager.mark_failed(queue_id, error_msg)
+            steps = result.get('steps', {})
+            self.queue_manager.mark_failed(queue_id, error_msg, processing_steps=steps if steps else None)
 
             self.pipeline_logger.error(
                 'video_failed',

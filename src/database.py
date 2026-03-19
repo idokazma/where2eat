@@ -426,6 +426,12 @@ class Database:
             except sqlite3.OperationalError:
                 pass  # video_queue table may not exist yet
 
+            # Add processing_steps column to video_queue
+            try:
+                cursor.execute('ALTER TABLE video_queue ADD COLUMN processing_steps TEXT')
+            except sqlite3.OperationalError:
+                pass  # Column already exists
+
             # Backfill restaurants.video_url, video_id, channel_name from episodes
             try:
                 cursor.execute('''

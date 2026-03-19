@@ -170,9 +170,11 @@ class VideoQueueManager:
         queue_id: str,
         restaurants_found: int = 0,
         episode_id: str = None,
+        processing_steps: dict = None,
     ) -> bool:
         """Mark a video as successfully processed."""
         now = datetime.utcnow().isoformat()
+        steps_json = json.dumps(processing_steps) if processing_steps else None
 
         with self.db.get_connection() as conn:
             cursor = conn.cursor()
@@ -182,10 +184,11 @@ class VideoQueueManager:
                 SET status = 'completed',
                     processing_completed_at = ?,
                     restaurants_found = ?,
-                    episode_id = ?
+                    episode_id = ?,
+                    processing_steps = ?
                 WHERE id = ?
                 """,
-                (now, restaurants_found, episode_id, queue_id),
+                (now, restaurants_found, episode_id, steps_json, queue_id),
             )
             return cursor.rowcount > 0
 
@@ -197,7 +200,7 @@ class VideoQueueManager:
         "Sign in to confirm your age",
     ]
 
-    def mark_failed(self, queue_id: str, error_message: str) -> bool:
+    def mark_failed(self, queue_id: str, error_message: str, processing_steps: dict = None) -> bool:
         """Mark a video as failed.
 
         If the error_message matches a permanent failure pattern, the video
@@ -206,6 +209,8 @@ class VideoQueueManager:
         Otherwise: permanently mark as 'failed'.
         Appends to error_log JSON array.
         """
+        steps_json = json.dumps(processing_steps) if processing_steps else None
+
         with self.db.get_connection() as conn:
             cursor = conn.cursor()
             cursor.execute(
@@ -253,7 +258,8 @@ class VideoQueueManager:
                         attempt_count = ?,
                         error_message = ?,
                         error_log = ?,
-                        processing_completed_at = ?
+                        processing_completed_at = ?,
+                        processing_steps = COALESCE(?, processing_steps)
                     WHERE id = ?
                     """,
                     (
@@ -261,6 +267,7 @@ class VideoQueueManager:
                         error_message,
                         json.dumps(error_log),
                         datetime.utcnow().isoformat(),
+                        steps_json,
                         queue_id,
                     ),
                 )
@@ -284,7 +291,8 @@ class VideoQueueManager:
                         attempt_count = ?,
                         scheduled_for = ?,
                         error_message = ?,
-                        error_log = ?
+                        error_log = ?,
+                        processing_steps = COALESCE(?, processing_steps)
                     WHERE id = ?
                     """,
                     (
@@ -292,6 +300,7 @@ class VideoQueueManager:
                         scheduled_for,
                         error_message,
                         json.dumps(error_log),
+                        steps_json,
                         queue_id,
                     ),
                 )
@@ -304,7 +313,8 @@ class VideoQueueManager:
                         attempt_count = ?,
                         error_message = ?,
                         error_log = ?,
-                        processing_completed_at = ?
+                        processing_completed_at = ?,
+                        processing_steps = COALESCE(?, processing_steps)
                     WHERE id = ?
                     """,
                     (
@@ -312,6 +322,7 @@ class VideoQueueManager:
                         error_message,
                         json.dumps(error_log),
                         datetime.utcnow().isoformat(),
+                        steps_json,
                         queue_id,
                     ),
                 )
@@ -547,7 +558,7 @@ class VideoQueueManager:
             vq.attempt_count, vq.max_attempts, vq.scheduled_for,
             vq.processing_started_at, vq.processing_completed_at,
             vq.restaurants_found, vq.error_message, vq.error_log,
-            vq.episode_id
+            vq.episode_id, vq.processing_steps
         FROM video_queue vq
 
         UNION ALL
@@ -572,7 +583,8 @@ class VideoQueueManager:
                            AS restaurants_found,
             NULL           AS error_message,
             NULL           AS error_log,
-            e.id           AS episode_id
+            e.id           AS episode_id,
+            NULL           AS processing_steps
         FROM episodes e
         WHERE e.video_id NOT IN (SELECT video_id FROM video_queue)
     """
@@ -583,6 +595,7 @@ class VideoQueueManager:
         limit: int = 20,
         status: Optional[str] = None,
         search: Optional[str] = None,
+        subscription_id: Optional[str] = None,
     ) -> dict:
         """Get all videos regardless of status, with optional filtering.
 
@@ -614,6 +627,10 @@ class VideoQueueManager:
             if status:
                 conditions.append("status = ?")
                 params.append(status)
+
+            if subscription_id:
+                conditions.append("subscription_id = ?")
+                params.append(subscription_id)
 
             if search:
                 conditions.append(

@@ -62,6 +62,40 @@ export interface HistoryItem {
   };
 }
 
+/** Per-step results stored in video_queue.processing_steps */
+export interface ProcessingSteps {
+  transcript?: {
+    success: boolean;
+    language?: string;
+    length?: number;
+    error?: string;
+  };
+  analysis?: {
+    success: boolean;
+    restaurants_extracted?: number;
+    error?: string;
+  };
+  hallucination_filter?: {
+    success: boolean;
+    accepted?: number;
+    rejected?: number;
+    rejected_names?: string[];
+    error?: string;
+  };
+  enrichment?: {
+    success: boolean;
+    matched?: number;
+    total?: number;
+    error?: string;
+  };
+  database?: {
+    success: boolean;
+    episode_id?: string;
+    restaurants_saved?: number;
+    error?: string;
+  };
+}
+
 export interface VideoItem {
   id: string;
   video_id: string;
@@ -74,6 +108,34 @@ export interface VideoItem {
   processing_started_at: string;
   processing_completed_at: string;
   error_message: string;
+  subscription_id?: string;
+  processing_steps?: string | ProcessingSteps | null;
+}
+
+export interface SubscriptionDetail {
+  id: string;
+  source_url: string;
+  source_name: string;
+  source_type: string;
+  source_id: string;
+  is_active: boolean;
+  priority: number;
+  last_checked_at: string | null;
+  total_videos_found: number;
+  total_videos_processed: number;
+  total_restaurants_found: number;
+}
+
+export interface SubscriptionVideosResponse {
+  subscription: SubscriptionDetail;
+  videos: VideoItem[];
+  status_summary: Record<string, number>;
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    total_pages: number;
+  };
 }
 
 export interface VideoDetailQueueItem {

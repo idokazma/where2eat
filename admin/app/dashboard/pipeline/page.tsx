@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { pipelineApi } from '@/lib/api';
+import { pipelineApi, subscriptionsApi } from '@/lib/api';
 import { queryKeys, REFETCH_INTERVALS } from '@/lib/constants';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -16,8 +16,10 @@ import {
   Rss,
   Play,
   Zap,
+  ChevronDown,
+  Layers,
 } from 'lucide-react';
-import type { PipelineOverview, PipelineStats, QueueItem, HistoryItem } from '@/types';
+import type { PipelineOverview, PipelineStats, QueueItem, HistoryItem, SubscriptionDetail } from '@/types';
 import { PipelineFlow } from '@/components/pipeline/pipeline-flow';
 import { NowProcessing } from '@/components/pipeline/now-processing';
 import { QueueTable } from '@/components/pipeline/queue-table';
@@ -31,6 +33,18 @@ export default function PipelinePage() {
   const queryClient = useQueryClient();
   const [selectedQueueId, setSelectedQueueId] = useState<string | null>(null);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
+  const [selectedSubscriptionId, setSelectedSubscriptionId] = useState<string | null>(null);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  // Fetch subscriptions for the selector
+  const { data: subsData } = useQuery({
+    queryKey: ['subscriptions'],
+    queryFn: () => subscriptionsApi.list(),
+    staleTime: 60_000,
+  });
+  const subscriptions: SubscriptionDetail[] = subsData?.subscriptions ?? [];
+
+  const selectedSub = subscriptions.find((s) => s.id === selectedSubscriptionId) ?? null;
 
   // Fetch health/scheduler info
   const { data: healthData } = useQuery({
@@ -97,6 +111,20 @@ export default function PipelinePage() {
     mutationFn: () => pipelineApi.schedulerProcessNow(),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.pipeline.all });
+    },
+  });
+
+  // Scheduler start/stop
+  const schedulerStartMutation = useMutation({
+    mutationFn: () => pipelineApi.schedulerStart(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['pipeline-health'] });
+    },
+  });
+  const schedulerStopMutation = useMutation({
+    mutationFn: () => pipelineApi.schedulerStop(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['pipeline-health'] });
     },
   });
 
@@ -190,12 +218,19 @@ export default function PipelinePage() {
 
       {/* Scheduler Status Bar */}
       <div className="flex items-center gap-4 rounded-lg border bg-card px-4 py-2.5 text-sm">
-        <div className="flex items-center gap-1.5">
+        <button
+          className="flex items-center gap-1.5 hover:opacity-80 transition-opacity"
+          onClick={() =>
+            schedulerRunning ? schedulerStopMutation.mutate() : schedulerStartMutation.mutate()
+          }
+          disabled={schedulerStartMutation.isPending || schedulerStopMutation.isPending}
+          title={schedulerRunning ? 'Click to stop scheduler' : 'Click to start scheduler'}
+        >
           <Radio className={`h-3.5 w-3.5 ${schedulerRunning ? 'text-green-500' : 'text-red-500'}`} />
           <span className="font-medium">
             Scheduler {schedulerRunning ? 'Active' : 'Stopped'}
           </span>
-        </div>
+        </button>
         <span className="text-muted-foreground">|</span>
         <div className="flex items-center gap-1.5 text-muted-foreground">
           <Clock className="h-3.5 w-3.5" />
@@ -225,6 +260,88 @@ export default function PipelinePage() {
           </>
         )}
       </div>
+
+      {/* Subscription Selector */}
+      <div className="relative">
+        <button
+          className="flex items-center gap-2 px-3 py-2 rounded-lg border bg-card text-sm hover:bg-muted/50 transition-colors w-full max-w-md"
+          onClick={() => setDropdownOpen(!dropdownOpen)}
+        >
+          <Layers className="h-4 w-4 text-muted-foreground" />
+          <span className="flex-1 text-left truncate">
+            {selectedSub ? selectedSub.source_name : 'All Subscriptions'}
+          </span>
+          {selectedSub && (
+            <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4">
+              {selectedSub.total_videos_processed}/{selectedSub.total_videos_found} processed
+            </Badge>
+          )}
+          <ChevronDown className={`h-3.5 w-3.5 text-muted-foreground transition-transform ${dropdownOpen ? 'rotate-180' : ''}`} />
+        </button>
+
+        {dropdownOpen && (
+          <div className="absolute z-20 mt-1 w-full max-w-md rounded-lg border bg-card shadow-lg">
+            <button
+              className={`flex items-center gap-2 px-3 py-2 text-sm w-full hover:bg-muted/50 transition-colors ${
+                !selectedSubscriptionId ? 'bg-muted/30 font-medium' : ''
+              }`}
+              onClick={() => {
+                setSelectedSubscriptionId(null);
+                setDropdownOpen(false);
+              }}
+            >
+              All Subscriptions
+            </button>
+            {subscriptions.map((sub) => (
+              <button
+                key={sub.id}
+                className={`flex items-center justify-between gap-2 px-3 py-2 text-sm w-full hover:bg-muted/50 transition-colors ${
+                  selectedSubscriptionId === sub.id ? 'bg-muted/30 font-medium' : ''
+                }`}
+                onClick={() => {
+                  setSelectedSubscriptionId(sub.id);
+                  setDropdownOpen(false);
+                }}
+              >
+                <span className="truncate">{sub.source_name || sub.source_id}</span>
+                <span className="text-[10px] text-muted-foreground shrink-0">
+                  {sub.total_restaurants_found}R / {sub.total_videos_processed}V
+                </span>
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Subscription Info Card */}
+      {selectedSub && (
+        <div className="rounded-lg border bg-card px-4 py-3">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="font-semibold text-sm">{selectedSub.source_name}</h3>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                {selectedSub.source_type} &middot; {selectedSub.source_id}
+              </p>
+            </div>
+            <div className="flex gap-4 text-xs text-muted-foreground">
+              <div>
+                <span className="text-foreground font-semibold">{selectedSub.total_videos_found}</span> discovered
+              </div>
+              <div>
+                <span className="text-foreground font-semibold">{selectedSub.total_videos_processed}</span> processed
+              </div>
+              <div>
+                <span className="text-foreground font-semibold">{selectedSub.total_restaurants_found}</span> restaurants
+              </div>
+              <div>
+                Last polled: {selectedSub.last_checked_at
+                  ? new Date(selectedSub.last_checked_at).toLocaleString()
+                  : 'Never'}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Pipeline Flow Visualization */}
       <PipelineFlow overview={overview} stats={stats} />
@@ -257,7 +374,7 @@ export default function PipelinePage() {
 
         {/* All Videos Tab (now default) */}
         <TabsContent value="all-videos">
-          <AllVideosTable />
+          <AllVideosTable subscriptionId={selectedSubscriptionId} />
         </TabsContent>
 
         {/* Overview Tab */}
