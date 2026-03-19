@@ -476,17 +476,70 @@ class TestSchedulerLifecycle:
         assert status['running'] is False
         assert isinstance(status['queue_depth'], int)
 
-    def test_scheduler_disabled_by_config(self, db):
-        """When PIPELINE_SCHEDULER_ENABLED=False, start() is a no-op."""
+    def test_scheduler_disabled_by_db_setting(self, db):
+        """When scheduler_enabled=false in DB, start() is a no-op."""
         from pipeline_scheduler import PipelineScheduler
 
-        with patch('pipeline_scheduler.PIPELINE_SCHEDULER_ENABLED', False):
-            sched = PipelineScheduler(db=db)
-            with patch('pipeline_scheduler.BackgroundScheduler') as MockSchedulerClass:
-                sched.start()
-                MockSchedulerClass.assert_not_called()
+        # Seed the DB setting to disabled
+        with db.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute(
+                "INSERT INTO settings (key, value) VALUES ('scheduler_enabled', 'false')"
+            )
 
+        sched = PipelineScheduler(db=db)
+        with patch('pipeline_scheduler.BackgroundScheduler') as MockSchedulerClass:
+            sched.start()
+            MockSchedulerClass.assert_not_called()
+
+        assert sched._running is False
+
+    def test_scheduler_enabled_by_default(self, db):
+        """When no DB setting exists, scheduler starts by default."""
+        from pipeline_scheduler import PipelineScheduler
+
+        sched = PipelineScheduler(db=db)
+        with patch('pipeline_scheduler.BackgroundScheduler') as MockSchedulerClass:
+            mock_sched = MagicMock()
+            MockSchedulerClass.return_value = mock_sched
+            sched.start()
+            mock_sched.start.assert_called_once()
+
+        assert sched._running is True
+
+    def test_stop_persists_disabled(self, db):
+        """stop() persists scheduler_enabled=false in DB."""
+        from pipeline_scheduler import PipelineScheduler
+
+        sched = PipelineScheduler(db=db)
+        with patch('pipeline_scheduler.BackgroundScheduler') as MockSchedulerClass:
+            mock_sched = MagicMock()
+            MockSchedulerClass.return_value = mock_sched
+            sched.start()
+
+        sched.stop()
+        assert sched._running is False
+        assert sched._get_db_enabled() is False
+
+    def test_start_after_stop_requires_db_enable(self, db):
+        """After stop(), start() won't work until _set_db_enabled(True)."""
+        from pipeline_scheduler import PipelineScheduler
+
+        sched = PipelineScheduler(db=db)
+        with patch('pipeline_scheduler.BackgroundScheduler') as MockSchedulerClass:
+            mock_sched = MagicMock()
+            MockSchedulerClass.return_value = mock_sched
+            sched.start()
+            sched.stop()
+
+            # start() should be a no-op since stop persisted disabled
+            sched.start()
             assert sched._running is False
+
+            # Re-enable and start
+            sched._set_db_enabled(True)
+            sched.start()
+            assert sched._running is True
 
 
 # ---------------------------------------------------------------------------

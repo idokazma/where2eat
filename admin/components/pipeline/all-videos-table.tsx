@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, Fragment } from 'react';
+import { useState, Fragment, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -20,21 +20,36 @@ import {
   Clock,
   SkipForward,
   Loader2,
+  Shield,
+  Database as DatabaseIcon,
 } from 'lucide-react';
 import { pipelineApi, episodesApi } from '@/lib/api';
 import { queryKeys, REFETCH_INTERVALS } from '@/lib/constants';
 import { formatRelativeTime, formatProcessingDuration } from '@/lib/formatters';
-import type { VideoItem, VideoRestaurant, StatusFilter } from '@/types';
+import type { VideoItem, VideoRestaurant, StatusFilter, ProcessingSteps } from '@/types';
 import { STATUS_OPTIONS, STATUS_COLORS } from '@/types/common';
 
 /**
+ * Parse processing_steps — may be a JSON string or already an object.
+ */
+function parseSteps(item: VideoItem): ProcessingSteps | null {
+  if (!item.processing_steps) return null;
+  if (typeof item.processing_steps === 'string') {
+    try {
+      return JSON.parse(item.processing_steps) as ProcessingSteps;
+    } catch {
+      return null;
+    }
+  }
+  return item.processing_steps as ProcessingSteps;
+}
+
+/**
  * Step indicator showing which pipeline stages a video has completed.
- * Each dot represents: Fetched → Transcript → Analyzed → Enriched
+ * Uses actual processing_steps data when available, falls back to heuristics.
  */
 function StepIndicator({ item }: { item: VideoItem }) {
   const status = item.status;
-
-  // Determine completed steps based on status
   const steps = getSteps(status, item);
 
   return (
@@ -56,15 +71,57 @@ function StepIndicator({ item }: { item: VideoItem }) {
 
 function getSteps(status: string, item: VideoItem) {
   const hasRestaurants = (item.restaurants_found ?? 0) > 0;
+  const ps = parseSteps(item);
 
   type StepDef = { icon: React.ReactNode; label: string; done: boolean; className: string };
 
+  const doneClass = 'bg-green-100 text-green-600';
+  const failClass = 'bg-red-100 text-red-600';
+  const pendingClass = 'bg-gray-100 text-gray-300';
+  const activeClass = 'bg-yellow-100 text-yellow-600';
+
+  // If we have processing_steps data, use it directly
+  if (ps && status === 'completed') {
+    const transcriptOk = ps.transcript?.success !== false;
+    const analysisOk = ps.analysis?.success !== false;
+    const filterOk = ps.hallucination_filter?.success !== false;
+    const enrichOk = ps.enrichment?.success !== false;
+
+    const icons: StepDef[] = [
+      { icon: <Rss className="size-2.5" />, label: 'Fetched', done: true, className: doneClass },
+      { icon: <FileText className="size-2.5" />, label: `Transcript${ps.transcript?.language ? ` (${ps.transcript.language})` : ''}`, done: transcriptOk, className: transcriptOk ? doneClass : failClass },
+      { icon: <Brain className="size-2.5" />, label: `Analyzed${ps.analysis?.restaurants_extracted != null ? ` (${ps.analysis.restaurants_extracted} extracted)` : ''}`, done: analysisOk, className: analysisOk ? doneClass : failClass },
+      { icon: <MapPin className="size-2.5" />, label: `Enriched${ps.enrichment?.matched != null ? ` (${ps.enrichment.matched}/${ps.enrichment.total})` : ''}`, done: enrichOk && hasRestaurants, className: (enrichOk && hasRestaurants) ? doneClass : 'bg-gray-100 text-gray-400' },
+    ];
+
+    const parts: string[] = [];
+    if (ps.analysis?.restaurants_extracted != null) parts.push(`${ps.analysis.restaurants_extracted} extracted`);
+    if (ps.hallucination_filter?.rejected != null && ps.hallucination_filter.rejected > 0) parts.push(`${ps.hallucination_filter.rejected} filtered`);
+    parts.push(`${item.restaurants_found ?? 0} saved`);
+
+    return { icons, tooltip: `Completed: ${parts.join(' → ')}` };
+  }
+
+  if (ps && status === 'failed') {
+    const transcriptOk = ps.transcript?.success === true;
+    const analysisOk = ps.analysis?.success === true;
+
+    const icons: StepDef[] = [
+      { icon: <Rss className="size-2.5" />, label: 'Fetched', done: true, className: doneClass },
+      { icon: transcriptOk ? <FileText className="size-2.5" /> : <XCircle className="size-2.5" />, label: 'Transcript', done: transcriptOk, className: transcriptOk ? doneClass : failClass },
+      { icon: analysisOk ? <Brain className="size-2.5" /> : <XCircle className="size-2.5" />, label: 'Analysis', done: analysisOk, className: analysisOk ? doneClass : (transcriptOk ? failClass : pendingClass) },
+      { icon: <MapPin className="size-2.5" />, label: 'Enrichment', done: false, className: pendingClass },
+    ];
+    return { icons, tooltip: `Failed: ${item.error_message || 'Unknown error'}` };
+  }
+
+  // Heuristic fallback for old records without processing_steps
   if (status === 'completed') {
     const icons: StepDef[] = [
-      { icon: <Rss className="size-2.5" />, label: 'Fetched', done: true, className: 'bg-green-100 text-green-600' },
-      { icon: <FileText className="size-2.5" />, label: 'Transcript', done: true, className: 'bg-green-100 text-green-600' },
-      { icon: <Brain className="size-2.5" />, label: 'Analyzed', done: true, className: 'bg-green-100 text-green-600' },
-      { icon: <MapPin className="size-2.5" />, label: 'Enriched', done: hasRestaurants, className: hasRestaurants ? 'bg-green-100 text-green-600' : 'bg-gray-100 text-gray-400' },
+      { icon: <Rss className="size-2.5" />, label: 'Fetched', done: true, className: doneClass },
+      { icon: <FileText className="size-2.5" />, label: 'Transcript', done: true, className: doneClass },
+      { icon: <Brain className="size-2.5" />, label: 'Analyzed', done: true, className: doneClass },
+      { icon: <MapPin className="size-2.5" />, label: 'Enriched', done: hasRestaurants, className: hasRestaurants ? doneClass : 'bg-gray-100 text-gray-400' },
     ];
     return {
       icons,
@@ -76,40 +133,40 @@ function getSteps(status: string, item: VideoItem) {
 
   if (status === 'processing') {
     const icons: StepDef[] = [
-      { icon: <Rss className="size-2.5" />, label: 'Fetched', done: true, className: 'bg-green-100 text-green-600' },
-      { icon: <Loader2 className="size-2.5 animate-spin" />, label: 'Processing...', done: false, className: 'bg-yellow-100 text-yellow-600' },
-      { icon: <Brain className="size-2.5" />, label: 'Analyzing', done: false, className: 'bg-gray-100 text-gray-300' },
-      { icon: <MapPin className="size-2.5" />, label: 'Enrichment', done: false, className: 'bg-gray-100 text-gray-300' },
+      { icon: <Rss className="size-2.5" />, label: 'Fetched', done: true, className: doneClass },
+      { icon: <Loader2 className="size-2.5 animate-spin" />, label: 'Processing...', done: false, className: activeClass },
+      { icon: <Brain className="size-2.5" />, label: 'Analyzing', done: false, className: pendingClass },
+      { icon: <MapPin className="size-2.5" />, label: 'Enrichment', done: false, className: pendingClass },
     ];
     return { icons, tooltip: 'Currently processing...' };
   }
 
   if (status === 'failed') {
     const icons: StepDef[] = [
-      { icon: <Rss className="size-2.5" />, label: 'Fetched', done: true, className: 'bg-green-100 text-green-600' },
-      { icon: <XCircle className="size-2.5" />, label: 'Failed', done: false, className: 'bg-red-100 text-red-600' },
-      { icon: <Brain className="size-2.5" />, label: 'Analyzing', done: false, className: 'bg-gray-100 text-gray-300' },
-      { icon: <MapPin className="size-2.5" />, label: 'Enrichment', done: false, className: 'bg-gray-100 text-gray-300' },
+      { icon: <Rss className="size-2.5" />, label: 'Fetched', done: true, className: doneClass },
+      { icon: <XCircle className="size-2.5" />, label: 'Failed', done: false, className: failClass },
+      { icon: <Brain className="size-2.5" />, label: 'Analyzing', done: false, className: pendingClass },
+      { icon: <MapPin className="size-2.5" />, label: 'Enrichment', done: false, className: pendingClass },
     ];
     return { icons, tooltip: `Failed: ${item.error_message || 'Unknown error'}` };
   }
 
   if (status === 'skipped') {
     const icons: StepDef[] = [
-      { icon: <Rss className="size-2.5" />, label: 'Fetched', done: true, className: 'bg-green-100 text-green-600' },
+      { icon: <Rss className="size-2.5" />, label: 'Fetched', done: true, className: doneClass },
       { icon: <SkipForward className="size-2.5" />, label: 'Skipped', done: false, className: 'bg-gray-100 text-gray-400' },
-      { icon: <Brain className="size-2.5" />, label: 'Analyzing', done: false, className: 'bg-gray-100 text-gray-300' },
-      { icon: <MapPin className="size-2.5" />, label: 'Enrichment', done: false, className: 'bg-gray-100 text-gray-300' },
+      { icon: <Brain className="size-2.5" />, label: 'Analyzing', done: false, className: pendingClass },
+      { icon: <MapPin className="size-2.5" />, label: 'Enrichment', done: false, className: pendingClass },
     ];
     return { icons, tooltip: 'Skipped' };
   }
 
   // queued (default)
   const icons: StepDef[] = [
-    { icon: <Rss className="size-2.5" />, label: 'Fetched', done: true, className: 'bg-green-100 text-green-600' },
+    { icon: <Rss className="size-2.5" />, label: 'Fetched', done: true, className: doneClass },
     { icon: <Clock className="size-2.5" />, label: 'Queued', done: false, className: 'bg-blue-100 text-blue-600' },
-    { icon: <Brain className="size-2.5" />, label: 'Analyzing', done: false, className: 'bg-gray-100 text-gray-300' },
-    { icon: <MapPin className="size-2.5" />, label: 'Enrichment', done: false, className: 'bg-gray-100 text-gray-300' },
+    { icon: <Brain className="size-2.5" />, label: 'Analyzing', done: false, className: pendingClass },
+    { icon: <MapPin className="size-2.5" />, label: 'Enrichment', done: false, className: pendingClass },
   ];
   return { icons, tooltip: 'Queued for processing' };
 }
@@ -138,7 +195,142 @@ function StatusBadge({ status }: { status: string }) {
   );
 }
 
-export function AllVideosTable() {
+/**
+ * Enhanced expanded row showing processing step details
+ */
+function ExpandedStepDetails({ item }: { item: VideoItem }) {
+  const ps = parseSteps(item);
+
+  if (!ps) return null;
+
+  return (
+    <div className="space-y-2 mb-3">
+      <h4 className="text-[10px] uppercase font-semibold text-muted-foreground tracking-wider">
+        Processing Steps
+      </h4>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+        {/* Transcript */}
+        {ps.transcript && (
+          <div className={`rounded-md px-3 py-2 text-xs ${ps.transcript.success ? 'bg-green-50 dark:bg-green-950/20' : 'bg-red-50 dark:bg-red-950/20'}`}>
+            <div className="flex items-center gap-1.5 mb-1">
+              <FileText className="size-3" />
+              <span className="font-medium">Transcript</span>
+              {ps.transcript.success ? (
+                <CheckCircle2 className="size-3 text-green-600" />
+              ) : (
+                <XCircle className="size-3 text-red-600" />
+              )}
+            </div>
+            {ps.transcript.language && (
+              <div className="text-muted-foreground">Language: {ps.transcript.language}</div>
+            )}
+            {ps.transcript.length != null && (
+              <div className="text-muted-foreground">Length: {ps.transcript.length.toLocaleString()} chars</div>
+            )}
+            {ps.transcript.error && (
+              <div className="text-red-600 mt-1">{ps.transcript.error}</div>
+            )}
+          </div>
+        )}
+
+        {/* Analysis */}
+        {ps.analysis && (
+          <div className={`rounded-md px-3 py-2 text-xs ${ps.analysis.success ? 'bg-green-50 dark:bg-green-950/20' : 'bg-red-50 dark:bg-red-950/20'}`}>
+            <div className="flex items-center gap-1.5 mb-1">
+              <Brain className="size-3" />
+              <span className="font-medium">Analysis</span>
+              {ps.analysis.success ? (
+                <CheckCircle2 className="size-3 text-green-600" />
+              ) : (
+                <XCircle className="size-3 text-red-600" />
+              )}
+            </div>
+            {ps.analysis.restaurants_extracted != null && (
+              <div className="text-muted-foreground">Extracted: {ps.analysis.restaurants_extracted} restaurants (pre-filter)</div>
+            )}
+            {ps.analysis.error && (
+              <div className="text-red-600 mt-1">{ps.analysis.error}</div>
+            )}
+          </div>
+        )}
+
+        {/* Hallucination Filter */}
+        {ps.hallucination_filter && (
+          <div className={`rounded-md px-3 py-2 text-xs ${ps.hallucination_filter.success ? 'bg-green-50 dark:bg-green-950/20' : 'bg-yellow-50 dark:bg-yellow-950/20'}`}>
+            <div className="flex items-center gap-1.5 mb-1">
+              <Shield className="size-3" />
+              <span className="font-medium">Hallucination Filter</span>
+              {ps.hallucination_filter.success ? (
+                <CheckCircle2 className="size-3 text-green-600" />
+              ) : (
+                <XCircle className="size-3 text-yellow-600" />
+              )}
+            </div>
+            {ps.hallucination_filter.accepted != null && (
+              <div className="text-muted-foreground">
+                Accepted: {ps.hallucination_filter.accepted}
+                {ps.hallucination_filter.rejected != null && ps.hallucination_filter.rejected > 0 && (
+                  <span className="text-red-600"> / Rejected: {ps.hallucination_filter.rejected}</span>
+                )}
+              </div>
+            )}
+            {ps.hallucination_filter.rejected_names && ps.hallucination_filter.rejected_names.length > 0 && (
+              <div className="text-red-600 mt-1 text-[10px]">
+                Filtered: {ps.hallucination_filter.rejected_names.join(', ')}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Enrichment */}
+        {ps.enrichment && (
+          <div className={`rounded-md px-3 py-2 text-xs ${ps.enrichment.success ? 'bg-green-50 dark:bg-green-950/20' : 'bg-red-50 dark:bg-red-950/20'}`}>
+            <div className="flex items-center gap-1.5 mb-1">
+              <MapPin className="size-3" />
+              <span className="font-medium">Enrichment</span>
+              {ps.enrichment.success ? (
+                <CheckCircle2 className="size-3 text-green-600" />
+              ) : (
+                <XCircle className="size-3 text-red-600" />
+              )}
+            </div>
+            {ps.enrichment.matched != null && (
+              <div className="text-muted-foreground">
+                Google Places: {ps.enrichment.matched}/{ps.enrichment.total} matched
+              </div>
+            )}
+            {ps.enrichment.error && (
+              <div className="text-red-600 mt-1">{ps.enrichment.error}</div>
+            )}
+          </div>
+        )}
+
+        {/* Database */}
+        {ps.database && (
+          <div className={`rounded-md px-3 py-2 text-xs ${ps.database.success ? 'bg-green-50 dark:bg-green-950/20' : 'bg-red-50 dark:bg-red-950/20'}`}>
+            <div className="flex items-center gap-1.5 mb-1">
+              <DatabaseIcon className="size-3" />
+              <span className="font-medium">Database</span>
+              {ps.database.success ? (
+                <CheckCircle2 className="size-3 text-green-600" />
+              ) : (
+                <XCircle className="size-3 text-red-600" />
+              )}
+            </div>
+            {ps.database.restaurants_saved != null && (
+              <div className="text-muted-foreground">Saved: {ps.database.restaurants_saved} restaurants</div>
+            )}
+            {ps.database.error && (
+              <div className="text-red-600 mt-1">{ps.database.error}</div>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+export function AllVideosTable({ subscriptionId }: { subscriptionId?: string | null }) {
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [draftSearch, setDraftSearch] = useState('');
@@ -147,9 +339,18 @@ export function AllVideosTable() {
   const [restaurantCache, setRestaurantCache] = useState<Record<string, VideoRestaurant[]>>({});
   const [loadingRestaurantsFor, setLoadingRestaurantsFor] = useState<string | null>(null);
 
+  // Reset page when subscription changes
+  const queryParams = useMemo(() => ({
+    page: currentPage,
+    limit: 20,
+    status: statusFilter,
+    search: searchQuery,
+    subscription_id: subscriptionId ?? undefined,
+  }), [currentPage, statusFilter, searchQuery, subscriptionId]);
+
   const { data, isLoading, refetch } = useQuery({
-    queryKey: queryKeys.pipeline.allVideos({ page: currentPage, status: statusFilter, search: searchQuery }),
-    queryFn: () => pipelineApi.getAllVideos({ page: currentPage, limit: 20, status: statusFilter, search: searchQuery }),
+    queryKey: queryKeys.pipeline.allVideos(queryParams),
+    queryFn: () => pipelineApi.getAllVideos(queryParams),
     refetchInterval: REFETCH_INTERVALS.allVideos,
   });
 
@@ -446,6 +647,9 @@ export function AllVideosTable() {
                             </span>
                           </div>
                         </div>
+
+                        {/* Processing Steps Detail Cards */}
+                        <ExpandedStepDetails item={item} />
 
                         {item.error_message && (
                           <div className="flex items-start gap-2 text-xs text-red-600 bg-red-50 dark:bg-red-950/20 rounded-md px-3 py-2 mb-3">

@@ -88,12 +88,14 @@ async def list_all_videos(
     limit: int = Query(20, ge=1, le=100),
     status: Optional[str] = Query(None, description="Filter by status"),
     search: Optional[str] = Query(None, description="Search title or channel"),
+    subscription_id: Optional[str] = Query(None, description="Filter by subscription"),
     user: dict = Depends(get_current_user),
 ):
     """List all videos regardless of status."""
     queue_manager = _get_queue_manager()
     result = queue_manager.get_all_videos(
-        page=page, limit=limit, status=status, search=search
+        page=page, limit=limit, status=status, search=search,
+        subscription_id=subscription_id,
     )
     total = result["total"]
     return {
@@ -759,6 +761,48 @@ async def remove_from_queue(
     return {"success": True, "message": "Video removed from queue"}
 
 
+@router.get(
+    "/subscription/{subscription_id}/videos",
+    summary="Videos for a subscription",
+    description="Get all videos associated with a specific subscription, including processing steps.",
+)
+async def subscription_videos(
+    subscription_id: str,
+    page: int = Query(1, ge=1),
+    limit: int = Query(20, ge=1, le=100),
+    status: Optional[str] = Query(None, description="Filter by status"),
+    user: dict = Depends(get_current_user),
+):
+    """Get subscription metadata and its videos."""
+    from database import get_database
+    from subscription_manager import SubscriptionManager
+
+    db = get_database()
+    sub_mgr = SubscriptionManager(db)
+    sub = sub_mgr.get_subscription(subscription_id)
+
+    if not sub:
+        raise HTTPException(status_code=404, detail="Subscription not found")
+
+    queue_manager = _get_queue_manager()
+    result = queue_manager.get_all_videos(
+        page=page, limit=limit, status=status,
+        subscription_id=subscription_id,
+    )
+
+    return {
+        "subscription": sub,
+        "videos": result["items"],
+        "status_summary": result["status_summary"],
+        "pagination": {
+            "page": page,
+            "limit": limit,
+            "total": result["total"],
+            "total_pages": max(1, (result["total"] + limit - 1) // limit),
+        },
+    }
+
+
 # ==================== Scheduler Control ====================
 
 def _get_scheduler():
@@ -805,7 +849,8 @@ async def scheduler_start(
     if scheduler._running:
         return {"success": False, "message": "Scheduler is already running", "status": scheduler.get_status()}
 
-    scheduler.start(force=True)
+    scheduler._set_db_enabled(True)
+    scheduler.start()
     return {"success": True, "message": "Scheduler started", "status": scheduler.get_status()}
 
 
