@@ -515,8 +515,10 @@ class PipelineScheduler:
     def _filter_by_age(videos: List[dict]) -> List[dict]:
         """Filter out videos older than PIPELINE_MAX_VIDEO_AGE_DAYS.
 
-        Videos without a valid published_at are EXCLUDED (unknown age).
-        Only videos with a confirmed recent date are queued.
+        Videos without a valid published_at are INCLUDED — yt-dlp often
+        cannot retrieve dates for playlist videos. Since we only fetch the
+        most recent N videos from the playlist, position-based recency
+        is sufficient.
         """
         cutoff = datetime.utcnow() - timedelta(days=PIPELINE_MAX_VIDEO_AGE_DAYS)
         cutoff_str = cutoff.isoformat()
@@ -525,6 +527,8 @@ class PipelineScheduler:
         for video in videos:
             date_str = video.get('published_at') or ''
             if not date_str:
+                # No date — include (playlist order implies recency)
+                result.append(video)
                 continue
             if date_str >= cutoff_str:
                 result.append(video)
@@ -593,72 +597,39 @@ class PipelineScheduler:
         try:
             import yt_dlp
 
-            # Step 1: Fast flat extraction to get video IDs and titles
-            ydl_opts_flat = {
+            # Flat extraction — fast, gets video IDs and titles.
+            # Dates are often unavailable for playlist videos; we rely on
+            # playlist position (newest first) + a small fetch limit instead.
+            ydl_opts = {
                 'extract_flat': True,
                 'quiet': True,
                 'no_warnings': True,
             }
-            # Only fetch the N most recent videos from the playlist.
-            # Keep this small — we fetch individual metadata for each one.
+            # Only fetch the most recent N videos from the playlist.
             fetch_limit = max_videos or 15
-            ydl_opts_flat['playlistend'] = fetch_limit
+            ydl_opts['playlistend'] = fetch_limit
 
-            with yt_dlp.YoutubeDL(ydl_opts_flat) as ydl:
+            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 info = ydl.extract_info(url, download=False)
 
             if not info:
                 logger.warning("yt-dlp returned no info for %s", url)
                 return []
 
-            flat_entries = list(info.get('entries') or [])
-            if not flat_entries:
-                return []
-
-            # Step 2: For each video, fetch individual metadata to get upload_date.
-            # This is slower but reliable — and we only do it for the recent N videos.
             videos = []
-            ydl_opts_single = {
-                'quiet': True,
-                'no_warnings': True,
-                'skip_download': True,
-                'no_playlist': True,
-                'socket_timeout': 10,
-            }
-
-            for entry in flat_entries:
+            for entry in (info.get('entries') or []):
                 video_id = entry.get('id')
-                if not video_id:
-                    continue
+                if video_id:
+                    upload_date = entry.get('upload_date') or ''
+                    if upload_date and len(upload_date) == 8:
+                        upload_date = f'{upload_date[:4]}-{upload_date[4:6]}-{upload_date[6:8]}'
 
-                video_url = f'https://www.youtube.com/watch?v={video_id}'
-                video_title = entry.get('title', '')
-                upload_date = ''
-
-                try:
-                    with yt_dlp.YoutubeDL(ydl_opts_single) as ydl_single:
-                        video_info = ydl_single.extract_info(video_url, download=False)
-                    if video_info:
-                        raw_date = video_info.get('upload_date') or ''
-                        if raw_date and len(raw_date) == 8:
-                            upload_date = f'{raw_date[:4]}-{raw_date[4:6]}-{raw_date[6:8]}'
-                        if not upload_date and video_info.get('timestamp'):
-                            try:
-                                upload_date = datetime.utcfromtimestamp(
-                                    video_info['timestamp']
-                                ).strftime('%Y-%m-%d')
-                            except (ValueError, TypeError, OSError):
-                                pass
-                        video_title = video_info.get('title') or video_title
-                except Exception as e:
-                    logger.warning("Failed to fetch metadata for %s: %s", video_id, e)
-
-                videos.append({
-                    'video_id': video_id,
-                    'video_url': video_url,
-                    'video_title': video_title,
-                    'published_at': upload_date,
-                })
+                    videos.append({
+                        'video_id': video_id,
+                        'video_url': entry.get('url') or f'https://www.youtube.com/watch?v={video_id}',
+                        'video_title': entry.get('title', ''),
+                        'published_at': upload_date,
+                    })
 
             return videos
         except ImportError:
