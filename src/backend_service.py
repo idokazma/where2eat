@@ -714,7 +714,7 @@ class BackendService:
                                     status=restaurant_data.get('status', 'open'),
                                     price_range=restaurant_data.get('price_range'),
                                     host_opinion=restaurant_data.get('host_opinion'),
-                                    host_comments=restaurant_data.get('host_comments'),
+                                    host_comments=self._fix_quote(restaurant_data.get('host_comments')),
                                     menu_items=restaurant_data.get('menu_items'),
                                     special_features=restaurant_data.get('special_features'),
                                     contact_hours=restaurant_data.get('contact_hours') or contact.get('hours'),
@@ -854,6 +854,17 @@ class BackendService:
     def get_restaurant(self, restaurant_id: str) -> Optional[Dict]:
         """Get single restaurant by ID."""
         return self.db.get_restaurant(restaurant_id)
+
+    @staticmethod
+    def _fix_quote(text: Optional[str]) -> Optional[str]:
+        """Fix typos in a host quote using Gemini."""
+        if not text:
+            return text
+        try:
+            from quote_fixer import fix_quote_typos
+            return fix_quote_typos(text)
+        except Exception:
+            return text
 
     def create_restaurant(self, data: Dict) -> str:
         """Create a new restaurant."""
