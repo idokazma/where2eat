@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, Fragment, useMemo } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/admin/ui/button';
 import { Input } from '@/components/admin/ui/input';
 import {
@@ -22,6 +22,7 @@ import {
   Loader2,
   Shield,
   Database as DatabaseIcon,
+  RotateCcw,
 } from 'lucide-react';
 import { pipelineApi, episodesApi } from '@/lib/admin/api';
 import { queryKeys, REFETCH_INTERVALS } from '@/lib/admin/constants';
@@ -331,6 +332,7 @@ function ExpandedStepDetails({ item }: { item: VideoItem }) {
 }
 
 export function AllVideosTable({ subscriptionId }: { subscriptionId?: string | null }) {
+  const queryClient = useQueryClient();
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [draftSearch, setDraftSearch] = useState('');
@@ -338,6 +340,13 @@ export function AllVideosTable({ subscriptionId }: { subscriptionId?: string | n
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [restaurantCache, setRestaurantCache] = useState<Record<string, VideoRestaurant[]>>({});
   const [loadingRestaurantsFor, setLoadingRestaurantsFor] = useState<string | null>(null);
+
+  const reprocessMutation = useMutation({
+    mutationFn: (id: string) => pipelineApi.retry(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.pipeline.all });
+    },
+  });
 
   // Reset page when subscription changes
   const queryParams = useMemo(() => ({
@@ -655,6 +664,29 @@ export function AllVideosTable({ subscriptionId }: { subscriptionId?: string | n
                           <div className="flex items-start gap-2 text-xs text-red-600 bg-red-50 dark:bg-red-950/20 rounded-md px-3 py-2 mb-3">
                             <XCircle className="size-3.5 shrink-0 mt-0.5" />
                             <span>{item.error_message}</span>
+                          </div>
+                        )}
+
+                        {/* Reprocess button — available for any status except processing */}
+                        {item.status !== 'processing' && (
+                          <div className="mb-3">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="h-7 text-xs gap-1.5"
+                              disabled={reprocessMutation.isPending}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                reprocessMutation.mutate(item.id);
+                              }}
+                            >
+                              {reprocessMutation.isPending ? (
+                                <RefreshCw className="size-3 animate-spin" />
+                              ) : (
+                                <RotateCcw className="size-3" />
+                              )}
+                              {item.status === 'completed' ? 'Reprocess' : 'Process Now'}
+                            </Button>
                           </div>
                         )}
 
