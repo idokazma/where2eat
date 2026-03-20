@@ -457,6 +457,39 @@ async def update_restaurant_admin(
     return existing
 
 
+@router.patch(
+    "/restaurants/{restaurant_id}",
+    summary="Patch restaurant fields (admin)",
+    description="Update specific fields on a restaurant in the database. Requires editor role or higher.",
+)
+async def patch_restaurant_admin(
+    restaurant_id: str,
+    body: dict,
+    user: dict = Depends(require_role(["editor", "admin", "super_admin"])),
+):
+    """Patch individual restaurant fields directly in the database."""
+    from database import get_database
+
+    # Allowed fields that can be patched
+    allowed = {
+        'name_hebrew', 'name_english', 'google_name', 'city', 'neighborhood',
+        'address', 'region', 'cuisine_type', 'price_range', 'status',
+        'host_opinion', 'host_comments', 'engaging_quote', 'instagram_url',
+        'contact_phone', 'contact_website', 'is_hidden', 'is_closing', 'country',
+    }
+
+    updates = {k: v for k, v in body.items() if k in allowed}
+    if not updates:
+        raise HTTPException(status_code=400, detail="No valid fields to update")
+
+    db = get_database()
+    success = db.update_restaurant(restaurant_id, **updates)
+    if not success:
+        raise HTTPException(status_code=404, detail="Restaurant not found")
+
+    return {"success": True, "updated_fields": list(updates.keys())}
+
+
 @router.delete(
     "/restaurants/{restaurant_id}",
     summary="Delete restaurant (admin)",
@@ -467,6 +500,12 @@ async def delete_restaurant_admin(
     user: dict = Depends(require_role(["admin", "super_admin"])),
 ):
     """Delete a restaurant."""
+    # Try DB first
+    from database import get_database
+    db = get_database()
+    if db.delete_restaurant(restaurant_id):
+        return {"message": "Restaurant deleted successfully"}
+
     file_path = RESTAURANTS_DIR / f"{restaurant_id}.json"
     if not file_path.exists():
         raise HTTPException(status_code=404, detail="Restaurant not found")

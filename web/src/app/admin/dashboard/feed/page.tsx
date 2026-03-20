@@ -90,13 +90,13 @@ async function fetchFeedRestaurants(params: {
   return apiFetch(`/api/restaurants/search?${qp}`);
 }
 
-/** Update a restaurant via admin API */
+/** Patch specific restaurant fields via admin API */
 async function updateRestaurant(
   id: string,
-  data: Partial<FeedRestaurant>
-): Promise<FeedRestaurant> {
+  data: Record<string, unknown>
+): Promise<{ success: boolean }> {
   return apiFetch(`/api/admin/restaurants/${id}`, {
-    method: 'PUT',
+    method: 'PATCH',
     body: JSON.stringify(data),
   });
 }

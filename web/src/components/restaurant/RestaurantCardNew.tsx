@@ -220,9 +220,9 @@ export function RestaurantCardNew({
           </span>
         )}
 
-        {/* Title - prefer Google Places corrected name when available */}
+        {/* Title - prefer Hebrew name, fall back to Google name */}
         <h3 className="restaurant-card-title">
-          {restaurant.google_places?.google_name || restaurant.google_name || restaurant.name_hebrew}
+          {restaurant.name_hebrew || restaurant.google_places?.google_name || restaurant.google_name}
         </h3>
 
         {/* Meta line */}
