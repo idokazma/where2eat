@@ -169,26 +169,9 @@ export function HomePageNew() {
       result = result.filter(isInIsrael);
     }
 
-    // Settings: radius filter (when nearby mode is active and radius is set)
-    if (locationFilter.mode === 'nearby' && locationFilter.userCoords && settings.radiusKm) {
-      const maxMeters = settings.radiusKm * 1000;
-      const { lat, lng } = locationFilter.userCoords;
-      result = result.filter((r) => {
-        const coords = getCoordinates(r.location);
-        if (!coords) return false;
-        const R = 6371000;
-        const dLat = ((coords.latitude - lat) * Math.PI) / 180;
-        const dLon = ((coords.longitude - lng) * Math.PI) / 180;
-        const a =
-          Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-          Math.cos((lat * Math.PI) / 180) *
-            Math.cos((coords.latitude * Math.PI) / 180) *
-            Math.sin(dLon / 2) *
-            Math.sin(dLon / 2);
-        const dist = R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        return dist <= maxMeters;
-      });
-    }
+    // Nearby mode: keep all restaurants with coordinates (DiscoveryFeed sorts by distance)
+    // Restaurants without coordinates go to the end of the list
+
 
     return result;
   }, [
@@ -196,9 +179,7 @@ export function HomePageNew() {
     searchQuery,
     locationFilter.mode,
     locationFilter.neighborhood,
-    locationFilter.userCoords,
     settings.showOnlyIsrael,
-    settings.radiusKm,
   ]);
 
   // Handle restaurant click
