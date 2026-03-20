@@ -5,9 +5,9 @@ import { useRouter } from 'next/navigation';
 import { Search } from 'lucide-react';
 import { Restaurant, getCoordinates } from '@/types/restaurant';
 import { PageLayout } from '@/components/layout';
-import { FilterBar, FilterChip, LocationFilter } from '@/components/filters';
-import { TrendingSection, DiscoveryFeed } from '@/components/feed';
-import { BottomSheet } from '@/components/ui/BottomSheet';
+import { FilterBar, LocationFilter } from '@/components/filters';
+import { DiscoveryFeed } from '@/components/feed';
+
 import { PageLoadingSkeleton } from '@/components/ui/skeleton';
 import { useLocationFilter } from '@/contexts/location-filter-context';
 import { useSettings } from '@/contexts/settings-context';
@@ -32,25 +32,6 @@ function isInIsrael(restaurant: Restaurant): boolean {
 
 const PAGE_SIZE = 15;
 
-// Available cuisines for filtering
-const CUISINES = [
-  'הומוס',
-  'שווארמה',
-  'איטלקי',
-  'אסייתי',
-  'דגים',
-  'בשרים',
-  'קינוחים',
-  'קפה',
-];
-
-// Price range options
-const PRICE_RANGES = [
-  { value: 'budget', label: '₪' },
-  { value: 'mid-range', label: '₪₪' },
-  { value: 'expensive', label: '₪₪₪' },
-];
-
 export function HomePageNew() {
   const router = useRouter();
 
@@ -64,10 +45,6 @@ export function HomePageNew() {
 
   // Filter state
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCuisines, setSelectedCuisines] = useState<string[]>([]);
-  const [selectedPriceRanges, setSelectedPriceRanges] = useState<string[]>([]);
-  const [isCuisineSheetOpen, setIsCuisineSheetOpen] = useState(false);
-  const [isPriceSheetOpen, setIsPriceSheetOpen] = useState(false);
 
   // Location filter
   const locationFilter = useLocationFilter();
@@ -93,17 +70,9 @@ export function HomePageNew() {
         params.location = locationFilter.city;
       }
 
-      if (selectedCuisines.length > 0) {
-        params.cuisine = selectedCuisines[0];
-      }
-
-      if (selectedPriceRanges.length > 0) {
-        params.price_range = selectedPriceRanges[0];
-      }
-
       return params;
     },
-    [locationFilter.mode, locationFilter.city, selectedCuisines, selectedPriceRanges]
+    [locationFilter.mode, locationFilter.city]
   );
 
   // Load restaurants (first page)
@@ -191,22 +160,6 @@ export function HomePageNew() {
       );
     }
 
-    // Multi-cuisine filtering (API only supports one value; client handles the rest)
-    if (selectedCuisines.length > 1) {
-      result = result.filter((r) =>
-        selectedCuisines.some((c) =>
-          r.cuisine_type?.toLowerCase().includes(c.toLowerCase())
-        )
-      );
-    }
-
-    // Multi-price-range filtering
-    if (selectedPriceRanges.length > 1) {
-      result = result.filter((r) =>
-        selectedPriceRanges.includes(r.price_range || '')
-      );
-    }
-
     // Settings: show only Israel
     if (settings.showOnlyIsrael) {
       result = result.filter(isInIsrael);
@@ -240,8 +193,6 @@ export function HomePageNew() {
     locationFilter.mode,
     locationFilter.neighborhood,
     locationFilter.userCoords,
-    selectedCuisines,
-    selectedPriceRanges,
     settings.showOnlyIsrael,
     settings.radiusKm,
   ]);
@@ -252,24 +203,6 @@ export function HomePageNew() {
     if (id) {
       router.push(`/restaurant/${encodeURIComponent(id)}`);
     }
-  };
-
-  // Toggle cuisine selection
-  const toggleCuisine = (cuisine: string) => {
-    setSelectedCuisines((prev) =>
-      prev.includes(cuisine)
-        ? prev.filter((c) => c !== cuisine)
-        : [...prev, cuisine]
-    );
-  };
-
-  // Toggle price range selection
-  const togglePriceRange = (price: string) => {
-    setSelectedPriceRanges((prev) =>
-      prev.includes(price)
-        ? prev.filter((p) => p !== price)
-        : [...prev, price]
-    );
   };
 
   // Loading state - show skeleton
@@ -318,38 +251,11 @@ export function HomePageNew() {
         </div>
         <FilterBar>
           <LocationFilter />
-
-          {/* Cuisine filter */}
-          <FilterChip
-            label={selectedCuisines.length > 0 ? `סוג (${selectedCuisines.length})` : 'סוג'}
-            isSelected={selectedCuisines.length > 0}
-            hasDropdown
-            onClick={() => setIsCuisineSheetOpen(true)}
-            onClear={selectedCuisines.length > 0 ? () => setSelectedCuisines([]) : undefined}
-          />
-
-          {/* Price filter */}
-          <FilterChip
-            label={selectedPriceRanges.length > 0 ? `מחיר (${selectedPriceRanges.length})` : 'מחיר'}
-            isSelected={selectedPriceRanges.length > 0}
-            hasDropdown
-            onClick={() => setIsPriceSheetOpen(true)}
-            onClear={selectedPriceRanges.length > 0 ? () => setSelectedPriceRanges([]) : undefined}
-          />
         </FilterBar>
       </div>
 
-      {/* Trending Section */}
-      <div className="animate-fade-up stagger-section-2">
-        <TrendingSection
-          restaurants={restaurants}
-          onRestaurantClick={handleRestaurantClick}
-          className="mt-2"
-        />
-      </div>
-
       {/* Discovery Feed */}
-      <div className="animate-fade-up stagger-section-3">
+      <div className="animate-fade-up stagger-section-2">
         <DiscoveryFeed
           restaurants={filteredRestaurants}
           onRestaurantClick={handleRestaurantClick}
@@ -362,65 +268,6 @@ export function HomePageNew() {
         />
       </div>
 
-      {/* Cuisine Filter Sheet */}
-      <BottomSheet
-        isOpen={isCuisineSheetOpen}
-        onClose={() => setIsCuisineSheetOpen(false)}
-        title="סוג מסעדה"
-      >
-        <div className="grid grid-cols-2 gap-2">
-          {CUISINES.map((cuisine) => (
-            <button
-              key={cuisine}
-              onClick={() => toggleCuisine(cuisine)}
-              className={`p-3 rounded-lg text-sm font-medium transition-colors ${
-                selectedCuisines.includes(cuisine)
-                  ? 'bg-[var(--color-accent-subtle)] text-[var(--color-accent)] border border-[var(--color-accent)]'
-                  : 'bg-[var(--color-surface)] text-[var(--color-ink)] hover:bg-[var(--color-border)]'
-              }`}
-            >
-              {cuisine}
-            </button>
-          ))}
-        </div>
-
-        <button
-          onClick={() => setIsCuisineSheetOpen(false)}
-          className="w-full mt-4 p-4 rounded-lg bg-[var(--color-ink)] text-[var(--color-paper)] font-medium"
-        >
-          אישור
-        </button>
-      </BottomSheet>
-
-      {/* Price Filter Sheet */}
-      <BottomSheet
-        isOpen={isPriceSheetOpen}
-        onClose={() => setIsPriceSheetOpen(false)}
-        title="טווח מחירים"
-      >
-        <div className="flex gap-2">
-          {PRICE_RANGES.map((price) => (
-            <button
-              key={price.value}
-              onClick={() => togglePriceRange(price.value)}
-              className={`flex-1 p-4 rounded-lg text-lg font-medium transition-colors ${
-                selectedPriceRanges.includes(price.value)
-                  ? 'bg-[var(--color-accent-subtle)] text-[var(--color-accent)] border border-[var(--color-accent)]'
-                  : 'bg-[var(--color-surface)] text-[var(--color-ink)] hover:bg-[var(--color-border)]'
-              }`}
-            >
-              {price.label}
-            </button>
-          ))}
-        </div>
-
-        <button
-          onClick={() => setIsPriceSheetOpen(false)}
-          className="w-full mt-4 p-4 rounded-lg bg-[var(--color-ink)] text-[var(--color-paper)] font-medium"
-        >
-          אישור
-        </button>
-      </BottomSheet>
     </PageLayout>
   );
 }
