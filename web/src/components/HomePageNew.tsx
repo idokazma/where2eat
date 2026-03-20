@@ -7,7 +7,6 @@ import { Restaurant, getCoordinates } from '@/types/restaurant';
 import { PageLayout } from '@/components/layout';
 import { FilterBar, LocationFilter } from '@/components/filters';
 import { DiscoveryFeed } from '@/components/feed';
-
 import { PageLoadingSkeleton } from '@/components/ui/skeleton';
 import { useLocationFilter } from '@/contexts/location-filter-context';
 import { useSettings } from '@/contexts/settings-context';
@@ -23,29 +22,40 @@ function isInIsrael(restaurant: Restaurant): boolean {
   if (region && ISRAEL_REGIONS.includes(region)) return true;
   const city = restaurant.location?.city;
   if (city && ISRAEL_CITIES.some(c => city.includes(c))) return true;
-  // Check by coordinates (rough Israel bounding box)
   const lat = restaurant.location?.lat;
   const lng = restaurant.location?.lng;
   if (lat && lng && lat >= 29.5 && lat <= 33.4 && lng >= 34.2 && lng <= 35.9) return true;
   return false;
 }
 
-const PAGE_SIZE = 15;
+function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
+  const R = 6371000;
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLon = ((lon2 - lon1) * Math.PI) / 180;
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos((lat1 * Math.PI) / 180) *
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLon / 2) ** 2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+// How many cards to render initially / per scroll batch
+const RENDER_BATCH = 15;
 
 export function HomePageNew() {
   const router = useRouter();
 
-  // Data state
-  const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
+  // All restaurants loaded once
+  const [allRestaurants, setAllRestaurants] = useState<Restaurant[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
 
-  // Filter state
+  // Progressive rendering — how many to show
+  const [renderCount, setRenderCount] = useState(RENDER_BATCH);
+
+  // Search (instant, client-side)
   const [searchQuery, setSearchQuery] = useState('');
-  const [committedSearch, setCommittedSearch] = useState('');
 
   // Location filter
   const locationFilter = useLocationFilter();
@@ -56,107 +66,62 @@ export function HomePageNew() {
   // Favorites context
   const { setAllRestaurants: setFavoriteContext } = useFavorites();
 
-  // Ref to prevent duplicate fetches
-  const isFetchingRef = useRef(false);
-
-  const isNearby = locationFilter.mode === 'nearby';
-
-  // Build search params from current filters
-  const buildSearchParams = useCallback(
-    (page: number): Record<string, string> => {
-      const params: Record<string, string> = {
-        page: String(page),
-        limit: isNearby ? '500' : String(PAGE_SIZE),
-      };
-
-      if (locationFilter.mode === 'manual' && locationFilter.city) {
-        params.location = locationFilter.city;
-      }
-
-      // Server-side search
-      if (committedSearch.trim()) {
-        params.query = committedSearch.trim();
-      }
-
-      // Server-side distance sort
-      if (isNearby && locationFilter.userCoords) {
-        params.user_lat = String(locationFilter.userCoords.lat);
-        params.user_lng = String(locationFilter.userCoords.lng);
-      }
-
-      return params;
-    },
-    [locationFilter.mode, locationFilter.city, locationFilter.userCoords, isNearby, committedSearch]
-  );
-
-  // Load restaurants (first page)
-  const loadRestaurants = useCallback(async () => {
-    if (isFetchingRef.current) return;
-    isFetchingRef.current = true;
+  // Fetch all restaurants once
+  const loadAll = useCallback(async () => {
     setIsLoading(true);
     setError(null);
     try {
-      const params = buildSearchParams(1);
+      const params: Record<string, string> = { page: '1', limit: '1000' };
       const response = await fetch(endpoints.restaurants.search(params));
       const data = await response.json();
-
       if (data.restaurants) {
-        setRestaurants(data.restaurants);
+        setAllRestaurants(data.restaurants);
         setFavoriteContext(data.restaurants);
-        setCurrentPage(1);
-        // When nearby, all restaurants are in one batch — no more pages
-        const totalPages = data.analytics?.total_pages ?? 1;
-        setHasMore(!isNearby && 1 < totalPages);
       }
-    } catch (err) {
-      console.error('Failed to load restaurants:', err);
+    } catch {
       setError('לא ניתן לטעון מסעדות');
     } finally {
       setIsLoading(false);
-      isFetchingRef.current = false;
     }
-  }, [buildSearchParams, setFavoriteContext, isNearby]);
-
-  // Load more restaurants (next page)
-  const loadMore = useCallback(async () => {
-    if (isFetchingRef.current || !hasMore) return;
-    isFetchingRef.current = true;
-    setIsLoadingMore(true);
-    try {
-      const nextPage = currentPage + 1;
-      const params = buildSearchParams(nextPage);
-      const response = await fetch(endpoints.restaurants.search(params));
-      const data = await response.json();
-
-      if (data.restaurants?.length) {
-        setRestaurants((prev) => {
-          const updated = [...prev, ...data.restaurants];
-          setFavoriteContext(updated);
-          return updated;
-        });
-        setCurrentPage(nextPage);
-        const totalPages = data.analytics?.total_pages ?? 1;
-        setHasMore(nextPage < totalPages);
-      } else {
-        setHasMore(false);
-      }
-    } catch (err) {
-      console.error('Failed to load more restaurants:', err);
-    } finally {
-      setIsLoadingMore(false);
-      isFetchingRef.current = false;
-    }
-  }, [currentPage, hasMore, buildSearchParams, setFavoriteContext]);
+  }, [setFavoriteContext]);
 
   useEffect(() => {
-    loadRestaurants();
-  }, [loadRestaurants]);
+    loadAll();
+  }, [loadAll]);
 
-  // Client-side filtering (only what the API can't handle)
-  const filteredRestaurants = useMemo(() => {
-    let result = restaurants.filter((r) => !r.is_closing && r.status !== 'closed');
+  // Reset render count when filters change
+  useEffect(() => {
+    setRenderCount(RENDER_BATCH);
+  }, [searchQuery, locationFilter.mode, locationFilter.city, locationFilter.neighborhood]);
 
-    // Filter by neighborhood (API only filters by city)
+  // Client-side filter + sort (instant)
+  const processedRestaurants = useMemo(() => {
+    let result = allRestaurants.filter((r) => !r.is_closing && r.status !== 'closed');
+
+    // Hide hidden restaurants
+    result = result.filter((r) => !r.is_hidden);
+
+    // Search by name, English name, cuisine, host comments
+    if (searchQuery.trim()) {
+      const q = searchQuery.trim().toLowerCase();
+      result = result.filter(
+        (r) =>
+          r.name_hebrew?.toLowerCase().includes(q) ||
+          r.name_english?.toLowerCase().includes(q) ||
+          r.cuisine_type?.toLowerCase().includes(q) ||
+          r.host_comments?.toLowerCase().includes(q)
+      );
+    }
+
+    // Filter by city
+    if (locationFilter.mode === 'manual' && locationFilter.city) {
+      const city = locationFilter.city.toLowerCase();
+      result = result.filter(
+        (r) => (r.location?.city || '').toLowerCase().includes(city)
+      );
+    }
+
+    // Filter by neighborhood
     if (locationFilter.mode === 'manual' && locationFilter.neighborhood) {
       result = result.filter(
         (r) => r.location?.neighborhood === locationFilter.neighborhood
@@ -168,15 +133,33 @@ export function HomePageNew() {
       result = result.filter(isInIsrael);
     }
 
-    return result;
-  }, [
-    restaurants,
-    locationFilter.mode,
-    locationFilter.neighborhood,
-    settings.showOnlyIsrael,
-  ]);
+    // Sort by distance when nearby
+    if (locationFilter.mode === 'nearby' && locationFilter.userCoords) {
+      const { lat, lng } = locationFilter.userCoords;
+      result = [...result].sort((a, b) => {
+        const coordsA = getCoordinates(a.location);
+        const distA = coordsA ? calculateDistance(lat, lng, coordsA.latitude, coordsA.longitude) : Infinity;
+        const coordsB = getCoordinates(b.location);
+        const distB = coordsB ? calculateDistance(lat, lng, coordsB.latitude, coordsB.longitude) : Infinity;
+        return distA - distB;
+      });
+    }
 
-  // Handle restaurant click
+    return result;
+  }, [allRestaurants, searchQuery, locationFilter, settings.showOnlyIsrael]);
+
+  // Slice for progressive rendering
+  const visibleRestaurants = useMemo(
+    () => processedRestaurants.slice(0, renderCount),
+    [processedRestaurants, renderCount]
+  );
+
+  const hasMore = renderCount < processedRestaurants.length;
+
+  const handleLoadMore = useCallback(() => {
+    setRenderCount((prev) => Math.min(prev + RENDER_BATCH, processedRestaurants.length));
+  }, [processedRestaurants.length]);
+
   const handleRestaurantClick = (restaurant: Restaurant) => {
     const id = restaurant.google_places?.place_id || restaurant.id;
     if (id) {
@@ -184,7 +167,6 @@ export function HomePageNew() {
     }
   };
 
-  // Loading state - show skeleton
   if (isLoading) {
     return (
       <PageLayout showHeader showBottomNav>
@@ -193,7 +175,6 @@ export function HomePageNew() {
     );
   }
 
-  // Error state
   if (error) {
     return (
       <PageLayout showHeader showBottomNav>
@@ -201,7 +182,7 @@ export function HomePageNew() {
           <div className="text-center px-4">
             <p className="text-lg font-medium text-[var(--color-negative)]">{error}</p>
             <button
-              onClick={loadRestaurants}
+              onClick={loadAll}
               className="mt-4 px-6 py-3 bg-[var(--color-accent)] text-white rounded-lg font-medium"
             >
               נסה שוב
@@ -216,44 +197,35 @@ export function HomePageNew() {
     <PageLayout showHeader showBottomNav showSearch={false}>
       {/* Search + Filters */}
       <div className="animate-fade-up stagger-section-1">
-        <form
-          className="px-4 pt-3 pb-1"
-          onSubmit={(e) => {
-            e.preventDefault();
-            setCommittedSearch(searchQuery);
-          }}
-        >
+        <div className="px-4 pt-3 pb-1">
           <div className="relative">
             <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--color-ink-subtle)]" />
             <input
               type="text"
               placeholder="חיפוש מסעדה..."
               value={searchQuery}
-              onChange={(e) => {
-                setSearchQuery(e.target.value);
-                // Clear search when input is emptied
-                if (!e.target.value.trim()) setCommittedSearch('');
-              }}
+              onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pr-9 pl-4 py-2.5 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg text-sm text-[var(--color-ink)] placeholder:text-[var(--color-ink-subtle)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]"
             />
           </div>
-        </form>
+        </div>
         <FilterBar>
           <LocationFilter />
         </FilterBar>
       </div>
 
-      {/* Discovery Feed */}
+      {/* Discovery Feed — progressive render */}
       <div className="animate-fade-up stagger-section-2">
         <DiscoveryFeed
-          restaurants={filteredRestaurants}
+          restaurants={visibleRestaurants}
           onRestaurantClick={handleRestaurantClick}
           showDistances={locationFilter.mode === 'nearby'}
           userCoords={locationFilter.userCoords}
           hasMore={hasMore}
-          isLoadingMore={isLoadingMore}
-          onLoadMore={loadMore}
+          isLoadingMore={false}
+          onLoadMore={handleLoadMore}
           className="mt-6 pb-8"
+          totalCount={processedRestaurants.length}
         />
       </div>
 

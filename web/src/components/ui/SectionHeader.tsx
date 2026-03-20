@@ -6,6 +6,7 @@ import { ChevronLeft } from 'lucide-react';
 interface SectionHeaderProps {
   icon?: React.ReactNode;
   title: string;
+  subtitle?: string;
   action?: {
     label: string;
     href?: string;
@@ -17,6 +18,7 @@ interface SectionHeaderProps {
 export function SectionHeader({
   icon,
   title,
+  subtitle,
   action,
   className = '',
 }: SectionHeaderProps) {
@@ -25,6 +27,9 @@ export function SectionHeader({
       <h2 className="section-title">
         {icon}
         <span>{title}</span>
+        {subtitle && (
+          <span className="text-xs font-normal text-[var(--color-ink-subtle)] mr-2">{subtitle}</span>
+        )}
       </h2>
 
       {action && (
