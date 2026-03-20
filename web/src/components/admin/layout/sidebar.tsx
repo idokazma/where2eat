@@ -19,6 +19,7 @@ import {
   Rss,
   GitBranch,
   Microscope,
+  Eye,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/admin/ui/button';
@@ -50,6 +51,7 @@ const sections: NavSection[] = [
   {
     label: 'Content',
     items: [
+      { name: 'Feed', href: '/admin/dashboard/feed', icon: Eye },
       { name: 'Restaurants', href: '/admin/dashboard/restaurants', icon: UtensilsCrossed },
       { name: 'Articles', href: '/admin/dashboard/articles', icon: FileText },
     ],
