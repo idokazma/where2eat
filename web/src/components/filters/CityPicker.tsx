@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { ChevronRight, Check, MapPin, X } from 'lucide-react';
 
 interface City {
@@ -80,10 +81,9 @@ export function CityPicker({
 
   if (!isOpen) return null;
 
-  // Neighborhood view
-  if (viewingCity) {
-    return (
-      <div className="fixed inset-0 z-[1000] bg-[var(--color-paper)] flex flex-col animate-fade-in">
+  // Render via portal to escape any parent transform/overflow stacking context
+  const content = viewingCity ? (
+    <div className="fixed inset-0 z-[1000] bg-[var(--color-paper)] flex flex-col animate-fade-in">
         {/* Header */}
         <div className="flex items-center gap-3 px-4 pt-[calc(env(safe-area-inset-top)+16px)] pb-4 border-b border-[var(--color-border)]">
           <button
@@ -132,11 +132,7 @@ export function CityPicker({
           </div>
         </div>
       </div>
-    );
-  }
-
-  // City list view
-  return (
+  ) : (
     <div className="fixed inset-0 z-[1000] bg-[var(--color-paper)] flex flex-col animate-fade-in">
       {/* Header */}
       <div className="flex items-center justify-between px-4 pt-[calc(env(safe-area-inset-top)+16px)] pb-4 border-b border-[var(--color-border)]">
@@ -175,4 +171,8 @@ export function CityPicker({
       </div>
     </div>
   );
+
+  // Portal to document.body to escape any parent transform stacking context
+  if (typeof document === 'undefined') return content;
+  return createPortal(content, document.body);
 }
