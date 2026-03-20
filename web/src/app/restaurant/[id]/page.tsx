@@ -257,10 +257,10 @@ export default function RestaurantDetailPage() {
             className="text-3xl sm:text-4xl font-black text-white mb-1"
             style={{ textShadow: '0 2px 8px rgba(0,0,0,0.5), 0 1px 2px rgba(0,0,0,0.3)' }}
           >
-            {restaurant.name_hebrew || restaurant.google_places?.google_name || restaurant.google_name}
+            {restaurant.name_english || restaurant.name_hebrew || restaurant.google_places?.google_name}
           </h1>
-          {restaurant.name_english && (
-            <p className="text-white/60 text-sm font-accent">{restaurant.name_english}</p>
+          {restaurant.name_english && restaurant.name_hebrew && (
+            <p className="text-white/60 text-sm font-accent">{restaurant.name_hebrew}</p>
           )}
           <div className="flex items-center gap-3 mt-2">
             {restaurant.cuisine_type && (

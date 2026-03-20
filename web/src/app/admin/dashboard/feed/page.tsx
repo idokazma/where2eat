@@ -292,7 +292,7 @@ export default function AdminFeedPage() {
             const imageUrl = getImageUrl(r);
             const isExpanded = expandedId === r.id;
             const isHidden = !!r.is_hidden;
-            const displayName = r.google_places?.google_name || r.google_name || r.name_hebrew;
+            const displayName = (r as any).name_english || r.name_hebrew || r.google_places?.google_name || r.google_name;
             const episodeDate = r.published_at || r.episode_info?.published_at || r.episode_info?.analysis_date;
 
             return (

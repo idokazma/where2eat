@@ -360,7 +360,7 @@ export default function MapView({
               <Popup className="rtl-popup" maxWidth={300}>
                 <div className="text-right" dir="rtl">
                   <h3 className="text-lg font-bold text-[var(--color-primary)] mb-1">
-                    {restaurant.google_places?.google_name || restaurant.name_hebrew}
+                    {restaurant.name_english || restaurant.name_hebrew || restaurant.google_places?.google_name}
                   </h3>
 
                   {restaurant.name_english && (

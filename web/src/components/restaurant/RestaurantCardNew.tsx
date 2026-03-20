@@ -3,7 +3,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import Image from 'next/image';
 import useEmblaCarousel from 'embla-carousel-react';
-import { Heart, Star, Play, MapPin, ExternalLink, Camera, Calendar, ChevronLeft } from 'lucide-react';
+import { Heart, Star, Play, MapPin, ExternalLink, Camera, Calendar, ChevronLeft, Instagram } from 'lucide-react';
 import { Restaurant } from '@/types/restaurant';
 import { EpisodeBadge } from './EpisodeBadge';
 import { DistanceBadge } from './DistanceBadge';
@@ -249,7 +249,7 @@ export function RestaurantCardNew({
 
         {/* Title - prefer Hebrew name, fall back to Google name */}
         <h3 className="restaurant-card-title">
-          {restaurant.name_hebrew || restaurant.google_places?.google_name || restaurant.google_name}
+          {restaurant.name_english || restaurant.name_hebrew || restaurant.google_places?.google_name}
         </h3>
 
         {/* Meta line */}
@@ -322,12 +322,26 @@ export function RestaurantCardNew({
           {(restaurant.google_places?.google_url || restaurant.location?.address) && (
             <button
               onClick={handleNavigateClick}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[var(--color-surface)] text-sm font-medium text-[var(--color-ink-muted)] hover:text-[var(--color-ink)] transition-colors mr-auto"
+              className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[var(--color-surface)] text-sm font-medium text-[var(--color-ink-muted)] hover:text-[var(--color-ink)] transition-colors"
               aria-label="Navigate to restaurant"
             >
               <MapPin className="w-4 h-4" />
               <ExternalLink className="w-3 h-3" />
             </button>
+          )}
+
+          {/* Instagram */}
+          {restaurant.instagram_url && (
+            <a
+              href={restaurant.instagram_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[var(--color-surface)] text-sm font-medium text-pink-500 hover:text-pink-600 transition-colors mr-auto"
+              aria-label="Instagram"
+            >
+              <Instagram className="w-4 h-4" />
+            </a>
           )}
         </div>
       </div>
