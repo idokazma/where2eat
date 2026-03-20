@@ -82,7 +82,7 @@ export function RestaurantCardNew({
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: false,
     direction: 'rtl',
-    watchDrag: !!embedUrl, // only enable drag if there's a video
+    watchDrag: !!embedUrl,
   });
 
   // Track which slide is active
@@ -92,6 +92,28 @@ export function RestaurantCardNew({
     emblaApi.on('select', onSelect);
     return () => { emblaApi.off('select', onSelect); };
   }, [emblaApi]);
+
+  // First-time swipe hint: auto-slide then snap back
+  const [hintPlayed, setHintPlayed] = useState(false);
+  useEffect(() => {
+    if (!emblaApi || !embedUrl || hintPlayed) return;
+    // Check localStorage — only show once ever
+    const key = 'w2e_swipe_hint_shown';
+    if (typeof window !== 'undefined' && localStorage.getItem(key)) return;
+
+    const timer = setTimeout(() => {
+      if (!emblaApi) return;
+      // Scroll partially to reveal YouTube card
+      emblaApi.scrollTo(1);
+      setTimeout(() => {
+        emblaApi.scrollTo(0);
+        if (typeof window !== 'undefined') localStorage.setItem(key, '1');
+        setHintPlayed(true);
+      }, 800);
+    }, 1500);
+
+    return () => clearTimeout(timer);
+  }, [emblaApi, embedUrl, hintPlayed]);
   const hasImage = imageUrl && !imageError;
   const photoCount = restaurant.photos?.length || 0;
   const restaurantId = restaurant.google_places?.place_id || restaurant.name_hebrew;
@@ -219,13 +241,6 @@ export function RestaurantCardNew({
           </div>
         </div>
 
-        {/* Swipe hint — only show if video available */}
-        {embedUrl && !showVideo && (
-          <div className="absolute top-3 left-3 flex items-center gap-1 px-2 py-1 bg-black/50 backdrop-blur-sm rounded text-white text-[10px] font-medium">
-            <Play className="w-3 h-3" />
-            <ChevronLeft className="w-3 h-3 animate-pulse" />
-          </div>
-        )}
       </div>
 
       {/* Content Section */}
@@ -351,17 +366,17 @@ export function RestaurantCardNew({
   // If no video, render card without carousel wrapper
   if (!embedUrl) return cardContent;
 
-  // Swipeable card: slide 1 = restaurant card, slide 2 = YouTube embed
+  // Swipeable card: slide 1 = restaurant card (96% width to peek YouTube), slide 2 = YouTube embed
   return (
     <div className="overflow-hidden rounded-2xl" ref={emblaRef}>
-      <div className="flex" style={{ direction: 'rtl' }}>
-        {/* Slide 1: Restaurant card */}
-        <div className="flex-[0_0_100%] min-w-0">
+      <div className="flex gap-2" style={{ direction: 'rtl' }}>
+        {/* Slide 1: Restaurant card — 96% width so YouTube peeks from the left */}
+        <div className="flex-[0_0_96%] min-w-0">
           {cardContent}
         </div>
 
         {/* Slide 2: YouTube embed */}
-        <div className="flex-[0_0_100%] min-w-0 bg-black rounded-2xl overflow-hidden">
+        <div className="flex-[0_0_96%] min-w-0 bg-black rounded-2xl overflow-hidden">
           <div className="relative w-full" style={{ paddingBottom: '75%' }}>
             {showVideo && (
               <iframe
@@ -373,8 +388,9 @@ export function RestaurantCardNew({
               />
             )}
             {!showVideo && (
-              <div className="absolute inset-0 flex items-center justify-center bg-gray-900">
+              <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-900 gap-2">
                 <Play className="w-12 h-12 text-white/50" />
+                <span className="text-white/40 text-xs">צפה בסרטון</span>
               </div>
             )}
           </div>
