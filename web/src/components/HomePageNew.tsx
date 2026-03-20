@@ -58,12 +58,15 @@ export function HomePageNew() {
   // Ref to prevent duplicate fetches
   const isFetchingRef = useRef(false);
 
+  const isNearby = locationFilter.mode === 'nearby';
+
   // Build search params from current filters
   const buildSearchParams = useCallback(
     (page: number): Record<string, string> => {
       const params: Record<string, string> = {
         page: String(page),
-        limit: String(PAGE_SIZE),
+        // When nearby, fetch a large batch so distance sort covers all restaurants
+        limit: isNearby ? '500' : String(PAGE_SIZE),
       };
 
       if (locationFilter.mode === 'manual' && locationFilter.city) {
@@ -72,7 +75,7 @@ export function HomePageNew() {
 
       return params;
     },
-    [locationFilter.mode, locationFilter.city]
+    [locationFilter.mode, locationFilter.city, isNearby]
   );
 
   // Load restaurants (first page)
@@ -90,8 +93,9 @@ export function HomePageNew() {
         setRestaurants(data.restaurants);
         setFavoriteContext(data.restaurants);
         setCurrentPage(1);
+        // When nearby, all restaurants are in one batch — no more pages
         const totalPages = data.analytics?.total_pages ?? 1;
-        setHasMore(1 < totalPages);
+        setHasMore(!isNearby && 1 < totalPages);
       }
     } catch (err) {
       console.error('Failed to load restaurants:', err);
@@ -100,7 +104,7 @@ export function HomePageNew() {
       setIsLoading(false);
       isFetchingRef.current = false;
     }
-  }, [buildSearchParams, setFavoriteContext]);
+  }, [buildSearchParams, setFavoriteContext, isNearby]);
 
   // Load more restaurants (next page)
   const loadMore = useCallback(async () => {
