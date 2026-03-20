@@ -96,41 +96,40 @@ export function CityPicker({
         </div>
 
         {/* Options */}
-        <div className="flex-1 overflow-y-auto -webkit-overflow-scrolling-touch">
-          {/* All city */}
-          <button
-            onClick={handleSelectAllCity}
-            className={`flex items-center justify-between w-full px-5 py-4.5 border-b border-[var(--color-border)] active:bg-[var(--color-surface)] transition-colors ${
-              selectedCity === viewingCity.nameHebrew && !selectedNeighborhood ? 'bg-[var(--color-accent-subtle)]' : ''
-            }`}
-          >
-            <span className="text-base font-semibold text-[var(--color-ink)]">כל {viewingCity.nameHebrew}</span>
-            {selectedCity === viewingCity.nameHebrew && !selectedNeighborhood && (
-              <Check className="w-5 h-5 text-[var(--color-accent)]" />
-            )}
-          </button>
+        <div className="flex-1 overflow-y-auto px-4 pt-4 pb-8" style={{ WebkitOverflowScrolling: 'touch' }}>
+          <div className="grid grid-cols-2 gap-3">
+            {/* All city option */}
+            <button
+              onClick={handleSelectAllCity}
+              className={`flex flex-col items-center justify-center gap-1.5 py-5 rounded-2xl border-2 col-span-2 transition-all active:scale-95 ${
+                selectedCity === viewingCity.nameHebrew && !selectedNeighborhood
+                  ? 'bg-[var(--color-accent-subtle)] border-[var(--color-accent)] text-[var(--color-accent)]'
+                  : 'bg-[var(--color-surface)] border-transparent text-[var(--color-ink)] hover:border-[var(--color-border)]'
+              }`}
+            >
+              <MapPin className="w-5 h-5" />
+              <span className="text-sm font-semibold">כל {viewingCity.nameHebrew}</span>
+            </button>
 
-          <div className="px-5 py-3">
-            <span className="text-xs font-medium text-[var(--color-ink-muted)] uppercase tracking-wider">שכונות</span>
+            {viewingCity.neighborhoods.map((neighborhood) => {
+              const isSelected = selectedNeighborhood === neighborhood && selectedCity === viewingCity.nameHebrew;
+              return (
+                <button
+                  key={neighborhood}
+                  onClick={() => handleSelectNeighborhood(neighborhood)}
+                  className={`flex items-center justify-center py-4 rounded-2xl border-2 transition-all active:scale-95 ${
+                    isSelected
+                      ? 'bg-[var(--color-accent-subtle)] border-[var(--color-accent)] text-[var(--color-accent)]'
+                      : 'bg-[var(--color-surface)] border-transparent text-[var(--color-ink)] hover:border-[var(--color-border)]'
+                  }`}
+                >
+                  <span className={`text-sm ${isSelected ? 'font-bold' : 'font-medium'}`}>
+                    {neighborhood}
+                  </span>
+                </button>
+              );
+            })}
           </div>
-
-          {viewingCity.neighborhoods.map((neighborhood) => {
-            const isSelected = selectedNeighborhood === neighborhood && selectedCity === viewingCity.nameHebrew;
-            return (
-              <button
-                key={neighborhood}
-                onClick={() => handleSelectNeighborhood(neighborhood)}
-                className={`flex items-center justify-between w-full px-5 py-4 border-b border-[var(--color-border)] active:bg-[var(--color-surface)] transition-colors ${
-                  isSelected ? 'bg-[var(--color-accent-subtle)]' : ''
-                }`}
-              >
-                <span className={`text-base ${isSelected ? 'font-semibold text-[var(--color-accent)]' : 'text-[var(--color-ink)]'}`}>
-                  {neighborhood}
-                </span>
-                {isSelected && <Check className="w-5 h-5 text-[var(--color-accent)]" />}
-              </button>
-            );
-          })}
         </div>
       </div>
     );
@@ -150,28 +149,29 @@ export function CityPicker({
         </button>
       </div>
 
-      {/* City list */}
-      <div className="flex-1 overflow-y-auto -webkit-overflow-scrolling-touch">
-        {CITIES.map((city) => {
-          const isSelected = selectedCity === city.nameHebrew;
-          return (
-            <button
-              key={city.name}
-              onClick={() => handleSelectCity(city)}
-              className={`flex items-center justify-between w-full px-5 py-4.5 border-b border-[var(--color-border)] active:bg-[var(--color-surface)] transition-colors ${
-                isSelected ? 'bg-[var(--color-accent-subtle)]' : ''
-              }`}
-            >
-              <div className="flex items-center gap-3">
+      {/* City grid — 2 columns, shows ~2.5 rows to hint at scrollability */}
+      <div className="flex-1 overflow-y-auto px-4 pt-4 pb-8" style={{ WebkitOverflowScrolling: 'touch' }}>
+        <div className="grid grid-cols-2 gap-3">
+          {CITIES.map((city) => {
+            const isSelected = selectedCity === city.nameHebrew;
+            return (
+              <button
+                key={city.name}
+                onClick={() => handleSelectCity(city)}
+                className={`flex flex-col items-center justify-center gap-1.5 py-5 rounded-2xl border-2 transition-all active:scale-95 ${
+                  isSelected
+                    ? 'bg-[var(--color-accent-subtle)] border-[var(--color-accent)] text-[var(--color-accent)]'
+                    : 'bg-[var(--color-surface)] border-transparent text-[var(--color-ink)] hover:border-[var(--color-border)]'
+                }`}
+              >
                 <MapPin className={`w-5 h-5 ${isSelected ? 'text-[var(--color-accent)]' : 'text-[var(--color-ink-muted)]'}`} />
-                <span className={`text-base ${isSelected ? 'font-semibold text-[var(--color-accent)]' : 'text-[var(--color-ink)]'}`}>
+                <span className={`text-sm ${isSelected ? 'font-bold' : 'font-medium'}`}>
                   {city.nameHebrew}
                 </span>
-              </div>
-              <ChevronRight className="w-4 h-4 text-[var(--color-ink-muted)] rotate-180" />
-            </button>
-          );
-        })}
+              </button>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
