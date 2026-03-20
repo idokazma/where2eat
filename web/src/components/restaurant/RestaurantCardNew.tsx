@@ -1,14 +1,16 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import Image from 'next/image';
-import { Heart, Star, Play, MapPin, ExternalLink, Camera, Calendar } from 'lucide-react';
+import useEmblaCarousel from 'embla-carousel-react';
+import { Heart, Star, Play, MapPin, ExternalLink, Camera, Calendar, ChevronLeft } from 'lucide-react';
 import { Restaurant } from '@/types/restaurant';
 import { EpisodeBadge } from './EpisodeBadge';
 import { DistanceBadge } from './DistanceBadge';
 import { useFavorites } from '@/contexts/favorites-context';
 import { normalizeHostOpinion, getPriceDisplay } from '@/lib/data-normalizer';
 import { getTimedYouTubeUrl } from '@/lib/youtube';
+import { getYouTubeEmbedUrl } from '@/lib/youtube-embed';
 
 interface RestaurantCardNewProps {
   restaurant: Restaurant;
@@ -71,8 +73,25 @@ export function RestaurantCardNew({
 }: RestaurantCardNewProps) {
   const { isFavorite, addFavorite, removeFavorite } = useFavorites();
   const [imageError, setImageError] = useState(false);
-
   const [imageLoading, setImageLoading] = useState(true);
+  const [showVideo, setShowVideo] = useState(false);
+
+  const videoUrl = restaurant.episode_info?.video_url;
+  const embedUrl = videoUrl ? getYouTubeEmbedUrl(videoUrl, restaurant.mention_timestamp_seconds) : null;
+
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    loop: false,
+    direction: 'rtl',
+    watchDrag: !!embedUrl, // only enable drag if there's a video
+  });
+
+  // Track which slide is active
+  useEffect(() => {
+    if (!emblaApi) return;
+    const onSelect = () => setShowVideo(emblaApi.selectedScrollSnap() === 1);
+    emblaApi.on('select', onSelect);
+    return () => { emblaApi.off('select', onSelect); };
+  }, [emblaApi]);
   const hasImage = imageUrl && !imageError;
   const photoCount = restaurant.photos?.length || 0;
   const restaurantId = restaurant.google_places?.place_id || restaurant.name_hebrew;
@@ -138,12 +157,12 @@ export function RestaurantCardNew({
     return undefined;
   };
 
-  return (
+  const cardContent = (
     <article
       className={`restaurant-card ${className}`}
-      onClick={onTap}
-      role={onTap ? 'button' : undefined}
-      tabIndex={onTap ? 0 : undefined}
+      onClick={!showVideo ? onTap : undefined}
+      role={onTap && !showVideo ? 'button' : undefined}
+      tabIndex={onTap && !showVideo ? 0 : undefined}
     >
       {/* Image Section */}
       <div className="restaurant-card-image">
@@ -199,6 +218,14 @@ export function RestaurantCardNew({
             )}
           </div>
         </div>
+
+        {/* Swipe hint — only show if video available */}
+        {embedUrl && !showVideo && (
+          <div className="absolute top-3 left-3 flex items-center gap-1 px-2 py-1 bg-black/50 backdrop-blur-sm rounded text-white text-[10px] font-medium">
+            <Play className="w-3 h-3" />
+            <ChevronLeft className="w-3 h-3 animate-pulse" />
+          </div>
+        )}
       </div>
 
       {/* Content Section */}
@@ -220,9 +247,9 @@ export function RestaurantCardNew({
           </span>
         )}
 
-        {/* Title - prefer Google Places corrected name when available */}
+        {/* Title - prefer Hebrew name, fall back to Google name */}
         <h3 className="restaurant-card-title">
-          {restaurant.google_places?.google_name || restaurant.google_name || restaurant.name_hebrew}
+          {restaurant.name_hebrew || restaurant.google_places?.google_name || restaurant.google_name}
         </h3>
 
         {/* Meta line */}
@@ -277,10 +304,13 @@ export function RestaurantCardNew({
             />
           </button>
 
-          {/* Watch */}
-          {restaurant.episode_info?.video_url && (
+          {/* Watch — swipe to see video inline */}
+          {embedUrl && (
             <button
-              onClick={handleWatchClick}
+              onClick={(e) => {
+                e.stopPropagation();
+                emblaApi?.scrollTo(1);
+              }}
               className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[var(--color-surface)] text-sm font-medium text-[var(--color-ink-muted)] hover:text-[var(--color-ink)] transition-colors"
               aria-label="Watch episode"
             >
@@ -302,5 +332,47 @@ export function RestaurantCardNew({
         </div>
       </div>
     </article>
+  );
+
+  // If no video, render card without carousel wrapper
+  if (!embedUrl) return cardContent;
+
+  // Swipeable card: slide 1 = restaurant card, slide 2 = YouTube embed
+  return (
+    <div className="overflow-hidden rounded-2xl" ref={emblaRef}>
+      <div className="flex" style={{ direction: 'rtl' }}>
+        {/* Slide 1: Restaurant card */}
+        <div className="flex-[0_0_100%] min-w-0">
+          {cardContent}
+        </div>
+
+        {/* Slide 2: YouTube embed */}
+        <div className="flex-[0_0_100%] min-w-0 bg-black rounded-2xl overflow-hidden">
+          <div className="relative w-full" style={{ paddingBottom: '75%' }}>
+            {showVideo && (
+              <iframe
+                src={embedUrl}
+                className="absolute inset-0 w-full h-full"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                title={`${restaurant.name_hebrew} - Episode`}
+              />
+            )}
+            {!showVideo && (
+              <div className="absolute inset-0 flex items-center justify-center bg-gray-900">
+                <Play className="w-12 h-12 text-white/50" />
+              </div>
+            )}
+          </div>
+          {/* Back to card button */}
+          <button
+            onClick={() => emblaApi?.scrollTo(0)}
+            className="w-full py-3 text-center text-white/70 text-sm hover:text-white transition-colors"
+          >
+            ← חזרה לכרטיס
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }
