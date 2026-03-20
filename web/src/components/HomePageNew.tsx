@@ -71,7 +71,7 @@ export function HomePageNew() {
     setIsLoading(true);
     setError(null);
     try {
-      const params: Record<string, string> = { page: '1', limit: '1000' };
+      const params: Record<string, string> = { page: '1', limit: '500' };
       const response = await fetch(endpoints.restaurants.search(params));
       const data = await response.json();
       if (data.restaurants) {
