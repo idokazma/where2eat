@@ -1,7 +1,7 @@
 "use client"
 
 import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from "react"
-import { Restaurant } from "@/types/restaurant"
+import { Restaurant, getCardId } from "@/types/restaurant"
 
 interface FavoritesContextType {
   favorites: string[]
@@ -49,7 +49,7 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
   }
 
   const favoriteRestaurants = allRestaurants.filter(restaurant =>
-    isFavorite(restaurant.google_places?.place_id || restaurant.name_hebrew)
+    isFavorite(getCardId(restaurant))
   )
 
   const setAllRestaurants = useCallback((restaurants: Restaurant[]) => {

@@ -5,6 +5,7 @@ import { PageLayout } from '@/components/layout';
 import { RestaurantCardNew } from '@/components/restaurant';
 import { useFavorites } from '@/contexts/favorites-context';
 import { getRestaurantImage } from '@/lib/images';
+import { getCardId } from '@/types/restaurant';
 
 export default function SavedPage() {
   const { favoriteRestaurants } = useFavorites();
@@ -20,7 +21,7 @@ export default function SavedPage() {
             <div className="space-y-4">
               {favoriteRestaurants.map((restaurant, index) => (
                 <div
-                  key={restaurant.google_places?.place_id || restaurant.name_hebrew}
+                  key={getCardId(restaurant)}
                   className="animate-fade-up"
                   style={{ animationDelay: `${index * 50}ms`, opacity: 0 }}
                 >

@@ -3,14 +3,15 @@
 import { useState, useCallback, useEffect } from 'react';
 import Image from 'next/image';
 import useEmblaCarousel from 'embla-carousel-react';
-import { Heart, Star, Play, MapPin, ExternalLink, Camera, Calendar, ChevronLeft, Instagram } from 'lucide-react';
-import { Restaurant } from '@/types/restaurant';
+import { Heart, Star, Play, MapPin, ExternalLink, Camera, Calendar, ChevronLeft, ChevronRight, Instagram, X } from 'lucide-react';
+import { Restaurant, getCardId } from '@/types/restaurant';
 import { EpisodeBadge } from './EpisodeBadge';
 import { DistanceBadge } from './DistanceBadge';
 import { useFavorites } from '@/contexts/favorites-context';
 import { normalizeHostOpinion, getPriceDisplay } from '@/lib/data-normalizer';
 import { getTimedYouTubeUrl } from '@/lib/youtube';
 import { getYouTubeEmbedUrl } from '@/lib/youtube-embed';
+import { getRestaurantImages } from '@/lib/images';
 
 interface RestaurantCardNewProps {
   restaurant: Restaurant;
@@ -75,6 +76,39 @@ export function RestaurantCardNew({
   const [imageError, setImageError] = useState(false);
   const [imageLoading, setImageLoading] = useState(true);
   const [showVideo, setShowVideo] = useState(false);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+
+  // Gallery lightbox carousel
+  const allImages = getRestaurantImages(restaurant);
+  const [galleryRef, galleryApi] = useEmblaCarousel({
+    loop: true,
+    direction: 'rtl',
+  });
+  const [gallerySlide, setGallerySlide] = useState(0);
+
+  useEffect(() => {
+    if (!galleryApi) return;
+    const onSelect = () => setGallerySlide(galleryApi.selectedScrollSnap());
+    galleryApi.on('select', onSelect);
+    return () => { galleryApi.off('select', onSelect); };
+  }, [galleryApi]);
+
+  // Lock body scroll when lightbox is open
+  useEffect(() => {
+    if (lightboxOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [lightboxOpen]);
+
+  const handleImageClick = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (allImages.length > 0) {
+      setLightboxOpen(true);
+    }
+  }, [allImages.length]);
 
   const videoUrl = restaurant.episode_info?.video_url;
   const embedUrl = videoUrl ? getYouTubeEmbedUrl(videoUrl, restaurant.mention_timestamp_seconds) : null;
@@ -116,7 +150,7 @@ export function RestaurantCardNew({
   }, [emblaApi, embedUrl, hintPlayed]);
   const hasImage = imageUrl && !imageError;
   const photoCount = restaurant.photos?.length || 0;
-  const restaurantId = restaurant.google_places?.place_id || restaurant.name_hebrew;
+  const restaurantId = getCardId(restaurant);
   const isSaved = isFavorite(restaurantId);
 
   const handleSaveClick = (e: React.MouseEvent) => {
@@ -187,7 +221,7 @@ export function RestaurantCardNew({
       tabIndex={onTap && !showVideo ? 0 : undefined}
     >
       {/* Image Section */}
-      <div className="restaurant-card-image">
+      <div className="restaurant-card-image" onClick={allImages.length > 0 ? handleImageClick : undefined} style={allImages.length > 0 ? { cursor: 'pointer' } : undefined}>
         {hasImage ? (
           <>
             {imageLoading && (
@@ -363,46 +397,130 @@ export function RestaurantCardNew({
     </article>
   );
 
+  const lightbox = lightboxOpen && allImages.length > 0 ? (
+    <div
+      className="fixed inset-0 z-[1000] bg-black/95 flex items-center justify-center"
+      onClick={() => setLightboxOpen(false)}
+    >
+      {/* Close button */}
+      <button
+        onClick={() => setLightboxOpen(false)}
+        className="absolute top-4 left-4 z-10 w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center text-white hover:bg-white/20 transition-colors"
+        aria-label="Close"
+      >
+        <X className="w-5 h-5" />
+      </button>
+
+      {/* Photo counter */}
+      {allImages.length > 1 && (
+        <div className="absolute top-4 right-4 z-10 px-3 py-1.5 bg-white/10 backdrop-blur-sm rounded-full text-white text-sm font-medium">
+          {gallerySlide + 1} / {allImages.length}
+        </div>
+      )}
+
+      {/* Navigation buttons */}
+      {allImages.length > 1 && (
+        <>
+          <button
+            onClick={(e) => { e.stopPropagation(); galleryApi?.scrollNext(); }}
+            className="absolute right-3 z-10 w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center text-white hover:bg-white/20 transition-colors"
+            aria-label="Next photo"
+          >
+            <ChevronRight className="w-5 h-5" />
+          </button>
+          <button
+            onClick={(e) => { e.stopPropagation(); galleryApi?.scrollPrev(); }}
+            className="absolute left-14 z-10 w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center text-white hover:bg-white/20 transition-colors"
+            aria-label="Previous photo"
+          >
+            <ChevronLeft className="w-5 h-5" />
+          </button>
+        </>
+      )}
+
+      {/* Embla Carousel */}
+      <div
+        className="w-full max-w-3xl max-h-[80vh] mx-4 overflow-hidden"
+        ref={galleryRef}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex h-[80vh]">
+          {allImages.map((url, index) => (
+            <div key={index} className="relative flex-[0_0_100%] min-w-0">
+              <Image
+                src={url}
+                alt={`${restaurant.name_hebrew} - ${index + 1}`}
+                fill
+                className="object-contain"
+                sizes="100vw"
+                priority={index === gallerySlide}
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Dot indicators */}
+      {allImages.length > 1 && (
+        <div className="absolute bottom-6 left-0 right-0 flex justify-center gap-2">
+          {allImages.map((_, index) => (
+            <button
+              key={index}
+              onClick={(e) => { e.stopPropagation(); galleryApi?.scrollTo(index); }}
+              className={`w-2 h-2 rounded-full transition-all ${
+                index === gallerySlide ? 'bg-white w-6' : 'bg-white/40 hover:bg-white/60'
+              }`}
+              aria-label={`Go to photo ${index + 1}`}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  ) : null;
+
   // If no video, render card without carousel wrapper
-  if (!embedUrl) return cardContent;
+  if (!embedUrl) return <>{cardContent}{lightbox}</>;
 
   // Swipeable card: slide 1 = restaurant card (96% width to peek YouTube), slide 2 = YouTube embed
   return (
-    <div className="overflow-hidden rounded-2xl" ref={emblaRef}>
-      <div className="flex gap-2" style={{ direction: 'rtl' }}>
-        {/* Slide 1: Restaurant card — 96% width so YouTube peeks from the left */}
-        <div className="flex-[0_0_96%] min-w-0">
-          {cardContent}
-        </div>
-
-        {/* Slide 2: YouTube embed */}
-        <div className="flex-[0_0_96%] min-w-0 bg-black rounded-2xl overflow-hidden">
-          <div className="relative w-full" style={{ paddingBottom: '75%' }}>
-            {showVideo && (
-              <iframe
-                src={embedUrl}
-                className="absolute inset-0 w-full h-full"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                title={`${restaurant.name_hebrew} - Episode`}
-              />
-            )}
-            {!showVideo && (
-              <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-900 gap-2">
-                <Play className="w-12 h-12 text-white/50" />
-                <span className="text-white/40 text-xs">צפה בסרטון</span>
-              </div>
-            )}
+    <>
+      <div className="overflow-hidden rounded-2xl" ref={emblaRef}>
+        <div className="flex gap-2" style={{ direction: 'rtl' }}>
+          {/* Slide 1: Restaurant card — 96% width so YouTube peeks from the left */}
+          <div className="flex-[0_0_96%] min-w-0">
+            {cardContent}
           </div>
-          {/* Back to card button */}
-          <button
-            onClick={() => emblaApi?.scrollTo(0)}
-            className="w-full py-3 text-center text-white/70 text-sm hover:text-white transition-colors"
-          >
-            ← חזרה לכרטיס
-          </button>
+
+          {/* Slide 2: YouTube embed */}
+          <div className="flex-[0_0_96%] min-w-0 bg-black rounded-2xl overflow-hidden">
+            <div className="relative w-full" style={{ paddingBottom: '75%' }}>
+              {showVideo && (
+                <iframe
+                  src={embedUrl}
+                  className="absolute inset-0 w-full h-full"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  title={`${restaurant.name_hebrew} - Episode`}
+                />
+              )}
+              {!showVideo && (
+                <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-900 gap-2">
+                  <Play className="w-12 h-12 text-white/50" />
+                  <span className="text-white/40 text-xs">צפה בסרטון</span>
+                </div>
+              )}
+            </div>
+            {/* Back to card button */}
+            <button
+              onClick={() => emblaApi?.scrollTo(0)}
+              className="w-full py-3 text-center text-white/70 text-sm hover:text-white transition-colors"
+            >
+              ← חזרה לכרטיס
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+      {lightbox}
+    </>
   );
 }

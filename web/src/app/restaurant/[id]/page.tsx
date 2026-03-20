@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
-import type { Restaurant } from '@/types/restaurant';
+import { type Restaurant, getCardId } from '@/types/restaurant';
 import {
   ChevronRight,
   Star,
@@ -155,9 +155,8 @@ export default function RestaurantDetailPage() {
   }
 
   const statusBadge = getStatusBadge(restaurant.status);
-  const isSaved = restaurant.google_places?.place_id
-    ? isFavorite(restaurant.google_places.place_id)
-    : false;
+  const cardId = getCardId(restaurant);
+  const isSaved = isFavorite(cardId);
 
   const heroImage = getRestaurantImage(restaurant);
   const allPhotos = getRestaurantImages(restaurant);
@@ -216,13 +215,10 @@ export default function RestaurantDetailPage() {
           </button>
           <button
             onClick={() => {
-              const placeId = restaurant.google_places?.place_id;
-              if (placeId) {
-                if (isFavorite(placeId)) {
-                  removeFavorite(placeId);
-                } else {
-                  addFavorite(placeId);
-                }
+              if (isSaved) {
+                removeFavorite(cardId);
+              } else {
+                addFavorite(cardId);
               }
             }}
             className="w-10 h-10 rounded-full bg-black/30 backdrop-blur-md flex items-center justify-center border border-white/10"

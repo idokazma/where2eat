@@ -122,6 +122,20 @@ export interface PodcastData {
   episode_summary: string;
 }
 
+/**
+ * Get a unique ID for a specific restaurant card/mention.
+ * Combines restaurant identity with episode to distinguish
+ * the same restaurant mentioned in different episodes.
+ */
+export function getCardId(restaurant: Restaurant): string {
+  const restaurantKey = restaurant.google_places?.place_id || restaurant.name_hebrew;
+  const videoId = restaurant.episode_info?.video_id;
+  if (videoId) {
+    return `${restaurantKey}__${videoId}`;
+  }
+  return restaurantKey;
+}
+
 export interface YouTubeAnalysisRequest {
   url: string;
   status: 'pending' | 'processing' | 'completed' | 'error';
