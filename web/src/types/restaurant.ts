@@ -66,6 +66,7 @@ export interface Restaurant {
   contact_info?: ContactInfo;
   business_news?: string | null;
   is_closing?: boolean;
+  is_hidden?: boolean;
   mention_context?: 'new_opening' | 'review' | 'news' | 'recommendation' | 'comparison' | 'business_news' | null;
   episode_info?: EpisodeInfo;
   mention_timestamps?: MentionTimestamp[];
