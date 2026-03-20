@@ -393,6 +393,7 @@ class Database:
                 ('google_url', 'TEXT'),
                 ('engaging_quote', 'TEXT'),
                 ('country', 'TEXT'),
+                ('instagram_url', 'TEXT'),
             ]:
                 try:
                     cursor.execute(f'ALTER TABLE restaurants ADD COLUMN {col} {col_type}')

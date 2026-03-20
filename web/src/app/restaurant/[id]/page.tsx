@@ -17,6 +17,7 @@ import {
   ExternalLink,
   Utensils,
   Camera,
+  Instagram,
 } from 'lucide-react';
 import { useFavorites } from '@/contexts/favorites-context';
 import { endpoints } from '@/lib/config';
@@ -455,18 +456,32 @@ export default function RestaurantDetailPage() {
           </div>
         )}
 
-        {/* Google Places Link */}
-        {restaurant.google_places?.google_url && (
-          <div className="pt-4 border-t border-[var(--color-border)]">
-            <a
-              href={restaurant.google_places.google_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center justify-center gap-2 p-3 rounded-xl bg-[var(--color-surface)] text-[var(--color-ink)] hover:bg-[var(--color-border)] transition-colors"
-            >
-              <span>צפה ב-Google Maps</span>
-              <ExternalLink className="w-4 h-4" />
-            </a>
+        {/* Google Places & Instagram Links */}
+        {(restaurant.google_places?.google_url || restaurant.instagram_url) && (
+          <div className="pt-4 border-t border-[var(--color-border)] space-y-2">
+            {restaurant.google_places?.google_url && (
+              <a
+                href={restaurant.google_places.google_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-2 p-3 rounded-xl bg-[var(--color-surface)] text-[var(--color-ink)] hover:bg-[var(--color-border)] transition-colors"
+              >
+                <span>צפה ב-Google Maps</span>
+                <ExternalLink className="w-4 h-4" />
+              </a>
+            )}
+            {restaurant.instagram_url && (
+              <a
+                href={restaurant.instagram_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-2 p-3 rounded-xl bg-gradient-to-r from-purple-50 to-pink-50 text-[var(--color-ink)] hover:from-purple-100 hover:to-pink-100 transition-colors"
+              >
+                <Instagram className="w-4 h-4 text-pink-600" />
+                <span>Instagram</span>
+                <ExternalLink className="w-3.5 h-3.5" />
+              </a>
+            )}
           </div>
         )}
 

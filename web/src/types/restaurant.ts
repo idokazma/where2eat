@@ -76,6 +76,7 @@ export interface Restaurant {
   image_url?: string | null;
   og_image_url?: string | null;
   published_at?: string | null;
+  instagram_url?: string | null;
 }
 
 export interface EpisodeInfo {
