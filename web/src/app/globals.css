@@ -602,10 +602,11 @@
     border-radius: var(--radius-lg) var(--radius-lg) 0 0;
     padding: var(--space-4);
     padding-bottom: calc(var(--space-4) + env(safe-area-inset-bottom));
-    max-height: 70vh;
+    max-height: 85vh;
     overflow-y: auto;
     z-index: var(--z-modal);
     animation: slide-up 300ms var(--spring) forwards;
+    -webkit-overflow-scrolling: touch;
   }
 
   .bottom-sheet-handle {
