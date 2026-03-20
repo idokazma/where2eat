@@ -476,6 +476,7 @@ async def patch_restaurant_admin(
         'address', 'region', 'cuisine_type', 'price_range', 'status',
         'host_opinion', 'host_comments', 'engaging_quote', 'instagram_url',
         'contact_phone', 'contact_website', 'is_hidden', 'is_closing', 'country',
+        'latitude', 'longitude', 'google_place_id',
     }
 
     updates = {k: v for k, v in body.items() if k in allowed}
