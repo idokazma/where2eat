@@ -4,6 +4,7 @@ Supports both SQLAlchemy (PostgreSQL/SQLite) and legacy JSON file storage.
 """
 
 import json
+import math
 import uuid
 import os
 import traceback
@@ -276,8 +277,10 @@ async def search_restaurants(
     sort_by: str = Query("published_at", description="Sort field"),
     sort_direction: str = Query("desc", description="Sort direction (asc/desc)"),
     page: int = Query(1, ge=1, description="Page number"),
-    limit: int = Query(20, ge=1, le=100, description="Items per page"),
+    limit: int = Query(20, ge=1, le=500, description="Items per page"),
     include_hidden: bool = Query(False, description="Include hidden restaurants (for admin)"),
+    user_lat: Optional[float] = Query(None, description="User latitude for distance sorting"),
+    user_lng: Optional[float] = Query(None, description="User longitude for distance sorting"),
 ):
     """Search restaurants with filters."""
     offset = (page - 1) * limit
@@ -414,21 +417,43 @@ async def search_restaurants(
             )
 
     # Apply sorting
-    def get_sort_value(r):
-        if sort_by == "name":
-            return r.get("name_hebrew") or ""
-        elif sort_by == "location":
-            return (r.get("location") or {}).get("city") or ""
-        elif sort_by == "cuisine":
-            return r.get("cuisine_type") or ""
-        elif sort_by == "rating":
-            return (r.get("rating") or {}).get("google_rating", 0) or 0
-        elif sort_by == "published_at":
-            return r.get("published_at") or (r.get("episode_info") or {}).get("published_at") or (r.get("episode_info") or {}).get("analysis_date") or ""
-        else:  # analysis_date
-            return (r.get("episode_info") or {}).get("analysis_date") or ""
+    # Distance sort when user coordinates are provided
+    if user_lat is not None and user_lng is not None:
+        def _haversine_dist(r):
+            loc = r.get("location") or {}
+            lat = loc.get("lat") or (loc.get("coordinates") or {}).get("latitude")
+            lng = loc.get("lng") or (loc.get("coordinates") or {}).get("longitude")
+            if lat is None or lng is None:
+                # Also check top-level lat/lng
+                lat = lat or r.get("latitude")
+                lng = lng or r.get("longitude")
+            if lat is None or lng is None:
+                return float("inf")
+            d_lat = math.radians(lat - user_lat)
+            d_lng = math.radians(lng - user_lng)
+            a = (math.sin(d_lat / 2) ** 2 +
+                 math.cos(math.radians(user_lat)) *
+                 math.cos(math.radians(lat)) *
+                 math.sin(d_lng / 2) ** 2)
+            return 6371000 * 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
 
-    filtered.sort(key=get_sort_value, reverse=(sort_direction == "desc"))
+        filtered.sort(key=_haversine_dist)
+    else:
+        def get_sort_value(r):
+            if sort_by == "name":
+                return r.get("name_hebrew") or ""
+            elif sort_by == "location":
+                return (r.get("location") or {}).get("city") or ""
+            elif sort_by == "cuisine":
+                return r.get("cuisine_type") or ""
+            elif sort_by == "rating":
+                return (r.get("rating") or {}).get("google_rating", 0) or 0
+            elif sort_by == "published_at":
+                return r.get("published_at") or (r.get("episode_info") or {}).get("published_at") or (r.get("episode_info") or {}).get("analysis_date") or ""
+            else:  # analysis_date
+                return (r.get("episode_info") or {}).get("analysis_date") or ""
+
+        filtered.sort(key=get_sort_value, reverse=(sort_direction == "desc"))
 
     # Apply pagination
     start_index = (page - 1) * limit

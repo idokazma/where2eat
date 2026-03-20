@@ -45,6 +45,7 @@ export function HomePageNew() {
 
   // Filter state
   const [searchQuery, setSearchQuery] = useState('');
+  const [committedSearch, setCommittedSearch] = useState('');
 
   // Location filter
   const locationFilter = useLocationFilter();
@@ -65,7 +66,6 @@ export function HomePageNew() {
     (page: number): Record<string, string> => {
       const params: Record<string, string> = {
         page: String(page),
-        // When nearby, fetch a large batch so distance sort covers all restaurants
         limit: isNearby ? '500' : String(PAGE_SIZE),
       };
 
@@ -73,9 +73,20 @@ export function HomePageNew() {
         params.location = locationFilter.city;
       }
 
+      // Server-side search
+      if (committedSearch.trim()) {
+        params.query = committedSearch.trim();
+      }
+
+      // Server-side distance sort
+      if (isNearby && locationFilter.userCoords) {
+        params.user_lat = String(locationFilter.userCoords.lat);
+        params.user_lng = String(locationFilter.userCoords.lng);
+      }
+
       return params;
     },
-    [locationFilter.mode, locationFilter.city, isNearby]
+    [locationFilter.mode, locationFilter.city, locationFilter.userCoords, isNearby, committedSearch]
   );
 
   // Load restaurants (first page)
@@ -141,21 +152,9 @@ export function HomePageNew() {
     loadRestaurants();
   }, [loadRestaurants]);
 
-  // Client-side filtering for neighborhood (not supported by API) and multi-value filters
+  // Client-side filtering (only what the API can't handle)
   const filteredRestaurants = useMemo(() => {
-    // Exclude closed restaurants
     let result = restaurants.filter((r) => !r.is_closing && r.status !== 'closed');
-
-    // Search by name
-    if (searchQuery.trim()) {
-      const q = searchQuery.trim().toLowerCase();
-      result = result.filter(
-        (r) =>
-          r.name_hebrew?.toLowerCase().includes(q) ||
-          r.name_english?.toLowerCase().includes(q) ||
-          r.cuisine_type?.toLowerCase().includes(q)
-      );
-    }
 
     // Filter by neighborhood (API only filters by city)
     if (locationFilter.mode === 'manual' && locationFilter.neighborhood) {
@@ -169,14 +168,9 @@ export function HomePageNew() {
       result = result.filter(isInIsrael);
     }
 
-    // Nearby mode: keep all restaurants with coordinates (DiscoveryFeed sorts by distance)
-    // Restaurants without coordinates go to the end of the list
-
-
     return result;
   }, [
     restaurants,
-    searchQuery,
     locationFilter.mode,
     locationFilter.neighborhood,
     settings.showOnlyIsrael,
@@ -222,18 +216,28 @@ export function HomePageNew() {
     <PageLayout showHeader showBottomNav showSearch={false}>
       {/* Search + Filters */}
       <div className="animate-fade-up stagger-section-1">
-        <div className="px-4 pt-3 pb-1">
+        <form
+          className="px-4 pt-3 pb-1"
+          onSubmit={(e) => {
+            e.preventDefault();
+            setCommittedSearch(searchQuery);
+          }}
+        >
           <div className="relative">
             <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--color-ink-subtle)]" />
             <input
               type="text"
               placeholder="חיפוש מסעדה..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                // Clear search when input is emptied
+                if (!e.target.value.trim()) setCommittedSearch('');
+              }}
               className="w-full pr-9 pl-4 py-2.5 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg text-sm text-[var(--color-ink)] placeholder:text-[var(--color-ink-subtle)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]"
             />
           </div>
-        </div>
+        </form>
         <FilterBar>
           <LocationFilter />
         </FilterBar>
