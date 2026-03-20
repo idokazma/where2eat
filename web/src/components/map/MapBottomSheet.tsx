@@ -19,6 +19,7 @@ const ITEM_HEIGHT = 72;
 interface MapRestaurant {
   id?: string;
   name_hebrew: string;
+  name_english?: string | null;
   cuisine_type?: string | null;
   location?: {
     city?: string | null;
@@ -82,7 +83,7 @@ function RowRenderer({
   return (
     <div style={style}>
       <RestaurantListItem
-        name={r.google_places?.google_name || r.name_hebrew}
+        name={r.name_english || r.name_hebrew || r.google_places?.google_name || ''}
         cuisineType={r.cuisine_type}
         city={r.location?.city as string | undefined}
         googleRating={r.rating?.google_rating}

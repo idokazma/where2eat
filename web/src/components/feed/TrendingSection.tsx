@@ -71,7 +71,7 @@ export function TrendingSection({
               {getRestaurantImage(restaurant) ? (
                 <Image
                   src={getRestaurantImage(restaurant)!}
-                  alt={restaurant.google_places?.google_name || restaurant.google_name || restaurant.name_hebrew}
+                  alt={restaurant.name_english || restaurant.name_hebrew || restaurant.google_places?.google_name || restaurant.google_name || ''}
                   fill
                   className="object-cover"
                   sizes="140px"
@@ -108,7 +108,7 @@ export function TrendingSection({
             )}
 
             {/* Title */}
-            <p className="trending-card-title">{restaurant.google_places?.google_name || restaurant.google_name || restaurant.name_hebrew}</p>
+            <p className="trending-card-title">{restaurant.name_english || restaurant.name_hebrew || restaurant.google_places?.google_name || restaurant.google_name}</p>
 
             {/* Meta */}
             <p className="trending-card-meta">
