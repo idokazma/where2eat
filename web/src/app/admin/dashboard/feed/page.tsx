@@ -444,6 +444,10 @@ export default function AdminFeedPage() {
                         <span className="text-gray-400 block mb-0.5">Google Name</span>
                         <EditableField label="Google name" value={r.google_name || ''} onSave={(val) => handleFieldSave(r.id, 'google_name', val)} />
                       </div>
+                      <div>
+                        <span className="text-gray-400 block mb-0.5">Instagram URL</span>
+                        <EditableField label="Instagram" value={(r as any).instagram_url || ''} onSave={(val) => handleFieldSave(r.id, 'instagram_url', val)} />
+                      </div>
                       <div className="col-span-2">
                         <span className="text-gray-400 block mb-0.5">Host Quote</span>
                         <EditableField label="host comments" value={r.host_comments || ''} onSave={(val) => handleFieldSave(r.id, 'host_comments', val)} />
