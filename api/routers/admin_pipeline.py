@@ -638,21 +638,21 @@ async def upload_transcripts_batch(
 
 @router.post(
     "/{queue_id}/retry",
-    summary="Retry failed video",
-    description="Requeue a failed video for retry. Requires admin role.",
+    summary="Reprocess video",
+    description="Requeue any video for (re)processing regardless of current status. Requires admin role.",
 )
 async def retry_video(
     queue_id: str,
     user: dict = Depends(require_role(["admin", "super_admin"])),
 ):
-    """Retry a failed video."""
+    """Reprocess a video — works for any status (queued, failed, skipped, completed)."""
     queue_manager = _get_queue_manager()
     video = queue_manager.get_video(queue_id)
 
     if not video:
         raise HTTPException(status_code=404, detail="Item not found")
-    if video["status"] != "failed":
-        raise HTTPException(status_code=400, detail="Only failed items can be retried")
+    if video["status"] == "processing":
+        raise HTTPException(status_code=400, detail="Video is currently processing")
 
     from database import get_database
     db = get_database()
@@ -664,12 +664,14 @@ async def retry_video(
                    error_message = NULL,
                    processing_started_at = NULL,
                    processing_completed_at = NULL,
-                   attempt_count = 0
+                   processing_steps = NULL,
+                   attempt_count = 0,
+                   scheduled_for = datetime('now')
                WHERE id = ?""",
             (queue_id,),
         )
 
-    return {"success": True, "message": "Video requeued for retry"}
+    return {"success": True, "message": f"Video requeued for processing (was: {video['status']})"}
 
 
 @router.post(
