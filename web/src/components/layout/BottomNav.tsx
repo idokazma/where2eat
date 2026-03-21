@@ -4,6 +4,7 @@ import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { Home, Map, Heart, Menu } from 'lucide-react';
 import { useFavorites } from '@/contexts/favorites-context';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface NavItem {
   href: string;
@@ -16,6 +17,7 @@ interface NavItem {
 export function BottomNav() {
   const pathname = usePathname();
   const { favorites } = useFavorites();
+  const { language } = useLanguage();
 
   const navItems: NavItem[] = [
     {
@@ -68,7 +70,7 @@ export function BottomNav() {
               </span>
             )}
           </span>
-          <span>{item.labelHe}</span>
+          <span>{language === 'he' ? item.labelHe : item.label}</span>
         </Link>
       ))}
     </nav>

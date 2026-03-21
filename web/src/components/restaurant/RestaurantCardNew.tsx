@@ -388,7 +388,7 @@ export function RestaurantCardNew({
         </div>
 
         {/* Slide 2: YouTube embed */}
-        <div className="flex-[0_0_96%] min-w-0 bg-black rounded-2xl overflow-hidden">
+        <div className="flex-[0_0_96%] min-w-0 rounded-2xl overflow-hidden" style={{ backgroundColor: 'var(--color-accent)' }}>
           <div className="relative w-full" style={{ paddingBottom: '75%' }}>
             {showVideo && (
               <iframe
@@ -400,16 +400,16 @@ export function RestaurantCardNew({
               />
             )}
             {!showVideo && (
-              <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-900 gap-2">
-                <Play className="w-12 h-12 text-white/50" />
-                <span className="text-white/40 text-xs">צפה בסרטון</span>
+              <div className="absolute inset-0 flex flex-col items-center justify-center gap-2" style={{ backgroundColor: 'var(--color-accent)' }}>
+                <Play className="w-12 h-12 text-white/80" />
+                <span className="text-white/70 text-xs font-medium">צפה בסרטון</span>
               </div>
             )}
           </div>
           {/* Back to card button */}
           <button
             onClick={() => emblaApi?.scrollTo(0)}
-            className="w-full py-3 text-center text-white/70 text-sm hover:text-white transition-colors"
+            className="w-full py-3 text-center text-white/80 text-sm font-medium hover:text-white transition-colors"
           >
             ← חזרה לכרטיס
           </button>
