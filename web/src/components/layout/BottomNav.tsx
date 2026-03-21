@@ -35,7 +35,7 @@ export function BottomNav() {
       label: 'Saved',
       labelHe: 'שמורים',
       icon: <Heart className="w-6 h-6" />,
-      badge: favorites.length > 0 ? favorites.length : undefined,
+      badge: undefined,
     },
     {
       href: '/more',

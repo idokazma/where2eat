@@ -226,24 +226,21 @@ export function RestaurantCardNew({
         {/* Overlay gradient */}
         <div className="absolute inset-0 overlay-dark" />
 
-        {/* Status badges — top right on image */}
-        <div className="absolute top-3 right-3 flex flex-col items-end gap-1.5 z-10">
-          {!!restaurant.is_closing && (
-            <span className="px-2 py-1 bg-red-600 backdrop-blur-sm rounded text-white text-[10px] font-bold">
-              נסגר
-            </span>
-          )}
-          {restaurant.status === 'closing_soon' && !restaurant.is_closing && (
-            <span className="px-2 py-1 bg-amber-500 backdrop-blur-sm rounded text-white text-[10px] font-bold">
-              נסגר בקרוב
-            </span>
-          )}
-          {isNew && (
-            <span className="px-2 py-1 bg-emerald-500 backdrop-blur-sm rounded text-white text-[10px] font-bold">
-              חדש
-            </span>
-          )}
-        </div>
+        {/* Status badges — top right on image (closed/closing only) */}
+        {(!!restaurant.is_closing || restaurant.status === 'closing_soon') && (
+          <div className="absolute top-3 right-3 z-10">
+            {!!restaurant.is_closing && (
+              <span className="px-2 py-1 bg-red-600 backdrop-blur-sm rounded text-white text-[10px] font-bold">
+                נסגר
+              </span>
+            )}
+            {restaurant.status === 'closing_soon' && !restaurant.is_closing && (
+              <span className="px-2 py-1 bg-amber-500 backdrop-blur-sm rounded text-white text-[10px] font-bold">
+                נסגר בקרוב
+              </span>
+            )}
+          </div>
+        )}
 
         {/* Bottom badges */}
         <div className="absolute bottom-3 right-3 left-3 flex items-end justify-between">
@@ -289,11 +286,16 @@ export function RestaurantCardNew({
           </div>
         )}
 
-        {/* Episode date */}
+        {/* Episode date + new badge */}
         {formattedDate && (
-          <div className="flex items-center gap-1 text-xs text-[var(--color-ink-muted)] mt-0.5">
+          <div className="flex items-center gap-1.5 text-xs text-[var(--color-ink-muted)] mt-0.5">
             <Calendar className="w-3 h-3" />
             <span>{formattedDate}</span>
+            {isNew && (
+              <span className="px-1.5 py-0.5 bg-emerald-500 text-white text-[9px] font-bold rounded leading-none">
+                חדש
+              </span>
+            )}
           </div>
         )}
 
