@@ -116,7 +116,7 @@ export function RestaurantCardNew({
   }, [emblaApi, embedUrl, hintPlayed]);
   const hasImage = imageUrl && !imageError;
   const photoCount = restaurant.photos?.length || 0;
-  const restaurantId = restaurant.google_places?.place_id || restaurant.name_hebrew;
+  const restaurantId = restaurant.id || restaurant.google_places?.place_id || restaurant.name_hebrew;
   const isSaved = isFavorite(restaurantId);
 
   const handleSaveClick = (e: React.MouseEvent) => {
