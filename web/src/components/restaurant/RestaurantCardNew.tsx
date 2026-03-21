@@ -227,11 +227,11 @@ export function RestaurantCardNew({
         <div className="absolute inset-0 overlay-dark" />
 
         {/* Status badges — top right on image (closed/closing only) */}
-        {(!!restaurant.is_closing || restaurant.status === 'closing_soon') && (
+        {(!!restaurant.is_closing || restaurant.status === 'closed' || restaurant.status === 'סגור' || restaurant.status === 'closing_soon') && (
           <div className="absolute top-3 right-3 z-10">
-            {!!restaurant.is_closing && (
+            {(!!restaurant.is_closing || restaurant.status === 'closed' || restaurant.status === 'סגור') && (
               <span className="px-2 py-1 bg-red-600 backdrop-blur-sm rounded text-white text-[10px] font-bold">
-                נסגר
+                נסגר לצמיתות
               </span>
             )}
             {restaurant.status === 'closing_soon' && !restaurant.is_closing && (

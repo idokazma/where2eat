@@ -55,7 +55,7 @@ export interface Restaurant {
   google_name?: string | null;
   location?: Location;
   cuisine_type?: string | null;
-  status?: 'open' | 'closed' | 'new_opening' | 'closing_soon' | 'reopening' | null;
+  status?: string | null;
   price_range?: 'budget' | 'mid-range' | 'expensive' | 'not_mentioned' | null;
   host_opinion?: 'positive' | 'negative' | 'mixed' | 'neutral' | null;
   host_comments?: string | null;
