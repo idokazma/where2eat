@@ -151,6 +151,14 @@ export function RestaurantCardNew({
     }
   };
 
+  // Check if restaurant is from last 7 days
+  const isNew = (() => {
+    const dateStr = restaurant.published_at || restaurant.episode_info?.published_at || restaurant.episode_info?.analysis_date;
+    if (!dateStr) return false;
+    const diff = Date.now() - new Date(dateStr).getTime();
+    return diff < 7 * 24 * 60 * 60 * 1000;
+  })();
+
   // Build meta items
   const metaItems: string[] = [];
   if (restaurant.location?.city) {
@@ -218,7 +226,26 @@ export function RestaurantCardNew({
         {/* Overlay gradient */}
         <div className="absolute inset-0 overlay-dark" />
 
-        {/* Badges */}
+        {/* Status badges — top right on image */}
+        <div className="absolute top-3 right-3 flex flex-col items-end gap-1.5 z-10">
+          {!!restaurant.is_closing && (
+            <span className="px-2 py-1 bg-red-600 backdrop-blur-sm rounded text-white text-[10px] font-bold">
+              נסגר
+            </span>
+          )}
+          {restaurant.status === 'closing_soon' && !restaurant.is_closing && (
+            <span className="px-2 py-1 bg-amber-500 backdrop-blur-sm rounded text-white text-[10px] font-bold">
+              נסגר בקרוב
+            </span>
+          )}
+          {isNew && (
+            <span className="px-2 py-1 bg-emerald-500 backdrop-blur-sm rounded text-white text-[10px] font-bold">
+              חדש
+            </span>
+          )}
+        </div>
+
+        {/* Bottom badges */}
         <div className="absolute bottom-3 right-3 left-3 flex items-end justify-between">
           <EpisodeBadge
             episodeNumber={getEpisodeNumber()}
@@ -245,23 +272,6 @@ export function RestaurantCardNew({
 
       {/* Content Section */}
       <div className="restaurant-card-content">
-        {/* Status badges */}
-        {!!restaurant.is_closing && (
-          <span className="inline-block px-2 py-0.5 mb-1 bg-red-500/10 text-red-600 text-xs font-semibold rounded">
-            נסגר לצמיתות
-          </span>
-        )}
-        {restaurant.status === 'closing_soon' && !restaurant.is_closing && (
-          <span className="inline-block px-2 py-0.5 mb-1 bg-amber-500/10 text-amber-600 text-xs font-semibold rounded">
-            נסגר בקרוב
-          </span>
-        )}
-        {restaurant.status === 'new_opening' && (
-          <span className="inline-block px-2 py-0.5 mb-1 bg-emerald-500/10 text-emerald-600 text-xs font-semibold rounded">
-            חדש!
-          </span>
-        )}
-
         {/* Title - prefer Hebrew name, fall back to Google name */}
         <h3 className="restaurant-card-title">
           {restaurant.name_english || restaurant.name_hebrew || restaurant.google_places?.google_name}
