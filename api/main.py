@@ -909,7 +909,7 @@ _default_origins = [
     "https://www.where2eat.rest",
 ]
 _env_origins = os.getenv("ALLOWED_ORIGINS")
-allowed_origins = _env_origins.split(",") if _env_origins else _default_origins
+allowed_origins = _default_origins + (_env_origins.split(",") if _env_origins else [])
 
 app.add_middleware(
     CORSMiddleware,
