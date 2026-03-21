@@ -777,6 +777,10 @@ def _run_enrichment(restaurant_id: str):
                 update_data["google_user_ratings_total"] = rating.get("total_reviews") or rating.get("user_ratings_total")
             if enriched.get("image_url"):
                 update_data["image_url"] = enriched["image_url"]
+            if enriched.get("photos"):
+                update_data["photos"] = json.dumps(enriched["photos"], ensure_ascii=False)
+            if enriched.get("og_image_url"):
+                update_data["og_image_url"] = enriched["og_image_url"]
             loc = enriched.get("location", {})
             if loc.get("full_address"):
                 update_data["address"] = loc["full_address"]
