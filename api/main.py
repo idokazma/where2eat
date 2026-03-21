@@ -899,9 +899,13 @@ curl "http://localhost:8000/api/restaurants/search?location=Tel+Aviv&cuisine=Ita
     },
 )
 
-# Configure CORS
+# Configure CORS & allowed origins
+_default_origins = [
+    "http://localhost:3000",
+    "http://localhost:3001",
+]
 _env_origins = os.getenv("ALLOWED_ORIGINS", "")
-allowed_origins = [o.strip() for o in _env_origins.split(",") if o.strip()]
+allowed_origins = _default_origins + [o.strip() for o in _env_origins.split(",") if o.strip()]
 
 app.add_middleware(
     CORSMiddleware,
@@ -910,6 +914,65 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+# Origin gate middleware — block requests not from allowed origins
+class OriginGateMiddleware(BaseHTTPMiddleware):
+    """Reject requests that don't come from an allowed origin.
+
+    Exempt paths (e.g. /health) are always allowed so Railway health
+    checks keep working.  Requests with a valid API key header bypass
+    the origin check for server-to-server use.
+    """
+
+    EXEMPT_PREFIXES = ("/health", "/docs", "/openapi.json")
+
+    async def dispatch(self, request: Request, call_next):
+        path = request.url.path
+
+        # Always allow CORS preflight requests
+        if request.method == "OPTIONS":
+            return await call_next(request)
+
+        # Always allow exempt paths
+        if any(path.startswith(p) for p in self.EXEMPT_PREFIXES):
+            return await call_next(request)
+
+        # Allow requests with a valid API key (server-to-server)
+        api_key = os.getenv("API_SECRET_KEY")
+        if api_key and request.headers.get("x-api-key") == api_key:
+            return await call_next(request)
+
+        # Check Origin header (set by browsers on fetch/XHR)
+        origin = request.headers.get("origin")
+        referer = request.headers.get("referer")
+
+        if origin:
+            if origin.rstrip("/") not in [o.rstrip("/") for o in allowed_origins]:
+                from fastapi.responses import JSONResponse
+                return JSONResponse(
+                    status_code=403,
+                    content={"detail": "Origin not allowed"},
+                )
+        elif referer:
+            # Fall back to Referer for same-origin navigations
+            from urllib.parse import urlparse
+            referer_origin = f"{urlparse(referer).scheme}://{urlparse(referer).netloc}"
+            if referer_origin.rstrip("/") not in [o.rstrip("/") for o in allowed_origins]:
+                from fastapi.responses import JSONResponse
+                return JSONResponse(
+                    status_code=403,
+                    content={"detail": "Origin not allowed"},
+                )
+        else:
+            # No Origin or Referer — block (not from a browser app)
+            from fastapi.responses import JSONResponse
+            return JSONResponse(
+                status_code=403,
+                content={"detail": "Origin required"},
+            )
+
+        return await call_next(request)
 
 
 # Security headers middleware
@@ -929,6 +992,7 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
 
 
 app.add_middleware(SecurityHeadersMiddleware)
+app.add_middleware(OriginGateMiddleware)
 
 # Include routers
 app.include_router(health_router)
