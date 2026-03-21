@@ -900,16 +900,8 @@ curl "http://localhost:8000/api/restaurants/search?location=Tel+Aviv&cuisine=Ita
 )
 
 # Configure CORS
-_default_origins = [
-    "http://localhost:3000",
-    "http://localhost:3001",
-    "https://where2eat.vercel.app",
-    "https://where2eat-delta.vercel.app",
-    "https://where2eat.rest",
-    "https://www.where2eat.rest",
-]
-_env_origins = os.getenv("ALLOWED_ORIGINS")
-allowed_origins = _default_origins + (_env_origins.split(",") if _env_origins else [])
+_env_origins = os.getenv("ALLOWED_ORIGINS", "")
+allowed_origins = [o.strip() for o in _env_origins.split(",") if o.strip()]
 
 app.add_middleware(
     CORSMiddleware,
