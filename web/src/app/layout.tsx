@@ -4,6 +4,7 @@ import { FavoritesProvider } from "@/contexts/favorites-context";
 import { SettingsProvider } from "@/contexts/settings-context";
 import { LocationFilterProvider } from "@/contexts/location-filter-context";
 import { ClientLayout } from "@/components/client-layout";
+import { Analytics } from "@vercel/analytics/next";
 
 export const metadata: Metadata = {
   title: "Where2Eat - Discover Recommended Restaurants from Podcasts",
@@ -54,6 +55,7 @@ export default function RootLayout({
             </LocationFilterProvider>
           </SettingsProvider>
         </ClientLayout>
+        <Analytics />
       </body>
     </html>
   );
