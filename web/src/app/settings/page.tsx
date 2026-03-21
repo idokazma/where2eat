@@ -4,9 +4,31 @@ import { ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { PageLayout } from '@/components/layout';
 import { useSettings, RADIUS_OPTIONS } from '@/contexts/settings-context';
+import type { ThemeMode, Language } from '@/contexts/settings-context';
 
 export default function SettingsPage() {
   const { settings, updateSetting, isInitialized } = useSettings();
+
+  const languages: { value: Language; label: string }[] = [
+    { value: 'he', label: 'עברית' },
+    { value: 'en', label: 'English' },
+  ];
+
+  const themes: { value: ThemeMode; label: string }[] = [
+    { value: 'light', label: 'בהיר' },
+    { value: 'dark', label: 'כהה' },
+    { value: 'system', label: 'מערכת' },
+  ];
+
+  const handleClearData = () => {
+    if (confirm('האם אתה בטוח? פעולה זו תמחק את כל הנתונים המקומיים')) {
+      localStorage.removeItem('where2eat-favorites');
+      localStorage.removeItem('where2eat-settings');
+      localStorage.removeItem('where2eat-location-filter');
+      localStorage.removeItem('w2e_swipe_hint_shown');
+      window.location.reload();
+    }
+  };
 
   return (
     <PageLayout showHeader showBottomNav showSettings={false}>
@@ -90,12 +112,20 @@ export default function SettingsPage() {
             שפה
           </h2>
           <div className="flex gap-2">
-            <button className="flex-1 p-3 rounded-lg bg-[var(--color-ink)] text-[var(--color-paper)] font-medium">
-              עברית
-            </button>
-            <button className="flex-1 p-3 rounded-lg bg-[var(--color-surface)] text-[var(--color-ink)]">
-              English
-            </button>
+            {languages.map(({ value, label }) => (
+              <button
+                key={value}
+                onClick={() => updateSetting('language', value)}
+                className={`flex-1 p-3 rounded-lg font-medium text-sm transition-colors ${
+                  settings.language === value
+                    ? 'bg-[var(--color-ink)] text-[var(--color-paper)]'
+                    : 'bg-[var(--color-surface)] text-[var(--color-ink)]'
+                }`}
+                disabled={!isInitialized}
+              >
+                {label}
+              </button>
+            ))}
           </div>
         </div>
 
@@ -105,21 +135,29 @@ export default function SettingsPage() {
             ערכת נושא
           </h2>
           <div className="flex gap-2">
-            <button className="flex-1 p-3 rounded-lg bg-[var(--color-ink)] text-[var(--color-paper)] font-medium">
-              בהיר
-            </button>
-            <button className="flex-1 p-3 rounded-lg bg-[var(--color-surface)] text-[var(--color-ink)]">
-              כהה
-            </button>
-            <button className="flex-1 p-3 rounded-lg bg-[var(--color-surface)] text-[var(--color-ink)]">
-              מערכת
-            </button>
+            {themes.map(({ value, label }) => (
+              <button
+                key={value}
+                onClick={() => updateSetting('theme', value)}
+                className={`flex-1 p-3 rounded-lg font-medium text-sm transition-colors ${
+                  settings.theme === value
+                    ? 'bg-[var(--color-ink)] text-[var(--color-paper)]'
+                    : 'bg-[var(--color-surface)] text-[var(--color-ink)]'
+                }`}
+                disabled={!isInitialized}
+              >
+                {label}
+              </button>
+            ))}
           </div>
         </div>
 
         {/* Clear data */}
         <div className="mt-8 pt-6 border-t border-[var(--color-border)]">
-          <button className="w-full p-4 rounded-lg bg-[var(--color-negative-subtle)] text-[var(--color-negative)] font-medium">
+          <button
+            onClick={handleClearData}
+            className="w-full p-4 rounded-lg bg-[var(--color-negative-subtle)] text-[var(--color-negative)] font-medium"
+          >
             נקה נתונים מקומיים
           </button>
           <p className="text-xs text-[var(--color-ink-subtle)] text-center mt-2">
