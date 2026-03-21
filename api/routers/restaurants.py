@@ -785,8 +785,6 @@ def _run_enrichment(restaurant_id: str):
             if loc.get("full_address"):
                 update_data["address"] = loc["full_address"]
 
-            update_data["google_places_enriched"] = 1
-
             if update_data:
                 db.update_restaurant(restaurant_id, **update_data)
 
