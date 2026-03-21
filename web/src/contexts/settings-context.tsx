@@ -2,9 +2,14 @@
 
 import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 
+export type ThemeMode = 'light' | 'dark' | 'system';
+export type Language = 'he' | 'en';
+
 export interface UserSettings {
   showOnlyIsrael: boolean;
   radiusKm: number | null;
+  theme: ThemeMode;
+  language: Language;
 }
 
 const STORAGE_KEY = 'where2eat-settings';
@@ -12,6 +17,8 @@ const STORAGE_KEY = 'where2eat-settings';
 const DEFAULTS: UserSettings = {
   showOnlyIsrael: false,
   radiusKm: null,
+  theme: 'light',
+  language: 'he',
 };
 
 export const RADIUS_OPTIONS = [0, 1, 5, 20] as const;
@@ -49,6 +56,21 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
       }
     }
   }, [settings, isInitialized]);
+
+  // Apply theme to document
+  useEffect(() => {
+    if (!isInitialized) return;
+    const root = document.documentElement;
+    if (settings.theme === 'dark') {
+      root.classList.add('dark');
+    } else if (settings.theme === 'light') {
+      root.classList.remove('dark');
+    } else {
+      // system
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      root.classList.toggle('dark', prefersDark);
+    }
+  }, [settings.theme, isInitialized]);
 
   const updateSetting = useCallback(<K extends keyof UserSettings>(key: K, value: UserSettings[K]) => {
     setSettings((prev) => ({ ...prev, [key]: value }));
