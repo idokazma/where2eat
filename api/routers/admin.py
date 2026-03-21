@@ -491,6 +491,32 @@ async def patch_restaurant_admin(
     return {"success": True, "updated_fields": list(updates.keys())}
 
 
+@router.patch(
+    "/restaurants/{restaurant_id}/visibility",
+    summary="Toggle restaurant visibility (admin)",
+    description="Hide or unhide a restaurant. Requires editor role or higher.",
+)
+async def toggle_restaurant_visibility(
+    restaurant_id: str,
+    body: dict,
+    user: dict = Depends(require_role(["editor", "admin", "super_admin"])),
+):
+    """Toggle is_hidden flag on a restaurant."""
+    from database import get_database
+
+    is_hidden = body.get("is_hidden")
+    if is_hidden is None:
+        raise HTTPException(status_code=400, detail="is_hidden field required")
+
+    db = get_database()
+    success = db.update_restaurant(restaurant_id, is_hidden=1 if is_hidden else 0)
+    if not success:
+        raise HTTPException(status_code=404, detail="Restaurant not found")
+
+    restaurant = db.get_restaurant(restaurant_id)
+    return restaurant
+
+
 @router.delete(
     "/restaurants/{restaurant_id}",
     summary="Delete restaurant (admin)",
