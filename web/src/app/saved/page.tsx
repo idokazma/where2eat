@@ -20,7 +20,7 @@ export default function SavedPage() {
             <div className="space-y-4">
               {favoriteRestaurants.map((restaurant, index) => (
                 <div
-                  key={restaurant.google_places?.place_id || restaurant.name_hebrew}
+                  key={restaurant.id || restaurant.google_places?.place_id || restaurant.name_hebrew}
                   className="animate-fade-up"
                   style={{ animationDelay: `${index * 50}ms`, opacity: 0 }}
                 >

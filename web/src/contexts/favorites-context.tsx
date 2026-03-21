@@ -15,21 +15,16 @@ interface FavoritesContextType {
 const FavoritesContext = createContext<FavoritesContextType | undefined>(undefined)
 
 export function FavoritesProvider({ children }: { children: ReactNode }) {
-  const [favorites, setFavorites] = useState<string[]>([])
-  const [allRestaurants, setAllRestaurantsState] = useState<Restaurant[]>([])
-
-  // Load favorites from localStorage on mount
-  useEffect(() => {
-    const saved = localStorage.getItem("where2eat-favorites")
-    if (saved) {
-      try {
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-        setFavorites(JSON.parse(saved))
-      } catch (error) {
-        console.error("Error loading favorites:", error)
-      }
+  const [favorites, setFavorites] = useState<string[]>(() => {
+    if (typeof window === 'undefined') return []
+    try {
+      const saved = localStorage.getItem("where2eat-favorites")
+      return saved ? JSON.parse(saved) : []
+    } catch {
+      return []
     }
-  }, [])
+  })
+  const [allRestaurants, setAllRestaurantsState] = useState<Restaurant[]>([])
 
   // Save favorites to localStorage whenever it changes
   useEffect(() => {
@@ -49,7 +44,7 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
   }
 
   const favoriteRestaurants = allRestaurants.filter(restaurant =>
-    isFavorite(restaurant.google_places?.place_id || restaurant.name_hebrew)
+    isFavorite(restaurant.id || restaurant.google_places?.place_id || restaurant.name_hebrew)
   )
 
   const setAllRestaurants = useCallback((restaurants: Restaurant[]) => {

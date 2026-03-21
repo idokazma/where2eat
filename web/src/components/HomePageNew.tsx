@@ -94,12 +94,16 @@ export function HomePageNew() {
     setRenderCount(RENDER_BATCH);
   }, [searchQuery, locationFilter.mode, locationFilter.city, locationFilter.neighborhood]);
 
+  // Stable references for memo deps
+  const locMode = locationFilter.mode;
+  const locCity = locationFilter.city;
+  const locNeighborhood = locationFilter.neighborhood;
+  const locLat = locationFilter.userCoords?.lat ?? null;
+  const locLng = locationFilter.userCoords?.lng ?? null;
+
   // Client-side filter + sort (instant)
   const processedRestaurants = useMemo(() => {
-    let result = allRestaurants.filter((r) => !r.is_closing && r.status !== 'closed');
-
-    // Hide hidden restaurants
-    result = result.filter((r) => !r.is_hidden);
+    let result = allRestaurants.filter((r) => !r.is_closing && r.status !== 'closed' && !r.is_hidden);
 
     // Search by name, English name, cuisine, host comments
     if (searchQuery.trim()) {
@@ -114,17 +118,17 @@ export function HomePageNew() {
     }
 
     // Filter by city
-    if (locationFilter.mode === 'manual' && locationFilter.city) {
-      const city = locationFilter.city.toLowerCase();
+    if (locMode === 'manual' && locCity) {
+      const city = locCity.toLowerCase();
       result = result.filter(
         (r) => (r.location?.city || '').toLowerCase().includes(city)
       );
     }
 
     // Filter by neighborhood
-    if (locationFilter.mode === 'manual' && locationFilter.neighborhood) {
+    if (locMode === 'manual' && locNeighborhood) {
       result = result.filter(
-        (r) => r.location?.neighborhood === locationFilter.neighborhood
+        (r) => r.location?.neighborhood === locNeighborhood
       );
     }
 
@@ -133,20 +137,19 @@ export function HomePageNew() {
       result = result.filter(isInIsrael);
     }
 
-    // Sort by distance when nearby
-    if (locationFilter.mode === 'nearby' && locationFilter.userCoords) {
-      const { lat, lng } = locationFilter.userCoords;
+    // Sort by distance when nearby (only when we have coords)
+    if (locMode === 'nearby' && locLat !== null && locLng !== null) {
       result = [...result].sort((a, b) => {
         const coordsA = getCoordinates(a.location);
-        const distA = coordsA ? calculateDistance(lat, lng, coordsA.latitude, coordsA.longitude) : Infinity;
+        const distA = coordsA ? calculateDistance(locLat, locLng, coordsA.latitude, coordsA.longitude) : Infinity;
         const coordsB = getCoordinates(b.location);
-        const distB = coordsB ? calculateDistance(lat, lng, coordsB.latitude, coordsB.longitude) : Infinity;
+        const distB = coordsB ? calculateDistance(locLat, locLng, coordsB.latitude, coordsB.longitude) : Infinity;
         return distA - distB;
       });
     }
 
     return result;
-  }, [allRestaurants, searchQuery, locationFilter, settings.showOnlyIsrael]);
+  }, [allRestaurants, searchQuery, locMode, locCity, locNeighborhood, locLat, locLng, settings.showOnlyIsrael]);
 
   // Slice for progressive rendering
   const visibleRestaurants = useMemo(
