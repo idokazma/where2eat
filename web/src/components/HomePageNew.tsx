@@ -103,7 +103,7 @@ export function HomePageNew() {
 
   // Client-side filter + sort (instant)
   const processedRestaurants = useMemo(() => {
-    let result = allRestaurants.filter((r) => !r.is_hidden);
+    let result = allRestaurants.filter((r) => !r.is_hidden && !r.is_closing && r.status !== 'closed' && r.status !== 'סגור');
 
     // Search by name, English name, cuisine, host comments
     if (searchQuery.trim()) {
