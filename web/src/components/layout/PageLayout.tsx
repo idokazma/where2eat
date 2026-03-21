@@ -20,7 +20,7 @@ export function PageLayout({
   title,
   showHeader = true,
   showBottomNav = true,
-  showSearch = true,
+  showSearch = false,
   showSettings = true,
   onSearchClick,
   headerRightContent,
