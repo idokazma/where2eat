@@ -13,7 +13,7 @@ interface HeaderProps {
 
 export function Header({
   title = 'Where2Eat',
-  showSearch = true,
+  showSearch = false,
   showSettings = true,
   onSearchClick,
   rightContent,
