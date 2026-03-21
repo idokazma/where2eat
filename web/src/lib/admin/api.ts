@@ -16,7 +16,7 @@ import type {
 } from '@/types/admin';
 import type { Restaurant, RestaurantListResponse, EditHistory } from '@/types/admin/restaurant';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://where2eat-production.up.railway.app';
 
 export interface LoginCredentials {
   email: string;
