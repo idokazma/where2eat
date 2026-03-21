@@ -14,8 +14,8 @@ import { Restaurant } from '@/types/restaurant';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Edit, Trash2, Eye, Download, Upload, Trash } from 'lucide-react';
-import { bulkApi } from '@/lib/api';
+import { Edit, Trash2, Eye, EyeOff, Download, Upload, Trash } from 'lucide-react';
+import { bulkApi, restaurantsApi } from '@/lib/api';
 
 interface RestaurantTableProps {
   data: Restaurant[];
@@ -55,6 +55,14 @@ export function RestaurantTable({
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['restaurants'] });
       setRowSelection({});
+    },
+  });
+
+  const toggleVisibilityMutation = useMutation({
+    mutationFn: ({ id, is_hidden }: { id: string; is_hidden: boolean }) =>
+      restaurantsApi.toggleVisibility(id, is_hidden),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['restaurants'] });
     },
   });
 
@@ -201,34 +209,48 @@ export function RestaurantTable({
       columnHelper.display({
         id: 'actions',
         header: 'Actions',
-        cell: (props) => (
-          <div className="flex gap-2">
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={() => router.push(`/dashboard/restaurants/${props.row.original.id}/preview`)}
-              title="Preview"
-            >
-              <Eye className="h-4 w-4" />
-            </Button>
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={() => router.push(`/dashboard/restaurants/${props.row.original.id}/edit`)}
-              title="Edit"
-            >
-              <Edit className="h-4 w-4" />
-            </Button>
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={() => handleDelete(props.row.original.id!)}
-              title="Delete"
-            >
-              <Trash2 className="h-4 w-4 text-destructive" />
-            </Button>
-          </div>
-        ),
+        cell: (props) => {
+          const restaurant = props.row.original;
+          const hidden = !!restaurant.is_hidden;
+          return (
+            <div className="flex gap-2">
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={() =>
+                  toggleVisibilityMutation.mutate({
+                    id: restaurant.id!,
+                    is_hidden: !hidden,
+                  })
+                }
+                title={hidden ? 'Unhide' : 'Hide'}
+                disabled={toggleVisibilityMutation.isPending}
+              >
+                {hidden ? (
+                  <EyeOff className="h-4 w-4 text-muted-foreground" />
+                ) : (
+                  <Eye className="h-4 w-4" />
+                )}
+              </Button>
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={() => router.push(`/dashboard/restaurants/${restaurant.id}/edit`)}
+                title="Edit"
+              >
+                <Edit className="h-4 w-4" />
+              </Button>
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={() => handleDelete(restaurant.id!)}
+                title="Delete"
+              >
+                <Trash2 className="h-4 w-4 text-destructive" />
+              </Button>
+            </div>
+          );
+        },
       }),
     ],
     [router]
@@ -377,7 +399,9 @@ export function RestaurantTable({
                 {table.getRowModel().rows.map((row) => (
                   <tr
                     key={row.id}
-                    className="hover:bg-muted/50 transition-colors"
+                    className={`hover:bg-muted/50 transition-colors ${
+                      row.original.is_hidden ? 'opacity-50' : ''
+                    }`}
                   >
                     {row.getVisibleCells().map((cell) => (
                       <td key={cell.id} className="px-4 py-3">
