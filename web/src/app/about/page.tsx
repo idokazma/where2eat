@@ -110,6 +110,23 @@ export default function AboutPage() {
             </div>
           </div>
 
+          {/* Origin story */}
+          <div className="space-y-3">
+            <h2 className="text-lg font-bold text-[var(--color-ink)]">הסיפור שלנו</h2>
+            <p className="text-[var(--color-ink)] leading-relaxed">
+              הפרויקט מבוסס על הפודקאסט{' '}
+              <span className="font-bold">״מדברים מהבטן״</span>
+              , פודקאסט אוכל ישראלי פופולרי שמביא המלצות אותנטיות למסעדות מכל רחבי הארץ.
+            </p>
+            <p className="text-[var(--color-ink)] leading-relaxed">
+              בגלגול הקודם שלו, הפרויקט נקרא{' '}
+              <span className="font-bold">״מדברים מהbotן״</span>
+              {' '}(או{' '}
+              <span className="font-bold">״מדברים מהבוטן״</span>
+              ) — שם שמשלב את שם הפודקאסט המקורי עם הבוט שמאחורי הקלעים, שמאזין, מנתח ומחלץ את ההמלצות באופן אוטומטי.
+            </p>
+          </div>
+
           {/* Version */}
           <div className="pt-6 border-t border-[var(--color-border)] text-center">
             <p className="text-sm text-[var(--color-ink-muted)]">
