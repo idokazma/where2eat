@@ -905,6 +905,8 @@ allowed_origins = os.getenv("ALLOWED_ORIGINS", "").split(",") if os.getenv("ALLO
     "http://localhost:3001",
     "https://where2eat.vercel.app",
     "https://where2eat-delta.vercel.app",
+    "https://where2eat.rest",
+    "https://www.where2eat.rest",
 ]
 
 app.add_middleware(
