@@ -5,9 +5,11 @@ import Link from 'next/link';
 import { PageLayout } from '@/components/layout';
 import { useSettings, RADIUS_OPTIONS } from '@/contexts/settings-context';
 import type { ThemeMode, Language } from '@/contexts/settings-context';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function SettingsPage() {
   const { settings, updateSetting, isInitialized } = useSettings();
+  const { language: activeLanguage, setLanguage } = useLanguage();
 
   const languages: { value: Language; label: string }[] = [
     { value: 'he', label: 'עברית' },
@@ -115,9 +117,12 @@ export default function SettingsPage() {
             {languages.map(({ value, label }) => (
               <button
                 key={value}
-                onClick={() => updateSetting('language', value)}
+                onClick={() => {
+                  setLanguage(value);
+                  updateSetting('language', value);
+                }}
                 className={`flex-1 p-3 rounded-lg font-medium text-sm transition-colors ${
-                  settings.language === value
+                  activeLanguage === value
                     ? 'bg-[var(--color-ink)] text-[var(--color-paper)]'
                     : 'bg-[var(--color-surface)] text-[var(--color-ink)]'
                 }`}
