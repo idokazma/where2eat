@@ -4,17 +4,10 @@ import { ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { PageLayout } from '@/components/layout';
 import { useSettings, RADIUS_OPTIONS } from '@/contexts/settings-context';
-import type { ThemeMode, Language } from '@/contexts/settings-context';
-import { useLanguage } from '@/contexts/LanguageContext';
+import type { ThemeMode } from '@/contexts/settings-context';
 
 export default function SettingsPage() {
   const { settings, updateSetting, isInitialized } = useSettings();
-  const { language: activeLanguage, setLanguage } = useLanguage();
-
-  const languages: { value: Language; label: string }[] = [
-    { value: 'he', label: 'עברית' },
-    { value: 'en', label: 'English' },
-  ];
 
   const themes: { value: ThemeMode; label: string }[] = [
     { value: 'light', label: 'בהיר' },
@@ -106,32 +99,6 @@ export default function SettingsPage() {
           <p className="text-xs text-[var(--color-ink-muted)] mt-2">
             חל כאשר מסנן &quot;קרוב אליי&quot; פעיל
           </p>
-        </div>
-
-        {/* Language setting */}
-        <div className="mb-6">
-          <h2 className="text-sm font-medium text-[var(--color-ink-muted)] mb-3">
-            שפה
-          </h2>
-          <div className="flex gap-2">
-            {languages.map(({ value, label }) => (
-              <button
-                key={value}
-                onClick={() => {
-                  setLanguage(value);
-                  updateSetting('language', value);
-                }}
-                className={`flex-1 p-3 rounded-lg font-medium text-sm transition-colors ${
-                  activeLanguage === value
-                    ? 'bg-[var(--color-ink)] text-[var(--color-paper)]'
-                    : 'bg-[var(--color-surface)] text-[var(--color-ink)]'
-                }`}
-                disabled={!isInitialized}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
         </div>
 
         {/* Theme setting */}
