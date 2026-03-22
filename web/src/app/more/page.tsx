@@ -53,7 +53,7 @@ export default function MorePage() {
         {/* Version */}
         <div className="mt-8 text-center">
           <p className="text-xs text-[var(--color-ink-subtle)]">
-            Where2Eat v2.0
+            Where2Eat
           </p>
         </div>
       </div>
