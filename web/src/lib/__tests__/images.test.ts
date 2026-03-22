@@ -140,9 +140,9 @@ describe('getPhotoProxyUrl', () => {
     expect(getPhotoProxyUrl('abc123', 400)).toBe('/api/photos/abc123?maxwidth=400');
   });
 
-  it('encodes special characters in reference', () => {
-    expect(getPhotoProxyUrl('ref/with spaces')).toBe(
-      '/api/photos/ref%2Fwith%20spaces?maxwidth=800'
+  it('preserves slashes in reference for catch-all route', () => {
+    expect(getPhotoProxyUrl('places/ChIJ123/photos/ATCDNf456')).toBe(
+      '/api/photos/places/ChIJ123/photos/ATCDNf456?maxwidth=800'
     );
   });
 });

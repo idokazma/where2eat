@@ -15,9 +15,10 @@ function isNewApiReference(reference: string): boolean {
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ reference: string }> }
+  { params }: { params: Promise<{ reference: string[] }> }
 ) {
-  const { reference } = await params;
+  const { reference: segments } = await params;
+  const reference = segments?.join('/');
 
   if (!reference) {
     return NextResponse.json({ error: 'Missing photo reference' }, { status: 400 });
