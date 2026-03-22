@@ -20,6 +20,7 @@ import {
   ChevronUp,
   Camera,
   Calendar,
+  RotateCw,
 } from 'lucide-react';
 import { apiFetch } from '@/lib/admin/api';
 
@@ -84,6 +85,15 @@ async function updateRestaurant(
   return apiFetch(`/api/admin/restaurants/${id}`, {
     method: 'PATCH',
     body: JSON.stringify(data),
+  });
+}
+
+/** Reprocess restaurant via Google Places enrichment */
+async function reprocessRestaurant(
+  id: string
+): Promise<{ success: boolean; error?: string }> {
+  return apiFetch(`/api/restaurants/${id}/reprocess`, {
+    method: 'POST',
   });
 }
 
@@ -276,6 +286,13 @@ export default function AdminFeedPage() {
   const visibilityMutation = useMutation({
     mutationFn: ({ id, is_hidden }: { id: string; is_hidden: boolean }) =>
       toggleVisibility(id, is_hidden),
+    onSuccess: () => {
+      loadAll();
+    },
+  });
+
+  const reprocessMutation = useMutation({
+    mutationFn: (id: string) => reprocessRestaurant(id),
     onSuccess: () => {
       loadAll();
     },
@@ -502,8 +519,8 @@ export default function AdminFeedPage() {
                       </div>
                     </div>
 
-                    {/* Links */}
-                    <div className="flex gap-3 mt-3 pt-2 border-t">
+                    {/* Links & Actions */}
+                    <div className="flex items-center gap-3 mt-3 pt-2 border-t">
                       {r.episode_info?.video_url && (
                         <a
                           href={r.episode_info.video_url}
@@ -524,6 +541,15 @@ export default function AdminFeedPage() {
                           <MapPin className="size-3" /> Google Maps
                         </a>
                       )}
+                      <button
+                        onClick={() => reprocessMutation.mutate(r.id)}
+                        disabled={reprocessMutation.isPending}
+                        className="flex items-center gap-1 text-xs text-orange-600 hover:text-orange-700 hover:underline disabled:opacity-50 ml-auto"
+                        title="Re-run Google Places enrichment to refresh images, rating, and location"
+                      >
+                        <RotateCw className={`size-3 ${reprocessMutation.isPending ? 'animate-spin' : ''}`} />
+                        Reprocess
+                      </button>
                     </div>
                   </div>
                 )}
