@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/admin/ui/button';
 import { Input } from '@/components/admin/ui/input';
 import {
@@ -76,29 +76,6 @@ interface FeedRestaurant {
   created_at?: string;
 }
 
-/** Fetch restaurants from the admin API (includes hidden restaurants) */
-async function fetchFeedRestaurants(params: {
-  page: number;
-  limit: number;
-  search?: string;
-}): Promise<{ restaurants: FeedRestaurant[]; total_pages: number; total: number }> {
-  const qp = new URLSearchParams({
-    page: params.page.toString(),
-    limit: params.limit.toString(),
-    sort: '-published_at',
-  });
-  if (params.search) qp.append('search', params.search);
-  const data = await apiFetch<{
-    restaurants: FeedRestaurant[];
-    pagination: { page: number; totalPages: number; total: number };
-  }>(`/api/admin/restaurants?${qp}`);
-  return {
-    restaurants: data.restaurants,
-    total_pages: data.pagination.totalPages,
-    total: data.pagination.total,
-  };
-}
-
 /** Patch specific restaurant fields via admin API */
 async function updateRestaurant(
   id: string,
@@ -150,6 +127,9 @@ function getCuisineColor(cuisine?: string | null): string {
   }
   return 'bg-muted';
 }
+
+// How many cards to render initially / per scroll batch
+const RENDER_BATCH = 20;
 
 /** Inline editable field */
 function EditableField({
@@ -205,24 +185,91 @@ function EditableField({
 
 export default function AdminFeedPage() {
   const queryClient = useQueryClient();
-  const [page, setPage] = useState(1);
-  const [search, setSearch] = useState('');
-  const [draftSearch, setDraftSearch] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
-  const { data, isLoading, refetch } = useQuery({
-    queryKey: ['admin-feed', page, search],
-    queryFn: () => fetchFeedRestaurants({ page, limit: 20, search: search || undefined }),
-  });
+  // All restaurants loaded once (like user feed)
+  const [allRestaurants, setAllRestaurants] = useState<FeedRestaurant[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const restaurants = data?.restaurants ?? [];
-  const totalPages = data?.total_pages ?? 1;
+  // Progressive rendering
+  const [renderCount, setRenderCount] = useState(RENDER_BATCH);
+  const sentinelRef = useRef<HTMLDivElement>(null);
+
+  // Fetch all restaurants once, sorted by published_at desc (same as user feed)
+  const loadAll = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const data = await apiFetch<{
+        restaurants: FeedRestaurant[];
+        pagination: { total: number };
+      }>('/api/admin/restaurants?page=1&limit=500&sort=-published_at');
+      if (data.restaurants) {
+        setAllRestaurants(data.restaurants);
+      }
+    } catch {
+      // silent
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadAll();
+  }, [loadAll]);
+
+  // Reset render count when search changes
+  useEffect(() => {
+    setRenderCount(RENDER_BATCH);
+  }, [searchQuery]);
+
+  // Client-side search filter (instant, like user feed)
+  const processedRestaurants = useMemo(() => {
+    let result = allRestaurants;
+
+    if (searchQuery.trim()) {
+      const q = searchQuery.trim().toLowerCase();
+      result = result.filter(
+        (r) =>
+          r.name_hebrew?.toLowerCase().includes(q) ||
+          r.name_english?.toLowerCase().includes(q) ||
+          r.cuisine_type?.toLowerCase().includes(q) ||
+          r.host_comments?.toLowerCase().includes(q) ||
+          r.location?.city?.toLowerCase().includes(q)
+      );
+    }
+
+    return result;
+  }, [allRestaurants, searchQuery]);
+
+  // Progressive rendering slice
+  const visibleRestaurants = useMemo(
+    () => processedRestaurants.slice(0, renderCount),
+    [processedRestaurants, renderCount]
+  );
+
+  const hasMore = renderCount < processedRestaurants.length;
+
+  // IntersectionObserver for infinite scroll
+  useEffect(() => {
+    if (!sentinelRef.current) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasMore) {
+          setRenderCount((prev) => Math.min(prev + RENDER_BATCH, processedRestaurants.length));
+        }
+      },
+      { rootMargin: '200px' }
+    );
+    observer.observe(sentinelRef.current);
+    return () => observer.disconnect();
+  }, [hasMore, processedRestaurants.length]);
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }: { id: string; data: Partial<FeedRestaurant> }) =>
       updateRestaurant(id, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-feed'] });
+      loadAll();
     },
   });
 
@@ -230,27 +277,14 @@ export default function AdminFeedPage() {
     mutationFn: ({ id, is_hidden }: { id: string; is_hidden: boolean }) =>
       toggleVisibility(id, is_hidden),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-feed'] });
+      loadAll();
     },
   });
 
   const handleFieldSave = (restaurantId: string, field: string, value: string) => {
     const data: Record<string, unknown> = {};
-
-    // Handle nested fields
-    if (field === 'city' || field === 'neighborhood' || field === 'address') {
-      data[field] = value;
-    } else {
-      data[field] = value;
-    }
-
+    data[field] = value;
     updateMutation.mutate({ id: restaurantId, data: data as Partial<FeedRestaurant> });
-  };
-
-  const handleSearchSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setPage(1);
-    setSearch(draftSearch);
   };
 
   return (
@@ -260,44 +294,49 @@ export default function AdminFeedPage() {
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Feed Preview</h1>
           <p className="text-sm text-muted-foreground mt-0.5">
-            Same restaurants users see — click any field to edit, toggle visibility to hide from feed
+            Same restaurants users see (+ hidden) — click any field to edit, toggle visibility to hide from feed
           </p>
         </div>
-        <Button variant="outline" size="sm" onClick={() => refetch()} disabled={isLoading}>
-          <RefreshCw className={`size-4 mr-1.5 ${isLoading ? 'animate-spin' : ''}`} />
-          Refresh
-        </Button>
+        <div className="flex items-center gap-2">
+          <span className="text-xs text-muted-foreground">
+            {processedRestaurants.length} restaurants
+          </span>
+          <Button variant="outline" size="sm" onClick={() => loadAll()} disabled={isLoading}>
+            <RefreshCw className={`size-4 mr-1.5 ${isLoading ? 'animate-spin' : ''}`} />
+            Refresh
+          </Button>
+        </div>
       </div>
 
-      {/* Search */}
-      <form onSubmit={handleSearchSubmit} className="flex gap-2">
-        <div className="relative flex-1">
-          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground" />
-          <Input
-            placeholder="Search restaurants..."
-            value={draftSearch}
-            onChange={(e) => setDraftSearch(e.target.value)}
-            className="pl-8 h-9"
-          />
-        </div>
-        <Button type="submit" variant="secondary" size="sm" className="h-9">Search</Button>
-        {search && (
-          <Button variant="ghost" size="sm" className="h-9" onClick={() => { setDraftSearch(''); setSearch(''); setPage(1); }}>
-            Clear
-          </Button>
+      {/* Search — instant client-side like user feed */}
+      <div className="relative">
+        <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground" />
+        <Input
+          placeholder="Search restaurants..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="pl-8 h-9"
+        />
+        {searchQuery && (
+          <button
+            onClick={() => setSearchQuery('')}
+            className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+          >
+            <X className="size-3.5" />
+          </button>
         )}
-      </form>
+      </div>
 
       {/* Cards */}
-      {isLoading && restaurants.length === 0 ? (
+      {isLoading && allRestaurants.length === 0 ? (
         <div className="flex justify-center py-12">
           <RefreshCw className="size-6 animate-spin text-muted-foreground" />
         </div>
-      ) : restaurants.length === 0 ? (
+      ) : processedRestaurants.length === 0 ? (
         <div className="text-center py-12 text-muted-foreground">No restaurants found</div>
       ) : (
         <div className="space-y-3">
-          {restaurants.map((r) => {
+          {visibleRestaurants.map((r) => {
             const imageUrl = getImageUrl(r);
             const isExpanded = expandedId === r.id;
             const isHidden = !!r.is_hidden;
@@ -491,23 +530,13 @@ export default function AdminFeedPage() {
               </div>
             );
           })}
-        </div>
-      )}
 
-      {/* Pagination */}
-      {totalPages > 1 && (
-        <div className="flex items-center justify-between pt-2">
-          <span className="text-xs text-muted-foreground">
-            Page {page} of {totalPages}
-          </span>
-          <div className="flex gap-1.5">
-            <Button variant="outline" size="sm" disabled={page <= 1} onClick={() => setPage((p) => p - 1)}>
-              Prev
-            </Button>
-            <Button variant="outline" size="sm" disabled={page >= totalPages} onClick={() => setPage((p) => p + 1)}>
-              Next
-            </Button>
-          </div>
+          {/* Sentinel for infinite scroll */}
+          {hasMore && (
+            <div ref={sentinelRef} className="flex justify-center py-4">
+              <RefreshCw className="size-4 animate-spin text-muted-foreground" />
+            </div>
+          )}
         </div>
       )}
     </div>
