@@ -21,7 +21,7 @@ const dataDir = path.join(__dirname, '..', '..', 'data', 'restaurants');
 router.get('/',
   [
     query('page').optional().isInt({ min: 1 }),
-    query('limit').optional().isInt({ min: 1, max: 100 }),
+    query('limit').optional().isInt({ min: 1, max: 500 }),
     query('sort').optional().isString(),
     query('search').optional().isString(),
   ],
