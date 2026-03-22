@@ -556,6 +556,55 @@ async def delete_restaurant_admin(
     return {"message": "Restaurant deleted successfully"}
 
 
+@router.post(
+    "/fix-photos",
+    summary="Fix double-encoded photos in database",
+    description="One-time migration to unwrap double/triple-encoded JSON photos field.",
+)
+async def fix_double_encoded_photos(
+    user: dict = Depends(require_role(["admin", "super_admin"])),
+):
+    """Fix all restaurants with double-encoded photos JSON in the database."""
+    from database import get_database
+
+    db = get_database()
+    fixed = 0
+    errors = []
+
+    with db.get_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT id, photos FROM restaurants WHERE photos IS NOT NULL AND photos != '[]'")
+        rows = cursor.fetchall()
+
+        for row in rows:
+            rid, raw_photos = row["id"], row["photos"]
+            if not raw_photos or raw_photos == "[]":
+                continue
+
+            # Unwrap until we get a list
+            value = raw_photos
+            decode_count = 0
+            try:
+                while isinstance(value, str):
+                    value = json.loads(value)
+                    decode_count += 1
+            except (json.JSONDecodeError, TypeError):
+                errors.append({"id": rid, "error": "Could not decode"})
+                continue
+
+            # If it took more than 1 decode, the data was over-encoded
+            if decode_count > 1 and isinstance(value, list):
+                cursor.execute(
+                    "UPDATE restaurants SET photos = ? WHERE id = ?",
+                    (json.dumps(value, ensure_ascii=False), rid),
+                )
+                fixed += 1
+
+        conn.commit()
+
+    return {"fixed": fixed, "total_checked": len(rows), "errors": errors}
+
+
 @router.get(
     "/restaurants/{restaurant_id}/history",
     summary="Get restaurant edit history",
