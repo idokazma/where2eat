@@ -5,6 +5,8 @@ const path = require('path');
 const fs = require('fs-extra');
 const { authenticateToken, requireRole } = require('../middleware/auth');
 
+const { filterHallucinations } = require('../utils/hallucination-filter');
+
 const router = express.Router();
 
 // All routes require authentication
@@ -57,6 +59,9 @@ router.get('/',
         }
       }
 
+      // Filter out hallucinations (same as public feed)
+      restaurants = filterHallucinations(restaurants, { strictMode: true });
+
       // Apply filters
       let filtered = restaurants;
 
@@ -108,11 +113,11 @@ router.get('/',
             bVal = b.cuisine_type || '';
             break;
           case 'published_at':
-            aVal = a.published_at || a.episode_info?.published_at || a.created_at || '';
-            bVal = b.published_at || b.episode_info?.published_at || b.created_at || '';
+          default:
+            aVal = a.published_at || a.episode_info?.published_at || a.episode_info?.analysis_date || '';
+            bVal = b.published_at || b.episode_info?.published_at || b.episode_info?.analysis_date || '';
             break;
           case 'created_at':
-          default:
             aVal = a.created_at || '';
             bVal = b.created_at || '';
             break;
