@@ -85,6 +85,7 @@ async function fetchFeedRestaurants(params: {
   const qp = new URLSearchParams({
     page: params.page.toString(),
     limit: params.limit.toString(),
+    sort: '-published_at',
   });
   if (params.search) qp.append('search', params.search);
   const data = await apiFetch<{
@@ -132,14 +133,14 @@ function getImageUrl(r: FeedRestaurant): string | null {
 
 // Cuisine gradient colors matching the consumer app
 const cuisineColors: Record<string, string> = {
-  'הומוס': 'bg-amber-100 dark:bg-amber-900/30',
-  'שווארמה': 'bg-orange-100 dark:bg-orange-900/30',
-  'אסייתי': 'bg-red-100 dark:bg-red-900/30',
-  'איטלקי': 'bg-green-100 dark:bg-green-900/30',
-  'דגים': 'bg-blue-100 dark:bg-blue-900/30',
-  'בשרים': 'bg-rose-100 dark:bg-rose-900/30',
-  'קינוחים': 'bg-pink-100 dark:bg-pink-900/30',
-  'קפה': 'bg-yellow-100 dark:bg-yellow-900/30',
+  'הומוס': 'bg-amber-100',
+  'שווארמה': 'bg-orange-100',
+  'אסייתי': 'bg-red-100',
+  'איטלקי': 'bg-green-100',
+  'דגים': 'bg-blue-100',
+  'בשרים': 'bg-rose-100',
+  'קינוחים': 'bg-pink-100',
+  'קפה': 'bg-yellow-100',
 };
 
 function getCuisineColor(cuisine?: string | null): string {
@@ -192,7 +193,7 @@ function EditableField({
           if (e.key === 'Escape') { setDraft(value); setEditing(false); }
         }}
       />
-      <button onClick={() => { onSave(draft); setEditing(false); }} className="text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300">
+      <button onClick={() => { onSave(draft); setEditing(false); }} className="text-green-600 hover:text-green-700">
         <Check className="size-3.5" />
       </button>
       <button onClick={() => { setDraft(value); setEditing(false); }} className="text-muted-foreground hover:text-foreground">
@@ -306,8 +307,8 @@ export default function AdminFeedPage() {
             return (
               <div
                 key={r.id}
-                className={`border rounded-xl overflow-hidden transition-all ${
-                  isHidden ? 'opacity-60 border-dashed border-destructive/40' : ''
+                className={`border rounded-xl overflow-hidden transition-all bg-white ${
+                  isHidden ? 'opacity-60 border-dashed border-red-300 bg-red-50/30' : ''
                 }`}
               >
                 {/* Card — mimics consumer layout */}
@@ -418,7 +419,7 @@ export default function AdminFeedPage() {
 
                 {/* Expanded edit panel */}
                 {isExpanded && (
-                  <div className="border-t bg-muted/30 px-4 py-3">
+                  <div className="border-t bg-gray-50 px-4 py-3">
                     <div className="grid grid-cols-2 gap-x-6 gap-y-2 text-xs">
                       <div>
                         <span className="text-muted-foreground block mb-0.5">Hebrew Name</span>
