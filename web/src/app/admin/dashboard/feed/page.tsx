@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/admin/ui/button';
 import { Input } from '@/components/admin/ui/input';
@@ -128,8 +128,8 @@ function getCuisineColor(cuisine?: string | null): string {
   return 'bg-muted';
 }
 
-// How many cards to render initially / per scroll batch
-const RENDER_BATCH = 20;
+// How many restaurants to fetch per page from the server
+const PAGE_SIZE = 25;
 
 /** Inline editable field */
 function EditableField({
@@ -188,97 +188,92 @@ export default function AdminFeedPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
-  // All restaurants loaded once (like user feed)
-  const [allRestaurants, setAllRestaurants] = useState<FeedRestaurant[]>([]);
+  // Server-paginated restaurants
+  const [restaurants, setRestaurants] = useState<FeedRestaurant[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-
-  // Progressive rendering
-  const [renderCount, setRenderCount] = useState(RENDER_BATCH);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
   const sentinelRef = useRef<HTMLDivElement>(null);
+  const searchTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Fetch all restaurants once, sorted by published_at desc (same as user feed)
-  const loadAll = useCallback(async () => {
-    setIsLoading(true);
+  // Fetch a page of restaurants from the server (already sorted by newest first)
+  const fetchPage = useCallback(async (page: number, search: string, append: boolean) => {
+    if (page === 1) setIsLoading(true);
+    else setIsLoadingMore(true);
+
     try {
+      const params = new URLSearchParams({
+        page: String(page),
+        limit: String(PAGE_SIZE),
+        sort: '-published_at',
+      });
+      if (search.trim()) params.set('search', search.trim());
+
       const data = await apiFetch<{
         restaurants: FeedRestaurant[];
-        pagination: { total: number };
-      }>('/api/admin/restaurants?page=1&limit=500&sort=-published_at');
+        pagination: { total: number; page: number };
+      }>(`/api/admin/restaurants?${params}`);
+
       if (data.restaurants) {
-        setAllRestaurants(data.restaurants);
+        setRestaurants((prev) => append ? [...prev, ...data.restaurants] : data.restaurants);
+        setTotalCount(data.pagination.total);
+        setCurrentPage(page);
       }
     } catch {
       // silent
     } finally {
       setIsLoading(false);
+      setIsLoadingMore(false);
     }
   }, []);
 
+  // Initial load
   useEffect(() => {
-    loadAll();
-  }, [loadAll]);
+    fetchPage(1, searchQuery, false);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Reset render count when search changes
+  // Debounced server-side search
   useEffect(() => {
-    setRenderCount(RENDER_BATCH);
-  }, [searchQuery]);
+    if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);
+    searchTimeoutRef.current = setTimeout(() => {
+      fetchPage(1, searchQuery, false);
+    }, 300);
+    return () => { if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current); };
+  }, [searchQuery, fetchPage]);
 
-  // Client-side search filter (instant, like user feed)
-  const processedRestaurants = useMemo(() => {
-    let result = allRestaurants;
+  const hasMore = restaurants.length < totalCount;
 
-    if (searchQuery.trim()) {
-      const q = searchQuery.trim().toLowerCase();
-      result = result.filter(
-        (r) =>
-          r.name_hebrew?.toLowerCase().includes(q) ||
-          r.name_english?.toLowerCase().includes(q) ||
-          r.cuisine_type?.toLowerCase().includes(q) ||
-          r.host_comments?.toLowerCase().includes(q) ||
-          r.location?.city?.toLowerCase().includes(q)
-      );
-    }
-
-    return result;
-  }, [allRestaurants, searchQuery]);
-
-  // Progressive rendering slice
-  const visibleRestaurants = useMemo(
-    () => processedRestaurants.slice(0, renderCount),
-    [processedRestaurants, renderCount]
-  );
-
-  const hasMore = renderCount < processedRestaurants.length;
-
-  // IntersectionObserver for infinite scroll
+  // IntersectionObserver for infinite scroll — loads next page from server
   useEffect(() => {
     if (!sentinelRef.current) return;
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && hasMore) {
-          setRenderCount((prev) => Math.min(prev + RENDER_BATCH, processedRestaurants.length));
+        if (entries[0].isIntersecting && hasMore && !isLoadingMore) {
+          fetchPage(currentPage + 1, searchQuery, true);
         }
       },
       { rootMargin: '200px' }
     );
     observer.observe(sentinelRef.current);
     return () => observer.disconnect();
-  }, [hasMore, processedRestaurants.length]);
+  }, [hasMore, isLoadingMore, currentPage, searchQuery, fetchPage]);
+
+  // Reload from page 1 after mutations
+  const reload = useCallback(() => {
+    fetchPage(1, searchQuery, false);
+  }, [fetchPage, searchQuery]);
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }: { id: string; data: Partial<FeedRestaurant> }) =>
       updateRestaurant(id, data),
-    onSuccess: () => {
-      loadAll();
-    },
+    onSuccess: reload,
   });
 
   const visibilityMutation = useMutation({
     mutationFn: ({ id, is_hidden }: { id: string; is_hidden: boolean }) =>
       toggleVisibility(id, is_hidden),
-    onSuccess: () => {
-      loadAll();
-    },
+    onSuccess: reload,
   });
 
   const handleFieldSave = (restaurantId: string, field: string, value: string) => {
@@ -299,9 +294,9 @@ export default function AdminFeedPage() {
         </div>
         <div className="flex items-center gap-2">
           <span className="text-xs text-muted-foreground">
-            {processedRestaurants.length} restaurants
+            {totalCount} restaurants
           </span>
-          <Button variant="outline" size="sm" onClick={() => loadAll()} disabled={isLoading}>
+          <Button variant="outline" size="sm" onClick={reload} disabled={isLoading}>
             <RefreshCw className={`size-4 mr-1.5 ${isLoading ? 'animate-spin' : ''}`} />
             Refresh
           </Button>
@@ -328,15 +323,15 @@ export default function AdminFeedPage() {
       </div>
 
       {/* Cards */}
-      {isLoading && allRestaurants.length === 0 ? (
+      {isLoading && restaurants.length === 0 ? (
         <div className="flex justify-center py-12">
           <RefreshCw className="size-6 animate-spin text-muted-foreground" />
         </div>
-      ) : processedRestaurants.length === 0 ? (
+      ) : restaurants.length === 0 ? (
         <div className="text-center py-12 text-muted-foreground">No restaurants found</div>
       ) : (
         <div className="space-y-3">
-          {visibleRestaurants.map((r) => {
+          {restaurants.map((r) => {
             const imageUrl = getImageUrl(r);
             const isExpanded = expandedId === r.id;
             const isHidden = !!r.is_hidden;
@@ -531,10 +526,14 @@ export default function AdminFeedPage() {
             );
           })}
 
-          {/* Sentinel for infinite scroll */}
+          {/* Sentinel for infinite scroll — loads next page from server */}
           {hasMore && (
             <div ref={sentinelRef} className="flex justify-center py-4">
-              <RefreshCw className="size-4 animate-spin text-muted-foreground" />
+              {isLoadingMore ? (
+                <RefreshCw className="size-4 animate-spin text-muted-foreground" />
+              ) : (
+                <span className="text-xs text-muted-foreground">Scroll for more</span>
+              )}
             </div>
           )}
         </div>
