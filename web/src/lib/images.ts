@@ -14,12 +14,7 @@ export function getRestaurantImage(restaurant: Restaurant): string | null {
     }
   }
 
-  // Priority 2: og:image from restaurant website (curated hero image)
-  if (restaurant.og_image_url) {
-    return restaurant.og_image_url;
-  }
-
-  // Priority 3: First Google Places photo (any)
+  // Priority 2: First Google Places photo (any)
   if (restaurant.photos && restaurant.photos.length > 0) {
     const photo = restaurant.photos[0];
     if (photo.photo_reference) {
@@ -30,12 +25,17 @@ export function getRestaurantImage(restaurant: Restaurant): string | null {
     }
   }
 
-  // Priority 4: image_url fallback
+  // Priority 3: image_url fallback
   if (restaurant.image_url) {
     if (!restaurant.image_url.startsWith('http')) {
       return getPhotoProxyUrl(restaurant.image_url);
     }
     return restaurant.image_url;
+  }
+
+  // Priority 4: og:image fallback (can be unreliable)
+  if (restaurant.og_image_url) {
+    return restaurant.og_image_url;
   }
 
   return null;
@@ -59,14 +59,13 @@ export function getRestaurantImages(restaurant: Restaurant): string[] {
     }
   }
 
-  // Add og:image if not already represented
-  if (restaurant.og_image_url) {
-    images.push(restaurant.og_image_url);
-  }
-
-  // Fallback to image_url if nothing else
-  if (images.length === 0 && restaurant.image_url) {
-    images.push(restaurant.image_url);
+  // Fallback: og:image or image_url when no Google Places photos
+  if (images.length === 0) {
+    if (restaurant.og_image_url) {
+      images.push(restaurant.og_image_url);
+    } else if (restaurant.image_url) {
+      images.push(restaurant.image_url);
+    }
   }
 
   return images;
@@ -81,7 +80,7 @@ export function getPhotoProxyUrl(
   maxWidth: number = 800
 ): string {
   const base = config.apiUrl || '';
-  return `${base}/api/photos/${encodeURIComponent(photoReference)}?maxwidth=${maxWidth}`;
+  return `${base}/api/photos/${photoReference}?maxwidth=${maxWidth}`;
 }
 
 /**

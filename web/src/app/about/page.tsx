@@ -130,7 +130,7 @@ export default function AboutPage() {
           {/* Version */}
           <div className="pt-6 border-t border-[var(--color-border)] text-center">
             <p className="text-sm text-[var(--color-ink-muted)]">
-              Where2Eat v2.0
+              Where2Eat
             </p>
           </div>
         </div>

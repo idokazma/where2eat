@@ -31,14 +31,14 @@ describe('getRestaurantImage', () => {
     expect(getRestaurantImage(r)).toBe('/api/photos/owner1?maxwidth=800');
   });
 
-  it('prefers og:image over regular photo when no owner photo', () => {
+  it('prefers regular photo over og:image when no owner photo', () => {
     const r = makeRestaurant({
       photos: [
         { photo_reference: 'regular1', photo_url: '', width: 400, height: 300 },
       ],
       og_image_url: 'https://restaurant.com/hero.jpg',
     });
-    expect(getRestaurantImage(r)).toBe('https://restaurant.com/hero.jpg');
+    expect(getRestaurantImage(r)).toBe('/api/photos/regular1?maxwidth=800');
   });
 
   it('falls back to first photo when no owner photo and no og:image', () => {
@@ -99,7 +99,7 @@ describe('getRestaurantImages', () => {
     expect(urls[2]).toBe('/api/photos/ref3?maxwidth=800');
   });
 
-  it('includes og:image in gallery after Google photos', () => {
+  it('does not include og:image when Google photos exist', () => {
     const r = makeRestaurant({
       photos: [
         { photo_reference: 'ref1', photo_url: '', width: 400, height: 300 },
@@ -107,9 +107,8 @@ describe('getRestaurantImages', () => {
       og_image_url: 'https://restaurant.com/hero.jpg',
     });
     const urls = getRestaurantImages(r);
-    expect(urls).toHaveLength(2);
+    expect(urls).toHaveLength(1);
     expect(urls[0]).toBe('/api/photos/ref1?maxwidth=800');
-    expect(urls[1]).toBe('https://restaurant.com/hero.jpg');
   });
 
   it('returns og:image alone when no Google photos', () => {
@@ -141,9 +140,9 @@ describe('getPhotoProxyUrl', () => {
     expect(getPhotoProxyUrl('abc123', 400)).toBe('/api/photos/abc123?maxwidth=400');
   });
 
-  it('encodes special characters in reference', () => {
-    expect(getPhotoProxyUrl('ref/with spaces')).toBe(
-      '/api/photos/ref%2Fwith%20spaces?maxwidth=800'
+  it('preserves slashes in reference for catch-all route', () => {
+    expect(getPhotoProxyUrl('places/ChIJ123/photos/ATCDNf456')).toBe(
+      '/api/photos/places/ChIJ123/photos/ATCDNf456?maxwidth=800'
     );
   });
 });
