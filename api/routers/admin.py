@@ -293,7 +293,17 @@ async def refresh_token(response: Response, user: dict = Depends(get_current_use
 
 # Restaurant admin endpoints
 def load_all_restaurants() -> List[dict]:
-    """Load all restaurants from JSON files."""
+    """Load all restaurants from SQLite database (same source as user feed), falling back to JSON files."""
+    # 1. Try SQLite database first (pipeline storage - same as public endpoint)
+    try:
+        from routers.restaurants import load_all_restaurants as load_from_public
+        restaurants = load_from_public()
+        if restaurants:
+            return restaurants
+    except Exception as e:
+        print(f"Warning: Could not load from public restaurant loader: {e}")
+
+    # 2. Fallback to JSON files
     RESTAURANTS_DIR.mkdir(parents=True, exist_ok=True)
     restaurants = []
     for file_path in RESTAURANTS_DIR.glob("*.json"):
@@ -311,11 +321,11 @@ def load_all_restaurants() -> List[dict]:
     "/restaurants",
     response_model=PaginatedRestaurants,
     summary="List restaurants (admin)",
-    description="Get paginated list of restaurants with admin filters.",
+    description="Get paginated list of restaurants with admin filters. Includes hidden restaurants.",
 )
 async def list_restaurants_admin(
     page: int = Query(1, ge=1),
-    limit: int = Query(25, ge=1, le=100),
+    limit: int = Query(25, ge=1, le=500),
     sort: str = Query("-created_at"),
     search: Optional[str] = Query(None),
     filter_status: Optional[str] = Query(None, alias="filter[status]"),
@@ -323,8 +333,11 @@ async def list_restaurants_admin(
     filter_city: Optional[str] = Query(None, alias="filter[city]"),
     user: dict = Depends(get_current_user),
 ):
-    """List restaurants with admin filters."""
+    """List restaurants with admin filters. Includes hidden restaurants."""
+    # Load from same source as user feed (SQLite → SQLAlchemy → JSON)
     restaurants = load_all_restaurants()
+
+    # Admin sees ALL restaurants including hidden ones (no is_hidden filter)
 
     # Apply filters
     if search:
@@ -333,7 +346,7 @@ async def list_restaurants_admin(
             r for r in restaurants
             if search_lower in r.get("name_hebrew", "").lower()
             or search_lower in r.get("name_english", "").lower()
-            or search_lower in r.get("location", {}).get("city", "").lower()
+            or search_lower in (r.get("location", {}) or {}).get("city", "").lower()
             or search_lower in r.get("cuisine_type", "").lower()
         ]
 
@@ -344,7 +357,7 @@ async def list_restaurants_admin(
         restaurants = [r for r in restaurants if r.get("cuisine_type") == filter_cuisine]
 
     if filter_city:
-        restaurants = [r for r in restaurants if r.get("location", {}).get("city") == filter_city]
+        restaurants = [r for r in restaurants if (r.get("location", {}) or {}).get("city") == filter_city]
 
     # Apply sorting
     sort_field = sort[1:] if sort.startswith("-") else sort
@@ -354,9 +367,11 @@ async def list_restaurants_admin(
         if sort_field == "name":
             return r.get("name_hebrew", "")
         elif sort_field == "city":
-            return r.get("location", {}).get("city", "")
+            return (r.get("location", {}) or {}).get("city", "")
         elif sort_field == "cuisine":
             return r.get("cuisine_type", "")
+        elif sort_field == "published_at":
+            return r.get("published_at") or (r.get("episode_info") or {}).get("published_at") or (r.get("episode_info") or {}).get("analysis_date") or ""
         else:  # created_at
             return r.get("created_at", "")
 
