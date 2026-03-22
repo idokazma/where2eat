@@ -259,6 +259,15 @@ class GooglePlacesEnricher:
             search_data = response.json()
             places = search_data.get('places', [])
 
+            # If no results with type restriction, retry without it
+            if not places and 'includedType' in body:
+                self.logger.debug(f"No results with type restriction, retrying without for: {query}")
+                body_no_type = {k: v for k, v in body.items() if k != 'includedType'}
+                response = requests.post(search_url, headers=headers, json=body_no_type)
+                response.raise_for_status()
+                search_data = response.json()
+                places = search_data.get('places', [])
+
             if not places:
                 self.logger.debug(f"No results from new API for query: {query}")
                 return None
@@ -399,6 +408,14 @@ class GooglePlacesEnricher:
             response.raise_for_status()
 
             search_data = response.json()
+
+            # If no results with type restriction, retry without it
+            if (search_data.get('status') != 'OK' or not search_data.get('results')) and 'type' in search_params:
+                self.logger.debug(f"No results with type restriction, retrying without for: {query}")
+                params_no_type = {k: v for k, v in search_params.items() if k != 'type'}
+                response = requests.get(search_url, params=params_no_type)
+                response.raise_for_status()
+                search_data = response.json()
 
             if search_data.get('status') != 'OK' or not search_data.get('results'):
                 self.logger.debug(f"No results for query: {query}")
