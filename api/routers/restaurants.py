@@ -781,7 +781,7 @@ def _run_enrichment(restaurant_id: str):
             if enriched.get("image_url"):
                 update_data["image_url"] = enriched["image_url"]
             if enriched.get("photos"):
-                update_data["photos"] = json.dumps(enriched["photos"], ensure_ascii=False)
+                update_data["photos"] = enriched["photos"]
             if enriched.get("og_image_url"):
                 update_data["og_image_url"] = enriched["og_image_url"]
             loc = enriched.get("location", {})
