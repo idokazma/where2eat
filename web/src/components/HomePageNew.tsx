@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { Search } from 'lucide-react';
 import { Restaurant, getCoordinates } from '@/types/restaurant';
@@ -40,19 +40,18 @@ function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: numbe
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
 
-// How many cards to render initially / per scroll batch
-const RENDER_BATCH = 15;
+const PAGE_SIZE = 50;
 
 export function HomePageNew() {
   const router = useRouter();
 
-  // All restaurants loaded once
+  // Paginated restaurants from server
   const [allRestaurants, setAllRestaurants] = useState<Restaurant[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  // Progressive rendering — how many to show
-  const [renderCount, setRenderCount] = useState(RENDER_BATCH);
+  const [page, setPage] = useState(1);
+  const [hasMorePages, setHasMorePages] = useState(true);
 
   // Search (instant, client-side)
   const [searchQuery, setSearchQuery] = useState('');
@@ -66,33 +65,44 @@ export function HomePageNew() {
   // Favorites context
   const { setAllRestaurants: setFavoriteContext } = useFavorites();
 
-  // Fetch all restaurants once
-  const loadAll = useCallback(async () => {
-    setIsLoading(true);
+  // Fetch a page of restaurants
+  const loadPage = useCallback(async (pageNum: number, append: boolean = false) => {
+    if (pageNum === 1) {
+      setIsLoading(true);
+    } else {
+      setIsLoadingMore(true);
+    }
     setError(null);
     try {
-      const params: Record<string, string> = { page: '1', limit: '500' };
+      const params: Record<string, string> = {
+        page: String(pageNum),
+        limit: String(PAGE_SIZE),
+        sort_by: 'published_at',
+        sort_direction: 'desc',
+      };
       const response = await fetch(endpoints.restaurants.search(params));
       const data = await response.json();
       if (data.restaurants) {
-        setAllRestaurants(data.restaurants);
-        setFavoriteContext(data.restaurants);
+        const newRestaurants = append
+          ? [...allRestaurants, ...data.restaurants]
+          : data.restaurants;
+        setAllRestaurants(newRestaurants);
+        setFavoriteContext(newRestaurants);
+        setHasMorePages(data.restaurants.length === PAGE_SIZE);
       }
     } catch {
       setError('לא ניתן לטעון מסעדות');
     } finally {
       setIsLoading(false);
+      setIsLoadingMore(false);
     }
-  }, [setFavoriteContext]);
+  }, [allRestaurants, setFavoriteContext]);
 
+  // Load first page on mount
   useEffect(() => {
-    loadAll();
-  }, [loadAll]);
-
-  // Reset render count when filters change
-  useEffect(() => {
-    setRenderCount(RENDER_BATCH);
-  }, [searchQuery, locationFilter.mode, locationFilter.city, locationFilter.neighborhood]);
+    loadPage(1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Stable references for memo deps
   const locMode = locationFilter.mode;
@@ -151,17 +161,14 @@ export function HomePageNew() {
     return result;
   }, [allRestaurants, searchQuery, locMode, locCity, locNeighborhood, locLat, locLng, settings.showOnlyIsrael]);
 
-  // Slice for progressive rendering
-  const visibleRestaurants = useMemo(
-    () => processedRestaurants.slice(0, renderCount),
-    [processedRestaurants, renderCount]
-  );
-
-  const hasMore = renderCount < processedRestaurants.length;
+  const hasMore = hasMorePages && !searchQuery.trim() && locationFilter.mode !== 'manual';
 
   const handleLoadMore = useCallback(() => {
-    setRenderCount((prev) => Math.min(prev + RENDER_BATCH, processedRestaurants.length));
-  }, [processedRestaurants.length]);
+    if (isLoadingMore || !hasMorePages) return;
+    const nextPage = page + 1;
+    setPage(nextPage);
+    loadPage(nextPage, true);
+  }, [isLoadingMore, hasMorePages, page, loadPage]);
 
   const handleRestaurantClick = (restaurant: Restaurant) => {
     const id = restaurant.google_places?.place_id || restaurant.id;
@@ -185,7 +192,7 @@ export function HomePageNew() {
           <div className="text-center px-4">
             <p className="text-lg font-medium text-[var(--color-negative)]">{error}</p>
             <button
-              onClick={loadAll}
+              onClick={() => { setPage(1); loadPage(1); }}
               className="mt-4 px-6 py-3 bg-[var(--color-accent)] text-white rounded-lg font-medium"
             >
               נסה שוב
@@ -220,12 +227,12 @@ export function HomePageNew() {
       {/* Discovery Feed — progressive render */}
       <div className="animate-fade-up stagger-section-2">
         <DiscoveryFeed
-          restaurants={visibleRestaurants}
+          restaurants={processedRestaurants}
           onRestaurantClick={handleRestaurantClick}
           showDistances={locationFilter.mode === 'nearby'}
           userCoords={locationFilter.userCoords}
           hasMore={hasMore}
-          isLoadingMore={false}
+          isLoadingMore={isLoadingMore}
           onLoadMore={handleLoadMore}
           className="mt-6 pb-8"
           totalCount={processedRestaurants.length}
