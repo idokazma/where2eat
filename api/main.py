@@ -925,7 +925,7 @@ class OriginGateMiddleware(BaseHTTPMiddleware):
     the origin check for server-to-server use.
     """
 
-    EXEMPT_PREFIXES = ("/health", "/docs", "/openapi.json")
+    EXEMPT_PREFIXES = ("/health", "/docs", "/openapi.json", "/api/photos")
 
     async def dispatch(self, request: Request, call_next):
         path = request.url.path
