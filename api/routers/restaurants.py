@@ -751,6 +751,9 @@ def _run_enrichment(restaurant_id: str):
         # Clear previous enrichment so it re-runs fresh
         restaurant.pop("google_place_id", None)
         restaurant.pop("google_places_enriched", None)
+        restaurant.pop("image_url", None)
+        restaurant.pop("photos", None)
+        restaurant.pop("og_image_url", None)
         gp = restaurant.get("google_places")
         if isinstance(gp, dict):
             gp.pop("place_id", None)
