@@ -76,7 +76,7 @@ interface FeedRestaurant {
   created_at?: string;
 }
 
-/** Fetch restaurants from the public API (same as consumer feed) */
+/** Fetch restaurants from the admin API (includes hidden restaurants) */
 async function fetchFeedRestaurants(params: {
   page: number;
   limit: number;
@@ -87,7 +87,15 @@ async function fetchFeedRestaurants(params: {
     limit: params.limit.toString(),
   });
   if (params.search) qp.append('search', params.search);
-  return apiFetch(`/api/restaurants/search?${qp}`);
+  const data = await apiFetch<{
+    restaurants: FeedRestaurant[];
+    pagination: { page: number; totalPages: number; total: number };
+  }>(`/api/admin/restaurants?${qp}`);
+  return {
+    restaurants: data.restaurants,
+    total_pages: data.pagination.totalPages,
+    total: data.pagination.total,
+  };
 }
 
 /** Patch specific restaurant fields via admin API */
@@ -124,22 +132,22 @@ function getImageUrl(r: FeedRestaurant): string | null {
 
 // Cuisine gradient colors matching the consumer app
 const cuisineColors: Record<string, string> = {
-  'הומוס': 'bg-amber-100',
-  'שווארמה': 'bg-orange-100',
-  'אסייתי': 'bg-red-100',
-  'איטלקי': 'bg-green-100',
-  'דגים': 'bg-blue-100',
-  'בשרים': 'bg-rose-100',
-  'קינוחים': 'bg-pink-100',
-  'קפה': 'bg-yellow-100',
+  'הומוס': 'bg-amber-100 dark:bg-amber-900/30',
+  'שווארמה': 'bg-orange-100 dark:bg-orange-900/30',
+  'אסייתי': 'bg-red-100 dark:bg-red-900/30',
+  'איטלקי': 'bg-green-100 dark:bg-green-900/30',
+  'דגים': 'bg-blue-100 dark:bg-blue-900/30',
+  'בשרים': 'bg-rose-100 dark:bg-rose-900/30',
+  'קינוחים': 'bg-pink-100 dark:bg-pink-900/30',
+  'קפה': 'bg-yellow-100 dark:bg-yellow-900/30',
 };
 
 function getCuisineColor(cuisine?: string | null): string {
-  if (!cuisine) return 'bg-gray-100';
+  if (!cuisine) return 'bg-muted';
   for (const [key, value] of Object.entries(cuisineColors)) {
     if (cuisine.includes(key)) return value;
   }
-  return 'bg-gray-100';
+  return 'bg-muted';
 }
 
 /** Inline editable field */
@@ -162,12 +170,12 @@ function EditableField({
   if (!editing) {
     return (
       <button
-        className={`group flex items-center gap-1 text-left hover:bg-gray-50 rounded px-1 -mx-1 ${className}`}
+        className={`group flex items-center gap-1 text-left hover:bg-muted rounded px-1 -mx-1 ${className}`}
         onClick={() => setEditing(true)}
         title={`Edit ${label}`}
       >
-        <span className={value ? '' : 'text-gray-400 italic'}>{value || `No ${label}`}</span>
-        <Pencil className="size-3 text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity" />
+        <span className={value ? '' : 'text-muted-foreground italic'}>{value || `No ${label}`}</span>
+        <Pencil className="size-3 text-muted-foreground/50 opacity-0 group-hover:opacity-100 transition-opacity" />
       </button>
     );
   }
@@ -184,10 +192,10 @@ function EditableField({
           if (e.key === 'Escape') { setDraft(value); setEditing(false); }
         }}
       />
-      <button onClick={() => { onSave(draft); setEditing(false); }} className="text-green-600 hover:text-green-700">
+      <button onClick={() => { onSave(draft); setEditing(false); }} className="text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300">
         <Check className="size-3.5" />
       </button>
-      <button onClick={() => { setDraft(value); setEditing(false); }} className="text-gray-400 hover:text-gray-600">
+      <button onClick={() => { setDraft(value); setEditing(false); }} className="text-muted-foreground hover:text-foreground">
         <X className="size-3.5" />
       </button>
     </div>
@@ -250,7 +258,7 @@ export default function AdminFeedPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Feed Preview</h1>
-          <p className="text-sm text-gray-500 mt-0.5">
+          <p className="text-sm text-muted-foreground mt-0.5">
             Same restaurants users see — click any field to edit, toggle visibility to hide from feed
           </p>
         </div>
@@ -263,7 +271,7 @@ export default function AdminFeedPage() {
       {/* Search */}
       <form onSubmit={handleSearchSubmit} className="flex gap-2">
         <div className="relative flex-1">
-          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3.5 text-gray-400" />
+          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground" />
           <Input
             placeholder="Search restaurants..."
             value={draftSearch}
@@ -282,10 +290,10 @@ export default function AdminFeedPage() {
       {/* Cards */}
       {isLoading && restaurants.length === 0 ? (
         <div className="flex justify-center py-12">
-          <RefreshCw className="size-6 animate-spin text-gray-400" />
+          <RefreshCw className="size-6 animate-spin text-muted-foreground" />
         </div>
       ) : restaurants.length === 0 ? (
-        <div className="text-center py-12 text-gray-500">No restaurants found</div>
+        <div className="text-center py-12 text-muted-foreground">No restaurants found</div>
       ) : (
         <div className="space-y-3">
           {restaurants.map((r) => {
@@ -299,7 +307,7 @@ export default function AdminFeedPage() {
               <div
                 key={r.id}
                 className={`border rounded-xl overflow-hidden transition-all ${
-                  isHidden ? 'opacity-50 border-dashed' : 'border-gray-200'
+                  isHidden ? 'opacity-60 border-dashed border-destructive/40' : ''
                 }`}
               >
                 {/* Card — mimics consumer layout */}
@@ -314,12 +322,12 @@ export default function AdminFeedPage() {
                       />
                     ) : (
                       <div className={`w-full h-full ${getCuisineColor(r.cuisine_type)} flex items-center justify-center`}>
-                        <span className="text-xs text-gray-500">{r.cuisine_type || 'Restaurant'}</span>
+                        <span className="text-xs text-muted-foreground">{r.cuisine_type || 'Restaurant'}</span>
                       </div>
                     )}
                     {isHidden && (
-                      <div className="absolute inset-0 bg-white/60 flex items-center justify-center">
-                        <EyeOff className="size-5 text-gray-500" />
+                      <div className="absolute inset-0 bg-background/60 flex items-center justify-center">
+                        <EyeOff className="size-5 text-muted-foreground" />
                       </div>
                     )}
                   </div>
@@ -338,7 +346,7 @@ export default function AdminFeedPage() {
                         </div>
 
                         {/* Meta line */}
-                        <div className="flex items-center gap-1.5 text-xs text-gray-500 mt-0.5 flex-wrap">
+                        <div className="flex items-center gap-1.5 text-xs text-muted-foreground mt-0.5 flex-wrap">
                           <EditableField
                             label="city"
                             value={r.location?.city || ''}
@@ -347,7 +355,7 @@ export default function AdminFeedPage() {
                           />
                           {r.cuisine_type && (
                             <>
-                              <span className="text-gray-300">·</span>
+                              <span className="text-muted-foreground/50">·</span>
                               <EditableField
                                 label="cuisine"
                                 value={r.cuisine_type}
@@ -358,7 +366,7 @@ export default function AdminFeedPage() {
                           )}
                           {r.rating?.google_rating != null && r.rating.google_rating > 0 && (
                             <>
-                              <span className="text-gray-300">·</span>
+                              <span className="text-muted-foreground/50">·</span>
                               <span className="flex items-center gap-0.5">
                                 <Star className="size-3 fill-yellow-400 text-yellow-400" />
                                 {r.rating.google_rating.toFixed(1)}
@@ -369,7 +377,7 @@ export default function AdminFeedPage() {
 
                         {/* Episode date */}
                         {episodeDate && (
-                          <div className="flex items-center gap-1 text-[10px] text-gray-400 mt-0.5">
+                          <div className="flex items-center gap-1 text-[10px] text-muted-foreground/70 mt-0.5">
                             <Calendar className="size-2.5" />
                             {new Date(episodeDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                           </div>
@@ -377,7 +385,7 @@ export default function AdminFeedPage() {
 
                         {/* Quote */}
                         {r.host_comments && (
-                          <p className="text-xs text-gray-600 mt-1 line-clamp-2 italic">
+                          <p className="text-xs text-muted-foreground mt-1 line-clamp-2 italic">
                             &ldquo;{r.host_comments}&rdquo;
                           </p>
                         )}
@@ -389,8 +397,8 @@ export default function AdminFeedPage() {
                           onClick={() => visibilityMutation.mutate({ id: r.id, is_hidden: !isHidden })}
                           className={`p-1.5 rounded-lg transition-colors ${
                             isHidden
-                              ? 'bg-red-50 text-red-500 hover:bg-red-100'
-                              : 'bg-gray-50 text-gray-400 hover:bg-gray-100'
+                              ? 'bg-destructive/10 text-destructive hover:bg-destructive/20'
+                              : 'bg-muted text-muted-foreground hover:bg-muted/80'
                           }`}
                           title={isHidden ? 'Show in feed' : 'Hide from feed'}
                         >
@@ -398,7 +406,7 @@ export default function AdminFeedPage() {
                         </button>
                         <button
                           onClick={() => setExpandedId(isExpanded ? null : r.id)}
-                          className="p-1.5 rounded-lg bg-gray-50 text-gray-400 hover:bg-gray-100 transition-colors"
+                          className="p-1.5 rounded-lg bg-muted text-muted-foreground hover:bg-muted/80 transition-colors"
                           title="Edit details"
                         >
                           {isExpanded ? <ChevronUp className="size-3.5" /> : <Pencil className="size-3.5" />}
@@ -410,58 +418,58 @@ export default function AdminFeedPage() {
 
                 {/* Expanded edit panel */}
                 {isExpanded && (
-                  <div className="border-t bg-gray-50/50 px-4 py-3">
+                  <div className="border-t bg-muted/30 px-4 py-3">
                     <div className="grid grid-cols-2 gap-x-6 gap-y-2 text-xs">
                       <div>
-                        <span className="text-gray-400 block mb-0.5">Hebrew Name</span>
+                        <span className="text-muted-foreground block mb-0.5">Hebrew Name</span>
                         <EditableField label="Hebrew name" value={r.name_hebrew} onSave={(val) => handleFieldSave(r.id, 'name_hebrew', val)} />
                       </div>
                       <div>
-                        <span className="text-gray-400 block mb-0.5">English Name</span>
+                        <span className="text-muted-foreground block mb-0.5">English Name</span>
                         <EditableField label="English name" value={r.name_english || ''} onSave={(val) => handleFieldSave(r.id, 'name_english', val)} />
                       </div>
                       <div>
-                        <span className="text-gray-400 block mb-0.5">City</span>
+                        <span className="text-muted-foreground block mb-0.5">City</span>
                         <EditableField label="city" value={r.location?.city || ''} onSave={(val) => handleFieldSave(r.id, 'city', val)} />
                       </div>
                       <div>
-                        <span className="text-gray-400 block mb-0.5">Neighborhood</span>
+                        <span className="text-muted-foreground block mb-0.5">Neighborhood</span>
                         <EditableField label="neighborhood" value={r.location?.neighborhood || ''} onSave={(val) => handleFieldSave(r.id, 'neighborhood', val)} />
                       </div>
                       <div>
-                        <span className="text-gray-400 block mb-0.5">Address</span>
+                        <span className="text-muted-foreground block mb-0.5">Address</span>
                         <EditableField label="address" value={r.location?.address || ''} onSave={(val) => handleFieldSave(r.id, 'address', val)} />
                       </div>
                       <div>
-                        <span className="text-gray-400 block mb-0.5">Cuisine</span>
+                        <span className="text-muted-foreground block mb-0.5">Cuisine</span>
                         <EditableField label="cuisine" value={r.cuisine_type || ''} onSave={(val) => handleFieldSave(r.id, 'cuisine_type', val)} />
                       </div>
                       <div>
-                        <span className="text-gray-400 block mb-0.5">Price Range</span>
+                        <span className="text-muted-foreground block mb-0.5">Price Range</span>
                         <EditableField label="price" value={r.price_range || ''} onSave={(val) => handleFieldSave(r.id, 'price_range', val)} />
                       </div>
                       <div>
-                        <span className="text-gray-400 block mb-0.5">Google Name</span>
+                        <span className="text-muted-foreground block mb-0.5">Google Name</span>
                         <EditableField label="Google name" value={r.google_name || ''} onSave={(val) => handleFieldSave(r.id, 'google_name', val)} />
                       </div>
                       <div>
-                        <span className="text-gray-400 block mb-0.5">Instagram URL</span>
+                        <span className="text-muted-foreground block mb-0.5">Instagram URL</span>
                         <EditableField label="Instagram" value={(r as any).instagram_url || ''} onSave={(val) => handleFieldSave(r.id, 'instagram_url', val)} />
                       </div>
                       <div className="col-span-2">
-                        <span className="text-gray-400 block mb-0.5">Host Quote</span>
+                        <span className="text-muted-foreground block mb-0.5">Host Quote</span>
                         <EditableField label="host comments" value={r.host_comments || ''} onSave={(val) => handleFieldSave(r.id, 'host_comments', val)} />
                       </div>
                     </div>
 
                     {/* Links */}
-                    <div className="flex gap-3 mt-3 pt-2 border-t border-gray-200">
+                    <div className="flex gap-3 mt-3 pt-2 border-t">
                       {r.episode_info?.video_url && (
                         <a
                           href={r.episode_info.video_url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex items-center gap-1 text-xs text-blue-600 hover:underline"
+                          className="flex items-center gap-1 text-xs text-primary hover:underline"
                         >
                           <Play className="size-3" /> Watch Episode
                         </a>
@@ -471,7 +479,7 @@ export default function AdminFeedPage() {
                           href={r.google_places.google_url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex items-center gap-1 text-xs text-blue-600 hover:underline"
+                          className="flex items-center gap-1 text-xs text-primary hover:underline"
                         >
                           <MapPin className="size-3" /> Google Maps
                         </a>
@@ -488,7 +496,7 @@ export default function AdminFeedPage() {
       {/* Pagination */}
       {totalPages > 1 && (
         <div className="flex items-center justify-between pt-2">
-          <span className="text-xs text-gray-500">
+          <span className="text-xs text-muted-foreground">
             Page {page} of {totalPages}
           </span>
           <div className="flex gap-1.5">
