@@ -33,7 +33,7 @@ router.get('/',
       const {
         page = 1,
         limit = 25,
-        sort = '-created_at',
+        sort = '-published_at',
         search = '',
         'filter[status]': filterStatus,
         'filter[cuisine]': filterCuisine,
@@ -106,6 +106,10 @@ router.get('/',
           case 'cuisine':
             aVal = a.cuisine_type || '';
             bVal = b.cuisine_type || '';
+            break;
+          case 'published_at':
+            aVal = a.published_at || a.episode_info?.published_at || a.created_at || '';
+            bVal = b.published_at || b.episode_info?.published_at || b.created_at || '';
             break;
           case 'created_at':
           default:
