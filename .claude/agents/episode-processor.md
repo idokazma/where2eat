@@ -336,7 +336,7 @@ For EVERY restaurant with verdict `add_to_page`, generate a DB-ready JSON file �
 Save each file to: `data/restaurants/VIDEO_ID_SLUG.json`
 where SLUG is a lowercase transliterated version of the Hebrew name (e.g., `w-n3zFXTuGM_tenne_deli.json`).
 
-**Exact schema (matches DB columns + API create endpoint):**
+**Exact schema — must match production API response structure:**
 
 ```json
 {
@@ -350,7 +350,7 @@ where SLUG is a lowercase transliterated version of the Hebrew name (e.g., `w-n3
   "status": "פתוח",
   "price_range": "בינוני",
   "host_opinion": "חיובית מאוד",
-  "host_comments": "הזרוע של טעם וצבע, אחת מחברות הקייטרינג הכי גדולות וותיקות בישראל. הדברים ברובם פשוט נהדרים, מחירים שפויים באופן מפתיע",
+  "host_comments": "הזרוע של טעם וצבע. הדברים ברובם פשוט נהדרים, מחירים שפויים באופן מפתיע",
   "menu_items": ["מקלובה", "קרובית ממולא בבשר טחון"],
   "special_features": ["מעדנייה", "מבית טעם וצבע", "משלוחים"],
   "contact_hours": null,
@@ -358,7 +358,8 @@ where SLUG is a lowercase transliterated version of the Hebrew name (e.g., `w-n3
   "contact_website": "https://www.tenne-deli.co.il/",
   "business_news": null,
   "mention_context": "הוזכר כמשלוח שהפך למנת הקרב בימים הראשונים של המלחמה",
-  "mention_timestamp": 754,
+  "mention_timestamp_seconds": 754,
+  "youtube_timestamped_url": "https://www.youtube.com/watch?v=w-n3zFXTuGM&t=754s",
   "google_place_id": "ChIJQdqAt8g5HRURkhERCYhQjzs",
   "google_rating": 4.6,
   "google_user_ratings_total": 67,
@@ -367,19 +368,19 @@ where SLUG is a lowercase transliterated version of the Hebrew name (e.g., `w-n3
   "image_url": "https://lh3.googleusercontent.com/...",
   "photos": [
     {
-      "photo_reference": "...",
-      "width": 1600,
-      "height": 1200,
+      "photo_reference": "places/ChIJ.../photos/ATCDNf...",
+      "width": 4800,
+      "height": 3600,
       "resolved_url": "https://lh3.googleusercontent.com/..."
     }
   ],
   "google_name": "Tenne",
   "published_at": "2026-03-11",
   "og_image_url": null,
-  "is_closing": false,
+  "is_closing": 0,
   "video_url": "https://www.youtube.com/watch?v=w-n3zFXTuGM",
   "video_id": "w-n3zFXTuGM",
-  "channel_name": "בית הפודיום",
+  "channel_name": "מדברים מהבטן - הפודיום",
   "google_url": "https://maps.google.com/?cid=4291737515105259922",
   "engaging_quote": "הדברים ברובם פשוט נהדרים",
   "country": "Israel",
@@ -388,25 +389,27 @@ where SLUG is a lowercase transliterated version of the Hebrew name (e.g., `w-n3
 }
 ```
 
-**Rules for upload-ready JSONs:**
-- Every field maps 1:1 to a DB column or a field accepted by `POST /api/restaurants`
-- `menu_items` and `special_features` are JSON arrays (the API/DB will serialize them)
-- `photos` is a JSON array of objects with `photo_reference`, `width`, `height`, `resolved_url`
-- `mention_timestamp` is in seconds (float) — the YouTube video offset
-- `is_closing` is boolean (API converts to 0/1 for DB)
-- `published_at` is the episode's YouTube publish date, NOT the extraction date
-- `image_url` must be a resolved `lh3.googleusercontent.com` URL, NOT a Google API photo reference URL
-- `host_comments` should be a concise Hebrew summary of what the hosts said (not raw quotes — those go in the extraction JSON)
-- `engaging_quote` is a single short Hebrew quote that best captures the recommendation
-- Do NOT include `id` — let the API generate UUIDs
-- Do NOT include `created_at` / `updated_at` — the API sets these automatically
-- Generate files for ALL `add_to_page` restaurants, including ones already in the DB
+**CRITICAL field rules — the agent MUST follow these exactly:**
 
-To resolve photo URLs, use:
+| Field | Type | Allowed values | Notes |
+|-------|------|---------------|-------|
+| `status` | string | `"פתוח"`, `"חדש"`, `"נסגר"`, `"נסגר זמנית"`, `"עומד להיפתח"` | **Hebrew only. NEVER English.** |
+| `host_opinion` | string | `"חיובית מאוד"`, `"חיובית"`, `"שלילית"`, `"מעורבת"`, `"ניטרלית"` | **Hebrew only. NEVER `"positive"`, `"very_positive"` etc.** |
+| `price_range` | string | `"זול"`, `"בינוני"`, `"יקר"`, `"יקר מאוד"` | **Hebrew only. NEVER `"$"`, `"$$"` etc.** |
+| `is_closing` | int | `0` or `1` | **Integer, not boolean.** |
+| `mention_timestamp_seconds` | float | seconds from video start | **Field name is `mention_timestamp_seconds`, NOT `mention_timestamp`.** |
+| `youtube_timestamped_url` | string | `https://...&t=Xs` | **Required. Build from video_id + mention_timestamp_seconds.** |
+| `photos` | array | objects with `{photo_reference, width, height, resolved_url}` | **NEVER a list of URL strings.** Each entry must have all 4 fields. |
+| `image_url` | string | `https://lh3.googleusercontent.com/...` | **Must be a resolved permanent URL, never a Google API photo reference URL.** |
+| `channel_name` | string | e.g., `"מדברים מהבטן - הפודיום"` | **Required. Never null.** |
+
+**Do NOT include:** `id`, `created_at`, `updated_at`, `is_hidden` — the API sets these.
+
+**Generate files for ALL `add_to_page` restaurants**, including ones already in the DB.
+
+**After generating, run the validation script:**
 ```bash
-source /Users/ido.kazma/Desktop/Projects/private/where2eat/.env
-RESOLVED=$(curl -s -o /dev/null -w '%{redirect_url}' "https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photoreference=PHOTO_REF&key=$GOOGLE_PLACES_API_KEY")
-echo "$RESOLVED"
+python3 scripts/validate_restaurant_jsons.py data/restaurants/VIDEO_ID/
 ```
 
 ### Step 6: Write Extraction Report (Markdown)
