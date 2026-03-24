@@ -32,47 +32,20 @@ The project is at `/Users/ido.kazma/Desktop/Projects/private/where2eat`.
 
 When given a YouTube video URL or ID, follow these steps:
 
-### Step 1: Fetch Transcript with Segments
+### Step 1: Fetch Transcript
+
+Run the enricher script to fetch the transcript (one command):
 
 ```bash
 cd /Users/ido.kazma/Desktop/Projects/private/where2eat
-python3 -c "
-import sys
-sys.path.insert(0, 'src')
-from youtube_transcript_collector import YouTubeTranscriptCollector
-collector = YouTubeTranscriptCollector()
-result = collector.get_transcript('VIDEO_URL_OR_ID')
-if result:
-    import json
-    with open('/tmp/transcript.json', 'w') as f:
-        json.dump(result, f, ensure_ascii=False, indent=2)
-    print(f'Transcript fetched: {len(result[\"transcript\"])} chars, language: {result[\"language\"]}')
-    print(f'Segments: {result[\"segment_count\"]}')
-else:
-    print('ERROR: Could not fetch transcript')
-"
+python3 scripts/episode_enricher.py VIDEO_ID
 ```
 
-If the Python collector fails, try fetching directly:
-```bash
-pip install youtube-transcript-api 2>/dev/null
-python3 -c "
-from youtube_transcript_api import YouTubeTranscriptApi
-transcript = YouTubeTranscriptApi.get_transcript('VIDEO_ID', languages=['iw', 'he', 'en'])
-import json
-result = {
-    'video_id': 'VIDEO_ID',
-    'transcript': ' '.join(s['text'] for s in transcript),
-    'segments': transcript,
-    'language': 'he'
-}
-with open('/tmp/transcript.json', 'w') as f:
-    json.dump(result, f, ensure_ascii=False, indent=2)
-print(f'OK: {len(result[\"transcript\"])} chars, {len(transcript)} segments')
-"
-```
+This saves:
+- `analyses/VIDEO_ID/transcript.json` — full transcript with segments (each has `start` and `text`)
+- `analyses/VIDEO_ID/enrichment.json` — basic enrichment with episode metadata
 
-**IMPORTANT**: Always save segments. They contain `start` (seconds) and `text` fields needed for timestamp extraction.
+Read the transcript from `analyses/VIDEO_ID/transcript.json`.
 
 ### Step 2: Read and Analyze the Transcript
 
@@ -202,143 +175,26 @@ Auto-generated Hebrew transcripts have NO speaker labels. Use these signals to a
 - Vague references ("that place we went to")
 - Mentions that are just comparisons ("it's like Miznon but...")
 
-### Step 3: Verify Each Restaurant via Google Places
+### Step 3: Enrich All Restaurants (Single Script Run)
 
-For EVERY restaurant with verdict ✅ ADD TO PAGE, fetch full Google Places data. Do NOT check the production DB yet — treat every restaurant equally so all cards get complete data (images, ratings, contact info, etc.).
+After Step 2, you have all the restaurant names and city hints. Run the enricher script ONCE to handle Google Places, Instagram, episode metadata, and DB check — all in a single command:
 
-```bash
-source /Users/ido.kazma/Desktop/Projects/private/where2eat/.env
-# Search by Hebrew name + city
-curl -s "https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=RESTAURANT_NAME+CITY&inputtype=textquery&fields=place_id,name,formatted_address,geometry&key=$GOOGLE_PLACES_API_KEY"
-```
-
-If found, get full details:
-```bash
-curl -s "https://maps.googleapis.com/maps/api/place/details/json?place_id=PLACE_ID&fields=name,formatted_address,formatted_phone_number,website,rating,user_ratings_total,opening_hours,photos,geometry,url,price_level&key=$GOOGLE_PLACES_API_KEY"
-```
-
-Resolve the first photo to a permanent URL:
-```bash
-PHOTO_URL=$(curl -s -o /dev/null -w '%{redirect_url}' "https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photoreference=PHOTO_REF&key=$GOOGLE_PLACES_API_KEY")
-```
-
-**Verification criteria:**
-- The Google name should reasonably match the transcript name (accounting for Hebrew transliteration quirks)
-- The location should make sense given the context (if they said "in Tel Aviv", it shouldn't be in Haifa)
-- If Google returns a completely different business, the extraction is wrong — skip it
-
-**If Google Places can't find it:**
-- Try alternative spellings / transliterations
-- Try without the city
-- Try the English name
-- If nothing works, still include the restaurant but note it's unverified
-
-### Step 4: Discover Instagram URLs
-
-For each `add_to_page` restaurant, try to find its Instagram page. Uses the existing `instagram_enricher.py` module with three strategies in order:
-
-**Strategy 1: Check if Google Places website IS an Instagram URL**
-```bash
-# If the website from Google Places is already instagram.com, use it directly
-# e.g., FLOR had website: "https://www.instagram.com/flor.telaviv/"
-```
-
-**Strategy 2: Scrape the restaurant's website for Instagram links**
 ```bash
 cd /Users/ido.kazma/Desktop/Projects/private/where2eat
-python3 -c "
-import sys; sys.path.insert(0, 'src')
-from instagram_enricher import discover_instagram
-result = discover_instagram(
-    name_hebrew='HEBREW_NAME',
-    name_english='ENGLISH_NAME',
-    website_url='WEBSITE_FROM_GOOGLE_PLACES',
-    city='CITY',
-    google_name='GOOGLE_NAME'
-)
-print(result or 'NOT_FOUND')
-"
+python3 scripts/episode_enricher.py VIDEO_ID \
+  --restaurants "RESTAURANT1,RESTAURANT2,RESTAURANT3" \
+  --city-hints "CITY1,CITY2,CITY3"
 ```
 
-**Strategy 3: If the enricher fails, try a direct Google search via curl**
-```bash
-# Search Google for the restaurant's Instagram
-curl -s -A 'Where2Eat/1.0' "https://www.google.com/search?q=%22RESTAURANT_NAME%22+instagram+CITY&num=5" | \
-  python3 -c "
-import sys, re
-html = sys.stdin.read()
-matches = re.findall(r'https?://(?:www\.)?instagram\.com/([a-zA-Z0-9_.]+)/?', html)
-ignore = {'explore', 'p', 'reel', 'stories', 'accounts', 'about', 'developer', 'legal'}
-for handle in matches:
-    if handle.lower() not in ignore:
-        print(f'https://www.instagram.com/{handle}/')
-        break
-else:
-    print('NOT_FOUND')
-"
-```
+This produces `analyses/VIDEO_ID/enrichment.json` containing:
+- Google Places data (place_id, rating, photos, phone, website, coordinates) for each restaurant
+- Instagram URLs (via website scraping and Google search)
+- Episode metadata (episode_id, published_at, title)
+- Production DB status (exists, id) for each restaurant
 
-**Rules:**
-- Add `instagram_url` to the extraction JSON's `google_places` object for each restaurant
-- Add `instagram_url` as a top-level field in the upload-ready JSONs (matches the DB column)
-- If found via website scraping, it's high confidence. If found via Google search, note it in the extraction for review.
-- Skip restaurants where Google Places website is a delivery platform (Wolt, 10bis, etc.) — go straight to Google search
-- If no Instagram found, set `instagram_url: null` — don't guess
+Read the enrichment JSON and merge the data into your extraction. All API calls are done — the remaining steps are pure file generation.
 
-### Step 5: Get Episode Metadata
-
-Get the episode ID and published date:
-
-```bash
-curl -s -H "Origin: https://where2eat-delta.vercel.app" \
-  "https://where2eat-production.up.railway.app/api/episodes/search?limit=50" | \
-  python3 -c "
-import json, sys
-data = json.load(sys.stdin)
-for e in data.get('episodes', []):
-    info = e.get('episode_info', {})
-    if info.get('video_id') == 'VIDEO_ID':
-        print(f'episode_id={e[\"restaurants\"][0][\"episode_id\"] if e.get(\"restaurants\") else \"NOT_FOUND\"}')
-        print(f'published_at={info.get(\"published_at\")}')
-        break
-"
-```
-
-If the episode doesn't exist yet, use the video's YouTube published date:
-```bash
-curl -s "https://www.youtube.com/watch?v=VIDEO_ID" 2>&1 | python3 -c "
-import sys, re
-html = sys.stdin.read()
-match = re.search(r'\"publishDate\":\"([^\"]+)\"', html)
-if match:
-    print(match.group(1))
-"
-```
-
-### Step 6: Check for Existing Restaurants in Production DB
-
-Now that all restaurants have full data (Google Places, Instagram, timestamps), check which ones already exist in production. This is done LAST so it doesn't affect data completeness.
-
-```bash
-# Check by episode
-curl -s -H "Origin: https://where2eat-delta.vercel.app" \
-  "https://where2eat-production.up.railway.app/api/restaurants/search?episode_id=VIDEO_ID&include_hidden=true&limit=50"
-```
-
-For each `add_to_page` restaurant, also search by name and Google Place ID across all episodes:
-```bash
-curl -s -H "Origin: https://where2eat-delta.vercel.app" \
-  "https://where2eat-production.up.railway.app/api/restaurants/search?query=RESTAURANT_NAME"
-```
-
-Set `production_db.exists` and `production_db.id` on each restaurant entry. This determines:
-- Which restaurants get upload-ready JSONs (only new ones)
-- Which get "חדש" vs "קיים" badges in the HTML mockup
-- Which the production-manager will upload
-
-**Do NOT skip any restaurants here.** All `add_to_page` restaurants stay in the extraction with full data regardless of DB status.
-
-### Step 7: Write Extraction JSON
+### Step 4: Write Extraction JSON
 
 **DO NOT insert restaurants into production. The agent only produces reports (JSON + markdown). Insertion is a separate step done explicitly by the user.**
 
@@ -473,7 +329,7 @@ Write a structured JSON file to `analyses/episode_VIDEO_ID_extraction.json` cont
 - `host_quotes` are the actual Hebrew quotes from the transcript
 - `production_db.exists` / `production_db.id` tracks whether it's already in the system
 
-### Step 8: Generate Upload-Ready Restaurant JSONs
+### Step 5: Generate Upload-Ready Restaurant JSONs
 
 For EVERY restaurant with verdict `add_to_page`, generate a DB-ready JSON file — regardless of whether it already exists in production. The extraction is a complete record of the episode. The `production_db` tag in the extraction JSON tells the production-manager which ones are new vs existing.
 
@@ -553,7 +409,7 @@ RESOLVED=$(curl -s -o /dev/null -w '%{redirect_url}' "https://maps.googleapis.co
 echo "$RESOLVED"
 ```
 
-### Step 9: Write Extraction Report (Markdown)
+### Step 6: Write Extraction Report (Markdown)
 
 Write a human-readable markdown report to `analyses/episode_VIDEO_ID_extraction.md` containing ALL restaurant mentions with full details. This mirrors the extraction JSON but in readable format.
 
@@ -636,7 +492,7 @@ Write a human-readable markdown report to `analyses/episode_VIDEO_ID_extraction.
 | New to add | ... |
 ```
 
-### Step 10: Present Summary to User
+### Step 7: Present Summary to User
 
 After writing the report, present a concise summary:
 
@@ -664,7 +520,7 @@ After writing the report, present a concise summary:
 
 Wait for user approval before inserting new restaurants.
 
-### Step 11: Generate HTML Feed Mockup
+### Step 8: Generate HTML Feed Mockup
 
 Generate a self-contained HTML file at `analyses/VIDEO_ID/feed_preview.html` that shows how the new restaurants will look in the app's discovery feed. This lets the user review the visual output before approving.
 
