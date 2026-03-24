@@ -202,26 +202,9 @@ Auto-generated Hebrew transcripts have NO speaker labels. Use these signals to a
 - Vague references ("that place we went to")
 - Mentions that are just comparisons ("it's like Miznon but...")
 
-### Step 3: Check for Existing Restaurants
+### Step 3: Verify Each Restaurant via Google Places
 
-Before processing, check which restaurants from this episode already exist in production:
-
-```bash
-curl -s -H "Origin: https://where2eat-delta.vercel.app" \
-  "https://where2eat-production.up.railway.app/api/restaurants/search?episode_id=VIDEO_ID&include_hidden=true&limit=50"
-```
-
-Also search by name for each restaurant you found:
-```bash
-curl -s -H "Origin: https://where2eat-delta.vercel.app" \
-  "https://where2eat-production.up.railway.app/api/restaurants/search?query=RESTAURANT_NAME"
-```
-
-Skip restaurants that already exist (unless the user explicitly asks to update them).
-
-### Step 4: Verify Each Restaurant via Google Places
-
-For EVERY restaurant with verdict ✅ ADD TO PAGE — both new AND already-in-DB — fetch full Google Places data. This ensures the extraction JSON and HTML mockup have images, ratings, and contact info for all cards, not just new ones.
+For EVERY restaurant with verdict ✅ ADD TO PAGE, fetch full Google Places data. Do NOT check the production DB yet — treat every restaurant equally so all cards get complete data (images, ratings, contact info, etc.).
 
 ```bash
 source /Users/ido.kazma/Desktop/Projects/private/where2eat/.env
@@ -250,7 +233,7 @@ PHOTO_URL=$(curl -s -o /dev/null -w '%{redirect_url}' "https://maps.googleapis.c
 - Try the English name
 - If nothing works, still include the restaurant but note it's unverified
 
-### Step 5: Discover Instagram URLs
+### Step 4: Discover Instagram URLs
 
 For each `add_to_page` restaurant, try to find its Instagram page. Uses the existing `instagram_enricher.py` module with three strategies in order:
 
@@ -302,7 +285,7 @@ else:
 - Skip restaurants where Google Places website is a delivery platform (Wolt, 10bis, etc.) — go straight to Google search
 - If no Instagram found, set `instagram_url: null` — don't guess
 
-### Step 6: Get Episode Metadata
+### Step 5: Get Episode Metadata
 
 Get the episode ID and published date:
 
@@ -331,6 +314,29 @@ if match:
     print(match.group(1))
 "
 ```
+
+### Step 6: Check for Existing Restaurants in Production DB
+
+Now that all restaurants have full data (Google Places, Instagram, timestamps), check which ones already exist in production. This is done LAST so it doesn't affect data completeness.
+
+```bash
+# Check by episode
+curl -s -H "Origin: https://where2eat-delta.vercel.app" \
+  "https://where2eat-production.up.railway.app/api/restaurants/search?episode_id=VIDEO_ID&include_hidden=true&limit=50"
+```
+
+For each `add_to_page` restaurant, also search by name and Google Place ID across all episodes:
+```bash
+curl -s -H "Origin: https://where2eat-delta.vercel.app" \
+  "https://where2eat-production.up.railway.app/api/restaurants/search?query=RESTAURANT_NAME"
+```
+
+Set `production_db.exists` and `production_db.id` on each restaurant entry. This determines:
+- Which restaurants get upload-ready JSONs (only new ones)
+- Which get "חדש" vs "קיים" badges in the HTML mockup
+- Which the production-manager will upload
+
+**Do NOT skip any restaurants here.** All `add_to_page` restaurants stay in the extraction with full data regardless of DB status.
 
 ### Step 7: Write Extraction JSON
 
