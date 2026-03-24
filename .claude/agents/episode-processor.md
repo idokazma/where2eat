@@ -475,7 +475,7 @@ Write a structured JSON file to `analyses/episode_VIDEO_ID_extraction.json` cont
 
 ### Step 8: Generate Upload-Ready Restaurant JSONs
 
-For each restaurant with verdict `add_to_page` that does NOT already exist in the DB, generate a ready-to-upload JSON file. These files match the production DB schema exactly and can be uploaded by the `production-manager` agent.
+For EVERY restaurant with verdict `add_to_page`, generate a DB-ready JSON file — regardless of whether it already exists in production. The extraction is a complete record of the episode. The `production_db` tag in the extraction JSON tells the production-manager which ones are new vs existing.
 
 Save each file to: `data/restaurants/VIDEO_ID_SLUG.json`
 where SLUG is a lowercase transliterated version of the Hebrew name (e.g., `w-n3zFXTuGM_tenne_deli.json`).
@@ -544,7 +544,7 @@ where SLUG is a lowercase transliterated version of the Hebrew name (e.g., `w-n3
 - `engaging_quote` is a single short Hebrew quote that best captures the recommendation
 - Do NOT include `id` — let the API generate UUIDs
 - Do NOT include `created_at` / `updated_at` — the API sets these automatically
-- Only generate files for `add_to_page` restaurants that are NOT already in the DB
+- Generate files for ALL `add_to_page` restaurants, including ones already in the DB
 
 To resolve photo URLs, use:
 ```bash
