@@ -1,0 +1,930 @@
+{
+  "episode": {
+    "video_id": "KPSWuKln4ec",
+    "video_url": "https://www.youtube.com/watch?v=KPSWuKln4ec",
+    "title": "מדברים מהבטן - פרק 149 - מהדורת ממ\"ד",
+    "channel_name": "מדברים מהבטן - הפודיום",
+    "published_at": "2026-03-18",
+    "hosts": [
+      "עמית אהרונסון",
+      "נטע סלונים"
+    ],
+    "guests": [
+      "איציק חנגל",
+      "רועי כהן"
+    ],
+    "language": "iw",
+    "transcript_length": 34396,
+    "segment_count": 1012,
+    "episode_id": "c76e493a-2f53-4a98-a240-99ab878d3c6c",
+    "summary": "פרק 149 של מדברים מהבטן, מהדורת ממ\"ד. כולל ביסים של השבוע (לבה, דלל), חדשות מסעדנות (נאפוליטן 26, מייקי'ז, חממה, בלמיה, סלס, קיצ'וקה, בר פרדיזיו), ראיון מעמיק עם איציק חנגל (בעלים של הלנה, אסה, צ'קולי, פסטל, מנטריי) על פתיחת מסעדות בזמן מלחמה, ראיון עם רועי כהן מלולו קיבוץ טריה, חדשות מישלן (גרנית, זקן), פרשת נומה/רדזפי, וסיכום משלוחים (הרצל 16)."
+  },
+  "extraction": {
+    "date": "2026-03-24",
+    "agent": "claude-opus-4-6",
+    "total_mentions": 28,
+    "add_to_page": 16,
+    "reference_only": 12,
+    "rejected": 0,
+    "already_in_db": 9,
+    "new_to_add": 7
+  },
+  "restaurants": [
+    {
+      "verdict": "add_to_page",
+      "name_hebrew": "לבה",
+      "name_english": "Lava",
+      "name_in_transcript": "לבה",
+      "google_name": "Lava - לאבה",
+      "timestamp": {
+        "seconds": 204,
+        "display": "03:24",
+        "youtube_url": "https://www.youtube.com/watch?v=KPSWuKln4ec&t=204"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "פארק המסילה",
+        "address": "Simtat Beit HaBad 7, Tel Aviv-Jaffa, 6684208, Israel",
+        "region": "מרכז",
+        "latitude": 32.060834,
+        "longitude": 34.770247
+      },
+      "cuisine_type": "שף / ים תיכוני",
+      "price_range": "$$$",
+      "status": "open",
+      "host_opinion": "very_positive",
+      "host_quotes": [
+        "פסטת חמת זתר ולימון...היא חוסלה כליל",
+        "קינוח שוקולד לבן עם פרג ובבקה...מעורר חושים"
+      ],
+      "host_comments": "נטע אכלה בלבה וסיפרה על פסטת חמת זתר ולימון שחוסלה כליל, קינוח שוקולד לבן עם פרג ובבקה, ותיארה את הריחות העולים מהלבה כמעוררי חושים.",
+      "dishes_mentioned": [
+        "פסטת חמת זתר ולימון",
+        "קינוח שוקולד לבן עם פרג ובבקה"
+      ],
+      "special_features": [
+        "שף",
+        "תפריט עונתי"
+      ],
+      "mention_context": "ביס השבוע - נטע מספרת על ארוחה בלבה",
+      "speaker": "נטע סלונים",
+      "production_db": {
+        "exists": true,
+        "id": "5863b6af-8660-4f0d-bc73-581e81eaa2c6"
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "name_hebrew": "דלל",
+      "name_english": "Dallal",
+      "name_in_transcript": "דלל",
+      "google_name": "Dallal Restaurant",
+      "timestamp": {
+        "seconds": 610,
+        "display": "10:10",
+        "youtube_url": "https://www.youtube.com/watch?v=KPSWuKln4ec&t=610"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "נווה צדק",
+        "address": "Shabazi St 10, Tel Aviv-Yafo, Israel",
+        "region": "מרכז",
+        "latitude": 32.0611278,
+        "longitude": 34.7634952
+      },
+      "cuisine_type": "ביסטרו / צרפתי-ישראלי",
+      "price_range": "$$$",
+      "status": "open",
+      "host_opinion": "very_positive",
+      "host_quotes": [
+        "קולקציית החג...פשוט מעולה",
+        "עוגה בחושה של תפוזים ושקדים...יפיפיה"
+      ],
+      "host_comments": "עמית סיפר על קולקציית החג של דלל שכוללת עוגה בחושה של תפוזים ושקדים, ותיאר את הכל כמעולה.",
+      "dishes_mentioned": [
+        "עוגה בחושה של תפוזים ושקדים",
+        "קולקציית חג"
+      ],
+      "special_features": [
+        "מאפים",
+        "קולקציות חג"
+      ],
+      "mention_context": "ביס השבוע - עמית מספר על קולקציית החג של דלל",
+      "speaker": "עמית אהרונסון",
+      "production_db": {
+        "exists": true,
+        "id": "a440da02-7015-44e6-bfb1-14eb128f8bc4"
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "name_hebrew": "נאפוליטן 26",
+      "name_english": "Neapolitan 26",
+      "name_in_transcript": "נאופוליטן",
+      "google_name": "26 נפוליטן הרצליה | 26 NEAPOLITAN STYLE",
+      "timestamp": {
+        "seconds": 1012,
+        "display": "16:52",
+        "youtube_url": "https://www.youtube.com/watch?v=KPSWuKln4ec&t=1012"
+      },
+      "location": {
+        "city": "הרצליה",
+        "neighborhood": "",
+        "address": "Abba Eban Blvd 5, Herzliya, 46746, Israel",
+        "region": "השרון",
+        "latitude": 32.1619042,
+        "longitude": 34.8092567
+      },
+      "cuisine_type": "פיצה נפוליטנית",
+      "price_range": "$$",
+      "status": "open",
+      "host_opinion": "very_positive",
+      "host_quotes": [
+        "פיצריה חדשה...נפוליטני סטייל",
+        "יש מצב שזה יהיה המקום הראשון שאני אפקוד אחרי המלחמה"
+      ],
+      "host_comments": "עמית סיפר על פיצריה חדשה בהרצליה בסגנון נפוליטני, ואמר שיש מצב שזה יהיה המקום הראשון שיפקוד אחרי המלחמה.",
+      "dishes_mentioned": [
+        "פיצה נפוליטנית"
+      ],
+      "special_features": [
+        "פיצה נפוליטנית",
+        "מקום חדש"
+      ],
+      "mention_context": "חדשות מסעדנות - פיצריה חדשה בהרצליה",
+      "speaker": "עמית אהרונסון",
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "name_hebrew": "מייקי'ז",
+      "name_english": "Mikey's",
+      "name_in_transcript": "מייקי",
+      "google_name": "maki-afula",
+      "timestamp": {
+        "seconds": 1054,
+        "display": "17:34",
+        "youtube_url": "https://www.youtube.com/watch?v=KPSWuKln4ec&t=1054"
+      },
+      "location": {
+        "city": "אפולה",
+        "neighborhood": "",
+        "address": "יצחק נבון 3, Afula, 18399, Israel",
+        "region": "חיפה והצפון",
+        "latitude": 32.613232,
+        "longitude": 35.300659
+      },
+      "cuisine_type": "פיצה",
+      "price_range": "$$",
+      "status": "open",
+      "host_opinion": "very_positive",
+      "host_quotes": [
+        "הפיצריה הראשונה בארץ שמנסה לייצר את הפיצות שלה אך ורק מחומרי גלם מקומיים"
+      ],
+      "host_comments": "עמית ונטע דיברו על מייקי'ז באפולה, הפיצריה הראשונה בארץ שמנסה לייצר פיצות רק מחומרי גלם מקומיים.",
+      "dishes_mentioned": [
+        "פיצה מחומרי גלם מקומיים"
+      ],
+      "special_features": [
+        "חומרי גלם מקומיים",
+        "פיצריה ייחודית"
+      ],
+      "mention_context": "חדשות מסעדנות - פיצריה ייחודית באפולה",
+      "speaker": "עמית אהרונסון",
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "name_hebrew": "חממה",
+      "name_english": "Hamama",
+      "name_in_transcript": "חממה",
+      "google_name": "Chamama in the city",
+      "timestamp": {
+        "seconds": 1128,
+        "display": "18:48",
+        "youtube_url": "https://www.youtube.com/watch?v=KPSWuKln4ec&t=1128"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "פלורנטין",
+        "address": "Avshalom Gissin St 7, Petah Tikva, Israel",
+        "region": "מרכז",
+        "latitude": 32.0978395,
+        "longitude": 34.8840434
+      },
+      "cuisine_type": "בר יין",
+      "price_range": "$$",
+      "status": "open",
+      "host_opinion": "positive",
+      "host_quotes": [
+        "בר יין שנקרא חממה...נראה מקום שהם מוזגים בו"
+      ],
+      "host_comments": "עמית סיפר על חממה, בר יין חדש שנפתח במקום שבו היה אורבי. תיאר אותו כמקום שבו מוזגים יין טוב.",
+      "dishes_mentioned": [],
+      "special_features": [
+        "בר יין",
+        "מקום חדש"
+      ],
+      "mention_context": "חדשות מסעדנות - בר יין חדש בפלורנטין",
+      "speaker": "עמית אהרונסון",
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "name_hebrew": "בלמיה",
+      "name_english": "Bellamia",
+      "name_in_transcript": "בלמיה",
+      "google_name": "Bellamia",
+      "timestamp": {
+        "seconds": 1206,
+        "display": "20:06",
+        "youtube_url": "https://www.youtube.com/watch?v=KPSWuKln4ec&t=1206"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "שדה דוב",
+        "address": "Tel Aviv-Yafo, Israel",
+        "region": "מרכז",
+        "latitude": 32.0991153,
+        "longitude": 34.7737794
+      },
+      "cuisine_type": "איטלקי",
+      "price_range": "$$",
+      "status": "open",
+      "host_opinion": "positive",
+      "host_quotes": [
+        "מסעדה איטלקית מאוד גדולה בלמיה...מעדניה איטלקית...כשר"
+      ],
+      "host_comments": "עמית סיפר על בלמיה, מסעדה איטלקית גדולה באזור שדה דוב עם מעדניה איטלקית, כשר.",
+      "dishes_mentioned": [],
+      "special_features": [
+        "מעדניה איטלקית",
+        "כשר"
+      ],
+      "mention_context": "חדשות מסעדנות - מסעדה איטלקית גדולה",
+      "speaker": "עמית אהרונסון",
+      "production_db": {
+        "exists": true,
+        "id": "33e36b86-81bd-4bc8-94b6-421f388b2f3b"
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "name_hebrew": "סלס",
+      "name_english": "Selas",
+      "name_in_transcript": "סלס",
+      "google_name": "Selas - אור גינסברג מארח (סלאס)",
+      "timestamp": {
+        "seconds": 1291,
+        "display": "21:31",
+        "youtube_url": "https://www.youtube.com/watch?v=KPSWuKln4ec&t=1291"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "יפו",
+        "address": "Tankhum St 6, Tel Aviv-Yafo, 6813821, Israel",
+        "region": "מרכז",
+        "latitude": 32.0530054,
+        "longitude": 34.7550693
+      },
+      "cuisine_type": "שף",
+      "price_range": "$$$$",
+      "status": "open",
+      "host_opinion": "very_positive",
+      "host_quotes": [
+        "תפריט בן מיפרקט...נקנקיית לוקוס וצ'דר...שיפוד טורו...נשמע מעיף"
+      ],
+      "host_comments": "עמית סיפר על תפריט בן מיפרקט חדש בסלס שכולל נקנקיית לוקוס וצ'דר ושיפוד טורו.",
+      "dishes_mentioned": [
+        "נקנקיית לוקוס וצ'דר",
+        "שיפוד טורו",
+        "תפריט בן מיפרקט"
+      ],
+      "special_features": [
+        "תפריט מיוחד",
+        "שף"
+      ],
+      "mention_context": "חדשות מסעדנות - תפריט חדש בסלס",
+      "speaker": "עמית אהרונסון",
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "name_hebrew": "קיצ'וקה",
+      "name_english": "Kichuka",
+      "name_in_transcript": "קיצוקה",
+      "google_name": "Chooka",
+      "timestamp": {
+        "seconds": 1291,
+        "display": "21:31",
+        "youtube_url": "https://www.youtube.com/watch?v=KPSWuKln4ec&t=1291"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "",
+        "address": "Weizmann St 14, Tel Aviv-Yafo, Israel",
+        "region": "מרכז",
+        "latitude": 32.081317,
+        "longitude": 34.7903544
+      },
+      "cuisine_type": "אסייתי / בר",
+      "price_range": "$$",
+      "status": "open",
+      "host_opinion": "positive",
+      "host_quotes": [
+        "גם בסלס וגם בקיצ'וקה יש עכשיו תפריט שנקרא בן מיפרקט"
+      ],
+      "host_comments": "עמית ציין שבקיצ'וקה, כמו בסלס, יש עכשיו תפריט בן מיפרקט.",
+      "dishes_mentioned": [
+        "תפריט בן מיפרקט"
+      ],
+      "special_features": [
+        "תפריט מיוחד"
+      ],
+      "mention_context": "חדשות מסעדנות - תפריט חדש בקיצ'וקה",
+      "speaker": "עמית אהרונסון",
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "name_hebrew": "בר פרדיזיו",
+      "name_english": "Bar Paradiso",
+      "name_in_transcript": "פרדיזיו",
+      "google_name": "Bar Paradiso",
+      "timestamp": {
+        "seconds": 1312,
+        "display": "21:52",
+        "youtube_url": "https://www.youtube.com/watch?v=KPSWuKln4ec&t=1312"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "נחלת בנימין",
+        "address": "Nahalat Binyamin St 43, Tel Aviv-Yafo, Israel",
+        "region": "מרכז",
+        "latitude": 32.0653361,
+        "longitude": 34.7709383
+      },
+      "cuisine_type": "בר / קוקטיילים",
+      "price_range": "$$",
+      "status": "open",
+      "host_opinion": "positive",
+      "host_quotes": [
+        "ארן בי אמור לשתף פעולה עם ספישל נקנקיות שיוגש בבר פרדיזיו"
+      ],
+      "host_comments": "עמית סיפר על שיתוף פעולה של ארן בי עם ספישל נקנקיות שיוגש בבר פרדיזיו.",
+      "dishes_mentioned": [
+        "נקנקיות מיוחדות"
+      ],
+      "special_features": [
+        "שיתוף פעולה",
+        "בר"
+      ],
+      "mention_context": "חדשות מסעדנות - שיתוף פעולה חדש בבר פרדיזיו",
+      "speaker": "עמית אהרונסון",
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "name_hebrew": "פסטל",
+      "name_english": "Pastel",
+      "name_in_transcript": "פסטל",
+      "google_name": "Pastel restaurant",
+      "timestamp": {
+        "seconds": 1356,
+        "display": "22:36",
+        "youtube_url": "https://www.youtube.com/watch?v=KPSWuKln4ec&t=1356"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "שדרות שאול המלך",
+        "address": "Sderot Sha'ul HaMelech 27, Tel Aviv-Jaffa, Israel",
+        "region": "מרכז",
+        "latitude": 32.0771034,
+        "longitude": 34.7862124
+      },
+      "cuisine_type": "ים תיכוני / שף",
+      "price_range": "$$$",
+      "status": "open",
+      "host_opinion": "very_positive",
+      "host_quotes": [
+        "התחלנו סרביס ב-12 בצהריים...זאת מסעדה של 800 מטר מרובע",
+        "פתחתי את פסטל מי שצריך להצדיק את הפתיחות האלה"
+      ],
+      "host_comments": "איציק חנגל סיפר על פתיחת פסטל, מסעדה ענקית של 800 מ\"ר שמתחילה סרביס ב-12 בצהריים. דיבר על ההחלטה לפתוח למרות המצב הביטחוני.",
+      "dishes_mentioned": [],
+      "special_features": [
+        "מסעדה גדולה",
+        "800 מ\"ר",
+        "ארוחות צהריים"
+      ],
+      "mention_context": "ראיון עם איציק חנגל - על פתיחת פסטל",
+      "speaker": "איציק חנגל",
+      "production_db": {
+        "exists": true,
+        "id": "f4cea478-d82c-4640-8625-cef66388620f"
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "name_hebrew": "אסה",
+      "name_english": "Asa",
+      "name_in_transcript": "אסה",
+      "google_name": "Asa Kadmoni Street",
+      "timestamp": {
+        "seconds": 1352,
+        "display": "22:32",
+        "youtube_url": "https://www.youtube.com/watch?v=KPSWuKln4ec&t=1352"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "",
+        "address": "Asa Kadmoni St, Tel Aviv-Yafo, Israel",
+        "region": "מרכז",
+        "latitude": 32.051832,
+        "longitude": 34.805155
+      },
+      "cuisine_type": "שף / ים תיכוני",
+      "price_range": "$$$",
+      "status": "open",
+      "host_opinion": "very_positive",
+      "host_quotes": [
+        "אסה תיפתח היום...כזה דבר כמו אסה אני לא מכיר מטורף",
+        "כרטיס טיסה שהתבטל מקום לאסה זה מצחיק"
+      ],
+      "host_comments": "איציק חנגל סיפר שאסה נפתחת היום ותיאר אותה כמקום מטורף וייחודי שאין כמוהו.",
+      "dishes_mentioned": [],
+      "special_features": [
+        "מסעדת שף",
+        "ייחודית"
+      ],
+      "mention_context": "ראיון עם איציק חנגל - על פתיחת אסה",
+      "speaker": "איציק חנגל",
+      "production_db": {
+        "exists": true,
+        "id": "1aac3728-43f9-4a96-91c0-76f4008d557d"
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "name_hebrew": "הלנה",
+      "name_english": "Helena",
+      "name_in_transcript": "אלנה",
+      "google_name": "Helena",
+      "timestamp": {
+        "seconds": 1352,
+        "display": "22:32",
+        "youtube_url": "https://www.youtube.com/watch?v=KPSWuKln4ec&t=1352"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "",
+        "address": "Tarsat Ave 6, Tel Aviv-Yafo, Israel",
+        "region": "מרכז",
+        "latitude": 32.0738343,
+        "longitude": 34.7791268
+      },
+      "cuisine_type": "ים תיכוני / שף",
+      "price_range": "$$$",
+      "status": "open",
+      "host_opinion": "very_positive",
+      "host_quotes": [
+        "היום בערב אנחנו פותחים את אלנה בשעה טובה"
+      ],
+      "host_comments": "איציק חנגל הודיע שהלנה נפתחת היום בערב.",
+      "dishes_mentioned": [],
+      "special_features": [
+        "מסעדת שף",
+        "פתיחה מחודשת"
+      ],
+      "mention_context": "ראיון עם איציק חנגל - על פתיחת הלנה",
+      "speaker": "איציק חנגל",
+      "production_db": {
+        "exists": true,
+        "id": "66d4b0b8-1fee-49cc-9e89-4aa112b9ad03"
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "name_hebrew": "צ'קולי",
+      "name_english": "Chakoli",
+      "name_in_transcript": "צקולי",
+      "google_name": "Chacoli",
+      "timestamp": {
+        "seconds": 1352,
+        "display": "22:32",
+        "youtube_url": "https://www.youtube.com/watch?v=KPSWuKln4ec&t=1352"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "טיילת הרברט סמואל",
+        "address": "Retsif Herbert Samuel St 3, Tel Aviv-Yafo, Israel",
+        "region": "מרכז",
+        "latitude": 32.0678001,
+        "longitude": 34.7622449
+      },
+      "cuisine_type": "ספרדי-באסקי",
+      "price_range": "$$$",
+      "status": "closed_temporary",
+      "host_opinion": "positive",
+      "host_quotes": [
+        "צ'קולי לא תיפתח כי אין לנו מרחב מוגן",
+        "ראיתם את צ'קולי? מידה מפוצצת"
+      ],
+      "host_comments": "איציק חנגל הסביר שצ'קולי לא תיפתח בגלל חוסר מרחב מוגן, אבל ציין שהיא תמיד מלאה ומפוצצת.",
+      "dishes_mentioned": [],
+      "special_features": [
+        "סגורה זמנית",
+        "חוסר ממ\"ד"
+      ],
+      "mention_context": "ראיון עם איציק חנגל - צ'קולי סגורה בגלל חוסר ממ\"ד",
+      "speaker": "איציק חנגל",
+      "production_db": {
+        "exists": true,
+        "id": "8137dcbd-c30f-4151-93a7-b63d0e4359b5"
+      },
+      "business_news": "סגורה זמנית בשל היעדר מרחב מוגן"
+    },
+    {
+      "verdict": "add_to_page",
+      "name_hebrew": "מנטריי",
+      "name_english": "Mantray",
+      "name_in_transcript": "מנטריי",
+      "google_name": "Manta Ray",
+      "timestamp": {
+        "seconds": 1790,
+        "display": "29:50",
+        "youtube_url": "https://www.youtube.com/watch?v=KPSWuKln4ec&t=1790"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "חוף",
+        "address": "בתוך חניון בית האצ״ל מאנטה ריי הכניסה לחניון, Nahum Goldmann 4, Tel Aviv-Jaffa, Israel",
+        "region": "מרכז",
+        "latitude": 32.0610764,
+        "longitude": 34.7600267
+      },
+      "cuisine_type": "ים תיכוני / דגים",
+      "price_range": "$$$",
+      "status": "open",
+      "host_opinion": "very_positive",
+      "host_quotes": [
+        "זכיתם במכרז להפעלה של מנטריי...אני רוצה להחזיר אותו לחיים"
+      ],
+      "host_comments": "איציק חנגל סיפר שזכה במכרז להפעלת מנטריי והוא רוצה להחזיר את המקום לחיים.",
+      "dishes_mentioned": [],
+      "special_features": [
+        "חוף הים",
+        "מכרז חדש",
+        "פתיחה מחודשת"
+      ],
+      "mention_context": "ראיון עם איציק חנגל - על זכייה במכרז מנטריי",
+      "speaker": "איציק חנגל",
+      "production_db": {
+        "exists": true,
+        "id": "8fad0a04-bfe6-4f18-9816-1cb40a2a6567"
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "name_hebrew": "לולו קיבוץ טריה",
+      "name_english": "Loulou Kibbutz Triya",
+      "name_in_transcript": "לולו",
+      "google_name": "Loulou",
+      "timestamp": {
+        "seconds": 2116,
+        "display": "35:16",
+        "youtube_url": "https://www.youtube.com/watch?v=KPSWuKln4ec&t=2116"
+      },
+      "location": {
+        "city": "קיבוץ אמיר",
+        "neighborhood": "",
+        "address": "Amir, 83728, Israel",
+        "region": "צפון",
+        "latitude": 33.178157,
+        "longitude": 35.6217857
+      },
+      "cuisine_type": "פיין דיינינג / שף",
+      "price_range": "$$$$",
+      "status": "open",
+      "host_opinion": "very_positive",
+      "host_quotes": [
+        "מסעדה כזאת פיין דיינינג...35 עובדים"
+      ],
+      "host_comments": "רועי כהן, הבעלים של לולו קיבוץ טריה בקיבוץ אמיר, סיפר על המסעדה שהיא פיין דיינינג עם 35 עובדים בצפון הרחוק.",
+      "dishes_mentioned": [],
+      "special_features": [
+        "פיין דיינינג",
+        "צפון",
+        "קיבוץ"
+      ],
+      "mention_context": "ראיון עם רועי כהן - בעלים של לולו קיבוץ טריה",
+      "speaker": "רועי כהן",
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "name_hebrew": "הרצל 16",
+      "name_english": "Herzl 16",
+      "name_in_transcript": "הרצל 16",
+      "google_name": "Herzl St 16",
+      "timestamp": {
+        "seconds": 2853,
+        "display": "47:33",
+        "youtube_url": "https://www.youtube.com/watch?v=KPSWuKln4ec&t=2853"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "",
+        "address": "Herzl St 16, Tel Aviv-Yafo, Israel",
+        "region": "מרכז",
+        "latitude": 32.0618845,
+        "longitude": 34.7701447
+      },
+      "cuisine_type": "משלוחים / ביסטרו",
+      "price_range": "$$",
+      "status": "open",
+      "host_opinion": "very_positive",
+      "host_quotes": [
+        "חיובי מאוד...פנקוטה וגיוזה",
+        "הסמוסה שזאת מנה ממולת שנעים לאכול מול טלוויזיה"
+      ],
+      "host_comments": "עמית ונטע דיברו בחיוב על גרסת המשלוחים של הרצל 16, שכוללת פנקוטה, גיוזה וסמוסה שנעים לאכול מול הטלוויזיה.",
+      "dishes_mentioned": [
+        "פנקוטה",
+        "גיוזה",
+        "סמוסה"
+      ],
+      "special_features": [
+        "משלוחים",
+        "אוכל לטלוויזיה"
+      ],
+      "mention_context": "סיכום חוויות משלוחים - הרצל 16",
+      "speaker": "עמית אהרונסון",
+      "production_db": {
+        "exists": true,
+        "id": "92cd3d9e-13b3-4d82-a801-752b51d3aa27"
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "קפה סטף",
+      "name_english": "Cafe Stef",
+      "name_in_transcript": "קפה סטף",
+      "timestamp": {
+        "seconds": 112,
+        "display": "01:52",
+        "youtube_url": "https://www.youtube.com/watch?v=KPSWuKln4ec&t=112"
+      },
+      "location": {
+        "city": ""
+      },
+      "skip_reason": "בדיחה חולפת על ביקור רה\"מ",
+      "speaker": "",
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "קרמלה",
+      "name_english": "Carmela",
+      "name_in_transcript": "קרמלה",
+      "timestamp": {
+        "seconds": 749,
+        "display": "12:29",
+        "youtube_url": "https://www.youtube.com/watch?v=KPSWuKln4ec&t=749"
+      },
+      "location": {
+        "city": ""
+      },
+      "skip_reason": "אזכור משלוח ירקות בלבד",
+      "speaker": "",
+      "production_db": {
+        "exists": true,
+        "id": "876e8d62-b88a-4863-a67a-0046277892c7"
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "אורבי",
+      "name_english": "Orbi",
+      "name_in_transcript": "אורבי",
+      "timestamp": {
+        "seconds": 1120,
+        "display": "18:40",
+        "youtube_url": "https://www.youtube.com/watch?v=KPSWuKln4ec&t=1120"
+      },
+      "location": {
+        "city": "תל אביב"
+      },
+      "skip_reason": "נסגר, הוחלף על ידי חממה",
+      "speaker": "",
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "לונל",
+      "name_english": "Lonel",
+      "name_in_transcript": "לונל",
+      "timestamp": {
+        "seconds": 1158,
+        "display": "19:18",
+        "youtube_url": "https://www.youtube.com/watch?v=KPSWuKln4ec&t=1158"
+      },
+      "location": {
+        "city": "תל אביב"
+      },
+      "skip_reason": "אזכור חיובי חולף, ללא ביקורת",
+      "speaker": "",
+      "production_db": {
+        "exists": true,
+        "id": "93f2957f-3a6f-4f3f-a53b-f0eda511acc0"
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "הסרפינה",
+      "name_english": "La Sarpina",
+      "name_in_transcript": "הסרפינה",
+      "timestamp": {
+        "seconds": 1188,
+        "display": "19:48",
+        "youtube_url": "https://www.youtube.com/watch?v=KPSWuKln4ec&t=1188"
+      },
+      "location": {
+        "city": "תל אביב"
+      },
+      "skip_reason": "אזכור היסטורי - דייר קודם של חלל",
+      "speaker": "",
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "רמסס by דבוקס",
+      "name_english": "Ramses by Dbox",
+      "name_in_transcript": "רמסס by דבוקס",
+      "timestamp": {
+        "seconds": 1239,
+        "display": "20:39",
+        "youtube_url": "https://www.youtube.com/watch?v=KPSWuKln4ec&t=1239"
+      },
+      "location": {
+        "city": "יפו"
+      },
+      "skip_reason": "מקום עבודה קודם של השף",
+      "speaker": "",
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "טיביז בורד הגליל",
+      "name_english": "TBZ Board HaGalil",
+      "name_in_transcript": "טיביז בורד הגליל",
+      "timestamp": {
+        "seconds": 2203,
+        "display": "36:43",
+        "youtube_url": "https://www.youtube.com/watch?v=KPSWuKln4ec&t=2203"
+      },
+      "location": {
+        "city": "גליל"
+      },
+      "skip_reason": "אזכור חולף של מיזם צדדי",
+      "speaker": "",
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "אסף גרנית",
+      "name_english": "Asaf Granit (Paris)",
+      "name_in_transcript": "אסף גרנית",
+      "timestamp": {
+        "seconds": 2649,
+        "display": "44:09",
+        "youtube_url": "https://www.youtube.com/watch?v=KPSWuKln4ec&t=2649"
+      },
+      "location": {
+        "city": "פריז"
+      },
+      "skip_reason": "חדשות כוכב מישלן",
+      "speaker": "",
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "מתן זקן",
+      "name_english": "Matan Zaken (Paris)",
+      "name_in_transcript": "מתן זקן",
+      "timestamp": {
+        "seconds": 2649,
+        "display": "44:09",
+        "youtube_url": "https://www.youtube.com/watch?v=KPSWuKln4ec&t=2649"
+      },
+      "location": {
+        "city": "פריז"
+      },
+      "skip_reason": "חדשות כוכב מישלן",
+      "speaker": "",
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "נומה",
+      "name_english": "Noma",
+      "name_in_transcript": "נומה",
+      "timestamp": {
+        "seconds": 2692,
+        "display": "44:52",
+        "youtube_url": "https://www.youtube.com/watch?v=KPSWuKln4ec&t=2692"
+      },
+      "location": {
+        "city": "קופנהגן"
+      },
+      "skip_reason": "חדשות על פרישת רדזפי",
+      "speaker": "",
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "המחלבה הקטנה",
+      "name_english": "HaMachleva HaKtana",
+      "name_in_transcript": "המחלבה הקטנה",
+      "timestamp": {
+        "seconds": 2990,
+        "display": "49:50",
+        "youtube_url": "https://www.youtube.com/watch?v=KPSWuKln4ec&t=2990"
+      },
+      "location": {
+        "city": ""
+      },
+      "skip_reason": "אזכור משלוחים בלבד",
+      "speaker": "",
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "קורסון",
+      "name_english": "Corson",
+      "name_in_transcript": "קורסון",
+      "timestamp": {
+        "seconds": 2968,
+        "display": "49:28",
+        "youtube_url": "https://www.youtube.com/watch?v=KPSWuKln4ec&t=2968"
+      },
+      "location": {
+        "city": "פרדס חנה"
+      },
+      "skip_reason": "בדיחה חולפת",
+      "speaker": "",
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    }
+  ]
+}

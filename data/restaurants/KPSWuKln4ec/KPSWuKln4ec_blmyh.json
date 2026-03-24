@@ -1,0 +1,53 @@
+{
+  "name_hebrew": "בלמיה",
+  "name_english": "Bellamia",
+  "city": "תל אביב",
+  "neighborhood": "שדה דוב",
+  "address": "Tel Aviv-Yafo, Israel",
+  "region": "מרכז",
+  "cuisine_type": "איטלקי",
+  "status": "open",
+  "price_range": "$$",
+  "host_opinion": "positive",
+  "host_comments": "עמית סיפר על בלמיה, מסעדה איטלקית גדולה באזור שדה דוב עם מעדניה איטלקית, כשר.",
+  "menu_items": [],
+  "special_features": [
+    "מעדניה איטלקית",
+    "כשר"
+  ],
+  "contact_hours": [
+    "Monday: 11:00 AM – 11:59 PM",
+    "Tuesday: 11:00 AM – 11:59 PM",
+    "Wednesday: 11:00 AM – 11:59 PM",
+    "Thursday: 11:00 AM – 11:59 PM",
+    "Friday: 11:00 AM – 11:59 PM",
+    "Saturday: 11:00 AM – 11:59 PM",
+    "Sunday: 11:00 AM – 11:59 PM"
+  ],
+  "contact_phone": null,
+  "contact_website": null,
+  "business_news": null,
+  "mention_context": "חדשות מסעדנות - מסעדה איטלקית גדולה",
+  "mention_timestamp": 1206,
+  "google_place_id": "ChIJJ_Jv4wlMHRURiaD-pae2PVU",
+  "google_rating": 3,
+  "google_user_ratings_total": 79,
+  "latitude": 32.0991153,
+  "longitude": 34.7737794,
+  "image_url": "https://lh3.googleusercontent.com/place-photos/AL8-SNFu4Ck1k5f5DF7oz3RF6dYdYKW4Z8tSerk7coGuj00T2FT8cdqya2HvUL1NhlqvlmRsZwSY31aaq51F_mmcqoVWquj2ZBMOjA3kJXqzj5QNERsE_RK8dRZs7nyUeJUmgxup04iG4mS6jBIQa6A=s1600-w800",
+  "photos": [
+    "https://lh3.googleusercontent.com/place-photos/AL8-SNFu4Ck1k5f5DF7oz3RF6dYdYKW4Z8tSerk7coGuj00T2FT8cdqya2HvUL1NhlqvlmRsZwSY31aaq51F_mmcqoVWquj2ZBMOjA3kJXqzj5QNERsE_RK8dRZs7nyUeJUmgxup04iG4mS6jBIQa6A=s1600-w800"
+  ],
+  "google_name": "Bellamia",
+  "published_at": "2026-03-18",
+  "og_image_url": null,
+  "is_closing": false,
+  "video_url": "https://www.youtube.com/watch?v=KPSWuKln4ec",
+  "video_id": "KPSWuKln4ec",
+  "channel_name": "מדברים מהבטן - הפודיום",
+  "google_url": "https://maps.google.com/?cid=6142266297963946121",
+  "engaging_quote": "מסעדה איטלקית מאוד גדולה בלמיה...מעדניה איטלקית...כשר",
+  "country": "ישראל",
+  "episode_id": "c76e493a-2f53-4a98-a240-99ab878d3c6c",
+  "instagram_url": null
+}
