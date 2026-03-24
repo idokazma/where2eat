@@ -127,6 +127,8 @@ For EVERY restaurant mention, you MUST assign one of these verdicts:
 - Comparison mention ("it's like Miznon but...")
 - Chef's former workplace mentioned for context
 - Catering companies, food brands, or non-restaurant businesses
+- **Restaurant owner talking about their own business in an interview** (reopening announcements, business plans, tender wins) — this is industry news, not a food recommendation. Example: Itsik Hangal saying "היום בערב אנחנו פותחים את הלנה" is a reopening announcement, not a review.
+- Restaurant explicitly said to NOT be discussed yet ("לא מדברים עליו עד שעוברת חצי שנה מהפתיחה")
 
 **❌ REJECT** — Not a real restaurant mention:
 - Sentence fragments mistaken as names
@@ -134,6 +136,22 @@ For EVERY restaurant mention, you MUST assign one of these verdicts:
 - Could not verify existence on Google Places after multiple search attempts
 
 This verdict determines what the `production-manager` agent will insert. Only ✅ ADD TO PAGE restaurants are candidates for upload.
+
+#### Reviewed vs Mentioned (sub-classification for ADD TO PAGE)
+
+Every ADD TO PAGE restaurant also gets a sub-tag:
+
+**נטעם (Reviewed)** — The hosts actually ate there and describe the food:
+- "הזמנתי פסטת חמת זתר ולימון...היא חוסלה כליל" → reviewed
+- "ההמבורגר היה מדהים, מופתי, מושלם" → reviewed
+- "קיבלתי את הקולקציה...פשוט מעולה" → reviewed
+
+**הוזכר (Mentioned)** — The hosts discuss it meaningfully but didn't eat there in this episode:
+- "נפתחה ממש עכשיו פיצריה חדשה...יש מצב שזה יהיה המקום הראשון שאני אפקוד" → mentioned (new opening, haven't been)
+- "יש עכשיו תפריט שנקרא בן מיפרקט...נשמע מעיף" → mentioned (new menu, haven't tried)
+- Discussion of a restaurant's concept/philosophy without personal dining experience → mentioned
+
+This tag appears as a badge in the HTML mockup: orange "נטעם" or gray "הוזכר".
 
 **Critical rules for Hebrew transcript analysis:**
 - Restaurant names are PROPER NOUNS, not sentence fragments
@@ -195,10 +213,24 @@ python3 scripts/episode_enricher.py VIDEO_ID \
 This produces `analyses/VIDEO_ID/enrichment.json` containing:
 - Google Places data (place_id, rating, photos, phone, website, coordinates) for each restaurant
 - Instagram URLs (via website scraping and Google search)
+- Timestamps: all occurrences in segments with intro flags and recommended discussion timestamp
 - Episode metadata (episode_id, published_at, title)
 - Production DB status (exists, id) for each restaurant
 
 Read the enrichment JSON and merge the data into your extraction. All API calls are done — the remaining steps are pure file generation.
+
+**CRITICAL: Verify enrichment results before using them.** The script does exact string matching, which can produce wrong results:
+
+1. **Wrong Google Places match** — If `google_name` doesn't match the restaurant you're looking for, DON'T use that data. Examples:
+   - Script matched "Chooka" for קיצ'וקאי (wrong restaurant) — the correct match is "Cichukai"
+   - Script matched "Chamama in the city" in Petah Tikva for חממה wine bar in Florentin TLV (wrong location)
+   - Script matched "Bellamia" gelato for בלה מיה Italian restaurant (wrong business entirely)
+
+2. **New restaurants not on Google Places** — If a restaurant just opened, it may not exist on Google yet. Mark it with a gradient fallback image and "⚠️ חדש מדי עבור Google Places" in the mockup. Don't use a wrong match just to have data.
+
+3. **Name variants the script missed** — The script searches for exact names. If the transcript says "נאופוליטן" but you extracted "נאפוליטן 26", the script won't find the timestamp. Check the `timestamps` section in enrichment.json — if `recommended_seconds` is null, search the segments yourself using the mangled name from the transcript.
+
+4. **Restaurant names in the DB may differ** — The production DB might have the restaurant under a slightly different name (e.g., "בלמיה" in DB but "בלה מיה" is the correct name). The `production_db` check in enrichment.json uses exact matching — cross-reference by Google Place ID when names differ.
 
 ### Step 4: Write Extraction JSON
 
@@ -722,8 +754,26 @@ The youtube-transcript-api auto-generates Hebrew transcripts that are often mang
 4. **Merged words**: "טנדלי" instead of "טנא דלי"
 5. **Sentence fragments mistaken as names**: Always check context
 6. **Numbers in names**: "פו 26" might appear as "פו עשרים ושש"
+7. **Different spelling**: "נאופוליטן" instead of "נאפוליטן" — the transcript uses one form, Google another
+8. **Different name entirely**: "בלמיה" in transcript/DB but actual name is "בלה מיה" (Bella Mia)
+9. **Hebrew prefix ה (the)**: "הדבר" instead of "דנבר" — the ה makes it look like a common word
+10. **Shortened forms**: "קיצ'וקה" instead of "קיצ'וקאי" (Kichukai)
+
+**When the name in the transcript differs from the real name:**
+- Record BOTH: `name_in_transcript` (the mangled version) and `name_hebrew` (the corrected version)
+- Use the corrected name for Google Places search and the DB
+- Use the mangled name for timestamp search in segments
+- The enricher script will search using the corrected name — if it can't find timestamps, search segments yourself using the mangled version
 
 When in doubt, use the surrounding context. If the hosts say "הלכנו לטנדלי ברעננה" — search Google Places for both "טנדלי רעננה" and similar variations.
+
+## Cross-Episode Contamination
+
+**NEVER carry restaurant data from one episode to another.** Each episode extraction is independent. Specifically:
+- Don't reuse timestamps from a previous episode (e.g., מטרלו at 62:14 from ep 148 doesn't exist in ep 149)
+- Don't assume a restaurant mentioned in a previous episode was also in this one
+- If a restaurant appears in multiple episodes, each episode's extraction records it independently with its own timestamps and quotes
+- Validate all timestamps are within the episode's duration (last segment's `start` value)
 
 ## Important Notes
 
