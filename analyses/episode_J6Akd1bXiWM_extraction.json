@@ -1,0 +1,691 @@
+{
+  "episode": {
+    "video_id": "J6Akd1bXiWM",
+    "video_url": "https://www.youtube.com/watch?v=J6Akd1bXiWM",
+    "title": "חיים מקבב לקבב | מדברים מהבטן, פרק 144",
+    "channel_name": "מדברים מהבטן - הפודיום",
+    "published_at": "2026-02-05",
+    "hosts": [
+      "עמית אהרונסון",
+      "נטע סלונים",
+      "יהונתן כהן"
+    ],
+    "guests": [
+      "משה בסון"
+    ],
+    "language": "he",
+    "transcript_length": 45863,
+    "segment_count": 1426,
+    "episode_id": "ea44adf8-c4f1-4391-bcef-b00b0167f09b",
+    "summary": "פרק 144 של מדברים מהבטן — פרק סיכום מחזור קולינרי. נטע ממליצה על פיצה לואיז בראשון לציון (פיצה ניו יורקית חדשה), עמית מתלהב מקזו'אל בירושלים (בית קפה-מאפייה חדש במתחם חיסמון) ומגריל 65 ליד צומת מחנה 80 (שיפודיה-מודרנית). יהונתן חוזר לחזי באור יהודה (קבאב וקובות צהובות) ולשיפודי זיקה ביפו. שף משה בסון מתארח לרגל סגירת מסעדת אקליפטוס הירושלמית. נטע ועמית מדברים על הקונספט החדש באחים עם טולי (מאפייה-בוקר). דיונים על רשימת הפיפסט, מחירי קפה ומוזלי, רכישות נומי, וביקורת סגי כהן על גסטרו מכניקו."
+  },
+  "extraction": {
+    "date": "2026-03-24",
+    "agent": "episode-processor",
+    "total_mentions": 22,
+    "add_to_page": 6,
+    "reference_only": 12,
+    "rejected": 4,
+    "already_in_db": 6,
+    "new_to_add": 0
+  },
+  "restaurants": [
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "פיצה לואיז",
+      "name_english": "Pizza Louise",
+      "name_in_transcript": "פיצה לואיז",
+      "google_name": "פיצה לואיז | Pizza Louise",
+      "timestamp": {
+        "seconds": 199,
+        "display": "03:19",
+        "youtube_url": "https://www.youtube.com/watch?v=J6Akd1bXiWM&t=199s"
+      },
+      "location": {
+        "city": "ראשון לציון",
+        "neighborhood": null,
+        "address": "Rothschild St 79, Rishon LeZion",
+        "region": "מרכז",
+        "latitude": 31.9639401,
+        "longitude": 34.7969708
+      },
+      "cuisine_type": "פיצה",
+      "price_range": "בינוני",
+      "status": "חדש",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "שניהם נותנים קיק נדיר באמת פיצה שאי אפשר להפסיק לאכול ממנה",
+        "פצצה פיצות מעולות",
+        "ובשורה לדעתי לראשון גם סוג הפיצה גם במשלוחים"
+      ],
+      "host_comments": "פיצריה ניו יורקית חדשה ברוטשילד ראשון לציון, מאנשי ברנרד. בייעוץ של רענן נוסל. כשרה. סלייסים בגודל של שני סלייסים רגילים. פיצות חצי-חצי רטבים. חזקה במשלוחים.",
+      "dishes_mentioned": ["פיצה מרגריטה", "פיצה עם קונפי עגבניות שרי וריבת צ'ילי", "פיצה ים תיכונית עם טק עלמטה בצל פטה ודבש"],
+      "special_features": ["פיצה ניו יורקית", "כשר", "משלוחים", "מאנשי ברנרד", "בייעוץ רענן נוסל"],
+      "mention_context": "נטע מביאה כביס השבוע שלה - פיצריה ניו יורקית חדשה ברוטשילד ראשון לציון. סלייסים ענקיים, פיצות חצי-חצי רטבים, כשר, חזק במשלוחים.",
+      "speaker": "נטע סלונים",
+      "google_places": {
+        "place_id": "ChIJ72qleSG1AhURLinjjivDd7k",
+        "google_url": "https://maps.google.com/?cid=13364365011093498158",
+        "rating": 4.8,
+        "review_count": 41,
+        "price_level": null,
+        "phone": "053-445-5039",
+        "website": "https://pizzalouise.co.il/",
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqGXGMlDXDDBiGtHk5DhntDPigDmofj2lu6RJEQKZZTHLJ1Zu1MpBw6ffVTjyv5kwKxOqxAnk-8Z4w77vQw-PWWBc1ED_NLTE7U=s1600-w800",
+        "instagram_url": "https://www.instagram.com/pizza.louise/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": true,
+        "id": "8893a75a-383c-4140-aa2f-05d651f85679"
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "קזו'אל",
+      "name_english": "Casual",
+      "name_in_transcript": "casז'ואל",
+      "google_name": "קזואל | Casual culinary cafe bar",
+      "timestamp": {
+        "seconds": 472,
+        "display": "07:52",
+        "youtube_url": "https://www.youtube.com/watch?v=J6Akd1bXiWM&t=472s"
+      },
+      "location": {
+        "city": "ירושלים",
+        "neighborhood": "מתחם חיסמון",
+        "address": "HaMatmid Alley 6, Jerusalem",
+        "region": "ירושלים",
+        "latitude": 31.779742,
+        "longitude": 35.21638799999999
+      },
+      "cuisine_type": "קפה-מאפייה",
+      "price_range": "בינוני",
+      "status": "חדש",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "אולי אפילו אחד מביסי השנה",
+        "סלט מעולה, ברדפודינג מלוח מעולה, קריחים מעולים",
+        "מחירים שפויים להפלי"
+      ],
+      "host_comments": "בית קפה-מאפייה חדש במתחם חיסמון ההיסטורי בירושלים. פתוח מבוקר עד לילה ומשנה אופי לאורך היום. עבודת אפייה מרשימה מאופה מוכשר בשם גילבן בנישתי. מחמצות, חלות, ג'בטות, עוגות. סלט פנצנלה מדהים עם פרי עונתי. ברד פודינג מלוח ייחודי. בית קליה פנימי עם קפה פילטר מעולה. פתוח בשבת.",
+      "dishes_mentioned": ["ברד פודינג מלוח", "סלט פנצנלה עם אגס", "חלות", "ג'בטות", "מחמצות", "קריחים", "קרפצ'ו תמרים ונקניקית דג", "פוקצ'ה"],
+      "special_features": ["מאפייה", "בית קליה פנימי", "פתוח בשבת", "מתחם חיסמון ההיסטורי"],
+      "mention_context": "עמית מביא כביס השבוע שלו — בית קפה חדש בירושלים עם עבודת אפייה מרשימה, ברד פודינג מלוח ייחודי, וסלט שמזכיר את הפנצנלה של פי בריבוע.",
+      "speaker": "עמית אהרונסון",
+      "google_places": {
+        "place_id": "ChIJZZHvLGopAxURj-5xYucFPjc",
+        "google_url": "https://maps.google.com/?cid=3980625611989315215",
+        "rating": 4.7,
+        "review_count": 91,
+        "price_level": null,
+        "phone": "058-400-6008",
+        "website": null,
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqEo3_fIqp5JX5McJdQK7obI-OfupXM7ddjTi1PENShoXgeL0yIQhgtkYBXiixQyAm0DYcZStHl3FwK5KICUpl_eubBMOBKX4W0=s1600-w800",
+        "instagram_url": null,
+        "verified": true
+      },
+      "production_db": {
+        "exists": true,
+        "id": "f2299901-ec83-4293-a183-e7c054f89133"
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "חזי",
+      "name_english": "Hezi Kebabs",
+      "name_in_transcript": "חזי באור יהודה",
+      "google_name": "Hezi Kebabs",
+      "timestamp": {
+        "seconds": 728,
+        "display": "12:08",
+        "youtube_url": "https://www.youtube.com/watch?v=J6Akd1bXiWM&t=728s"
+      },
+      "location": {
+        "city": "אור יהודה",
+        "neighborhood": null,
+        "address": "Ha-Shalhevet St 6, Or Yehuda",
+        "region": "מרכז",
+        "latitude": 32.0286264,
+        "longitude": 34.8659334
+      },
+      "cuisine_type": "בשרים",
+      "price_range": "בינוני",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "אכלתי קבב שבאמת אין שני לו",
+        "הקובות הצהובות בחזי הן כאלו שעוררו בי זכרונות"
+      ],
+      "host_comments": "יהונתן חוזר לחזי באור יהודה — קבאב נדיר, בשר מעולה על האש. הרחיבו את התפריט עם תבשילים ביתיים (קובסלק, קומיה, שניצלים, מקרונים). בדגש על הקובות הצהובות — מעטפת גמישה דקיקה עם בשר מעולה בטיבול עדין.",
+      "dishes_mentioned": ["קבאב", "קובות צהובות", "פיתות טורקיות", "קובסלק", "קומיה", "שניצלים", "מקרונים"],
+      "special_features": ["קבאב נדיר", "תבשילים ביתיים", "קובות צהובות"],
+      "mention_context": "יהונתן מספר שחזר לחזי באור יהודה בגלל שחייב קבאב. מגלה שהרחיבו את התפריט עם תבשילים ביתיים, ומדגיש את הקובות הצהובות כביס השבוע.",
+      "speaker": "יהונתן כהן",
+      "google_places": {
+        "place_id": "ChIJ_YXkDGE1HRURlUIaDs6ObMQ",
+        "google_url": "https://maps.google.com/?cid=14153844744569635477",
+        "rating": 4.5,
+        "review_count": 2500,
+        "price_level": 1,
+        "phone": "050-482-2448",
+        "website": "https://www.2eat.co.il/restaurant.aspx?restid=23507",
+        "photo_url": "https://lh3.googleusercontent.com/place-photos/AL8-SNFQRdUBDnfo4mQzW80uT39CQm4UaKBOF7KzhWzsymIsuQw_Cx-WYY-CcjtVarpADK4WTM5S2HZkJfzq1naHqtQOIup9yCJ1Lv16kkBzakN0EhKY8wDvxV__9Na5eZ1HKXHZyWSJBLFswAvX=s1600-w800",
+        "instagram_url": null,
+        "verified": true
+      },
+      "production_db": {
+        "exists": true,
+        "id": "58be078c-fc6a-48e7-92ce-c4adf6a681a4"
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "האחים",
+      "name_english": "HaAchim",
+      "name_in_transcript": "האחים",
+      "google_name": "Haachim",
+      "timestamp": {
+        "seconds": 2349,
+        "display": "39:09",
+        "youtube_url": "https://www.youtube.com/watch?v=J6Akd1bXiWM&t=2349s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": null,
+        "address": "Shlomo Ibn Gabirol St 26, Tel Aviv-Yafo",
+        "region": "מרכז",
+        "latitude": 32.0745789,
+        "longitude": 34.7821292
+      },
+      "cuisine_type": "מאפייה-בוקר",
+      "price_range": "בינוני",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "וואו איזה דברים טעימים היא עושה אלוהים ישמור",
+        "פנומנלי באמת דבר מדהים",
+        "פנומנלי באמת רמה כל כך גבוהה"
+      ],
+      "host_comments": "קונספט חדש — טולי (קונדיטורית לשעבר של נומי) הצטרפה לאחים עם מזנון מאפים בשירות עצמי. מלאוח עם רצה לירוק בבצק, פטייר ממולא בעלי חובזה, קורסון שוקולד מקמח מלא מונבט. האחים מוסיפים מנות בוקר (שקשוקה, אבוקדו טוסט עם סקורדליה). בוריקה ענן ענן, קנאפה, קטייף. רוגלך מ-8 שקלים עד מלאוח ב-46. אחד המקומות הגדולים והפופולריים ביותר בתל אביב.",
+      "dishes_mentioned": ["מלאוח עם רצה לירוק", "פטייר ממולא בעלי חובזה", "קורסון שוקולד", "אבוקדו טוסט סקורדליה", "שקשוקה", "בוריקה", "קנאפה", "קטייף", "רוגלך"],
+      "special_features": ["שירות עצמי", "מאפים של טולי (לשעבר נומי)", "קמחים מלאים מונבטים", "מבחר משתנה"],
+      "mention_context": "נטע ועמית מתלהבים מהקונספט החדש באחים — טולי הקונדיטורית הצטרפה ויצרה מזנון מאפים בשירות עצמי ברמה גבוהה מאוד, לצד מנות הבוקר של האחים.",
+      "speaker": "נטע סלונים",
+      "google_places": {
+        "place_id": "ChIJeSeRS8m7HRURcdcryO5CFbI",
+        "google_url": "https://maps.google.com/?cid=12832236306590062449",
+        "rating": 4.5,
+        "review_count": 6023,
+        "price_level": 2,
+        "phone": "03-691-7171",
+        "website": "http://www.haachim.co.il/",
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqEKgUCLrq2qZXolUMpJNGJA0vN4u_hQlwzaVWXs-wyN4NIRppkVV59HqHkqmwpCWyl3pMnQamPwVYuA9UaheNsnmlEY1WRNE88=s1600-w800",
+        "instagram_url": null,
+        "verified": true
+      },
+      "production_db": {
+        "exists": true,
+        "id": "91bfb99d-9c41-41ab-9eaf-3ef8d70fd1c1"
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "גריל 65",
+      "name_english": "Grill 65",
+      "name_in_transcript": "גריל 65",
+      "google_name": "גריל 65",
+      "timestamp": {
+        "seconds": 2683,
+        "display": "44:43",
+        "youtube_url": "https://www.youtube.com/watch?v=J6Akd1bXiWM&t=2683s"
+      },
+      "location": {
+        "city": "פרדס חנה-כרכור",
+        "neighborhood": "צומת מחנה 80",
+        "address": "Camp 80 Junction, Pardes Hanna-Karkur",
+        "region": "שרון",
+        "latitude": 32.4591894,
+        "longitude": 34.988227
+      },
+      "cuisine_type": "בשרים",
+      "price_range": "בינוני",
+      "status": "חדש",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "הייתה לי חוויה מצוינת",
+        "הקובניה מדהימה באמת כלומר הצלחת יפה יפיה ממש כמו איזה גינת ירק פורחת",
+        "שוארמה בצלחת עם פטה של חומוס...על זה הר שלומה...באמת מקום שגם מייצר התלבטות לא פשוטה"
+      ],
+      "host_comments": "שיפודיה מודרנית חדשה ליד צומת מחנה 80. פלטת סלטים מלאה באיכות גבוהה. קובניה מדהימה, שוארמה עגל/כבש על עמוד, מועג'נה וזתר, שיפודים. מקדם איכות נדיר. בוריקה ענן ענן, קנאפה וקטייף. שיפודים באזור 40 שקלים, קובניה 45, שוארמה בפיטה 50-55.",
+      "dishes_mentioned": ["קובניה", "שוארמה עגל כבש", "מועג'נה וזתר", "שיפודים", "סלטים", "בוריקה", "קנאפה", "קטייף", "מקדוסים"],
+      "special_features": ["שיפודיה מודרנית", "פלטת סלטים באיכות גבוהה", "עמוד שוארמה", "פתוח בשבת"],
+      "mention_context": "עמית הלך לגריל 65 החדשה ליד צומת מחנה 80 בעקבות שיחה עם חמודי. חוויה מצוינת — פלטת סלטים ברמה גבוהה, קובניה מדהימה, שוארמה פנטסטית, מועג'נה וזתר. מקום שמשלב שיפודיה מודרנית עם המטבח הערבי החדש.",
+      "speaker": "עמית אהרונסון",
+      "google_places": {
+        "place_id": "ChIJpUbmPwAPHRURbpSDoj4b4nQ",
+        "google_url": "https://maps.google.com/?cid=8422324208964703342",
+        "rating": 4.2,
+        "review_count": 155,
+        "price_level": null,
+        "phone": "077-905-8000",
+        "website": null,
+        "photo_url": null,
+        "instagram_url": null,
+        "verified": true
+      },
+      "production_db": {
+        "exists": true,
+        "id": "c0c4d64a-c664-4d51-9fc9-24644c77b750"
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "שיפודי זיקה",
+      "name_english": "Shipudei Zika",
+      "name_in_transcript": "שיפודי זיקה",
+      "google_name": "שיפודי זיקה",
+      "timestamp": {
+        "seconds": 3118,
+        "display": "51:58",
+        "youtube_url": "https://www.youtube.com/watch?v=J6Akd1bXiWM&t=3118s"
+      },
+      "location": {
+        "city": "תל אביב-יפו",
+        "neighborhood": "יפו",
+        "address": "Yefet St 160, Tel Aviv-Yafo",
+        "region": "מרכז",
+        "latitude": 32.0410804,
+        "longitude": 34.7513398
+      },
+      "cuisine_type": "בשרים",
+      "price_range": "זול",
+      "status": "פתוח",
+      "host_opinion": "חיובית",
+      "host_quotes": [
+        "סלט הירקות אהוב עליי בעולם",
+        "צלייה טובה",
+        "מקום מעולה לפני משחק בבלומפילד אחרי משחק בבלומפילד"
+      ],
+      "host_comments": "יהונתן חזר לשיפודי זיקה ביפו אחרי 15 שנה. מסע בזמן למסעדה המזרחית של פעם עם התאמות קטנות. שיפודים, חומוס שעושים במקום, צ'יפס בתיגון כפול, וסלט ירקות עם תטבילה שהוא גולת הכותרת. קובות מטוגנות מעולות. שיפוד בסביבות 20-30 שקלים.",
+      "dishes_mentioned": ["שיפודים", "חומוס", "צ'יפס תיגון כפול", "סלט ירקות עם תטבילה", "קובות מטוגנות"],
+      "special_features": ["שיפודיה ותיקה", "מסע בזמן", "ברחוב יפת ביפו"],
+      "mention_context": "יהונתן מספר שחזר לשיפודי זיקה ביפו אחרי 15 שנה — לא בדיוק המלצה מודרנית, אבל שיפודיה של פעם עם צלייה טובה, צ'יפס מעולה וסלט ירקות עם תטבילה שהוא הטוב ביותר.",
+      "speaker": "יהונתן כהן",
+      "google_places": {
+        "place_id": "ChIJR_FvpcpMHRURA6XJHbMTqxo",
+        "google_url": "https://maps.google.com/?cid=1921651326023476483",
+        "rating": 4.2,
+        "review_count": 902,
+        "price_level": 1,
+        "phone": "03-506-2104",
+        "website": "https://www.haaretz.co.il/food/restaurants/1.3411114",
+        "photo_url": "https://lh3.googleusercontent.com/place-photos/AL8-SNFW9aDZZqYPGlakp3Ra-iar3t-51O5914tiBAl3gUHD2N_wbZYW0vRU2cqXeCp6Lb1ZvLCw8p445pSGKFeUHDN-oDBMVyAIO9_KpuW62T7gPgPBjrOo9ly8mSQ13JSgGQWpcPmLptm23PdkXg=s1600-w800",
+        "instagram_url": null,
+        "verified": true
+      },
+      "production_db": {
+        "exists": true,
+        "id": "081372f9-cacc-42ae-8601-a9c774657098"
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "אקליפטוס",
+      "name_english": "The Eucalyptus",
+      "name_in_transcript": "אקליפטוס",
+      "skip_reason": "Closing announcement — chef Moshe Basson interviewed about final closure of the 40-year-old Jerusalem restaurant. Industry news, not a food recommendation.",
+      "timestamp": {
+        "seconds": 1498,
+        "display": "24:58",
+        "youtube_url": "https://www.youtube.com/watch?v=J6Akd1bXiWM&t=1498s"
+      },
+      "location": {
+        "city": "ירושלים",
+        "address": "Felt St 14, Jerusalem"
+      },
+      "host_quotes": ["אקליפטוס הירושלמית...הבעלים שלה שף משה בסון הודיע שלשום באופן סופי שהוא סוגר את המסעדה הזאת"],
+      "mention_context": "Chef Moshe Basson interviewed about the permanent closure of his 40-year-old Jerusalem restaurant Eucalyptus, due to war, tourism decline, and landlord issues.",
+      "google_places": {
+        "place_id": "ChIJdWxij80pAxURsB7W_iQoxu4",
+        "rating": 4.5,
+        "review_count": 1347,
+        "verified": true
+      },
+      "production_db": {
+        "exists": true,
+        "id": "b0051f47-47a0-4e48-b88e-616755cc6664"
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "גסטרו מכניקו",
+      "name_english": "Gastro Mechanico",
+      "name_in_transcript": "גסטרו מכניקו",
+      "skip_reason": "Discussed via critic Sagi Cohen's review — hosts did not eat there themselves. Debate about social media promotion vs substance.",
+      "timestamp": {
+        "seconds": 3453,
+        "display": "57:33",
+        "youtube_url": "https://www.youtube.com/watch?v=J6Akd1bXiWM&t=3453s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "address": "Chlenov St 22, Tel Aviv-Yafo"
+      },
+      "host_quotes": ["גסטרו מכניקה כל כך חמודה שהיא שוכחת להיות מסעדה"],
+      "mention_context": "Discussed through Sagi Cohen's review. Hosts debate the restaurant's heavy social media promotion. Cohen was not impressed — found it confused with overpowering flavors.",
+      "google_places": {
+        "place_id": "ChIJ3wqvM6hLHRUR5zkKQgkBdP4",
+        "rating": 4.0,
+        "review_count": 41,
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "אסה",
+      "name_english": "Asa",
+      "name_in_transcript": "אסה",
+      "skip_reason": "Discussed via critics (Avi Aprati and Sagi Cohen reviews), not hosts' own dining experience.",
+      "timestamp": {
+        "seconds": 3314,
+        "display": "55:14",
+        "youtube_url": "https://www.youtube.com/watch?v=J6Akd1bXiWM&t=3314s"
+      },
+      "location": {
+        "city": "תל אביב"
+      },
+      "host_quotes": ["אפרטי מאוד נהנה באסה כציין לטובה את המחירים"],
+      "mention_context": "Discussed through Avi Aprati and Sagi Cohen reviews. Price comparison between critics' bills (471 vs 850 NIS). Hosts did not eat there in this episode.",
+      "google_places": {
+        "place_id": null,
+        "rating": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "אנונה",
+      "name_english": "Anona Bistro",
+      "name_in_transcript": "אנונה",
+      "skip_reason": "Mentioned only in price discussion context — 64 NIS for muesli. Not a review or recommendation.",
+      "timestamp": {
+        "seconds": 1237,
+        "display": "20:37",
+        "youtube_url": "https://www.youtube.com/watch?v=J6Akd1bXiWM&t=1237s"
+      },
+      "location": {
+        "city": "אשקלון"
+      },
+      "host_quotes": ["קפה אנונה באשקלון 64 ש₪ למוזלי"],
+      "mention_context": "Listener sent in an even more expensive muesli price (64 NIS) from Anona in Ashkelon, continuing last week's discussion.",
+      "google_places": {
+        "place_id": "ChIJFVpoQVGcAhURoy2zbZvfN0M",
+        "rating": 4.5,
+        "review_count": 1446,
+        "verified": true
+      },
+      "production_db": {
+        "exists": true,
+        "id": "6f8b21f0-53c1-4c69-bd7e-e3e1a3e33297"
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "פלאפל דניאל",
+      "name_english": "Falafel Daniel",
+      "name_in_transcript": "פלאפל דניאל",
+      "skip_reason": "Mentioned via Kobi Rubin's weekly column — 10 NIS falafel. Hosts did not eat there.",
+      "timestamp": {
+        "seconds": 3697,
+        "display": "61:37",
+        "youtube_url": "https://www.youtube.com/watch?v=J6Akd1bXiWM&t=3697s"
+      },
+      "location": {
+        "city": "בת ים",
+        "address": "Balfour St 59, Bat Yam"
+      },
+      "host_quotes": ["פלאפל דניאל...10 ש₪ לפיטה פלאפל זה מאוד מאוד זול"],
+      "mention_context": "Kobi Rubin column mention — cheap 10 NIS falafel pita in Bat Yam with properly thin-sliced pickled cucumber.",
+      "google_places": {
+        "place_id": "ChIJS79T5CqzAhURZkm3fPtGLbI",
+        "rating": 3.5,
+        "review_count": 15,
+        "verified": true
+      },
+      "production_db": {
+        "exists": true,
+        "id": "6a6e7aab-8b51-4650-8bb8-0c812b49fcb1"
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "נומי",
+      "name_english": "Nomi",
+      "name_in_transcript": "נומי",
+      "skip_reason": "Industry news — Nomi group acquired Doctor Frost cakes and Sheli Aviv Yeni's decorated cakes business.",
+      "timestamp": {
+        "seconds": 2208,
+        "display": "36:48",
+        "youtube_url": "https://www.youtube.com/watch?v=J6Akd1bXiWM&t=2208s"
+      },
+      "location": {
+        "city": "תל אביב"
+      },
+      "host_quotes": ["נומיימי השבוע קנו את דוקור פרוסט"],
+      "mention_context": "Nomi group's latest acquisitions — Doctor Frost cakes and Sheli Aviv Yeni's decorated cakes. Discussion about possible Nomi IPO strategy.",
+      "google_places": {
+        "place_id": null,
+        "rating": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "קונטר",
+      "name_english": "Counter",
+      "name_in_transcript": "קונטר",
+      "skip_reason": "Brief passing mention — 'Counter is doing well' in Jerusalem news roundup. No review or details.",
+      "timestamp": {
+        "seconds": 3801,
+        "display": "63:21",
+        "youtube_url": "https://www.youtube.com/watch?v=J6Akd1bXiWM&t=3801s"
+      },
+      "location": {
+        "city": "ירושלים"
+      },
+      "mention_context": "Brief mention in Jerusalem news roundup at the end of the episode.",
+      "google_places": {
+        "place_id": "ChIJDzpojCPWAhURGhXoiivWiDo",
+        "rating": 4.4,
+        "review_count": 41,
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "הג'ג'ה",
+      "name_english": "Jaja",
+      "name_in_transcript": "הג'ג'ה",
+      "skip_reason": "Brief mention by Yonatan as a pizza place he hasn't been to in Rishon LeZion. No review.",
+      "timestamp": {
+        "seconds": 378,
+        "display": "06:18",
+        "youtube_url": "https://www.youtube.com/watch?v=J6Akd1bXiWM&t=378s"
+      },
+      "location": {
+        "city": "ראשון לציון"
+      },
+      "host_quotes": ["גם הג'ג'ה שאף פעם לא הייתי כן חזק מאוד"],
+      "mention_context": "Yonatan mentions Jaja as a strong pizza place in Rishon LeZion he hasn't visited, in context of Louise discussion.",
+      "google_places": {
+        "place_id": "ChIJgTqtoSK1AhURIl1s-R9g0E4",
+        "rating": 4.0,
+        "review_count": 1529,
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "ברנרד",
+      "name_english": "Bernard",
+      "name_in_transcript": "ברנרד",
+      "skip_reason": "Bar/venue mentioned only as context for who opened Pizza Louise. Not a restaurant review.",
+      "timestamp": {
+        "seconds": 191,
+        "display": "03:11",
+        "youtube_url": "https://www.youtube.com/watch?v=J6Akd1bXiWM&t=191s"
+      },
+      "location": {
+        "city": "ראשון לציון"
+      },
+      "mention_context": "Bernard is a well-known bar in Rishon LeZion. Its owners opened Pizza Louise.",
+      "google_places": {
+        "place_id": null,
+        "rating": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "גרוסי",
+      "name_english": "Grossi",
+      "name_in_transcript": "גרוסי",
+      "skip_reason": "Mentioned only in context of Sagi Cohen visiting — hosts did not review it.",
+      "timestamp": {
+        "seconds": 3414,
+        "display": "56:54",
+        "youtube_url": "https://www.youtube.com/watch?v=J6Akd1bXiWM&t=3414s"
+      },
+      "location": {
+        "city": "ירושלים"
+      },
+      "mention_context": "Mentioned that Sagi Cohen visited Grossi in Jerusalem and even waited at the entrance.",
+      "google_places": {
+        "place_id": null,
+        "rating": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "קפה קפה",
+      "name_english": "Cafe Cafe",
+      "name_in_transcript": "קפה קפה",
+      "skip_reason": "Chain restaurant — price discussion only. They lowered regular coffee price to 10 NIS.",
+      "timestamp": {
+        "seconds": 1281,
+        "display": "21:21",
+        "youtube_url": "https://www.youtube.com/watch?v=J6Akd1bXiWM&t=1281s"
+      },
+      "location": {
+        "city": "ישראל"
+      },
+      "mention_context": "Price discussion — Cafe Cafe fixed small coffee at 10 NIS, cheaper than industry standard of 14.",
+      "google_places": {
+        "place_id": null,
+        "rating": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "הר קפה",
+      "name_english": "Har Cafe (Aroma)",
+      "name_in_transcript": "הר קפה",
+      "skip_reason": "Chain restaurant — price increase discussion. Breakfast for one now 89 NIS.",
+      "timestamp": {
+        "seconds": 1317,
+        "display": "21:57",
+        "youtube_url": "https://www.youtube.com/watch?v=J6Akd1bXiWM&t=1317s"
+      },
+      "location": {
+        "city": "ישראל"
+      },
+      "mention_context": "Price discussion — breakfast at Har Cafe now 89 NIS, almond croissant 20 NIS for a factory product.",
+      "google_places": {
+        "place_id": null,
+        "rating": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "rejected",
+      "name_in_transcript": "דוקור פרוסט",
+      "reject_reason": "Not a restaurant — cake/dessert brand acquired by Nomi group.",
+      "timestamp": {
+        "seconds": 2214,
+        "display": "36:54"
+      }
+    },
+    {
+      "verdict": "rejected",
+      "name_in_transcript": "חופוס",
+      "reject_reason": "Foreign restaurant in Egypt (overlooking Giza pyramids) — mentioned in Fifty Best list discussion, not a local restaurant.",
+      "timestamp": {
+        "seconds": 1061,
+        "display": "17:41"
+      }
+    },
+    {
+      "verdict": "rejected",
+      "name_in_transcript": "שמורה של בני",
+      "reject_reason": "Not a restaurant — nature reserve/hospitality place mentioned as a possible day trip stop, not reviewed.",
+      "timestamp": {
+        "seconds": 3754,
+        "display": "62:34"
+      }
+    },
+    {
+      "verdict": "rejected",
+      "name_in_transcript": "שלי אביב ייני",
+      "reject_reason": "Not a restaurant — person's name (cake decorator whose business was acquired by Nomi).",
+      "timestamp": {
+        "seconds": 2220,
+        "display": "37:00"
+      }
+    }
+  ]
+}
