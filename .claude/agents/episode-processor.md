@@ -250,7 +250,59 @@ PHOTO_URL=$(curl -s -o /dev/null -w '%{redirect_url}' "https://maps.googleapis.c
 - Try the English name
 - If nothing works, still include the restaurant but note it's unverified
 
-### Step 5: Get Episode Metadata
+### Step 5: Discover Instagram URLs
+
+For each `add_to_page` restaurant, try to find its Instagram page. Uses the existing `instagram_enricher.py` module with three strategies in order:
+
+**Strategy 1: Check if Google Places website IS an Instagram URL**
+```bash
+# If the website from Google Places is already instagram.com, use it directly
+# e.g., FLOR had website: "https://www.instagram.com/flor.telaviv/"
+```
+
+**Strategy 2: Scrape the restaurant's website for Instagram links**
+```bash
+cd /Users/ido.kazma/Desktop/Projects/private/where2eat
+python3 -c "
+import sys; sys.path.insert(0, 'src')
+from instagram_enricher import discover_instagram
+result = discover_instagram(
+    name_hebrew='HEBREW_NAME',
+    name_english='ENGLISH_NAME',
+    website_url='WEBSITE_FROM_GOOGLE_PLACES',
+    city='CITY',
+    google_name='GOOGLE_NAME'
+)
+print(result or 'NOT_FOUND')
+"
+```
+
+**Strategy 3: If the enricher fails, try a direct Google search via curl**
+```bash
+# Search Google for the restaurant's Instagram
+curl -s -A 'Where2Eat/1.0' "https://www.google.com/search?q=%22RESTAURANT_NAME%22+instagram+CITY&num=5" | \
+  python3 -c "
+import sys, re
+html = sys.stdin.read()
+matches = re.findall(r'https?://(?:www\.)?instagram\.com/([a-zA-Z0-9_.]+)/?', html)
+ignore = {'explore', 'p', 'reel', 'stories', 'accounts', 'about', 'developer', 'legal'}
+for handle in matches:
+    if handle.lower() not in ignore:
+        print(f'https://www.instagram.com/{handle}/')
+        break
+else:
+    print('NOT_FOUND')
+"
+```
+
+**Rules:**
+- Add `instagram_url` to the extraction JSON's `google_places` object for each restaurant
+- Add `instagram_url` as a top-level field in the upload-ready JSONs (matches the DB column)
+- If found via website scraping, it's high confidence. If found via Google search, note it in the extraction for review.
+- Skip restaurants where Google Places website is a delivery platform (Wolt, 10bis, etc.) — go straight to Google search
+- If no Instagram found, set `instagram_url: null` — don't guess
+
+### Step 6: Get Episode Metadata
 
 Get the episode ID and published date:
 
@@ -280,7 +332,7 @@ if match:
 "
 ```
 
-### Step 6: Write Extraction JSON
+### Step 7: Write Extraction JSON
 
 **DO NOT insert restaurants into production. The agent only produces reports (JSON + markdown). Insertion is a separate step done explicitly by the user.**
 
@@ -356,6 +408,7 @@ Write a structured JSON file to `analyses/episode_VIDEO_ID_extraction.json` cont
         "phone": "073-363-3533",
         "website": "https://www.tenne-deli.co.il/",
         "photo_url": "https://lh3.googleusercontent.com/...",
+        "instagram_url": "https://www.instagram.com/handle/",
         "verified": true
       },
       "production_db": {
@@ -414,7 +467,7 @@ Write a structured JSON file to `analyses/episode_VIDEO_ID_extraction.json` cont
 - `host_quotes` are the actual Hebrew quotes from the transcript
 - `production_db.exists` / `production_db.id` tracks whether it's already in the system
 
-### Step 7: Generate Upload-Ready Restaurant JSONs
+### Step 8: Generate Upload-Ready Restaurant JSONs
 
 For each restaurant with verdict `add_to_page` that does NOT already exist in the DB, generate a ready-to-upload JSON file. These files match the production DB schema exactly and can be uploaded by the `production-manager` agent.
 
@@ -468,7 +521,8 @@ where SLUG is a lowercase transliterated version of the Hebrew name (e.g., `w-n3
   "google_url": "https://maps.google.com/?cid=4291737515105259922",
   "engaging_quote": "הדברים ברובם פשוט נהדרים",
   "country": "Israel",
-  "episode_id": "UUID_FROM_PRODUCTION_OR_NULL"
+  "episode_id": "UUID_FROM_PRODUCTION_OR_NULL",
+  "instagram_url": "https://www.instagram.com/tenne_deli/"
 }
 ```
 
@@ -493,7 +547,7 @@ RESOLVED=$(curl -s -o /dev/null -w '%{redirect_url}' "https://maps.googleapis.co
 echo "$RESOLVED"
 ```
 
-### Step 8: Write Extraction Report (Markdown)
+### Step 9: Write Extraction Report (Markdown)
 
 Write a human-readable markdown report to `analyses/episode_VIDEO_ID_extraction.md` containing ALL restaurant mentions with full details. This mirrors the extraction JSON but in readable format.
 
@@ -576,7 +630,7 @@ Write a human-readable markdown report to `analyses/episode_VIDEO_ID_extraction.
 | New to add | ... |
 ```
 
-### Step 9: Present Summary to User
+### Step 10: Present Summary to User
 
 After writing the report, present a concise summary:
 
@@ -604,7 +658,7 @@ After writing the report, present a concise summary:
 
 Wait for user approval before inserting new restaurants.
 
-### Step 10: Generate HTML Feed Mockup
+### Step 11: Generate HTML Feed Mockup
 
 Generate a self-contained HTML file at `analyses/VIDEO_ID/feed_preview.html` that shows how the new restaurants will look in the app's discovery feed. This lets the user review the visual output before approving.
 
