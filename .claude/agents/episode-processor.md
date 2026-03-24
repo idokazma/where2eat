@@ -96,12 +96,18 @@ for i, seg in enumerate(segments):
 
 Review all occurrences and pick the one where the real discussion starts.
 
-For each restaurant, record:
-- `mention_timestamp_seconds`: the `start` value of the **discussion** segment (not the intro mention)
-- `youtube_timestamped_url`: `https://www.youtube.com/watch?v=VIDEO_ID&t=Xs` where X is the seconds value
-- `mention_timestamp_display`: formatted as `MM:SS` for the report
+**Cross-check with enricher script:** The enricher script (`enrichment.json`) provides a `timestamps` object with the script's automated findings for each restaurant — all occurrences, intro flags, and a recommended timestamp. Compare YOUR timestamp choice with the script's `recommended_seconds`. If they differ:
+- If you picked a LATER timestamp (deeper discussion), that's probably better — use yours
+- If the script found occurrences you missed, investigate — you may have searched for the wrong name variant
+- If neither found the restaurant, note it as "NOT FOUND in segments" and use context-based estimation from the transcript text
 
-If the restaurant name is mangled in the transcript (e.g. "טנדלי" for "טנא דלי"), search for the mangled version in segments. If segments are empty (cached transcript), estimate from character position in the full text.
+For each restaurant, record:
+- `mention_timestamp_seconds`: the exact `start` value from the segment (NOT estimated)
+- `youtube_timestamped_url`: `https://www.youtube.com/watch?v=VIDEO_ID&t=Xs` where X is the integer seconds
+- `mention_timestamp_display`: formatted as `MM:SS` for the report
+- Timestamps MUST be within the episode duration (check last segment's `start` value)
+
+If the restaurant name is mangled in the transcript (e.g. "טנדלי" for "טנא דלי"), search for the mangled version in segments. The enricher also tries variants without apostrophes and without spaces.
 
 #### Add-to-Page Verdict
 

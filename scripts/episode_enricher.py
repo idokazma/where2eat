@@ -236,6 +236,82 @@ def check_production_db(video_id: str, restaurant_names: list) -> dict:
     return results
 
 
+def find_timestamps(name: str, segments: list, video_id: str) -> dict:
+    """Find all occurrences of a restaurant name in transcript segments.
+
+    Returns a dict with all occurrences and a recommended discussion timestamp
+    (skipping intro/agenda mentions in the first 180 seconds).
+    """
+    if not segments:
+        return {"occurrences": [], "recommended": None, "recommended_display": None, "youtube_url": None}
+
+    episode_duration = segments[-1]["start"] + segments[-1].get("duration", 0) if segments else 0
+
+    # Build search variants: the name itself + common transcript manglings
+    search_terms = [name]
+    # Remove apostrophes for mangled search
+    clean = name.replace("'", "").replace("׳", "").replace("'", "")
+    if clean != name:
+        search_terms.append(clean)
+    # Try without spaces (transcript sometimes merges words)
+    no_spaces = name.replace(" ", "")
+    if no_spaces != name:
+        search_terms.append(no_spaces)
+
+    occurrences = []
+    seen_times = set()
+
+    for term in search_terms:
+        for i, seg in enumerate(segments):
+            text = seg.get("text", "")
+            if term in text:
+                start = seg["start"]
+                # Deduplicate by rounding to nearest second
+                rounded = round(start)
+                if rounded in seen_times:
+                    continue
+                seen_times.add(rounded)
+
+                # Get context: surrounding segments
+                context_before = segments[i - 1]["text"] if i > 0 else ""
+                context_after = segments[i + 1]["text"] if i < len(segments) - 1 else ""
+
+                occurrences.append({
+                    "seconds": round(start, 1),
+                    "display": f"{int(start // 60)}:{int(start % 60):02d}",
+                    "segment_index": i,
+                    "text": text,
+                    "context_before": context_before[:80],
+                    "context_after": context_after[:80],
+                    "is_intro": start < 180,  # First 3 minutes = likely intro/agenda
+                })
+
+    occurrences.sort(key=lambda x: x["seconds"])
+
+    # Pick recommended: first non-intro occurrence, or first occurrence if all are intro
+    recommended = None
+    for occ in occurrences:
+        if not occ["is_intro"]:
+            recommended = occ["seconds"]
+            break
+    if recommended is None and occurrences:
+        recommended = occurrences[0]["seconds"]
+
+    recommended_display = None
+    youtube_url = None
+    if recommended is not None:
+        recommended_display = f"{int(recommended // 60)}:{int(recommended % 60):02d}"
+        youtube_url = f"https://www.youtube.com/watch?v={video_id}&t={int(recommended)}s"
+
+    return {
+        "occurrences": occurrences,
+        "recommended_seconds": recommended,
+        "recommended_display": recommended_display,
+        "youtube_url": youtube_url,
+        "episode_duration_seconds": round(episode_duration, 1),
+    }
+
+
 def get_episode_metadata(video_id: str) -> dict:
     """Get episode metadata from production API and YouTube."""
     print(f"\n[Step 5] Getting episode metadata...")
@@ -298,6 +374,7 @@ def main():
         "transcript": None,
         "episode_metadata": None,
         "restaurants": {},
+        "timestamps": {},
         "production_db": {},
     }
 
@@ -353,6 +430,24 @@ def main():
             if i < len(restaurant_names) - 1:
                 time.sleep(0.3)
 
+    # Timestamp extraction from segments
+    if restaurant_names and transcript_data:
+        segments = transcript_data.get("segments", [])
+        if segments:
+            print(f"\n[Timestamps] Finding timestamps for {len(restaurant_names)} restaurants...")
+            episode_dur = segments[-1]["start"] + segments[-1].get("duration", 0)
+            print(f"  Episode duration: {int(episode_dur // 60)}:{int(episode_dur % 60):02d}")
+            for name in restaurant_names:
+                ts = find_timestamps(name, segments, video_id)
+                enrichment["timestamps"][name] = ts
+                n_occ = len(ts["occurrences"])
+                rec = ts["recommended_display"] or "NOT FOUND"
+                intro_count = sum(1 for o in ts["occurrences"] if o["is_intro"])
+                if n_occ == 0:
+                    print(f"  {name}: NOT FOUND in segments")
+                else:
+                    print(f"  {name}: {n_occ} occurrences, recommended={rec} (skipped {intro_count} intro mentions)")
+
     # Step 5: Episode metadata
     enrichment["episode_metadata"] = get_episode_metadata(video_id)
 
@@ -376,6 +471,10 @@ def main():
     n_new = sum(1 for v in enrichment["production_db"].values() if not v.get("exists"))
     n_exist = sum(1 for v in enrichment["production_db"].values() if v.get("exists"))
     print(f"  Production DB: {n_new} new, {n_exist} existing")
+    n_ts_found = sum(1 for v in enrichment.get("timestamps", {}).values() if v.get("recommended_seconds"))
+    n_ts_total = len(enrichment.get("timestamps", {}))
+    if n_ts_total:
+        print(f"  Timestamps found: {n_ts_found}/{n_ts_total}")
     print(f"{'='*60}")
 
 
