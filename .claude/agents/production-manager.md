@@ -238,6 +238,103 @@ The episode-processor agent produces these files:
 3. User asks production-manager to upload approved restaurants
 4. Production-manager reads the upload-ready JSONs and uploads them
 5. Production-manager verifies each upload succeeded
+6. **Production-manager populates `episode_mentions` table** (see below)
+
+### 6. Populate Episode Mentions
+
+After uploading restaurants, populate the `episode_mentions` table from the extraction JSON. This powers the Episodes feed in the frontend.
+
+**Process:**
+1. Read `analyses/VIDEO_ID/extraction.json` (or `agentic_extractor/episode_VIDEO_ID_extraction.json`)
+2. Ensure the episode exists in the `episodes` table
+3. For **every** restaurant in the extraction (not just `add_to_page`):
+   - `add_to_page` → save mention with `restaurant_id` linking to the uploaded/existing restaurant
+   - `reference_only` → save mention WITHOUT `restaurant_id` (these don't go in the restaurants table)
+   - `rejected` → skip entirely
+4. Report how many mentions were saved per category
+
+**Script:**
+```bash
+PYTHONPATH=src /Users/ido.kazma/Desktop/Projects/private/where2eat/venv/bin/python3 -c "
+import json, sys
+sys.path.insert(0, 'src')
+from database import Database
+
+db = Database('data/where2eat.db')
+VIDEO_ID = 'REPLACE_ME'
+
+with open(f'agentic_extractor/episode_{VIDEO_ID}_extraction.json') as f:
+    ext = json.load(f)
+
+ep = ext['episode']
+episode_id = ep.get('episode_id')
+
+# Look up episode_id from DB if needed
+if not episode_id:
+    with db.get_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute('SELECT id FROM episodes WHERE video_id = ?', (VIDEO_ID,))
+        row = cursor.fetchone()
+        episode_id = row['id'] if row else None
+
+if not episode_id:
+    print(f'ERROR: No episode found for {VIDEO_ID}')
+    sys.exit(1)
+
+count = 0
+for r in ext['restaurants']:
+    verdict = r.get('verdict', 'add_to_page')
+    if verdict == 'rejected':
+        continue
+
+    timestamp = r.get('timestamp', {}) or {}
+    location = r.get('location', {}) or {}
+    google_places = r.get('google_places', {}) or {}
+    production_db = r.get('production_db', {}) or {}
+
+    db.save_episode_mention({
+        'episode_id': episode_id,
+        'video_id': VIDEO_ID,
+        'name_hebrew': r.get('name_hebrew', r.get('name_in_transcript', 'unknown')),
+        'name_english': r.get('name_english'),
+        'verdict': verdict,
+        'mention_level': r.get('sub_tag') or r.get('mention_level'),
+        'timestamp_seconds': timestamp.get('seconds'),
+        'timestamp_display': timestamp.get('display'),
+        'speaker': r.get('speaker'),
+        'host_quotes': r.get('host_quotes'),
+        'host_comments': r.get('host_comments'),
+        'dishes_mentioned': r.get('dishes_mentioned'),
+        'mention_context': r.get('mention_context'),
+        'skip_reason': r.get('skip_reason'),
+        'city': location.get('city'),
+        'cuisine_type': r.get('cuisine_type'),
+        'host_opinion': r.get('host_opinion'),
+        'google_place_id': google_places.get('place_id'),
+        'latitude': location.get('latitude'),
+        'longitude': location.get('longitude'),
+        'restaurant_id': production_db.get('id') if production_db.get('exists') else None,
+    })
+    count += 1
+
+print(f'Saved {count} mentions for episode {VIDEO_ID}')
+"
+```
+
+**Key field mappings from extraction JSON → episode_mentions:**
+
+| Extraction JSON field | episode_mentions column | Notes |
+|----------------------|------------------------|-------|
+| `sub_tag` | `mention_level` | Values: `נטעם` (tasted) or `הוזכר` (mentioned) |
+| `verdict` | `verdict` | Values: `add_to_page`, `reference_only` |
+| `timestamp.seconds` | `timestamp_seconds` | Float |
+| `timestamp.display` | `timestamp_display` | e.g., "03:24" |
+| `host_quotes` | `host_quotes` | JSON array of strings |
+| `dishes_mentioned` | `dishes_mentioned` | JSON array of strings |
+| `skip_reason` | `skip_reason` | Only for `reference_only` |
+| `production_db.id` | `restaurant_id` | FK to restaurants table, NULL for reference_only |
+
+**Important:** Always run this step after uploading restaurants so that the `restaurant_id` links are correct. The `save_episode_mention` method uses upsert (ON CONFLICT UPDATE), so it's safe to re-run.
 
 ## Reporting Format
 
