@@ -32,18 +32,49 @@ The project is at `/Users/ido.kazma/Desktop/Projects/private/where2eat`.
 
 When given a YouTube video URL or ID, follow these steps:
 
-### Step 1: Fetch Transcript
-
-Run the enricher script to fetch the transcript (one command):
+### Step 1: Fetch Transcript with Segments
 
 ```bash
 cd /Users/ido.kazma/Desktop/Projects/private/where2eat
-python3 scripts/episode_enricher.py VIDEO_ID
+python3 -c "
+import sys
+sys.path.insert(0, 'src')
+from youtube_transcript_collector import YouTubeTranscriptCollector
+collector = YouTubeTranscriptCollector()
+result = collector.get_transcript('VIDEO_URL_OR_ID')
+if result:
+    import json, os
+    os.makedirs('analyses/VIDEO_ID', exist_ok=True)
+    with open('analyses/VIDEO_ID/transcript.json', 'w') as f:
+        json.dump(result, f, ensure_ascii=False, indent=2)
+    print(f'Transcript fetched: {len(result[\"transcript\"])} chars, language: {result[\"language\"]}')
+    print(f'Segments: {result[\"segment_count\"]}')
+else:
+    print('ERROR: Could not fetch transcript')
+"
 ```
 
-This saves:
-- `analyses/VIDEO_ID/transcript.json` — full transcript with segments (each has `start` and `text`)
-- `analyses/VIDEO_ID/enrichment.json` — basic enrichment with episode metadata
+If the Python collector fails, try fetching directly:
+```bash
+pip install youtube-transcript-api 2>/dev/null
+python3 -c "
+from youtube_transcript_api import YouTubeTranscriptApi
+transcript = YouTubeTranscriptApi.get_transcript('VIDEO_ID', languages=['iw', 'he', 'en'])
+import json, os
+result = {
+    'video_id': 'VIDEO_ID',
+    'transcript': ' '.join(s['text'] for s in transcript),
+    'segments': transcript,
+    'language': 'he'
+}
+os.makedirs('analyses/VIDEO_ID', exist_ok=True)
+with open('analyses/VIDEO_ID/transcript.json', 'w') as f:
+    json.dump(result, f, ensure_ascii=False, indent=2)
+print(f'OK: {len(result[\"transcript\"])} chars, {len(transcript)} segments')
+"
+```
+
+**IMPORTANT**: Always save segments. They contain `start` (seconds) and `text` fields needed for timestamp extraction.
 
 Read the transcript from `analyses/VIDEO_ID/transcript.json`.
 
@@ -96,10 +127,7 @@ for i, seg in enumerate(segments):
 
 Review all occurrences and pick the one where the real discussion starts.
 
-**Cross-check with enricher script:** The enricher script (`enrichment.json`) provides a `timestamps` object with the script's automated findings for each restaurant — all occurrences, intro flags, and a recommended timestamp. Compare YOUR timestamp choice with the script's `recommended_seconds`. If they differ:
-- If you picked a LATER timestamp (deeper discussion), that's probably better — use yours
-- If the script found occurrences you missed, investigate — you may have searched for the wrong name variant
-- If neither found the restaurant, note it as "NOT FOUND in segments" and use context-based estimation from the transcript text
+**Optional cross-check with enricher script:** If `analyses/VIDEO_ID/enrichment.json` exists (from a previous run of `scripts/episode_enricher.py`), it may have a `timestamps` object with automated segment search results. You can compare your timestamp choice with the script's `recommended_seconds` — but YOUR analysis takes priority. The enricher does exact string matching and often misses name variants.
 
 For each restaurant, record:
 - `mention_timestamp_seconds`: the exact `start` value from the segment (NOT estimated)
@@ -107,7 +135,7 @@ For each restaurant, record:
 - `mention_timestamp_display`: formatted as `MM:SS` for the report
 - Timestamps MUST be within the episode duration (check last segment's `start` value)
 
-If the restaurant name is mangled in the transcript (e.g. "טנדלי" for "טנא דלי"), search for the mangled version in segments. The enricher also tries variants without apostrophes and without spaces.
+If the restaurant name is mangled in the transcript (e.g. "טנדלי" for "טנא דלי"), search for the mangled version in segments. Also try variants without apostrophes and without spaces.
 
 #### Add-to-Page Verdict
 
@@ -199,40 +227,108 @@ Auto-generated Hebrew transcripts have NO speaker labels. Use these signals to a
 - Vague references ("that place we went to")
 - Mentions that are just comparisons ("it's like Miznon but...")
 
-### Step 3: Enrich All Restaurants (Single Script Run)
+### Step 3: Verify Each Restaurant via Google Places
 
-After Step 2, you have all the restaurant names and city hints. Run the enricher script ONCE to handle Google Places, Instagram, episode metadata, and DB check — all in a single command:
+For EVERY restaurant with verdict ✅ ADD TO PAGE, verify and fetch full Google Places data. YOU do the verification directly, using your understanding of the context.
 
 ```bash
-cd /Users/ido.kazma/Desktop/Projects/private/where2eat
-python3 scripts/episode_enricher.py VIDEO_ID \
-  --restaurants "RESTAURANT1,RESTAURANT2,RESTAURANT3" \
-  --city-hints "CITY1,CITY2,CITY3"
+source /Users/ido.kazma/Desktop/Projects/private/where2eat/.env
+# Search by Hebrew name + city
+curl -s "https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=RESTAURANT_NAME+CITY&inputtype=textquery&fields=place_id,name,formatted_address,geometry&key=$GOOGLE_PLACES_API_KEY"
 ```
 
-This produces `analyses/VIDEO_ID/enrichment.json` containing:
-- Google Places data (place_id, rating, photos, phone, website, coordinates) for each restaurant
-- Instagram URLs (via website scraping and Google search)
-- Timestamps: all occurrences in segments with intro flags and recommended discussion timestamp
-- Episode metadata (episode_id, published_at, title)
-- Production DB status (exists, id) for each restaurant
+If found, get full details:
+```bash
+curl -s "https://maps.googleapis.com/maps/api/place/details/json?place_id=PLACE_ID&fields=name,formatted_address,formatted_phone_number,website,rating,user_ratings_total,opening_hours,photos,geometry,url,price_level&key=$GOOGLE_PLACES_API_KEY"
+```
 
-Read the enrichment JSON and merge the data into your extraction. All API calls are done — the remaining steps are pure file generation.
+Resolve the first photo to a permanent URL:
+```bash
+PHOTO_URL=$(curl -s -o /dev/null -w '%{redirect_url}' "https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photoreference=PHOTO_REF&key=$GOOGLE_PLACES_API_KEY")
+```
 
-**CRITICAL: Verify enrichment results before using them.** The script does exact string matching, which can produce wrong results:
+**Verification criteria — YOU must validate every match:**
+- The Google name should reasonably match the transcript name (accounting for Hebrew transliteration quirks)
+- The location should make sense given the context (if they said "in Ashkelon", it shouldn't be in Ramat Hasharon)
+- The business type must match: a pasta factory should not match a clothing shop, an Italian restaurant should not match a gelato shop
+- If Google returns a completely different business, **reject the match and try alternatives**
 
-1. **Wrong Google Places match** — If `google_name` doesn't match the restaurant you're looking for, DON'T use that data. Examples:
-   - Script matched "Chooka" for קיצ'וקאי (wrong restaurant) — the correct match is "Cichukai"
-   - Script matched "Chamama in the city" in Petah Tikva for חממה wine bar in Florentin TLV (wrong location)
-   - Script matched "Bellamia" gelato for בלה מיה Italian restaurant (wrong business entirely)
+**Name correction — use YOUR linguistic knowledge:**
+- Hebrew transcripts often mangle restaurant names. Use context to figure out the real name:
+  - "טנדלי" in a context about a deli → "טנא דלי" (Tenne Deli)
+  - "רב יולו" in a context about a pasta factory making ravioli → "רביולון" (Raviolon)
+  - "נאופוליטן" → could be "נאפוליטן 26" (Neapolitan 26)
+- When the transcript name doesn't match Google results, try the CORRECTED name you inferred from context
+- Record both: `name_in_transcript` (what was said) and `name_hebrew` (the real name)
 
-2. **New restaurants not on Google Places** — If a restaurant just opened, it may not exist on Google yet. Mark it with a gradient fallback image and "⚠️ חדש מדי עבור Google Places" in the mockup. Don't use a wrong match just to have data.
+**If Google Places can't find it:**
+- Try alternative spellings / transliterations
+- Try the corrected name (not just the transcript version)
+- Try without the city
+- Try the English name
+- If nothing works, still include the restaurant but note it's unverified
 
-3. **Name variants the script missed** — The script searches for exact names. If the transcript says "נאופוליטן" but you extracted "נאפוליטן 26", the script won't find the timestamp. Check the `timestamps` section in enrichment.json — if `recommended_seconds` is null, search the segments yourself using the mangled name from the transcript.
+**Instagram discovery** (for each verified restaurant):
+```bash
+# Check if the Google Places website field links to Instagram
+# Or search directly:
+curl -s "https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=RESTAURANT_NAME+instagram&inputtype=textquery&fields=name,website&key=$GOOGLE_PLACES_API_KEY"
+```
 
-4. **Restaurant names in the DB may differ** — The production DB might have the restaurant under a slightly different name (e.g., "בלמיה" in DB but "בלה מיה" is the correct name). The `production_db` check in enrichment.json uses exact matching — cross-reference by Google Place ID when names differ.
+### Step 4: Get Episode Metadata
 
-### Step 4: Write Extraction JSON
+Get the episode ID and published date:
+
+```bash
+curl -s -H "Origin: https://where2eat-delta.vercel.app" \
+  "https://where2eat-production.up.railway.app/api/episodes/search?limit=50" | \
+  python3 -c "
+import json, sys
+data = json.load(sys.stdin)
+for e in data.get('episodes', []):
+    info = e.get('episode_info', {})
+    if info.get('video_id') == 'VIDEO_ID':
+        print(f'episode_id={e[\"restaurants\"][0][\"episode_id\"] if e.get(\"restaurants\") else \"NOT_FOUND\"}')
+        print(f'published_at={info.get(\"published_at\")}')
+        break
+"
+```
+
+If the episode doesn't exist yet, use the video's YouTube published date:
+```bash
+curl -s "https://www.youtube.com/watch?v=VIDEO_ID" 2>&1 | python3 -c "
+import sys, re
+html = sys.stdin.read()
+match = re.search(r'\"publishDate\":\"([^\"]+)\"', html)
+if match:
+    print(match.group(1))
+"
+```
+
+### Step 5: Check for Existing Restaurants in Production DB
+
+Now that you have verified names and Google Place IDs, check which restaurants already exist in production:
+
+```bash
+curl -s -H "Origin: https://where2eat-delta.vercel.app" \
+  "https://where2eat-production.up.railway.app/api/restaurants/search?episode_id=VIDEO_ID&include_hidden=true&limit=50"
+```
+
+Also search by name and by Google Place ID for each restaurant:
+```bash
+# By name
+curl -s -H "Origin: https://where2eat-delta.vercel.app" \
+  "https://where2eat-production.up.railway.app/api/restaurants/search?query=RESTAURANT_NAME"
+
+# By Google Place ID (more reliable — names may differ between transcript and DB)
+curl -s -H "Origin: https://where2eat-delta.vercel.app" \
+  "https://where2eat-production.up.railway.app/api/restaurants" | \
+  python3 -c "import json,sys; [print(f'{r[\"id\"]} | {r[\"name_hebrew\"]}') for r in json.load(sys.stdin).get('restaurants',[]) if r.get('google_place_id') == 'PLACE_ID']"
+```
+
+Record the `production_db` status for each restaurant (exists/id). Cross-reference by Google Place ID when names differ between your extraction and the DB.
+
+### Step 6: Write Extraction JSON
 
 **DO NOT insert restaurants into production. The agent only produces reports (JSON + markdown). Insertion is a separate step done explicitly by the user.**
 
@@ -367,7 +463,7 @@ Write a structured JSON file to `analyses/episode_VIDEO_ID_extraction.json` cont
 - `host_quotes` are the actual Hebrew quotes from the transcript
 - `production_db.exists` / `production_db.id` tracks whether it's already in the system
 
-### Step 5: Generate Upload-Ready Restaurant JSONs
+### Step 7: Generate Upload-Ready Restaurant JSONs
 
 For EVERY restaurant with verdict `add_to_page`, generate a DB-ready JSON file — regardless of whether it already exists in production. The extraction is a complete record of the episode. The `production_db` tag in the extraction JSON tells the production-manager which ones are new vs existing.
 
@@ -450,7 +546,7 @@ where SLUG is a lowercase transliterated version of the Hebrew name (e.g., `w-n3
 python3 scripts/validate_restaurant_jsons.py data/restaurants/VIDEO_ID/
 ```
 
-### Step 6: Write Extraction Report (Markdown)
+### Step 8: Write Extraction Report (Markdown)
 
 Write a human-readable markdown report to `analyses/episode_VIDEO_ID_extraction.md` containing ALL restaurant mentions with full details. This mirrors the extraction JSON but in readable format.
 
@@ -533,7 +629,7 @@ Write a human-readable markdown report to `analyses/episode_VIDEO_ID_extraction.
 | New to add | ... |
 ```
 
-### Step 7: Present Summary to User
+### Step 9: Present Summary to User
 
 After writing the report, present a concise summary:
 
@@ -561,7 +657,7 @@ After writing the report, present a concise summary:
 
 Wait for user approval before inserting new restaurants.
 
-### Step 8: Generate HTML Feed Mockup
+### Step 10: Generate HTML Feed Mockup
 
 Generate a self-contained HTML file at `analyses/VIDEO_ID/feed_preview.html` that shows how the new restaurants will look in the app's discovery feed. This lets the user review the visual output before approving.
 
