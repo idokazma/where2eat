@@ -134,6 +134,7 @@ export interface YouTubeAnalysisRequest {
 export interface EpisodeMention {
   id: string;
   restaurant_id?: string;
+  video_id?: string;
   name_hebrew: string;
   name_english?: string;
   verdict: 'add_to_page' | 'reference_only';
