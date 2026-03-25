@@ -78,6 +78,8 @@ export interface Restaurant {
   og_image_url?: string | null;
   published_at?: string | null;
   instagram_url?: string | null;
+  mention_level?: 'נטעם' | 'הוזכר' | null;
+  host_quotes?: string[];
 }
 
 export interface EpisodeInfo {
@@ -127,4 +129,52 @@ export interface YouTubeAnalysisRequest {
   status: 'pending' | 'processing' | 'completed' | 'error';
   result?: PodcastData;
   error?: string;
+}
+
+export interface EpisodeMention {
+  id: string;
+  restaurant_id?: string;
+  name_hebrew: string;
+  name_english?: string;
+  verdict: 'add_to_page' | 'reference_only';
+  mention_level?: 'נטעם' | 'הוזכר';
+  timestamp_seconds?: number;
+  timestamp_display?: string;
+  speaker?: string;
+  host_quotes?: string[];
+  host_comments?: string;
+  dishes_mentioned?: string[];
+  mention_context?: string;
+  skip_reason?: string;
+  city?: string;
+  cuisine_type?: string;
+  host_opinion?: string;
+  image_url?: string;
+  google_rating?: number;
+  google_url?: string;
+  instagram_url?: string;
+  restaurant?: Restaurant;
+}
+
+export interface EpisodeSummary {
+  id: string;
+  video_id: string;
+  title?: string;
+  channel_name?: string;
+  published_at?: string;
+  episode_summary?: string;
+  thumbnail_url?: string;
+  add_to_page_count: number;
+  reference_only_count: number;
+  tasted_count: number;
+  mentioned_count: number;
+}
+
+export interface EpisodeDetail {
+  episode: EpisodeSummary;
+  mentions: {
+    tasted: EpisodeMention[];
+    mentioned: EpisodeMention[];
+    reference_only: EpisodeMention[];
+  };
 }

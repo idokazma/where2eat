@@ -9,6 +9,7 @@ from .health import router as health_router
 from .admin import router as admin_router
 from .admin_subscriptions import router as admin_subscriptions_router
 from .admin_pipeline import router as admin_pipeline_router
+from .episodes import router as episodes_router
 
 __all__ = [
     "restaurants_router",
@@ -20,4 +21,5 @@ __all__ = [
     "admin_router",
     "admin_subscriptions_router",
     "admin_pipeline_router",
+    "episodes_router",
 ]

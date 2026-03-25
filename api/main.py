@@ -50,6 +50,7 @@ from routers import (
     admin_router,
     admin_subscriptions_router,
     admin_pipeline_router,
+    episodes_router,
 )
 
 
@@ -1004,6 +1005,7 @@ app.include_router(photos_router)
 app.include_router(admin_router)
 app.include_router(admin_subscriptions_router)
 app.include_router(admin_pipeline_router)
+app.include_router(episodes_router)
 
 
 @app.get("/api/subscriptions")

@@ -6,6 +6,7 @@ import useEmblaCarousel from 'embla-carousel-react';
 import { Heart, Star, Play, MapPin, ExternalLink, Camera, Calendar, ChevronLeft, Instagram } from 'lucide-react';
 import { Restaurant } from '@/types/restaurant';
 import { EpisodeBadge } from './EpisodeBadge';
+import { MentionLevelBadge } from './MentionLevelBadge';
 import { DistanceBadge } from './DistanceBadge';
 import { useFavorites } from '@/contexts/favorites-context';
 import { normalizeHostOpinion, getPriceDisplay } from '@/lib/data-normalizer';
@@ -262,10 +263,15 @@ export function RestaurantCardNew({
 
       {/* Content Section */}
       <div className="restaurant-card-content">
-        {/* Title - prefer Hebrew name, fall back to Google name */}
-        <h3 className="restaurant-card-title">
-          {restaurant.name_english || restaurant.name_hebrew || restaurant.google_places?.google_name}
-        </h3>
+        {/* Title + mention level badge */}
+        <div className="flex items-center gap-2">
+          <h3 className="restaurant-card-title flex-1">
+            {restaurant.name_english || restaurant.name_hebrew || restaurant.google_places?.google_name}
+          </h3>
+          {restaurant.mention_level && (
+            <MentionLevelBadge mentionLevel={restaurant.mention_level} />
+          )}
+        </div>
 
         {/* Meta line */}
         {metaItems.length > 0 && (
@@ -293,9 +299,9 @@ export function RestaurantCardNew({
         )}
 
         {/* Host quote */}
-        {restaurant.host_comments && (
+        {(restaurant.engaging_quote || restaurant.host_quotes?.[0] || restaurant.host_comments) && (
           <div className="restaurant-card-quote">
-            &ldquo;{restaurant.host_comments}&rdquo;
+            &ldquo;{restaurant.engaging_quote || restaurant.host_quotes?.[0] || restaurant.host_comments}&rdquo;
           </div>
         )}
 
