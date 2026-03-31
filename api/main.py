@@ -839,8 +839,8 @@ async def lifespan(app: FastAPI):
     backfill_mention_timestamps()
     # Backfill published_at from YouTube metadata
     backfill_episode_published_at()
-    # Sync SQLite data to PostgreSQL
-    sync_sqlite_to_postgres()
+    # Sync SQLite→PostgreSQL disabled: SQLite is primary, PG sync causes DB lock issues
+    # sync_sqlite_to_postgres()
     # Seed admin user and subscriptions if empty
     seed_initial_data()
     # Start pipeline scheduler
