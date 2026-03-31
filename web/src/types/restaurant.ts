@@ -85,8 +85,8 @@ export interface Restaurant {
 export interface EpisodeInfo {
   video_id: string;
   video_url: string;
-  language: string;
-  analysis_date: string;
+  language?: string;
+  analysis_date?: string;
   published_at?: string;
   title?: string | null;
   channel_name?: string | null;
