@@ -216,30 +216,34 @@ async def seed_extraction(extraction: Dict[str, Any] = Body(...)):
                 if row:
                     restaurant_id = row['id']
 
-        db.save_episode_mention({
-            'episode_id': episode_id,
-            'restaurant_id': restaurant_id,
-            'video_id': video_id,
-            'name_hebrew': r.get('name_hebrew', ''),
-            'name_english': r.get('name_english'),
-            'verdict': verdict,
-            'mention_level': r.get('sub_tag') or r.get('mention_level'),
-            'timestamp_seconds': timestamp.get('seconds'),
-            'timestamp_display': timestamp.get('display'),
-            'speaker': r.get('speaker'),
-            'host_quotes': r.get('host_quotes'),
-            'host_comments': r.get('host_comments'),
-            'dishes_mentioned': r.get('dishes_mentioned'),
-            'mention_context': r.get('mention_context'),
-            'skip_reason': r.get('skip_reason'),
-            'city': location.get('city'),
-            'cuisine_type': r.get('cuisine_type'),
-            'host_opinion': r.get('host_opinion'),
-            'google_place_id': gp.get('place_id'),
-            'latitude': location.get('latitude'),
-            'longitude': location.get('longitude'),
-        })
-        mentions_added += 1
+        try:
+            db.save_episode_mention({
+                'episode_id': episode_id,
+                'restaurant_id': restaurant_id,
+                'video_id': video_id,
+                'name_hebrew': r.get('name_hebrew', ''),
+                'name_english': r.get('name_english'),
+                'verdict': verdict,
+                'mention_level': r.get('sub_tag') or r.get('mention_level'),
+                'timestamp_seconds': timestamp.get('seconds'),
+                'timestamp_display': timestamp.get('display'),
+                'speaker': r.get('speaker'),
+                'host_quotes': r.get('host_quotes'),
+                'host_comments': r.get('host_comments'),
+                'dishes_mentioned': r.get('dishes_mentioned'),
+                'mention_context': r.get('mention_context'),
+                'skip_reason': r.get('skip_reason'),
+                'city': location.get('city'),
+                'cuisine_type': r.get('cuisine_type'),
+                'host_opinion': r.get('host_opinion'),
+                'google_place_id': gp.get('place_id'),
+                'latitude': location.get('latitude'),
+                'longitude': location.get('longitude'),
+            })
+            mentions_added += 1
+        except Exception as e:
+            print(f"[SEED] Failed to save mention {r.get('name_hebrew', '?')}: {e}")
+            continue
 
     # Backfill mention_level on restaurants
     with db.get_connection() as conn:
