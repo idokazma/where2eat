@@ -50,6 +50,7 @@ from routers import (
     admin_router,
     admin_subscriptions_router,
     admin_pipeline_router,
+    episodes_router,
 )
 
 
@@ -903,6 +904,7 @@ curl "http://localhost:8000/api/restaurants/search?location=Tel+Aviv&cuisine=Ita
 _default_origins = [
     "http://localhost:3000",
     "http://localhost:3001",
+    "http://localhost:3003",
 ]
 _env_origins = os.getenv("ALLOWED_ORIGINS", "")
 allowed_origins = _default_origins + [o.strip() for o in _env_origins.split(",") if o.strip()]
@@ -1004,6 +1006,7 @@ app.include_router(photos_router)
 app.include_router(admin_router)
 app.include_router(admin_subscriptions_router)
 app.include_router(admin_pipeline_router)
+app.include_router(episodes_router)
 
 
 @app.get("/api/subscriptions")

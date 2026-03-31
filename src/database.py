@@ -123,6 +123,37 @@ class Database:
                 )
             ''')
 
+            # Episode mentions table (per-episode restaurant mention tracking)
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS episode_mentions (
+                    id TEXT PRIMARY KEY,
+                    episode_id TEXT NOT NULL,
+                    restaurant_id TEXT,
+                    video_id TEXT NOT NULL,
+                    name_hebrew TEXT NOT NULL,
+                    name_english TEXT,
+                    verdict TEXT NOT NULL,
+                    mention_level TEXT,
+                    timestamp_seconds REAL,
+                    timestamp_display TEXT,
+                    speaker TEXT,
+                    host_quotes TEXT,
+                    host_comments TEXT,
+                    dishes_mentioned TEXT,
+                    mention_context TEXT,
+                    skip_reason TEXT,
+                    city TEXT,
+                    cuisine_type TEXT,
+                    host_opinion TEXT,
+                    google_place_id TEXT,
+                    latitude REAL,
+                    longitude REAL,
+                    created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                    FOREIGN KEY (episode_id) REFERENCES episodes(id),
+                    FOREIGN KEY (restaurant_id) REFERENCES restaurants(id)
+                )
+            ''')
+
             # Processing jobs table
             cursor.execute('''
                 CREATE TABLE IF NOT EXISTS jobs (
@@ -394,6 +425,7 @@ class Database:
                 ('engaging_quote', 'TEXT'),
                 ('country', 'TEXT'),
                 ('instagram_url', 'TEXT'),
+                ('mention_level', 'TEXT'),
             ]:
                 try:
                     cursor.execute(f'ALTER TABLE restaurants ADD COLUMN {col} {col_type}')
@@ -478,6 +510,9 @@ class Database:
             cursor.execute('CREATE INDEX IF NOT EXISTS idx_pipeline_logs_level ON pipeline_logs(level)')
             cursor.execute('CREATE INDEX IF NOT EXISTS idx_pipeline_logs_event_type ON pipeline_logs(event_type)')
             cursor.execute('CREATE INDEX IF NOT EXISTS idx_pipeline_logs_subscription_id ON pipeline_logs(subscription_id)')
+            cursor.execute('CREATE INDEX IF NOT EXISTS idx_episode_mentions_video_id ON episode_mentions(video_id)')
+            cursor.execute('CREATE INDEX IF NOT EXISTS idx_episode_mentions_restaurant_id ON episode_mentions(restaurant_id)')
+            cursor.execute('CREATE INDEX IF NOT EXISTS idx_episode_mentions_verdict ON episode_mentions(verdict)')
 
     # ==================== Episode Operations ====================
 
@@ -2035,6 +2070,155 @@ class Database:
             stats['total'] = sum(stats.values())
             return stats
 
+    # ==================== Episode Mention Operations ====================
+
+    def save_episode_mention(self, data: Dict[str, Any]) -> str:
+        """Save an episode mention record.
+
+        Args:
+            data: Mention data dict with keys matching episode_mentions columns.
+
+        Returns:
+            Mention ID
+        """
+        mention_id = data.get('id', str(uuid.uuid4()))
+
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute('''
+                INSERT INTO episode_mentions (
+                    id, episode_id, restaurant_id, video_id, name_hebrew, name_english,
+                    verdict, mention_level, timestamp_seconds, timestamp_display,
+                    speaker, host_quotes, host_comments, dishes_mentioned,
+                    mention_context, skip_reason, city, cuisine_type, host_opinion,
+                    google_place_id, latitude, longitude
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ON CONFLICT(id) DO UPDATE SET
+                    restaurant_id = COALESCE(excluded.restaurant_id, episode_mentions.restaurant_id),
+                    verdict = excluded.verdict,
+                    mention_level = excluded.mention_level,
+                    host_quotes = COALESCE(excluded.host_quotes, episode_mentions.host_quotes),
+                    host_comments = COALESCE(excluded.host_comments, episode_mentions.host_comments),
+                    dishes_mentioned = COALESCE(excluded.dishes_mentioned, episode_mentions.dishes_mentioned)
+            ''', (
+                mention_id,
+                data['episode_id'],
+                data.get('restaurant_id'),
+                data['video_id'],
+                data['name_hebrew'],
+                data.get('name_english'),
+                data['verdict'],
+                data.get('mention_level'),
+                data.get('timestamp_seconds'),
+                data.get('timestamp_display'),
+                data.get('speaker'),
+                json.dumps(data['host_quotes'], ensure_ascii=False) if data.get('host_quotes') else None,
+                data.get('host_comments'),
+                json.dumps(data['dishes_mentioned'], ensure_ascii=False) if data.get('dishes_mentioned') else None,
+                data.get('mention_context'),
+                data.get('skip_reason'),
+                data.get('city'),
+                data.get('cuisine_type'),
+                data.get('host_opinion'),
+                data.get('google_place_id'),
+                data.get('latitude'),
+                data.get('longitude'),
+            ))
+
+        return mention_id
+
+    def get_episode_mentions(self, video_id: str) -> List[Dict[str, Any]]:
+        """Get all mentions for an episode, ordered by timestamp.
+
+        Args:
+            video_id: YouTube video ID
+
+        Returns:
+            List of mention dicts
+        """
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute('''
+                SELECT em.*, r.id as linked_restaurant_id, r.image_url, r.google_rating,
+                       r.google_user_ratings_total as google_review_count,
+                       r.latitude as r_lat, r.longitude as r_lng,
+                       r.address, r.neighborhood, r.price_range, r.google_url, r.instagram_url,
+                       r.contact_website as website, r.contact_phone as phone,
+                       r.special_features
+                FROM episode_mentions em
+                LEFT JOIN restaurants r ON em.restaurant_id = r.id
+                WHERE em.video_id = ?
+                ORDER BY em.timestamp_seconds ASC NULLS LAST
+            ''', (video_id,))
+            rows = cursor.fetchall()
+            results = []
+            for row in rows:
+                d = dict(row)
+                # Parse JSON fields
+                for field in ('host_quotes', 'dishes_mentioned', 'special_features'):
+                    if d.get(field) and isinstance(d[field], str):
+                        try:
+                            d[field] = json.loads(d[field])
+                        except (json.JSONDecodeError, TypeError):
+                            pass
+                results.append(d)
+            return results
+
+    def get_restaurant_mentions(self, restaurant_id: str) -> List[Dict[str, Any]]:
+        """Get all mentions of a restaurant across episodes.
+
+        Args:
+            restaurant_id: Restaurant ID
+
+        Returns:
+            List of mention dicts with episode info
+        """
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute('''
+                SELECT em.*, e.title as episode_title, e.channel_name as ep_channel_name,
+                       e.published_at as ep_published_at
+                FROM episode_mentions em
+                LEFT JOIN episodes e ON em.episode_id = e.id
+                WHERE em.restaurant_id = ?
+                ORDER BY e.published_at DESC
+            ''', (restaurant_id,))
+            rows = cursor.fetchall()
+            results = []
+            for row in rows:
+                d = dict(row)
+                for field in ('host_quotes', 'dishes_mentioned'):
+                    if d.get(field) and isinstance(d[field], str):
+                        try:
+                            d[field] = json.loads(d[field])
+                        except (json.JSONDecodeError, TypeError):
+                            pass
+                results.append(d)
+            return results
+
+    def get_episodes_with_mention_counts(self) -> List[Dict[str, Any]]:
+        """Get all episodes that have mentions, with count summaries.
+
+        Returns:
+            List of episode dicts with add_to_page_count and reference_only_count
+        """
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute('''
+                SELECT
+                    e.id, e.video_id, e.title, e.channel_name, e.published_at,
+                    e.episode_summary,
+                    SUM(CASE WHEN em.verdict = 'add_to_page' THEN 1 ELSE 0 END) as add_to_page_count,
+                    SUM(CASE WHEN em.verdict = 'reference_only' THEN 1 ELSE 0 END) as reference_only_count,
+                    SUM(CASE WHEN em.mention_level = 'נטעם' THEN 1 ELSE 0 END) as tasted_count,
+                    SUM(CASE WHEN em.mention_level = 'הוזכר' THEN 1 ELSE 0 END) as mentioned_count
+                FROM episodes e
+                INNER JOIN episode_mentions em ON e.id = em.episode_id
+                WHERE em.verdict != 'rejected'
+                GROUP BY e.id
+                ORDER BY e.published_at DESC
+            ''')
+            return [dict(row) for row in cursor.fetchall()]
 
 
 # Singleton instance for convenience

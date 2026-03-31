@@ -101,6 +101,32 @@ export default function SettingsPage() {
           </p>
         </div>
 
+        {/* Feed layout */}
+        <div className="mb-6">
+          <h2 className="text-sm font-medium text-[var(--color-ink-muted)] mb-3">
+            תצוגת פיד
+          </h2>
+          <div className="flex gap-2">
+            {([
+              { value: '1-col' as const, label: 'עמודה אחת' },
+              { value: '2-col' as const, label: 'שתי עמודות' },
+            ]).map(({ value, label }) => (
+              <button
+                key={value}
+                onClick={() => updateSetting('feedLayout', value)}
+                className={`flex-1 p-3 rounded-lg font-medium text-sm transition-colors ${
+                  settings.feedLayout === value
+                    ? 'bg-[var(--color-ink)] text-[var(--color-paper)]'
+                    : 'bg-[var(--color-surface)] text-[var(--color-ink)]'
+                }`}
+                disabled={!isInitialized}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
+
         {/* Theme setting */}
         <div className="mb-6">
           <h2 className="text-sm font-medium text-[var(--color-ink-muted)] mb-3">

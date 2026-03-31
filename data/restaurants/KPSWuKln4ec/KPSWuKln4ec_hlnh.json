@@ -1,0 +1,53 @@
+{
+  "name_hebrew": "הלנה",
+  "name_english": "Helena",
+  "city": "תל אביב",
+  "neighborhood": "",
+  "address": "Tarsat Ave 6, Tel Aviv-Yafo, Israel",
+  "region": "מרכז",
+  "cuisine_type": "ים תיכוני / שף",
+  "status": "open",
+  "price_range": "$$$",
+  "host_opinion": "very_positive",
+  "host_comments": "איציק חנגל הודיע שהלנה נפתחת היום בערב.",
+  "menu_items": [],
+  "special_features": [
+    "מסעדת שף",
+    "פתיחה מחודשת"
+  ],
+  "contact_hours": [
+    "Monday: 6:00 PM – 1:00 AM",
+    "Tuesday: 6:00 PM – 1:00 AM",
+    "Wednesday: 6:00 PM – 1:00 AM",
+    "Thursday: 6:00 PM – 1:00 AM",
+    "Friday: 12:00 PM – 1:00 AM",
+    "Saturday: 12:00 PM – 1:00 AM",
+    "Sunday: 6:00 PM – 1:00 AM"
+  ],
+  "contact_phone": "03-653-6090",
+  "contact_website": "http://ontopo.com/he/il/page/84482361",
+  "business_news": null,
+  "mention_context": "ראיון עם איציק חנגל - על פתיחת הלנה",
+  "mention_timestamp": 1352,
+  "google_place_id": "ChIJ3_AoGvlLHRURHFrLCU3EREk",
+  "google_rating": 4.1,
+  "google_user_ratings_total": 368,
+  "latitude": 32.0738343,
+  "longitude": 34.7791268,
+  "image_url": "https://lh3.googleusercontent.com/place-photos/AL8-SNHzAQ32THADGJKwq_oDdY6S4jSovSjI0ZMoTOc_4EhOpWMi2n_8HU9ot8vVvGt4a__NkU0Fhdl4f6RquAJq2eS6b0ubqbC92AEqaGCZC__W9u8FtAmioUnTiNRQ37a7y4qrPcDe0Ddo0ArU9w=s1600-w800",
+  "photos": [
+    "https://lh3.googleusercontent.com/place-photos/AL8-SNHzAQ32THADGJKwq_oDdY6S4jSovSjI0ZMoTOc_4EhOpWMi2n_8HU9ot8vVvGt4a__NkU0Fhdl4f6RquAJq2eS6b0ubqbC92AEqaGCZC__W9u8FtAmioUnTiNRQ37a7y4qrPcDe0Ddo0ArU9w=s1600-w800"
+  ],
+  "google_name": "Helena",
+  "published_at": "2026-03-18",
+  "og_image_url": null,
+  "is_closing": false,
+  "video_url": "https://www.youtube.com/watch?v=KPSWuKln4ec",
+  "video_id": "KPSWuKln4ec",
+  "channel_name": "מדברים מהבטן - הפודיום",
+  "google_url": "https://maps.google.com/?cid=5279560498340911644",
+  "engaging_quote": "היום בערב אנחנו פותחים את אלנה בשעה טובה",
+  "country": "ישראל",
+  "episode_id": "c76e493a-2f53-4a98-a240-99ab878d3c6c",
+  "instagram_url": "https://www.instagram.com/helena.tlv/"
+}

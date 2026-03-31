@@ -1,0 +1,56 @@
+{
+  "name_hebrew": "לבה",
+  "name_english": "Lava",
+  "city": "תל אביב",
+  "neighborhood": "פארק המסילה",
+  "address": "Simtat Beit HaBad 7, Tel Aviv-Jaffa, 6684208, Israel",
+  "region": "מרכז",
+  "cuisine_type": "שף / ים תיכוני",
+  "status": "open",
+  "price_range": "$$$",
+  "host_opinion": "very_positive",
+  "host_comments": "נטע אכלה בלבה וסיפרה על פסטת חמת זתר ולימון שחוסלה כליל, קינוח שוקולד לבן עם פרג ובבקה, ותיארה את הריחות העולים מהלבה כמעוררי חושים.",
+  "menu_items": [
+    "פסטת חמת זתר ולימון",
+    "קינוח שוקולד לבן עם פרג ובבקה"
+  ],
+  "special_features": [
+    "שף",
+    "תפריט עונתי"
+  ],
+  "contact_hours": [
+    "Monday: 6:00 – 11:00 PM",
+    "Tuesday: 6:00 PM – 12:00 AM",
+    "Wednesday: 6:00 PM – 12:00 AM",
+    "Thursday: 6:00 PM – 12:00 AM",
+    "Friday: 4:00 PM – 12:00 AM",
+    "Saturday: 4:00 PM – 12:00 AM",
+    "Sunday: 6:00 – 11:00 PM"
+  ],
+  "contact_phone": null,
+  "contact_website": null,
+  "business_news": null,
+  "mention_context": "ביס השבוע - נטע מספרת על ארוחה בלבה",
+  "mention_timestamp": 204,
+  "google_place_id": "ChIJf6Jae11NHRURPY0nlNFUojA",
+  "google_rating": 3.9,
+  "google_user_ratings_total": 552,
+  "latitude": 32.060834,
+  "longitude": 34.770247,
+  "image_url": "https://lh3.googleusercontent.com/place-photos/AL8-SNH78BLCqHRnY2rxdlJkzzAR3vrXMybFe_9qNEPhibs__K765UVuWQXbWCDNT8dg5PPevapcoIXwenlQgIdxVGgv9Nul_P-Oo6GRCSZ8SPAUaQR-tf9-Cv4wcT_Lvug0eA5Pk0FztAVq1dMssg=s1600-w800",
+  "photos": [
+    "https://lh3.googleusercontent.com/place-photos/AL8-SNH78BLCqHRnY2rxdlJkzzAR3vrXMybFe_9qNEPhibs__K765UVuWQXbWCDNT8dg5PPevapcoIXwenlQgIdxVGgv9Nul_P-Oo6GRCSZ8SPAUaQR-tf9-Cv4wcT_Lvug0eA5Pk0FztAVq1dMssg=s1600-w800"
+  ],
+  "google_name": "Lava - לאבה",
+  "published_at": "2026-03-18",
+  "og_image_url": null,
+  "is_closing": false,
+  "video_url": "https://www.youtube.com/watch?v=KPSWuKln4ec",
+  "video_id": "KPSWuKln4ec",
+  "channel_name": "מדברים מהבטן - הפודיום",
+  "google_url": "https://maps.google.com/?cid=3504456719158185277",
+  "engaging_quote": "פסטת חמת זתר ולימון...היא חוסלה כליל",
+  "country": "ישראל",
+  "episode_id": "c76e493a-2f53-4a98-a240-99ab878d3c6c",
+  "instagram_url": null
+}

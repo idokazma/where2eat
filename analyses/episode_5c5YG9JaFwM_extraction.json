@@ -1,0 +1,566 @@
+{
+  "episode": {
+    "video_id": "5c5YG9JaFwM",
+    "video_url": "https://www.youtube.com/watch?v=5c5YG9JaFwM",
+    "title": "מדברים מהבטן פרק 143 - סיכום מחזור קולינרי",
+    "channel_name": "מדברים מהבטן - הפודיום",
+    "published_at": "2026-01-28",
+    "hosts": ["עמית אהרונסון", "נטע סלונים", "יהונתן כהן"],
+    "guests": ["יונתן בורוביץ'"],
+    "language": "he",
+    "transcript_length": 43955,
+    "segment_count": 1316,
+    "episode_id": "6800cb96-632c-494f-9f03-6ef7509ca586",
+    "summary": "פרק סיכום שבועי עם ביסים של השבוע: פרן קלאב בירושלים (אמית), סיליקיד במשלוח (נטע), אשת חיל בגבעתיים (יונתן), וצ'וטה של אילן גרוסי בירושלים (אמית). הפרק כולל דיון נרחב על רכישת GDB על ידי קבוצת נו מימי בשווי 65 מיליון שקל עם ראיון עם השף יונתן בורוביץ', סקירת מבקרים (סגי כהן, קובי רובין), ודיון על הפיפטי בסט של המזרח התיכון."
+  },
+  "extraction": {
+    "date": "2026-03-24",
+    "agent": "episode-processor",
+    "total_mentions": 17,
+    "add_to_page": 4,
+    "reference_only": 13,
+    "rejected": 0,
+    "already_in_db": 4,
+    "new_to_add": 0
+  },
+  "restaurants": [
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "פרן קלאב",
+      "name_english": "Fern Club",
+      "name_in_transcript": "פרן פרן קלאב",
+      "google_name": "Pergamon Club",
+      "timestamp": {
+        "seconds": 157,
+        "display": "2:37",
+        "youtube_url": "https://www.youtube.com/watch?v=5c5YG9JaFwM&t=157s"
+      },
+      "location": {
+        "city": "ירושלים",
+        "neighborhood": "מרכז העיר",
+        "address": "Yohanan Horkanos St 1, Jerusalem, Israel",
+        "region": "ירושלים",
+        "latitude": 31.7819815,
+        "longitude": 35.2213605
+      },
+      "cuisine_type": "קפה ומאפייה",
+      "price_range": "בינוני",
+      "status": "חדש",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "כריך באמת פשוט אדיר",
+        "מקום מפתיע מעולה משמח",
+        "מומלץ בטירוף"
+      ],
+      "host_comments": "בית קפה חדש בבניין ה-YMCA מול מלון המלך דוד בירושלים, מופעל על ידי אנשי אוכל ממזרח ירושלים. מאפים של מירל שרפים, קפה מעולה, כריך סלט ביצים ופאן סוויס.",
+      "dishes_mentioned": ["כריך סלט ביצים", "פאן סוויס", "מנקושה", "קפה"],
+      "special_features": ["פתוח בשבת", "מאפים בסגנון פריזאי וערבי", "בבניין YMCA ההיסטורי"],
+      "mention_context": "ביס השבוע של אמית - בית קפה חדש בירושלים שפתוח בשבת בבוקר",
+      "speaker": "עמית אהרונסון",
+      "google_places": {
+        "place_id": "ChIJz15Sx9ApAxURs-juOnBs7ag",
+        "google_url": "https://maps.google.com/?cid=12172504597133191347",
+        "rating": 4.5,
+        "review_count": 21,
+        "price_level": null,
+        "phone": "054-484-0511",
+        "website": "http://www.pergamonjlm.com/",
+        "photo_url": "https://lh3.googleusercontent.com/place-photos/AL8-SNGx0alcgWQOEGvopuX-Yw9KGfRG6EN8jH7e9gU5no2EXGupBdYLiNhQiBbG6FAZEWLRApAgtBeVNMKJuw1IIOrj8QftMiboPyTsDcPJ4WWGDjpEaCelgNKiJSnpkg_jxc-N-sJrgdt2Zxhsog=s1600-w800",
+        "instagram_url": null,
+        "verified": true,
+        "note": "Google match is 'Pergamon Club' - may be wrong match. DB already has this restaurant as 'פרן פרן קלאב'."
+      },
+      "production_db": {
+        "exists": true,
+        "id": "f06608f4-a1d1-4384-8d46-b9930fcb9e73"
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "סילי קיד",
+      "name_english": "Silly Kid",
+      "name_in_transcript": "סיליקיד",
+      "google_name": "Silly Kid",
+      "timestamp": {
+        "seconds": 347,
+        "display": "5:47",
+        "youtube_url": "https://www.youtube.com/watch?v=5c5YG9JaFwM&t=347s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": null,
+        "address": "Yona HaNavi St 48, Tel Aviv-Yafo, 6330246, Israel",
+        "region": "מרכז",
+        "latitude": 32.0718209,
+        "longitude": 34.7692226
+      },
+      "cuisine_type": "עוף מטוגן",
+      "price_range": "בינוני",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "הקריספי צ'יקן מעולה גם ברמת הלחמניה וג'וסי ועסיסי ובאמת קריספי מבחוץ",
+        "הטנדרס עצמם שזה בעיניי הדבר הכי טוב בסוף מושלמים",
+        "צ'יפס בבריכת צ'דר... וואו איזה טעים זה... זה חולני"
+      ],
+      "host_comments": "נטע הזמינה סיליקיד במשלוח בפעם הראשונה והופתעה לטובה - הקריספי צ'יקן נשאר פריך, הטנדרס מושלמים, הצ'יפס עם צ'דר חולני, ועוגת השוקולד מדהימה.",
+      "dishes_mentioned": ["קריספי צ'יקן", "טנדרס", "סילי דוג", "צ'יפס בבריכת צ'דר", "עוגת שוקולד"],
+      "special_features": ["משלוח מצוין", "קריספי צ'יקן", "קינוח יוצא דופן"],
+      "mention_context": "ביס השבוע של נטע - משלוח סיליקיד ראשון שהפתיע בפריכות",
+      "speaker": "נטע סלונים",
+      "google_places": {
+        "place_id": "ChIJ-czO1gZNHRUREqZY3qg_7Nc",
+        "google_url": "https://maps.google.com/?cid=15558880807175628306",
+        "rating": 4.5,
+        "review_count": 489,
+        "price_level": null,
+        "phone": "03-310-4520",
+        "website": "https://tabitisrael.co.il/tabit-order?orgName=Silly%20Kid",
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqGQL5_arSW-7g8AbkmCET7bNxp5qHUhvQtvEHo5u3_tHLf_I0QtmpPxjRQuEe4k6Oor12Gcmw8Wy7Wl2TLVOYx9UTps6hx9K8M=s1600-w800",
+        "instagram_url": null,
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "אשת חיל",
+      "name_english": "Eshet Chayil",
+      "name_in_transcript": "אשת חיל",
+      "google_name": "אשת חיל אוכל טריפולטאי",
+      "timestamp": {
+        "seconds": 2148,
+        "display": "35:48",
+        "youtube_url": "https://www.youtube.com/watch?v=5c5YG9JaFwM&t=2148s"
+      },
+      "location": {
+        "city": "גבעתיים",
+        "neighborhood": "מרכז גבעתיים",
+        "address": "Sheinkin St 48, Giv'atayim, 5330413, Israel",
+        "region": "מרכז",
+        "latitude": 32.0755509,
+        "longitude": 34.8139028
+      },
+      "cuisine_type": "טריפוליטאי",
+      "price_range": "זול",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "בחור בן 25 שמבשל כמו ממה בת 70",
+        "תבשילים מעולים",
+        "ממליץ בחום אשת חיל שחקן חדש בזירה לא טיפוסית"
+      ],
+      "host_comments": "מסעדה טריפוליטאית חדשה ברחוב שנקין בגבעתיים, מופעלת על ידי אושר בן 25 שלמד מאמו. תבשילים מעולים - מפרום תפוחי אדמה, מפרום חציל, קציצות דגים, שקשוקה, קעבר. מחירים סבירים, 60 שקל לצלחת ענק.",
+      "dishes_mentioned": ["מפרום תפוחי אדמה", "מפרום חציל", "קציצות דגים", "שקשוקה צ'ומה", "קעבר", "קוסקוס", "בסטיל", "כמוניע", "הטבך בסלק"],
+      "special_features": ["טריפוליטאי", "מחירים סבירים", "משלוחים", "קוסקוס ידני"],
+      "mention_context": "ביס השבוע של יונתן - מסעדה טריפוליטאית חדשה בגבעתיים",
+      "speaker": "יהונתן כהן",
+      "google_places": {
+        "place_id": "ChIJcRkKPgBLHRURDGD46My4zj8",
+        "google_url": "https://maps.google.com/?cid=4597815459813285900",
+        "rating": 4.8,
+        "review_count": 44,
+        "price_level": null,
+        "phone": "03-579-5762",
+        "website": null,
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqHqttLByWSziowNM6NUI7Ahj3xssVbH8gGNcj49NnFYXz2UwQ3mUjIwcDH3zNZ5GfDBYYB83QwNc8YQf5Sk4oghd31irSt6xDw=s1600-w800",
+        "instagram_url": null,
+        "verified": true
+      },
+      "production_db": {
+        "exists": true,
+        "id": "450e98ac-7bf9-416b-9f40-0f966dcd003d"
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "צ'וטה",
+      "name_english": "Chota",
+      "name_in_transcript": "צ'וטה",
+      "google_name": "Chota",
+      "timestamp": {
+        "seconds": 2667,
+        "display": "44:27",
+        "youtube_url": "https://www.youtube.com/watch?v=5c5YG9JaFwM&t=2667s"
+      },
+      "location": {
+        "city": "ירושלים",
+        "neighborhood": "מרכז העיר",
+        "address": "Ben Sira St 18, Jerusalem, 9418113, Israel",
+        "region": "ירושלים",
+        "latitude": 31.7787289,
+        "longitude": 35.2220011
+      },
+      "cuisine_type": "ביסטרונומי",
+      "price_range": "יקר",
+      "status": "חדש",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "האיש פורץ גבולות בשלב שלא נהוג",
+        "היה מאוד מאוד מוצלח והיה נורא טעים",
+        "צ'וטה ירושלים רחוב בן סירה שווה ביותר"
+      ],
+      "host_comments": "המקום החדש של אילן גרוסי בירושלים. עיצוב מינימליסטי נורדי, מטבח פתוח, תפריט ביסטרונומי - מסשימי אינטיאס עם פונזו רימונים, שיפוט דנוור עם פירה, סקלופס עם קרם שורשים, פטייר עם שרימפס. תפריט יין הרפתקני, אירוח אילן גרוסי על הפלור.",
+      "dishes_mentioned": ["סשימי אינטיאס עם פונזו רימונים", "שיפוט דנוור עם פירה", "סקלופס עם קרם שורשים", "פטייר עם שרימפס", "סוס שוקולד מלוח", "תירמיסו", "גרפה"],
+      "special_features": ["ביסטרונומי", "אילן גרוסי", "תפריט יין הרפתקני", "עיצוב נורדי", "מטבח פתוח"],
+      "mention_context": "סקירת המקום החדש של אילן גרוסי בירושלים - היעד החם ביותר בעיר",
+      "speaker": "עמית אהרונסון",
+      "google_places": {
+        "place_id": "ChIJbd2Z9VopAxURhtMxQvXr0n4",
+        "google_url": "https://maps.google.com/?cid=9138626032498234246",
+        "rating": 4.9,
+        "review_count": 82,
+        "price_level": null,
+        "phone": "02-500-2250",
+        "website": "https://www.instagram.com/chota_rest",
+        "photo_url": null,
+        "instagram_url": "https://www.instagram.com/chota_rest",
+        "verified": true
+      },
+      "production_db": {
+        "exists": true,
+        "id": "e04a993a-84fb-470e-bea4-ac769ac504b8"
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "GDB",
+      "name_english": "GDB",
+      "name_in_transcript": "GDB",
+      "skip_reason": "Acquisition news only - discussed as business story (Nono Mimi buying 50% for 65M NIS), not a restaurant review or recommendation",
+      "timestamp": {
+        "seconds": 1232,
+        "display": "20:32",
+        "youtube_url": "https://www.youtube.com/watch?v=5c5YG9JaFwM&t=1232s"
+      },
+      "location": {
+        "city": "תל אביב"
+      },
+      "mention_context": "Discussion of Nono Mimi acquiring 50% of GDB for 65 million NIS",
+      "google_places": {
+        "place_id": "ChIJ---AQxFLHRUR-4ga0BJy_Qs",
+        "rating": 4.4,
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "סנטי",
+      "name_english": "Santi",
+      "name_in_transcript": "סנטי",
+      "skip_reason": "Mentioned as where Amit ate with James Sherman, brief passing mention without food review",
+      "timestamp": {
+        "seconds": 1099,
+        "display": "18:19",
+        "youtube_url": "https://www.youtube.com/watch?v=5c5YG9JaFwM&t=1099s"
+      },
+      "location": {
+        "city": "תל אביב"
+      },
+      "mention_context": "James Sherman ate at Santi with Amit and will film content there",
+      "google_places": {
+        "place_id": "ChIJO52YEHBNHRUR7ZFa-Nja_DI",
+        "rating": 4.3,
+        "verified": true
+      },
+      "production_db": {
+        "exists": true,
+        "id": "264d8872-dea3-426d-91ab-478397cebf7f"
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "גייג'ין",
+      "name_english": "Gaijin",
+      "name_in_transcript": "גייג'ין",
+      "skip_reason": "Name-dropped as one of four restaurants where James Sherman will film content, no review or opinion",
+      "timestamp": {
+        "seconds": 1099,
+        "display": "18:19",
+        "youtube_url": "https://www.youtube.com/watch?v=5c5YG9JaFwM&t=1099s"
+      },
+      "location": {
+        "city": "תל אביב"
+      },
+      "mention_context": "Listed among restaurants where James Sherman will film",
+      "google_places": {
+        "place_id": "ChIJtT4cRedNHRURcudsoVIVLL0",
+        "rating": 4.1,
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "היבא",
+      "name_english": "Hiba",
+      "name_in_transcript": "היבא",
+      "skip_reason": "Name-dropped as one of four restaurants where James Sherman will film content, no review or opinion",
+      "timestamp": {
+        "seconds": 1099,
+        "display": "18:19",
+        "youtube_url": "https://www.youtube.com/watch?v=5c5YG9JaFwM&t=1099s"
+      },
+      "location": {
+        "city": "תל אביב"
+      },
+      "mention_context": "Listed among restaurants where James Sherman will film",
+      "google_places": {
+        "place_id": "ChIJ0_0kufVLHRURbEnQPFPvfXI",
+        "rating": 4.6,
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "רוטשילד 48",
+      "name_english": "R48",
+      "name_in_transcript": "ר48",
+      "skip_reason": "Name-dropped as one of four restaurants where James Sherman will film content, no review or opinion",
+      "timestamp": {
+        "seconds": 1099,
+        "display": "18:19",
+        "youtube_url": "https://www.youtube.com/watch?v=5c5YG9JaFwM&t=1099s"
+      },
+      "location": {
+        "city": "תל אביב"
+      },
+      "mention_context": "Listed among restaurants where James Sherman will film",
+      "google_places": {
+        "place_id": "ChIJ9Z_EX1VLHRURzOL152hIpOs",
+        "rating": 4.3,
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "טרומן אנד קו",
+      "name_english": "Truman & Co",
+      "name_in_transcript": "טרמן אנקו",
+      "skip_reason": "Owner Kfir Harviv mentioned in context of the acquisition humor video, no food review",
+      "timestamp": {
+        "seconds": 1199,
+        "display": "19:59",
+        "youtube_url": "https://www.youtube.com/watch?v=5c5YG9JaFwM&t=1199s"
+      },
+      "location": {
+        "city": "Airport City"
+      },
+      "mention_context": "Kfir Harviv (owner of Truman & Co) made a humorous video about restaurant acquisitions",
+      "google_places": {
+        "place_id": null,
+        "verified": false,
+        "note": "Google match was wrong (Factory Enercon in Netanya)"
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "בלה מיה",
+      "name_english": "Bella Mia",
+      "name_in_transcript": "בלמי",
+      "skip_reason": "Mentioned only as granola price comparison point (64 NIS for granola there)",
+      "timestamp": {
+        "seconds": 745,
+        "display": "12:25",
+        "youtube_url": "https://www.youtube.com/watch?v=5c5YG9JaFwM&t=745s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "כיכר דיזנגוף"
+      },
+      "mention_context": "Price comparison - granola at Belmia costs 64 NIS",
+      "google_places": {
+        "place_id": "ChIJJ_Jv4wlMHRURiaD-pae2PVU",
+        "rating": 3.0,
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "בלוסטון ליין",
+      "name_english": "Bluestone Lane",
+      "name_in_transcript": "בלוסטון לין",
+      "skip_reason": "Foreign chain mentioned as concept comparison for adding small granola to main breakfast order",
+      "timestamp": {
+        "seconds": 712,
+        "display": "11:52",
+        "youtube_url": "https://www.youtube.com/watch?v=5c5YG9JaFwM&t=712s"
+      },
+      "location": {
+        "city": "ארצות הברית"
+      },
+      "mention_context": "Australian-style breakfast chain mentioned as positive example for small add-on portions",
+      "google_places": {
+        "place_id": null,
+        "verified": false,
+        "note": "Not in Israel. Google match was wrong (Atlas Stones factory)."
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "עדל קבבים",
+      "name_english": "Adel Kebabs",
+      "name_in_transcript": "אדל",
+      "skip_reason": "Brief recommendation by guest Yonatan Borowitz at end of interview, not a reviewed meal by hosts",
+      "timestamp": {
+        "seconds": 2040,
+        "display": "34:00",
+        "youtube_url": "https://www.youtube.com/watch?v=5c5YG9JaFwM&t=2040s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "שכונת התקווה"
+      },
+      "host_quotes": ["קבב של אדלנו בטח הוא מלץ כבר... שני כבבים בלפה"],
+      "mention_context": "Guest Borowitz quickly recommends kebab at Adel in Shchunat HaTikva at the end of his interview segment",
+      "google_places": {
+        "place_id": "ChIJm8dQYWpLHRURIvkCTL-XeKA",
+        "google_url": "https://maps.google.com/?cid=11563158891143559458",
+        "rating": 4.4,
+        "review_count": 438,
+        "verified": true
+      },
+      "production_db": {
+        "exists": true,
+        "id": "e3d10ea7-ad80-406a-b969-83d795ef2c5d"
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "גוש ודניאל",
+      "name_english": "Gouje and Daniel",
+      "name_in_transcript": "גוש ודניאל",
+      "skip_reason": "Referenced as Sagi Cohen's review target, hosts did not eat there - reviewer was disappointed",
+      "timestamp": {
+        "seconds": 3070,
+        "display": "51:10",
+        "youtube_url": "https://www.youtube.com/watch?v=5c5YG9JaFwM&t=3070s"
+      },
+      "location": {
+        "city": "בני ציון",
+        "region": "שרון"
+      },
+      "mention_context": "Sagi Cohen reviewed Gouje & Daniel, was not impressed",
+      "google_places": {
+        "place_id": "ChIJtY5Bg5g4HRURTj8wTOvTNUA",
+        "rating": 4.6,
+        "verified": true
+      },
+      "production_db": {
+        "exists": true,
+        "id": "316731f8-e646-4f4c-9e1b-f356931300fa"
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "החומוס של השמן",
+      "name_english": "HaHummus Shel HaShemen",
+      "name_in_transcript": "החומוס של השמן",
+      "skip_reason": "Referenced as Kobi Rubin's review target, hosts did not eat there themselves in this episode",
+      "timestamp": {
+        "seconds": 3128,
+        "display": "52:08",
+        "youtube_url": "https://www.youtube.com/watch?v=5c5YG9JaFwM&t=3128s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "פלורנטין"
+      },
+      "host_quotes": ["אחת ממנות החומוס הכי טובות שאפשר למצוא היום בתל אביב"],
+      "mention_context": "Kobi Rubin reviewed this hummus place positively, formerly known as Hummus Fauzi",
+      "google_places": {
+        "place_id": "ChIJbfv4bgBNHRUR2PifUa5Nbhg",
+        "rating": 4.7,
+        "verified": true
+      },
+      "production_db": {
+        "exists": true,
+        "id": "ab321e56-1cab-45fe-8136-bfcfb68d398c"
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "סולת",
+      "name_english": "Solet",
+      "name_in_transcript": "סולת",
+      "skip_reason": "Brief mention as homework - Neta considering ordering their couscous event, no review",
+      "timestamp": {
+        "seconds": 3362,
+        "display": "56:02",
+        "youtube_url": "https://www.youtube.com/watch?v=5c5YG9JaFwM&t=3362s"
+      },
+      "location": {
+        "city": "באר שבע"
+      },
+      "mention_context": "Mentioned as a Beer Sheva couscous event place they want to try",
+      "google_places": {
+        "place_id": "ChIJEZMPS9tnAhURrvtBGdlEUfw",
+        "rating": 4.6,
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "חמודי",
+      "name_english": "Hamudi",
+      "name_in_transcript": "חמודי",
+      "skip_reason": "Mentioned as a place Amit wants to visit from previous episode, no dining experience shared",
+      "timestamp": {
+        "seconds": 3328,
+        "display": "55:28",
+        "youtube_url": "https://www.youtube.com/watch?v=5c5YG9JaFwM&t=3328s"
+      },
+      "location": {
+        "city": null
+      },
+      "mention_context": "Amit says he wants to visit the place they discussed with Hamudi last week",
+      "google_places": {
+        "place_id": null,
+        "verified": false,
+        "note": "Google match was Hummus Hamudi in Hadera - likely wrong match. Context suggests a shipudim/shwarma place."
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    }
+  ]
+}

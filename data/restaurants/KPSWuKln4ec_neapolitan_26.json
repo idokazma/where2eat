@@ -1,0 +1,77 @@
+{
+  "name_hebrew": "נאופוליטן 26",
+  "name_english": "Neapolitan 26",
+  "city": "הרצליה",
+  "neighborhood": null,
+  "address": null,
+  "region": "שרון",
+  "cuisine_type": "פיצה",
+  "status": "חדש",
+  "price_range": "בינוני",
+  "host_opinion": "חיובית",
+  "host_comments": "פיצריה נפוליטנית חדשה בהרצליה שנפתחה לפני המלחמה. נראה מקום חמוד עם פיצות נפוליטניות, סלט ויינות.",
+  "menu_items": [
+    "פיצות נפוליטניות"
+  ],
+  "special_features": [
+    "פיצריה נפוליטנית",
+    "חדש"
+  ],
+  "contact_hours": null,
+  "contact_phone": "+972 50-547-4830",
+  "contact_website": null,
+  "business_news": null,
+  "mention_context": "פתיחה חדשה בהרצליה, עמית מאוד מתרגש לבקר",
+  "mention_timestamp_seconds": 1003,
+  "youtube_timestamped_url": "https://www.youtube.com/watch?v=KPSWuKln4ec&t=1003s",
+  "google_place_id": "ChIJafO8Rn9JHRURSVhFjYbLsC0",
+  "google_rating": 4.8,
+  "google_user_ratings_total": null,
+  "latitude": 32.161904199999995,
+  "longitude": 34.8092567,
+  "image_url": "https://lh3.googleusercontent.com/places/ANXAkqGAYgfAzZz-_4R7bJw97nYUpXX9ibtgUatJ59Zrt2rwu0i45B4QouFX-YgRh_8WZu09iY81vHkWJmwLeZhhTB5KqSh4GnyNTKY=s4800-w800",
+  "photos": [
+    {
+      "photo_reference": "places/ChIJafO8Rn9JHRURSVhFjYbLsC0/photos/ATCDNfXzci6qNRAytEDwZrX-z2qXNfb6YKdQn8zbcIqm0oYZPB4LIEfldtUSURokHiep7nrPE6YGMxIHlD4ae6H2JRwW8D__Aw6Nh6h7-XTm6ZEzHak1VWZUJ5dlRyIAOIselU57ougzuSDK64ivzdOovPC0MMoER7QrlySlbst1muB5rkRNbieBbOfhsQIk2zKuPZ7qbZf660kewt5JGSQBGd0fvS-ZulLF2Szez8Y7qplEENUgIRNT2OlKhlZhiuVPVHVGv815a7KHAQDO2bb2_1m2uCcj0xQbDlJycPkoJTcxqg",
+      "width": 3024,
+      "height": 4032,
+      "resolved_url": "https://lh3.googleusercontent.com/places/ANXAkqGAYgfAzZz-_4R7bJw97nYUpXX9ibtgUatJ59Zrt2rwu0i45B4QouFX-YgRh_8WZu09iY81vHkWJmwLeZhhTB5KqSh4GnyNTKY=s4800-w800"
+    },
+    {
+      "photo_reference": "places/ChIJafO8Rn9JHRURSVhFjYbLsC0/photos/ATCDNfWPRcxuM1SxXkxDze1f8SL1nNznOPXFQZxmvsZQ0ZJDJO9HbUZFyAJJRmZ5u-9339JwiircEjDm99llnaJ0_y1scdGug9N_m8O0le8zD1dWJXUCBjOTgcwfH04QhSLok6nM53qBc-0jmzQh22l-dcuwZvazyhmIdOsVTNvYS1x7c9AbxIS9Zbx6ZujP3aQd5KGWhosmpFJOvkextCe5ppxXlUxKot9jrAeWkK8EweBzTk4aTXwcm4Jgc9UeezrshNSWrRMLR4MH7mkE_yjPu4onkM6ksBB8iaY0faJjdXP2kA",
+      "width": 642,
+      "height": 480,
+      "resolved_url": "https://lh3.googleusercontent.com/places/ANXAkqHCDQQuiZJMN3F3Ngq1OJZ-hNKmHibSqdt5HMo8MLCBvVaKJZp03HHHHs1nrzCj8qtuZVkzp8jpBrT4sHLE5lEVf4I92tFCu78=s4800-w642"
+    },
+    {
+      "photo_reference": "places/ChIJafO8Rn9JHRURSVhFjYbLsC0/photos/ATCDNfUp13GZEJJfGAhUwDa6LxV-cQk_a0Y2QjEQOvmKbbOOzlsXYuJ4SEz-5Ybmnx1ADqcuCP8E0-tB3mG32MisKHv2fgmfPw55ZNUHOyxHyPcMNb4hJNxkfutD4CCn4sRne59cQxF3esVVoWknKtST0SiB3WRjwGtgZ_clYNhx6HIBz3RH9PqON8xFCOfnwu8gkj1wuUUmcGujdA0V1C9FIWM_ReTNjqvIyA1v61qFP2kymumktRpfjyZl5lrzDN95hAuu1XjgQhDTLJRagh0VvV0L3jBWujO36LIjwmBZA6Q0LQ",
+      "width": 1241,
+      "height": 1748,
+      "resolved_url": "https://lh3.googleusercontent.com/places/ANXAkqFB7llcZloo-v4HMFOVR7_XEaPAye-E9qLivfHavgWInpiO0gF_cGTjlrT-SVIZ3uua1K0uRPLJtaPv7L0KMW-3wehPFDS2ZH0=s4800-w800"
+    },
+    {
+      "photo_reference": "places/ChIJafO8Rn9JHRURSVhFjYbLsC0/photos/ATCDNfVPWoxRxG6utO08vVvyC-VD6d5PIfWsA_b4lXX-l46-F7aavnoDZPJP74ZGiIzyrEe5zaNw2Ps_8817nqVU11Q2KWcYDhyXVZgIaOVrnD9NjBcg9fr-HEwayidJK7bElnnRsAJyUk-V5hH1NjeexzCLzTDes9iIlgo_Mx9SBm1GpBVz0ONkM64jfQ4OlmqebPaqQgMmp0Kj0BMJYENpbGy-EHodr_2sLaIaeyNEfUVvEZx9bJgJhrpSgFtTXx1V0BxQ51ZgRKuf3qdZTieNzai_HBDcI2cGy7ASr99klRNy7Q",
+      "width": 642,
+      "height": 480,
+      "resolved_url": "https://lh3.googleusercontent.com/places/ANXAkqFxgNO6Nco9W28tuQxKnScAHxxoCWZrZ6rkf1LimvRasbMFv6xsUSD9A6Soyb2T5r5xQxhlwd9leh6zM87JtNi0o1gSGAvNGSY=s4800-w642"
+    },
+    {
+      "photo_reference": "places/ChIJafO8Rn9JHRURSVhFjYbLsC0/photos/ATCDNfXrLVUlhonez8w0l9s59wzI3qbA-zTwY-sKuMntfy-IrNuR5Lmd8V8w1av-SCLWt24mEPLvYiyBRmOwdBe5Ck3Dml6L0EqZolkGTEyY6XyDTs87ZxaK08TV1E2V2eMMPfl3yThG7kY6xLmhclzZfueGYjyI4tKlf7kxWnqgpOicG98b01u98c6Z2398VN4tdlec9JaDLOHk8K-43X5cSaRVx-gvZpVX-K97-IL7973OyZihSGwJaXSxJgJ_xtid_Gj2NVjNK6OR7dJ739qjpkFHOmLdmhdZeO8MgBizxqVqog",
+      "width": 642,
+      "height": 480,
+      "resolved_url": "https://lh3.googleusercontent.com/places/ANXAkqHb6lxa2aI57g6fixcS871Q2hm-zlUQ6S1ey9b_QJrGLbJc9-tzKTDW0hMLixJDIE9KfhDcKiy8z3OB12F7Kp7h7aspgAFWT5w=s4800-w642"
+    }
+  ],
+  "google_name": "26 נפוליטן הרצליה | 26 NEAPOLITAN STYLE",
+  "published_at": "2026-03-18",
+  "og_image_url": null,
+  "is_closing": 0,
+  "video_url": "https://www.youtube.com/watch?v=KPSWuKln4ec",
+  "video_id": "KPSWuKln4ec",
+  "channel_name": "מדברים מהבטן - הפודיום",
+  "google_url": "https://maps.google.com/?cid=3292355106364020809&g_mp=CiVnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLkdldFBsYWNlEAIYBCAA",
+  "engaging_quote": "יש מצב שזה יהיה המקום הראשון שאני אפקוד אחרי המלחמה",
+  "country": "Israel",
+  "episode_id": "c76e493a-2f53-4a98-a240-99ab878d3c6c",
+  "instagram_url": null
+}

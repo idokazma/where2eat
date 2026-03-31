@@ -19,8 +19,10 @@ import {
   Camera,
   Instagram,
 } from 'lucide-react';
+import Link from 'next/link';
 import { useFavorites } from '@/contexts/favorites-context';
 import { endpoints } from '@/lib/config';
+import { MentionLevelBadge } from '@/components/restaurant/MentionLevelBadge';
 import { getRestaurantImage, getRestaurantImages, getCuisineGradient } from '@/lib/images';
 import { PhotoGallery } from '@/components/restaurant/PhotoGallery';
 import { normalizeStatus, getPriceDisplay, normalizeMenuItems } from '@/lib/data-normalizer';
@@ -346,14 +348,31 @@ export default function RestaurantDetailPage() {
           />
         )}
 
+        {/* Mention level + Episode link */}
+        {(restaurant.mention_level || restaurant.episode_info?.video_id) && (
+          <div className="flex items-center gap-3">
+            {restaurant.mention_level && (
+              <MentionLevelBadge mentionLevel={restaurant.mention_level} size="md" />
+            )}
+            {restaurant.episode_info?.video_id && (
+              <Link
+                href={`/episode/${restaurant.episode_info.video_id}`}
+                className="text-sm text-[var(--color-accent)] hover:underline"
+              >
+                צפה בכל הפרק ←
+              </Link>
+            )}
+          </div>
+        )}
+
         {/* Host Opinion / Engaging Quote */}
-        {(restaurant.engaging_quote || restaurant.host_comments) && (
+        {(restaurant.engaging_quote || restaurant.host_quotes?.[0] || restaurant.host_comments) && (
           <div className="p-4 rounded-xl bg-[var(--color-surface)] border-r-4 border-r-[var(--color-gold)]">
             <h2 className="text-sm font-medium text-[var(--color-ink-muted)] mb-2">
               מה המארח אמר
             </h2>
             <p className="text-[var(--color-ink)] leading-relaxed text-[15px]">
-              &ldquo;{restaurant.engaging_quote || restaurant.host_comments}&rdquo;
+              &ldquo;{restaurant.engaging_quote || restaurant.host_quotes?.[0] || restaurant.host_comments}&rdquo;
             </p>
             {restaurant.engaging_quote && restaurant.host_comments && restaurant.engaging_quote !== restaurant.host_comments && (
               <p className="text-[var(--color-ink-muted)] text-sm mt-2 leading-relaxed">

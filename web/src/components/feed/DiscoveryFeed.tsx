@@ -6,6 +6,7 @@ import { Restaurant, getCoordinates } from '@/types/restaurant';
 import { RestaurantCardNew } from '@/components/restaurant/RestaurantCardNew';
 import { SectionHeader } from '@/components/ui/SectionHeader';
 import { getRestaurantImage } from '@/lib/images';
+import { useSettings } from '@/contexts/settings-context';
 
 interface DiscoveryFeedProps {
   restaurants: Restaurant[];
@@ -44,6 +45,8 @@ export function DiscoveryFeed({
   className = '',
   totalCount,
 }: DiscoveryFeedProps) {
+  const { settings } = useSettings();
+  const isTwoCol = settings.feedLayout === '2-col';
   const sentinelRef = useRef<HTMLDivElement>(null);
 
   // Progressive render: observe sentinel to load more cards
@@ -93,7 +96,7 @@ export function DiscoveryFeed({
         subtitle={totalCount ? `${totalCount} מסעדות` : undefined}
       />
 
-      <div className="px-4 space-y-4">
+      <div className={`px-4 ${isTwoCol ? 'grid grid-cols-2 gap-3' : 'space-y-4'}`}>
         {restaurants.map((restaurant, index) => {
           let distanceMeters: number | undefined;
           const coords = getCoordinates(restaurant.location);
@@ -111,6 +114,7 @@ export function DiscoveryFeed({
             >
               <RestaurantCardNew
                 restaurant={restaurant}
+                variant={isTwoCol ? 'compact' : 'default'}
                 showDistance={showDistances && !!distanceMeters}
                 distanceMeters={distanceMeters}
                 onTap={() => onRestaurantClick?.(restaurant)}

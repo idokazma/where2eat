@@ -41,6 +41,11 @@ export const endpoints = {
     byId: (id: string) => getApiUrl(`/api/restaurants/${id}`),
   },
   episodes: {
+    list: (params?: Record<string, string>) => {
+      const query = params ? `?${new URLSearchParams(params).toString()}` : '';
+      return getApiUrl(`/api/episodes${query}`);
+    },
+    detail: (videoId: string) => getApiUrl(`/api/episodes/${videoId}`),
     search: (params: Record<string, string>) => {
       const query = new URLSearchParams(params).toString();
       return getApiUrl(`/api/episodes/search?${query}`);

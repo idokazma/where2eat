@@ -4,12 +4,14 @@ import { createContext, useContext, useState, useEffect, useCallback, ReactNode 
 
 export type ThemeMode = 'light' | 'dark' | 'system';
 export type Language = 'he' | 'en';
+export type FeedLayout = '1-col' | '2-col';
 
 export interface UserSettings {
   showOnlyIsrael: boolean;
   radiusKm: number | null;
   theme: ThemeMode;
   language: Language;
+  feedLayout: FeedLayout;
 }
 
 const STORAGE_KEY = 'where2eat-settings';
@@ -19,6 +21,7 @@ const DEFAULTS: UserSettings = {
   radiusKm: null,
   theme: 'light',
   language: 'he',
+  feedLayout: '1-col',
 };
 
 export const RADIUS_OPTIONS = [0, 1, 5, 20] as const;

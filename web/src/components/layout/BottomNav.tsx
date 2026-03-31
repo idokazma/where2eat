@@ -2,7 +2,7 @@
 
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { Home, Map, Heart, Menu } from 'lucide-react';
+import { Home, Map, Heart, Menu, PlayCircle } from 'lucide-react';
 import { useFavorites } from '@/contexts/favorites-context';
 import { useLanguage } from '@/contexts/LanguageContext';
 
@@ -33,6 +33,12 @@ export function BottomNav() {
       icon: <Map className="w-6 h-6" />,
     },
     {
+      href: '/episodes',
+      label: 'Episodes',
+      labelHe: 'פרקים',
+      icon: <PlayCircle className="w-6 h-6" />,
+    },
+    {
       href: '/saved',
       label: 'Saved',
       labelHe: 'שמורים',
@@ -55,7 +61,7 @@ export function BottomNav() {
   };
 
   return (
-    <nav className="bottom-nav lg:hidden">
+    <nav className="bottom-nav">
       {navItems.map((item) => (
         <Link
           key={item.href}

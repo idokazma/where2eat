@@ -1,0 +1,57 @@
+{
+  "name_hebrew": "סלס",
+  "name_english": "Selas",
+  "city": "תל אביב",
+  "neighborhood": "יפו",
+  "address": "Tankhum St 6, Tel Aviv-Yafo, 6813821, Israel",
+  "region": "מרכז",
+  "cuisine_type": "שף",
+  "status": "open",
+  "price_range": "$$$$",
+  "host_opinion": "very_positive",
+  "host_comments": "עמית סיפר על תפריט בן מיפרקט חדש בסלס שכולל נקנקיית לוקוס וצ'דר ושיפוד טורו.",
+  "menu_items": [
+    "נקנקיית לוקוס וצ'דר",
+    "שיפוד טורו",
+    "תפריט בן מיפרקט"
+  ],
+  "special_features": [
+    "תפריט מיוחד",
+    "שף"
+  ],
+  "contact_hours": [
+    "Monday: 6:00 – 10:30 PM",
+    "Tuesday: 6:00 – 10:30 PM",
+    "Wednesday: 6:00 – 10:30 PM",
+    "Thursday: 6:00 – 10:30 PM",
+    "Friday: 6:00 – 10:30 PM",
+    "Saturday: 6:00 – 10:30 PM",
+    "Sunday: Closed"
+  ],
+  "contact_phone": "03-965-3565",
+  "contact_website": "https://selas.co.il/",
+  "business_news": null,
+  "mention_context": "חדשות מסעדנות - תפריט חדש בסלס",
+  "mention_timestamp": 1291,
+  "google_place_id": "ChIJ8Xs1H7lMHRURJRZBUcmEcUI",
+  "google_rating": 4.5,
+  "google_user_ratings_total": 1033,
+  "latitude": 32.0530054,
+  "longitude": 34.7550693,
+  "image_url": "https://lh3.googleusercontent.com/places/ANXAkqEobIJ3MJAiNepVbXNfPlVFWG_dobEKp6h3yXyKfkTqqIGjV9_rpNDj7lGA63Uy3D6qSMLM8KqqhNPQqX9YQBe50Ly95stj-u0=s1600-w800",
+  "photos": [
+    "https://lh3.googleusercontent.com/places/ANXAkqEobIJ3MJAiNepVbXNfPlVFWG_dobEKp6h3yXyKfkTqqIGjV9_rpNDj7lGA63Uy3D6qSMLM8KqqhNPQqX9YQBe50Ly95stj-u0=s1600-w800"
+  ],
+  "google_name": "Selas - אור גינסברג מארח (סלאס)",
+  "published_at": "2026-03-18",
+  "og_image_url": null,
+  "is_closing": false,
+  "video_url": "https://www.youtube.com/watch?v=KPSWuKln4ec",
+  "video_id": "KPSWuKln4ec",
+  "channel_name": "מדברים מהבטן - הפודיום",
+  "google_url": "https://maps.google.com/?cid=4787753879058060837",
+  "engaging_quote": "תפריט בן מיפרקט...נקנקיית לוקוס וצ'דר...שיפוד טורו...נשמע מעיף",
+  "country": "ישראל",
+  "episode_id": "c76e493a-2f53-4a98-a240-99ab878d3c6c",
+  "instagram_url": "https://www.instagram.com/selas.rest/"
+}
