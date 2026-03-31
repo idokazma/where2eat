@@ -207,6 +207,25 @@ def main():
     print(f"\n{'='*60}")
     print(f"TOTAL: {total_restaurants} restaurants added, {total_mentions} mentions seeded")
 
+    # Backfill mention_level on restaurants from episode_mentions
+    with db.get_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute('''
+            UPDATE restaurants SET mention_level = (
+                SELECT em.mention_level FROM episode_mentions em
+                WHERE em.restaurant_id = restaurants.id
+                AND em.mention_level IS NOT NULL
+                ORDER BY em.created_at DESC
+                LIMIT 1
+            )
+            WHERE id IN (
+                SELECT DISTINCT restaurant_id FROM episode_mentions
+                WHERE restaurant_id IS NOT NULL AND mention_level IS NOT NULL
+            )
+        ''')
+        print(f"\nBackfilled mention_level on {cursor.rowcount} restaurants")
+        conn.commit()
+
     # Verify
     episodes = db.get_episodes_with_mention_counts()
     print(f"\nEpisodes with mentions: {len(episodes)}")

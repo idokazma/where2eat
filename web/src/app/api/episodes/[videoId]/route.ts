@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
-
-const FASTAPI_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+import { getEpisodeDetail } from '@/lib/data/extractor-loader';
 
 export async function GET(
   request: Request,
@@ -8,25 +7,15 @@ export async function GET(
 ) {
   try {
     const { videoId } = await params;
+    const detail = getEpisodeDetail(videoId);
 
-    const res = await fetch(`${FASTAPI_URL}/api/episodes/${videoId}`, {
-      headers: { 'Origin': 'http://localhost:3003' },
-    });
-
-    if (!res.ok) {
-      return NextResponse.json(
-        { error: `Episode ${videoId} not found` },
-        { status: res.status }
-      );
+    if (!detail) {
+      return NextResponse.json({ error: `Episode ${videoId} not found` }, { status: 404 });
     }
 
-    const data = await res.json();
-    return NextResponse.json(data);
+    return NextResponse.json(detail);
   } catch (error) {
     console.error('Error fetching episode detail:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch episode' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Failed to fetch episode' }, { status: 500 });
   }
 }

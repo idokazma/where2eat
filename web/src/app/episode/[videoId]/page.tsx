@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import {
@@ -17,8 +17,9 @@ import {
 } from 'lucide-react';
 import { PageLayout } from '@/components/layout';
 import { MentionLevelBadge } from '@/components/restaurant/MentionLevelBadge';
+import { RestaurantCardNew } from '@/components/restaurant/RestaurantCardNew';
 import { fetchEpisodeDetail } from '@/lib/api/episodes';
-import type { EpisodeDetail, EpisodeMention } from '@/types/restaurant';
+import type { EpisodeDetail, EpisodeMention, Restaurant } from '@/types/restaurant';
 
 function MentionCard({ mention }: { mention: EpisodeMention }) {
   const youtubeUrl = mention.timestamp_seconds
@@ -29,39 +30,40 @@ function MentionCard({ mention }: { mention: EpisodeMention }) {
     <div className="bg-[var(--color-surface)] rounded-xl border border-[var(--color-border)] overflow-hidden">
       {/* Image if available */}
       {mention.image_url && (
-        <div className="relative aspect-[16/10] bg-[var(--color-ink-faint)]">
-          <Image
-            src={mention.image_url}
-            alt={mention.name_hebrew}
-            fill
-            className="object-cover"
-            sizes="(max-width: 768px) 100vw, 50vw"
-          />
-        </div>
+        <Link href={`/restaurant/${mention.restaurant_id || mention.id}`}>
+          <div className="relative aspect-[16/10] bg-[var(--color-ink-faint)]">
+            <Image
+              src={mention.image_url}
+              alt={mention.name_hebrew}
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, 50vw"
+            />
+          </div>
+        </Link>
       )}
 
       <div className="p-3">
         {/* Name + badge */}
         <div className="flex items-center gap-2 mb-1">
-          {mention.restaurant_id ? (
-            <Link
-              href={`/restaurant/${mention.restaurant_id}`}
-              className="font-bold text-[var(--color-ink)] hover:text-[var(--color-accent)] transition-colors flex-1"
-            >
-              {mention.name_hebrew}
-            </Link>
-          ) : (
-            <span className="font-bold text-[var(--color-ink)] flex-1">
-              {mention.name_hebrew}
-            </span>
-          )}
+          <Link
+            href={`/restaurant/${mention.restaurant_id || mention.id}`}
+            className="font-bold text-[var(--color-ink)] hover:text-[var(--color-accent)] transition-colors flex-1"
+          >
+            {mention.name_hebrew}
+          </Link>
           {mention.mention_level && (
             <MentionLevelBadge mentionLevel={mention.mention_level} />
           )}
         </div>
 
+        {/* English name */}
+        {mention.name_english && (
+          <p className="text-xs text-[var(--color-ink-faint)] mb-1">{mention.name_english}</p>
+        )}
+
         {/* Meta line */}
-        <div className="flex items-center gap-2 text-xs text-[var(--color-ink-muted)] mb-2">
+        <div className="flex items-center gap-2 text-xs text-[var(--color-ink-muted)] mb-2 flex-wrap">
           {mention.city && (
             <span className="flex items-center gap-0.5">
               <MapPin className="w-3 h-3" />
@@ -69,18 +71,29 @@ function MentionCard({ mention }: { mention: EpisodeMention }) {
             </span>
           )}
           {mention.cuisine_type && <span>· {mention.cuisine_type}</span>}
+          {mention.price_range && <span>· {mention.price_range}</span>}
           {mention.google_rating && (
             <span className="flex items-center gap-0.5">
               · <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
               {mention.google_rating}
+              {mention.google_review_count && (
+                <span className="text-[var(--color-ink-faint)]">({mention.google_review_count})</span>
+              )}
             </span>
           )}
         </div>
 
+        {/* Mention context (useful for reference_only that lack quotes) */}
+        {mention.mention_context && !mention.host_quotes?.length && !mention.host_comments && (
+          <p className="text-sm text-[var(--color-ink-muted)] mb-2 leading-relaxed">
+            {mention.mention_context}
+          </p>
+        )}
+
         {/* Host quotes */}
         {mention.host_quotes && mention.host_quotes.length > 0 && (
           <div className="mb-2">
-            {mention.host_quotes.map((quote, i) => (
+            {mention.host_quotes.slice(0, 2).map((quote, i) => (
               <blockquote
                 key={i}
                 className="text-sm text-[var(--color-ink-muted)] italic border-r-2 border-[var(--color-accent)] pr-3 py-0.5 mb-1"
@@ -109,6 +122,44 @@ function MentionCard({ mention }: { mention: EpisodeMention }) {
                 {dish}
               </span>
             ))}
+          </div>
+        )}
+
+        {/* Special features */}
+        {mention.special_features && mention.special_features.length > 0 && (
+          <div className="flex flex-wrap gap-1 mb-2">
+            {mention.special_features.map((feat, i) => (
+              <span
+                key={i}
+                className="text-[10px] px-1.5 py-0.5 rounded-full bg-[var(--color-surface-alt,#f0f0f0)] text-[var(--color-ink-muted)]"
+              >
+                {feat}
+              </span>
+            ))}
+          </div>
+        )}
+
+        {/* Links: Instagram, Website, Google Maps */}
+        {(mention.instagram_url || mention.website || mention.google_url) && (
+          <div className="flex items-center gap-3 mb-2 text-xs">
+            {mention.instagram_url && (
+              <a href={mention.instagram_url} target="_blank" rel="noopener noreferrer"
+                className="text-[var(--color-accent)] hover:underline flex items-center gap-1">
+                <ExternalLink className="w-3 h-3" />Instagram
+              </a>
+            )}
+            {mention.website && (
+              <a href={mention.website} target="_blank" rel="noopener noreferrer"
+                className="text-[var(--color-accent)] hover:underline flex items-center gap-1">
+                <ExternalLink className="w-3 h-3" />אתר
+              </a>
+            )}
+            {mention.google_url && (
+              <a href={mention.google_url} target="_blank" rel="noopener noreferrer"
+                className="text-[var(--color-accent)] hover:underline flex items-center gap-1">
+                <MapPin className="w-3 h-3" />מפה
+              </a>
+            )}
           </div>
         )}
 
@@ -163,6 +214,59 @@ function ReferenceItem({ mention }: { mention: EpisodeMention }) {
   );
 }
 
+function mentionToRestaurant(mention: EpisodeMention, episode: EpisodeDetail['episode']): Restaurant {
+  return {
+    id: mention.restaurant_id || mention.id,
+    name_hebrew: mention.name_hebrew,
+    name_english: mention.name_english || null,
+    google_name: null,
+    location: {
+      city: mention.city || null,
+      neighborhood: mention.neighborhood || null,
+      address: mention.address || null,
+      region: null,
+    },
+    cuisine_type: mention.cuisine_type || null,
+    price_range: mention.price_range as Restaurant['price_range'],
+    status: null,
+    host_opinion: mention.host_opinion as Restaurant['host_opinion'],
+    host_comments: mention.host_comments || null,
+    engaging_quote: mention.host_quotes?.[0] || null,
+    host_quotes: mention.host_quotes || [],
+    mention_timestamp_seconds: mention.timestamp_seconds || null,
+    mention_context: mention.mention_context as Restaurant['mention_context'],
+    mention_level: mention.mention_level || null,
+    image_url: mention.image_url || null,
+    rating: {
+      google_rating: mention.google_rating || undefined,
+      total_reviews: mention.google_review_count || undefined,
+    },
+    google_places: mention.google_place_id
+      ? { place_id: mention.google_place_id, google_url: mention.google_url || undefined }
+      : undefined,
+    instagram_url: mention.instagram_url || null,
+    contact_info: {
+      phone: mention.phone || null,
+      website: mention.website || null,
+      hours: null,
+    },
+    published_at: episode.published_at || null,
+    episode_info: {
+      video_id: mention.video_id || episode.video_id,
+      video_url: `https://www.youtube.com/watch?v=${mention.video_id || episode.video_id}`,
+      language: 'he',
+      analysis_date: episode.published_at || null,
+      published_at: episode.published_at || null,
+      title: episode.title || null,
+      channel_name: episode.channel_name || null,
+    },
+    menu_items: mention.dishes_mentioned?.map(d => ({
+      item_name: d, description: '', price: null, recommendation_level: 'mentioned' as const,
+    })),
+    special_features: mention.special_features,
+  };
+}
+
 function formatTimestamp(seconds?: number): string {
   if (!seconds) return '';
   const mins = Math.floor(seconds / 60);
@@ -172,6 +276,7 @@ function formatTimestamp(seconds?: number): string {
 
 export default function EpisodeDetailPage() {
   const params = useParams();
+  const router = useRouter();
   const videoId = params.videoId as string;
 
   const [data, setData] = useState<EpisodeDetail | null>(null);
@@ -297,9 +402,13 @@ export default function EpisodeDetailPage() {
               <UtensilsCrossed className="w-5 h-5 text-emerald-600" />
               נטעם בפרק
             </h2>
-            <div className="space-y-3">
+            <div className="space-y-4">
               {mentions.tasted.map((m) => (
-                <MentionCard key={m.id} mention={m} />
+                <RestaurantCardNew
+                  key={m.id}
+                  restaurant={mentionToRestaurant(m, episode)}
+                  onTap={() => router.push(`/restaurant/${m.restaurant_id || m.id}`)}
+                />
               ))}
             </div>
           </section>
@@ -312,9 +421,13 @@ export default function EpisodeDetailPage() {
               <MessageCircle className="w-5 h-5 text-sky-600" />
               הוזכר בפרק
             </h2>
-            <div className="space-y-3">
+            <div className="space-y-4">
               {mentions.mentioned.map((m) => (
-                <MentionCard key={m.id} mention={m} />
+                <RestaurantCardNew
+                  key={m.id}
+                  restaurant={mentionToRestaurant(m, episode)}
+                  onTap={() => router.push(`/restaurant/${m.restaurant_id || m.id}`)}
+                />
               ))}
             </div>
           </section>
@@ -335,9 +448,13 @@ export default function EpisodeDetailPage() {
               גם הוזכרו ({mentions.reference_only.length})
             </button>
             {refsOpen && (
-              <div className="bg-[var(--color-surface)] rounded-xl border border-[var(--color-border)] px-3 animate-fade-up">
+              <div className="space-y-4 animate-fade-up">
                 {mentions.reference_only.map((m) => (
-                  <ReferenceItem key={m.id} mention={m} />
+                  <RestaurantCardNew
+                    key={m.id}
+                    restaurant={mentionToRestaurant(m, episode)}
+                    onTap={() => router.push(`/restaurant/${m.restaurant_id || m.id}`)}
+                  />
                 ))}
               </div>
             )}

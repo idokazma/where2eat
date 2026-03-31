@@ -2140,8 +2140,11 @@ class Database:
             cursor = conn.cursor()
             cursor.execute('''
                 SELECT em.*, r.id as linked_restaurant_id, r.image_url, r.google_rating,
-                       r.google_user_ratings_total, r.latitude as r_lat, r.longitude as r_lng,
-                       r.address, r.neighborhood, r.price_range, r.google_url, r.instagram_url
+                       r.google_user_ratings_total as google_review_count,
+                       r.latitude as r_lat, r.longitude as r_lng,
+                       r.address, r.neighborhood, r.price_range, r.google_url, r.instagram_url,
+                       r.contact_website as website, r.contact_phone as phone,
+                       r.special_features
                 FROM episode_mentions em
                 LEFT JOIN restaurants r ON em.restaurant_id = r.id
                 WHERE em.video_id = ?
@@ -2152,7 +2155,7 @@ class Database:
             for row in rows:
                 d = dict(row)
                 # Parse JSON fields
-                for field in ('host_quotes', 'dishes_mentioned'):
+                for field in ('host_quotes', 'dishes_mentioned', 'special_features'):
                     if d.get(field) and isinstance(d[field], str):
                         try:
                             d[field] = json.loads(d[field])

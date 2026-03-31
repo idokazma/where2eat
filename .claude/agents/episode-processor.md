@@ -435,7 +435,7 @@ WebSearch: "RESTAURANT_NAME site:2eat.co.il"
 
 #### 3e. Image Sourcing Priority
 
-Every `add_to_page` restaurant MUST have an `image_url`. Try these sources in order:
+**EVERY restaurant with a `place_id` MUST have a `photo_url`** — not just `add_to_page`, but also `reference_only`. The webapp shows full cards for all restaurants in episode views, including referenced ones. A card without an image looks broken. Try these sources in order:
 
 1. **Google Places photos** — resolve to permanent `lh3.googleusercontent.com` URL
 2. **Google Places text search variations** — try Hebrew name + city, English name, brand-specific queries
@@ -443,6 +443,31 @@ Every `add_to_page` restaurant MUST have an `image_url`. Try these sources in or
 4. **Ontopo / Tabit** — may have venue photos
 5. **Food review sites** (Mako, Haaretz, Globes) — `WebSearch: "{name_hebrew} {city} ביקורת מסעדה"`
 6. **Restaurant's own website / Instagram** — use `WebFetch` to get the og:image
+
+**CRITICAL — Image URL Resolution Rules:**
+
+Google Places returns two types of photo URLs. Only permanent `lh3` URLs are valid for storage:
+
+- **`places.googleapis.com/v1/.../media?...&key=KEY`** — these are API URLs that require the API key and will break when the key rotates or is restricted. **NEVER store these in extraction JSONs or use them in HTML.**
+- **`lh3.googleusercontent.com/...`** — these are permanent, publicly accessible URLs. **Always store this form.**
+
+To resolve an API URL to a permanent one, follow the 302 redirect:
+```bash
+curl -s -o /dev/null -w '%{redirect_url}' -L --max-redirs 0 \
+  "https://places.googleapis.com/v1/PHOTO_NAME/media?maxWidthPx=800&key=YOUR_KEY"
+# Returns: https://lh3.googleusercontent.com/places/... (permanent URL)
+```
+
+**After writing `photo_url` to JSON, always validate it:**
+```bash
+curl -s -o /dev/null -w '%{http_code}' "PHOTO_URL"
+# Must return 200. If 400 or 404, the URL is truncated or expired — re-fetch from Google Places API.
+```
+
+Common failure modes:
+- **Truncated lh3 URLs** — the hash portion gets cut off (e.g. `AL8-SNHKB8T-4CmM-rTgdlGvwf9SO46k7` instead of the full ~200-char hash). These return HTTP 400. Fix by re-fetching via Places API with the `place_id`.
+- **Same broken URL copied to multiple restaurants** — if the resolution fails once and you reuse the result, every restaurant gets the same broken URL. Always resolve per-restaurant.
+- **HTML generated before resolution** — if the feed_preview.html is generated before photo URLs are resolved, it will contain API URLs or broken lh3 URLs. Always resolve photos BEFORE generating HTML.
 
 **Common mismatches to watch for:**
 - בנגר → actually "באנגר-BUNGER" (the official name differs from the podcast pronunciation)
@@ -640,6 +665,7 @@ Write a structured JSON file to `analyses/VIDEO_ID/extraction.json` containing A
 - Every restaurant mention goes in the `restaurants` array regardless of verdict
 - `verdict` is always one of: `"add_to_page"`, `"reference_only"`, `"rejected"`
 - `reference_only` entries MUST have a `skip_reason` explaining why
+- `reference_only` entries with a `place_id` MUST also have `photo_url`, `rating`, `review_count`, `phone`, `website` — the webapp renders full cards for ALL restaurants in episode views, not just `add_to_page`. Treat them with the same data quality.
 - `rejected` entries MUST have a `reject_reason`
 - `add_to_page` entries must have full Google Places data (including `photo_url`) — both new AND existing restaurants
 - `timestamp` is required for ALL entries — use segment data to find exact seconds
@@ -888,7 +914,7 @@ Generate a self-contained HTML file at `analyses/VIDEO_ID/feed_preview.html` tha
 The mockup should match the actual app design:
 - **RTL layout** (Hebrew primary)
 - **Card design**: White card, rounded corners, shadow on hover
-- **Image**: 16:10 aspect ratio, restaurant photo from Google Places (or gradient fallback with cuisine name)
+- **Image**: 16:10 aspect ratio, restaurant photo — MUST use resolved `lh3.googleusercontent.com` URLs only (never `places.googleapis.com` API URLs). Validate each URL returns HTTP 200 before embedding. Use gradient fallback with cuisine name only as last resort when no working image URL exists.
 - **Title**: Large bold Hebrew name (font-family: Heebo)
 - **Meta line**: City • Cuisine • Price range (with dot separators)
 - **Date**: Published date with calendar icon, "חדש" badge if within 7 days

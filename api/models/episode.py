@@ -26,15 +26,18 @@ class EpisodeMention(BaseModel):
     google_place_id: Optional[str] = None
     latitude: Optional[float] = None
     longitude: Optional[float] = None
-    # Joined restaurant fields (for add_to_page)
+    # Joined restaurant fields
     image_url: Optional[str] = None
     google_rating: Optional[float] = None
-    google_user_ratings_total: Optional[int] = None
+    google_review_count: Optional[int] = None
     address: Optional[str] = None
     neighborhood: Optional[str] = None
     price_range: Optional[str] = None
     google_url: Optional[str] = None
     instagram_url: Optional[str] = None
+    website: Optional[str] = None
+    phone: Optional[str] = None
+    special_features: Optional[List[str]] = None
 
     class Config:
         extra = "allow"

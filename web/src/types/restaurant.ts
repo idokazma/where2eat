@@ -148,12 +148,20 @@ export interface EpisodeMention {
   mention_context?: string;
   skip_reason?: string;
   city?: string;
+  neighborhood?: string;
+  address?: string;
   cuisine_type?: string;
+  price_range?: string;
   host_opinion?: string;
   image_url?: string;
   google_rating?: number;
+  google_review_count?: number;
   google_url?: string;
+  google_place_id?: string;
   instagram_url?: string;
+  website?: string;
+  phone?: string;
+  special_features?: string[];
   restaurant?: Restaurant;
 }
 

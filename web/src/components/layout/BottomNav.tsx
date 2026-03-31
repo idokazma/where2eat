@@ -61,7 +61,7 @@ export function BottomNav() {
   };
 
   return (
-    <nav className="bottom-nav lg:hidden">
+    <nav className="bottom-nav">
       {navItems.map((item) => (
         <Link
           key={item.href}

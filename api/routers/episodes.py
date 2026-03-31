@@ -4,10 +4,12 @@ Serves episode data with mention-level grouping (נטעם/הוזכר/reference_o
 """
 
 import os
+import json
+import uuid
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Dict, Any, List
 
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, Body
 
 from models.episode import (
     EpisodeMention,
@@ -144,3 +146,116 @@ async def get_episode_detail(video_id: str):
             "reference_only": reference_only,
         },
     )
+
+
+@router.post(
+    "/seed",
+    summary="Seed an episode extraction",
+    description="Accepts a full extraction JSON and creates episode + mentions in DB.",
+)
+async def seed_extraction(extraction: Dict[str, Any] = Body(...)):
+    """Seed episode data from an extraction JSON."""
+    db = _get_sqlite_db()
+    if not db:
+        raise HTTPException(status_code=503, detail="Database unavailable")
+
+    ep = extraction.get('episode', {})
+    video_id = ep.get('video_id')
+    if not video_id:
+        raise HTTPException(status_code=400, detail="Missing episode.video_id")
+
+    episode_id = ep.get('episode_id', str(uuid.uuid4()))
+
+    # Create episode
+    try:
+        db.create_episode(
+            video_id=video_id,
+            video_url=ep.get('video_url', f'https://www.youtube.com/watch?v={video_id}'),
+            title=ep.get('title', ''),
+            channel_name=ep.get('channel_name', ''),
+            published_at=ep.get('published_at'),
+            episode_summary=ep.get('summary', ''),
+            id=episode_id,
+        )
+    except Exception:
+        # Episode exists — look up its ID
+        with db.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT id FROM episodes WHERE video_id = ?", (video_id,))
+            row = cursor.fetchone()
+            if row:
+                episode_id = row['id']
+            else:
+                raise HTTPException(status_code=500, detail="Could not create or find episode")
+
+    # Save mentions
+    mentions_added = 0
+    restaurants = extraction.get('restaurants', [])
+    for r in restaurants:
+        verdict = r.get('verdict', '')
+        if verdict == 'rejected':
+            continue
+
+        location = r.get('location', {}) or {}
+        gp = r.get('google_places', {}) or {}
+        production_db = r.get('production_db', {}) or {}
+        timestamp = r.get('timestamp', {}) or {}
+
+        restaurant_id = production_db.get('id') if production_db.get('exists') else None
+
+        # For add_to_page, find the restaurant by google_place_id or name
+        if verdict == 'add_to_page' and not restaurant_id:
+            with db.get_connection() as conn:
+                cursor = conn.cursor()
+                if gp.get('place_id'):
+                    cursor.execute("SELECT id FROM restaurants WHERE google_place_id = ?", (gp['place_id'],))
+                else:
+                    cursor.execute("SELECT id FROM restaurants WHERE name_hebrew = ? AND video_id = ?",
+                                   (r.get('name_hebrew', ''), video_id))
+                row = cursor.fetchone()
+                if row:
+                    restaurant_id = row['id']
+
+        db.save_episode_mention({
+            'episode_id': episode_id,
+            'restaurant_id': restaurant_id,
+            'video_id': video_id,
+            'name_hebrew': r.get('name_hebrew', ''),
+            'name_english': r.get('name_english'),
+            'verdict': verdict,
+            'mention_level': r.get('sub_tag') or r.get('mention_level'),
+            'timestamp_seconds': timestamp.get('seconds'),
+            'timestamp_display': timestamp.get('display'),
+            'speaker': r.get('speaker'),
+            'host_quotes': r.get('host_quotes'),
+            'host_comments': r.get('host_comments'),
+            'dishes_mentioned': r.get('dishes_mentioned'),
+            'mention_context': r.get('mention_context'),
+            'skip_reason': r.get('skip_reason'),
+            'city': location.get('city'),
+            'cuisine_type': r.get('cuisine_type'),
+            'host_opinion': r.get('host_opinion'),
+            'google_place_id': gp.get('place_id'),
+            'latitude': location.get('latitude'),
+            'longitude': location.get('longitude'),
+        })
+        mentions_added += 1
+
+    # Backfill mention_level on restaurants
+    with db.get_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute('''
+            UPDATE restaurants SET mention_level = (
+                SELECT em.mention_level FROM episode_mentions em
+                WHERE em.restaurant_id = restaurants.id
+                AND em.mention_level IS NOT NULL
+                ORDER BY em.created_at DESC LIMIT 1
+            )
+            WHERE id IN (
+                SELECT DISTINCT restaurant_id FROM episode_mentions
+                WHERE restaurant_id IS NOT NULL AND mention_level IS NOT NULL
+            )
+        ''')
+        conn.commit()
+
+    return {"status": "ok", "episode_id": episode_id, "mentions_added": mentions_added}
