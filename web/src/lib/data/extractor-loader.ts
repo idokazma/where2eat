@@ -104,7 +104,7 @@ function invalidateIfStale() {
   }
 }
 
-function resolveExtractorDir(): string {
+function resolveExtractorDir(): string | null {
   // web/ is cwd when running next dev
   const candidates = [
     path.resolve(process.cwd(), '..', 'agentic_extractor'),
@@ -113,7 +113,8 @@ function resolveExtractorDir(): string {
   for (const dir of candidates) {
     if (fs.existsSync(dir)) return dir;
   }
-  throw new Error('agentic_extractor directory not found');
+  // On Vercel/production, directory won't exist — return null
+  return null;
 }
 
 function loadExtractions(): RawExtraction[] {
@@ -121,6 +122,10 @@ function loadExtractions(): RawExtraction[] {
   if (cachedExtractions) return cachedExtractions;
 
   const dir = resolveExtractorDir();
+  if (!dir) {
+    cachedExtractions = [];
+    return cachedExtractions;
+  }
   const files = fs.readdirSync(dir).filter(f => f.startsWith('episode_') && f.endsWith('_extraction.json'));
 
   cachedExtractions = files.map(f => {
