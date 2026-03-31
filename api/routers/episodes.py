@@ -203,7 +203,7 @@ async def seed_extraction(extraction: Dict[str, Any] = Body(...)):
 
         restaurant_id = production_db.get('id') if production_db.get('exists') else None
 
-        # For add_to_page, find the restaurant by google_place_id or name
+        # For add_to_page, find or create the restaurant
         if verdict == 'add_to_page' and not restaurant_id:
             with db.get_connection() as conn:
                 cursor = conn.cursor()
@@ -215,6 +215,56 @@ async def seed_extraction(extraction: Dict[str, Any] = Body(...)):
                 row = cursor.fetchone()
                 if row:
                     restaurant_id = row['id']
+
+            # Create restaurant if not found
+            if not restaurant_id:
+                try:
+                    def _map_price(p):
+                        return {'$':'זול','$$':'בינוני','$$$':'יקר','$$$$':'יקר מאוד'}.get(p, p)
+                    def _map_opinion(o):
+                        return {'very_positive':'חיובית מאוד','positive':'חיובית','negative':'שלילית','mixed':'מעורבת','neutral':'ניטרלית'}.get(o, o)
+                    def _map_status(s):
+                        return {'open':'פתוח','new':'חדש','closed':'נסגר'}.get(s, s)
+
+                    import json as _json
+                    restaurant_id = db.create_restaurant(
+                        name_hebrew=r.get('name_hebrew', ''),
+                        episode_id=episode_id,
+                        name_english=r.get('name_english'),
+                        city=location.get('city'),
+                        neighborhood=location.get('neighborhood'),
+                        address=location.get('address'),
+                        region=location.get('region'),
+                        cuisine_type=r.get('cuisine_type'),
+                        status=_map_status(r.get('status', 'open')),
+                        price_range=_map_price(r.get('price_range', '')),
+                        host_opinion=_map_opinion(r.get('host_opinion', '')),
+                        host_comments=r.get('host_comments'),
+                        menu_items=_json.dumps(r.get('dishes_mentioned', []), ensure_ascii=False) if r.get('dishes_mentioned') else None,
+                        special_features=_json.dumps(r.get('special_features', []), ensure_ascii=False) if r.get('special_features') else None,
+                        mention_context=r.get('mention_context'),
+                        mention_timestamp=timestamp.get('seconds'),
+                        google_place_id=gp.get('place_id'),
+                        google_name=r.get('google_name'),
+                        google_rating=gp.get('rating'),
+                        google_user_ratings_total=gp.get('review_count'),
+                        google_url=gp.get('google_url'),
+                        latitude=location.get('latitude'),
+                        longitude=location.get('longitude'),
+                        image_url=gp.get('photo_url'),
+                        video_url=ep.get('video_url', f'https://www.youtube.com/watch?v={video_id}'),
+                        video_id=video_id,
+                        channel_name=ep.get('channel_name'),
+                        country='Israel',
+                        engaging_quote=(r.get('host_quotes', []) or [None])[0],
+                        contact_phone=gp.get('phone'),
+                        contact_website=gp.get('website'),
+                        instagram_url=gp.get('instagram_url'),
+                        mention_level=r.get('sub_tag'),
+                        published_at=ep.get('published_at'),
+                    )
+                except Exception as e:
+                    print(f"[SEED] Failed to create restaurant {r.get('name_hebrew', '?')}: {e}")
 
         try:
             db.save_episode_mention({
