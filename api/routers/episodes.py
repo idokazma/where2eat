@@ -148,6 +148,28 @@ async def get_episode_detail(video_id: str):
     )
 
 
+@router.delete(
+    "/reset",
+    summary="Reset all episode data",
+    description="Deletes all episodes, mentions, and restaurants. Use with caution.",
+)
+async def reset_all_data():
+    """Delete all episodes, mentions, and restaurants."""
+    db = _get_sqlite_db()
+    if not db:
+        raise HTTPException(status_code=503, detail="Database unavailable")
+    with db.get_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM episode_mentions")
+        cursor.execute("DELETE FROM restaurants")
+        cursor.execute("DELETE FROM episodes")
+        conn.commit()
+        r_count = cursor.execute("SELECT COUNT(*) FROM restaurants").fetchone()[0]
+        e_count = cursor.execute("SELECT COUNT(*) FROM episodes").fetchone()[0]
+        m_count = cursor.execute("SELECT COUNT(*) FROM episode_mentions").fetchone()[0]
+    return {"status": "reset", "restaurants": r_count, "episodes": e_count, "mentions": m_count}
+
+
 @router.post(
     "/seed",
     summary="Seed an episode extraction",
