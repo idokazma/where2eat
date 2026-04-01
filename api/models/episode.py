@@ -1,7 +1,25 @@
 """Pydantic models for episode-related data."""
 
+import json
 from typing import Optional, List, Dict, Any
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
+
+
+def _parse_json_list(v):
+    """Parse a JSON string to list, or return the value if already a list."""
+    if v is None:
+        return None
+    if isinstance(v, list):
+        return v
+    if isinstance(v, str):
+        try:
+            parsed = json.loads(v)
+            if isinstance(parsed, list):
+                return parsed
+        except (json.JSONDecodeError, TypeError):
+            pass
+        return [v] if v.strip() else None
+    return None
 
 
 class EpisodeMention(BaseModel):
@@ -38,6 +56,11 @@ class EpisodeMention(BaseModel):
     website: Optional[str] = None
     phone: Optional[str] = None
     special_features: Optional[List[str]] = None
+
+    @field_validator('host_quotes', 'dishes_mentioned', 'special_features', mode='before')
+    @classmethod
+    def parse_json_lists(cls, v):
+        return _parse_json_list(v)
 
     class Config:
         extra = "allow"
