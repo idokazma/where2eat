@@ -223,7 +223,8 @@ async def seed_extraction(extraction: Dict[str, Any] = Body(...)):
         production_db = r.get('production_db', {}) or {}
         timestamp = r.get('timestamp', {}) or {}
 
-        restaurant_id = production_db.get('id') if production_db.get('exists') else None
+        # Ignore production_db.id — always look up fresh to avoid stale references
+        restaurant_id = None
 
         # For add_to_page, find or create the restaurant
         if verdict == 'add_to_page' and not restaurant_id:
