@@ -730,9 +730,12 @@ class Database:
         }
 
         # Reconstruct nested rating
+        google_rating_val = restaurant.pop('google_rating', None)
+        reviews_val = restaurant.pop('google_user_ratings_total', None)
         restaurant['rating'] = {
-            'google_rating': restaurant.pop('google_rating', None),
-            'user_ratings_total': restaurant.pop('google_user_ratings_total', None)
+            'google_rating': google_rating_val,
+            'total_reviews': reviews_val,
+            'user_ratings_total': reviews_val,
         }
 
         # Reconstruct google_places object

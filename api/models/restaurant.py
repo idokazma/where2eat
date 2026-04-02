@@ -8,16 +8,26 @@ from datetime import datetime
 class Location(BaseModel):
     """Restaurant location details."""
     city: Optional[str] = None
+    neighborhood: Optional[str] = None
     address: Optional[str] = None
     region: Optional[str] = None
     lat: Optional[float] = None
     lng: Optional[float] = None
+
+    class Config:
+        extra = "allow"
 
 
 class Rating(BaseModel):
     """Restaurant rating information."""
     google_rating: Optional[float] = None
     review_count: Optional[int] = None
+    total_reviews: Optional[int] = None
+    user_ratings_total: Optional[int] = None
+    price_level: Optional[int] = None
+
+    class Config:
+        extra = "allow"
 
 
 class EpisodeInfo(BaseModel):
@@ -25,6 +35,12 @@ class EpisodeInfo(BaseModel):
     video_id: Optional[str] = None
     video_url: Optional[str] = None
     analysis_date: Optional[str] = None
+    published_at: Optional[str] = None
+    title: Optional[str] = None
+    channel_name: Optional[str] = None
+
+    class Config:
+        extra = "allow"
 
 
 class Restaurant(BaseModel):

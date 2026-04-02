@@ -1,0 +1,38 @@
+'use client';
+
+import { useEffect } from 'react';
+import { AlertTriangle } from 'lucide-react';
+
+export default function GlobalError({
+  error,
+  reset,
+}: {
+  error: Error & { digest?: string };
+  reset: () => void;
+}) {
+  useEffect(() => {
+    console.error('Application error:', error);
+  }, [error]);
+
+  return (
+    <div className="min-h-screen bg-[var(--color-paper)] flex flex-col items-center justify-center px-4" dir="rtl">
+      <div className="text-center max-w-sm">
+        <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-red-50 flex items-center justify-center">
+          <AlertTriangle className="w-8 h-8 text-red-500" />
+        </div>
+        <h2 className="text-lg font-bold text-[var(--color-ink)] mb-2">
+          משהו השתבש
+        </h2>
+        <p className="text-sm text-[var(--color-ink-muted)] mb-6">
+          אירעה שגיאה בלתי צפויה. נסה שוב.
+        </p>
+        <button
+          onClick={reset}
+          className="px-5 py-2.5 bg-[var(--color-accent)] text-white rounded-xl font-medium text-sm"
+        >
+          נסה שוב
+        </button>
+      </div>
+    </div>
+  );
+}
