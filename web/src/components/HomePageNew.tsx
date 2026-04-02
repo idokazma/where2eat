@@ -227,8 +227,7 @@ export function HomePageNew() {
           hasMore={hasMore}
           isLoadingMore={false}
           onLoadMore={handleLoadMore}
-          className="mt-6 pb-8"
-          totalCount={processedRestaurants.length}
+          className="mt-2 pb-8"
         />
       </div>
 

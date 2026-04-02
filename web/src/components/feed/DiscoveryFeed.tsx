@@ -93,7 +93,7 @@ export function DiscoveryFeed({
       <SectionHeader
         icon={<UtensilsCrossed className="w-5 h-5 text-[var(--color-ink-muted)]" />}
         title="גילויים"
-        subtitle={totalCount ? `${totalCount} מסעדות` : undefined}
+        subtitle={undefined}
       />
 
       <div className={`px-4 ${isTwoCol ? 'grid grid-cols-2 gap-3' : 'space-y-4'}`}>
