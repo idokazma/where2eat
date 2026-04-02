@@ -54,7 +54,8 @@ export default function RestaurantDetailPage() {
   const [heroImageError, setHeroImageError] = useState(false);
   const [heroImageLoading, setHeroImageLoading] = useState(true);
 
-  const restaurantId = decodeURIComponent(params.id as string);
+  const rawId = params?.id;
+  const restaurantId = typeof rawId === 'string' ? decodeURIComponent(rawId) : Array.isArray(rawId) ? decodeURIComponent(rawId[0]) : '';
 
   useEffect(() => {
     const loadRestaurant = async () => {
@@ -275,7 +276,7 @@ export default function RestaurantDetailPage() {
                 {getPriceDisplay(restaurant.price_range)}
               </span>
             )}
-            {restaurant.rating?.google_rating && (
+            {typeof restaurant.rating?.google_rating === 'number' && restaurant.rating.google_rating > 0 && (
               <span className="flex items-center gap-1 px-2.5 py-1 bg-[var(--color-gold)]/90 rounded-md text-white text-xs font-bold font-accent">
                 <Star className="w-3 h-3 fill-current" />
                 {restaurant.rating.google_rating.toFixed(1)}
@@ -324,13 +325,13 @@ export default function RestaurantDetailPage() {
         </div>
 
         {/* Rating detail */}
-        {restaurant.rating?.google_rating && (
+        {typeof restaurant.rating?.google_rating === 'number' && restaurant.rating.google_rating > 0 && (
           <div className="flex items-center gap-3 p-3 rounded-xl bg-[var(--color-surface)]">
             <div className="flex items-center gap-1 text-[var(--color-gold)]">
               <Star className="w-5 h-5 fill-current" />
               <span className="text-lg font-bold">{restaurant.rating.google_rating.toFixed(1)}</span>
             </div>
-            {restaurant.rating.total_reviews && (
+            {typeof restaurant.rating.total_reviews === 'number' && restaurant.rating.total_reviews > 0 && (
               <span className="text-sm text-[var(--color-ink-muted)]">
                 {restaurant.rating.total_reviews.toLocaleString()} ביקורות ב-Google
               </span>
@@ -415,7 +416,7 @@ export default function RestaurantDetailPage() {
         )}
 
         {/* Menu Items */}
-        {restaurant.menu_items && restaurant.menu_items.length > 0 && (() => {
+        {Array.isArray(restaurant.menu_items) && restaurant.menu_items.length > 0 && (() => {
           const normalizedItems = normalizeMenuItems(restaurant.menu_items);
           return (
             <div className="space-y-3">
@@ -459,7 +460,7 @@ export default function RestaurantDetailPage() {
         })()}
 
         {/* Special Features */}
-        {restaurant.special_features && restaurant.special_features.length > 0 && (
+        {Array.isArray(restaurant.special_features) && restaurant.special_features.length > 0 && (
           <div className="space-y-3">
             <h2 className="text-lg font-bold text-[var(--color-ink)]">מאפיינים מיוחדים</h2>
             <div className="flex flex-wrap gap-2">
