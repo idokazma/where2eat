@@ -19,6 +19,7 @@ import { PageLayout } from '@/components/layout';
 import { MentionLevelBadge } from '@/components/restaurant/MentionLevelBadge';
 import { RestaurantCardNew } from '@/components/restaurant/RestaurantCardNew';
 import { fetchEpisodeDetail } from '@/lib/api/episodes';
+import { getRestaurantImage } from '@/lib/images';
 import type { EpisodeDetail, EpisodeMention, Restaurant } from '@/types/restaurant';
 
 function MentionCard({ mention }: { mention: EpisodeMention }) {
@@ -403,13 +404,17 @@ export default function EpisodeDetailPage() {
               נטעם בפרק
             </h2>
             <div className="space-y-4">
-              {mentions.tasted.map((m) => (
-                <RestaurantCardNew
-                  key={m.id}
-                  restaurant={mentionToRestaurant(m, episode)}
-                  onTap={() => router.push(`/restaurant/${m.restaurant_id || m.id}`)}
-                />
-              ))}
+              {mentions.tasted.map((m) => {
+                const rest = mentionToRestaurant(m, episode);
+                return (
+                  <RestaurantCardNew
+                    key={m.id}
+                    restaurant={rest}
+                    imageUrl={getRestaurantImage(rest) || undefined}
+                    onTap={() => router.push(`/restaurant/${m.restaurant_id || m.id}`)}
+                  />
+                );
+              })}
             </div>
           </section>
         )}
@@ -422,13 +427,17 @@ export default function EpisodeDetailPage() {
               הוזכר בפרק
             </h2>
             <div className="space-y-4">
-              {mentions.mentioned.map((m) => (
-                <RestaurantCardNew
-                  key={m.id}
-                  restaurant={mentionToRestaurant(m, episode)}
-                  onTap={() => router.push(`/restaurant/${m.restaurant_id || m.id}`)}
-                />
-              ))}
+              {mentions.mentioned.map((m) => {
+                const rest = mentionToRestaurant(m, episode);
+                return (
+                  <RestaurantCardNew
+                    key={m.id}
+                    restaurant={rest}
+                    imageUrl={getRestaurantImage(rest) || undefined}
+                    onTap={() => router.push(`/restaurant/${m.restaurant_id || m.id}`)}
+                  />
+                );
+              })}
             </div>
           </section>
         )}
@@ -449,13 +458,17 @@ export default function EpisodeDetailPage() {
             </button>
             {refsOpen && (
               <div className="space-y-4 animate-fade-up">
-                {mentions.reference_only.map((m) => (
-                  <RestaurantCardNew
-                    key={m.id}
-                    restaurant={mentionToRestaurant(m, episode)}
-                    onTap={() => router.push(`/restaurant/${m.restaurant_id || m.id}`)}
-                  />
-                ))}
+                {mentions.reference_only.map((m) => {
+                  const rest = mentionToRestaurant(m, episode);
+                  return (
+                    <RestaurantCardNew
+                      key={m.id}
+                      restaurant={rest}
+                      imageUrl={getRestaurantImage(rest) || undefined}
+                      onTap={() => router.push(`/restaurant/${m.restaurant_id || m.id}`)}
+                    />
+                  );
+                })}
               </div>
             )}
           </section>
