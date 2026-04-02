@@ -149,14 +149,16 @@ function mentionToRestaurant(mention: EpisodeMention, episode: EpisodeDetail['ep
     mention_timestamp_seconds: mention.timestamp_seconds || null,
     mention_context: mention.mention_context as Restaurant['mention_context'],
     mention_level: mention.mention_level || null,
-    image_url: mention.image_url || null,
+    image_url: mention.image_url || mention.restaurant?.image_url || null,
+    og_image_url: mention.restaurant?.og_image_url || null,
+    photos: mention.restaurant?.photos || [],
     rating: {
       google_rating: mention.google_rating || undefined,
       total_reviews: mention.google_review_count || undefined,
     },
     google_places: mention.google_place_id
       ? { place_id: mention.google_place_id, google_url: mention.google_url || undefined }
-      : undefined,
+      : mention.restaurant?.google_places,
     instagram_url: mention.instagram_url || null,
     contact_info: {
       phone: mention.phone || null,
