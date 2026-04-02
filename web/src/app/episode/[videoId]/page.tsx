@@ -20,196 +20,108 @@ import { MentionLevelBadge } from '@/components/restaurant/MentionLevelBadge';
 import { RestaurantCardNew } from '@/components/restaurant/RestaurantCardNew';
 import { fetchEpisodeDetail } from '@/lib/api/episodes';
 import { getRestaurantImage } from '@/lib/images';
+import { getCuisineGradient } from '@/lib/images';
 import type { EpisodeDetail, EpisodeMention, Restaurant } from '@/types/restaurant';
 
-function MentionCard({ mention }: { mention: EpisodeMention }) {
+function ExpandableRestaurantItem({
+  mention,
+  episode,
+  onNavigate,
+}: {
+  mention: EpisodeMention;
+  episode: EpisodeDetail['episode'];
+  onNavigate: (id: string) => void;
+}) {
+  const [expanded, setExpanded] = useState(false);
+  const rest = mentionToRestaurant(mention, episode);
+  const imageUrl = getRestaurantImage(rest);
+  const gradientClass = getCuisineGradient(mention.cuisine_type);
+
   const youtubeUrl = mention.timestamp_seconds
-    ? `https://www.youtube.com/watch?v=${mention.video_id || ''}&t=${Math.floor(mention.timestamp_seconds)}s`
+    ? `https://www.youtube.com/watch?v=${mention.video_id || episode.video_id}&t=${Math.floor(mention.timestamp_seconds)}s`
     : null;
 
   return (
-    <div className="bg-[var(--color-surface)] rounded-xl border border-[var(--color-border)] overflow-hidden">
-      {/* Image if available */}
-      {mention.image_url && (
-        <Link href={`/restaurant/${mention.restaurant_id || mention.id}`}>
-          <div className="relative aspect-[16/10] bg-[var(--color-ink-faint)]">
+    <div className="rounded-xl border border-[var(--color-border)] overflow-hidden bg-[var(--color-surface)]">
+      {/* Compact row — always visible */}
+      <button
+        onClick={() => setExpanded(!expanded)}
+        className="w-full flex items-center gap-3 p-3 text-right hover:bg-[var(--color-surface-alt,rgba(0,0,0,0.02))] transition-colors"
+      >
+        {/* Thumbnail */}
+        <div className="w-14 h-14 rounded-lg overflow-hidden shrink-0 relative bg-[var(--color-ink-faint)]">
+          {imageUrl ? (
             <Image
-              src={mention.image_url}
+              src={imageUrl}
               alt={mention.name_hebrew}
               fill
               className="object-cover"
-              sizes="(max-width: 768px) 100vw, 50vw"
+              sizes="56px"
             />
-          </div>
-        </Link>
-      )}
-
-      <div className="p-3">
-        {/* Name + badge */}
-        <div className="flex items-center gap-2 mb-1">
-          <Link
-            href={`/restaurant/${mention.restaurant_id || mention.id}`}
-            className="font-bold text-[var(--color-ink)] hover:text-[var(--color-accent)] transition-colors flex-1"
-          >
-            {mention.name_hebrew}
-          </Link>
-          {mention.mention_level && (
-            <MentionLevelBadge mentionLevel={mention.mention_level} />
+          ) : (
+            <div className={`w-full h-full ${gradientClass} flex items-center justify-center`}>
+              <UtensilsCrossed className="w-5 h-5 text-white/70" />
+            </div>
           )}
         </div>
 
-        {/* English name */}
-        {mention.name_english && (
-          <p className="text-xs text-[var(--color-ink-faint)] mb-1">{mention.name_english}</p>
-        )}
-
-        {/* Meta line */}
-        <div className="flex items-center gap-2 text-xs text-[var(--color-ink-muted)] mb-2 flex-wrap">
-          {mention.city && (
-            <span className="flex items-center gap-0.5">
-              <MapPin className="w-3 h-3" />
-              {mention.city}
+        {/* Info */}
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2">
+            <span className="font-bold text-sm text-[var(--color-ink)] truncate">
+              {mention.name_hebrew}
             </span>
-          )}
-          {mention.cuisine_type && <span>· {mention.cuisine_type}</span>}
-          {mention.price_range && <span>· {mention.price_range}</span>}
-          {mention.google_rating && (
-            <span className="flex items-center gap-0.5">
-              · <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
-              {mention.google_rating}
-              {mention.google_review_count && (
-                <span className="text-[var(--color-ink-faint)]">({mention.google_review_count})</span>
-              )}
-            </span>
+            {mention.mention_level && (
+              <MentionLevelBadge mentionLevel={mention.mention_level} />
+            )}
+          </div>
+          <div className="flex items-center gap-1.5 text-xs text-[var(--color-ink-muted)] mt-0.5">
+            {mention.city && (
+              <span className="flex items-center gap-0.5">
+                <MapPin className="w-3 h-3" />
+                {mention.city}
+              </span>
+            )}
+            {mention.cuisine_type && <span>· {mention.cuisine_type}</span>}
+            {mention.google_rating && (
+              <span className="flex items-center gap-0.5">
+                · <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
+                {mention.google_rating}
+              </span>
+            )}
+          </div>
+          {/* Short quote preview */}
+          {mention.host_quotes?.[0] && !expanded && (
+            <p className="text-xs text-[var(--color-ink-faint)] mt-0.5 truncate italic">
+              &ldquo;{mention.host_quotes[0]}&rdquo;
+            </p>
           )}
         </div>
 
-        {/* Mention context (useful for reference_only that lack quotes) */}
-        {mention.mention_context && !mention.host_quotes?.length && !mention.host_comments && (
-          <p className="text-sm text-[var(--color-ink-muted)] mb-2 leading-relaxed">
-            {mention.mention_context}
-          </p>
-        )}
-
-        {/* Host quotes */}
-        {mention.host_quotes && mention.host_quotes.length > 0 && (
-          <div className="mb-2">
-            {mention.host_quotes.slice(0, 2).map((quote, i) => (
-              <blockquote
-                key={i}
-                className="text-sm text-[var(--color-ink-muted)] italic border-r-2 border-[var(--color-accent)] pr-3 py-0.5 mb-1"
-              >
-                &ldquo;{quote}&rdquo;
-              </blockquote>
-            ))}
-          </div>
-        )}
-
-        {/* Host comments */}
-        {mention.host_comments && !mention.host_quotes?.length && (
-          <p className="text-sm text-[var(--color-ink-muted)] mb-2">
-            {mention.host_comments}
-          </p>
-        )}
-
-        {/* Dishes */}
-        {mention.dishes_mentioned && mention.dishes_mentioned.length > 0 && (
-          <div className="flex flex-wrap gap-1 mb-2">
-            {mention.dishes_mentioned.map((dish, i) => (
-              <span
-                key={i}
-                className="text-[10px] px-1.5 py-0.5 rounded-full bg-[var(--color-accent-subtle)] text-[var(--color-accent)]"
-              >
-                {dish}
-              </span>
-            ))}
-          </div>
-        )}
-
-        {/* Special features */}
-        {mention.special_features && mention.special_features.length > 0 && (
-          <div className="flex flex-wrap gap-1 mb-2">
-            {mention.special_features.map((feat, i) => (
-              <span
-                key={i}
-                className="text-[10px] px-1.5 py-0.5 rounded-full bg-[var(--color-surface-alt,#f0f0f0)] text-[var(--color-ink-muted)]"
-              >
-                {feat}
-              </span>
-            ))}
-          </div>
-        )}
-
-        {/* Links: Instagram, Website, Google Maps */}
-        {(mention.instagram_url || mention.website || mention.google_url) && (
-          <div className="flex items-center gap-3 mb-2 text-xs">
-            {mention.instagram_url && (
-              <a href={mention.instagram_url} target="_blank" rel="noopener noreferrer"
-                className="text-[var(--color-accent)] hover:underline flex items-center gap-1">
-                <ExternalLink className="w-3 h-3" />Instagram
-              </a>
-            )}
-            {mention.website && (
-              <a href={mention.website} target="_blank" rel="noopener noreferrer"
-                className="text-[var(--color-accent)] hover:underline flex items-center gap-1">
-                <ExternalLink className="w-3 h-3" />אתר
-              </a>
-            )}
-            {mention.google_url && (
-              <a href={mention.google_url} target="_blank" rel="noopener noreferrer"
-                className="text-[var(--color-accent)] hover:underline flex items-center gap-1">
-                <MapPin className="w-3 h-3" />מפה
-              </a>
-            )}
-          </div>
-        )}
-
-        {/* Footer: speaker + timestamp */}
-        <div className="flex items-center justify-between text-xs text-[var(--color-ink-faint)]">
-          {mention.speaker && <span>{mention.speaker}</span>}
+        {/* Timestamp + chevron */}
+        <div className="flex flex-col items-center gap-1 shrink-0">
+          {expanded ? (
+            <ChevronUp className="w-4 h-4 text-[var(--color-ink-muted)]" />
+          ) : (
+            <ChevronDown className="w-4 h-4 text-[var(--color-ink-muted)]" />
+          )}
           {youtubeUrl && (
-            <a
-              href={youtubeUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1 text-[var(--color-accent)] hover:underline"
-            >
-              <Play className="w-3 h-3" />
+            <span className="text-[10px] text-[var(--color-accent)]">
               {mention.timestamp_display || formatTimestamp(mention.timestamp_seconds)}
-            </a>
+            </span>
           )}
         </div>
-      </div>
-    </div>
-  );
-}
+      </button>
 
-function ReferenceItem({ mention }: { mention: EpisodeMention }) {
-  const youtubeUrl = mention.timestamp_seconds
-    ? `https://www.youtube.com/watch?v=${mention.video_id || ''}&t=${Math.floor(mention.timestamp_seconds)}s`
-    : null;
-
-  return (
-    <div className="flex items-start gap-3 py-2 border-b border-[var(--color-border)] last:border-b-0">
-      <div className="flex-1 min-w-0">
-        <span className="text-sm font-medium text-[var(--color-ink)]">
-          {mention.name_hebrew}
-        </span>
-        {mention.skip_reason && (
-          <p className="text-xs text-[var(--color-ink-faint)] mt-0.5">
-            {mention.skip_reason}
-          </p>
-        )}
-      </div>
-      {youtubeUrl && (
-        <a
-          href={youtubeUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-xs text-[var(--color-accent)] shrink-0"
-        >
-          {mention.timestamp_display || formatTimestamp(mention.timestamp_seconds)}
-        </a>
+      {/* Expanded: full restaurant card */}
+      {expanded && (
+        <div className="border-t border-[var(--color-border)] animate-fade-up">
+          <RestaurantCardNew
+            restaurant={rest}
+            imageUrl={imageUrl || undefined}
+            onTap={() => onNavigate(mention.restaurant_id || mention.id)}
+          />
+        </div>
       )}
     </div>
   );
@@ -403,18 +315,15 @@ export default function EpisodeDetailPage() {
               <UtensilsCrossed className="w-5 h-5 text-emerald-600" />
               נטעם בפרק
             </h2>
-            <div className="space-y-4">
-              {mentions.tasted.map((m) => {
-                const rest = mentionToRestaurant(m, episode);
-                return (
-                  <RestaurantCardNew
-                    key={m.id}
-                    restaurant={rest}
-                    imageUrl={getRestaurantImage(rest) || undefined}
-                    onTap={() => router.push(`/restaurant/${m.restaurant_id || m.id}`)}
-                  />
-                );
-              })}
+            <div className="space-y-2">
+              {mentions.tasted.map((m) => (
+                <ExpandableRestaurantItem
+                  key={m.id}
+                  mention={m}
+                  episode={episode}
+                  onNavigate={(id) => router.push(`/restaurant/${id}`)}
+                />
+              ))}
             </div>
           </section>
         )}
@@ -426,18 +335,15 @@ export default function EpisodeDetailPage() {
               <MessageCircle className="w-5 h-5 text-sky-600" />
               הוזכר בפרק
             </h2>
-            <div className="space-y-4">
-              {mentions.mentioned.map((m) => {
-                const rest = mentionToRestaurant(m, episode);
-                return (
-                  <RestaurantCardNew
-                    key={m.id}
-                    restaurant={rest}
-                    imageUrl={getRestaurantImage(rest) || undefined}
-                    onTap={() => router.push(`/restaurant/${m.restaurant_id || m.id}`)}
-                  />
-                );
-              })}
+            <div className="space-y-2">
+              {mentions.mentioned.map((m) => (
+                <ExpandableRestaurantItem
+                  key={m.id}
+                  mention={m}
+                  episode={episode}
+                  onNavigate={(id) => router.push(`/restaurant/${id}`)}
+                />
+              ))}
             </div>
           </section>
         )}
@@ -457,18 +363,15 @@ export default function EpisodeDetailPage() {
               גם הוזכרו ({mentions.reference_only.length})
             </button>
             {refsOpen && (
-              <div className="space-y-4 animate-fade-up">
-                {mentions.reference_only.map((m) => {
-                  const rest = mentionToRestaurant(m, episode);
-                  return (
-                    <RestaurantCardNew
-                      key={m.id}
-                      restaurant={rest}
-                      imageUrl={getRestaurantImage(rest) || undefined}
-                      onTap={() => router.push(`/restaurant/${m.restaurant_id || m.id}`)}
-                    />
-                  );
-                })}
+              <div className="space-y-2 animate-fade-up">
+                {mentions.reference_only.map((m) => (
+                  <ExpandableRestaurantItem
+                    key={m.id}
+                    mention={m}
+                    episode={episode}
+                    onNavigate={(id) => router.push(`/restaurant/${id}`)}
+                  />
+                ))}
               </div>
             )}
           </section>
