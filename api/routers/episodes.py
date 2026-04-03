@@ -186,7 +186,7 @@ async def seed_extraction(extraction: Dict[str, Any] = Body(...)):
     if not video_id:
         raise HTTPException(status_code=400, detail="Missing episode.video_id")
 
-    episode_id = ep.get('episode_id', str(uuid.uuid4()))
+    episode_id = ep.get('episode_id') or str(uuid.uuid4())
 
     # Create episode
     try:
