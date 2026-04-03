@@ -648,8 +648,8 @@ class Database:
                     google_user_ratings_total, latitude, longitude, image_url, photos,
                     google_name, published_at, og_image_url,
                     video_url, video_id, channel_name, google_url, engaging_quote,
-                    is_closing, country
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    is_closing, country, instagram_url, mention_level, is_hidden
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ''', (
                 restaurant_id,
                 episode_id,
@@ -689,6 +689,9 @@ class Database:
                 kwargs.get('engaging_quote'),
                 1 if kwargs.get('is_closing') else 0,
                 kwargs.get('country'),
+                kwargs.get('instagram_url'),
+                kwargs.get('mention_level'),
+                1 if kwargs.get('is_hidden') else 0,
             ))
 
             return restaurant_id
@@ -2142,15 +2145,28 @@ class Database:
         with self.get_connection() as conn:
             cursor = conn.cursor()
             cursor.execute('''
-                SELECT em.*, r.id as linked_restaurant_id, r.image_url, r.google_rating,
-                       r.google_user_ratings_total as google_review_count,
-                       r.latitude as r_lat, r.longitude as r_lng,
-                       r.address, r.neighborhood, r.price_range, r.google_url, r.instagram_url,
-                       r.contact_website as website, r.contact_phone as phone,
-                       r.special_features
+                SELECT em.*,
+                       COALESCE(r.id, r_gp.id) as linked_restaurant_id,
+                       COALESCE(r.image_url, r_gp.image_url) as image_url,
+                       COALESCE(r.google_rating, r_gp.google_rating) as google_rating,
+                       COALESCE(r.google_user_ratings_total, r_gp.google_user_ratings_total) as google_review_count,
+                       COALESCE(r.latitude, r_gp.latitude) as r_lat,
+                       COALESCE(r.longitude, r_gp.longitude) as r_lng,
+                       COALESCE(r.address, r_gp.address) as address,
+                       COALESCE(r.neighborhood, r_gp.neighborhood) as neighborhood,
+                       COALESCE(r.price_range, r_gp.price_range) as price_range,
+                       COALESCE(r.google_url, r_gp.google_url) as google_url,
+                       COALESCE(r.instagram_url, r_gp.instagram_url) as instagram_url,
+                       COALESCE(r.contact_website, r_gp.contact_website) as website,
+                       COALESCE(r.contact_phone, r_gp.contact_phone) as phone,
+                       COALESCE(r.special_features, r_gp.special_features) as special_features
                 FROM episode_mentions em
                 LEFT JOIN restaurants r ON em.restaurant_id = r.id
+                LEFT JOIN restaurants r_gp ON r_gp.google_place_id = em.google_place_id
+                    AND em.restaurant_id IS NULL
+                    AND em.google_place_id IS NOT NULL
                 WHERE em.video_id = ?
+                GROUP BY em.id
                 ORDER BY em.timestamp_seconds ASC NULLS LAST
             ''', (video_id,))
             rows = cursor.fetchall()
