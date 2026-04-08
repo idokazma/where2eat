@@ -68,6 +68,15 @@ def get_db_session():
     """Get database session if using SQLAlchemy."""
     if not use_sqlalchemy():
         return None
+    import sys
+    # Use already-registered module from startup (main.py registers it at boot)
+    # This avoids re-loading the file on every request and prevents import errors
+    if "models.base" in sys.modules:
+        try:
+            return sys.modules["models.base"].get_db_session()
+        except Exception as e:
+            print(f"Warning: Could not get database session: {e}")
+            return None
     try:
         import importlib.util
 
@@ -84,6 +93,9 @@ def get_db_session():
         spec = importlib.util.spec_from_file_location("src_models_base", src_base_path)
         src_models_base = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(src_models_base)
+
+        # Register in sys.modules for future calls
+        sys.modules["models.base"] = src_models_base
 
         return src_models_base.get_db_session()
     except Exception as e:
