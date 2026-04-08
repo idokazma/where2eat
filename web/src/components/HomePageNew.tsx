@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { Search } from 'lucide-react';
+import { Search, Shuffle } from 'lucide-react';
 import { Restaurant, getCoordinates } from '@/types/restaurant';
 import { PageLayout } from '@/components/layout';
 import { FilterBar, LocationFilter } from '@/components/filters';
@@ -56,6 +56,14 @@ export function HomePageNew() {
 
   // Search (instant, client-side)
   const [searchQuery, setSearchQuery] = useState('');
+
+  // Feeling Lucky — shuffle seed (null = default order, number = shuffled)
+  const [shuffleSeed, setShuffleSeed] = useState<number | null>(null);
+
+  const handleShuffle = useCallback(() => {
+    setShuffleSeed(Math.random());
+    setRenderCount(RENDER_BATCH);
+  }, []);
 
   // Location filter
   const locationFilter = useLocationFilter();
@@ -146,10 +154,17 @@ export function HomePageNew() {
         const distB = coordsB ? calculateDistance(locLat, locLng, coordsB.latitude, coordsB.longitude) : Infinity;
         return distA - distB;
       });
+    } else if (shuffleSeed !== null) {
+      // Feeling Lucky — stable shuffle based on seed
+      result = [...result].sort((a, b) => {
+        const hashA = ((a.id?.charCodeAt(0) ?? 0) * shuffleSeed * 9301 + 49297) % 233280;
+        const hashB = ((b.id?.charCodeAt(0) ?? 0) * shuffleSeed * 9301 + 49297) % 233280;
+        return hashA - hashB;
+      });
     }
 
     return result;
-  }, [allRestaurants, searchQuery, locMode, locCity, locNeighborhood, locLat, locLng, settings.showOnlyIsrael]);
+  }, [allRestaurants, searchQuery, locMode, locCity, locNeighborhood, locLat, locLng, settings.showOnlyIsrael, shuffleSeed]);
 
   // Slice for progressive rendering
   const visibleRestaurants = useMemo(
@@ -214,6 +229,17 @@ export function HomePageNew() {
         </div>
         <FilterBar>
           <LocationFilter />
+          <button
+            onClick={handleShuffle}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-colors shrink-0 ${
+              shuffleSeed !== null
+                ? 'bg-[var(--color-accent)] text-white'
+                : 'bg-[var(--color-surface)] text-[var(--color-ink-subtle)] border border-[var(--color-border)]'
+            }`}
+          >
+            <Shuffle className="w-3.5 h-3.5" />
+            <span>ערבב</span>
+          </button>
         </FilterBar>
       </div>
 
