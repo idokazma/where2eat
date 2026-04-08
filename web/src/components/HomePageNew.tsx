@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { Search, Shuffle } from 'lucide-react';
+import { Search, Shuffle, X } from 'lucide-react';
 import { Restaurant, getCoordinates } from '@/types/restaurant';
 import { PageLayout } from '@/components/layout';
 import { FilterBar, LocationFilter } from '@/components/filters';
@@ -231,17 +231,27 @@ export function HomePageNew() {
         </div>
         <FilterBar>
           <LocationFilter />
-          <button
-            onClick={handleShuffle}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-colors shrink-0 ${
-              shuffleSeed !== null
-                ? 'bg-[var(--color-accent)] text-white'
-                : 'bg-[var(--color-surface)] text-[var(--color-ink-subtle)] border border-[var(--color-border)]'
-            }`}
-          >
-            <Shuffle className="w-3.5 h-3.5" />
-            <span>ערבב</span>
-          </button>
+          <div className="flex items-center shrink-0">
+            <button
+              onClick={handleShuffle}
+              className={`flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium transition-colors ${
+                shuffleSeed !== null
+                  ? 'bg-[var(--color-accent)] text-white rounded-r-none rounded-l-full border-r border-white/20'
+                  : 'bg-[var(--color-surface)] text-[var(--color-ink-subtle)] border border-[var(--color-border)] rounded-full'
+              }`}
+            >
+              <Shuffle className="w-3.5 h-3.5" />
+              <span>ערבב</span>
+            </button>
+            {shuffleSeed !== null && (
+              <button
+                onClick={() => setShuffleSeed(null)}
+                className="flex items-center px-2 py-1.5 bg-[var(--color-accent)] text-white rounded-l-none rounded-r-full"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            )}
+          </div>
         </FilterBar>
       </div>
 
