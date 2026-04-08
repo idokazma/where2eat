@@ -61,7 +61,7 @@ export function HomePageNew() {
   const [shuffleSeed, setShuffleSeed] = useState<number | null>(null);
 
   const handleShuffle = useCallback(() => {
-    setShuffleSeed(42);
+    setShuffleSeed(Date.now());
     setRenderCount(RENDER_BATCH);
   }, []);
 
