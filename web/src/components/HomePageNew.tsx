@@ -155,12 +155,14 @@ export function HomePageNew() {
         return distA - distB;
       });
     } else if (shuffleSeed !== null) {
-      // Feeling Lucky — stable shuffle based on seed
-      result = [...result].sort((a, b) => {
-        const hashA = ((a.id?.charCodeAt(0) ?? 0) * shuffleSeed * 9301 + 49297) % 233280;
-        const hashB = ((b.id?.charCodeAt(0) ?? 0) * shuffleSeed * 9301 + 49297) % 233280;
-        return hashA - hashB;
-      });
+      // Feeling Lucky — stable shuffle: each item gets a deterministic random
+      // value derived from both its index AND the seed, so every click produces
+      // a different order but the same seed always gives the same order (no
+      // re-shuffle on re-render).
+      result = result.map((r, i) => ({
+        r,
+        rand: Math.sin(shuffleSeed + i * 127.1) * 43758.5453 % 1,
+      })).sort((a, b) => a.rand - b.rand).map(({ r }) => r);
     }
 
     return result;
