@@ -1,0 +1,717 @@
+{
+  "episode": {
+    "video_id": "shVuVzVjlwk",
+    "video_url": "https://www.youtube.com/watch?v=shVuVzVjlwk",
+    "title": "מגבון מבוצע היטב (פרק 133)",
+    "channel_name": "מדברים מהבטן - הפודיום",
+    "published_at": "2025-11-19",
+    "hosts": [
+      "עמית אהרונסון",
+      "יהונתן כהן",
+      "נתה סלונים"
+    ],
+    "guests": [],
+    "language": "he",
+    "transcript_length": 50051,
+    "segment_count": 1491,
+    "episode_id": null,
+    "summary": "פרק 133 של מדברים מהבטן. נתה ועמית מספרים על ארוחת שף מיוחדת עם יונתן רושפלד בסקולרט של דנון. יהונתן מרים כוס לאיטמיט בקינג ג'ורג', ועמית נותן ביס בונוס מקפה גינה במצפה רמון. בהמשך - נתה מתלהבת מפאנקי בקריית מוצקין, יהונתן אכל במסעדת ירושלים בלוד, ועמית מספר על ברנץ' בהלופט במלון ג'ורג' בתל אביב. דיון על מאסטרשף, משחקי השף, חתונת נועה קירל, פטירת יום טוב בטש, וביקורת סגי כהן על האובי."
+  },
+  "extraction": {
+    "date": "2026-04-03",
+    "agent": "episode-processor",
+    "total_mentions": 21,
+    "add_to_page": 6,
+    "reference_only": 12,
+    "rejected": 3,
+    "already_in_db": 0,
+    "new_to_add": 6
+  },
+  "restaurants": [
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "סקולרט של דנון - ארוחת רושפלד",
+      "name_english": "Danon Scholard - Roshfeld Dinner",
+      "name_in_transcript": "סקולרט של דנון",
+      "google_name": null,
+      "timestamp": {
+        "seconds": 215,
+        "display": "03:35",
+        "youtube_url": "https://www.youtube.com/watch?v=shVuVzVjlwk&t=215s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": null,
+        "address": null,
+        "region": "מרכז",
+        "latitude": null,
+        "longitude": null
+      },
+      "cuisine_type": "שף",
+      "price_range": "בינוני",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "בחיים שלי לא אכלתי שרימס בהכנה כל כך טובה וואו",
+        "ביס מהמם שאני באמת כאילו ככל שיכולתי החזרתי את הכף והשבתי אותה לפי",
+        "שינת לרכב העסיסית ברמה לא סבירה ג'וסית בטירוף"
+      ],
+      "host_comments": "נתה ועמית ביקרו בארוחת שף מיוחדת בהובלת יונתן רושפלד בסקולרט של דנון. חמש מנות וקינוח, מחיר 280 שקל כולל יין. התלהבות מפלאן שרימפס על רוטב סצ'ואן וסינטה מושלמת. ארוחה פתוחה לקהל הרחב",
+      "dishes_mentioned": [
+        "פלאן שרימפס ברוטב סצ'ואן",
+        "סינטה עם משחת פטרוזיליה ובצלים",
+        "לחם",
+        "קינוח"
+      ],
+      "special_features": [
+        "ארוחת שף",
+        "מטבח פתוח",
+        "אווירת בר יין",
+        "פתוח לקהל הרחב"
+      ],
+      "mention_context": "ביס השבוע של נתה ועמית - ארוחת שף בהובלת יונתן רושפלד בסקולרט דנון, פרויקט ארוחות עם שפים גדולים",
+      "mention_level": "נטעם",
+      "speaker": "נתה סלונים",
+      "google_places": {
+        "place_id": null,
+        "google_url": null,
+        "rating": null,
+        "review_count": null,
+        "price_level": null,
+        "phone": null,
+        "website": null,
+        "photo_url": null,
+        "instagram_url": "https://www.instagram.com/schoolyard_by_danon/",
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      },
+      "notes": "Pop-up event at Danon culinary school with Chef Roshfeld. Not a permanent restaurant - recurring events with different chefs. Considered add_to_page because hosts gave a full detailed review of the food and experience."
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "איטמיט",
+      "name_english": "EatMeat",
+      "name_in_transcript": "eט me",
+      "google_name": "איטמיט",
+      "timestamp": {
+        "seconds": 675,
+        "display": "11:15",
+        "youtube_url": "https://www.youtube.com/watch?v=shVuVzVjlwk&t=675s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": null,
+        "address": "המלך ג'ורג' 68, תל אביב-יפו, ישראל",
+        "region": "מרכז",
+        "latitude": 32.0759273,
+        "longitude": 34.776848099999995
+      },
+      "cuisine_type": "סנדוויצ'ים",
+      "price_range": "זול",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "סך הכל סנדוויץ' בשר שלטי הוא היה מהראשונים שהביאו את הדבר הזה לארץ",
+        "20 שנה כנראה אחד הקריחי בשר הכי טובים ובטח פופולריים שיש בנמצא ומגיע לו מגיע לו רספקט",
+        "פשטות מנצחת"
+      ],
+      "host_comments": "יהונתן מרים הצדעה למקום שעובד 20 שנה בקינג ג'ורג'. סנדוויצ'י בשר עם דפי אנטריקוט דקיקים, בצל, פלפל חריף, צ'ימצ'ורי, מיונז וחרדל. שתי מנות בלבד - בלחם או על סלט. אנדרייטד אבל אדיר",
+      "dishes_mentioned": [
+        "סנדוויץ' בשר",
+        "דפי אנטריקוט דקיקים",
+        "סלט"
+      ],
+      "special_features": [
+        "20 שנה",
+        "שתי מנות בלבד",
+        "אנדרייטד"
+      ],
+      "mention_context": "ביס השבוע של יהונתן - הצדעה למקום ותיק וקלאסי בקינג ג'ורג' שעושה סנדוויצ'י בשר מעולים כבר 20 שנה",
+      "mention_level": "נטעם",
+      "speaker": "יהונתן כהן",
+      "google_places": {
+        "place_id": "ChIJC6rE44BLHRURiN4-MXlga4M",
+        "google_url": "https://maps.google.com/?cid=9469768715110112904",
+        "rating": 4.7,
+        "review_count": 1455,
+        "price_level": null,
+        "phone": "03-525-2153",
+        "website": "https://www.facebook.com/eatmeattelaviv/",
+        "photo_url": "places/ChIJC6rE44BLHRURiN4-MXlga4M/photos/AU_ZVEHnwq0nl_8fuz11C7zuqwrr3L4bx02HEOWSntVOWeAOOIxj8EhDBEGJwsHhqfw8wl16B4HpYqtivYHM-PYEJ0AImo1aJBHTZZ3V15fSPDC4EJfQw6PoUNVNCc6-mn9Fm-L01TQWWu42QhTUGPiTNl6HCuyx5WXw4B5QxaV2T6vNCkdSepEXXabluqLeYoVX7OPkPf1CwCwv8o6p3h98EmZuDRSfz0DMjY5b457ad8H0heJNLAnesQTYo8geoKV4gyHS8cUaMVB2C6KMRl0ljDMbjxQin1OlH6UV5LKzpZFFzA",
+        "instagram_url": "https://www.instagram.com/eatmeat___tlv/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "קפה גינה",
+      "name_english": "Cafe Gina",
+      "name_in_transcript": "קפה גינה",
+      "google_name": "קפה גינה",
+      "timestamp": {
+        "seconds": 797,
+        "display": "13:17",
+        "youtube_url": "https://www.youtube.com/watch?v=shVuVzVjlwk&t=797s"
+      },
+      "location": {
+        "city": "מצפה רמון",
+        "neighborhood": null,
+        "address": "הר בוקר 12/5, מצפה רמון, 8060000, ישראל",
+        "region": "דרום",
+        "latitude": 30.6189126,
+        "longitude": 34.8011231
+      },
+      "cuisine_type": "קפה",
+      "price_range": "בינוני",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "מקום חמוד להפלי",
+        "קפה מעולה אגב עושים הכל לבד",
+        "הכי טוב עוגת דלא עם קרם אסקרפונה",
+        "עוגה ריח וטעם של דלעת פרשית טריה"
+      ],
+      "host_comments": "עמית נותן ביס בונוס על בית קפה קהילתי במצפה רמון. שתי נשים - רוני אדס ומעיין פורטנוי - פתחו מקום עם משחקים לילדים, מקומות ללפטופיסטים, אירועי תרבות. קפה מעולה, עוגת דלעת מהממת עם קרם מסקרפונה. פתוח בשבת",
+      "dishes_mentioned": [
+        "עוגת דלעת עם קרם מסקרפונה",
+        "בריוש עם ביצי עין",
+        "סלטים",
+        "אמריקנו"
+      ],
+      "special_features": [
+        "בית קפה קהילתי",
+        "פתוח בשבת",
+        "אירועי תרבות",
+        "משחקים לילדים"
+      ],
+      "mention_context": "ביס בונוס של עמית מביקור בדרום - בית קפה קהילתי במצפה רמון עם קפה מעולה ועוגת דלעת מהממת",
+      "mention_level": "נטעם",
+      "speaker": "עמית אהרונסון",
+      "google_places": {
+        "place_id": "ChIJZZZWqmTzARURmN9FOeldx3g",
+        "google_url": "https://maps.google.com/?cid=8703028061186416536",
+        "rating": 4.5,
+        "review_count": 554,
+        "price_level": null,
+        "phone": "055-245-1146",
+        "website": "https://www.cafe-gina.com/",
+        "photo_url": "places/ChIJZZZWqmTzARURmN9FOeldx3g/photos/AU_ZVEGwAvEQL_3C8G63dMqSpvxR7N3ynk2UQqWaj3p3SIRC5zIJDyBLiG3LcFmPeimkzp_TGliAm4a0UfT0Jwa0-LSB6S5XUl8pi4Sltnbeoov2QVrTlwqsbyps63wK2OzYvZF0g4chyNDzXlJfyWLKwsweMOzHATgdOk2FuO_iOxT1_3ovqr6fVwcIBqams1RECQvm2shONkBMucXFimU3vqLebrzeelKCFgPtUNcXWWXpy4aB5hxvJB6f2N8_MOFsPUSWAQNWN6IaFINx43H9dVBtx6AJ63nYV7jmj63rJN4fB-PQrfOl2FF5AfoOPv2PL8ww_faMop_q6b_V6B2RYawRo-NQDKKlK0ZBobVJ4sLt2t1EkrEk0-L-ceyLREFcAbyEbUNho1qlOUjWT49YfkHNRn8zAaQjaWwXa95gqE6HZg",
+        "instagram_url": "https://www.instagram.com/cafe_gina/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "פאנקי",
+      "name_english": "Funky",
+      "name_in_transcript": "פאנקי",
+      "google_name": "פאנקי FUNKY",
+      "timestamp": {
+        "seconds": 2402,
+        "display": "40:02",
+        "youtube_url": "https://www.youtube.com/watch?v=shVuVzVjlwk&t=2402s"
+      },
+      "location": {
+        "city": "קריית מוצקין",
+        "neighborhood": "צומת מוצרט",
+        "address": "שדרות משה גושן 2, קריית מוצקין, 2636801, ישראל",
+        "region": "צפון",
+        "latitude": 32.8243815,
+        "longitude": 35.0791767
+      },
+      "cuisine_type": "יפני",
+      "price_range": "בינוני",
+      "status": "חדש",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "העיצוב שם זה משהו לא נורמלי ברמת ההשקעה",
+        "בחיים שלי לא ראיתי מטבח כזה נקי בחיים שלי בשום מטבח של שום מסעדה",
+        "קריספי חציל ברמת קריספיות שעוד לא נתקלנו בהם",
+        "אפילו המגבון מבוצע"
+      ],
+      "host_comments": "נתה ביקרה במקום יפני חדש בקריית מוצקין - איזקאיה מודרנית של שלושה אחים (לי, דין וסגי חזן) ואור פלג. רמן מצוין, אגנסו (צ'יפס חציל יפני) מדהים, קצו סנדו, קוקטיילים יפניים. עיצוב מושקע, מטבח נקי להפליא, שמפנייה ב-114 שקל. פתוח בשבת",
+      "dishes_mentioned": [
+        "רמן פייתן עוף",
+        "אגנסו (צ'יפס חציל יפני)",
+        "קצו סנדו",
+        "קצוק קרי",
+        "נודלס",
+        "קוקטייל וויסקי מייפל מיסו"
+      ],
+      "special_features": [
+        "איזקאיה מודרנית",
+        "עיצוב מושקע",
+        "מטבח נקי במיוחד",
+        "שמפנייה ב-114 שקל",
+        "פתוח בשבת",
+        "מגבון ממותג",
+        "כפות רמן ממותגות"
+      ],
+      "mention_context": "נתה נסעה לקריית מוצקין ומתלהבת ממקום יפני חדש שהיה יכול להיות הכי פופולרי בתל אביב",
+      "mention_level": "נטעם",
+      "speaker": "נתה סלונים",
+      "google_places": {
+        "place_id": "ChIJ7X8AAgC3HRURSEqTKSMCwH8",
+        "google_url": "https://maps.google.com/?cid=9205359988389923400",
+        "rating": 4.4,
+        "review_count": 230,
+        "price_level": null,
+        "phone": "04-866-0188",
+        "website": "https://funkykm.co.il/",
+        "photo_url": "places/ChIJ7X8AAgC3HRURSEqTKSMCwH8/photos/AU_ZVEG4DH64mYSB7wWKfwgw3-_RaWAnMZzEBzjSgI3YF5nLnnGv-ZMAC-FaSP0JR4T7PHeUf7MzXfDmEChIQM6o_WDwLzMOUBQh3sxvXqervFsotAxudOEyCCwgjnmy9sE4X0zz8v1362AJApCKmbjMfLHjDwb59UMQesJXIW05uLYZGwadr0pZiTL7ApmneCakzzwTEnhbb3iXTnOkt8KSWBir2ODnFsFKbrK6gxvf2VrPuHxXMphgtCZo4zQRSESJVPCZZksN8JO0f04nyAWpQKxrdF2AAvEq2D8mCHLvZDJTHw",
+        "instagram_url": "https://www.instagram.com/funky.motzkin/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "מסעדת ירושלים",
+      "name_english": "Jerusalem Restaurant",
+      "name_in_transcript": "מסעדת ירושלים",
+      "google_name": "מסעדת ירושלים",
+      "timestamp": {
+        "seconds": 2692,
+        "display": "44:52",
+        "youtube_url": "https://www.youtube.com/watch?v=shVuVzVjlwk&t=2692s"
+      },
+      "location": {
+        "city": "לוד",
+        "neighborhood": null,
+        "address": "יוספטל 6, לוד, ישראל",
+        "region": "מרכז",
+        "latitude": 31.944982900000003,
+        "longitude": 34.8767296
+      },
+      "cuisine_type": "בוכרי",
+      "price_range": "זול",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "36 שקל לשיפוד של יצירת המופת הזו",
+        "שיפוד יפה ונדיב עם חריכה מעולה מצליעה של רב אומן במעטפת החיצונית תוכן עסיסי ועדין",
+        "כבב מפואר במקום נהדר",
+        "שווה מומלץ"
+      ],
+      "host_comments": "יהונתן ביקר במסעדת ירושלים בלוד - מקום שמרגיש כמו מסע בזמן. משפחה שמתקתקת עסק - אבא על הקופה, הבן דוד על הגריל, האמא במטבח. קבב מושלם עם חריכה מעולה, דושפרה, מאפים בוכריים. ליד תחנת הרכבת בלוד, שתייה גדולה",
+      "dishes_mentioned": [
+        "קבב",
+        "דושפרה",
+        "בכש",
+        "אושפלו",
+        "מאפים בוכריים",
+        "סלט ירקות"
+      ],
+      "special_features": [
+        "מסעדה בוכרית משפחתית",
+        "גריל",
+        "ליד תחנת הרכבת",
+        "שתייה גדולה",
+        "מחירים נמוכים"
+      ],
+      "mention_context": "יהונתן הלך למקום שכולם ממליצים עליו בכל פעם שמדברים על אוכל בוכרי או קבב - מסעדת ירושלים בלוד",
+      "mention_level": "נטעם",
+      "speaker": "יהונתן כהן",
+      "google_places": {
+        "place_id": "ChIJgV7zTmzKAhURpPRrZydQHBU",
+        "google_url": "https://maps.google.com/?cid=1521178904313459876",
+        "rating": 4.2,
+        "review_count": 861,
+        "price_level": null,
+        "phone": "08-924-4948",
+        "website": null,
+        "photo_url": "places/ChIJgV7zTmzKAhURpPRrZydQHBU/photos/AU_ZVEGBh6cQOoUTaxV0q-qc0xjJsYj9-Yk-qGZ1MDoNQkupXMMW9Bi6G8lpXV9iMA4Sso3VZHitb4X8tIutoM95leSrissno3Q6FHGVf3g5yRUz-cXHLc96-BVJkF-wF0Kc4wB7oATyqUUyJg38fVcU8RFKhuPf5noqrVUwG7g2WZMNuBkHJQPodXxPgTA6n58d5cYNiIHGPm8vNEtzUC-76M76JL9vhnkClsM6KHODlOgq6V8ksr7Mlas4zthGvQ53vMjyaNTNKBCjLG76j3aIwFSpO1lAcSYxhjqp3rsql8Sq3Q",
+        "instagram_url": "https://www.instagram.com/jerusalem.lod/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "הלופט במלון ג'ורג'",
+      "name_english": "The Loft at The George",
+      "name_in_transcript": "הלופט",
+      "google_name": "The George Tel Aviv",
+      "timestamp": {
+        "seconds": 2889,
+        "display": "48:09",
+        "youtube_url": "https://www.youtube.com/watch?v=shVuVzVjlwk&t=2889s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": null,
+        "address": "טל ישראל 5, תל אביב-יפו, 6742726, ישראל",
+        "region": "מרכז",
+        "latitude": 32.0638459,
+        "longitude": 34.7842112
+      },
+      "cuisine_type": "ברנץ'",
+      "price_range": "בינוני",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "אחת ממנות הבראנץ' הכי שוות ומשתלמות בתל אביב",
+        "64 שקל למנה שבקלות עם דרינק יכולה להיות ארוחת בוקר שלמה לבן אדם",
+        "סלט עוף זה משהו שאנחנו צריכים יותר ממנו בחיים שלנו"
+      ],
+      "host_comments": "עמית אכל ברנץ' בשבת בהלופט - מסעדת מלון ג'ורג' (מועדון חברים, אבל המסעדה פתוחה לקהל). מנת ניגובים ב-64 שקל - סלט ביצים, הרינג, איקרא, כבד קצוץ עם חלה קרואסון. קלאב סנדוויץ' עם סלט עוף, בליני אמיתיים, מאפים מעולים. לוקיישן יפהפה",
+      "dishes_mentioned": [
+        "ניגובים - סלט ביצים הרינג איקרא כבד קצוץ",
+        "חלת קרואסון",
+        "בליני עם קוויר וקרם פרש",
+        "סשימי",
+        "קלאב סנדוויץ' עם סלט עוף",
+        "מאפים",
+        "טפוצ'יפס"
+      ],
+      "special_features": [
+        "ברנץ' שבת",
+        "מלון בוטיק",
+        "פתוח לקהל הרחב",
+        "לוקיישן יפהפה"
+      ],
+      "mention_context": "עמית מספר על ברנץ' שבת משתלם ואיכותי בהלופט במלון ג'ורג' - מנות בראנץ' קלאסיות מבוצעות מעולה",
+      "mention_level": "נטעם",
+      "speaker": "עמית אהרונסון",
+      "google_places": {
+        "place_id": "ChIJI_B13LVLHRURNltYHax4oX8",
+        "google_url": "https://maps.google.com/?cid=9196764594689301302",
+        "rating": 4.2,
+        "review_count": 310,
+        "price_level": null,
+        "phone": "04-672-8578",
+        "website": "https://thegeorgetelaviv.com/he/",
+        "photo_url": "places/ChIJI_B13LVLHRURNltYHax4oX8/photos/AU_ZVEHDlpeDNavj42CUeX4ujrUOANVRM8zUPUgDe_p8ywuvPDFj6JapDDoRUsg_3hdVfPHsY2IfwOv9UOtsEFUfwQjlQD4CvTgIf8tAnMuf7UgdW04_4ZFxZvEhn9AKs05Gz1AACA5bu7zrsfmgvlEuSNybLD4YiG6LrSvxs9JpSypXkYr9Bfq35Vc6-Cr-0evRpcmEhxNyy323ly1bm7SUFEvV9ucRJFeTefn00m8XeVvcP4sgKl1Y7HdwEu6rwQC8ulEN_RJuwt-bGm2sBWD8B1nlTxZJvtImmGI1W3pETczLHw",
+        "instagram_url": "https://www.instagram.com/thegeorgetelaviv/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "יהלומה לוי - מקום חדש",
+      "name_english": "Yahaloma Levy - New Place",
+      "name_in_transcript": "יהלומה",
+      "skip_reason": "פתיחה חדשה שהוזכרה כחדשות - המארחים עדיין לא ביקרו",
+      "timestamp": {
+        "seconds": 2164,
+        "display": "36:04",
+        "youtube_url": "https://www.youtube.com/watch?v=shVuVzVjlwk&t=2164s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "address": "רחוב בן יהודה, תל אביב"
+      },
+      "host_quotes": [
+        "יש לה יד נהדרת בדיוק לז'נר הזה",
+        "מאוד מגניב מאוד מעודקן מאוד פרשי וכיפי"
+      ],
+      "mention_context": "יהלומה לוי חוזרת עם מקום חדש ברחוב בן יהודה, איפה שהיה שרק. מסעדנית ותיקה שהתחילה בלווינסקי, הייתה שפית רשתית של לנדבר",
+      "google_places": {
+        "place_id": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "הספייס האוס",
+      "name_english": "The Spice House",
+      "name_in_transcript": "הספייס האוס",
+      "skip_reason": "חדשות פתיחה מחדש - לא ביקרו, רק דיווח שנפתח מחדש",
+      "timestamp": {
+        "seconds": 2227,
+        "display": "37:07",
+        "youtube_url": "https://www.youtube.com/watch?v=shVuVzVjlwk&t=2227s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "נחלת בנימין"
+      },
+      "host_quotes": [
+        "הספייס האוס נפתח מחדש"
+      ],
+      "mention_context": "בר קוקטיילים שנפתח מחדש באזור נחלת בנימין, גרסה 2.0 עם קוקטיילים של יותם ואוכל של גאי פורטל בוגר הקורדון בלו",
+      "google_places": {
+        "place_id": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "רוברטה ווינצ'י",
+      "name_english": "Roberta Vinci",
+      "name_in_transcript": "רוברטה ווינצ'י",
+      "skip_reason": "אירוע חגיגות שמן זית בשיתוף פתורה - לא ביקורת מסעדה",
+      "timestamp": {
+        "seconds": 2286,
+        "display": "38:06",
+        "youtube_url": "https://www.youtube.com/watch?v=shVuVzVjlwk&t=2286s"
+      },
+      "location": {
+        "city": "קרקור"
+      },
+      "host_quotes": [
+        "מסעדה נורא כיפית"
+      ],
+      "mention_context": "הזכרה של אירוע חגיגות ראשון המסיק עם תפריט מיוחד בשיתוף שמן זית פתורה. עמית אמר שהיה בעבר ושווה",
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "שמונה",
+      "name_english": "Shmoné",
+      "name_in_transcript": "שמונה",
+      "skip_reason": "חדשות - אייל שני שומר על כוכב מישלן בניו יורק",
+      "timestamp": {
+        "seconds": 2338,
+        "display": "38:58",
+        "youtube_url": "https://www.youtube.com/watch?v=shVuVzVjlwk&t=2338s"
+      },
+      "location": {
+        "city": "ניו יורק"
+      },
+      "mention_context": "ידיעה שאייל שני שומר על כוכב מישלן שלו במסעדת שמונה בניו יורק",
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "ג'ורג' אנד ג'ון",
+      "name_english": "George & John",
+      "name_in_transcript": "ג'ורג' וג'ון",
+      "skip_reason": "חדשות תעשייה - החלפת שף, לא ביקורת",
+      "timestamp": {
+        "seconds": 2352,
+        "display": "39:12",
+        "youtube_url": "https://www.youtube.com/watch?v=shVuVzVjlwk&t=2352s"
+      },
+      "location": {
+        "city": "תל אביב"
+      },
+      "host_quotes": [
+        "השפים בג'ורג' וג'ון שוב מתחלפים"
+      ],
+      "mention_context": "חדשות על החלפת שף נוספת בג'ורג' אנד ג'ון - השף החדש הוא בן טיפוכיו של תומר טל",
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "הכיס",
+      "name_english": "HaKis",
+      "name_in_transcript": "הכיס",
+      "skip_reason": "הזכרה כהשוואה - מקום המבורגרים מגניב בחיפה/קריות, לא ביקורת",
+      "timestamp": {
+        "seconds": 2441,
+        "display": "40:41",
+        "youtube_url": "https://www.youtube.com/watch?v=shVuVzVjlwk&t=2441s"
+      },
+      "location": {
+        "city": "קריית מוצקין"
+      },
+      "mention_context": "הוזכר כמקום המבורגרים מגניב שנמצא מול פאנקי, של אותם בעלים",
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "הקוסם",
+      "name_english": "HaKosem",
+      "name_in_transcript": "כוסם",
+      "skip_reason": "הזכרה חולפת - יהונתן מציין שתמיד הולך לכוסם",
+      "timestamp": {
+        "seconds": 762,
+        "display": "12:42",
+        "youtube_url": "https://www.youtube.com/watch?v=shVuVzVjlwk&t=762s"
+      },
+      "location": {
+        "city": "תל אביב"
+      },
+      "mention_context": "יהונתן מציין שתמיד הולך לכוסם כשהוא במרכז תל אביב, ופעם אחת חרג ללכת לאיטמיט",
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "האובי",
+      "name_english": "OBI",
+      "name_in_transcript": "OBI",
+      "skip_reason": "דיון על ביקורת סגי כהן - המארחים לא ביקרו בעצמם",
+      "timestamp": {
+        "seconds": 3374,
+        "display": "56:14",
+        "youtube_url": "https://www.youtube.com/watch?v=shVuVzVjlwk&t=3374s"
+      },
+      "location": {
+        "city": "תל אביב"
+      },
+      "host_quotes": [
+        "האובי הוא לא מקום שאני אשלח אליו את ההורים שלי",
+        "זה לא מקום שסגי כהן אמור לאכול בו"
+      ],
+      "mention_context": "דיון ארוך על ביקורת חיובית של סגי כהן לאובי - המארחים חולקים על ההתאמה של סגי לסוג המקום הזה (בר/דיג'י עם אוכל)",
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "פופולר",
+      "name_english": "Popular",
+      "name_in_transcript": "פופולר",
+      "skip_reason": "נזכרה בהקשר של ביקורת אבי הפרטי - המארחים לא אכלו בגרסה המחודשת",
+      "timestamp": {
+        "seconds": 3725,
+        "display": "62:05",
+        "youtube_url": "https://www.youtube.com/watch?v=shVuVzVjlwk&t=3725s"
+      },
+      "location": {
+        "city": "תל אביב"
+      },
+      "host_quotes": [
+        "פופולר מקום מעולה"
+      ],
+      "mention_context": "אבי הפרטי (מבקר חיצוני) ביקר בלאנץ' של אבי ביטון בפופולר המחודש. דיון על המחירים - מוס שוקולד ב-58 שקל",
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "סמבוסק העיר",
+      "name_english": "Sambusak Ha'Ir",
+      "name_in_transcript": "סמבוסק העיר",
+      "skip_reason": "קובי רובין ביקר, לא המארחים - הזכרה קצרה",
+      "timestamp": {
+        "seconds": 3787,
+        "display": "63:07",
+        "youtube_url": "https://www.youtube.com/watch?v=shVuVzVjlwk&t=3787s"
+      },
+      "location": {
+        "city": "קריית שמונה"
+      },
+      "mention_context": "קובי רובין אכל שם לחמג'ון/מנאיש עם בשר. המארחים לא ביקרו - רק הזכרה קצרה",
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "נונו",
+      "name_english": "Nono",
+      "name_in_transcript": "נונו",
+      "skip_reason": "הזכרה חולפת - חוגגים 11 שנה, עמית רוצה ללכת. לא ביקורת",
+      "timestamp": {
+        "seconds": 3877,
+        "display": "64:37",
+        "youtube_url": "https://www.youtube.com/watch?v=shVuVzVjlwk&t=3877s"
+      },
+      "location": {
+        "city": "תל אביב"
+      },
+      "mention_context": "מסעדה איטלקית שחוגגת 11 שנה עם אירוע מיוחד של טולטולי וספיישלים. עמית רוצה ללכת",
+      "production_db": {
+        "exists": false,
+        "id": null
+      },
+      "google_places": {
+        "instagram_url": "https://www.instagram.com/nonorestaurant/"
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "צ'וטה",
+      "name_english": "Chuta",
+      "name_in_transcript": "צ'וטה",
+      "skip_reason": "הזכרה חולפת - עמית רוצה להגיע לירושלים לצ'וטה",
+      "timestamp": {
+        "seconds": 3862,
+        "display": "64:22",
+        "youtube_url": "https://www.youtube.com/watch?v=shVuVzVjlwk&t=3862s"
+      },
+      "location": {
+        "city": "ירושלים"
+      },
+      "mention_context": "עמית מזכיר שרוצה להגיע לירושלים לצ'וטה - לא ביקורת, רק תוכניות עתידיות",
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "rejected",
+      "name_in_transcript": "יום טוב בטש",
+      "reject_reason": "לא מסעדה - מכירים/מזכירים אדם שנפטר (בעל דוכן שניצלים וקציצות). העסק עצמו לא נקרא בשם ולא ניתנת ביקורת",
+      "timestamp": {
+        "seconds": 2113,
+        "display": "35:13"
+      }
+    },
+    {
+      "verdict": "rejected",
+      "name_in_transcript": "ג'רדינו",
+      "reject_reason": "הזכרה בהקשר משחקי השף - שף שעשה אודישן, לא ביקורת מסעדה",
+      "timestamp": {
+        "seconds": 1484,
+        "display": "24:44"
+      }
+    },
+    {
+      "verdict": "rejected",
+      "name_in_transcript": "מולם",
+      "reject_reason": "הזכרה כהשוואה בדיון על סגי כהן - לא ביקורת, רק התייחסות לביקורת קודמת של סגי",
+      "timestamp": {
+        "seconds": 3627,
+        "display": "60:27"
+      }
+    }
+  ]
+}

@@ -1,0 +1,817 @@
+{
+  "episode": {
+    "video_id": "w2US9jIi9R4",
+    "video_url": "https://www.youtube.com/watch?v=w2US9jIi9R4",
+    "title": "על הדבש ועל העולש | מדברים מהבטן, פרק 137",
+    "channel_name": "מדברים מהבטן - הפודיום",
+    "published_at": "2025-12-17",
+    "hosts": [
+      "עמית אהרונסון",
+      "יונתן כהן",
+      "נטע סלונים"
+    ],
+    "guests": [],
+    "language": "he",
+    "transcript_length": 47345,
+    "segment_count": 1453,
+    "episode_id": null,
+    "summary": "פרק 137 של מדברים מהבטן. יונתן חוזר מטיול בצפון אנגליה ומספר על מאפייה כשרה מדהימה בגייטסהד, עמית מדווח על סיבוב טעימות מרשים בנצרת כולל מלון בלנד ומאפיית אל משדוי, ונטע ממליצה על סאן של קבוצת מוג'ו בגני תקווה. בנוסף דיון על דירוגי טייסט אטלס, חדשות על בובי הסמאש בורגר החדש בגבעתיים, ופינת המבקרים עם סגי כהן על ברסרי 18."
+  },
+  "extraction": {
+    "date": "2026-04-03",
+    "agent": "episode-processor",
+    "total_mentions": 18,
+    "add_to_page": 10,
+    "reference_only": 6,
+    "rejected": 2,
+    "already_in_db": 0,
+    "new_to_add": 10
+  },
+  "restaurants": [
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "מלון בלנד",
+      "name_english": "The Blend Hotel",
+      "name_in_transcript": "הבלנד",
+      "google_name": "THE BLEND Boutique by Golden Crown",
+      "timestamp": {
+        "seconds": 622,
+        "display": "10:22",
+        "youtube_url": "https://www.youtube.com/watch?v=w2US9jIi9R4&t=622s"
+      },
+      "location": {
+        "city": "נצרת",
+        "neighborhood": null,
+        "address": "פאולוס השישי 62, נצרת",
+        "region": "צפון",
+        "latitude": 32.6979742,
+        "longitude": 35.2942579
+      },
+      "cuisine_type": "מטבח ערבי מקומי",
+      "price_range": "בינוני",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "חומוס הכי אוורירי שאכלתי מזה הרבה מאוד זמן",
+        "באמת פשוט נורא נורא כזה עשוי היטב הכל",
+        "יופי של ארוחה"
+      ],
+      "host_comments": "עמית מדווח על ארוחת צהריים שלמה וטובה מאוד במלון בלנד בנצרת בשישי-שבת. השף רמי סלם מגיש מטבח מקומי מבוצע מעולה. ביס השבוע: קובניה - בורגול מטובל עם תבשיל חוסה של בשר ובצל. חומוס אוורירי, מוחמרה נהדרת, שכל מחשי קישואים, ולסיום אום אלי (ליילות בהירות) נפלא.",
+      "dishes_mentioned": [
+        "קובניה",
+        "חומוס",
+        "מוחמרה",
+        "שכל מחשי קישואים",
+        "אום אלי / ליילות בהירות",
+        "קבב",
+        "טלה על האש"
+      ],
+      "special_features": [
+        "מסעדת מלון",
+        "ארוחות שישי-שבת",
+        "שף רמי סלם",
+        "מטבח ערבי מקומי"
+      ],
+      "mention_context": "ביס השבוע של עמית - ארוחת צהריים שלמה במלון בלנד בנצרת",
+      "speaker": "עמית אהרונסון",
+      "google_places": {
+        "place_id": "ChIJN7pQHx5NHBURyH6MvGmn6vI",
+        "google_url": "https://maps.google.com/?cid=17503986974305582792",
+        "rating": 4.7,
+        "review_count": 89,
+        "price_level": null,
+        "phone": "04-610-7000",
+        "website": "http://www.theblend.co.il/",
+        "photo_url": "places/ChIJN7pQHx5NHBURyH6MvGmn6vI/photos/AU_ZVEEIallT8hxtAX6sk5hCrBIrtv5q0aHG6PEbvJ5Ba8_U4w9ndEUfr-bR9082vkIoWFanQTY657sStpIspSa2MrxcYJAiFV0H1wrwrdkgJ0uI0NwW4Vnaom-fvWqaC4ekvmC_bMd9T8ARFdvnJJK2VD9zwMdJg9vEnmzIztBUML-3Jr-It4rZC7Ho2TKJLN7-PrLkEb5lZvPAzxEkVsJ3YtmkwQVMuCFijGdbnzLcNdH2k2d328dSioB4VuyjNDZ9DWZRlr3YKEg1GPYt3_uZPm-j4gjtgARq2tnYa7OmRoqhiw",
+        "instagram_url": "https://www.instagram.com/theblendhotel/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "Savour's",
+      "name_english": "Savour Bakery Cafe & Patisserie",
+      "name_in_transcript": "סיבר",
+      "google_name": "Savour Bakery Cafe & Patisserie",
+      "timestamp": {
+        "seconds": 424,
+        "display": "07:04",
+        "youtube_url": "https://www.youtube.com/watch?v=w2US9jIi9R4&t=424s"
+      },
+      "location": {
+        "city": "גייטסהד, אנגליה",
+        "neighborhood": null,
+        "address": "205B Coatsworth Rd, Gateshead NE8 1SR, UK",
+        "region": "חו\"ל",
+        "latitude": 54.9535227,
+        "longitude": -1.6071266
+      },
+      "cuisine_type": "קונדיטוריה / מאפייה",
+      "price_range": "בינוני",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "פטיסרי בולנג'רי בלבל הכי הכי גבוה שניתן למצוא",
+        "מעפים קלאסים לצד מודרנה מופרכת",
+        "מה שהבחורה הזו עושה בגייטסהד עובר בקלות גם בבוירת צרפת מבחינת הסטנדרט והאיכות"
+      ],
+      "host_comments": "יונתן מספר על מאפייה כשרה מדהימה בגייטסהד שבצפון אנגליה, של סטב סדן קונדיטורית מבאר שבע במקור. פטיסרי ובולנג'רי ברמה שעוברת בקלות גם בפריז. קלאסיקה לצד מודרנה, צבעוני ומרעיב.",
+      "dishes_mentioned": [
+        "מאפים",
+        "סביכים",
+        "פריקסים"
+      ],
+      "special_features": [
+        "כשר",
+        "פטיסרי ובולנג'רי",
+        "ישראלית בחו\"ל"
+      ],
+      "mention_context": "יונתן גילה מאפייה כשרה מדהימה בגייטסהד במהלך טיול בר מצווה באנגליה",
+      "speaker": "יונתן כהן",
+      "google_places": {
+        "place_id": "ChIJhVGQVQBxfkgRZQY2vMC9n9k",
+        "google_url": "https://maps.google.com/?cid=15681461063016384101",
+        "rating": 4.7,
+        "review_count": 222,
+        "price_level": null,
+        "phone": "0191 477 7710",
+        "website": "https://savourbakecafe.com/",
+        "photo_url": "places/ChIJhVGQVQBxfkgRZQY2vMC9n9k/photos/AU_ZVEGQ_WsBMwxGDwrruLmwPWiJvhKz06qTnO2YE0qymBuSfFmgY79W3c_5wZJh5PnRPyX2_kDW8UXi5WGebF_iUE3N1C7LEJ-yftfDXPgAY6h2Jyuv1BFnOdmnw_R4TMkE2uyBDXwtNqPUPczB6gzh3EtdFCZhVuU8ruK1pIuEjp78TefIqAW3V7-LQmUPBo3ZB2jY6zRK6jffNXDI4my0cygBX-fhRYieyM5YgWcDiROnNza1hF8jDBPjb6QsS9xLxx4N7_JXwR0PF1CZNYiy3DX9nF5HJNs3c-OGdx0YOFS-Lg",
+        "instagram_url": null,
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "מוג'ו סאן",
+      "name_english": "Mojo San",
+      "name_in_transcript": "סאן",
+      "google_name": "מוג'ו סאן גני תקווה",
+      "timestamp": {
+        "seconds": 2270,
+        "display": "37:50",
+        "youtube_url": "https://www.youtube.com/watch?v=w2US9jIi9R4&t=2270s"
+      },
+      "location": {
+        "city": "גני תקווה",
+        "neighborhood": "צים אורבן",
+        "address": "האקליפטוס 1203, גני תקווה",
+        "region": "מרכז",
+        "latitude": 32.065474699999996,
+        "longitude": 34.8758091
+      },
+      "cuisine_type": "אסיאתי",
+      "price_range": "בינוני",
+      "status": "חדש",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "מקום חמוד להעלה. מאוד מאוד אהבתי",
+        "באמת דליקתסן אסיאתי כזה",
+        "סושי בוריטו שזה דבר נפלא"
+      ],
+      "host_comments": "נטע ממליצה על סאן החדש של קבוצת מוג'ו הנתניאטית בגני תקווה, במתחם צים אורבן. שירות עצמי אבל אפסקייל לגמרי. תפריט ענקי פאן-אסיאתי: סושי בוריטו, סביצ'ה עם פניפורי, ראמן, קוקטיילים ברזילאיים. גם משקאות קלאוד (טרנד חדש) וחנות מרצ'נדייז.",
+      "dishes_mentioned": [
+        "סושי בוריטו",
+        "סביצ'ה עם פניפורי",
+        "ראמן",
+        "קוקטיילים ברזילאיים",
+        "משקאות קלאוד"
+      ],
+      "special_features": [
+        "שירות עצמי אפסקייל",
+        "פאן-אסיאתי",
+        "קבוצת מוג'ו",
+        "חנות מרצ'נדייז",
+        "קוקטיילים"
+      ],
+      "mention_context": "נטע מדווחת על ביקור מפורט בסאן החדש של קבוצת מוג'ו בגני תקווה",
+      "speaker": "נטע סלונים",
+      "google_places": {
+        "place_id": "ChIJn_X_pok1HRURcWhmhAva_hw",
+        "google_url": "https://maps.google.com/?cid=2089347020147288177",
+        "rating": 4.2,
+        "review_count": 160,
+        "price_level": null,
+        "phone": "077-303-4193",
+        "website": "https://www.san-gt.co.il/",
+        "photo_url": "places/ChIJn_X_pok1HRURcWhmhAva_hw/photos/AU_ZVEHnhrtnw7eQ57BjVML2VtSoQAiOk6j5Hf6GZuExGIoeoUnxxk0xi88vlyigj6hOj7DgVMGz8gxlEtgkZaM8xQGAD61QYbfmptaWD6dwmjPOSq0DBMINR2p6JPePCbR8JQMnfPhM5wuux-94wOlpMRBOX-C_tNUG8gYT-3o-0ofrLTPJjbnHZZzU6D8zkAgZSrs0OE6ryYmWfglUf_u4MkyvdhlRykJ__RDwecxxCML3J8HZ4Wr0rsf2YVDFAPPghXzdIy5CKTR5RVeapVgRQgm5S9rXA0QC1pTefrMXOTG_zw",
+        "instagram_url": "https://www.instagram.com/mojosan_ganne_tiqwa/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "אלמשהדאוי מאפייה",
+      "name_english": "Al Mashdawi Bakery",
+      "name_in_transcript": "אל משדוי",
+      "google_name": "אלמשהדאוי מאפיה",
+      "timestamp": {
+        "seconds": 2573,
+        "display": "42:53",
+        "youtube_url": "https://www.youtube.com/watch?v=w2US9jIi9R4&t=2573s"
+      },
+      "location": {
+        "city": "נצרת",
+        "neighborhood": null,
+        "address": "אל בישארה 49, נצרת",
+        "region": "צפון",
+        "latitude": 32.7053714,
+        "longitude": 35.3002404
+      },
+      "cuisine_type": "מאפייה",
+      "price_range": "זול",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "עלף העולש הזאת זה מנה ששווה לנסוע בשבילה. זה טעים בצורה בלתי רגילה",
+        "פשוט פשוט נפלא"
+      ],
+      "host_comments": "עמית מדווח על ביקור במאפיית אל משדוי הנודעת בנצרת. המנה הבולטת: לפת העולש - לפות עם לבנה חריפה, עולש ובצל מטוגן, שנותנת חוויה בשרית למרות שהיא צמחונית. גם עוגיות מילוי תמרים והקרקיש נפלאים. אפשר לעמוד שם שעה לצפות במה שמזמינים.",
+      "dishes_mentioned": [
+        "לפת העולש",
+        "עוגיות תמרים",
+        "קרקיש",
+        "בורקס גבינה וזעתר",
+        "חביתות",
+        "איג'ות"
+      ],
+      "special_features": [
+        "מאפייה מוכרת",
+        "אוכל רחוב נצרתי",
+        "מנות צמחוניות"
+      ],
+      "mention_context": "תחנה מרכזית בסיבוב הטעימות הנצרתי של עמית - מנת לפת העולש כביס השבוע",
+      "speaker": "עמית אהרונסון",
+      "google_places": {
+        "place_id": "ChIJZY7OKypMHBURyTIwYiI3WD8",
+        "google_url": "https://maps.google.com/?cid=4564458843155739337",
+        "rating": 4.8,
+        "review_count": 491,
+        "price_level": null,
+        "phone": "04-646-2430",
+        "website": "https://meshhdawi.com/",
+        "photo_url": "places/ChIJZY7OKypMHBURyTIwYiI3WD8/photos/AU_ZVEHaISl_3ui0XL52k_n4F7oqSTZMqHEaRXxjKy6a6T2lzQHqOQidVX-qp_aX18x6jhk-jednBL8CKALyDjnqnUhHOezkNseC43oEBEcxNItgIgSxd-iDRTovQDkqYrgUc_zuEg1kJrmAylv3zuGKUWrQoRl3s-kGHkLB8P4XCVY-9_eCqkjy0RXwCtd12PjAyapnj8hXR6o_XeHe9kJVKOuYqI9I8SBdWBRQe92xCqvzyRxovrLmrV2nHomwN8pwBQTDyLQT5uwlwK6Aos4TwCzcs64bqcrmvtiiBZfjsmOCwVTDLfuxT0ujTv_8waZX7lRJFQGbNLQIr7DCSULvcEFyiTSYG4BhcuNehGzEOisc_nfrWnHBqe-SqEh3_X9CPTndZ9GQrb1zwFGAXj5lrJw_bxbkN-9yDKeDmG-BaiVmEtrG",
+        "instagram_url": "https://www.instagram.com/meshhdawi/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "אלבייק",
+      "name_english": "Al Bek",
+      "name_in_transcript": "אלבק",
+      "google_name": "אלבייק _البيك",
+      "timestamp": {
+        "seconds": 2658,
+        "display": "44:18",
+        "youtube_url": "https://www.youtube.com/watch?v=w2US9jIi9R4&t=2658s"
+      },
+      "location": {
+        "city": "נצרת",
+        "neighborhood": "העיר העתיקה",
+        "address": "אל בישארה 35, נצרת",
+        "region": "צפון",
+        "latitude": 32.7040673,
+        "longitude": 35.29877260000001
+      },
+      "cuisine_type": "מאפייה",
+      "price_range": "זול",
+      "status": "פתוח",
+      "host_opinion": "חיובית",
+      "host_quotes": [
+        "מבנה עצום שקצת מזכיר את ההכלים של הבורקסיות בטורקיה"
+      ],
+      "host_comments": "עמית מדווח על מאפייה בעיר העתיקה בנצרת. פוקצ'ה עם חצילים זה הסיפור המרכזי - מין עיגול בצק גדול עם גבינה ערבית וחצילים מטוגנים. מבנה גדול שאנשים יושבים ואוכלים מאפים.",
+      "dishes_mentioned": [
+        "פוקצ'ה חצילים",
+        "זלאטימו"
+      ],
+      "special_features": [
+        "מאפייה בעיר העתיקה",
+        "אוכל רחוב"
+      ],
+      "mention_context": "תחנה בסיבוב הטעימות הנצרתי של עמית",
+      "speaker": "עמית אהרונסון",
+      "google_places": {
+        "place_id": "ChIJQUbVJ5NNHBURA29bwYTDOho",
+        "google_url": "https://maps.google.com/?cid=1890037968582438659",
+        "rating": 4.8,
+        "review_count": 33,
+        "price_level": null,
+        "phone": "04-607-0818",
+        "website": null,
+        "photo_url": "places/ChIJQUbVJ5NNHBURA29bwYTDOho/photos/AU_ZVEFCNGUSA9vHd9G_YHL3j50uR5tgj9eUOo1MdzA5nsiVQKzA-Gv80tjHsIRiHh1r4QcYbhUlfn5nTJf0aR1E2kIa83qDkiryfvHAhwVb0LnpFcKXKcRvdKVcIOdztOjE6tCBnGbElmDaTiK99mUvw1TcKOMc2wCzrSn1sag9Meq0i2_SqnHpdegpiU9d3Bp7e68yd669YCSn55wep7oXxMIFCMh20t7_Wldopkwc8yaEh8M_boUUFiA5_TsL1mwfc8GzzFalbRJG1-2DEyQ-DYDevckL9cYb-VN-408FOj-vrA",
+        "instagram_url": "https://www.instagram.com/albeek_nazareth/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "שיפודי אלזעים",
+      "name_english": "Shipudei Al Za'eem",
+      "name_in_transcript": "אלזעים",
+      "google_name": "שיפודי אלזעים",
+      "timestamp": {
+        "seconds": 2701,
+        "display": "45:01",
+        "youtube_url": "https://www.youtube.com/watch?v=w2US9jIi9R4&t=2701s"
+      },
+      "location": {
+        "city": "נצרת",
+        "neighborhood": null,
+        "address": "פאולוס השישי 150, נצרת",
+        "region": "צפון",
+        "latitude": 32.705551899999996,
+        "longitude": 35.3011511
+      },
+      "cuisine_type": "אוכל רחוב ערבי",
+      "price_range": "זול",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "אחת ממנות אוכל הרחוב הכי משתלמות שמוגשות היום בישראל",
+        "35 שקלים קונים לכם פיטה שלדעתי מספקת כמעט כמו מנת שוארמה"
+      ],
+      "host_comments": "עמית ממליץ על שיפודי אלזעים כמוסד ארייס נצרתי. 35 שקלים לפיטה מספקת עם בשר על הגחלים, דחינה, אמבה, חריף. מולדת מנת הארייס.",
+      "dishes_mentioned": [
+        "ארייס בפיטה",
+        "דחינה",
+        "אמבה"
+      ],
+      "special_features": [
+        "אוכל רחוב",
+        "מוסד נצרתי",
+        "ארייס מקורי"
+      ],
+      "mention_context": "תחנה בסיבוב הטעימות הנצרתי - מוסד הארייס של נצרת",
+      "speaker": "עמית אהרונסון",
+      "google_places": {
+        "place_id": "ChIJixgVjSlMHBURWYmHFnEaXRM",
+        "google_url": "https://maps.google.com/?cid=1395300532566329689",
+        "rating": 4.6,
+        "review_count": 128,
+        "price_level": null,
+        "phone": "053-937-2594",
+        "website": "https://food.walla.co.il/item/3120219",
+        "photo_url": "places/ChIJixgVjSlMHBURWYmHFnEaXRM/photos/AU_ZVEG9Nbben7OsLK0PkC43aGlOvrMqaOU8C8VbtmSzSjXw87tDvQOaX_5zLCS8ZE1slfrKwlljQ7Hm1lPGTiKljar9z11E3-ROkjhOEvf1Yd-E_Tzyuqptsln5ihCYKzhM85Q8EqxoBdFdWQ7zLqiEdcB5VWOhIlXGfFjBKdOL0fO15UzfYE2CjOvXq5IimlzeeTanp3cBsD5pLt4R9UIpc_fWckubk1kVyJd77hxMDhKyEc4zBg4z8-kfj9ARN-0UPnPsxWy2266iWDouc6FsCcQOFTZNNnT06APVJERWm-U02odV7zIEen4Bb5EnYugm4q8ccGCVeMl-emw5RmMDs8mblqtHureB9cxTCWubXBU7JvwPLFAaSHkE5tGGz4zCmOhSK3z4SLtROv2_wwahyLotueBcTFn4vMcMyq9EyE49SQ",
+        "instagram_url": null,
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "רוז קפה",
+      "name_english": "Rose Roastery Boutique Cafe",
+      "name_in_transcript": "רוז קפה",
+      "google_name": "Rose Roastery Boutique Cafe",
+      "timestamp": {
+        "seconds": 2766,
+        "display": "46:06",
+        "youtube_url": "https://www.youtube.com/watch?v=w2US9jIi9R4&t=2766s"
+      },
+      "location": {
+        "city": "נצרת",
+        "neighborhood": "כיכר כנסיית המעיין",
+        "address": "6089, נצרת",
+        "region": "צפון",
+        "latitude": 32.706409,
+        "longitude": 35.300866
+      },
+      "cuisine_type": "קפה",
+      "price_range": "בינוני",
+      "status": "פתוח",
+      "host_opinion": "חיובית",
+      "host_quotes": [
+        "קפה בקליה מקומית, עשוי נהדר גם ההפוך גם האספרסו גם האמריקנו",
+        "פשוט מוצלח מאוד"
+      ],
+      "host_comments": "עמית ממליץ על רוז קפה בכיכר כנסיית המעיין בנצרת. הכי קרוב לספשלטי קפה בעיר. קפה בקליה מקומית, עשוי נהדר. גם ליילות בהירות (אום אלי) עם סירופ בצד.",
+      "dishes_mentioned": [
+        "קפה בקליה מקומית",
+        "ליילות בהירות"
+      ],
+      "special_features": [
+        "בית קפה בוטיק",
+        "קליה מקומית",
+        "כיכר כנסיית המעיין"
+      ],
+      "mention_context": "תחנה בסיבוב הטעימות הנצרתי של עמית",
+      "speaker": "עמית אהרונסון",
+      "google_places": {
+        "place_id": "ChIJ7ylO9CVNHBURt19IpdXfDEo",
+        "google_url": "https://maps.google.com/?cid=5335885767221206967",
+        "rating": 5.0,
+        "review_count": 216,
+        "price_level": null,
+        "phone": "054-498-2941",
+        "website": "http://nrmary.com/",
+        "photo_url": "places/ChIJ7ylO9CVNHBURt19IpdXfDEo/photos/AU_ZVEHsBIsPSA9lcHNuE1W5d_14ws0TJDeG3i6Am8ZO1ICDcZGbyB84hUU8XUj0RhISextOU0OpOUum3UgvYFpGKaa_OD6ywSDQsAmDxII2NB2HlCvbg1rrMWMUyI8QYsCFefzXVCihcaGDLrJt2UfgUHe91N8OqPPvLHgsnaFWzI35mXlHFNpUQkmxaJVu-60Kux5CiYOf7GqP4VKVQ-BmJjaVNpJk4Hp58CWPw3S5BsOyJLHzzLled2LcKZZVgR_CoCP0bABbXP2AC568Uvb-aBPkkfvgiUhI3JnFXV0VUnmDe6AYCUyfgaep-hdC31rN_GLVGLxQL7USYVwjDbScbwPGBZKu3VsLArR45YJXx4aA9ZN_KWyKQ8mp-RmzBstGTAyfv0914GhMARgFSCte5a85oY7xzB5qVe0Pd5j2mxKVg305",
+        "instagram_url": null,
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "מעדני דמוני",
+      "name_english": "Maadani Damouni",
+      "name_in_transcript": "דמוני",
+      "google_name": "מעדני דאמוני בע\"מ",
+      "timestamp": {
+        "seconds": 2848,
+        "display": "47:28",
+        "youtube_url": "https://www.youtube.com/watch?v=w2US9jIi9R4&t=2848s"
+      },
+      "location": {
+        "city": "נצרת",
+        "neighborhood": null,
+        "address": "5034 6, נצרת",
+        "region": "צפון",
+        "latitude": 32.7053453,
+        "longitude": 35.288395799999996
+      },
+      "cuisine_type": "מעדנייה",
+      "price_range": "בינוני",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "שווה בטירוף",
+        "מורטדלה עם זיתים ושינקן ונקניקיות עם גבינה",
+        "פשוט מעולה"
+      ],
+      "host_comments": "עמית ממליץ על מעדני דמוני - טליז בנצרת שמכין בעצמו נקניקים ונקניקיות ומתמחה בבשר לבן (חזיר). קבנוס אמיתי, בייקון, מורטדלה עם זיתים, שינקן. הגיע דרך המלצה של בעלי המבורגר הסימתה.",
+      "dishes_mentioned": [
+        "קבנוס",
+        "בייקון",
+        "מורטדלה עם זיתים",
+        "שינקן",
+        "נקניקיות עם גבינה"
+      ],
+      "special_features": [
+        "מעדנייה",
+        "ייצור עצמי",
+        "בשר חזיר",
+        "לא כשר"
+      ],
+      "mention_context": "המלצה אחרונה בסיבוב הנצרתי - למיטיבי לסת או סתם לכופרים",
+      "speaker": "עמית אהרונסון",
+      "google_places": {
+        "place_id": "ChIJ0YLos4FNHBURxGY7JjQ-e-k",
+        "google_url": "https://maps.google.com/?cid=16824109226673268420",
+        "rating": 4.9,
+        "review_count": 131,
+        "price_level": null,
+        "phone": "04-600-1977",
+        "website": "https://www.facebook.com/Maadani.Damouni/",
+        "photo_url": "places/ChIJ0YLos4FNHBURxGY7JjQ-e-k/photos/AU_ZVEH382Aizt5i8rCWfC0-buVZtk9mphfJ_fWi6fYKDRQVKl3Wo7WxX7UUpiWcq35aQrolkexCppExFrs6W2Pi9DB-Nz0ULSODcOdeeOJEWE5bN1L70HKdvXrnpIkz4UP2HFLtAFU69YVcvcF2jdoY8iiv9C05DSMKQ68yoGc9tFxXcc6t_F6SZQePeGXBnmqkqZSptg5qJDyhEgQRBPs7T0KK1ldOx3Use22vHb372GxOK1_0nfl-yDiZTXvDTNHNwmsejecZztNW-fyOor0R4aSyXkERXBRQgHuKzsILIplNSOf6XUTn1VG1nOU3CEiiustQuqxEptDu5rghDw4GSfEqy0hMrJ7BfumGrywHBYRSW1UOR7y8TsRwG-mqOrn6MiBgRJyHyeuR4D1W5-aLSip9rCIha6k319m5ZJCPjYW7Tm4",
+        "instagram_url": null,
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "מזל",
+      "name_english": "Mazal",
+      "name_in_transcript": "מזל",
+      "google_name": "MAZAL - Original Shawarma",
+      "timestamp": {
+        "seconds": 3072,
+        "display": "51:12",
+        "youtube_url": "https://www.youtube.com/watch?v=w2US9jIi9R4&t=3072s"
+      },
+      "location": {
+        "city": "לונדון, אנגליה",
+        "neighborhood": "קמדן",
+        "address": "Second Floor, Unit M192 2nd Floor, Hawley Wharf, London NW1 8AA, UK",
+        "region": "חו\"ל",
+        "latitude": 51.5417287,
+        "longitude": -0.14508179999999998
+      },
+      "cuisine_type": "ישראלי",
+      "price_range": "בינוני",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "זה הדבר האמיתי זה הדבר עצמו טעמים וביצועים ישראלים לכל עניין ודבר",
+        "חוויה ישראלית טובה נדיבה בלי טיפת פשרה או הנחה",
+        "פלאפל תשעה פאונד לפיטה שבישראל עולה 25 שקלים"
+      ],
+      "host_comments": "יונתן מדווח על מזל - מזללה ישראלית כשרה בקמדן מרקט בלונדון של אביב באום. שוארמה, חומוס, פלאפל, פלפל ירוק - הכל מבוצע ברמה ישראלית אמיתית. גם ראטוי על דחינה. מחירים סבירים - פיטה שוארמה ב-12 פאונד, פלאפל 9 פאונד.",
+      "dishes_mentioned": [
+        "שוארמה בפיטה",
+        "חומוס",
+        "פלאפל",
+        "פלפל ירוק",
+        "ראטוי על דחינה",
+        "צ'יפסירים"
+      ],
+      "special_features": [
+        "כשר",
+        "ישראלי בלונדון",
+        "קמדן מרקט",
+        "מוזיקה ישראלית"
+      ],
+      "mention_context": "יונתן ממליץ על מזללה ישראלית כשרה בלונדון - הדבר האמיתי",
+      "speaker": "יונתן כהן",
+      "google_places": {
+        "place_id": "ChIJ_clTdh4bdkgRNbqKHx9x0ZQ",
+        "google_url": "https://maps.google.com/?cid=10723476566232971829",
+        "rating": 4.7,
+        "review_count": 1566,
+        "price_level": null,
+        "phone": "020 3951 1561",
+        "website": "https://www.mazal.london/",
+        "photo_url": "places/ChIJ_clTdh4bdkgRNbqKHx9x0ZQ/photos/AU_ZVEG_tIn8xuV9IIf3i7xgqnyceAfO9qD0daz5K_Yw9fDrZGmmkwg9lAYgiIkLgrXSwejdrk5Ek0QDOwHmfVRbpTmcphAsaEXL1Ew9-q05h8jkO5BWM883b5KjPX0gxSJKbDvmgizZVOG0hmRu6bdBG_zJ91ljG3MY7R-fWnmq5NezRuInS5TbG57sO_YRS2EMxKuTgVpWotXgMACx3AylFL0m9rJluQzGdg0hNCMp-t_whiDFTwdcA_UT_FvC7a6dLFB8xX_csASiEn8MJ7-NBVDGiTv9_sVuRyJ_lMbul7amxsEhRMpeqW1TbUkEVbk4Y_BGFFAfUSKQ8N8GTtps9S6Yd60LVv6DZvhaF6vp-m8t54kkQM45iIDfXkqwmlvDik-T1KMV_f9nbc6_UBt5C8SOjvM2b1MQV4oR7bElPiFdKGPAG8-QVGnqbhrFzDuB",
+        "instagram_url": null,
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "הוזכר",
+      "name_hebrew": "בובי",
+      "name_english": "Bobby from Nowhere",
+      "name_in_transcript": "בובי",
+      "google_name": "Bobby from nowhere",
+      "timestamp": {
+        "seconds": 2138,
+        "display": "35:38",
+        "youtube_url": "https://www.youtube.com/watch?v=w2US9jIi9R4&t=2138s"
+      },
+      "location": {
+        "city": "גבעתיים",
+        "neighborhood": null,
+        "address": "כצנלסון 64, גבעתיים",
+        "region": "מרכז",
+        "latitude": 32.0752429,
+        "longitude": 34.8090739
+      },
+      "cuisine_type": "המבורגר",
+      "price_range": "בינוני",
+      "status": "חדש",
+      "host_opinion": "חיובית",
+      "host_quotes": [
+        "שני מאזינים כבר שלחו לנו פידבק",
+        "סופר נייס סופר פיין",
+        "שווה תרשמו"
+      ],
+      "host_comments": "סמאש בורגר חדש של קבוצת מרלן בגבעתיים. מוצר דגל אחד, סופר ממותג. שתי קציצות 70 גרם ב-43 שקלים. גם קריספי צ'יקן, נאגטס וגלידה אמריקאית. מאזינים כבר שלחו פידבק חיובי.",
+      "dishes_mentioned": [
+        "סמאש בורגר",
+        "קריספי צ'יקן",
+        "נאגטס",
+        "גלידה אמריקאית"
+      ],
+      "special_features": [
+        "סמאש בורגר",
+        "קבוצת מרלן",
+        "פתיחה חדשה"
+      ],
+      "mention_context": "חדשות - סמאש בורגר חדש של קבוצת מרלן בגבעתיים",
+      "speaker": "hosts",
+      "google_places": {
+        "place_id": "ChIJj3E0-rBLHRURgDosaHfii60",
+        "google_url": "https://maps.google.com/?cid=12505337792801028736",
+        "rating": 4.1,
+        "review_count": 136,
+        "price_level": null,
+        "phone": null,
+        "website": "https://orders.beecommcloud.com/#/init/68f9b7ae124bc0470aab8915",
+        "photo_url": "places/ChIJj3E0-rBLHRURgDosaHfii60/photos/AU_ZVEHbE_G3IBcmhWYm4hANL6qUEr3PtYT7tJS1FdBbhoir_Hc-LCUhPY8Cm7MUVTm89LPmiF7sTWp080gTQzC5pRBVI1oZAhxcLduiNwHeTWWwovIh8aI45hbXEosBLfCugRtwTdAuHXk7EukY7Sdm2ZO9ktuZ7a_FWJMuIMXWmuu4SxXBic5EPzy5qq2beJHGZrioYT2krudFDJ4730tbjfP7rZ3G3PDLec0bGepTtPC76TklezWRosScveutZa49VVw0iq7USa2LLXZfht6TxDi5wcAzKt424mCsULWuLzFJuA",
+        "instagram_url": "https://www.instagram.com/bobby_from_nowhere/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "ברכה",
+      "name_english": "Bracha",
+      "name_in_transcript": "ברכה",
+      "skip_reason": "סניף חדש שנפתח בגולדרס גרין - יונתן לא אכל שם, רק מזכיר כהרחבה של מזל",
+      "timestamp": {
+        "seconds": 3214,
+        "display": "53:34",
+        "youtube_url": "https://www.youtube.com/watch?v=w2US9jIi9R4&t=3214s"
+      },
+      "location": {
+        "city": "לונדון, אנגליה",
+        "neighborhood": "גולדרס גרין",
+        "address": "118 Golders Green Rd, London NW11 8HB, UK"
+      },
+      "mention_context": "סניף חדש של אביב באום בגולדרס גרין - שניצל בבגטים מהארץ. יונתן לא אכל שם.",
+      "google_places": {
+        "place_id": "ChIJD3jdc9oRdkgRICyOWW-Cq5U",
+        "rating": 4.3,
+        "review_count": 78,
+        "verified": true,
+        "photo_url": "places/ChIJD3jdc9oRdkgRICyOWW-Cq5U/photos/AU_ZVEEL3KmY2MMr5ZB9ti5LIdaM-g3HQ667fQXk5NKElcaqEK2_XrAhr3FE0fwiPVaD5SuRQDgTlV1ys2casmPTe20aF-vu_lqHOYY9fiznsT8XfOIgvDlhTaMC8CCv69lyjP3vyC_8YY2Qam8ggiGHXcgmagfBeautN7kNlZ7agyrHjjM7dBy-loJk6GAyobQirW4pJ2AfuLvcEZSso7klL8uDfAT4kUlmdtlBFER30ckYI6d1qvXz33ffr6lU79u8wd-qWNYKs1y8DanpQmA17NGa_qHVgoW6OlCVhdfQGMZ38g"
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "ממו בכיכר",
+      "name_english": "Momo BaKikar",
+      "name_in_transcript": "ממו בכיכר",
+      "skip_reason": "הוזכר בהקשר של קובי רובין שביקר שם - המנחים לא אכלו שם, רק ראו תמונות",
+      "timestamp": {
+        "seconds": 3667,
+        "display": "61:07",
+        "youtube_url": "https://www.youtube.com/watch?v=w2US9jIi9R4&t=3667s"
+      },
+      "location": {
+        "city": "בני ברק",
+        "neighborhood": null,
+        "address": "הירקון 10, בני ברק"
+      },
+      "mention_context": "קובי רובין ביקר שם - חביתת ירק עם נקניק ב-32 שקלים, נראה טעים. עמית אומר שעובר שם תמיד ועדיין לא נכנס.",
+      "google_places": {
+        "place_id": "ChIJOystzstLHRURaXWWqJa3u-s",
+        "rating": 4.6,
+        "review_count": 8,
+        "verified": true,
+        "photo_url": "places/ChIJOystzstLHRURaXWWqJa3u-s/photos/AU_ZVEEbdLd614CGnwlb93DX7qF2HFn80GA97nl6tYvsJH1IjRib-CTSzA15EuHaHnE_b4ZZeTcYRMz1KGK6_OHwUkRkC0_qk256G4GvB9v0nVuM2Z0kBX67QztjWBOabqITgmbu9v_U2PdcSl1Qwkvzl3dta4J4QtLynMy2qFeQNp-34krTnLv3TGUeZIbg1wPEVVLK4rwBBdoNOfxu8JHW5bmXqWNWrxPMhQrW5EX1DFBywm4m7fXbdfVKgz79z5O7b7BrM8ZzZrCpiHv0g3fZ8c21w--INPKXfPKjoW1WWATwHg"
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "קבוצת מחניודה",
+      "name_english": "Machne Yehuda Group",
+      "name_in_transcript": "קבוצת מחניודה",
+      "skip_reason": "חדשות תעשייה - פתיחת מסעדה חדשה בבית בלגיה. לא ביקורת או המלצה.",
+      "timestamp": {
+        "seconds": 2017,
+        "display": "33:37",
+        "youtube_url": "https://www.youtube.com/watch?v=w2US9jIi9R4&t=2017s"
+      },
+      "location": {
+        "city": "ירושלים",
+        "neighborhood": "גבעת רם"
+      },
+      "mention_context": "סף גנית וקבוצת מחניודה פותחים מסעדה בשרית חדשה בבית בלגיה בקמפוס גבעת רם. אמורה להיפתח בימים הקרובים.",
+      "google_places": {
+        "place_id": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "ברסרי 18",
+      "name_english": "Brasserie 18",
+      "name_in_transcript": "ברסרי 18",
+      "skip_reason": "הוזכרה בהקשר של ביקורת סגי כהן - המנחים לא ביקרו שם בפרק הזה",
+      "timestamp": {
+        "seconds": 3552,
+        "display": "59:12",
+        "youtube_url": "https://www.youtube.com/watch?v=w2US9jIi9R4&t=3552s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "לוונטין",
+        "address": "לבונטין 19, תל אביב-יפו"
+      },
+      "mention_context": "סגי כהן כתב ביקורת שלילית חריפה על ברסרי 18 - המנחים מתייחסים לביקורת אבל לא אכלו שם.",
+      "google_places": {
+        "place_id": "ChIJ8cmDoMVJHRURJmmFE4i8S1U",
+        "rating": 4.3,
+        "review_count": 475,
+        "verified": true,
+        "photo_url": "places/ChIJ8cmDoMVJHRURJmmFE4i8S1U/photos/AU_ZVEFpHh5LkKCjMOtl7eE4Nl7AN5ZTZ6C-vK3g1feU97g-3eMibYcbeeLh9ihn0wLsIU-l7q4fvUkC1AQsMQV8Efkh63D6SR5dHu19jSshxS84o-G6QM6vflxXV7hBQFQk0cPMKTOkSAkYOm5I5h2TSh8khw-diXAroS-Hg7SkrqvRw_FL2wBLgby48ZJ1-guTRSrynZ65i5vdKebON0kzmNFc9FProbuHBNuyIm1bvQBbV_YhgXlnyuGequu8dZYt8Ne2AmHmmJYq3stnXl1hwmCC0Khz-W8Sj9FGg1i5KwcM7A"
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "הסטקיה",
+      "name_english": "HaStakia",
+      "name_in_transcript": "הסטקיה",
+      "skip_reason": "הוזכרה בהקשר של ביקורת חיובית של סגי כהן - המנחים לא ביקרו שם בפרק הזה. עמית אומר שהיה שם וחווה חוויה דומה אבל לא מפרט.",
+      "timestamp": {
+        "seconds": 3465,
+        "display": "57:45",
+        "youtube_url": "https://www.youtube.com/watch?v=w2US9jIi9R4&t=3465s"
+      },
+      "location": {
+        "city": "ירושלים",
+        "neighborhood": "מחנה יהודה"
+      },
+      "mention_context": "סגי כהן כתב ביקורת חיובית מאוד על הסטקיה במחנה יהודה. עמית מאשר שהיה שם וחווה חוויה דומה.",
+      "google_places": {
+        "place_id": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "אל בבור",
+      "name_english": "Elbabour Spices",
+      "name_in_transcript": "אל בבור",
+      "skip_reason": "חנות תבלינים - לא מסעדה או בית אוכל. הוזכרה כהמלצה להצטיידות בחומרי גלם.",
+      "timestamp": {
+        "seconds": 2808,
+        "display": "46:48",
+        "youtube_url": "https://www.youtube.com/watch?v=w2US9jIi9R4&t=2808s"
+      },
+      "location": {
+        "city": "נצרת",
+        "address": "6010 22, נצרת"
+      },
+      "mention_context": "חנות התבלינים הנהדרת אל בבור המפורסמת בנצרת - דיבס חרובים, סומק, זעתרים ותערובות.",
+      "google_places": {
+        "place_id": "ChIJKziviCtMHBURWtZl053gjoA",
+        "rating": 4.6,
+        "review_count": 531,
+        "verified": true,
+        "photo_url": "places/ChIJKziviCtMHBURWtZl053gjoA/photos/AU_ZVEGuFrEkgHOvCzoIOnybM_9JEmMzQFwtVgBGWMMRHws9YhIljIinEWrgHLwhm6cZiU4qFwuv4BcMIe5K85cro64aPpr0ZD3TNmIRlbMfWoUH-un80sASJDqduiJXnujP23q2WD5ueSfTXrh5HTefsgtf-494VP08iq3ZyfvwR5spbGV9WDAkm2Z_K_iiRA98leUuGlniJV2NtZzKmojmtWJKw3sLRo8JCT4YHJM_Jn5NTjZfFEIk9l-q-vEK-J3k8VDwPld9oBjuzH-MiFIEax-9YFRHWVeXptMUAIdrKs2Oe1GDNBGXchXpge9-pOQqbaWP5zkb7g0I4s4DycH4CSHl_Vi1Omz6FWkYQBssaMPchtK3b8e8ajUbvisSbhuMx0-Of17T-DWjGL4JV7bpMRO0RODa8EWk5fN1LQQTwOnZdw"
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "rejected",
+      "name_in_transcript": "ווינטרפסט של ארז",
+      "reject_reason": "פופאפ/אירוע חד-פעמי, לא מסעדה קבועה. מוזכר כאירוע שנטע הולכת אליו היום.",
+      "timestamp": {
+        "seconds": 3744,
+        "display": "62:24"
+      }
+    },
+    {
+      "verdict": "rejected",
+      "name_in_transcript": "בבלה ביוליה",
+      "reject_reason": "פופאפ אוכל אשכנזי - אירוע חד-פעמי, לא מסעדה קבועה.",
+      "timestamp": {
+        "seconds": 3770,
+        "display": "62:50"
+      }
+    }
+  ]
+}

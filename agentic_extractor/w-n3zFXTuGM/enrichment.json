@@ -1,0 +1,1800 @@
+{
+  "video_id": "w-n3zFXTuGM",
+  "transcript": {
+    "length": 45533,
+    "segment_count": 1312,
+    "language": "iw",
+    "path": "/Users/ido.kazma/Desktop/Projects/private/where2eat/analyses/w-n3zFXTuGM/transcript.json"
+  },
+  "episode_metadata": {
+    "episode_id": "2f1a4568-8f7b-4387-b596-9f7dbea73287",
+    "published_at": "2026-03-11",
+    "title": null
+  },
+  "restaurants": {
+    "טנא דלי": {
+      "place_id": "ChIJ17ynXLlJHRURzu1X-d39aAI",
+      "google_name": "טנא | מעדניה מבית טעם וצבע",
+      "google_url": "https://maps.google.com/?cid=173667715466653134",
+      "formatted_address": "Aba Akhime'ir St 1, Tel Aviv-Yafo, 6912601, Israel",
+      "rating": 4.1,
+      "review_count": 29,
+      "price_level": null,
+      "phone": "073-363-3533",
+      "website": "https://tenne-deli.co.il/",
+      "latitude": 32.1253287,
+      "longitude": 34.7984047,
+      "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqFa71b21-IBB1WitOzhFHQIjWB4YWSU8J20U_iVDMY2fAjNyQT13yPeSFcgfOsM4WC8VHIscYkCxGQywTSd8bPDNz_w1frTvpg=s1600-w800",
+      "photos": [
+        {
+          "photo_reference": "AU_ZVEErq_PW_AXe2t16EGnof7Slx5qU5vbiMwdP1gUcntf4OUWG8ky5uP89or_zFLOJHz8x8S9cbn-mufuDT5RX8VhzZjq6XFPQW4Da6TY1ncvYTnbi9_NUHXJEyviVUtPkL52iErhubetfLtPtvQ0ibd75etTjbaEdUcp64lgiKxdFXped_q6Vr5kDjNcVUWewFOqc6YHlzdXZtIvnq3SeAXER1ZVntILEijm6aSEC6hSOIQ8RpR12jhPkOwIL-GccJ9ir1Z-qWw_OtIQCLGHk3H2DmR-05urWvWYxMCAElc0b_A",
+          "width": 1620,
+          "height": 1080,
+          "resolved_url": "https://lh3.googleusercontent.com/places/ANXAkqFa71b21-IBB1WitOzhFHQIjWB4YWSU8J20U_iVDMY2fAjNyQT13yPeSFcgfOsM4WC8VHIscYkCxGQywTSd8bPDNz_w1frTvpg=s1600-w800"
+        },
+        {
+          "photo_reference": "AU_ZVEFKSLC_fuxzr4gXSF4xBSHvZLQtUHSl3NGqAUxzt-topdbLkiF3nyFKhyNSiwOMnFpKLTP0mSSRkORRjzUgpyp_QW-I5Nm4ROJM14tse-KJLXjHqtIKeAVmtEIDyljm6RMa_dg2Xbsi0UX343vyNA0a035s_9IDvDJqmYedzq_4B0-xF2MQ_gHYUJ4dSOdMk3KE6Szji38DJe5torcmvrkQFRZR8-jgL2TvOubVFckpzhHasrIghNRPadquPNKtnVnngL5p-yZL1t1O02vuQRJhTlympkXYTTMZqhNsmjvF8g",
+          "width": 1620,
+          "height": 1080
+        },
+        {
+          "photo_reference": "AU_ZVEE4D72V1u9_0nyNdkpsdWR69lIG4SI7NBBq1g_avXL5QkbrS1RUpNccqzRZtdaIuBn9XFNFyXFhwYywMjXr5Awln9AfnMRPMR8H5tSUDIbb-n99mObyhSB6vmPkZLrylca5SIli2auuLQzqAov8yNlWSBcF0iag5MQ6AjojjQaI_APRZZGR30gpSZyfn2CIvv72kjs44QNAlQ-S3LQjZSc7ypl5ebqyXd997TKP1OBQcxCdGhcQ4WpsrKqoJFvkbz2DdzEhDhCl3XKNI1HFUpwh95vjYbup7yBlNNun1CsdnA",
+          "width": 1620,
+          "height": 1080
+        }
+      ],
+      "opening_hours": [
+        "Monday: 7:30 AM – 7:00 PM",
+        "Tuesday: 7:30 AM – 7:00 PM",
+        "Wednesday: 7:30 AM – 11:00 PM",
+        "Thursday: 7:30 AM – 11:00 PM",
+        "Friday: 7:30 AM – 2:30 PM",
+        "Saturday: Closed",
+        "Sunday: 7:30 AM – 7:00 PM"
+      ],
+      "verified": true,
+      "instagram_url": "https://www.instagram.com/tenne_the_deli/"
+    },
+    "ג'אנגו": {
+      "place_id": "ChIJi9qmgZU5HRUR4XQjfpgaEAY",
+      "google_name": "G Mall Kfar Saba",
+      "google_url": "https://maps.google.com/?cid=436878406108542177",
+      "formatted_address": "Weizmann St 207, Kefar Sava, Israel",
+      "rating": 4.3,
+      "review_count": 14587,
+      "price_level": null,
+      "phone": "09-767-5345",
+      "website": "https://www.gazit-g.com/property/g-%D7%9B%D7%A4%D7%A8-%D7%A1%D7%91%D7%90/",
+      "latitude": 32.1719777,
+      "longitude": 34.9280953,
+      "photo_url": "https://lh3.googleusercontent.com/place-photos/AL8-SNGRNGFxk2C8fYpLcbERS6zw99MRrg1V--DNTMytP9gQ8Y4v9FtwDYoxtImqnDhwzHxvHU23cjr7gnIBgxc5WGkIxR8o0-YzWyTHg4xBCKdj4R-8hjB7XAayvdckjKZ8cR6KaFVFV2q3clnb=s1600-w800",
+      "photos": [
+        {
+          "photo_reference": "AU_ZVEFs3yqpyQ7ZokQ0qZjxZF3Z47teGKE-EdShjAywj3hgsnzXE6myE93uAGylcmLwLsM0KPZqnefw0gSL8wexEzhk2sTPzG8ao4FuGqH11W2R4sod123BJmmX8uojVrs1z_FmlV0Y7FMeelJ2ict1z0dYPd9ZNbeX1cc8KrJOIkESs8HtA789yrENJeV9M6cGts_6WMGugt8AN8mFxJWTpCLbjdgwcxN2SWUxRJ0HaQ6UyMXvjDXhi6na-YUStw5alX7uiYvNVO_7ug-CtKzD47eeCbaGwqoxuFmz3jOuvdvNw4VGKqxS9T92fLbqszsbliEvxC2lsJY3pMvbiNEptAUFPt6LNf2rL0PDuwG02kFuiSF3TWO8zegnt5SJ0Gpi5kkHypyhNL6cZs_4EWhH7n05GcZ4JyownBs2K7zYfo4",
+          "width": 4032,
+          "height": 2268,
+          "resolved_url": "https://lh3.googleusercontent.com/place-photos/AL8-SNGRNGFxk2C8fYpLcbERS6zw99MRrg1V--DNTMytP9gQ8Y4v9FtwDYoxtImqnDhwzHxvHU23cjr7gnIBgxc5WGkIxR8o0-YzWyTHg4xBCKdj4R-8hjB7XAayvdckjKZ8cR6KaFVFV2q3clnb=s1600-w800"
+        },
+        {
+          "photo_reference": "AU_ZVEE5zKvnzsKyUJCoRsbzT15JIkPugYWTb3SsvUmdtmZsK6htewzDaP3XGr0OHVbXLuc74mwCs3OhrgNgsSO9XLEo7Ns3aGj4jbulOXBLd5k53eppbz1Q2kQRq7swR-iD57dvwq6Pwx4_ZPQO4ayUOCDu7Pjh0jWPboLjRESIUo3KZx4ZCOZeNYiWW8gyGL7xeWUdUWcUUMgzRH3mUKyuLCdm4cVp6YKrND_GFi9RRL0PeoT7dT34QGdEg2OcPUgmN5YqC5sTaOKcvLgCVzjLr26EjLFamG7wByUnbhBb6zs-pMpYyF3kxshSh1lt5qIztAVGJj9RYsAXs5_BtrBQxr9zun6PXySDr665gHLT3aPAIMkUybbl9j0wo8p9xf0AJrQa7a27w_pO36m9_ODKhX4LXSAitdS4CMEIdE5ZMXNg0703",
+          "width": 4624,
+          "height": 3468
+        },
+        {
+          "photo_reference": "AU_ZVEFcBVm9d6FnS_yjV3bvJPkUqJ5_OMQtyWCDkLVdZqdIU1VIeiUhyNmTA6h7DVnrw9aa5zV6qFbDFGfOtVIhMRs2kLAGPOEPDncgiEZAeAxBcnp_omfMBHkSNawC99ZN_xlqqSp6mseSkN-qqupzdpmw1KSrQpCSHqINfoaXHswrrCQf2bfVhDUA_1UvhooLgqg-oBK-CVi53E5eSii_Y52DQUPamiNCXgofdVZOHsH0tzH0755r1JOMwAxE2zc_b3dgT7vqffPXJrfRLS9HMLfcgdVkBg2AMSK0tjeqFI4_8l4EVyBMmGZ16LF9apVBTCUOzz9wZA55lH61uIkK_9dzNTb35ILvVdd9K27-pw549wS1-xJRNAjtjWBAEV2MrVw5yJfiiGqO2EyHBn43x1jQy2y3xLGADO_3bVvX3B6jTw",
+          "width": 4032,
+          "height": 2268
+        },
+        {
+          "photo_reference": "AU_ZVEF_jbStDH8ZiT49PGV_IwsGoWPCpZ8yXAzMlmSro6xSEm4LDxveWTJEJkepHGpvP-13gkT_rR-9AXBqbcYZkhELEhybw-xHPlu4xxIv9INX1CSowWeI-uYMILi28K5rL-4Xsl-O0XisGeZOzYQS5XHY2e5pl9bn-OmGrA1MZODm0SKGZJnXUMlkWGugLyDIufGr_ugvykVbJkh1Xye0sZJ2UZNk9fTvDe7Zn0Kgu2LRe74UM8Lw-xsHwV_4DeW7qCWmSIVRV_qUnFf-DILJJ9M9pLpFaxv7zQifQuuFNrQL9TAC2An7805fzq5hEmHEMEylNoR-7cgkAkH4NWehGmeeKBoqht4LRv2mSAZx8Hiia8EhIcdHj0oRxAqigC6pKQk_C0geSyS2L1U_oIug4j6i89V6qoLB47VcqYvx-WcEUQ",
+          "width": 4032,
+          "height": 2268
+        },
+        {
+          "photo_reference": "AU_ZVEGZULuu0FoEUvZ4H1W8-Fwu1E9MEppnocFjVQERNZMOQGKoJht0WIYChrhmabIet43IR8xr3sIc9FsVAs2bV0JazzQ_3Wr3utyZDTDsQ6ONDdvMHtGL3mBVJO-0iJ0ym9hlaHZ65WC_SBQW0HdnHSkDwoB-fPakRRZlGm9QcIx5OcZVQewXGLVRAYso6MFmQb2RWjfNRaJ9Sp-K_Yx_pxvUXs8xnDtxWy9KQKQZolu0rFQHMNVnSsVq-frj3qmKqRQQ_aco7L9SOoRdMOAScBCTnzX0t7QbIt9mcbYS8DLKkHx6HGXvsviyzagZE9gOu9NzB6OqhQQ0m1yzV1EflyTxm7GqrJ98frCDSISSWeiGFQ9Ozssdb_mcWWTPR80JKPNTOez6WDlQRzeeE4i25JekaxhbBuh8d_aUNmkzpsc",
+          "width": 4000,
+          "height": 2256
+        }
+      ],
+      "opening_hours": [
+        "Monday: 9:30 AM – 10:00 PM",
+        "Tuesday: 9:30 AM – 10:00 PM",
+        "Wednesday: 9:30 AM – 10:00 PM",
+        "Thursday: 9:30 AM – 10:00 PM",
+        "Friday: 9:00 AM – 3:00 PM",
+        "Saturday: 11:00 AM – 10:00 PM",
+        "Sunday: 9:30 AM – 10:00 PM"
+      ],
+      "verified": true,
+      "instagram_url": "https://www.instagram.com/g.kfarsaba/"
+    },
+    "הדבר כפר סבא": {
+      "place_id": "ChIJu0brwedTHBURKHdOCcCd0nw",
+      "google_name": "אביה הדברות",
+      "google_url": "https://maps.google.com/?cid=8994424853927720744",
+      "formatted_address": "יאיר שטרן 23, כפר סבא, Israel",
+      "rating": 5,
+      "review_count": 458,
+      "price_level": null,
+      "phone": "077-997-9673",
+      "website": "https://www.aviahadbarot.com/",
+      "latitude": 32.1868781,
+      "longitude": 34.9031549,
+      "photo_url": "https://lh3.googleusercontent.com/place-photos/AL8-SNFEwnXIsgXEpi9ZJqmH-iDGIRIBXvMuqzauEpXZ-V4ApFN5fm7BBR5LT9tXnwNmNRrnduMWMRVUqiqFAtzMbt8V9WiFk1f-lzMaZpPUorH6lNyC694chErjBcOPrt5ZFlwWLBb0TW2-wVwk1Q=s1600-w800",
+      "photos": [
+        {
+          "photo_reference": "AU_ZVEHcPObqzoBoBa7_Ws25IR5rqjDg7H3ildOn74Y82i6nLZgXesaJo1ifv06_kMi3GFwaQ86a3tXWzPmpFa3Y9EQoqXNm5XCRjFSsETTnKUaX6ZjW5ZIf6oNK3Zl7_RSegsCud1jeePQfDa3pBEEF6TkHSSs5ZiZlUBQeTZupPQ42txuENyMvurcbDaLG_eAbFZBidCYOE3G9rqp_GgvvAkVFTD4cE2cPhmCGREUNZx_c1Azed5NgyhSupOaX4BfQ4JTXNt_z60dnQrZ2pvBzpoVFin4J5Y8ATUr-TEu26NDeKzZSAkemhy7c9aUwZLSg8FvJaUXgsMvujsFYtdqWDMkJEfm4GzuwG1HRSjtt9_z_ywLlTlVPYb3EMJYZRRVoNGF7mTw7_nKdBhh7-molUmaQfvyr6EoUDnD7vUQeOXc-Yg",
+          "width": 1800,
+          "height": 4000,
+          "resolved_url": "https://lh3.googleusercontent.com/place-photos/AL8-SNFEwnXIsgXEpi9ZJqmH-iDGIRIBXvMuqzauEpXZ-V4ApFN5fm7BBR5LT9tXnwNmNRrnduMWMRVUqiqFAtzMbt8V9WiFk1f-lzMaZpPUorH6lNyC694chErjBcOPrt5ZFlwWLBb0TW2-wVwk1Q=s1600-w800"
+        },
+        {
+          "photo_reference": "AU_ZVEF5lpCq1Wnsg9vgkBnyXEBzXltlY02GOU5OgYwXsWLXoPtXQIJau1yVoiQ44bY3BKBB6Zsi8uV_CEQ8y7j4S_PWxCevaTDuWAI39wbLLuFuGinSuhoBJ_ZZBdu8HQZJr5mkT17D0xR6TCZ6gol0krRqQBmiEv3_pTmGn14HG65tSDjiMvkMQhAcklKR9wZP-nb0TgfePC6SXjTubZLhuvZfiGmuRKW44OWvjJuBIL8U7cGl3ssjkRMicHGaIY1WZQulRgmFMH0VABx5PhxfZolrHTs63T2DGZtRigZQN4neQ1vG1BsIdHxL2oxCzxBq-D2kSINcULg6LVRKz1aziAqCE_nWoDMR4fwu7xl0J9bo-WcMcgnuFCzWVexxmRkkKmlqe8AWxGwwWZPlOoNUmhaKoXukCqyHDxuXvgS7dUPY4Yyq",
+          "width": 1200,
+          "height": 1600
+        },
+        {
+          "photo_reference": "AU_ZVEHnhN16e35tWZbmPJmnRICNWg2O9P73PYjNyYIYE_Mnex9m4WPZLFTlWugUslZZoYB8YkGimmavU_q-IhNlQz3spGfDBnTMtWOQAQ_jqxJvQrIA27KPlmIJaW76GgF1ZfwNhros5Tw7xXYntG35QR98xVGACpZ-HC5OqFncfRfg75odBeiLS6T3P9n79WKKh3R-GYLSUvwePC-CV3zXmhDx3XwwF7O-TdN34QCn8VITzHsItkWI48_dYB1QK-fEHM1jmaMSuxT3Qej3MN4-u3Mt4R-OvGhyQSMX7dcrblMqNHgXuqQMGgleCHSKlnRhuAitI940USyYNUCiT1e2BwXfoH5iU_4ybFgkeelftVSAerJcsb4GAoRndRR0pQZpMb159MrAdMEvGPt9Ovo1aqAknqVmJrZSmTm7iXcu1v6_krhM",
+          "width": 1200,
+          "height": 1600
+        },
+        {
+          "photo_reference": "AU_ZVEGNrCe9gmFPBv5rmKOiYlHWILZM81i_lMS1W1NEQfBWcgdcbQpOlMkhYdCCTr1SV1Y1yqZV3rLPQ7Wus_tqM6pEQr79vTy0ZSPAkAmr4vaRnqZxv0ikQ73_CElAOQ3cLgPcf1PDMHYPpsdvAQHMqZeRyrH74aRRUNKDLoEnVaTfXvEwXDJMMAeJ2mUBs4T5wRihxTnnXEHRK0t1LIatVrvrNefsnQdyjRyijh3l83Z3ITY5btjY3lKADdq3jdLGe__EbPVUrBHmKm2ipFR_gpcXpOgL-PD1hJm0sHX_Cgs2ZGpJSFpkh0q_7ZJSLh58D5q3w_ZNYtZicc8AP7yo28xXNWD-TYKzc6rUGa9fGT9N-NRdEz372rOkG8E8uzN-nQd2GEguv1cProfFrY-HG-Hjs1kti38o4mE6GAR6BI8NBQ",
+          "width": 1200,
+          "height": 1599
+        }
+      ],
+      "opening_hours": [
+        "Monday: 7:30 AM – 11:30 PM",
+        "Tuesday: 7:30 AM – 11:30 PM",
+        "Wednesday: 7:30 AM – 11:30 PM",
+        "Thursday: 7:30 AM – 11:30 PM",
+        "Friday: 8:00 AM – 3:30 PM",
+        "Saturday: 7:00 PM – 12:00 AM",
+        "Sunday: 7:30 AM – 11:30 PM"
+      ],
+      "verified": true,
+      "instagram_url": null
+    },
+    "יאמה": {
+      "place_id": "ChIJv8qejN-dAhURaFgMG-nrASc",
+      "google_name": "ימה ספא - YAMA SPA",
+      "google_url": "https://maps.google.com/?cid=2810787028869601384",
+      "formatted_address": "הנמל 9 - מתחם המרינה מול, Ashkelon, 7879304, Israel",
+      "rating": 4.4,
+      "review_count": 63,
+      "price_level": null,
+      "phone": "074-797-3003",
+      "website": "http://www.yama-spa.co.il/",
+      "latitude": 31.6823264,
+      "longitude": 34.5573046,
+      "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqHrKoqKZKt9aEzA49RYwVEHMBbYA1Cq7Aet5nE4IX6sJI-TvSah4TcDofWNZlskaFA-tGxRuPgKtBRHsaYmrfS5x80Fw9Ph8aU=s1600-w800",
+      "photos": [
+        {
+          "photo_reference": "AU_ZVEFs7nXsc3hvXBXZVycw6coBvuMo1IPdZuUZb1ShvCKS6y5jMAww2X0EY4tG95DIeMvbXgvMdwoTvSnqr05XyN1VlmGjS8RrbQyAynYpTwM-ShQ4bTbijvTap0K1Fm_80GOfF5PzId1EVlD-Wq8q76sVcz5L1pS0BQttRrl-Jx_FD1mPd_Bn3YirFgFbkaiOQg9kZgxARhw4CUorTpoOOOPTHqqkth_vyEJdC8idTi95mdUd-BKn2XyCQZCy0nVfMlDVjdZS9lWHmrDhiVHVREVHZetHgllRNLns1CqrNK0vqg",
+          "width": 1600,
+          "height": 1066,
+          "resolved_url": "https://lh3.googleusercontent.com/places/ANXAkqHrKoqKZKt9aEzA49RYwVEHMBbYA1Cq7Aet5nE4IX6sJI-TvSah4TcDofWNZlskaFA-tGxRuPgKtBRHsaYmrfS5x80Fw9Ph8aU=s1600-w800"
+        },
+        {
+          "photo_reference": "AU_ZVEEh_5TD5AIaPF0v4qofRGzOsvizWRXYyeeOPVoaHn575RR8Pbh-eKJCtnZMox1AHipXKan--rULwIkVm2RufKOEiCKNJU8fAKbF4UpHurbRmajFyTtjiUeda5Rjgua7mlwignJgDiXZobMklB6RfjHzu-mfeabtbJ91VumhcfKHcaKNDbDw_s-3TSAStxUG_yggDZZ2626ByD2_fasJpyyEaFdSqI1zp9ABfi6ib6yt39sobHBmVaFPWCMs0JhQIU2_MzpY8UCKDuxK1UoI1ExzcyHIAdqdCw1EltqLhEBpEA",
+          "width": 3024,
+          "height": 4032
+        },
+        {
+          "photo_reference": "AU_ZVEF9_bwsvBaLBk8stq3aiDS8ZuQuclnlHTaw4nAqrFCeyOuKo63qA-VzUb3EDiQYxkLwz1lxlUsTiRYItCXmEFLVGKCGNH8hA7I2vjLjOQvjYW_6rIG3LKdoFK9m_7LCh5KzQdO6TK6TCUOIJdCgNv1Feg4xdAE2-epXhTU-xJ60tSDs6DhcL9k4XBdRIIIEL3eZbWxliSXEv8m0ycZrLsLAX2EgmI6ncpRKc5oWKj7ASVmaPF0uZBSPoexrygBz6rArxOT7QB_x0nBP_roXbvURoLhMSGuN8wRRn5SKP1SgJjvOjxgc96um38oWu3TFGzjCp281PunB9BeZD1qR0-4PYRftTpv9wvSh2gdac4kaFSCdsrkvuyjz3plLYWWT2f18CQQ4AJYtDS3L51lCAj3qnGgsmZNE-ZX2Nta9hCkwMw",
+          "width": 2252,
+          "height": 4000
+        },
+        {
+          "photo_reference": "AU_ZVEGtOSyPLL2RsazJBlC-0PKKjknsbtHV8Uqk1VfShIi8q-2SChFLw6pneNSfwmCRISCeWmTw20_IAgx-hIBqlFkiqLaLel3KdLwFs0uBgCPjKyIuX3Ls5oSkN-roy7pGl1jr8Vn6SeJasF5kBySi5KjGS5c3601PArMGydMGgknCdAvEpr7vgFCfMny79FHGYg3gcOWhyvCWqydjLtoKL-Jiv0vg23hr88hF_D41sQCXQSx3hVqSzC51GXb7jlZipT3Y1SJIvx2ULzSV4A6iViW3pKYIEyYOF62pXdKAPFYjcQ",
+          "width": 1600,
+          "height": 1066
+        },
+        {
+          "photo_reference": "AU_ZVEHqVeClZSDS58Not-1GH7ubaMt1fkfXbZhT-TvOixAEoxiH6cfBxb6yqXyuA4B0kr6AMEvU8NwHTwkng76A13suQ_tza7BWsvr_Gbj6HgGjav5vgZBRIQwhzsIAv8KO4yFDc2aCKizgIC5TF6n6r17DPOUDzu2YHP_kLX1PUhB90u_Q088jU_22myl5vplTjLvJg5VjyQTd-JhHMP_pI52vwfZbFRsy1zin1rfOE9101276OHnyXoLc9cQ0j17xS89YDFlDgm7QZm1H1OwDkNVHJf_Qynox-MSAqmLy-jSwQw",
+          "width": 1600,
+          "height": 1066
+        }
+      ],
+      "opening_hours": [
+        "Monday: 9:00 AM – 6:00 PM",
+        "Tuesday: 9:00 AM – 6:00 PM",
+        "Wednesday: 9:00 AM – 6:00 PM",
+        "Thursday: 9:00 AM – 6:00 PM",
+        "Friday: 9:00 AM – 3:15 PM",
+        "Saturday: Closed",
+        "Sunday: 9:00 AM – 6:00 PM"
+      ],
+      "verified": true,
+      "instagram_url": null
+    },
+    "רב יולו": {
+      "place_id": "ChIJ-2aSyTlIHRURFN21s5jt9KE",
+      "google_name": "YOLO",
+      "google_url": "https://maps.google.com/?cid=11670213774529649940",
+      "formatted_address": "Ussishkin St 54, Ramat Hasharon, Israel",
+      "rating": 4.1,
+      "review_count": 34,
+      "price_level": null,
+      "phone": "03-518-7177",
+      "website": "http://www.yoloshops.co.il/",
+      "latitude": 32.142354,
+      "longitude": 34.843559,
+      "photo_url": "https://lh3.googleusercontent.com/place-photos/AL8-SNGws--3UAbv1hEuPduzjsrCX-ik451SoLEAu34-nxlv8wvx5A21DYjK3tzEjN8q-drtqFTk_F0FcPR9opK8NSV2d2EdPAsFl6i7EhMRQiFfYfzzM6HliwMgk9Xm7jEjcts-xpZfiPrGKCyopn8=s1600-w800",
+      "photos": [
+        {
+          "photo_reference": "AU_ZVEFba_s3QgbROnv7u-a0TAr--psTpK8d-mSrbSQukeRH-Jj1kBcv_ePQSUaSPAFmLKT1onOHoVnACUFErU4u1NzVSQUD84vwmPeQLClv6gpnFBai6-E_GVTfjQ2x5jtyKtLY4xbNRE3qjPAwlqpb_qNT3xCUrCok4Ly9xO3YFQ4-oiyeitzuEyIGcTdh6Sd8PvkWIKFWe0Ls-Cq8cILPnaRhP0SdSzijFNx4rTXdQibysmBH8V2rayweeNHfENeI4tB374RVplgYQN-UGYo0yWiiq2Al9xLbxu2yv4FBePtIba4MqpcHAzwxchUxr-bqifNOlHrXxK7AX-J2PMkRqyOoM8SJmJPrDAf1v_D55Cbn12mQ6SztBYt_jv4QbVOc4kOQOlkZtJJmUWVWpzsM1HBzYE25M1l0e3QB0Io6ATeq3Iku",
+          "width": 4080,
+          "height": 3060,
+          "resolved_url": "https://lh3.googleusercontent.com/place-photos/AL8-SNGws--3UAbv1hEuPduzjsrCX-ik451SoLEAu34-nxlv8wvx5A21DYjK3tzEjN8q-drtqFTk_F0FcPR9opK8NSV2d2EdPAsFl6i7EhMRQiFfYfzzM6HliwMgk9Xm7jEjcts-xpZfiPrGKCyopn8=s1600-w800"
+        },
+        {
+          "photo_reference": "AU_ZVEFwtwrDj2HTd7LKt3Cgmge_wfq0fjKfaDXnMceP6PgYqYGMk7dk4mMEqwwnVJIwE7akf5ZM2VL3jBtg_YVvrgyloj_XPPnOo07LUJ0iIGUiFX34Sh_auavABxwRhTT8w-p-dC3M1atCcDTahErCJe8UHewbrDsceHYIWlkz0Wr7pG4IsD-cEYR3pBVuKjVuKpQrfsEfDAbJsUZkQ_XuI4Q-M1az6T6ghIpYSnfflxkSAMWJ0x_HMZKi2GWpBYtij_jIrYufJRrkTRNlj0RmOtYCDabSe22bHuW8ARPmQj7iGuRxaMIxSJHRh1mtx1EHKgemKLM75qFUDOJDANqvWNcmY7h-W9w6_26_7ogwctrwfE0UI_UunEBJ3heGK9-wQnLZrKVKHXQNwN0Z7kzikj3QycodsWHL_nET_9Nd3V-AvHJV",
+          "width": 1920,
+          "height": 1080
+        },
+        {
+          "photo_reference": "AU_ZVEHudTTMy2rdrtimqSAxwWoLyJikEn9XW0VI6M0KtwwpKHxFjYMIK9-J5MoHhExYn6h3VoABpA5UO_V1bDPFGADRbsoLrhK1hA31hB3gnkE6ihiUYueBMqb1asgNwZO01nyUnhzow6Vk5arvwMx2IXu9lSpChdtcEjMOiw1Y0fHJ2eCztijZzpTKCrGZu0HfV8bF3hvokNUpG-gUNAZ6rkQYEidd3HVnTBYFgmceEBZWNzoy4BDjvV20HBTwkZZZkGW8vt22GU6qDBVn5DX3dyx_xrUNdvu7qrbOcmkSfQYgBfIw42Gf1HUU2YCVyf3NydPME7GjZqqh-SrFm1OUV6_QEw8uNy9YslnIE_GPsq4IJgmZwKLuKywgorlHdHNUwUuVpm7e9ozJ3iDO1c538025FXCks3Zv2MNLYxuoGzteDdjo",
+          "width": 1920,
+          "height": 1080
+        },
+        {
+          "photo_reference": "AU_ZVEGsNA9xW9Q1AAkJuzfa7_-QI11ectqL5Ej0kAw4x6Ar2G_9DZM0upJDVMWqSAALvrhEMhKDvzLNe4hl6K01ATwAClW-4OgZnPvVwfQwAMRbiF-kONS5-XlP3ELbdmJYSTwVviIAx4B-im6tGmDguUGe04jz_-TRxUDEX7F_boNmeC_4z94oJmBGQ61EgO4-lfnY5B-t-SVUfYgVL2OEuB3pN2n9gKL_DLyeG22Je3hrnZY0576p6h-szKHOWDzwyM6y7ycys3k4NX1kuAd09zF5C9GJcszPGgT3Kf4VMxWuSuVaOl4ec7zlcxbOI6m41ZEyNU2Kn0HDFJeN7CUE3CePQLfvJOJu5ZUKUs9TndhW-MwLwbz1TIMTzSqYVwW4qa_fI3EasQVBkxZnRbaPUIOxsIW3jvDoLBoWzK1477Q",
+          "width": 1080,
+          "height": 1920
+        },
+        {
+          "photo_reference": "AU_ZVEECs60hYYHgj2qgcDID2HjmLR8fkExpvdrEx8IDpGj2uQrEd_GqBeI-RreM2vb1ENMeWgGoNUbTIoqTF5Jcjl7HmQ4eAlLsCYOPfpam8tBifPWMfulHY5VtS93zx1Xh4L5Sxofxz53Po_JyTJ0Q8O1y69KSKmtt4gM-tDsrnJyZPn86DL7U3yWhr6oZweSH33fJk1GqisZVTpTdVFv437Iiw6ReEBRe0_QsY50jaVNSAp-YfczrDNwfKqarftNsWr8V-5dgG8bGMAFf2N2Phne2ak-S-jhv1hXl9u9NAbNinlWBkHpb_ne_BPWvUHZ-VHbKfIIiEhaqi51F8MzolRzRxgOhMw0owmbo4KmTJfV0QLyna2Z9UUkhDLHoLPPfg6dAVjB0wrDBoo6wB9K9s5EPoB3v_626kAc_U763JHDzdQ",
+          "width": 3000,
+          "height": 4000
+        }
+      ],
+      "opening_hours": [
+        "Monday: 9:30 AM – 8:00 PM",
+        "Tuesday: 9:30 AM – 8:00 PM",
+        "Wednesday: 9:30 AM – 8:00 PM",
+        "Thursday: 9:30 AM – 8:00 PM",
+        "Friday: 9:00 AM – 3:00 PM",
+        "Saturday: Closed",
+        "Sunday: 9:30 AM – 8:00 PM"
+      ],
+      "verified": true,
+      "instagram_url": "https://www.instagram.com/yoloshops/"
+    },
+    "המחמצת של חגאי": {
+      "place_id": "ChIJzwbbuFs3HRURts5Mf9eW07I",
+      "google_name": "Hagay Bread",
+      "google_url": "https://maps.google.com/?cid=12885808811134996150",
+      "formatted_address": "Chayim Vital St 25, Tel Aviv-Yafo, Israel",
+      "rating": 4.8,
+      "review_count": 305,
+      "price_level": null,
+      "phone": "03-670-5520",
+      "website": "https://www.hagaybread.com/",
+      "latitude": 32.0550396,
+      "longitude": 34.7677815,
+      "photo_url": "https://lh3.googleusercontent.com/place-photos/AL8-SNFA0Bx-e7A0tX_jTSJOxgWRu35Um6v_fSy7SxhCX4TFnlQkATIerwQk5nNd6SAjGG4lQQSr1KTpS4qjlUlFGwEsRYq5CE2Yb5nDk4uzyeG2Iw2GEdstmz7GFZwWa6ANeib_5AWesgX8PUtnyw=s1600-w800",
+      "photos": [
+        {
+          "photo_reference": "AU_ZVEGbNPZQmh01q7mVTQphBlN1X3lQAF3Ch1fGlRhHjVXlfmgmNXC0SUBY8ilWs2mdZgzW-d_jH10C31tv75_-j4HOstO2UaFuVwv7qeYNxJZmV8Y6GLIG9_3Y68_YyyWtEI3ivzuCG9Ma62yqORmuOD0Mrhovot97XfX1nBc9FwxyUMy6vFuni-iCLm3eqzB4iLfj8KeNQOvYLS4oQjj49iQiXyGzdIREpFzdGljNe2r-i5cvCODYmo8bwkqGVjX0swsomtt835aVnhGOx0ks0EuBUq8TgYhzJmCJq3EQHPCP3Mu0mHDLUKP_f5TOnSox50cBYgmdUCfFRrrjNr-7VDqf77fctvOjRI78shXbytCL4XLRB6Tx2wzEd5nH4Ic4tVVPhu2ozRWYzzeDic2OJpoUmAh4gfdK6FIv69mbbkIK-Q",
+          "width": 2858,
+          "height": 4032,
+          "resolved_url": "https://lh3.googleusercontent.com/place-photos/AL8-SNFA0Bx-e7A0tX_jTSJOxgWRu35Um6v_fSy7SxhCX4TFnlQkATIerwQk5nNd6SAjGG4lQQSr1KTpS4qjlUlFGwEsRYq5CE2Yb5nDk4uzyeG2Iw2GEdstmz7GFZwWa6ANeib_5AWesgX8PUtnyw=s1600-w800"
+        },
+        {
+          "photo_reference": "AU_ZVEGZi4EuMKO_A3qhkmCafUuu09_e1hAreDfJiaZOoNG_q5lR9dw_baGMX15Qgl6ejXIuOMmn71GoxUBhuFMGER6eaLjEA6huNyOqR0g_jAD00p1-5WCUT4E_JFjZ_pV4RwRvw3_yk3WWyXrh1wtcR0jBMnugvhDZgZcWYBpmAD54g1Jstj-7Fp87U3YYkCZuadlZieIkC9BrzhO2YNIrjInr_0AVKksj2Yemxgd5ghMVydUX7s-1Uu_9skMyvODPkyz7gF8lP7aMbLSWPv3WjLDOVm_VniMloLzqWVoMwG7mPg",
+          "width": 1066,
+          "height": 1600
+        },
+        {
+          "photo_reference": "AU_ZVEEbNZiDoe0I4JYSfAMC9O2Q7Ql0rGvm5Qr8kuuWNOE-Ltc5WTymde8xFogztCjhr-lf5SMasoIQltpDCfkNy7DlXFm_GFAlfqcbzwb3UqcrzHP2GTky4-y3plHEWJXD2ytMfvEbJV4XOVxAim4D_hSu1Q4HAqNhL-KFeE0UKMxOzHwkGjbNpcUGpvNV0PUBCMBHOJfkwvR807e30FeSHs0m0Gc2EqblfFX76rIvy9ffVxbpvVl5pnKBQD21nLc6w3jlK9__IaEvgrf2Q9UVXWXyi9ndN4szGSr78Bu5je8MmNEEsSVxGivutz58-fExTli-wE1IEPknForPUXVXcKNQB29HIbn6vNEZMk1uCdCIGtBHnXW0pHi0T-IkPyLUg-PH0ynMyduVH-XcejSjrNGJJ5hU11cack3aNWTVlt307s7w",
+          "width": 4032,
+          "height": 3024
+        },
+        {
+          "photo_reference": "AU_ZVEHzb8MNAWvtVL6PrztP3I2apNVXE5SDLSqtO0yVi0jCyQpo4W0gXN7KiNyCzDwmKFzY2v8BrtTnUW7kmplLOYeFZUEiU8nO3qMS4UP3m1CfIKrszpM4mNApgVHugmWwwWSg8JK-acoaveL4leUO23_TzQt5fUxZ3HochVcKxbfTR0AqxJwSFOh9BSzIFO2RwsVAJuR6MlQRRFC-5j8_pzjNnVCTu6cSrk16APZF76m1GR09boKOCzGreYAsvO9RdxvTrXMd3fdqTh-oyj59IQRbJBG6-l2PxIuDk3VnYABaE4HDZ-PSpADos3ExbB4RD74UiZNbME-LnNavCnh4UinFlvF3uarBUkHtrG18l0yIypwwpq6qufL6_RNVxRhZE-qoibd10kydHmCSg8kG8VbfDfDJal6d9ukAlQak_KxTNQ",
+          "width": 4032,
+          "height": 3024
+        },
+        {
+          "photo_reference": "AU_ZVEEnpnUWZuWDn1_6w0i3IGWDh_VWAaYrCoLLLf39ojxAqli3pYKHSldceQ7nBdnMAcclN0kc-7FpC7VjcKWnCf6G--28u7ZWe4oS4D_onEmqIEHU4RQuu_MnWKUd-vTQScJ2aH31-pHq0xgjOzEk0lh-gL_YfM98ou_60qO86H4PxECo3ULIYZbSUlVYtuIjSKmBxyfPLY3T0tl3wuFgXwl49r3OHjST71Z6j63b-fOUY_FSu0ceygVaBpfT8IdvMfeL3S20xv13Cf00a9LdP2PK0NupMrvf1qYQPj9mWneyTHU03ipnPzw-cxFqPCjGzc0MezAzUz0ILzanUMcqPCP4dy3gZs2IpnmR33DaxIjFqKlpA13ONQT-QPGUJiCeb2-z7oAoMHR8zssXMM0lCTYZPdBa2UeCYH9xTX5sogco0A",
+          "width": 4032,
+          "height": 3024
+        }
+      ],
+      "opening_hours": [
+        "Monday: 8:00 AM – 6:00 PM",
+        "Tuesday: 8:00 AM – 6:00 PM",
+        "Wednesday: 8:00 AM – 6:00 PM",
+        "Thursday: 8:00 AM – 6:00 PM",
+        "Friday: 8:00 AM – 2:00 PM",
+        "Saturday: Closed",
+        "Sunday: Closed"
+      ],
+      "verified": true,
+      "instagram_url": null
+    },
+    "אילנה דן": {
+      "place_id": "ChIJC_wSesdMHRURvHqdU7gJ5qw",
+      "google_name": "Ilana Goor Museum",
+      "google_url": "https://maps.google.com/?cid=12458656106448517820",
+      "formatted_address": "Mazal Dagim St 4, Tel Aviv-Yafo, Israel",
+      "rating": 4.7,
+      "review_count": 1143,
+      "price_level": null,
+      "phone": "03-683-7676",
+      "website": "https://www.ilanagoormuseum.org/en/",
+      "latitude": 32.0533624,
+      "longitude": 34.75146489999999,
+      "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqEwRTCuUrubZ6_Gj72s_qUGhsnbV11lczQ591G5B4Wv94AAEEe3coeS1X_Yf2EJ-qOc0sm5RBEvHFQmzaS2mS2WFzLj9atU3Eg=s1600-w800",
+      "photos": [
+        {
+          "photo_reference": "AU_ZVEFUkCE9Szkkb5LgvXh9EUdIvR6Es2DeJIWWiPVqYsVdICOlrWuQcFBdZP-vhZ015nYdlmJzhO-MAy67t0pdk_6fidkNzoIik21_dgtaFJA3zbjUuIJoNMLqSp6h7xIbTsui4MtWhfx7Jn8eQdYvqdwcbPZCsOufonzXiSZrLomQzb6i9andlKmeswaiKhogIBmPI_UdcLMqwYBr0HEKxc1dbpYI4AOjwaVpGSkXa2ee8b2FBLcU2SRSSbyMeRBj2afjwae67bO0Pg5reasYHiR1a2umnD96SJ2uMpoB5lO65A",
+          "width": 1134,
+          "height": 505,
+          "resolved_url": "https://lh3.googleusercontent.com/places/ANXAkqEwRTCuUrubZ6_Gj72s_qUGhsnbV11lczQ591G5B4Wv94AAEEe3coeS1X_Yf2EJ-qOc0sm5RBEvHFQmzaS2mS2WFzLj9atU3Eg=s1600-w800"
+        },
+        {
+          "photo_reference": "AU_ZVEHujuaiH70GObRbzcDJpR5ql0DgR9Nt9k2CHHEpdKObc-voneBHRtX_b3CyBfyNS2iRBAZ1MdOYMSuOUB-qrhM0VmuUSkwvWHbqafIGG3hORICPvu24ZuEpimroA1pW33H8U-Bksfg8JtTDMbMCXgMPNMODRq0lFb04cDOH2f_iyJ57_vWnSYwGm2UIhHxM1UmUrGMeS0Az0nc6HYXXiyK952VmhN1e_cJ7BNTmfGQtMboltztOZPc3JpuHS4AraGadSeqTypNwxBkUef7xzS0YHJKMgbMQc_CNMb5gMsldlgFlq8PQeGf4yk8N9pWJxy5RArE9ncvAoalTIsyrwjn1feeaamiqKRphEbEvcxmeMgHmnBj1RCZDNLrRJXKpu5QZoE-scI9ZCsdBRUpFotY4sSG2x2LyArrMLpGycXQwpQ",
+          "width": 4160,
+          "height": 3120
+        },
+        {
+          "photo_reference": "AU_ZVEFIskOwKwJPOPUpJlY9ZwluA1Nqz72Gt_Y03L1qetLZ0QTNlPV6HMtEbdmKJO76wb9E4Lb3DZWb__bQocYFUBmhH6SveoXm4rYjmLkEBU1hrvBwdmROaHue2Avq8DLMubOEbvuagXo-Duv7yaWHJqIhy8DHptgkdGCeQ19sCjtLOC7_ih6_SqVqh8pc-XyfiP93Xa7cZbbdbzs7Ns8YNkgP2CQXBV-eJpSoX87Qbu5HmDMAJgJgpz6BbXtylAnwQZi-5XlBdXps0R_lqCe3MunXPMMDQE6xfeG7dLiM3LCUORCsD5newG2xnIzGIg9VisdNY4d-cdzpJ9m2Lx2DX43GxJtW1GUpeCfoXNVoPuc143sHvvKNP9_PyVBI6GFfXWJNmKGuJUOAFOJ5M0PQiyZnxjZ2X-AYyVR5Cdm10GA",
+          "width": 3072,
+          "height": 4096
+        },
+        {
+          "photo_reference": "AU_ZVEHbcbdtAZ-ui2YAnZ74Xp_m2oLU1d46eLe6WTesBUtvzLCtLq9rPhqyGoCCTzPo3Q-n79p7Zd-1OjRbTXwd7yFJsY9ps29Tuiia25z7yJn3QQBuy5E17fkepUT0RsCw_XAwyTcO751C5V9Rz5Md0Y_qzMDeacvUmxSr9dkBLnXFDO0Mt7ewmKUat8pq2XDvAIOz5x3DT__w8kld-AYMzPSfmFCv8sLE7rgOyLx1qx9Sx_18oWj27bc62YQo-6cMMHuNjR-IqKW678rHQwkAk9WSoM27Jw2wzUDeXNARXt2qQwKgXwjp9JT82tXpp6CqXjTJiidrYqbCR6lCCQiWts7ax-KdZwGPRYhF_1-5C4qJtDTuPDoTt473v9j2CeUiwnqbkedIMYuAMEaABGAkaejc85HkLRH9zuT_2dq_OuES478",
+          "width": 4032,
+          "height": 3024
+        },
+        {
+          "photo_reference": "AU_ZVEGK0SW9lUnEb7ikm6Q-15kyNp7npzvFostfsaPDyRYLQlxRVS6iINJe47RB9Nig3EmOJk6-DhNbcHpNqSkx_57qTSZW7Ck4g_IBK_utJSwnlFxfxtXjUfh57vREIvgdUmJGM_68Ksm3B3y34vr0r6fuZNQGU1Ly69isJvSH2DB6ShNdimul066Ddg5MKTIoN01YGMZrnSdw55meniWZawpT6mlmTTa8tnx4ARFlbned94uLS0zfqjzQixuUSt5e-h98jv0eHpd4g5pGndn6YKEBch2_igv8w67lJQ_MGRvbDSRJIEcCybMeIpBJkGeqU5wUT5xbGfuS3ZeEtPmu8dhVrLIJJrcgw6IID8CMAArDPlX1cbmwFjzecEjBxhWPymSWwDd2RMOZpGBz2jWpTyB3WhfGABTmDQHIG4SNEoatxUOH",
+          "width": 4618,
+          "height": 3464
+        }
+      ],
+      "opening_hours": [
+        "Monday: 10:00 AM – 4:00 PM",
+        "Tuesday: 10:00 AM – 4:00 PM",
+        "Wednesday: 10:00 AM – 4:00 PM",
+        "Thursday: 10:00 AM – 4:00 PM",
+        "Friday: 10:00 AM – 2:00 PM",
+        "Saturday: 10:00 AM – 4:00 PM",
+        "Sunday: 10:00 AM – 4:00 PM"
+      ],
+      "verified": true,
+      "instagram_url": "https://www.instagram.com/ilanagoor_museum/"
+    },
+    "גרציאני": {
+      "place_id": "ChIJixvEyDlLHRURhFUJY0Ivtzk",
+      "google_name": "Gratziani",
+      "google_url": "https://maps.google.com/?cid=4158844743075845508",
+      "formatted_address": "Sderot HaHaskala 20, Tel Aviv-Jaffa, Israel",
+      "rating": 4.3,
+      "review_count": 107,
+      "price_level": null,
+      "phone": "03-644-2020",
+      "website": null,
+      "latitude": 32.0676489,
+      "longitude": 34.7967538,
+      "photo_url": "https://lh3.googleusercontent.com/place-photos/AL8-SNEUetsg0LF1pcywzVnPLyCHzVuRaiWEhXlrR4O2uEP5nLRxxtNhR__HsHJEAea_sej6BmKNpyriKcmqaGVJ5L5JhCt-bBzMJ8zaUN5YaxdOIQbqbj0B6LLiB1BartDohXim2rKHdQHGYTMV8A=s1600-w800",
+      "photos": [
+        {
+          "photo_reference": "AU_ZVEEnSSOuzhKkHTxYZ_lxVYoMU9qzyDQNyBFSSB3NNQYFRXZBrfUF6knVW635LniJP13i5xQ1z67JVyLWWcM2z2gRIMn_7qdmj2OGvJc8FVUB1zY3ew7qAASc01vfpESplyDpTbQVFaxdFO6wE-fxwN1U_QB-pVJBwc9ZoBTmVe0t0UOMxLALs-QeTYM2C0PsqMdeiAZ761TmwLhagg7mYO7fHU32RF-3FggTSWg0cugtt4j-3WHr8J3xiqbkbitUciOAGNMEoc8bNQ_XRnorO7l0cKrBb1WSJ-DLW2IPWX42RNAaqeq5B4D6RX9bCpwv1qSqaNCFWwsyJD5rOE9CTGR_kGeImiNWTI0UwzFXm4cpdvcNuUdqgehKk6pcejP4oR9o1e4EqinuKcOdahjrc-U-Cg4gTS-vaE1XFyQSKGYfTuY",
+          "width": 4800,
+          "height": 3599,
+          "resolved_url": "https://lh3.googleusercontent.com/place-photos/AL8-SNEUetsg0LF1pcywzVnPLyCHzVuRaiWEhXlrR4O2uEP5nLRxxtNhR__HsHJEAea_sej6BmKNpyriKcmqaGVJ5L5JhCt-bBzMJ8zaUN5YaxdOIQbqbj0B6LLiB1BartDohXim2rKHdQHGYTMV8A=s1600-w800"
+        },
+        {
+          "photo_reference": "AU_ZVEFurK9Ug4c9LTOy2We6SRcuqveWLmGY5-zt5cnZphU2n9GfRuRxMjk6mHkxSUrmwe-ISUidVtbGPWZdDLiRq4DpkqqDRMiPUTjltChlsVH4Sx8CmAvKXU1UvcAwEqoLYdFhFUsNvAhC1YQljd_TTyenhu-4lIao8rOxQzfNyfl7pOnyLiK4t5tAHlClbREl3CNdaRZEarpMJSkVf5HDJJP2QJmeZha_KZhLVX1PUbOp5-oJO9JT7cjy2_PLb0fm4KvtmH9eqZpPk8h41XcVWtonoUXWnvPWdiF09cVc9iSGdJByk1kLy4zjLf99oaFGfWbvoIg9Nwo7u3tZkUXxEqkYNX_LuvyQYXALfZnKlDvjPp2yfgzsDIPpeQykCccVN-aa_ZhNkMRNWxKv9RHGyzZK-7Hr0ghTldTxFSnsXYVTVdQ",
+          "width": 4080,
+          "height": 3072
+        },
+        {
+          "photo_reference": "AU_ZVEErjun2CkbHws69GFJ1Xbht8B6EUIuImrbVuq3dzI53OjO8Ud9cphq2kIME_zdhMzJx4hJJ-NuyTloddI46AzMxgRwK01IdvnxFqEtKA1WcEhemZgUrBbuiQJe3FqbUPM4X3aZjVGJKa9zwgTTvzAwUNLPLL1jjtXhqnyfzRLwkdcMCBWSEC4BX5_05VEZOnIewkic6ODqZcCIwY2ACcY5vs-97xnRkRJf3c_jLi2J7N5To7pgsL9pTTv4iw9t-auoJiB3dTAFRSF5ZgYTfKgP3vT3uUfTq-rnaBOouvHY9kmFDgSxVCPc6496BAiTwINXsiYosFt9bMQ3UcWqfcEafmETMx70K0GhGi1JztS61JyD_hmDS1kC10Eigp4f2wXthRkAQFR_lRXPbV-JR7u7xmYqbLi7Zh-0afrVzGb8Svw",
+          "width": 4624,
+          "height": 2604
+        },
+        {
+          "photo_reference": "AU_ZVEGJ3sPgNdTu54htJAKjgMIzoOUD-Z47YvrQA1Xz0frU78brUJ3BviL9u_Zo6lcU4D0iTNl_SyU6pTy3SB5PRmzYUDi9F6abBgElXRnkM5pX2Jw3Lnirlws-G4aYFulLuzTRwloeQOc_kZEd9M1e8ckjHDAu_w6qiXXwy27H-tA8wSLUcCsNS237VJ1Sx2RA9ui4C5TdF82WlOjLyWH4yWBNHmf_dd5I_3N37jn0uo4Iyw7MlJwim4nzQg_F0bWlVdjXmA5WNsiAq4s4Rqnz630rJcEAhnN8B7az0Myqs2DSEhWOZbrUFYfbjrDWnzR8nauDGu9mB4bam25FRYSvDipnga0nCy3Ih2pe1Q2CKjsv7GC2aHPPbshcmqxCP-kOFjkNN_YA_m5XaBtlegwuXbRlGtqUwpPRDrtcmc0-O_8",
+          "width": 4624,
+          "height": 3468
+        },
+        {
+          "photo_reference": "AU_ZVEGyn8JNu-_DrJvDjCrXy2AdqiCbKrceGd6pwk7ewczsFSZkx0EscZJQzTiKdpXreVrv-k-w5yMbgz9NQyLidx7I4xl8omb4mUgHl8bjkieJ_uOop1xLUvEHS6YMDdLG4Tu7EnsOfSPGW8HMiOi2XYMRFNMJFOKEB5oedgkOUrPiuzv5BwHfk09rKThC8N7SH58ynhxEU13iiPKVoOVLt_s74inKborLVuFiEJhcV2aOV5qPiKT9pAgdygKHwbAcRKb5iGdgkJHC9ZXEfA5DMJcUTJd9kO1U6qtXmlDfE3QZBo757Puirbmd2omThelIVVVbAeYD4UJpaXNumbh1g2LnIOekPv2U_veNy4UuvxAnQIfUc6-dhJKZtK6YPyFMFVsTWBtpPL3HHB8XriC7q9WtC9ZCDTeEgkRYxUloK7zq9Q",
+          "width": 4800,
+          "height": 3599
+        }
+      ],
+      "opening_hours": [
+        "Monday: 7:00 AM – 9:00 PM",
+        "Tuesday: 7:00 AM – 9:00 PM",
+        "Wednesday: 7:00 AM – 7:30 PM",
+        "Thursday: 7:00 AM – 9:00 PM",
+        "Friday: 7:00 AM – 3:00 PM",
+        "Saturday: Closed",
+        "Sunday: 7:00 AM – 9:00 PM"
+      ],
+      "verified": true,
+      "instagram_url": null
+    },
+    "הפלור": {
+      "place_id": "ChIJadLzWq9LHRURDYPBOG_ZtlE",
+      "google_name": "FLOR - Cave à Manger",
+      "google_url": "https://maps.google.com/?cid=5888132634550305549",
+      "formatted_address": "Wilson St 10, Tel Aviv-Yafo, 6522020, Israel",
+      "rating": 4.8,
+      "review_count": 86,
+      "price_level": null,
+      "phone": "050-872-5210",
+      "website": "https://www.instagram.com/flor.telaviv/",
+      "latitude": 32.0672736,
+      "longitude": 34.7814233,
+      "photo_url": "https://lh3.googleusercontent.com/place-photos/AL8-SNEQgZmZvMlgC7RfSy-m_LfZfMFbHVKJf2-DFubIWK-qrf-x1v7dz72iv0oEnL9QAUUX9hXgbJ11gxsKE5cSa4fou-inxfmgESLCGlmgmNbWlaHN3nUn1-vweYlsm-amJuXXGYRAwgUgvjke0Q=s1600-w800",
+      "photos": [
+        {
+          "photo_reference": "AU_ZVEFifnNVv0Dw_irfXdsVwFwAwxAU5t00REQDICo6fAGsC9gulyVy56ahWD470Tif3Q5I9kr134D_7w6yJ89WWYgtft66Blf5MtckH1zlHat0XUNhs_Ltmz375V5dEXanyORiBiM7a3UZt113-p07sN7yBKERL8TH7fr7osdAEISsd5szbmt6LHi6y-UXySfgvmewXRo_txGoWaHcwMXxxjhk8XE-0RrQ2NPgkAim32mS5W-ohevsVhj3Oz_Sngpegv8imjtK_YM_5v5dB0Ad3bvPnr1yN0XIXOAUXaNQqXwdy-XkF_762Vu3cqEvpxliHrtA4HTuiWPT34qgKOExG0fjBIZK_omIfG7dKa2n1jshTyv8CSIoizpB_JOMBPcnuvd2KJyA6Rp_Q6h6R7UohKw9a9NyQP_d4Nn2MIGDHNOL_c0",
+          "width": 2268,
+          "height": 4032,
+          "resolved_url": "https://lh3.googleusercontent.com/place-photos/AL8-SNEQgZmZvMlgC7RfSy-m_LfZfMFbHVKJf2-DFubIWK-qrf-x1v7dz72iv0oEnL9QAUUX9hXgbJ11gxsKE5cSa4fou-inxfmgESLCGlmgmNbWlaHN3nUn1-vweYlsm-amJuXXGYRAwgUgvjke0Q=s1600-w800"
+        },
+        {
+          "photo_reference": "AU_ZVEGV3p_rBEyRAWlYtXqkC5XYEYzH_t69fmjaUWyIzNn6P5P33hxNYzcXeil9Nga-vFNq-7k_gGsumxnNTWVdZXeTa2bbepsmzzK0FnSrS0nbhnUXjbMedj8DgfEIOgkiecmFw8P76smZOnpffidLfGA0CpjC9AP5-4xJKld6DNEl4Ei0isvPFfcdes4zeGM23plP0BIPxFpz5-z68JwWglJjXj8ryO7Ge9hH8y1A3g1pAaftxca3-4unZaGsPFoIbheipStOkvCQaAM_3hTIz9f4hBJow-Xwkj62FtlAg2wOFA",
+          "width": 4032,
+          "height": 3024
+        },
+        {
+          "photo_reference": "AU_ZVEE6RDJs26Ul5UUSr0sfJyCrnelVyCfy8_SeX9R44PI2qAPZ53AA9Fgletd-SbvidGI4LXZ5mrV5_FWcrZKhYA_0hcAW9CsZOC1N2L2WFDYF38vP9vxKedZOMUNTNAT3I5dZYwoMVmPSt-S7VuFzWCW7eCzZWsFmFvOeOUuyN1UD0cRqsQy2wPlNV4d0ZL52Wx-axLDmb_aEU8ADNCXaj84P3VjNq2Ggg1IZJb8OUtwBvv2wka6IQtRAhQNqdu6YAJQGjK3RxZ3qhhjVblFev_uH7HqWjAq-ZB2lGjMQZf3ZFw",
+          "width": 3024,
+          "height": 4032
+        },
+        {
+          "photo_reference": "AU_ZVEGo8jWfhKAh_OJxXfxO71oT80KSB5oSwf0IY7XWo9WnwIkXnSaZvvyty_vKTpm0F7oVxdE0m4Bc7hWW--On5jSDs1C5BeQauML7hkfl1TIYKPJkDrr8NSJdygfhjArqJtIrBLudVgTOTrGKsIINT6q9p_jZMH_IVu4bxZgV83T2KAGu4W0LBf20WQAgfxwqCau4o-Js2B8ThdI7aKjOAz9AsRLsF4I4EE_PEVa56RfDc4AJsglDn2qjkkLgrRZqxM76PFKhRhKtXeHhil2PR7pQcBCp6TcrJgiDfLh2HO1nUw",
+          "width": 3024,
+          "height": 4032
+        },
+        {
+          "photo_reference": "AU_ZVEGoM4TVx88-zgTcUb-1mlrlwoAM2z5gDTLAoEhyjtwOZv0yMhMAMfvvlAhX5hBS7TUOk7ymhE_zTzlUotNrBDLqoTMSNZiqQ5fp0yPC08tzpJenDcastwn7JKTm2iXUwX7hAKX3rSL30fReX5MPMUklYi8vNXhNvarU2VC9TbJFwS9gR9dkV7qifAS4_Ihf2OgWdVbKYZIiY9ChO1pMzr7C2lQ0nUOYrMmZxLlulko5k3_3XmLrAkrsjngAGgitcL95TwRMbqaeYo8dqfWb2kgPOP8e5-CTcB58ItL9VRrD3w",
+          "width": 2268,
+          "height": 4032
+        }
+      ],
+      "opening_hours": [
+        "Monday: 5:00 – 11:00 PM",
+        "Tuesday: 5:00 – 11:00 PM",
+        "Wednesday: 5:00 – 11:00 PM",
+        "Thursday: 5:00 – 11:00 PM",
+        "Friday: Closed",
+        "Saturday: 5:00 – 11:00 PM",
+        "Sunday: 5:00 – 11:00 PM"
+      ],
+      "verified": true,
+      "instagram_url": "https://www.instagram.com/flor.telaviv/"
+    },
+    "פו תל אביב": {
+      "place_id": "ChIJ_waSBvVLHRURCCFrOT5v5Y0",
+      "google_name": "Fu Sushi",
+      "google_url": "https://maps.google.com/?cid=10224700842056556808",
+      "formatted_address": "Dizengoff St 302, Tel Aviv-Yafo, Israel",
+      "rating": 4.4,
+      "review_count": 4439,
+      "price_level": 3,
+      "phone": "03-605-1000",
+      "website": "http://www.fusushi.co.il/",
+      "latitude": 32.0944673,
+      "longitude": 34.7767462,
+      "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqFVF6frD1sC46f-0LbpsOMTBisMBdZ0QVY7QBVZUSCpmjD8qqF7sy_SHpN7jLNb020L7rI23x3DXBjhRGLNgcov0GVXKt-JyDk=s1600-w800",
+      "photos": [
+        {
+          "photo_reference": "AU_ZVEFyAN_bkqCw4iiv9G3ivQG00WXaFNphWSoNRsuT30Ys01k0sIoxH0TWjM0gfoEBF9YrJs6Vh72AhosONREMvG5TBEK_rbXvC4_5pAc-8mf8T_9vJvDYhBL1dWsgKdi6uI688JUuEs-Bv38Nd-hMeMnh5b-G4oApdnJ1r85qccsZjsCGEYPfpeLr4v9NVlCioqmSIFiQ7HNkn7OnBAlVWCcdomnXxpNVniGYpBnj33JlZP-aN2XlFNvAOtoE3dcOCxRf9B19JI3Bb0mcvOUSra_46Ypqwtkkw2ElIarxQXWE0Q",
+          "width": 4288,
+          "height": 2848,
+          "resolved_url": "https://lh3.googleusercontent.com/places/ANXAkqFVF6frD1sC46f-0LbpsOMTBisMBdZ0QVY7QBVZUSCpmjD8qqF7sy_SHpN7jLNb020L7rI23x3DXBjhRGLNgcov0GVXKt-JyDk=s1600-w800"
+        },
+        {
+          "photo_reference": "AU_ZVEHVxaleNTF6s9vGZwAMCb70hemns2oUGUiwJAzLl43ue4sWluoTBNBBbqEK6K7wIev9tkqxsdyXMaeSWII1Pch4NhwZ76BzEvGozL9D9iyKuOyV0i4-nPQfei34ovkyezEqNsQZdAX1hBST0b365iqBqAyuR5tc50c2juzuXrGViokNYEbbp_kVflMup0F_EY8hBm7hnABm5O4t45nIXlRpPgrEIFNOAw_js39CSvL6y3IiqMHuRGVv18TT4wfljlTj6ZuVMdio3uh84aM8woEwo5C0gT8GZloDI5vZSug9JQ",
+          "width": 4800,
+          "height": 3200
+        },
+        {
+          "photo_reference": "AU_ZVEFV695J8TowVN8eF-9LMhLgM_dd2GPi7P_mbaXddQqxl1HGhUpmI3P-TU6Krwe8bjdBIApe_H_9jov_Jb_T1G6sxlzU8cAMnqVVypuMam7xpncbMBb2O_yJ6MImARk0y5Urg4mb5W-308vNAcknqYH3gje39NgOwwe0Bkwd04YXTlM-btWuMmLR8raknjvtwxW2aDK7q6ZxsbDAC_WzP7OkmW-55oCw8vVAu9iAx-2q6OuDCtz0gMqHLgvbXbUGBACUaneSq9_HtXOtnvmcm4dZFQZZ07ibqijEV2m6xaqRxQfL7wgKyJvp2p0z0PEKHsXxvrsGy2hSZX1S119nJG7B1-tnn_Yws1UFCS9OxPIbiUwD5OgN3FGD8JSbv6pFlrVexLXei1pdNpjBuMxVxOUR_vm4KgYBrMMe-oY2EeWn2A",
+          "width": 4032,
+          "height": 2268
+        },
+        {
+          "photo_reference": "AU_ZVEH3DO7_cyWorcbf5gkk1T4HZfFDg_r1qbIfT7MksUU-ic52dc0jbG6SLcKnQgioWbRQfD88Avz5kaXJTsEJ2xVkXrN1hNHNtZZFwhVgSbicGWjn1MvOCdCdFYi30RXMD6yGAMdkmhAStTpNOS3oeb2rejBgi2QptmU_MWMbDmxN5PL0FdAzZVMq9nVN-_BeS8OmKySZCaq4G5S2suIU7-CI15jcnuo_EnJqxEYhRfTgrOHGIodAyVyBFzay2ErdDrgvQ9mB7reNNrCLTywK9hz1bE9B4rDtvDOPTZaNuUyX8RwEqszEWCA9Eu4408upF3Moobjy6ZihwRIy80KMEWtEp5oyaMZq5wCtjDE8uOn-hX8wxDoA2XsK-xwYZrWLfGBGSAUHLiwk3ukG_MFg0yf6WzbBo8LCi_dOTIZrP_KYGqP_",
+          "width": 4080,
+          "height": 3072
+        },
+        {
+          "photo_reference": "AU_ZVEFXy_1E5NcRuJGxX4wlX4LJQ5-_rLXAMgUmgej2nISHijcCYd0kENQJaTAq4xUBI8Roz3lOGvhhDxwCIaXlnk4TJuj_FGYdpYN8T8CkpwFEccBpsj64mQmObMVpj16eR-CBIl5YsGk9Cv8ril8As4YM0nKP0sfiRlpUcQGcUIPY9g7B-N7crHZmZ_9sa8HuNCrvkKRJ8QEwvXTzODRIG9htypzsxET7DDkus3NwBM32mcpjlBHlBmwA8vPZ3wmecpYqjDFrLrJtle6KAJT8_ybG-9dffiAO52cW6OgYP3PjlIvbdf0N8l_41UHf-4Pr89TF67DcQzsk8RPzYbAhOZOGxeeNIzpaEbtjurf_dR0UPIwfVfOc1COjkoQ2RyzNXk_Bxs7JE5No4xQlrdwnQdt5BYJkk0xubSbKWOk0I5L_iKnP",
+          "width": 3024,
+          "height": 4032
+        }
+      ],
+      "opening_hours": [
+        "Monday: 11:30 AM – 12:00 AM",
+        "Tuesday: 11:30 AM – 12:00 AM",
+        "Wednesday: 11:30 AM – 12:00 AM",
+        "Thursday: 11:30 AM – 12:00 AM",
+        "Friday: 12:00 PM – 12:00 AM",
+        "Saturday: 12:00 PM – 12:00 AM",
+        "Sunday: 11:30 AM – 12:00 AM"
+      ],
+      "verified": true,
+      "instagram_url": "https://www.instagram.com/fusushitlv/"
+    },
+    "מירים": {
+      "place_id": "ChIJeQ7yoVQ1HRURgJowza72l9A",
+      "google_name": "מירים פלורנטין - TAZUZU",
+      "google_url": "https://maps.google.com/?cid=15030753511999576704",
+      "formatted_address": "Geva St 25, Pardes Hanna-Karkur, Israel",
+      "rating": null,
+      "review_count": null,
+      "price_level": null,
+      "phone": "054-684-8412",
+      "website": "https://www.t-zuzu.com/",
+      "latitude": 32.4784936,
+      "longitude": 34.9848341,
+      "photo_url": null,
+      "photos": [],
+      "opening_hours": [
+        "Monday: 9:00 AM – 5:00 PM",
+        "Tuesday: 9:00 AM – 5:00 PM",
+        "Wednesday: 9:00 AM – 5:00 PM",
+        "Thursday: 9:00 AM – 5:00 PM",
+        "Friday: Closed",
+        "Saturday: Closed",
+        "Sunday: 9:00 AM – 5:00 PM"
+      ],
+      "verified": true,
+      "instagram_url": null
+    },
+    "ג'רדינו": {
+      "place_id": "ChIJAz_99pxJHRURllusF-MVeQo",
+      "google_name": "Giardino Bello",
+      "google_url": "https://maps.google.com/?cid=754658477660199830",
+      "formatted_address": "Kehilat Varsha St 54, Tel Aviv-Yafo, Israel",
+      "rating": 4.1,
+      "review_count": 845,
+      "price_level": 2,
+      "phone": "03-946-4647",
+      "website": "http://giardinobello.co.il/",
+      "latitude": 32.1106173,
+      "longitude": 34.8219331,
+      "photo_url": "https://lh3.googleusercontent.com/place-photos/AL8-SNGHg2agMG3LtNQ5uvc7ULHVs3qST9P6wbjeWqMujw7YrYKJ41xE3oj9ftg07BCVt2uT0lBlntQF4BRhWKn7pCQO20tfhzkT2geQ3pqtHWjnhk066w3Tgz3s3PsOOXhNm11A0fkrJ5WODWvnTfA=s1600-w800",
+      "photos": [
+        {
+          "photo_reference": "AU_ZVEGb_H91EIzDb2niveNi-YycnS2GXtOTEitwQM78ZQ0Fq_Gk8mEGdCGECDws18rW629FuF6WnpxaixpJrpHePIg-swDPHDRPdWhdupAUJ_OEvOt6EuAX2BaMy3nxDYy-axKL4_Fye8vHlltHXKIrX84746VG19h9jOB_VBug8hSG_KO3adkAIfjSZJmM9Te2mx3iGu3a7rkd5y2iz7zTEuW4nHNbHditggn3NlyPK8IgHMsGdYo2VXjMRlOBmVG9yfzTeum5Rddy87x60FJKDlEAHZFwu7eVnwieFcSK77zZtNICoxD3fBHOQVnt0foqY8uLL8R2lXT3yN5F4m9njmLC5lrdgfqyIgLZ2aNywAH3hq-6t4j0JwcjV8Z6aA4BwWbxQw6tTnHtYYz8dMJHdfobt5bklmG3nzbCfUL-8hvbQ266",
+          "width": 4096,
+          "height": 2304,
+          "resolved_url": "https://lh3.googleusercontent.com/place-photos/AL8-SNGHg2agMG3LtNQ5uvc7ULHVs3qST9P6wbjeWqMujw7YrYKJ41xE3oj9ftg07BCVt2uT0lBlntQF4BRhWKn7pCQO20tfhzkT2geQ3pqtHWjnhk066w3Tgz3s3PsOOXhNm11A0fkrJ5WODWvnTfA=s1600-w800"
+        },
+        {
+          "photo_reference": "AU_ZVEGmWGnWLDKAPyFxUFQvoiHBv2xp8cYDJ8PgpQ5nYO6o2kF_sCiOPv_Omcg5GUV2JaT05lz-tgVdjz8b-ya84iDVe8v3sQmC4mrPuR8fI42BH5DnP-KuyV9hBCFmdsDsdcUdceJrEoQJlPgrGHx_0r84njWpM5oYUfyMIg76QojpE8q5AfnNqeeldnBB_cTpobfS_0GPjkkI991qEpcumPvjzCfzvTIYSW0gFqSyxNPN_0ir209tuYt1cEaOrfUa7lZFeYpv4tmoYJO6kDBPchciU9JeLuuB_S7pppivfl8",
+          "width": 3032,
+          "height": 3024
+        },
+        {
+          "photo_reference": "AU_ZVEHZOwQoUL3bFPnD11mgRC1Qe7VQiYRGOvobQ1wAghvOzTS017DsmFt3AaUxxfIv1z3uCgaO8Et648dQaITPAHsC-Wy8fbutage-RhR8JDzTK9qCob4cBNYGil83COn5-0e6xyi3v5e1mrudGpoW2ghsW_mc4rqwFhy5HG0tRwxrRhnf3k8xXmmX-dM6oJTedwPY1_brKdS7UxtttnrPOzam6Hsbdok36pZrUE2D2pa9Fewxr3TGWBxUXVvwxwmtv1dVXR8UbW4KZerc66njQ1_PhyHnqr1_xVTbe927iQIIGSh1KDriaYFXH4dQh-wYZeL2LbfxztnKn1x5HCYImi9ekMEhkccJnOgvNm0Jo7s-2OkTXA-EWmbBbxFKAxK6ZX6Th1ZlzRSSpGBlyJVoGaSl61qE-NV1S5KXmAIKJvGlDiY",
+          "width": 4000,
+          "height": 2252
+        },
+        {
+          "photo_reference": "AU_ZVEF3HSJ9XLqUzCWlFH_tksiVTpHXy0Q-cS8wNowcX-4499OpYa7WdvU1BbeqK_KdXcmylSmWFTYu_4dk8-lDP_2YwWDdyDznNvEFKU4ibfPBdJ6W5uvalAnmzJxDsNDLmabyZjf-4JDNj3tqFtV1YfOABWYlGoguxVxELe6NPdL0uOhwUXLrrhte2sXBX3mo8dzO3cgW8Q92q1mHw3Q76RhEas1HVSX4UhwkOPT_uWW6EppXUpi0cktZAeoct-EXzqk4tCxPKcazoxZ4YqTzpb0QZ7ArPilkI71YCmcO7C96IRlB7kg109vHffSq-sdHQO-Ggrtm2AWHIm5BOrfE2pvv9Hw3SzkeIvWurOqZJa-w7MmrqdyHU5gBVTIAA3VqeK_CN0Krau12mYshj5RC4zaaZFe0fbVt6d9cku8OHr0",
+          "width": 4000,
+          "height": 3000
+        },
+        {
+          "photo_reference": "AU_ZVEGOKdQ1h9iYxT-myonXTEIQWqEKviwgnHATbSMnIqzjNYK4GQc6OtSKCGrTeWR_cByBmjrqGSSI_QytMqolhYm6OTIwhuqFMvjBkPfOSSPnuqViiRsXMJWTP3Jk9s3wsg32ni9Au9vBtSfWrcbMElR1F1c9RmubeceijRxBFEmKPDdemvpftABTQHHduoHyddgP_nusE8D9dmAgTmT92jCLA_cYAR2rDPhqY9YtfiN_LEXZSYhgSU3E9DVGWeGgRZRxlygxFLxAgVfrGsllDgn0oxMpq08ftyY1swZ_OaoRzWVu72QeQqOqlbe2jOQ9FjKMYlZYtOaYOqSOkHAyYo4643Nh_5-r-6eV8dtiL547Wv0tl9ROLRZ7G3T3HEBWMIUFPnHt1TWVbpTQcVWJ4N7kx9KwCk3BXYQWDbCflaX-Q3C7",
+          "width": 3000,
+          "height": 4000
+        }
+      ],
+      "opening_hours": [
+        "Monday: Closed",
+        "Tuesday: 12:30 – 9:00 PM",
+        "Wednesday: 12:30 – 9:00 PM",
+        "Thursday: 12:30 – 9:00 PM",
+        "Friday: 12:30 – 10:00 PM",
+        "Saturday: 1:00 – 9:00 PM",
+        "Sunday: Closed"
+      ],
+      "verified": true,
+      "instagram_url": "https://www.instagram.com/giardinobello2/"
+    },
+    "נומה": {
+      "place_id": "ChIJV72Mei49HRURhCVQbBcrAJY",
+      "google_name": "נומה NUMA דברים לילדים ולבית",
+      "google_url": "https://maps.google.com/?cid=10808686485290624388",
+      "formatted_address": "הלוטם 13, כוכב יאיר צור יגאל, Israel",
+      "rating": 5,
+      "review_count": 35,
+      "price_level": null,
+      "phone": "054-777-6838",
+      "website": "https://numaonline.co.il/",
+      "latitude": 32.0638977,
+      "longitude": 34.876926,
+      "photo_url": "https://lh3.googleusercontent.com/place-photos/AL8-SNGFg7PLeo8bkO_gTYxOVs7I4Y7rYYN3_SruGmLFG_mtYdL8tNKyV8GyPsv89-dM_0y6eSOzCiZ2HSHoKVxhT1LEKRzvk3CWBOse2FQuR1SmYucCXnQJ-6DjZ2klwhNiFKI3QgA7-XCSWfBc_w=s1600-w800",
+      "photos": [
+        {
+          "photo_reference": "AU_ZVEGZEeExB1rTmxiu_NB7lbuDAOMfr9TukXqHtWxjygUnPVlZ0hOT3g6amhCiET1fxi6jMiRfQiwQAYQb1wLAJo0BSvW-DdefFinR8qjEnhFNkKzphc23JlEfNUy7qS_vNJKOUJ3MWFZE-w4Ati6MXGXUXqtVp9cYSAMxigdkQQ5wmO62zZ3duGu56JJUR0NfEcBs23BUXUZ0TFIh0BGiXG1VfHoUerbHdDwBMZQ0I_HfDV_govyN496dYVFSELdlyqPHlE222DTHEsPfUpqf5m-8N0ycU2OhUb7KyLFDliFiE2BmPXKshigR8GAqygw3iargSNFfv-Nq1NvksaYUjuNpGhEtXee9857OtVohspsr8jdSEaCDIkjK1Lf7oO3Y3gq7mrtQ3kKjGUt6SHFvh4sHN3sED7tdpUMY2Wr6YIDiDw",
+          "width": 2040,
+          "height": 1360,
+          "resolved_url": "https://lh3.googleusercontent.com/place-photos/AL8-SNGFg7PLeo8bkO_gTYxOVs7I4Y7rYYN3_SruGmLFG_mtYdL8tNKyV8GyPsv89-dM_0y6eSOzCiZ2HSHoKVxhT1LEKRzvk3CWBOse2FQuR1SmYucCXnQJ-6DjZ2klwhNiFKI3QgA7-XCSWfBc_w=s1600-w800"
+        },
+        {
+          "photo_reference": "AU_ZVEGdisPoEFWPs-1mX74gHEUVgNz49EyrmnSKpVBG6G43gUFiGAbeYaSrmpFAsBeV1ThIgd84btkPeTHWyBVY5uDVZpRrRv0s16d2C6ppUU5Xb-gn2pk0DolA3SkoXOTLKnNedWrrXwciOBkSiUODHh2khuYreiDkTk6W74iwBxQK8OgRAngM9bIJJVG4ZLBmLNqHBGtSmaQ-wFzh-nzARiWtDIwNgc9Idcyj7VMC4V725Rrf019uBKPa1NErelE0Ouv9XcrZUyVEyjjjYH6WSo2ojWq15dtKW3BNhT3LD29GF4q19sKjw3WCgrmYpDSlCRSPyBTjHMatBBNyJHFizL3smUjZBjQkTUq4oCuRvo8FfiWPc-iOpPT4iouaNr-CDf2c5iPwiuY6iimX1uUoxYxavUXCBeCqao_Nco9yEz26p5-u",
+          "width": 2048,
+          "height": 1536
+        },
+        {
+          "photo_reference": "AU_ZVEHZoLPNFpKUNyGWou55ymaaHajTTQdnztO5BDWpWI-vnIT0jCYzRcJ_ohMKSqoIvxRtnYwjjOrAoe88fzOPg8KRstZHiyd3BxpIoNYW8nrpPMl9SWoc2ccykjrY5rOz58ljkEEOwngEGkdmIMfC4f83USu4JXqt7jLup8jTDX5nrmVZU6paarH0ouYSiEyeZ0gG_kYYWN16L6jIDE1Kaa4Irhx09Kd8wvInuNzFhAGunY6EMKAl2Xhz1HvKTNXX_aIX6TxQlGsuaynXJ3GW4yeKqVpex5etZFzon_d4733_VmMVRqQ11K9LknBLDRqorXunlDogm47ViKrCfpU5NMD8d0yKOsv7F4aDysbWV1l-k8DluiXYCIwzog7k4Bcki1ms4td4eNUJbQwx6MzMXOBPXEmKRM0Ci_o2vi2DBRarq3BY",
+          "width": 2040,
+          "height": 1360
+        },
+        {
+          "photo_reference": "AU_ZVEE_-XOczeucP9do08hVKGJ11zOYe_SwCVEpPGemVrixUv5ao6LeGfOEsxms40EV0XWpiThzNcxQp2YJStSwTXBLxmtlkfvLH6k1WkwMMHn4O0shCqG36XOAYOB_P5NkgYb6P1grBr5BMUSdhMEeLOq8RKGseyZ9ByEATNRqZDITFrOPfdP9g0eNCdaTQloyT-HSzDROO1dQkWeAT_Zo8R2qPqvDa4HcqTeOWXayisl9Jq8GMwsWtWLC0MA6JLZa3Ks4f-_Xb5HuA7-syUqHZ0lT9eddwyFhU4My-ZxxEe3pt5yQbUfzcDpaIhXpYdrdZng_CheQEQS1VKUSCQXNCAFpiHvkUEHTfvhX1IxEc4x-nLxa-iRJHtUiH8JU8AaOLHUPb9_r5tsG6EP2vioTC50A-VjN5ND07FCWloc7ILM",
+          "width": 2048,
+          "height": 1536
+        },
+        {
+          "photo_reference": "AU_ZVEHhBL2AueMEWXH-Tya7on-qUkBbIqZhfHiH20-6g3OYAdfRkcaMyHzQppvQKSexAJ8M-_otON4B5HtiyUrhfUMSxa32zrodKmVEljVoDDDvg6TnAW4TAF-PbLS5bbrnhSLfbTdCfoTu-zwGEMB_hsRA6U0nZ9HmKmnMekffu_KgtDi1SSTiL_Th_ehLfpThFPGTteFHnqqnUvxsSOuS2uuJPIFdQw4NvmlHAXTbFyvUFM4bIEEQwQPeG3Lc67fi1hqCw0YuxGu7kS7dZsdzlrLW4p2j4EEOai1LSNJpHkTJ8pUSIINU3QWHtra6m74XyinjtJskALgB1aCSnA7bGUQ1tkq2KvoYF47SD1pQLs8nLFRfaLdycHKecJ4Sd9PjYM1GVU5yr6JNsndZl-m6R7_xykd2CLdIbazehdqzelgHDg",
+          "width": 2048,
+          "height": 1536
+        }
+      ],
+      "opening_hours": [
+        "Monday: 9:00 AM – 8:00 PM",
+        "Tuesday: 9:00 AM – 8:00 PM",
+        "Wednesday: 9:00 AM – 8:00 PM",
+        "Thursday: 9:00 AM – 8:00 PM",
+        "Friday: 9:00 AM – 3:00 PM",
+        "Saturday: Closed",
+        "Sunday: 9:00 AM – 8:00 PM"
+      ],
+      "verified": true,
+      "instagram_url": null
+    },
+    "מרלוזה": {
+      "place_id": "ChIJ9Zoun59NHRURfo0Fcmygd5A",
+      "google_name": "מרלוזה | merloza",
+      "google_url": "https://maps.google.com/?cid=10409965451320069502",
+      "formatted_address": "Lilienblum St 24, Tel Aviv-Yafo, Israel",
+      "rating": 4.6,
+      "review_count": 574,
+      "price_level": null,
+      "phone": "077-230-2430",
+      "website": "http://ontopo.com/he/il/page/55627288?source=google",
+      "latitude": 32.0621129,
+      "longitude": 34.7700262,
+      "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqFVAb3F9J7tJCHWxWv34wQ6nWxVDt3qqblaK0K0zc-gl0SXhIUGPczy9pAHHEq73bYMOHWaEbSAzXLpEXggaac1ro8dIkiK4gE=s1600-w800",
+      "photos": [
+        {
+          "photo_reference": "AU_ZVEHW6ye30SVlkktY56l_ftMz1mnoisAXwor7bYuibUb_dYsCJSfB9bO3hRj4sCW-BK7Z-F7eoj7YcSu8-TwoHCyli4oVn0epEsPZYeDYnZxiryYF0rq0T-Iol3q5-Y4TEXoigv2H0ABqsXxIfb9ldPMahzcmNvSy8oBljTJTvn_dnQM1MBScBRDWb8I1InoHbz0YPBeEwTPclT-FGhbfli_oH1X75KGhfXTIt9IV1vZ91eL3IlHKZM6_hrPX2saytP_5Zh--izJc__Rq-lh9pSYjGNOIkQ163LuNrsQIuYjSiA",
+          "width": 4551,
+          "height": 3641,
+          "resolved_url": "https://lh3.googleusercontent.com/places/ANXAkqFVAb3F9J7tJCHWxWv34wQ6nWxVDt3qqblaK0K0zc-gl0SXhIUGPczy9pAHHEq73bYMOHWaEbSAzXLpEXggaac1ro8dIkiK4gE=s1600-w800"
+        },
+        {
+          "photo_reference": "AU_ZVEE_9kY9T3UR100GCH5q0KPafwzINNGJE8PGJEUXi6qe5jOEV8Z9OO5BPiFfWp4jo0eTp1jDSn16aUO5TTWwTvyEe0YhlsGrxr5Tz9JUoNgGf7-cJtV63e2QgIbrvn8nNWeAmL7k26Zca03N2d_z6MXVziK7QQ4yJaroKSVkSXevzEEnajnymYpK4eOTW5GIHL8zLhMQd0qKjd9t9n_nQwtcyIC_RN1PUlfrLfgN6sf5InmD_VkykYEgnJgtE9btISek0GnVNWl04xvqXFpwopUREUda5iLIr37hSOPmXaE_yQ",
+          "width": 4560,
+          "height": 3648
+        },
+        {
+          "photo_reference": "AU_ZVEEN7KQcXmyZMU8_fh4E2277rGcCeOeHsctyu2paEb8dtQ7DgtzQXOc4xdEmLVhqPt-_Qb4t8XxQsuv9tYfaV8JKARaa45kt7jkemPHJQsKjVgupoSEo1_ki8YV86681NN85m9WwBKGQjmHdhu5FM0rRcET6IuiNrR0nNVl6C8V0SxYAi3JMmXdIHeY63w6gXkHOL84pV4vguhth5oBIIM2tj04cM7m7UtMGkCc3aEAM9U-o9HVKrhxolpxavNVnjIbvuVuHoStXtyjqhQyEOFzEWdI5Kz3r0_gkhjzXr3ePOw",
+          "width": 4509,
+          "height": 3607
+        },
+        {
+          "photo_reference": "AU_ZVEGmhHMQ4E_4cDlbYYkkDVetRoKYlnwdpqAUXMism03m2CWnT3qD57dvDB0Ekut5zjL00JimVF_z1NqrXKqr1oIVdQupiGsFCUS8Fd7VAtW5V5KZG7RzyGXXGNlRHJLTcSBnSLy91ZRMKg19rjC9Jex42mgFHMaYWS4EtlbafxQYbyfDar_Gbqcyj50I_mQkw3TWvoMP_GmSKrVEPh_0-1kmz3Nc4CM3GyV_XwV5nIiSF5vjGNLuMrCnYY-eBF7TVg_XxdtpWYP9Avu_2TlcWRmS8U_Z80iqG8YiBox1MWmPlr8IOLIPEEfMzCEWw3yd3NCgsw28UN0HELGuzAaIVk4XNa6my5CQd2kWrwvmpILfR3IlraiE7lMfzmtyXSEX8X0Z6w-ZuNg6317kj_0tpEA9p3dB_K8G_RXs88ZqiVkk9M88",
+          "width": 3024,
+          "height": 4032
+        },
+        {
+          "photo_reference": "AU_ZVEGUxwV7pxAnfrgfnn8szMYWAMbuXRvPbvdI80-BZ2QZqCRTGt81mXWH1CBRVcCdl6JDA86fsp0dt_KZkh9cFDINZ6bYmHmGiybICs9tvcHrcuuSKRl0o_E5e1HaFZ_iSO8xLBtPRK-fH0aC5H0dR6umqIA8TtN01ftgQA8ZhAC8dXwFK75_2gADnbg-y4evmQZtTzYDCw2O3b-Wo7Metf25gNTdeSzSQ8q4HKgOoS-AudhdlWePuBlMVWmXl0-8gzM0GCX_6TwNdO1B9LFWhEEjeARHR5rWpt8QU_JBXAeQqmEJzAOLrZNvN3uSU-K7jVayNQl4B5LmWsyVIZrxBzMaT2deKuQQgRH4d9yxHze3A52QMNBAQRT5vkltMushU8hUypMAqSKahMekNPfcUb5Upnolgizzhu65YIlissE",
+          "width": 2048,
+          "height": 1536
+        }
+      ],
+      "opening_hours": [
+        "Monday: 5:00 – 11:00 PM",
+        "Tuesday: 5:00 – 11:00 PM",
+        "Wednesday: 5:00 – 11:00 PM",
+        "Thursday: 5:00 PM – 12:00 AM",
+        "Friday: 12:00 – 2:30 PM",
+        "Saturday: Closed",
+        "Sunday: 5:00 – 11:00 PM"
+      ],
+      "verified": true,
+      "instagram_url": "https://www.instagram.com/merloza.lilienblum/"
+    },
+    "מאשיה": {
+      "place_id": "ChIJh3glpn5MHRUR6jwTBg3yMK4",
+      "google_name": "Mashya",
+      "google_url": "https://maps.google.com/?cid=12551798299231993066",
+      "formatted_address": "Mendele Mokher Sfarim St 5, Tel Aviv-Yafo, Israel",
+      "rating": 4.4,
+      "review_count": 5329,
+      "price_level": 3,
+      "phone": "03-750-0999",
+      "website": "http://www.mashya.co.il/",
+      "latitude": 32.0792599,
+      "longitude": 34.768714,
+      "photo_url": "https://lh3.googleusercontent.com/place-photos/AL8-SNEws9-B-voF-nA_cpNUvsFp4DhqLHAaVETX3YChf0W-dPnTiIngCNUclqA9UlbIkY-ko3cTA2pZB9-conCGCB9rPuoGzrLQyvam5roZ3fcCTiy0_nmDPNxWbDS0Enx_xGZVn8P-gLSoBFJvAw=s1600-w800",
+      "photos": [
+        {
+          "photo_reference": "AU_ZVEECTM38fpoTEflQKBGnYiycHuQu46m1DSgA5iiAHNzEiDFGAFlfSDK_-zwifKCglr8ZhLrMsLY3mDYjPV2Msk3BdAvvPpgHbRtxzljHQONUeDyH3gcMa7LvuaR_1kjYSXhSnj0V6Vvw4CqWFl30WpxDfjuJChFvoJQ0aIfsDAjCRPlnPRVFf8tbFGquxMbG9aZh6k1kHABXE_HsmqlAE41I9uqNKVCCySPWgye8hFvYIhupdCZVSJBCoMlgTGdXVhuxuZK0FzoVuQgEUz_zKqp5QtT6oD--rtZMIiGtP0Fvgu1-JDueMdLvgmWsGIp9PCpEQliS90xGcOVH4Hw8PvXBC-1_2SnrJTYmftmz2sUAac9SwpwQrEevKelf2w28I4dZ1_rbL5tJ1-wJ8ae54S4mMbo0-HZdvlstvWHeQpo8Mw",
+          "width": 4032,
+          "height": 3024,
+          "resolved_url": "https://lh3.googleusercontent.com/place-photos/AL8-SNEws9-B-voF-nA_cpNUvsFp4DhqLHAaVETX3YChf0W-dPnTiIngCNUclqA9UlbIkY-ko3cTA2pZB9-conCGCB9rPuoGzrLQyvam5roZ3fcCTiy0_nmDPNxWbDS0Enx_xGZVn8P-gLSoBFJvAw=s1600-w800"
+        },
+        {
+          "photo_reference": "AU_ZVEEhQMjY3ghBJ0hAlPC5C26wPphyvsguN-njBsVgzZ8iddftkGLfh3vhAKGAzwkfr8az_KiKrcO_XLSXc-iA2dgHQd3SRa78NrFyPMGWUVTlb1eKF1XD9L95ddn67yPcy7g2TEUoB9M08WV-WzSWFUVPsYx6lF543jrsEpkrLsmCH0G8DT_yWHFVvKXyQO8kjwSIzAFZXkX5oMOrE1zIxsz0X4-WJHVllm4tYPBTPXmUqvdk7NQWiGxZ-gAASCzjCeC4ZRVa4ZppXIp9YHb0QRqflNc_7ZcGocuNPZdgelLVXA",
+          "width": 4800,
+          "height": 3202
+        },
+        {
+          "photo_reference": "AU_ZVEEdd47_IdHbZljOYZx9tNAU8Td3ch_7oE5Q5eJ3DPLR8sNaeTIXvLmXLvMqKvlonY2IzqnopMUdDSU0Sz85NoBzWYICXxStdDzGyo18G-7xGMNzZ8QV_J7uJnkrVv8fkj_ZFnelRPt4fJu73BVSbExLgFj3mjzCx0iTbI8SJxBaeDNUH0JKJSmZuWo7GhBrCpZJ-APwvMpECaYLQFagMrAufw9q4iI92XbpSx0ozO7rIbVRkozFoiLWdeA4BnNY5u01qjUMCrsvHzQfr9g8lgQbn3RJzXOKhCzq_OgQ7h5nYfMDCMBKuTkDry457-31J9JxHF_a0jgwSoBr7lA0E1VW5MK5o64qHFqqphY_tDQ1YYhRTgErHAzNoUEwCgZwrSqQei_exyjNG_BGm0qM84u-jATB_nbt5saSUPmApmo",
+          "width": 1126,
+          "height": 1106
+        },
+        {
+          "photo_reference": "AU_ZVEEzwGO9Coy0Mu6B2qmB9x3_i-BaQLKOpDL_jBBJ55f8r_RIy4XYP7P0BQ8g_VQdTEKYQJl9KG_xFuiCsbTazyCJ7B47rbe756gOOnFaA1e932yKlqvklv13Fs7zxhJR9xjeiJcdkepbGmXC2i06A-vF049vbwqtbCwCBRzTI897UZogZa6nu_m5hkI5oFU5nIYKFMsOFcGo3gKJToQ5NUB7DzGh1tV9R7RS1HQmOkhApxcCzZwrsknoeRQstFiPHZ2BVZRFDwLXJG_jiOSpOo9XG3JX0PQCo40MUr509JJUtuLOy2gl5OY-YfdwLaOtLXkz3RlnQ6MJ6QU9DvpUUnRUM-PEmCihnbN5_JZc3q6NUkPnEnctAHSd97YHVmo4ycCfvojDhFiT7QNTqNs2CQgRIS_Vco_1Ayw_BT36VOMsJNwK",
+          "width": 720,
+          "height": 960
+        },
+        {
+          "photo_reference": "AU_ZVEGOwhHeAIC_aQ6Lo3-Jsz0RW8FcunnyKbXajnv_AYBKuUPG3P_52dwCryQ9pGLVlbHsqZa9HcgyYECFAQ91pgjpxknQuWZZgBm0VWH505CXmOjGg1yVR8_8365ew9HDAw1jvSDBSHXLw2aSMRmNm4pFJA9KIkJIafOcrg7L2iR3Hszx2ScCbAM8l4wgM2V4d-GdUWoGhFQ1O59Y3G8IIJhNePe3YaYM9xx5wUmXgnXkuGKIBM6XGMb1UQWyM9cSfCn1-ZEP-qgRmPUngzQ0CFW71i48WCbNBCi5_Dc-DkQTziB3jy-QPK3Mfcg5Z4xB0dfRlXLsOhRtoj0RQ67YvTpzqEhwzd4lje0uyiXjVvh3_Sznbx0GCmLOIhmrZS9rglwPinsFSdcGtK0EHovWOl5lAad9zeq4owFl4hoh5uO0Kvx8",
+          "width": 4000,
+          "height": 2252
+        }
+      ],
+      "opening_hours": [
+        "Monday: 6:00 – 10:00 PM",
+        "Tuesday: 6:00 – 10:00 PM",
+        "Wednesday: 6:00 – 10:00 PM",
+        "Thursday: 8:00 AM – 1:00 PM, 6:00 – 11:00 PM",
+        "Friday: 8:00 AM – 1:00 PM, 5:00 – 10:00 PM",
+        "Saturday: 8:00 AM – 1:00 PM, 6:00 – 10:00 PM",
+        "Sunday: Closed"
+      ],
+      "verified": true,
+      "instagram_url": "https://www.instagram.com/mashya_restaurant/"
+    },
+    "מטרלו": {
+      "place_id": "ChIJ27CZRwANHRURprF35Du51ow",
+      "google_name": "מטרלו",
+      "google_url": "https://maps.google.com/?cid=10148502477213249958",
+      "formatted_address": "Ha-Giborim St 16, Binyamina-Giv'at Ada, Israel",
+      "rating": 5,
+      "review_count": 2,
+      "price_level": null,
+      "phone": null,
+      "website": "https://www.instagram.com/mattarello____/",
+      "latitude": 32.5250609,
+      "longitude": 34.9454486,
+      "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqEBeUdCDG4stvq0Vbs9yiwbAww8QsPo5R6uSCipLV8tz4GFnm6B_uMOV4JDua-WKgY9FvLA6tgVIYUwg3MZmng9GdTDwEW3TPU=s1600-w800",
+      "photos": [
+        {
+          "photo_reference": "AU_ZVEF022Yd7kUPw_TBY1OHANskXXz0psTWr1_NCaZbd4rE8S6SlKgm7onlXkPJpvlMpBFNQ95qRyeO67D2QYvWfTH3urF-644At9q3MOfYWi6y7gOj2TNhN13E1lnfm9CUdwLC8Xiif96rxq09G1HpGrUM0t7Z3zMs3d7oLnshH3rhZDKyIEMpIpGvHTkTKLQtwNijPcci_Y33TyMDcsMB-moOino7PMJPY5TUQVpxzhSGUa0cqr0e2Mfw6NIggJjBN8mF_Z3pRCgLa0-sHHxx640MOThBbEbc8xUbF8GiKOS4yg",
+          "width": 2048,
+          "height": 1366,
+          "resolved_url": "https://lh3.googleusercontent.com/places/ANXAkqEBeUdCDG4stvq0Vbs9yiwbAww8QsPo5R6uSCipLV8tz4GFnm6B_uMOV4JDua-WKgY9FvLA6tgVIYUwg3MZmng9GdTDwEW3TPU=s1600-w800"
+        },
+        {
+          "photo_reference": "AU_ZVEGRRsOxdyNWe5ciX-OOxWH7b8qgsFG8jBEnLcjHM-Ap5Jgp6rjke-2cgn9ho71ukbgH9G0r2kLjfb2Oy7fnD9mr98DcMbhxxKLO5a4tR3VdvMtVVAQK_nkqNUZPpIcMFCCUPb2uYD-NRSCg6LOKMSNhvfpoobkLk4xP87HGoQyDC8nFOYVVg-q0hyjyhq8_RtZeKPKRObAJrbhgX6z28xE5Nf9IZkyIGSrLawth-CSbaUaj-yjKSLYomEchd2epFf8nfr0qi61Ji2dhN21axWpFuYvZPHk5vwqfwUVsM8uiWQ",
+          "width": 2048,
+          "height": 1366
+        },
+        {
+          "photo_reference": "AU_ZVEF02cOjz_yufcsHZKIswwDwG4DopZLEnI9xltgetsgnHIREr-7qZBJjHMKhDpd2H6wuUCDDvDJSA4ZWZwOaOQiErJIFxWQmkoj0cGfR97fuxXLGnc3XkLsO1tJb4J3NHXvYrFj4mHa-m-tLgo8QAEA-ek8bsKG8ao6pbexS2PEB9vO7Pia43NCmUsrgF95p0oj8OiFIWfyUd8MLczMYSSq8i_zlbcq2mdoMy0i7dZFSxtct0j5Dvy-ceXYrXkmzOYpMhyb1iRc_Cef-w9csZ6FHDVypkeMr52OjLgUXRGwx8w",
+          "width": 2048,
+          "height": 1366
+        },
+        {
+          "photo_reference": "AU_ZVEF--LWCqnSj7o22VmzZdhwUcOscLE080vfjTgdbbL5-Q6mlXqGVMqEk-wRYZ9iALtPKI9SDclZEjLBCz0ghLnENRfXszduA_vJLUEfihJ3PoMP17HdsoyquxTovaJeHktaPtC-_oPZekVUfF3cmCw5NsCVqsTl6XPjwhg-PhhzE_nKH8i3kBKsDJmBDdg7XJ3krx7S5zj2CdM631mbzfmTgtYjn0tUJ6p-TptA52BzFBFO8MX2eZOer07iPWt19jcIT3vEzjadbCooik4GFNryliLj9J3mbF8tfXke5qOP2aA",
+          "width": 2048,
+          "height": 1366
+        },
+        {
+          "photo_reference": "AU_ZVEGhpL2C22XsHWhf_bu0WkyJDCHWbdB1e7wu6CQvBrVIop8bVwntuf06HT1BB_-mGWsxLqFLTDlYli8NJTjqSjUlZKSSK9oDVE34MBNNbLn-GSe48FKE_--VUTeFEXeA6lC2km4Z5Q62P2D5YLnQ0i-e_gAylnW6wiKsJwl42BOqT9YAEoRwlLI4LKHCBnFsNp9J0pExxrDKV_BM1aJG6af7dBrL0SMqNPPCgm2svFMcfKxk5NtTOIlPRNJ_KG3TlrmBma59ouxEMwC3osiMSPgCSVlx-G4Y-rP6-EQk31e7_g",
+          "width": 2048,
+          "height": 1365
+        }
+      ],
+      "opening_hours": null,
+      "verified": true,
+      "instagram_url": "https://www.instagram.com/mattarello____/"
+    },
+    "אלטר פיצה": {
+      "place_id": "ChIJUarwaABHHRUR8RfU1oCVGxY",
+      "google_name": "Alter Pizza",
+      "google_url": "https://maps.google.com/?cid=1593031273798178801",
+      "formatted_address": "Natan Alterman St 33, Herzliya, Israel",
+      "rating": 4.1,
+      "review_count": 35,
+      "price_level": null,
+      "phone": "054-777-9496",
+      "website": null,
+      "latitude": 32.1749263,
+      "longitude": 34.8327441,
+      "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqFr9xFSukKRsITzc1qzXeURFA0mbZLmhoqQTMrvSuBQnXrZC9rhncGFLyRCghdctUMkVKs_AuXnfNQ-YOxdGbfYJ7tOLa0ODS8=s1600-w800",
+      "photos": [
+        {
+          "photo_reference": "AU_ZVEHtNpIrOQGShLFmCWVbdIu-9yvcEGHCB_i4HrbjSuzQPTQQsNivJ3DuZvPYScqscxMgGFu93YDq5RB3Pjdo6Y7fj6uLqLgn5YcsYGgtXPZOJ-xXAtiLUVDRRdcHXANE5YEqaS5PghAfzAA1djpTqpc9MEzM2qEGI4_76sf6F09rEZl9YxryETO7DpxddXBoarJcdrIPFlhzOdUu0AMJj50fLmbNpPyEtPN5Vnc6DHGdixqW0eyfDzPnDnPjqwMCeAgbUA3zaYwPw1FDWzFwmX49ncg7bOwSyAsUBaQ6jYdplg",
+          "width": 1200,
+          "height": 1600,
+          "resolved_url": "https://lh3.googleusercontent.com/places/ANXAkqFr9xFSukKRsITzc1qzXeURFA0mbZLmhoqQTMrvSuBQnXrZC9rhncGFLyRCghdctUMkVKs_AuXnfNQ-YOxdGbfYJ7tOLa0ODS8=s1600-w800"
+        },
+        {
+          "photo_reference": "AU_ZVEFXPQH0WF0p1jK0aoT1ZV9-aKVoytbSR9i_9AkKaGBFvsDtu0ofaiyNC0XStabZZAXK6y7eydCEDil3f3r55zQRP5RG1U-8IrWlTr-DJwS91lO0fKNAMlfV92cC4A1tWXZnU1fCkGZeWkbKliR8RWIgfbAysiJh0LmBzrS1GeLr41P_oV5yZibxfR9JgsPHMTUoe0ke1xw8lDrZ4M2g8JkoBuzaZwSmVriSzVwKIV3k8-A8JcHWiglAujXyT6gAxz96fPzZVphLwpteOdvZbYssgi2P7XCab9i5kejw0pwlSA",
+          "width": 4800,
+          "height": 2699
+        },
+        {
+          "photo_reference": "AU_ZVEG7M_p566A-Eq7w8X3j_V9Dajtjd-fXuEe6pXpghFft0brIYNc2zj20KNe6m_MeMQDP0USFHUEczUciWsD7v3Jx_Bt-u3DK9Ox0F1ORqsHcnedX9ebL94QADmQZ60mN7hcy6lLr54cE4cf_9N9wXRgUixlr_V6AQqX4w9TLu8VGxE3T23h1OBF3xMkDkkiJZ4VXEJvevGQcXjAV09yQD_sylOuxvnIsGNjPk5A99lphKSdzx1tEH46Ks9NEUiFlBOVLuGGKSe3Hfiz3YgEfFzWMGgDpBgepm-XtIMzx_5dw8w",
+          "width": 1206,
+          "height": 2144
+        },
+        {
+          "photo_reference": "AU_ZVEGi4dvYGLZCQ4GTtQFs7M4HQv_73nE4bKaOB7JCxBLDDOtW1k7lm49kSUAPXz-Zs5QijauUxW8XolR5T2KUZxDOE3i4lIzGR2HxYOgLrbOh1FT_qegqzkKpblXoc-w-uKXGOFkgOApidNmZt8rSFddzmT4Y2J2MldwBah4vyKH_-JXKgKxlViON0aeDWJmysEDeC2eDjjh17ro4qMM185I7HwrMgYU_41no3EmdV7veq0wtLjGAZwjIpAbZAt58kDDyDPAGoBezv0nlcF7pTQFecemV9TRknnINyU46n-rn6A",
+          "width": 2160,
+          "height": 3840
+        },
+        {
+          "photo_reference": "AU_ZVEFA0XOfGQxOnZ38n0SHPFh-gSFgSEP_Y-Y8IbKMhNWk_GrTRCQOTSO9Dmo4Shsw6MDLRB6R_CuvPo5A3dN5zAQm9f04xsYqFdWwY4_ydNZi5-xWRnM5lti6yMEsfG-ppppADGFVu0FgZbzugkClMSYdaLq5cZ0JqBmzysW7cSVbTPLi_cy_iToCJUTARpSXtOP34UU9d84ur7c93eIotiOOdnw3uTOwQn2HR_KUC3Gr3S-YY7xgVhGdFE_nX-m8P0nUFbKmXsU5yMbpKweu_asNzW2Niot8YF5TiGJLBgLB7w",
+          "width": 1600,
+          "height": 900
+        }
+      ],
+      "opening_hours": [
+        "Monday: 4:00 – 11:00 PM",
+        "Tuesday: 4:00 – 11:00 PM",
+        "Wednesday: 4:00 – 11:00 PM",
+        "Thursday: 4:00 – 11:00 PM",
+        "Friday: Closed",
+        "Saturday: 8:00 AM – 2:00 PM, 4:00 – 11:00 PM",
+        "Sunday: 4:00 – 11:00 PM"
+      ],
+      "verified": true,
+      "instagram_url": null
+    },
+    "רפאל": {
+      "place_id": "ChIJE9diGNdJHRURAPe8eITlLf4",
+      "google_name": "Medica Raphael Hospital",
+      "google_url": "https://maps.google.com/?cid=18315547616709768960",
+      "formatted_address": "בניין מספר 3, תל אביב-יפו, Israel",
+      "rating": 4.6,
+      "review_count": 951,
+      "price_level": null,
+      "phone": "03-376-8826",
+      "website": "http://www.raphaelhospitals.co.il/",
+      "latitude": 32.1141053,
+      "longitude": 34.84339629999999,
+      "photo_url": "https://lh3.googleusercontent.com/place-photos/AL8-SNG_AptV6tXQvJBObDHlFvZxJMAaftHrTgJsWnH4goXEvkIIhf8XbK8heJ7vctU3_95Lnh6tr1HbKl2sLFW35uGnZUyqpeoYp-4sWFN8bR3f_OAIAfdi4Yqsqqbf2cARoP_T_7d3YZEAtoeYQA=s1600-w800",
+      "photos": [
+        {
+          "photo_reference": "AU_ZVEEoISNL2bhITsArDX241kmP-IGnbgOqH1w6WFMykmAToHemxzZN8jDwT2VDzwO_7oB4XdLrPJW-l4C7Ne_IO_01o-_UGhMX8LwkgRS2BKZpaakDn0D0oiNaglgLqm7SIBIyjkO1qWiDMnkfPo8BQN8j_e46h6Ufj-HpjD-nNdHgv9aD5bZXMaXC6XBSrtiB1X9V1fw4-EpF0yCA2T_VqdZIW86aSThBhqOFqBddtVy-dVIOsVI8wG8vfaof3Pg26aVydRNz100mUbdrH_RsQn_8BLOM8_inpdvpQ9VQEOCAGLHo_t_ClUitCwG3O02vVRoN-JynbN3uhbTJ88bYd012CW6zEL3rxRKU-ojV-BDkgECYxbnA0v8_ehYiSxHMjkliaqVDfAIowRtRMQkCmGePE76kkVpqwumjz-xkcBaWuys",
+          "width": 4032,
+          "height": 3024,
+          "resolved_url": "https://lh3.googleusercontent.com/place-photos/AL8-SNG_AptV6tXQvJBObDHlFvZxJMAaftHrTgJsWnH4goXEvkIIhf8XbK8heJ7vctU3_95Lnh6tr1HbKl2sLFW35uGnZUyqpeoYp-4sWFN8bR3f_OAIAfdi4Yqsqqbf2cARoP_T_7d3YZEAtoeYQA=s1600-w800"
+        },
+        {
+          "photo_reference": "AU_ZVEG_BviQ8NbBagRkUiUhf-dQR-LTzbAYILzbF0JqXKuweldSccLdrJcJY73WJKWZQNHlxm_oBykmr2osxYtdCDuE9Cw01Sc4JPM5tt4QSF1NWOjzNnPcVUqITNagH7p61ls4hjU17yqKZRkb_kVhexeyVj4EocBWRANh_Renlzra0tfUlxvxMb8fuSq0mLF4JMMoOQqPAn4LimVWR8VKcmgsfAho1w9EE1PeVSlnVLRzopR0RfJQruTedC9lRUMFG6SySiYnR_4I9b_r-NjtZPvFiW-Y49s8jOwYA7mHOotWu6aBYxEiVpLv5b0VsEZmjz3LI7Xqwq4DllsRJvrRfC-XzYO50k34xr4kB9qNUhDvNUsiNpolFvHRkLlO0Aekj-9g2iHPkDLQT2y_HDsR5bQ-E31kvC6OUSNeCvd4JYtXaw",
+          "width": 1600,
+          "height": 1200
+        },
+        {
+          "photo_reference": "AU_ZVEGRPEIZGXLjBSjZIdEsM9mzUM56XMbmjZ7az68osr8lvtOKt3HQGVThdODMaK6UBpTs8PQQQg-LEUrwURYy-G1e1TAkNhqsUkVLlozO-Gu63xj-iMJoqabC87VHuzM7Q_-H15qEyYzAUxpIZeGeI0wt5Ouq0dl1z6GchVSrEsv8hR2LejfR0FBrgrqFJ6uCY7LMcVykzhtBXujo0LcbF3SmooLOIuHV-bHxaLpuuHpYfgqKfnJo-5cmLAF8u-ZqUo634gjUITLaKthH3MUhkVBAJ1bsm66OFidlAoSUzmdSAg",
+          "width": 720,
+          "height": 480
+        },
+        {
+          "photo_reference": "AU_ZVEEMPztePmCuSvaDih76Ow7Bcaax46GUlWxN4mddQowO1avtKhgMCfYb9mQ8Uwa_mfU01DAp-1HX_M_cyBIWACWE1rkIslTi2xJdsra15gkeJCFgo7hg6X9_DLGhs4s9GulorhTyRwZO6LzHLF32lErOFlRX4rwctByZKXsY5peCDruIki4oZRJ2ovkReLBCdz7LZgK49jczhsHwHjTJ6dSDLVWlwmFKgfCOO9VXxbGWitzQxbKUDHHfJrpi4wTNnb9__Y4kA2DDDJ38u9OqlqEK9T0u8EZkLkxtalxbZ1mRq8722YSwxwnIwnX1FW3PsFPNg-_kq6W_3eIfxSUoyKbfCbRC8hSbJ-GBZL4jIQxp52PKC5MTViJblXjakM2IgUaUqKw4m93J2fbhbIastWlEEz1lXQpId-5bTjuVgBDMdSoh",
+          "width": 3000,
+          "height": 4000
+        },
+        {
+          "photo_reference": "AU_ZVEHDwxYtkZgxKdRmGwPUAjOMkNguyNZoLZDZR8Qy8XAWMR_vmCCLii0Jh_5S7T4W4K2EpQ1Ry-upAxtpGgthNgflii5TofZkk6E9pZdkmhw6MccZhKpo9vVd9OtO2J4riaFyUWhTJeAkJEXgTZsNXY556QVJfoU40xh9rp8q2plTcYF8g43BRlXbTRsJarcmUKacdqS4uIb5IwE2vCGJnlZ3kuHHoKQtnPU9mdm-8PwG1gPQAbcAOum6pruqOthqX5DCR8P9-tS5hLm8dmJo0lDSVH2Awn2Xq0U_a2PgD3FMYzSWa9Eda3EyVseZJB2RBs3ltWYa4v5hfnlrZXzMo9u6sZK2dOy2Ds6zdHGyu37mjU8aTd4L50W8wvQyiZCByvB7nds_-rVlFt7YYeZ6w4b3PhmRW0lqK-62KA5UXCm0yQ",
+          "width": 3001,
+          "height": 2252
+        }
+      ],
+      "opening_hours": null,
+      "verified": true,
+      "instagram_url": "https://www.instagram.com/medica.centers/"
+    },
+    "ג'אנגו תל אביב": {
+      "place_id": "ChIJd6FfvPxNHRURKikrdUB3UhQ",
+      "google_name": "Jango Burger",
+      "google_url": "https://maps.google.com/?cid=1464363947576207658",
+      "formatted_address": "Hillel ha-Zaken St 12, Tel Aviv-Yafo, Israel",
+      "rating": 4.1,
+      "review_count": 471,
+      "price_level": null,
+      "phone": "03-631-7773",
+      "website": "https://www.triger.co.il/",
+      "latitude": 32.0702792,
+      "longitude": 34.769635,
+      "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqEnyuk46CZaegSXTQesnUqrlGVh13cAe5e8vqtr_J0FX0OCC5e_AHnGKGQMJViEdIj-e3R5WToDes-JJxp4ZkmPDqUdXwKljP8=s1600-w800",
+      "photos": [
+        {
+          "photo_reference": "AU_ZVEF91CybjwB7P30Vrak5GGdJRdtONQ3NcpCZZvqiKhy_v4UUeRlYtZvTKFnyKPIsIfvTtKPx3WOCL2v5EzrJMSMbe78MCZQmFmfhaVx-9kTCKq4eD9tDVYvHficlY51Be9FeybM4iVPIURBxXBwO7Q4-j1AhH7h1xjBuQgyV4wX3A-L_KLan0miE3FZRmnaNph9uP7Btnmnv56iLphO068kTxGJY1GB86KK5BWMCiMxbQ0tbaEY68dOyW9psM6mustddDpRWlDWDPqZQYtWd6YI9UiuRgWIbtZJk-OlSY8VVmQ",
+          "width": 4800,
+          "height": 3200,
+          "resolved_url": "https://lh3.googleusercontent.com/places/ANXAkqEnyuk46CZaegSXTQesnUqrlGVh13cAe5e8vqtr_J0FX0OCC5e_AHnGKGQMJViEdIj-e3R5WToDes-JJxp4ZkmPDqUdXwKljP8=s1600-w800"
+        },
+        {
+          "photo_reference": "AU_ZVEFIt2-qh1bGhyIifjpnVUCJ4WF2yMgiXeA2f4J-SkEDhlyjuPbzcVLit22WAheFAaKwAiO3PFCY_ZGmMf50PhllU-hC3NfFpEvaUpfE6brpiDKuELKMuniBuKiZ3vZe_2lWkacf3gLeCXA4SGxfea-fo-J44KG8ZR85jzJ4rVqfaPzMHl3UJFyRi4655qRxcbxAH-Ad0ZdSslgOQ9KQmuseVvrh7QJhFkqRWciC26m0lPC2nbobkA7-kjXCeaYeOcqHy4lLQoEQv4Vsnb-9Yl8MiYAOf9pmbuEg7ZWinY4eEA",
+          "width": 2000,
+          "height": 2500
+        },
+        {
+          "photo_reference": "AU_ZVEFNrto8zdnbI_8658U2N_mdt9hM_5IrAnIfZac8UM4kQEUzZBIYVsKW6t585gyrybTJQSBtYbS4kcklTatGX7qZ6aeiYVPbajI05ni4EHR_9QcdYWSJN-1eR0C_tKJG7Pbhkj8x0VdLHjZsN7sOpAFfoqPzGx1bzDTE6Gkd5lhHBDb-CiwU2c0Zf_Y8orWV7kH6Ws-hH9vVvYrfLmOQ9h0S76ahd7Qr8GBWjbQ0UgTLLvye4MrdA5H8dY8dc2uhj2KXWlYYn5Ok25L1SLwFDAp0d77Vj834j8phYwQrQTQCLQ",
+          "width": 793,
+          "height": 991
+        },
+        {
+          "photo_reference": "AU_ZVEFPZQc809YxQvkWsmZ3d4c2_i7VXw2tpAH7K6ohdJ835xYYHJXSgIMSUTbvHwui97vofYW9nPjfmkZECPp4Ho0P0ZkzN65RdDl6bizUo6AaZVsDSygq4UuDth7ny7QyVbwAcDNd_5yjWjPylfhlp8CeXAHGupc-l2i7OxENZNO1X3aIgKKsErf2ec_ha2dVOPn3vUS8qd89AgOeaZD4u9PHb_D_HARg3wwaeCrSOpWNXQPr8KedVZoQDhDIfiMhlOJ_nklsobzbz7SxvIIgf__jYJ6D1-nCNmwOtTN_d2LlyA",
+          "width": 793,
+          "height": 991
+        },
+        {
+          "photo_reference": "AU_ZVEEAOFySstXPbOdUhE4Z4dvmKUOkP71DjKGgR-c14t_oZimXxQB-fW8iqcgEfcESR_6dviJBR2ydTfFo9MSgRIlaw4MffBEcIenUYaxwCr0y8LP2WCPjbV_p1HtXIpSujXyItjpDQ6fIJmnRLn9HCxNR0XOGZAtav3nTvTbtq-mzeXCWY14UU2iaex_4JJ2zbxzCQL6bmTI5jBxMOebspRYp6P0bYhGuda6xRHsWWhIxJZtzc9M8Chj9XnYGNXXcaSgwDY7Cyf8S35KOoDk-nQu-WqbmI5J8EV9MnG4RpRTazA",
+          "width": 793,
+          "height": 991
+        }
+      ],
+      "opening_hours": [
+        "Monday: 12:00 PM – 12:00 AM",
+        "Tuesday: 12:00 PM – 12:00 AM",
+        "Wednesday: 12:00 PM – 12:00 AM",
+        "Thursday: 12:00 PM – 12:00 AM",
+        "Friday: 12:00 PM – 12:00 AM",
+        "Saturday: 12:00 PM – 12:00 AM",
+        "Sunday: 12:00 PM – 12:00 AM"
+      ],
+      "verified": true,
+      "instagram_url": null
+    },
+    "הדבר המבורגר כפר סבא": {
+      "place_id": "ChIJeR6vCQA5HRURcmz42BvApCc",
+      "google_name": "דנוור DENVER",
+      "google_url": "https://maps.google.com/?cid=2856619289496546418",
+      "formatted_address": "Tchernichovsky St 14, Kefar Sava, 4427107, Israel",
+      "rating": 4.3,
+      "review_count": 463,
+      "price_level": null,
+      "phone": "077-303-4072",
+      "website": "https://denver-kfarsaba.web.delivery/",
+      "latitude": 32.1761392,
+      "longitude": 34.8928907,
+      "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqFJwbFESiDYDVVVlXRTuWDF2lPAwdmFj-Oha8_oGpRqVcPNRPdyugieDTv2tuMo0nk_p289uslFbImYXhpXHZ2aTsbhCY8kZC8=s1600-w800",
+      "photos": [
+        {
+          "photo_reference": "AU_ZVEEPOYQrkG4oHzDwBz2k1R1ArGDYRN1PbABxzsZP0kIPQ7euaZlpXS6vd3uWQOyHfSwz6g4WMjoSUhMleOdl0jUbzCb03L4VBpy1KlCvERuZrHaNx6xIRVDBS-XvBIxEnqz5-pwZuV62A-m-dRbC_NvV6illJuT9jeJ6EqBUFf2ZMwbdnK-iF8gWoOUPD6uo7M_5q9LZdACxrcv5fjj6ew19AOSshNKu5UHTZ2-e_p13OnavHv4vh6F4oj4QAOM4gH-ogaEZyJnzwU3onI5UHesrIFwBfNEBOJDpExvaGh9iUg",
+          "width": 2752,
+          "height": 2064,
+          "resolved_url": "https://lh3.googleusercontent.com/places/ANXAkqFJwbFESiDYDVVVlXRTuWDF2lPAwdmFj-Oha8_oGpRqVcPNRPdyugieDTv2tuMo0nk_p289uslFbImYXhpXHZ2aTsbhCY8kZC8=s1600-w800"
+        },
+        {
+          "photo_reference": "AU_ZVEF4nc4bCYXVO2eM_1lJhtg-qZeT92MIRvIOIUZBN5oW1Vnw-B_PJFoZOwBp8CMVytRQrUeIpxR0hViGDNATH2eecBufiUR5usfcmfXYSC2Te6srBZuWb_QK4EXyCKAipzkOK7eIwJT0ckUYrlYN-TeQzhQ7T-5glpZ_ix3AdcfmBdTY_JFSdiJqbqnMxJHJH0pys-MHmQv1DQNMc0QNXDBnBZns993kMwmirLwJhrGsg32NOfTJfE3TIWx1qakjC_DYR-7QCyDtOc2EXZotaXSk4fVckgvkSmIVTGlpFUzgTw",
+          "width": 2064,
+          "height": 2752
+        },
+        {
+          "photo_reference": "AU_ZVEGYxdeWl2N4R9TXTLK9qCkblcTjjDJIfg3AiDVKIvPG1sUwyeCEQVWd5BG9R_QIjpQabJx1rKuVhgFAKq8ipR5mkx-aZidhqXjs9H1ZIb-WIMb6AZ3AXgv5CAjkB6v86AlCXre5BMAFrMs1_M3GodQuktHLTKvF2JWfjsjfjBTWRGOgAk8lw2EW4tLUMXWrb2nYSfRD4D2Zz7IW_Z9OLno6DvfBXIbtz2_DqjtxVz0reiWXTlhfA9pRd9IEHLkQkZEOSYWlRweQRxFu2l51BOZ4lD6Sbavb9ix6LhYADgql9A",
+          "width": 2064,
+          "height": 2752
+        },
+        {
+          "photo_reference": "AU_ZVEFI_uzVL-74ZhaixYmtTEKJZRhUpTPgKtdfs7tRx9CTpRTUeWY1KhMH5TvQCUdxXAckywWwZnlQEX_SBDOhq3zYoJ1CNTTYvrsOZCeBix_DJmHKyrJkZEH5r-nXDP6AKVPGMCJ8AhSGa2ZtXP4l21lEWLiRqyLGnZl6rcRjSIdQMmtFHMBwAvYIKCDr0vCuF19wIzVDzaGqSFdb7Kc94BF2Kbjx6Knqb60Cvsk8QKy4EOFYqfnWW4W5KV0wk9dZOzton8s2Xo5kLFgZD9ei9xkVB_zU7axAIgTp6ltxdDPNZA",
+          "width": 2064,
+          "height": 2752
+        },
+        {
+          "photo_reference": "AU_ZVEFk3p4yf_zKw_duPTVzyNSh8GBJfthWs4GqVqqoFR6tDJOwJjXVlObH7T_2duUGJkWNDN7XOBaOqXnWJd7ECe4hQtKV4Tpj6RqYiJUDR66phwmJ_w82isphDYQQCClevZNsIBIp0zYkp1fcmg4rkaOX5leO9djkZHS-s4bTLsYNrGuz7PoWLJB5T7O5LbPbb6fxOVejT1i5lWEZQpm7VrLfXVwo1ckLq8oVTolDXPa3JRSzrNlR-2EzCCxG1NSuwQpH6hvWIRjUoiFDT7DjVlS8rVSHzyDP7W0qhwZozf32AA",
+          "width": 2064,
+          "height": 2752
+        }
+      ],
+      "opening_hours": [
+        "Monday: 12:00 – 11:00 PM",
+        "Tuesday: 12:00 – 11:00 PM",
+        "Wednesday: 12:00 – 11:00 PM",
+        "Thursday: 12:00 – 11:00 PM",
+        "Friday: 12:00 – 5:00 PM",
+        "Saturday: 12:00 – 11:00 PM",
+        "Sunday: 12:00 – 11:00 PM"
+      ],
+      "verified": true,
+      "instagram_url": null
+    },
+    "ימה גלילות": {
+      "place_id": "ChIJX6MLTGVNHRUR5OioxdOiR5k",
+      "google_name": "Yama",
+      "google_url": "https://maps.google.com/?cid=11044975641587411172",
+      "formatted_address": "Shalma Rd 40, Tel Aviv-Yafo, 6811149, Israel",
+      "rating": 4.3,
+      "review_count": 25,
+      "price_level": null,
+      "phone": "03-609-4445",
+      "website": "https://yamaonline.co.il/",
+      "latitude": 32.055246,
+      "longitude": 34.7660067,
+      "photo_url": "https://lh3.googleusercontent.com/place-photos/AL8-SNEi9UJ95g-AA9RLA1YrwGy979CKQ7C1GsGFfx0xcq6A30ocO0JUNO1bwcCuxiRvAPI2zahWQ-btYXwB0aPpge1VTez0tE0l0Gq_QrK8hUjuJAtvKuSGzM-5-LlJayKbEEBxXVeP0jfrEaQDPDE=s1600-w800",
+      "photos": [
+        {
+          "photo_reference": "AU_ZVEEA0qdrRuVcV05OX-FfcPkV8ip2HrlRMvsIotIS8UhuY4AqLZKOn-Dj0-cK8RDrO5kvITSMLwJm8eFuws54uS4wPNUncpDM0Ju3yFRrEmwWzZwO2B4W39OnST_KLDBG2056JOomhb67An7s10vxZ4qD7-PZNj3BRQCQyMwinkRN-AWOFEa1vWU71RpA-q936fGwKJQIN3x4wFO3FfnqleF6xhEyg0WevmhaJYSetF8_qPWlbu2QCw5ethu_YTJXBuvjx7B2udgetMUxXRwfvuZIvn8nAxZZt62IMm2C4gj9SxS817bJEhpzIBE-UshgtKz1GXJA2yC9yyyna00RoQGFMrjE4aQWurWSqk6-W8-2Y6iWf8Y7A2sK2QNEGt-1mZ61GPlXG87Zg4ZizBgdfSrPTmWCSRtRw3tgCVkHcMparhds",
+          "width": 4032,
+          "height": 2268,
+          "resolved_url": "https://lh3.googleusercontent.com/place-photos/AL8-SNEi9UJ95g-AA9RLA1YrwGy979CKQ7C1GsGFfx0xcq6A30ocO0JUNO1bwcCuxiRvAPI2zahWQ-btYXwB0aPpge1VTez0tE0l0Gq_QrK8hUjuJAtvKuSGzM-5-LlJayKbEEBxXVeP0jfrEaQDPDE=s1600-w800"
+        },
+        {
+          "photo_reference": "AU_ZVEFe3CZLYNXygn4_CUZ9UBAGmgfgoUlFeI2MwNG5EB8wrO4XG7s39A2vuPznzKVLfMGcBnduEK2KTyNQSSDbHVRVKeD52_NAaj4JBlnmDEQfjGDj43aZPUjGl7x7rAzZsAzNpOOG291Q17HnccJXALxW__z14JpicZzUfE5GLo_LIlOODIjlFTBuwWwtwRITruNTgoT532xBBgMt7No7-chqPv06MRbzesU-tKORu_mcfk1x5DTCdNWCwpwG6ogEH_HPxl1zBMSUe9hL3RKkusROdcuJp5lH6xe75ZfnvtZGkMoF0CM0hv0SCe0VWa3vcVlJ_lrWv9B5qfdddaeRkcz8vw2uEm2GJkEVKG6Xrb0PTGcRQy_0nacJ-Xftcs4Z1xwUnn5VgUIM23cFW_0Sc_1pjESuZdRcYnPhzXTTkoldYOEL",
+          "width": 3380,
+          "height": 2905
+        },
+        {
+          "photo_reference": "AU_ZVEGoPFYmQrZMrhn2XCriIZn97bwnrCqbj0xT14rfy9d7qCbz7JB5juvLpPZzTi7qGpv8Lzjg_0rjOQZB3us8q2Zn858bre0H0heF1ciuPOba-zq5LLWscBX1js7NXP2Qfr-yaLWgpvMU4ityW-HyM6kYOkcz-zb2I-6sYSzffxKH_SBozr9LpzM2dnjiCLSkdZ2CjgAVtT6rE0zCemG30gHf8m9gRwA1IIsXtih0VzCt-t23KqLD1cs22TIwSSOjYVY6XNcDfHGFF8sTEaMijiOTS13pPw2ZAKqXMsbrqS4YOtifRnPiatsIOSxLRi3qMQrCf1tBcaAjI_V4EABeElT5UbZRBAMdeqlzABvmmqTXoPfx8qBV1rbWb6qrlnVu6Mpt2zpGbFF2gM2Z6DlZekwzzH48WpCiMRchH2sWOJMkmw",
+          "width": 4032,
+          "height": 2268
+        },
+        {
+          "photo_reference": "AU_ZVEHXQw0DdAT_GSI7-fTWibhilUufBynABY8AfNy_JLk5oAvbyVYQymeO_m9B8bnZyqlO_fDc89Ipl_7NXUUCuwj8s7TGf5ZWEXa8AkEmevF5Ez7BJO7REKP5uVVpX2gE1TG2NutOc1XfY-_adBtUTxnPjyPLDC53FdqMCNqm09NI3VWjtw66dQcy9LkCMfLHYtprycvCz8ECBgPUkFCULuPYwVhtrbIzpJNzjYvyKLpKvBzrMsP0F1noG8FbsxxkhYFryglEwkOw4e22lMZsePLQEb9B9-2X1QOaPS4AcfNBfYowbWBAMNaZ9FIGrzV8u7dxpcC6OGYt-4XNKk_XgfMmfhAAM-lWG5yWCoLPAfU-M97dOEAskTyyk4VU-QPXpcVYaw1At4PmY6JWVDBwAK4sbtHiqK1CA1o3Kx-EZoAf6KV_",
+          "width": 3024,
+          "height": 4032
+        },
+        {
+          "photo_reference": "AU_ZVEG8gZLO-Su9liu7oj99YtJWt4x2xCq2ZbMEn6KYxlj4j7RUeD8q1VEZ2oM_sM8dQJiCn3iW1MqKlv9wDNC_pVwTdyGiDH31j0ID0pQN9u6NBjfODBhIdJTlUxDF983L3YSvT3cmU4Q_oGg7G1g4MIAwYEryTiqQ3DUkqPe-Ke0XyH4WB3xRC9x__gDSoxXHSwlkBd4UWkH_iJlOJO-lgOOuKRkS4bixlw13Aom-BifLNmLZquvnfelah7mGG4VBKp3B5N6oKOZ8ZF-tudQ9guNRRPLghF_vWrAUsRb5Rqchl3yPiK65yQcYpBQEZ3ahAbjpFCygL7JWICNiqHI3c0rhvGJKPstxrgPvy7lireLN7JwG5T0l-9_0EWQmXNp4lOJOvewga2mX_TBSD511AvFugvzL3nWUqmL8TRjOsflChw",
+          "width": 3024,
+          "height": 4032
+        }
+      ],
+      "opening_hours": [
+        "Monday: 10:00 AM – 8:00 PM",
+        "Tuesday: 8:00 AM – 8:00 PM",
+        "Wednesday: 8:00 AM – 8:00 PM",
+        "Thursday: 8:00 AM – 8:00 PM",
+        "Friday: 7:00 AM – 6:00 PM",
+        "Saturday: Closed",
+        "Sunday: 10:00 AM – 8:00 PM"
+      ],
+      "verified": true,
+      "instagram_url": "https://www.instagram.com/yama.fish.shop/"
+    },
+    "פו חיים כהן תל אביב": {
+      "place_id": "ChIJjWNkBJ9LHRURiO82rTq2iHE",
+      "google_name": "Yaffo Tel Aviv",
+      "google_url": "https://maps.google.com/?cid=8180989086248923016",
+      "formatted_address": "בניין אלקטרה, יגאל אלון 98, תל אביב-יפו, Israel",
+      "rating": 4.3,
+      "review_count": 3904,
+      "price_level": 4,
+      "phone": "03-624-9249",
+      "website": "http://yaffotelaviv.com/",
+      "latitude": 32.0700137,
+      "longitude": 34.7940951,
+      "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqGnz7UqlB4KmgAdb4ODl6jqp6tal9gCQ6s6meQs3UtmI_xYl5CCzEo5u7JXNXOydf9nivMWWnud-JnrDjdR7DojldHf8jWXZ7o=s1600-w800",
+      "photos": [
+        {
+          "photo_reference": "AU_ZVEEif_xeh6K2yF6Zda9gnL1Rvk78aIopNlXFOxdmGFwtRiS8Mk4nQNAefS_bC-8LhoQi0XE5oLAW_aQs2135VdsVN-Yf7UsEnDKSLBmcETz23YBTS0rhSqkrMJZ5wubVEgEywclAgLjsCyBqCUm4A91NzWSpwjQrDpQkAq7pfJ7NNnmzrI2nUWjOlxly3Q2eKVMAr4Wm-wd7S_uwLcRr-ObcdGugww93ewwUYFksqDkKYELW19IdLWfgVS0w8q8-l5CeIy9azn_zWhI51hDl9kEe5N-Sjph28nDDdQdGJVaFjw",
+          "width": 1600,
+          "height": 1067,
+          "resolved_url": "https://lh3.googleusercontent.com/places/ANXAkqGnz7UqlB4KmgAdb4ODl6jqp6tal9gCQ6s6meQs3UtmI_xYl5CCzEo5u7JXNXOydf9nivMWWnud-JnrDjdR7DojldHf8jWXZ7o=s1600-w800"
+        },
+        {
+          "photo_reference": "AU_ZVEFwEg6IRK4ZaUcRUm8DgQktbSJvSo5DMvVEuUMakPC4zxpbbaie342L2DdVzROkceQ1qXGX5LoBaRpNwZErEQTLaW0AA_d30PMeFziwOZopxbJkO3Q36Gh885AeU8jeLPoEoD2QgbJMxTGP0MbpRtZIvOfP4F2-DMDftYSx5CCUmXuOjyJRPE2Fed2VajTUImuQs4WM2YFidDMmzXF0XYYQ1oPsmEflLCoEdw_I7brU3yJZs2kvXU2qpE23Z10YvPaiTDQpvmofimBkcqkbqHQHL6YmAdt5sC3N1lqxhF4J0g",
+          "width": 4800,
+          "height": 3200
+        },
+        {
+          "photo_reference": "AU_ZVEHooFo9CSqrlq2OblZ0denuXOkTg8K-OXoXklM8c4Ttbi0_BNQl94yHasa7_0hKt7rq_kj_Q84GqZkU9KsNab6i5_WLUwxSFWtgirL97T-xO3qpWEKnbIN2SBHrwX8uZnw5ajRN1Ww_TMXwypfDZHE0wFrRCUBwFFSkkAfP2VT68RZPb2RkQi2XSGLlrbsfc-PVsaEOpstfLHuayWBCAE_59S61aBHlSmYtUZFy-WKQmE8XyU5s3H8PfxASJ6f_TgWg0yIWft6WpT75CZ2CzhkT9bj89u3tNoC6DEr-THpyG5ddJC49Oa95Yg0AUooS21GPu1FM4G8TZyH2lwDm3kFjuw53IEgN_tL75QOVqKl1ThxPGmO8vuRvr8_w4G5gHLh6odLG4I-YZxSKMgV8rhxjJ_mgdtWgnf3mEN8uVbkjdTom",
+          "width": 4032,
+          "height": 3024
+        },
+        {
+          "photo_reference": "AU_ZVEE4gJj5_lzZb7Pi-pmYemTrR06Vs-11AellukYUnoY8Zi6rZo-O57o-zmlWoK9buXLWD-Lwjl46_HHiHKw8Zdg_Ujtl-EFw1HsxcM1lhY1PvC0FGS5DqfvewynI380r5i5qBXIp-Y68VIL7fylfzNFddN1RNvuKakVdo3jO4HrodPZPzD8ovNcUoEku_ENc8tRcHipDKvCum_5rPWlbfgw_w06Rc9GFzencGmyvj4zxEgFZ6GuyiWzEAD6_Rw2SW-zKhqzCEadvrSeO7ViIfKfeA3ST9tUNec7lJ9DEQzAl_Q5bOg1QYRsACsQCA946jJoHXUM4rFwjdK1VyomPPkWduxqTIQCBzig7GCtStc3yq_s26oZ5lYd-G9HXjS_hC4lVprncl1msy3Y7tAzB2JgkoHM5WuL9qBvejNOldpNwMA",
+          "width": 4032,
+          "height": 3024
+        },
+        {
+          "photo_reference": "AU_ZVEHXX9aPOwnsxI22inrCi8hTtig3_1bwzFe5w3MVJJh8Ffo5wzuxRhYIRFJI_2400Vh_UpqQw5BtbKVDCwIPqz3j3KYJOEDRi6pALlL1EvW1eA9MArT4jrZuCbKZhIiwfm-CB_1xxyz9FC4Szf0_Qn-e4RzLbwNm4KfP4mxzLTfHtXHRXkfUzcW4wpkX0b0fY5RjT_l6bP-zt-YSCnK9GWBFoqjO_ZbIg1KJGglviULMbv2-M2uCPTWf6QYiGhdR8ohIVyu4TrnTuQ9J0trf_1fYyw4HS-Np1Vx5sm4f_otyVGtIpajaDuGN2U_N-X7duSTPmevfvoSFSTm3LRG2lHtPw5vEE0y4CTvsspbN4mR-WSTkcAk40PlPIo8XwSzMjmDh-S8eEtIuhLG8uiRs0Xj4r2GksfrjlrYN9Ohf3y1nfFLx",
+          "width": 4032,
+          "height": 3024
+        }
+      ],
+      "opening_hours": [
+        "Monday: 12:00 – 10:00 PM",
+        "Tuesday: 12:00 – 10:00 PM",
+        "Wednesday: 12:00 – 3:30 PM, 6:00 – 10:00 PM",
+        "Thursday: 12:00 – 4:00 PM, 6:00 – 10:30 PM",
+        "Friday: 5:30 – 10:30 PM",
+        "Saturday: 12:00 – 10:00 PM",
+        "Sunday: 12:00 – 10:00 PM"
+      ],
+      "verified": true,
+      "instagram_url": "https://www.instagram.com/yaffotelaviv_restaurant/"
+    }
+  },
+  "timestamps": {
+    "טנא דלי": {
+      "occurrences": [],
+      "recommended_seconds": null,
+      "recommended_display": null,
+      "youtube_url": null,
+      "episode_duration_seconds": 4065.6
+    },
+    "ג'אנגו": {
+      "occurrences": [
+        {
+          "seconds": 333.8,
+          "display": "5:33",
+          "segment_index": 110,
+          "text": "שיודע לספק את הסחורה מדהים הוא הג'אנגו",
+          "context_before": "שניים לא אחד א אז התל אביבי המוכר ואהוב",
+          "context_after": "אין יותר מדי מה להוסיף המבורגר מצוין",
+          "is_intro": false
+        }
+      ],
+      "recommended_seconds": 333.8,
+      "recommended_display": "5:33",
+      "youtube_url": "https://www.youtube.com/watch?v=w-n3zFXTuGM&t=333s",
+      "episode_duration_seconds": 4065.6
+    },
+    "הדבר כפר סבא": {
+      "occurrences": [],
+      "recommended_seconds": null,
+      "recommended_display": null,
+      "youtube_url": null,
+      "episode_duration_seconds": 4065.6
+    },
+    "יאמה": {
+      "occurrences": [
+        {
+          "seconds": 418.2,
+          "display": "6:58",
+          "segment_index": 141,
+          "text": "המשלוח זה יאמה של יובל בן נריה שבעצם",
+          "context_before": "והכל אבל עכשיו בדקתי אותו גם בגרסת",
+          "context_after": "פתח בביג בגללות אז אני לא אחביר במילים",
+          "is_intro": false
+        },
+        {
+          "seconds": 455.6,
+          "display": "7:35",
+          "segment_index": 150,
+          "text": "יאמה. כי אם הייתי צריך עכשיו לקנות את כל",
+          "context_before": "שזה בעיניי הגאונות של הדבר הזה שנקרא",
+          "context_after": "המרכיבים, אז אי אפשר לקנות שתי ביצים ואי",
+          "is_intro": false
+        }
+      ],
+      "recommended_seconds": 418.2,
+      "recommended_display": "6:58",
+      "youtube_url": "https://www.youtube.com/watch?v=w-n3zFXTuGM&t=418s",
+      "episode_duration_seconds": 4065.6
+    },
+    "רב יולו": {
+      "occurrences": [
+        {
+          "seconds": 511.4,
+          "display": "8:31",
+          "segment_index": 168,
+          "text": "שנקרא רב יולו מפעל שיושב באשקלון מייצרים",
+          "context_before": "שלי ממש כאילו איך את לא מכירה א מפעל",
+          "context_after": "פסטות כן כן א אז הם מייצרים פסטות כזה",
+          "is_intro": false
+        }
+      ],
+      "recommended_seconds": 511.4,
+      "recommended_display": "8:31",
+      "youtube_url": "https://www.youtube.com/watch?v=w-n3zFXTuGM&t=511s",
+      "episode_duration_seconds": 4065.6
+    },
+    "המחמצת של חגאי": {
+      "occurrences": [],
+      "recommended_seconds": null,
+      "recommended_display": null,
+      "youtube_url": null,
+      "episode_duration_seconds": 4065.6
+    },
+    "אילנה דן": {
+      "occurrences": [
+        {
+          "seconds": 696.2,
+          "display": "11:36",
+          "segment_index": 229,
+          "text": "לפרגן לאילנה דן שהיא גם אחת מהעופות",
+          "context_before": "יצא פשוט הכי טעים שיש ובנוסף הזדמנות גם",
+          "context_after": "הטובות בארצנו והמאוד ככה פופולריות בתל",
+          "is_intro": false
+        }
+      ],
+      "recommended_seconds": 696.2,
+      "recommended_display": "11:36",
+      "youtube_url": "https://www.youtube.com/watch?v=w-n3zFXTuGM&t=696s",
+      "episode_duration_seconds": 4065.6
+    },
+    "גרציאני": {
+      "occurrences": [
+        {
+          "seconds": 1107.1,
+          "display": "18:27",
+          "segment_index": 367,
+          "text": "התחתית וכמובן קודם כל גרציאני ברחוב",
+          "context_before": "במרכז תל אביב אבל לא רק האזור הזה של",
+          "context_after": "יהודה הלוי שנפגעו קשה מאוד א והפלור א",
+          "is_intro": false
+        }
+      ],
+      "recommended_seconds": 1107.1,
+      "recommended_display": "18:27",
+      "youtube_url": "https://www.youtube.com/watch?v=w-n3zFXTuGM&t=1107s",
+      "episode_duration_seconds": 4065.6
+    },
+    "הפלור": {
+      "occurrences": [
+        {
+          "seconds": 1110.6,
+          "display": "18:30",
+          "segment_index": 368,
+          "text": "יהודה הלוי שנפגעו קשה מאוד א והפלור א",
+          "context_before": "התחתית וכמובן קודם כל גרציאני ברחוב",
+          "context_after": "שעשו הדסטארט",
+          "is_intro": false
+        },
+        {
+          "seconds": 1128.6,
+          "display": "18:48",
+          "segment_index": 373,
+          "text": "הפלור א אולי לימודי ניסיון וגם אנשים",
+          "context_before": "אבל הם היה מקסים בעיניי לראות שהחבר'ה של",
+          "context_after": "ראליים שחיים במדינת ישראל יודעים שהם לא",
+          "is_intro": false
+        }
+      ],
+      "recommended_seconds": 1110.6,
+      "recommended_display": "18:30",
+      "youtube_url": "https://www.youtube.com/watch?v=w-n3zFXTuGM&t=1110s",
+      "episode_duration_seconds": 4065.6
+    },
+    "פו תל אביב": {
+      "occurrences": [],
+      "recommended_seconds": null,
+      "recommended_display": null,
+      "youtube_url": null,
+      "episode_duration_seconds": 4065.6
+    },
+    "מירים": {
+      "occurrences": [
+        {
+          "seconds": 1906.8,
+          "display": "31:46",
+          "segment_index": 607,
+          "text": "אני יכול להגיד לך שפתחתי את מסעדת מירים",
+          "context_before": "שהמקום פתוח אבל אין סועדים.",
+          "context_after": "ממש בתחילת השנה א",
+          "is_intro": false
+        }
+      ],
+      "recommended_seconds": 1906.8,
+      "recommended_display": "31:46",
+      "youtube_url": "https://www.youtube.com/watch?v=w-n3zFXTuGM&t=1906s",
+      "episode_duration_seconds": 4065.6
+    },
+    "ג'רדינו": {
+      "occurrences": [
+        {
+          "seconds": 2161.5,
+          "display": "36:01",
+          "segment_index": 688,
+          "text": "צנגר שהוא גם השב שמסלת ג'רדינו כוטף את",
+          "context_before": "א נכון ובוא נלך מה שנקרא נתחיל מהסוף בר",
+          "context_after": "הניצחון",
+          "is_intro": false
+        },
+        {
+          "seconds": 2362.5,
+          "display": "39:22",
+          "segment_index": 755,
+          "text": "כשהוא קיבל לידיו את הג'רדינו אבל זה לא",
+          "context_before": "הוא אולי היה אמור להיות השף הבא של ישראל",
+          "context_after": "התרומם אז הוא הלך לרעה לתי עכשיו מבחינת",
+          "is_intro": false
+        },
+        {
+          "seconds": 2407.7,
+          "display": "40:07",
+          "segment_index": 771,
+          "text": "בגלל שהארוחה שאני למשל אכלתי בג'רדינו",
+          "context_before": "וכן יכול להיות שיש פי את המקום לטייק הזה",
+          "context_after": "לפני בערך שנתיים הייתה ארוחה מאוד מאוד",
+          "is_intro": false
+        },
+        {
+          "seconds": 2472.9,
+          "display": "41:12",
+          "segment_index": 792,
+          "text": "היא מנה מהג'רדינו. השיפוד אנס הזה עם",
+          "context_before": "מחנקה נוזלי. ווואלה בסוף מנת הקינוח שלו",
+          "context_after": "הקרם אנגלז אננס והטקסטורות של האננה. זאת",
+          "is_intro": false
+        },
+        {
+          "seconds": 2479.3,
+          "display": "41:19",
+          "segment_index": 794,
+          "text": "מנה שהולכת עם הג'רדינו מהיום הראשון שלה.",
+          "context_before": "הקרם אנגלז אננס והטקסטורות של האננה. זאת",
+          "context_after": "אז אני לא יודע כמה מהצופים יודעים את זה.",
+          "is_intro": false
+        }
+      ],
+      "recommended_seconds": 2161.5,
+      "recommended_display": "36:01",
+      "youtube_url": "https://www.youtube.com/watch?v=w-n3zFXTuGM&t=2161s",
+      "episode_duration_seconds": 4065.6
+    },
+    "נומה": {
+      "occurrences": [
+        {
+          "seconds": 140.2,
+          "display": "2:20",
+          "segment_index": 50,
+          "text": "הבאמת מטורף שקורה עם מסעדת נומה",
+          "context_before": "גמר משחקי השף והיה לנו ויש לנו את הסיפור",
+          "context_after": ">> עוד רגע ניגע בו לעומק א מה עוד יש לנו",
+          "is_intro": true
+        },
+        {
+          "seconds": 174.5,
+          "display": "2:54",
+          "segment_index": 61,
+          "text": "אפשר לומר מנפגעות או מניצולות נומה הייתה",
+          "context_before": "ליאור משיח ליאורוש תהיה איתנו כי היא",
+          "context_after": "שם בסטאז' לפני קצת יותר מעסור ננסה להבין",
+          "is_intro": true
+        },
+        {
+          "seconds": 2704.7,
+          "display": "45:04",
+          "segment_index": 870,
+          "text": "טיימס בסוף השבוע האחרון על מסעדת נומה",
+          "context_before": ">> התחקיר הגדול מאוד שמתפרסם בניו יורק",
+          "context_after": "בקופנהוגגן שבמשך שנים נחשבת למסעדה",
+          "is_intro": false
+        },
+        {
+          "seconds": 2735.8,
+          "display": "45:35",
+          "segment_index": 878,
+          "text": "שעבד במשך חמש שנים בנומה בתפקידים מאוד",
+          "context_before": "טימס בעקבות עמוד אינסטגרם שפותח מישהו",
+          "context_after": "מאוד בכירים, כולל מנהל מאבד את ההצסות של",
+          "is_intro": false
+        },
+        {
+          "seconds": 2742.6,
+          "display": "45:42",
+          "segment_index": 880,
+          "text": "נומה שבמסעדה כמו נומה זה חתכת ג'וב א",
+          "context_before": "מאוד בכירים, כולל מנהל מאבד את ההצסות של",
+          "context_after": "ובעצם חוסף עדויות אחרי עדויות של טבחים",
+          "is_intro": false
+        },
+        {
+          "seconds": 2749.2,
+          "display": "45:49",
+          "segment_index": 882,
+          "text": "ובמיוחד שלמתחים של סטאז'רים שעברו בנומה",
+          "context_before": "ובעצם חוסף עדויות אחרי עדויות של טבחים",
+          "context_after": "מסכת התעללויות אין דרך אחרת לתאר את זה",
+          "is_intro": false
+        },
+        {
+          "seconds": 2785.0,
+          "display": "46:24",
+          "segment_index": 894,
+          "text": "ותבחים שעברו התעללויות בנומה. והדבר הזה",
+          "context_before": "זה יותר מ-30 מדויות לטענתם של סטג'זרים",
+          "context_after": "מתגלגל ותופס תאוצה דרך האינסטגרם עד",
+          "is_intro": false
+        },
+        {
+          "seconds": 2831.8,
+          "display": "47:11",
+          "segment_index": 908,
+          "text": "שנומה פותחים את הפופאפ שלהם בלוס אנג'לס.",
+          "context_before": "למסגר ולומר שכל הדבר הזה קורה רגע לפני",
+          "context_after": "זה קורה היום. אנחנו היום יום רביעי. היום",
+          "is_intro": false
+        },
+        {
+          "seconds": 2840.3,
+          "display": "47:20",
+          "segment_index": 911,
+          "text": "נומה בסילבר",
+          "context_before": "בערב אמור להיות הסרויס הראשון בפופאפ של",
+          "context_after": "לייק בלוס אנג'לס. פופאפ שכרטיס לארוחה",
+          "is_intro": false
+        },
+        {
+          "seconds": 2896.8,
+          "display": "48:16",
+          "segment_index": 927,
+          "text": "בנומה ב-2016,",
+          "context_before": "רוצה להגיד מהמקום הקטן שלי, א, אני הייתי",
+          "context_after": "שזה שיא התקופה לכאורה של ההתעללויות,",
+          "is_intro": false
+        },
+        {
+          "seconds": 2907.9,
+          "display": "48:27",
+          "segment_index": 931,
+          "text": "מארגן רנרת זפי ומסדת נומה, מן סימפוזיון",
+          "context_before": "בסימפוזיון שנקרא מד סימפוזיום, שאותו",
+          "context_after": "אוכל של שפים ומסעדנים מכל העולם. באמת כל",
+          "is_intro": false
+        },
+        {
+          "seconds": 2954.7,
+          "display": "49:14",
+          "segment_index": 944,
+          "text": "טבחים וסטאטז'רים שהיו בנומה סיפרו על על",
+          "context_before": "כנראה לא בדיוק המצב מטבחים כבר אז ב-2016",
+          "context_after": "אגורפים שרנה היה נותן להם כזה בקטנה מתחת",
+          "is_intro": false
+        },
+        {
+          "seconds": 2975.0,
+          "display": "49:35",
+          "segment_index": 951,
+          "text": "מאוד אנשים חיכו לנומה בסיבוב בהקשר הזה",
+          "context_before": "כפול ואני חושב אני חושב שבאמת פשוט הרבה",
+          "context_after": "כי כל מי שנפגע א לדעתי ישב כמו איזה סיר",
+          "is_intro": false
+        },
+        {
+          "seconds": 3071.1,
+          "display": "51:11",
+          "segment_index": 986,
+          "text": ">> אז את היית בנומה א כסטז'רית לפני בערך 10",
+          "context_before": "מה עוד אני אגיד",
+          "context_after": "שנים נכון מתי זה היה בדיוק",
+          "is_intro": false
+        },
+        {
+          "seconds": 3168.3,
+          "display": "52:48",
+          "segment_index": 1016,
+          "text": "שגם הייתי בתקופה אחרת בנומה עם רנס. זאת",
+          "context_before": "לדעתי. אני לא לא נחספתי לזה אבל אני אגיד",
+          "context_after": "אומרת אני רגע רוצה לחזור למה שאמרת לפני",
+          "is_intro": false
+        },
+        {
+          "seconds": 3197.5,
+          "display": "53:17",
+          "segment_index": 1026,
+          "text": "את ה א הרגעים הקשים שלי בנומה. אני",
+          "context_before": "מעולם לא ניסה להסתיר את זה. אני חוויתי",
+          "context_after": "חוויתי אותם דווקא מעובדים אחרים.",
+          "is_intro": false
+        },
+        {
+          "seconds": 3278.9,
+          "display": "54:38",
+          "segment_index": 1052,
+          "text": "אני לא עבדתי איתו כשאני עבדתי בנומה",
+          "context_before": "וייט?",
+          "context_after": "מישהו אחר נהיה את המעבדה א ובאמת אני לא",
+          "is_intro": false
+        },
+        {
+          "seconds": 3312.4,
+          "display": "55:12",
+          "segment_index": 1062,
+          "text": "בנומה זה בחינם נכון צריך להגיד",
+          "context_before": "מבינה לו אם זה שני פתאום אמרת עבדתי",
+          "context_after": ">> בהתנדבות לגמרי שום דבר",
+          "is_intro": false
+        },
+        {
+          "seconds": 3328.1,
+          "display": "55:28",
+          "segment_index": 1069,
+          "text": "געה להגיד הייתי בנומה או שזה משהו שנוח",
+          "context_before": ">> את מתחילה עם חיוך ואיך את מסיימת והאם את",
+          "context_after": "רגע לשרט את קורות החיים אבל הוא סוחב",
+          "is_intro": false
+        },
+        {
+          "seconds": 3391.8,
+          "display": "56:31",
+          "segment_index": 1088,
+          "text": "בנומה הרבה אנשים לא יודעים אבל כולם",
+          "context_before": "א להגיע לשם כי בעצם איך שעובד הסטאש",
+          "context_after": "עושים רוטציה בכל המטבח אתה מקבל בין שבוע",
+          "is_intro": false
+        },
+        {
+          "seconds": 3455.3,
+          "display": "57:35",
+          "segment_index": 1107,
+          "text": "שעבדתי בנומה אני מאוד מאוד גאה בזה זה",
+          "context_before": "לעשות אותו עד הסוף ואני מאוד גאה להגיד",
+          "context_after": "תמיד היה א משהו שאני גאה בו אני תמיד גם",
+          "is_intro": false
+        },
+        {
+          "seconds": 3613.6,
+          "display": "60:13",
+          "segment_index": 1159,
+          "text": "לא הייתם בנומה פשוט לכו לטיפול. עשיתי",
+          "context_before": "לטיפול חבר'ה. אתם חיים בישראל אפילו אם",
+          "context_after": "טיפול בשנה שאחרי נומה. אני אומרת את זה",
+          "is_intro": false
+        },
+        {
+          "seconds": 3616.2,
+          "display": "60:16",
+          "segment_index": 1160,
+          "text": "טיפול בשנה שאחרי נומה. אני אומרת את זה",
+          "context_before": "לא הייתם בנומה פשוט לכו לטיפול. עשיתי",
+          "context_after": "אמיתי.",
+          "is_intro": false
+        }
+      ],
+      "recommended_seconds": 2704.7,
+      "recommended_display": "45:04",
+      "youtube_url": "https://www.youtube.com/watch?v=w-n3zFXTuGM&t=2704s",
+      "episode_duration_seconds": 4065.6
+    },
+    "מרלוזה": {
+      "occurrences": [
+        {
+          "seconds": 3760.4,
+          "display": "62:40",
+          "segment_index": 1211,
+          "text": ">> אז אז הראשון זה מרלוזה שמש",
+          "context_before": ">> קדימה",
+          "context_after": ">> זה מבאס מאוד",
+          "is_intro": false
+        },
+        {
+          "seconds": 3787.6,
+          "display": "63:07",
+          "segment_index": 1219,
+          "text": "התחרבן על הסגירה של מרלוזה וכבר מאחורי",
+          "context_before": "א בעצם הודיע ממש כזה שנייה לפני שהכל פה",
+          "context_after": "הקלים יש דיבור על זה שאת החלל שם",
+          "is_intro": false
+        }
+      ],
+      "recommended_seconds": 3760.4,
+      "recommended_display": "62:40",
+      "youtube_url": "https://www.youtube.com/watch?v=w-n3zFXTuGM&t=3760s",
+      "episode_duration_seconds": 4065.6
+    },
+    "מאשיה": {
+      "occurrences": [
+        {
+          "seconds": 3876.3,
+          "display": "64:36",
+          "segment_index": 1246,
+          "text": "אבל בעצם מאשיה א הייתה אמורה להיות",
+          "context_before": "מאזינינו הצעירים יותר לא אולי לא יזכרו",
+          "context_after": "המסעדה השנייה של רפי כהן קראו לה מסעדת",
+          "is_intro": false
+        }
+      ],
+      "recommended_seconds": 3876.3,
+      "recommended_display": "64:36",
+      "youtube_url": "https://www.youtube.com/watch?v=w-n3zFXTuGM&t=3876s",
+      "episode_duration_seconds": 4065.6
+    },
+    "מטרלו": {
+      "occurrences": [
+        {
+          "seconds": 3734.4,
+          "display": "62:14",
+          "segment_index": 1199,
+          "text": "השביע אותנו שאנחנו לא מדברים על מטרלו עד",
+          "context_before": "לא אנחנו ננצל את זה שם נתן לא פה הוא",
+          "context_after": "שלא עוברת חצי שנה מהפתיחה אבל א אתה ממש",
+          "is_intro": false
+        }
+      ],
+      "recommended_seconds": 3734.4,
+      "recommended_display": "62:14",
+      "youtube_url": "https://www.youtube.com/watch?v=w-n3zFXTuGM&t=3734s",
+      "episode_duration_seconds": 4065.6
+    },
+    "אלטר פיצה": {
+      "occurrences": [
+        {
+          "seconds": 998.1,
+          "display": "16:38",
+          "segment_index": 334,
+          "text": "האלטר פיצה. אה יפה. עם מה אנחנו ממשיכים?",
+          "context_before": ">> מעניין. יש לנו אחת טובה לא רחוק מפה.",
+          "context_after": "אנחנו א נאמר תודה קודם כל כי גם בימים",
+          "is_intro": false
+        }
+      ],
+      "recommended_seconds": 998.1,
+      "recommended_display": "16:38",
+      "youtube_url": "https://www.youtube.com/watch?v=w-n3zFXTuGM&t=998s",
+      "episode_duration_seconds": 4065.6
+    },
+    "רפאל": {
+      "occurrences": [
+        {
+          "seconds": 3889.7,
+          "display": "64:49",
+          "segment_index": 1250,
+          "text": "המסעדה הבאה שלו אחרי רפאל ויש מי שיגידו",
+          "context_before": "שנת 2013 ושם רפי כהן היה אמור לפתוח את",
+          "context_after": "שבעצם שם בחמש בהרפתקה הזאת התחילה גם",
+          "is_intro": false
+        },
+        {
+          "seconds": 3897.3,
+          "display": "64:57",
+          "segment_index": 1252,
+          "text": "ההידרדרות או הנפילה של רפי ושל א רפאל",
+          "context_before": "שבעצם שם בחמש בהרפתקה הזאת התחילה גם",
+          "context_after": "שברגע שהוא היה כבר בפתיחה של המסעדה הזאת",
+          "is_intro": false
+        }
+      ],
+      "recommended_seconds": 3889.7,
+      "recommended_display": "64:49",
+      "youtube_url": "https://www.youtube.com/watch?v=w-n3zFXTuGM&t=3889s",
+      "episode_duration_seconds": 4065.6
+    },
+    "ג'אנגו תל אביב": {
+      "occurrences": [],
+      "recommended_seconds": null,
+      "recommended_display": null,
+      "youtube_url": null,
+      "episode_duration_seconds": 4065.6
+    },
+    "הדבר המבורגר כפר סבא": {
+      "occurrences": [],
+      "recommended_seconds": null,
+      "recommended_display": null,
+      "youtube_url": null,
+      "episode_duration_seconds": 4065.6
+    },
+    "ימה גלילות": {
+      "occurrences": [],
+      "recommended_seconds": null,
+      "recommended_display": null,
+      "youtube_url": null,
+      "episode_duration_seconds": 4065.6
+    },
+    "פו חיים כהן תל אביב": {
+      "occurrences": [],
+      "recommended_seconds": null,
+      "recommended_display": null,
+      "youtube_url": null,
+      "episode_duration_seconds": 4065.6
+    }
+  },
+  "production_db": {
+    "ג'אנגו": {
+      "exists": true,
+      "id": "7ef1fede-9dc4-448f-bd64-bd3e0100b7c2"
+    },
+    "דנבר": {
+      "exists": true,
+      "id": "601b4968-6a72-4e37-bace-65b5b2f21e87"
+    },
+    "yama Glilot ימה גלילות": {
+      "exists": true,
+      "id": "d2d0a7f0-c399-4511-b1d6-09888ff2b340"
+    },
+    "רביולון": {
+      "exists": true,
+      "id": "771307c6-e9d5-46f5-92f5-289b333e4caa"
+    },
+    "דוכן של אילנה דן בשוק לווינסקי": {
+      "exists": true,
+      "id": "ba0f9e54-a49a-4656-b4da-21c5d2a0d6b3"
+    },
+    "יפו תל אביב": {
+      "exists": true,
+      "id": "6abafbca-fb07-4e66-93d9-69d4a912ce57"
+    },
+    "נומה": {
+      "exists": true,
+      "id": "1481de0b-df9e-4f60-bd64-8bece4306708"
+    },
+    "טנא דלי": {
+      "exists": true,
+      "id": "93a864f4-bac0-4fc2-b3c0-bb6d48357c3b"
+    },
+    "הדבר כפר סבא": {
+      "exists": false,
+      "id": null
+    },
+    "יאמה": {
+      "exists": true,
+      "id": "531c8ad3-ba9d-44a1-a4ae-e587ad52c151"
+    },
+    "רב יולו": {
+      "exists": false,
+      "id": null
+    },
+    "המחמצת של חגאי": {
+      "exists": false,
+      "id": null
+    },
+    "אילנה דן": {
+      "exists": false,
+      "id": null
+    },
+    "גרציאני": {
+      "exists": false,
+      "id": null
+    },
+    "הפלור": {
+      "exists": false,
+      "id": null
+    },
+    "פו תל אביב": {
+      "exists": false,
+      "id": null
+    },
+    "מירים": {
+      "exists": false,
+      "id": null
+    },
+    "ג'רדינו": {
+      "exists": false,
+      "id": null
+    },
+    "מרלוזה": {
+      "exists": false,
+      "id": null
+    },
+    "מאשיה": {
+      "exists": false,
+      "id": null
+    },
+    "מטרלו": {
+      "exists": true,
+      "id": "41d47b6b-e26a-4520-ae08-851b07b65bff"
+    },
+    "אלטר פיצה": {
+      "exists": true,
+      "id": "7e04110b-bb11-4e39-8604-b7f8e3e911b1"
+    },
+    "רפאל": {
+      "exists": true,
+      "id": "d0c1bb80-bf2c-4127-90b1-7d1a62a1cfae"
+    },
+    "ג'אנגו תל אביב": {
+      "exists": false,
+      "id": null
+    },
+    "הדבר המבורגר כפר סבא": {
+      "exists": false,
+      "id": null
+    },
+    "ימה גלילות": {
+      "exists": false,
+      "id": null
+    },
+    "פו חיים כהן תל אביב": {
+      "exists": false,
+      "id": null
+    }
+  }
+}

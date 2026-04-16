@@ -1,0 +1,866 @@
+{
+  "episode": {
+    "video_id": "KPSWuKln4ec",
+    "video_url": "https://www.youtube.com/watch?v=KPSWuKln4ec",
+    "title": "פרק 149 - מדברים מהבטן: מהדורת מעמד #2",
+    "channel_name": "מדברים מהבטן - הפודיום",
+    "published_at": "2026-03-18",
+    "hosts": [
+      "עמית אהרונסון",
+      "נטע סלונים"
+    ],
+    "guests": [
+      "איציק חנגל",
+      "רועי כהן"
+    ],
+    "language": "he",
+    "transcript_length": 34396,
+    "segment_count": 1012,
+    "episode_id": "c76e493a-2f53-4a98-a240-99ab878d3c6c",
+    "summary": "פרק 149 של מדברים מהבטן, מהדורת מעמד בזמן מלחמה. עמית ונטע משוחחים על אוכל ביתי בימי מלחמה, מתארחים אצל איציק חנגל (אסה, צ'קולי, הלנה, פסטל, מנטריי) על האתגרים של ניהול מסעדות בזמן מלחמה, ומדברים עם רועי כהן מלולו קיבוץ טריה על המצב בצפון. בנוסף, סוקרים פתיחות חדשות (נאופוליטן 26 בהרצליה, מייקיז באפולה, חממה בפלורנטין), פרשת נומה, כוכבי משלן לשפים ישראלים בפריז, וטור של סגי כהן על הרצל 16."
+  },
+  "extraction": {
+    "date": "2026-03-24",
+    "agent": "episode-processor",
+    "total_mentions": 20,
+    "add_to_page": 7,
+    "reference_only": 11,
+    "rejected": 2,
+    "already_in_db": 4,
+    "new_to_add": 3
+  },
+  "restaurants": [
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "לבה",
+      "name_english": "Lava",
+      "name_in_transcript": "הלבה",
+      "google_name": "Lava - לאבה",
+      "timestamp": {
+        "seconds": 186,
+        "display": "03:06",
+        "youtube_url": "https://www.youtube.com/watch?v=KPSWuKln4ec&t=186s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "נוה צדק",
+        "address": "פארק המסילה, תל אביב",
+        "region": "מרכז",
+        "latitude": 32.060834,
+        "longitude": 34.770247
+      },
+      "cuisine_type": "איטלקי",
+      "price_range": "בינוני",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "הכי בקטנה ובקבוע מה שנקרא המנה שאכלתי כבר נראה לי זה 20 פעמים",
+        "עשינו הזמנה זריזה של פסטת חמת זתר ולימון",
+        "היא חוסלה כליל"
+      ],
+      "host_comments": "נטע מספרת שאכלה פסטת חמת זתר ולימון מלבה בפארק המסילה, מנה שהיא כבר אכלה כ-20 פעמים. הפסטה חוסלה כליל.",
+      "dishes_mentioned": [
+        "פסטת חמת זתר ולימון"
+      ],
+      "special_features": [
+        "פארק המסילה",
+        "פסטה"
+      ],
+      "mention_context": "נטע מספרת על ארוחת ערב ספונטנית בפארק המסילה, שם הניחוח מהלבה מעורר חושים",
+      "speaker": "נטע סלונים",
+      "google_places": {
+        "place_id": "ChIJf6Jae11NHRURPY0nlNFUojA",
+        "google_url": "https://maps.google.com/?cid=3504456719158185277&g_mp=CiVnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLkdldFBsYWNlEAIYBCAA",
+        "rating": 3.9,
+        "review_count": null,
+        "price_level": null,
+        "phone": null,
+        "website": null,
+        "photo_url": "https://lh3.googleusercontent.com/place-photos/AL8-SNEw10yhnxHV_HciJ2-HKNBX_ic41_xinGydXVilKy7GdhKzYUR8gMsGKJEA9vyBBQF1em3Nqt5bd9MLj8V_bxcJvaeew2YfRbGhi36okpC_WvnbHdIS1SAteYEkBSsPtD8k8rB3PCUOzvrgPw=s4800-w800",
+        "instagram_url": "https://www.instagram.com/lavatelaviv/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": true,
+        "id": "5863b6af-8660-4f0d-bc73-581e81eaa2c6"
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "דלל",
+      "name_english": "Dallal",
+      "name_in_transcript": "דלל",
+      "google_name": "Dallal Restaurant",
+      "timestamp": {
+        "seconds": 610,
+        "display": "10:10",
+        "youtube_url": "https://www.youtube.com/watch?v=KPSWuKln4ec&t=610s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "נוה צדק",
+        "address": null,
+        "region": "מרכז",
+        "latitude": 32.0611278,
+        "longitude": 34.7634952
+      },
+      "cuisine_type": "קונדיטוריה",
+      "price_range": "בינוני",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "קיבלתי את קולקציית החג...פשוט מעולה",
+        "איזה מצבור של עוגיות עוגות",
+        "יש להם איזה עוגה בחושה כזאת של תפוזים ושקדים משהו פנטסטי"
+      ],
+      "host_comments": "עמית קיבל את קולקציית הפסח של דלל ומתלהב מאוד. עוגות ועוגיות ללא קמח, כולל עוגה בחושה של תפוזים ושקדים ומון דקוז פיסטוק עם קרם פטיסייר.",
+      "dishes_mentioned": [
+        "עוגה בחושה תפוזים ושקדים",
+        "מון דקוז פיסטוק",
+        "קרם פטיסייר",
+        "עוגיות שקדים"
+      ],
+      "special_features": [
+        "קונדיטוריה",
+        "מתוקי פסח"
+      ],
+      "mention_context": "עמית מספר על קולקציית מתוקי הפסח של דלל שנשלחה אליו",
+      "speaker": "עמית אהרונסון",
+      "google_places": {
+        "place_id": "ChIJIaam_JlMHRURmoGSrDoKiMQ",
+        "google_url": "https://maps.google.com/?cid=14161580275386188186&g_mp=CiVnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLkdldFBsYWNlEAIYBCAA",
+        "rating": 4.1,
+        "review_count": null,
+        "price_level": null,
+        "phone": "+972 3-510-9292",
+        "website": null,
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqGvOmOgHi3ehPK8oJfE8ZOeSuQohuFUp_P3ug3ANtMT7wc_LdaRipmZodvYI-KLTKFH50Hywx9c7Lkpx-DprihaDjJq4ygVLjk=s4800-w800",
+        "instagram_url": "https://www.instagram.com/dallal_tlv/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": true,
+        "id": "a440da02-7015-44e6-bfb1-14eb128f8bc4"
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "הוזכר",
+      "name_hebrew": "נאופוליטן 26",
+      "name_english": "Neapolitan 26",
+      "name_in_transcript": "נאופוליטן 26",
+      "google_name": "26 נפוליטן הרצליה | 26 NEAPOLITAN STYLE",
+      "timestamp": {
+        "seconds": 1003,
+        "display": "16:43",
+        "youtube_url": "https://www.youtube.com/watch?v=KPSWuKln4ec&t=1003s"
+      },
+      "location": {
+        "city": "הרצליה",
+        "neighborhood": null,
+        "address": null,
+        "region": "שרון",
+        "latitude": 32.161904199999995,
+        "longitude": 34.8092567
+      },
+      "cuisine_type": "פיצה",
+      "price_range": "בינוני",
+      "status": "חדש",
+      "host_opinion": "חיובית",
+      "host_quotes": [
+        "נפתחה ממש עכשיו פיצריה חדשה די מסקרנת נפוליטני סטייל",
+        "יש מצב שזה יהיה המקום הראשון שאני אפקוד אחרי המלחמה"
+      ],
+      "host_comments": "עמית מספר על פיצריה נפוליטנית חדשה שנפתחה בהרצליה ממש לפני המלחמה. נראה מקום חמוד עם פיצות נפוליטניות, סלט ויינות.",
+      "dishes_mentioned": [
+        "פיצות נפוליטניות"
+      ],
+      "special_features": [
+        "פיצריה נפוליטנית",
+        "חדש"
+      ],
+      "mention_context": "פתיחה חדשה בהרצליה, עמית מאוד מתרגש לבקר",
+      "speaker": "עמית אהרונסון",
+      "google_places": {
+        "place_id": "ChIJafO8Rn9JHRURSVhFjYbLsC0",
+        "google_url": "https://maps.google.com/?cid=3292355106364020809&g_mp=CiVnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLkdldFBsYWNlEAIYBCAA",
+        "rating": 4.8,
+        "review_count": null,
+        "price_level": null,
+        "phone": "+972 50-547-4830",
+        "website": null,
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqGAYgfAzZz-_4R7bJw97nYUpXX9ibtgUatJ59Zrt2rwu0i45B4QouFX-YgRh_8WZu09iY81vHkWJmwLeZhhTB5KqSh4GnyNTKY=s4800-w800",
+        "instagram_url": "https://www.instagram.com/26_neapolitan_style/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": true,
+        "id": "4c73ab04-12a6-4993-9234-e74f83f80d05"
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "הוזכר",
+      "name_hebrew": "מייקיז",
+      "name_english": "Mikey's",
+      "name_in_transcript": "מיקיז",
+      "google_name": null,
+      "timestamp": {
+        "seconds": 1034,
+        "display": "17:14",
+        "youtube_url": "https://www.youtube.com/watch?v=KPSWuKln4ec&t=1034s"
+      },
+      "location": {
+        "city": "אפולה",
+        "neighborhood": null,
+        "address": null,
+        "region": "צפון",
+        "latitude": null,
+        "longitude": null
+      },
+      "cuisine_type": "פיצה",
+      "price_range": "בינוני",
+      "status": "חדש",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "זאת הפיצריה הראשונה בארץ שמנסה לייצר את הפיצות שלה אך ורק מחומרי גלם מקומיים",
+        "זה קורה סליחה על הצרפתית בפאקינג אפולה וזה מטורף"
+      ],
+      "host_comments": "פיצריה חדשה באפולה שמשתמשת אך ורק בחומרי גלם מקומיים - קמח מדגנים ישראליים, עגבניות מחקלאים מקומיים, גבינות ישראליות. המנחים משווים את הרעיון למה שהיה קורה אם אסף דוקטור היה פותח פיצריה.",
+      "dishes_mentioned": [
+        "פיצה מחומרי גלם מקומיים"
+      ],
+      "special_features": [
+        "חומרי גלם מקומיים בלבד",
+        "קמח אורגני ישראלי",
+        "גבינות ישראליות"
+      ],
+      "mention_context": "רונית ורד כתבה עליהם כתבה במוסף הארץ, המנחים מתלהבים מהקונספט",
+      "speaker": "hosts",
+      "google_places": {
+        "place_id": "ChIJFZcVCYJTHBURrTYec53ZIt4",
+        "google_url": "https://maps.google.com/?cid=16006595295892616877&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+        "rating": null,
+        "review_count": null,
+        "price_level": null,
+        "phone": null,
+        "website": null,
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqFZ9zFCeor6hPNjmbptoR-MSZZARI7_6NjhHSvF3fL6KMEjPb7043GXjDO2NJI7BWZbfrkC56o5r-Fy7QvzKNVxh0AaaUpRmCE=s4800-w800",
+        "instagram_url": "https://www.instagram.com/mikeys_local_pizzeria/",
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "הוזכר",
+      "name_hebrew": "חממה",
+      "name_english": "Hamama",
+      "name_in_transcript": "חממה",
+      "google_name": null,
+      "timestamp": {
+        "seconds": 1113,
+        "display": "18:33",
+        "youtube_url": "https://www.youtube.com/watch?v=KPSWuKln4ec&t=1113s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "פלורנטין",
+        "address": "רביעית פלורנטין, תל אביב",
+        "region": "מרכז",
+        "latitude": null,
+        "longitude": null
+      },
+      "cuisine_type": "בר יין",
+      "price_range": "בינוני",
+      "status": "חדש",
+      "host_opinion": "חיובית",
+      "host_quotes": [
+        "נפתח איזשהו בר יין שנקרא חממה",
+        "נראה מקום שהם מוזגים בו מה שנקרא כאילו על היין"
+      ],
+      "host_comments": "בר יין חדש שנפתח ברביעית פלורנטין במקום שהיה אורבי. מתמקד ביין ולא מגיש אוכל משמעותי.",
+      "dishes_mentioned": [],
+      "special_features": [
+        "בר יין",
+        "רביעית פלורנטין"
+      ],
+      "mention_context": "פתיחה חדשה ברביעית פלורנטין, במקום שנסגר",
+      "speaker": "עמית אהרונסון",
+      "google_places": {
+        "place_id": "ChIJ5Z-5Xg9NHRUR3sUvK9cagYM",
+        "google_url": "https://maps.google.com/?cid=9475884602409076190&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+        "rating": null,
+        "review_count": null,
+        "price_level": null,
+        "phone": null,
+        "website": null,
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqFQhCkBz1e1aZFINJIbPJz7IPsuvj26Wkg9VIOOHHFD1jybGs_Z2RQgIcSoaKDdbeWBHFXnwbTnPGWCbYLObf3DXJl0YZwtWVM=s4800-w800",
+        "instagram_url": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "הרצל 16",
+      "name_english": "Herzl 16",
+      "name_in_transcript": "הרצל 16",
+      "google_name": "Herzl 16",
+      "timestamp": {
+        "seconds": 2853,
+        "display": "47:33",
+        "youtube_url": "https://www.youtube.com/watch?v=KPSWuKln4ec&t=2853s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": null,
+        "address": "רחוב הרצל 16",
+        "region": "מרכז",
+        "latitude": 32.0618726,
+        "longitude": 34.770143399999995
+      },
+      "cuisine_type": "אסייתי",
+      "price_range": "בינוני",
+      "status": "פתוח",
+      "host_opinion": "חיובית",
+      "host_quotes": [
+        "משלוח חיובי מאוד של סגי",
+        "פנקוטה וגיוזה כמו כניסות קרקעיות זה תמיד אותו דבר",
+        "סמוסה שזאת מנה ממולת שנעים לאכול מול טלוויזיה מרוכנת"
+      ],
+      "host_comments": "המנחים מדברים על טור חיובי של סגי כהן על הרצל 16 בגרסת המשלוחים. 540 מילים על אוכל ו-370 מילים על פוליטיקה. סגי נהנה מהאוכל.",
+      "dishes_mentioned": [
+        "פנקוטה",
+        "גיוזה",
+        "סמוסה"
+      ],
+      "special_features": [
+        "משלוחים"
+      ],
+      "mention_context": "סיקור טור ביקורת חיובי של סגי כהן על הרצל 16 בגרסת המשלוחים",
+      "speaker": "hosts",
+      "google_places": {
+        "place_id": "ChIJw5bxV5W2AhURZRBa2gd1xpQ",
+        "google_url": "https://maps.google.com/?cid=10720384639590600805&g_mp=CiVnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLkdldFBsYWNlEAIYBCAA",
+        "rating": 4.3,
+        "review_count": null,
+        "price_level": null,
+        "phone": "+972 3-554-4300",
+        "website": "http://www.herzl16.co.il/",
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqGphE4h2Jclb_ajIEmiBPT6-HkWKox7YFg5gTgjLOzSpO4Bi-wvlP3NEnwf8vTZn58Vxal8m7SxHGaCfmTporXX2D84WTeGKBs=s4800-w800",
+        "instagram_url": "https://www.instagram.com/herzl16/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": true,
+        "id": "92cd3d9e-13b3-4d82-a801-752b51d3aa27"
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "הוזכר",
+      "name_hebrew": "המחלבה הקטנה",
+      "name_english": "HaMachlava HaKtana",
+      "name_in_transcript": "המחלבה הקטנה",
+      "google_name": null,
+      "timestamp": {
+        "seconds": 2990,
+        "display": "49:50",
+        "youtube_url": "https://www.youtube.com/watch?v=KPSWuKln4ec&t=2990s"
+      },
+      "location": {
+        "city": null,
+        "neighborhood": null,
+        "address": null,
+        "region": null,
+        "latitude": null,
+        "longitude": null
+      },
+      "cuisine_type": "מחלבה",
+      "price_range": "בינוני",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "מאוד משמח מהמחלבה הקטנה התחילו משלוחים להרצליה",
+        "הזמנתי לי סטרצ'טלה ובורטה"
+      ],
+      "host_comments": "עמית שמח שהמחלבה הקטנה התחילו משלוחים להרצליה, הזמין סטרצ'טלה ובורטה.",
+      "dishes_mentioned": [
+        "סטרצ'טלה",
+        "בורטה"
+      ],
+      "special_features": [
+        "מחלבה",
+        "משלוחים"
+      ],
+      "mention_context": "עמית מזמין מוצרי חלב איכותיים מהמחלבה הקטנה שהתחילו משלוחים להרצליה",
+      "speaker": "עמית אהרונסון",
+      "google_places": {
+        "place_id": "ChIJZeHPkRsTHRURzAbPZWcXO9E",
+        "google_url": "https://maps.google.com/?cid=15076669910410004172&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+        "rating": null,
+        "review_count": null,
+        "price_level": null,
+        "phone": null,
+        "website": null,
+        "photo_url": "https://lh3.googleusercontent.com/place-photos/AL8-SNEN--uSN5ZlIxNc0bIZQmHe8zRtAJrRgVFUJUBe3tHppsCQYw-TDLPJlTIb6GowT3R3g_eIyBfX_Ys2oL82W9Awi93uSfvl6pO29Rgpr8iRmdKf5uQpveoMExVIhCOAOTODg1bRtFNWNbt7Ew0=s4800-w768",
+        "instagram_url": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "בלה אוסטריה",
+      "name_english": "Bella Osteria",
+      "name_in_transcript": "בלמיה",
+      "google_name": "bella osteria בלה אוסטריה",
+      "skip_reason": "פתיחה חדשה - חדשות תעשייה, המנחים לא אכלו שם",
+      "timestamp": {
+        "seconds": 1206,
+        "display": "20:06",
+        "youtube_url": "https://www.youtube.com/watch?v=KPSWuKln4ec&t=1206s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "address": "איינשטיין 10, תל אביב-יפו, ישראל",
+        "latitude": 32.111859,
+        "longitude": 34.787579
+      },
+      "host_quotes": [
+        "מסעדה איטלקית מאוד גדולה בלמיה"
+      ],
+      "mention_context": "הכרזה על מסעדה איטלקית כשרה חדשה במתחם איינשטיין בתל אביב",
+      "google_places": {
+        "place_id": "ChIJmwRxlE9JHRURb16iBCxk_yc",
+        "google_url": "https://maps.google.com/?cid=2882132426759495279",
+        "rating": 4.7,
+        "review_count": 6,
+        "price_level": null,
+        "phone": "03-508-3010",
+        "website": null,
+        "photo_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photo_reference=AU_ZVEEK04Ui4W2pz_PlEQ8UbdH6A3v8PiuM0L61WGIlznH40NN0Kxlv33gjSG2X_hM9Tu7U7UZbiLYVX4DFUHTzDSAyw_m109z27daAmnQR9VHmPP8IyN_arcZetf9FduJhfyGbp5AmBfVi7tR2FISnFJLqDVW-_NX_B8nCaD_JXt9q8jhNXE2lBp60MNfIjz1KfuxxcTNHmLx_h1h5rt7CQdVdIqL8UNoYTDqAG7yVqGknULoogje2c7sCZNfFy1K1-Y2JLRzqucXpo76o5BBUaBI0AsyaQmDoxlE_W1X0mVlUIg&key=AIzaSyCxg3UKajEAYAsAcnaOm1OsD8ArjSVZxQE",
+        "instagram_url": null,
+        "verified": true
+      },
+      "production_db": {
+        "exists": true,
+        "id": "33e36b86-81bd-4bc8-94b6-421f388b2f3b"
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "סלס",
+      "name_english": "Selas",
+      "name_in_transcript": "סלס",
+      "google_name": "Selas - אור גינסברג מארח (סלאס)",
+      "skip_reason": "הוזכר רק בהקשר של תפריט ספישל זמני, ללא ביקורת או חוויה אישית",
+      "timestamp": {
+        "seconds": 1291,
+        "display": "21:31",
+        "youtube_url": "https://www.youtube.com/watch?v=KPSWuKln4ec&t=1291s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "address": "תנחום 6, תל אביב-יפו, 6813821, ישראל",
+        "latitude": 32.0530054,
+        "longitude": 34.7550693
+      },
+      "host_quotes": [
+        "גם בסלס וגם בקיצ'וקה יש עכשיו תפריט שנקרא בן מיפרקט"
+      ],
+      "mention_context": "הוזכר לצד קיצ'וקאי כמקום שמגיש תפריט ספישל 'בן מיפרקט'",
+      "google_places": {
+        "place_id": "ChIJ8Xs1H7lMHRURJRZBUcmEcUI",
+        "google_url": "https://maps.google.com/?cid=4787753879058060837",
+        "rating": 4.5,
+        "review_count": 1038,
+        "price_level": 4,
+        "phone": "03-965-3565",
+        "website": "https://selas.co.il/",
+        "photo_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photo_reference=AU_ZVEHmnPRmDN2LyuVAgdTVWdsBmV2pIFATLTKqaTwHVRXAwK9kGRbpgZm4k5lBgzYg-tnAoPFtUgJBj1kaFUVCebUh9GFe5UbjMaDsbs1uSwK4z_7cUnCpMsbFob4uDF1BHfpQTPcZ07WIOet-NK_W_hKsfJp2j6fD5Ti0y_8H0pAti3tXu5tnw70hxogg3-05Ci7vKwhKWiOW9CRjKpnRHziNGZLaHAE_Wx2kMtUS639cDdV2TsjWmKhwsFzHsslvIgQgKnhkGCTVF1GzLI2w0zUuY-2WvcPTdICCCbs7hAgTgg&key=AIzaSyCxg3UKajEAYAsAcnaOm1OsD8ArjSVZxQE",
+        "instagram_url": null,
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "קיצ'וקאי",
+      "name_english": "Cichukai",
+      "name_in_transcript": "קיצ'וקה",
+      "google_name": "Cichukai",
+      "skip_reason": "הוזכר רק בהקשר של תפריט ספישל זמני, ללא ביקורת או חוויה אישית",
+      "timestamp": {
+        "seconds": 1291,
+        "display": "21:31",
+        "youtube_url": "https://www.youtube.com/watch?v=KPSWuKln4ec&t=1291s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "address": "עמיעד 10, תל אביב-יפו, ישראל",
+        "latitude": 32.0534073,
+        "longitude": 34.7553647
+      },
+      "host_quotes": [
+        "גם בסלס וגם בקיצ'וקה יש עכשיו תפריט שנקרא בן מיפרקט"
+      ],
+      "mention_context": "הוזכר לצד סלס כמקום שמגיש תפריט ספישל",
+      "google_places": {
+        "place_id": "ChIJFwstgflNHRURDwKRyh5aDiU",
+        "google_url": "https://maps.google.com/?cid=2670170717371302415",
+        "rating": 4.3,
+        "review_count": 394,
+        "price_level": null,
+        "phone": "03-965-3565",
+        "website": "https://www.cichukai.co.il/",
+        "photo_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photo_reference=AU_ZVEGUKcLiQjRFZbhEInKTdoICbzF7-nkPaiL_1xwZek_qvx7o8L1DZyO__D4rr45CZfntm28sWmCJjXKn-PpphPkA8hMV41d5o_O59arMdxZp12wzatICQVSutacy7PGp1L_G53rUB-lpMhwVjoOQ1JbLmQXzF-FMi6Sajk8qJKJwkDLEap_9XU27BQH2WtOFStAeFqptQhwqDQ19e6Vm9yKo5C3BZO-qm5UqDFOh4SfAhf9Z-wF8rZvnzsXSESQ_gjceXt27Mvunus1khFjSy-goopQO2rXBwXiYADh5E9IDcg&key=AIzaSyCxg3UKajEAYAsAcnaOm1OsD8ArjSVZxQE",
+        "instagram_url": null,
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "בר פרדיסו",
+      "name_english": "Bar Paradiso",
+      "name_in_transcript": "בר פרדיזיו",
+      "google_name": "בר פרדיסו - bar paradiso",
+      "skip_reason": "הוזכר רק כמקום לשיתוף פעולה בנקניקיות ספישל",
+      "timestamp": {
+        "seconds": 1312,
+        "display": "21:52",
+        "youtube_url": "https://www.youtube.com/watch?v=KPSWuKln4ec&t=1312s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "address": "נחלת בנימין 43, תל אביב-יפו, ישראל",
+        "latitude": 32.0653361,
+        "longitude": 34.7709383
+      },
+      "host_quotes": [
+        "ארן בי אמור לשתף פעולה עם ספישל נקנקיות שיוגש בבר פרדיזיו של דן ליברמן"
+      ],
+      "mention_context": "שיתוף פעולה של ארן בי עם בר פרדיזיו על נקניקיות ספישל",
+      "google_places": {
+        "place_id": "ChIJo7CCAQBNHRURnYx5wnraWkI",
+        "google_url": "https://maps.google.com/?cid=4781374175190813853",
+        "rating": 3.8,
+        "review_count": 282,
+        "price_level": null,
+        "phone": "077-303-4133",
+        "website": "https://www.instagram.com/bar__paradiso",
+        "photo_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photo_reference=AU_ZVEFyUHnQ00P1iLKsdT0NI5M_VMeCmVb4qWu1T14kmCErJp9UU3_W6WGT9zW3ZdvGEDrNOjJvn9DZ-mgzcWmouAeR_VydjETcYai06-UFdXiqfqkxZranaAu5e37QMfSOZ0YAYHz1ZgzsGQ0Yrz4YCMQl-8f6XhZlSkGJ9407_CImeslp7vujFosloCga01vgbIYCy2MVU8xWr3Wrrx3ZF3M9zhq5BUZwXWmN_wqAUmPlvVZCJ6QzqEJ94zSacR0cd84DIK3ovITEle6MrgFT-zijAgFvWVSSjWmLhzaKxI2ADg&key=AIzaSyCxg3UKajEAYAsAcnaOm1OsD8ArjSVZxQE",
+        "instagram_url": "https://www.instagram.com/bar__paradiso",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "אסה",
+      "name_english": "Assa",
+      "name_in_transcript": "אסה",
+      "skip_reason": "ראיון עם הבעלים איציק חנגל - חדשות תעשייה על פתיחה בזמן מלחמה, לא ביקורת אוכל",
+      "timestamp": {
+        "seconds": 1352,
+        "display": "22:32",
+        "youtube_url": "https://www.youtube.com/watch?v=KPSWuKln4ec&t=1352s"
+      },
+      "location": {
+        "city": "תל אביב"
+      },
+      "host_quotes": [
+        "כזה דבר כמו אסה אני לא מכיר מטורף"
+      ],
+      "mention_context": "ראיון עם איציק חנגל על ניהול מסעדות בזמן מלחמה, אסה תיפתח מחדש",
+      "google_places": {
+        "place_id": "ChIJJVr-czVLHRUR8Fkls6uMdV4",
+        "rating": 4.1,
+        "verified": true,
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqESzt5hzyA8TQiyCj92IaqRZdfk6GZwwWln_cNS1MQed26ckEJH-EedJm8PHIVSaBiicljXdmTern-wMZ-eeZ4Tei2ZN79wtCE=s4800-w800"
+      },
+      "production_db": {
+        "exists": true,
+        "id": "1aac3728-43f9-4a96-91c0-76f4008d557d"
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "צ'קולי",
+      "name_english": "Chacoli",
+      "name_in_transcript": "צ'קולי",
+      "skip_reason": "ראיון עם הבעלים - לא תיפתח כי אין מרחב מוגן, חדשות תעשייה",
+      "timestamp": {
+        "seconds": 1486,
+        "display": "24:46",
+        "youtube_url": "https://www.youtube.com/watch?v=KPSWuKln4ec&t=1486s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "address": "רציף הרברט סמואל 3, תל אביב-יפו",
+        "latitude": 32.0636,
+        "longitude": 34.7636
+      },
+      "host_quotes": [
+        "צ'קולי לא תיפתח כי אין לנו מרחב מוגן"
+      ],
+      "mention_context": "איציק חנגל מסביר שצ'קולי לא תיפתח בזמן המלחמה כי אין מרחב מוגן",
+      "google_places": {
+        "place_id": "ChIJzR-iXgBNHRUR92oIpgbfTek",
+        "rating": 4.1,
+        "review_count": 556,
+        "verified": true,
+        "photo_url": "AU_ZVEGSuvGVYfsaDsTOG2jTkQZ2z6ORtUWLyG4hvr5GZRQtsImbTFt8rtcbGvY0adxD-dl04ABzyqKmpIReTkp3GxC7O5nLxGusSdBCzzzuCMucEa3DvfDN8uPjOcwoHx9NkPG472cv5qVbEvFJ1nEvdo3hQD7yrZnJbEwXKCqAs7CVfMQWllK_noBVeE3EaiS__qHnbwyWVzPIWqDPYeTFsNy2dE9qha9l3mq2ynyQ_OzU6mvhvk0iEzQTovPW9i5FRxAp6qaq92e7Slp21ZDX-Q77uLqgI7ROnrHJsklIi4ceeQ",
+        "google_url": "https://maps.google.com/?cid=16811338203692296951",
+        "phone": "03-656-4740"
+      },
+      "production_db": {
+        "exists": true,
+        "id": "8137dcbd-c30f-4151-93a7-b63d0e4359b5"
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "הלנה",
+      "name_english": "Helena",
+      "name_in_transcript": "אלנה",
+      "skip_reason": "הכרזת פתיחה מחדש של הבעלים בזמן מלחמה - חדשות תעשייה, לא ביקורת",
+      "timestamp": {
+        "seconds": 1436,
+        "display": "23:56",
+        "youtube_url": "https://www.youtube.com/watch?v=KPSWuKln4ec&t=1436s"
+      },
+      "location": {
+        "city": "תל אביב"
+      },
+      "host_quotes": [
+        "היום בערב אנחנו פותחים את אלנה בשעה טובה"
+      ],
+      "mention_context": "איציק חנגל מודיע שהלנה נפתחת מחדש הערב",
+      "google_places": {
+        "place_id": "ChIJ3_AoGvlLHRURHFrLCU3EREk",
+        "rating": 4.1,
+        "verified": true,
+        "photo_url": "https://lh3.googleusercontent.com/place-photos/AL8-SNEpHqljnXx7bL2CTpyT2kKEEoCh6vzt19WoUl1oUyKd_Ve43bBFBmrmoym23jCbLr4jIvIP-7-E66rRpHj8RwOj3ztDusKXW5f__3xFW8QfthCKaIE3Jl302ol5FACGFD4TFSXhdYeazLtUPA=s4800-w800"
+      },
+      "production_db": {
+        "exists": true,
+        "id": "8a060dc0-a1af-4c75-9131-a73ba6cb075f"
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "פסטל",
+      "name_english": "Pastel",
+      "name_in_transcript": "פסטל",
+      "skip_reason": "ראיון עם הבעלים על פתיחת מסעדה חדשה בזמן מלחמה - חדשות תעשייה, לא ביקורת",
+      "timestamp": {
+        "seconds": 1412,
+        "display": "23:32",
+        "youtube_url": "https://www.youtube.com/watch?v=KPSWuKln4ec&t=1412s"
+      },
+      "location": {
+        "city": "תל אביב"
+      },
+      "host_quotes": [
+        "פתחתי את פסטל אתמול, זאת מסעדה של 800 מטר מרובע"
+      ],
+      "mention_context": "איציק חנגל פתח את פסטל יום קודם, מדבר על האתגר הכלכלי של הפעלת מסעדה כזו גדולה בזמן מלחמה",
+      "google_places": {
+        "place_id": "ChIJ6644AptLHRURlCPeKB29rbE",
+        "rating": 4.5,
+        "verified": true,
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqFeltKnfqbNxa0lfftcvyZTqUhf3OXi3SbZGvdMVHHhkgRkhcptTuuM4ceSzGrgaoEtCmGSuaYo5sA-Q3DEF6EWzpx9PRuOe64=s4800-w800"
+      },
+      "production_db": {
+        "exists": true,
+        "id": "f4cea478-d82c-4640-8625-cef66388620f"
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "מנטריי",
+      "name_english": "Mantra Ray",
+      "name_in_transcript": "מנטריי",
+      "skip_reason": "זכייה במכרז - תוכניות עסקיות עתידיות, לא ביקורת או המלצה",
+      "timestamp": {
+        "seconds": 1790,
+        "display": "29:50",
+        "youtube_url": "https://www.youtube.com/watch?v=KPSWuKln4ec&t=1790s"
+      },
+      "location": {
+        "city": "תל אביב"
+      },
+      "host_quotes": [
+        "זכיתם במכרז להפעלה של מנטריי"
+      ],
+      "mention_context": "איציק חנגל זכה במכרז להפעלת מנטריי, רוצה להחזיר את המקום לחיים",
+      "google_places": {
+        "place_id": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": true,
+        "id": "8fad0a04-bfe6-4f18-9816-1cb40a2a6567"
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "לולו קיבוץ טריה",
+      "name_english": "Lulu Kibbutz Triya",
+      "name_in_transcript": "לולו קיבוץ טריה",
+      "skip_reason": "ראיון עם הבעלים רועי כהן על המצב בצפון - חדשות תעשייה, המסעדה סגורה",
+      "timestamp": {
+        "seconds": 2098,
+        "display": "34:58",
+        "youtube_url": "https://www.youtube.com/watch?v=KPSWuKln4ec&t=2098s"
+      },
+      "location": {
+        "city": "קיבוץ אמיר",
+        "region": "צפון"
+      },
+      "host_quotes": [
+        "היא סגורה לגמרי"
+      ],
+      "mention_context": "ראיון עם רועי כהן על לולו קיבוץ טריה שסגורה בגלל המלחמה בצפון",
+      "google_places": {
+        "place_id": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "נומה",
+      "name_english": "Noma",
+      "name_in_transcript": "נומה",
+      "skip_reason": "חדשות בינלאומיות - פרשת רנה רדזפי והתפטרותו, לא ביקורת או המלצה",
+      "timestamp": {
+        "seconds": 2692,
+        "display": "44:52",
+        "youtube_url": "https://www.youtube.com/watch?v=KPSWuKln4ec&t=2692s"
+      },
+      "location": {
+        "city": "קופנהגן",
+        "address": "Refshalevej 96, Copenhagen"
+      },
+      "host_quotes": [
+        "הודעת ההתפטרות של רנה רדזפי מנומה אחרי 20 שנה"
+      ],
+      "mention_context": "דיון על פרשת נומה, התפטרות רדזפי, תרבות האלימות במטבחים מקצועיים, והפופאפ בלוס אנג'לס",
+      "google_places": {
+        "place_id": "ChIJpYCQZztTUkYRFOE368Xs6kI",
+        "rating": 4.6,
+        "verified": true,
+        "photo_url": "https://lh3.googleusercontent.com/place-photos/AL8-SNHQtkcs-5fIY7-hGu79owZvyZmdLj0mdEHh6Kibw59mnr2MY62dt6_GICrOVd0tWA0-S4Cp-ztQz2amG6sFGVR8KEvYQ7YNlgADbvL4-fPh2_ymwGqnzqZmOWb9m-pjKPF52mELup0Mbju4K8o=s4800-w800"
+      },
+      "production_db": {
+        "exists": true,
+        "id": "1481de0b-df9e-4f60-bd64-8bece4306708"
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "קרמלה",
+      "name_english": "Carmela",
+      "name_in_transcript": "קרמלה",
+      "skip_reason": "הוזכר בקצרה כמקום ממנו הוזמן משלוח, ללא ביקורת",
+      "timestamp": {
+        "seconds": 748,
+        "display": "12:28",
+        "youtube_url": "https://www.youtube.com/watch?v=KPSWuKln4ec&t=748s"
+      },
+      "location": {
+        "city": "תל אביב"
+      },
+      "host_quotes": [
+        "מילתי אותה במשלוח מקרמלה"
+      ],
+      "mention_context": "נטע מזכירה שמילאה את הלפת חלבון שלה במשלוח מקרמלה",
+      "google_places": {
+        "place_id": "ChIJNbRBiIRMHRURE3F_LNjkn1E",
+        "rating": 4.2,
+        "verified": true,
+        "photo_url": "https://lh3.googleusercontent.com/place-photos/AL8-SNFC112cyQVX0bGaxBgbwYDN-BQ5UTciryCDZDBzuHB22MzNa7vNco290DcuZzvBETxYsbTgez2S-nPlpxxzFR06DP_yT4USuzCTcBobNrk4_-k-eF1Jh56-g7O2mgKQd77d6HYTSsppY9rreB8=s4800-w800"
+      },
+      "production_db": {
+        "exists": true,
+        "id": "876e8d62-b88a-4863-a67a-0046277892c7"
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "לונל",
+      "name_english": "Lunel",
+      "name_in_transcript": "לונל",
+      "skip_reason": "הוזכר בעוברו כמקום שעושה עבודה יפה ברביעית פלורנטין",
+      "timestamp": {
+        "seconds": 1157,
+        "display": "19:17",
+        "youtube_url": "https://www.youtube.com/watch?v=KPSWuKln4ec&t=1157s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "פלורנטין"
+      },
+      "host_quotes": [
+        "לונל עושים שם עבודה יפה כבר כבר די הרבה זמן"
+      ],
+      "mention_context": "הוזכר בהקשר של רביעית פלורנטין כמקום ותיק ומוצלח",
+      "google_places": {
+        "place_id": "ChIJE_ZLROdNHRUR7dNSftaiQRA",
+        "rating": 4.4,
+        "verified": true,
+        "photo_url": "https://lh3.googleusercontent.com/place-photos/AL8-SNHuU9Yu46NrZiG3Ncj6_kXDcylsoOd6-CrMCCp6_dn8NMeEOtGJcFlDFcVz3eddTAk_wdXBCQ6-RxMev9gyHaSPira8ocVI4PwOEyNPLYn94c9pVeIj0zwmPt7Y-i1oOsJkXtPP0o06ypFl3w=s4800-w800"
+      },
+      "production_db": {
+        "exists": true,
+        "id": "93f2957f-3a6f-4f3f-a53b-f0eda511acc0"
+      }
+    },
+    {
+      "verdict": "rejected",
+      "name_in_transcript": "סרפינה",
+      "reject_reason": "מסעדה שנסגרה, הוזכרה רק כהתייחסות היסטורית למתחם איינשטיין",
+      "timestamp": {
+        "seconds": 1187,
+        "display": "19:47"
+      }
+    },
+    {
+      "verdict": "rejected",
+      "name_in_transcript": "רמסס by דבוקס",
+      "reject_reason": "הוזכר רק כמקום העבודה הקודם של השף יון משען, לא כהמלצה",
+      "timestamp": {
+        "seconds": 1239,
+        "display": "20:39"
+      }
+    }
+  ]
+}

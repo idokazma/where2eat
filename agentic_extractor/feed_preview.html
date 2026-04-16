@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Where2Eat — Agentic Extraction Preview</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0f0f0f; color: #e0e0e0; padding: 24px; }
+  h1 { text-align: center; font-size: 28px; margin-bottom: 8px; color: #fff; }
+  .subtitle { text-align: center; color: #888; margin-bottom: 32px; font-size: 14px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; max-width: 1400px; margin: 0 auto; }
+  .card { background: #1a1a1a; border-radius: 16px; overflow: hidden; transition: transform 0.2s; border: 1px solid #2a2a2a; }
+  .card:hover { transform: translateY(-4px); border-color: #444; }
+  .card-img { width: 100%; height: 200px; object-fit: cover; }
+  .card-body { padding: 16px; }
+  .card-name { font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+  .card-name-en { font-size: 13px; color: #888; margin-bottom: 10px; }
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+  .tag { font-size: 11px; padding: 3px 10px; border-radius: 20px; background: #2a2a2a; color: #ccc; }
+  .tag.city { background: #1e3a5f; color: #7db8f0; }
+  .tag.cuisine { background: #3a2a1e; color: #f0b87d; }
+  .tag.price { background: #1e3a2a; color: #7df0a0; }
+  .tag.rating { background: #3a3a1e; color: #f0e07d; }
+  .tag.mention { background: #3a1e3a; color: #d07df0; }
+  .quote { font-style: italic; font-size: 13px; color: #aaa; margin-top: 8px; padding: 8px 12px; border-right: 3px solid #444; line-height: 1.5; }
+  .meta { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; font-size: 12px; color: #666; }
+  .episode-link { color: #5b9bd5; text-decoration: none; font-size: 12px; }
+  .episode-link:hover { text-decoration: underline; }
+  .no-img { width: 100%; height: 200px; background: linear-gradient(135deg, #2a2a2a, #1a1a1a); display: flex; align-items: center; justify-content: center; color: #444; font-size: 48px; }
+  .stats { text-align: center; margin-bottom: 24px; display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; }
+  .stat { background: #1a1a1a; padding: 12px 24px; border-radius: 12px; border: 1px solid #2a2a2a; }
+  .stat-num { font-size: 28px; font-weight: 700; color: #fff; }
+  .stat-label { font-size: 12px; color: #888; }
+</style>
+</head>
+<body>
+<h1>Where2Eat</h1>
+<p class="subtitle">Agentic Extraction Preview — 78 restaurants from 12 episodes</p>
+<div class="stats">
+  <div class="stat"><div class="stat-num">78</div><div class="stat-label">מסעדות</div></div>
+  <div class="stat"><div class="stat-num">78</div><div class="stat-label">עם תמונה</div></div>
+  <div class="stat"><div class="stat-num">12</div><div class="stat-label">פרקים</div></div>
+</div>
+<div class="grid">
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/places/ANXAkqGL-7fN3B1lUZAOh1yuWcHhlEtkbPflGPqZX3nuYl7iNHe9aQd0oNBnPXp4Ec5iYDUmvyiyj47m0UZm7azdU9dn3FLucaxzwdw=s4800-w800" alt="בואו" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">בואו</div>
+      <div class="card-name-en">Bou</div>
+      <div class="tags"><span class="tag city">תל אביב</span><span class="tag cuisine">שף ים-תיכוני</span><span class="tag price">יקר</span><span class="tag mention">נטעם</span></div>
+      <div class="quote">"I should kill you so fucking good - כל ביס שלוקחים פה אתה מרגיש דברים"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=3N2oC0N6ciQ&t=1364s" target="_blank">▶ מדברים מהבטן פרק 146 - תומר טל ובואו</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/places/ANXAkqGL-7fN3B1lUZAOh1yuWcHhlEtkbPflGPqZX3nuYl7iNHe9aQd0oNBnPXp4Ec5iYDUmvyiyj47m0UZm7azdU9dn3FLucaxzwdw=s4800-w800" alt="זוזו חנה" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">זוזו חנה</div>
+      <div class="card-name-en">Zuzu Hana</div>
+      <div class="tags"><span class="tag city">צומת מגדל</span><span class="tag cuisine">ביתי ערבי</span><span class="tag price">בינוני</span><span class="tag mention">נטעם</span></div>
+      <div class="quote">"מסעדה שתמיד כיף לשבת בה כל המשפחה"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=3N2oC0N6ciQ&t=188s" target="_blank">▶ מדברים מהבטן פרק 146 - תומר טל ובואו</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/places/ANXAkqGP5tw75RcqlS51OKGRrE847hErRpYDxZWmPsGONNNJCzpg5_d9cY0mSlOCXpsYiO5KGtKrhUajfb8MSDGaxoL3OaxDqOEwN3k=s1600-w800" alt="יאמה גלילות" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">יאמה גלילות</div>
+      <div class="card-name-en">Yama Galilot</div>
+      <div class="tags"><span class="tag city">הרצליה</span><span class="tag cuisine">קצביית דגים / בשר</span><span class="tag price">בינוני</span><span class="tag mention">נטעם</span></div>
+      <div class="quote">"עוף מהרוטיסרי מטורף, יש שם ענענה של ריח מחוץ למקום"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=3N2oC0N6ciQ&t=252s" target="_blank">▶ מדברים מהבטן פרק 146 - תומר טל ובואו</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/places/ANXAkqGVgn2sYi8If5n4F-iIFFg5e1wCmhEnNKPTZoiGnxLQjnsnpTBVjYrK1nmumy3cCfTuEDHz5FgfMEJBwHwyPwvEBWf9insiBYE=s1600-w800" alt="קפה בוליווד" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">קפה בוליווד</div>
+      <div class="card-name-en">Cafe Bollywood</div>
+      <div class="tags"><span class="tag city">תל אביב</span><span class="tag cuisine">הודי</span><span class="tag price">זול</span><span class="tag rating">⭐ 4.7 (30)</span><span class="tag mention">נטעם</span></div>
+      <div class="quote">"לא דברים שאנחנו רגילים לראות כאן"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=3N2oC0N6ciQ&t=478s" target="_blank">▶ מדברים מהבטן פרק 146 - תומר טל ובואו</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/places/ANXAkqHD2U6Rbq1TSyUsBMwxuvDON-zzxtE6pMjjoFRnjYr9HFwz2AFpQs-3uXix0F3mQ7tuWSGfGjGPxqle7Fd5FiMzQZHr_78GtlA=s1600-w800" alt="נורה" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">נורה</div>
+      <div class="card-name-en">Nura</div>
+      <div class="tags"><span class="tag city">קריית ענבים</span><span class="tag cuisine">ים-תיכוני / דגים</span><span class="tag price">יקר</span><span class="tag rating">⭐ 4.3 (233)</span><span class="tag mention">נטעם</span></div>
+      <div class="quote">"קישום ממולה שאלוהים נגע בו"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=3N2oC0N6ciQ&t=843s" target="_blank">▶ מדברים מהבטן פרק 146 - תומר טל ובואו</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/place-photos/AL8-SNHe6aJxPk2IgfxYMwX4M_KxNrscOSXoCvg9LkpQdkSkiWi1wwlhN3aKwrsCZQppnnFXYdpMd9I9qCFgCrwVthiqpNj-O5caCuhRjE99uBEbT7RSsuBe2X_p3ce3BUk7VW8mHOycrU4kGVETpg=s1600-w800" alt="אורי בורי" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">אורי בורי</div>
+      <div class="card-name-en">Uri Buri</div>
+      <div class="tags"><span class="tag city">עכו</span><span class="tag cuisine">דגים</span><span class="tag price">יקר</span><span class="tag rating">⭐ 4.7 (5204)</span><span class="tag mention">נטעם</span></div>
+      <div class="quote">"החשש לא היה במקום, יכולת אדירה של מלאכת שימור עדינה"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=3N2oC0N6ciQ&t=3697s" target="_blank">▶ מדברים מהבטן פרק 146 - תומר טל ובואו</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/places/ANXAkqHD2U6Rbq1TSyUsBMwxuvDON-zzxtE6pMjjoFRnjYr9HFwz2AFpQs-3uXix0F3mQ7tuWSGfGjGPxqle7Fd5FiMzQZHr_78GtlA=s1600-w800" alt="זהרה" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">זהרה</div>
+      <div class="card-name-en">Zahara</div>
+      <div class="tags"><span class="tag city">ירושלים</span><span class="tag cuisine">בר אוכל בשרי</span><span class="tag price">בינוני</span><span class="tag mention">נטעם</span></div>
+      <div class="quote">"זה היה כל כך טוב, כל כך לא מה שציפיתי"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=3N2oC0N6ciQ&t=3945s" target="_blank">▶ מדברים מהבטן פרק 146 - תומר טל ובואו</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/place-photos/AL8-SNEQgZmZvMlgC7RfSy-m_LfZfMFbHVKJf2-DFubIWK-qrf-x1v7dz72iv0oEnL9QAUUX9hXgbJ11gxsKE5cSa4fou-inxfmgESLCGlmgmNbWlaHN3nUn1-vweYlsm-amJuXXGYRAwgUgvjke0Q=s1600-w800" alt="פלור" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">פלור</div>
+      <div class="card-name-en">Flor - Cave a Manger</div>
+      <div class="tags"><span class="tag city">תל אביב</span><span class="tag cuisine">בר יין ואוכל</span><span class="tag price">בינוני</span><span class="tag rating">⭐ 4.8 (86)</span><span class="tag mention">נטעם</span></div>
+      <div class="quote">"מקום נורא נורא משוחרר"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=3N2oC0N6ciQ&t=4281s" target="_blank">▶ מדברים מהבטן פרק 146 - תומר טל ובואו</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/place-photos/AL8-SNGx0alcgWQOEGvopuX-Yw9KGfRG6EN8jH7e9gU5no2EXGupBdYLiNhQiBbG6FAZEWLRApAgtBeVNMKJuw1IIOrj8QftMiboPyTsDcPJ4WWGDjpEaCelgNKiJSnpkg_jxc-N-sJrgdt2Zxhsog=s1600-w800" alt="פרן קלאב" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">פרן קלאב</div>
+      <div class="card-name-en">Fern Club</div>
+      <div class="tags"><span class="tag city">ירושלים</span><span class="tag cuisine">קפה ומאפייה</span><span class="tag price">בינוני</span><span class="tag rating">⭐ 4.5 (21)</span><span class="tag mention">נטעם</span></div>
+      <div class="quote">"כריך באמת פשוט אדיר"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=5c5YG9JaFwM&t=157s" target="_blank">▶ מדברים מהבטן פרק 143 - סיכום מחזור קולינ</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/places/ANXAkqGQL5_arSW-7g8AbkmCET7bNxp5qHUhvQtvEHo5u3_tHLf_I0QtmpPxjRQuEe4k6Oor12Gcmw8Wy7Wl2TLVOYx9UTps6hx9K8M=s1600-w800" alt="סילי קיד" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">סילי קיד</div>
+      <div class="card-name-en">Silly Kid</div>
+      <div class="tags"><span class="tag city">תל אביב</span><span class="tag cuisine">עוף מטוגן</span><span class="tag price">בינוני</span><span class="tag rating">⭐ 4.5 (489)</span><span class="tag mention">נטעם</span></div>
+      <div class="quote">"הקריספי צ'יקן מעולה גם ברמת הלחמניה וג'וסי ועסיסי ובאמת קריספי מבחוץ"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=5c5YG9JaFwM&t=347s" target="_blank">▶ מדברים מהבטן פרק 143 - סיכום מחזור קולינ</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/places/ANXAkqHqttLByWSziowNM6NUI7Ahj3xssVbH8gGNcj49NnFYXz2UwQ3mUjIwcDH3zNZ5GfDBYYB83QwNc8YQf5Sk4oghd31irSt6xDw=s1600-w800" alt="אשת חיל" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">אשת חיל</div>
+      <div class="card-name-en">Eshet Chayil</div>
+      <div class="tags"><span class="tag city">גבעתיים</span><span class="tag cuisine">טריפוליטאי</span><span class="tag price">זול</span><span class="tag rating">⭐ 4.8 (44)</span><span class="tag mention">נטעם</span></div>
+      <div class="quote">"בחור בן 25 שמבשל כמו ממה בת 70"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=5c5YG9JaFwM&t=2148s" target="_blank">▶ מדברים מהבטן פרק 143 - סיכום מחזור קולינ</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/places/ANXAkqGQL5_arSW-7g8AbkmCET7bNxp5qHUhvQtvEHo5u3_tHLf_I0QtmpPxjRQuEe4k6Oor12Gcmw8Wy7Wl2TLVOYx9UTps6hx9K8M=s1600-w800" alt="צ'וטה" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">צ'וטה</div>
+      <div class="card-name-en">Chota</div>
+      <div class="tags"><span class="tag city">ירושלים</span><span class="tag cuisine">ביסטרונומי</span><span class="tag price">יקר</span><span class="tag rating">⭐ 4.9 (82)</span><span class="tag mention">נטעם</span></div>
+      <div class="quote">"האיש פורץ גבולות בשלב שלא נהוג"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=5c5YG9JaFwM&t=2667s" target="_blank">▶ מדברים מהבטן פרק 143 - סיכום מחזור קולינ</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/places/ANXAkqEwS_C4ZkJFFTGEb4gh70z5WKWGgqJosQmuqdteeoXq6_HzAtU-VYaqK-N5t8gyuqTP23U4gHi1CppKad2V2FD27uhdbi96W1s=s1600-w800" alt="מרי פוסה" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">מרי פוסה</div>
+      <div class="card-name-en">Mariposa</div>
+      <div class="tags"><span class="tag city">קיסריה</span><span class="tag cuisine">שף</span><span class="tag price">יקר</span><span class="tag rating">⭐ 4.5 (2277)</span><span class="tag mention">נטעם</span></div>
+      <div class="quote">"חמוסטה התאילנדית והיא מוגשת אחת לבתאם למצב רוחו של השף"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=6jvskRWvQkg&t=412s" target="_blank">▶ סיכום שנה 2025 | מדברים מהבטן</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/place-photos/AL8-SNEws9-B-voF-nA_cpNUvsFp4DhqLHAaVETX3YChf0W-dPnTiIngCNUclqA9UlbIkY-ko3cTA2pZB9-conCGCB9rPuoGzrLQyvam5roZ3fcCTiy0_nmDPNxWbDS0Enx_xGZVn8P-gLSoBFJvAw=s1600-w800" alt="משיה" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">משיה</div>
+      <div class="card-name-en">Mashya</div>
+      <div class="tags"><span class="tag city">תל אביב</span><span class="tag cuisine">שף</span><span class="tag price">יקר</span><span class="tag rating">⭐ 4.4 (5329)</span><span class="tag mention">נטעם</span></div>
+      <div class="quote">"אחד הכישרונות העולים בעיניי של המטבח הישראלי החדש גיל דהן"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=6jvskRWvQkg&t=470s" target="_blank">▶ סיכום שנה 2025 | מדברים מהבטן</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/place-photos/AL8-SNG6gqfZsePlMA5uMPYFw3OWOIAenj0lEXqnbYU1dG8McKlCv1zimm61fQ8p3MYVEnqETv76AlEvcmy3FCSbTaubQrHNhQ7OLXVI3qHOX77XPbIPhP4X3JWKks_0TPd9Tl1Ky22xmfpAjphgIl0=s4800-w800" alt="גורמה סבזי" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">גורמה סבזי</div>
+      <div class="card-name-en">Gourmet Sabzi</div>
+      <div class="tags"><span class="tag city">תל אביב</span><span class="tag cuisine">פרסי</span><span class="tag price">זול</span><span class="tag rating">⭐ 4.2 (414)</span><span class="tag mention">נטעם</span></div>
+      <div class="quote">"הגונדי האחד והיחיד בעיניי של גורמי סבזי בשוק לוינסקי"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=6jvskRWvQkg&t=513s" target="_blank">▶ סיכום שנה 2025 | מדברים מהבטן</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/place-photos/AL8-SNEws9-B-voF-nA_cpNUvsFp4DhqLHAaVETX3YChf0W-dPnTiIngCNUclqA9UlbIkY-ko3cTA2pZB9-conCGCB9rPuoGzrLQyvam5roZ3fcCTiy0_nmDPNxWbDS0Enx_xGZVn8P-gLSoBFJvAw=s1600-w800" alt="מיז'נה" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">מיז'נה</div>
+      <div class="card-name-en">Mijana</div>
+      <div class="tags"><span class="tag city">חיפה</span><span class="tag cuisine">ערבי מודרני</span><span class="tag price">בינוני</span><span class="tag mention">נטעם</span></div>
+      <div class="quote">"המסעדה הערבית המודרנית בהר...שמצליחה סוף סוף להעמיד פייט אמיתי"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=6jvskRWvQkg&t=535s" target="_blank">▶ סיכום שנה 2025 | מדברים מהבטן</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/places/ANXAkqE_Na8H9w6ki9YUccecaqZLGaFkVxkb5kJVUzgVnI6xvsN8wHfa0OlRgCmFboY-GRUB1sLJz_qpCPpipplndpWbjmVvPi4eTWc=s4800-w800" alt="אלקבר" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">אלקבר</div>
+      <div class="card-name-en">Al Kaber</div>
+      <div class="tags"><span class="tag city">עין זיוון</span><span class="tag cuisine">אוכל רחוב</span><span class="tag price">זול</span><span class="tag mention">נטעם</span></div>
+      <div class="quote">"בייגל קריספי צ'יקן...נתח עוף כזה עסיסי מהאש, קולסלו, רוטב ברביקיו ביתי, פלפלים מוחמצים"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=6jvskRWvQkg&t=596s" target="_blank">▶ סיכום שנה 2025 | מדברים מהבטן</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/places/ANXAkqHwfaqs52J9XR5S2ftes83cBR4zOv0pCrnhHrui5TTaNh4dandXfAm2pVtn794X3V2dPGH5m4AGU33LmahaNKZS1S1G4gcaQIc=s4800-w800" alt="הסתקייה" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">הסתקייה</div>
+      <div class="card-name-en">Hastakia</div>
+      <div class="tags"><span class="tag city">ירושלים</span><span class="tag cuisine">מזרחי</span><span class="tag price">בינוני</span><span class="tag mention">נטעם</span></div>
+      <div class="quote">"המסעדה הכי טעימה של אסף גרנית וקבוצת מחנה יהודה"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=6jvskRWvQkg&t=707s" target="_blank">▶ סיכום שנה 2025 | מדברים מהבטן</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/places/ANXAkqE_Na8H9w6ki9YUccecaqZLGaFkVxkb5kJVUzgVnI6xvsN8wHfa0OlRgCmFboY-GRUB1sLJz_qpCPpipplndpWbjmVvPi4eTWc=s4800-w800" alt="הלנסן" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">אלנה</div>
+      <div class="card-name-en">Alena</div>
+      <div class="tags"><span class="tag city">תל אביב</span><span class="tag cuisine">איטלקי-ים תיכוני</span><span class="tag price">בינוני</span><span class="tag mention">נטעם</span></div>
+      <div class="quote">"הפיצ'יקו פפה של הלנסן"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=6jvskRWvQkg&t=856s" target="_blank">▶ סיכום שנה 2025 | מדברים מהבטן</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/places/ANXAkqHFHwyYqeY_ZoSjRPiTHfpUUGJpiRZqm79rZgzCRK975ZVmUsMtiWVycZNQ2BowpNJVa5wv7Q_IVT_I9Y6TT3WIVwaN2Y2VNLw=s4800-w800" alt="צפרירים" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">צפרירים</div>
+      <div class="card-name-en">Zafririm</div>
+      <div class="tags"><span class="tag city">חיפה</span><span class="tag cuisine">בשרים</span><span class="tag price">בינוני</span><span class="tag rating">⭐ 4.5 (3648)</span><span class="tag mention">נטעם</span></div>
+      <div class="quote">"השוארמה כן שנכנסת ששוברת"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=6jvskRWvQkg&t=901s" target="_blank">▶ סיכום שנה 2025 | מדברים מהבטן</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/places/ANXAkqG890AHFpmQsDLv9dTPRZN97q4DEt1dmjO=s1600-w800" alt="צ'קולי" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">צ'קולי</div>
+      <div class="card-name-en">Chacoli</div>
+      <div class="tags"><span class="tag city">תל אביב</span><span class="tag cuisine">ספרדי</span><span class="tag price">יקר</span><span class="tag rating">⭐ 4.1 (553)</span><span class="tag mention">נטעם</span></div>
+      <div class="quote">"כמעט כל פעם שיש לי הזדמנות ליציאה שאיננה מחויבת המציאות...זה אולי המקום הראשון שקופץ לי לראש"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=6jvskRWvQkg&t=1077s" target="_blank">▶ סיכום שנה 2025 | מדברים מהבטן</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/places/ANXAkqFiexEg9A3N_VOqzU0kd9mZUbiJFeLBZIH=s1600-w800" alt="סטודיו גורושה" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">סטודיו גורושה</div>
+      <div class="card-name-en">Studio Gursha</div>
+      <div class="tags"><span class="tag city">תל אביב</span><span class="tag cuisine">שף</span><span class="tag price">יקר</span><span class="tag rating">⭐ 4.8 (474)</span><span class="tag mention">נטעם</span></div>
+      <div class="quote">"כזו כמו סטודיו גורשה אין וגם הרבה שנים לא הייתה"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=6jvskRWvQkg&t=1199s" target="_blank">▶ סיכום שנה 2025 | מדברים מהבטן</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/place-photos/AL8-SNEE4sIVC_mpyChM9udS1IljhbQCr=s1600-w800" alt="פרינו" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">פרינו</div>
+      <div class="card-name-en">Farino / Prino</div>
+      <div class="tags"><span class="tag city">אשדוד</span><span class="tag cuisine">פיצה</span><span class="tag price">בינוני</span><span class="tag rating">⭐ 4.5 (577)</span><span class="tag mention">נטעם</span></div>
+      <div class="quote">"הפיצריה הנפוליטנית של פרינו שהוא גם אמן ברמת הבצק"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=6jvskRWvQkg&t=1329s" target="_blank">▶ סיכום שנה 2025 | מדברים מהבטן</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/places/ANXAkqFiexEg9A3N_VOqzU0kd9mZUbiJFeLBZIH=s1600-w800" alt="מושיק" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">מושיק</div>
+      <div class="card-name-en">Moshik</div>
+      <div class="tags"><span class="tag city">תל אביב</span><span class="tag cuisine">שף</span><span class="tag price">יקר מאוד</span><span class="tag mention">נטעם</span></div>
+      <div class="quote">"ארוחת השנה...גובלת בשלמות"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=6jvskRWvQkg&t=1521s" target="_blank">▶ סיכום שנה 2025 | מדברים מהבטן</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/place-photos/AL8-SNEE4sIVC_mpyChM9udS1IljhbQCr=s1600-w800" alt="ריבנו" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">ריבנו</div>
+      <div class="card-name-en">Buono</div>
+      <div class="tags"><span class="tag city">תל אביב</span><span class="tag cuisine">גלידה</span><span class="tag price">בינוני</span><span class="tag mention">הוזכר</span></div>
+      <div class="quote">"הגלידה של ריבנו"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=6jvskRWvQkg&t=3259s" target="_blank">▶ סיכום שנה 2025 | מדברים מהבטן</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/places/ANXAkqGXGMlDXDDBiGtHk5DhntDPigDmofj2lu6RJEQKZZTHLJ1Zu1MpBw6ffVTjyv5kwKxOqxAnk-8Z4w77vQw-PWWBc1ED_NLTE7U=s1600-w800" alt="פיצה לואיז" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">פיצה לואיז</div>
+      <div class="card-name-en">Pizza Louise</div>
+      <div class="tags"><span class="tag city">ראשון לציון</span><span class="tag cuisine">פיצה</span><span class="tag price">בינוני</span><span class="tag rating">⭐ 4.8 (41)</span><span class="tag mention">נטעם</span></div>
+      <div class="quote">"שניהם נותנים קיק נדיר באמת פיצה שאי אפשר להפסיק לאכול ממנה"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=J6Akd1bXiWM&t=199s" target="_blank">▶ חיים מקבב לקבב | מדברים מהבטן, פרק 144</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/places/ANXAkqEo3_fIqp5JX5McJdQK7obI-OfupXM7ddjTi1PENShoXgeL0yIQhgtkYBXiixQyAm0DYcZStHl3FwK5KICUpl_eubBMOBKX4W0=s1600-w800" alt="קזו'אל" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">קזו'אל</div>
+      <div class="card-name-en">Casual</div>
+      <div class="tags"><span class="tag city">ירושלים</span><span class="tag cuisine">קפה-מאפייה</span><span class="tag price">בינוני</span><span class="tag rating">⭐ 4.7 (91)</span><span class="tag mention">נטעם</span></div>
+      <div class="quote">"אולי אפילו אחד מביסי השנה"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=J6Akd1bXiWM&t=472s" target="_blank">▶ חיים מקבב לקבב | מדברים מהבטן, פרק 144</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/place-photos/AL8-SNFQRdUBDnfo4mQzW80uT39CQm4UaKBOF7KzhWzsymIsuQw_Cx-WYY-CcjtVarpADK4WTM5S2HZkJfzq1naHqtQOIup9yCJ1Lv16kkBzakN0EhKY8wDvxV__9Na5eZ1HKXHZyWSJBLFswAvX=s1600-w800" alt="חזי" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">חזי</div>
+      <div class="card-name-en">Hezi Kebabs</div>
+      <div class="tags"><span class="tag city">אור יהודה</span><span class="tag cuisine">בשרים</span><span class="tag price">בינוני</span><span class="tag rating">⭐ 4.5 (2500)</span><span class="tag mention">נטעם</span></div>
+      <div class="quote">"אכלתי קבב שבאמת אין שני לו"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=J6Akd1bXiWM&t=728s" target="_blank">▶ חיים מקבב לקבב | מדברים מהבטן, פרק 144</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/places/ANXAkqEKgUCLrq2qZXolUMpJNGJA0vN4u_hQlwzaVWXs-wyN4NIRppkVV59HqHkqmwpCWyl3pMnQamPwVYuA9UaheNsnmlEY1WRNE88=s1600-w800" alt="האחים" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">האחים</div>
+      <div class="card-name-en">HaAchim</div>
+      <div class="tags"><span class="tag city">תל אביב</span><span class="tag cuisine">מאפייה-בוקר</span><span class="tag price">בינוני</span><span class="tag rating">⭐ 4.5 (6023)</span><span class="tag mention">נטעם</span></div>
+      <div class="quote">"וואו איזה דברים טעימים היא עושה אלוהים ישמור"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=J6Akd1bXiWM&t=2349s" target="_blank">▶ חיים מקבב לקבב | מדברים מהבטן, פרק 144</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://img.mako.co.il/2026/02/11/grill65_autoOrient_i.jpg" alt="גריל 65" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">גריל 65</div>
+      <div class="card-name-en">Grill 65</div>
+      <div class="tags"><span class="tag city">פרדס חנה-כרכור</span><span class="tag cuisine">בשרים</span><span class="tag price">בינוני</span><span class="tag rating">⭐ 4.2 (155)</span><span class="tag mention">נטעם</span></div>
+      <div class="quote">"הייתה לי חוויה מצוינת"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=J6Akd1bXiWM&t=2683s" target="_blank">▶ חיים מקבב לקבב | מדברים מהבטן, פרק 144</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/place-photos/AL8-SNFW9aDZZqYPGlakp3Ra-iar3t-51O5914tiBAl3gUHD2N_wbZYW0vRU2cqXeCp6Lb1ZvLCw8p445pSGKFeUHDN-oDBMVyAIO9_KpuW62T7gPgPBjrOo9ly8mSQ13JSgGQWpcPmLptm23PdkXg=s1600-w800" alt="שיפודי זיקה" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">שיפודי זיקה</div>
+      <div class="card-name-en">Shipudei Zika</div>
+      <div class="tags"><span class="tag city">תל אביב-יפו</span><span class="tag cuisine">בשרים</span><span class="tag price">זול</span><span class="tag rating">⭐ 4.2 (902)</span><span class="tag mention">נטעם</span></div>
+      <div class="quote">"סלט הירקות אהוב עליי בעולם"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=J6Akd1bXiWM&t=3118s" target="_blank">▶ חיים מקבב לקבב | מדברים מהבטן, פרק 144</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/place-photos/AL8-SNEw10yhnxHV_HciJ2-HKNBX_ic41_xinGydXVilKy7GdhKzYUR8gMsGKJEA9vyBBQF1em3Nqt5bd9MLj8V_bxcJvaeew2YfRbGhi36okpC_WvnbHdIS1SAteYEkBSsPtD8k8rB3PCUOzvrgPw=s4800-w800" alt="לבה" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">לבה</div>
+      <div class="card-name-en">Lava</div>
+      <div class="tags"><span class="tag city">תל אביב</span><span class="tag cuisine">איטלקי</span><span class="tag price">בינוני</span><span class="tag rating">⭐ 3.9 ()</span><span class="tag mention">נטעם</span></div>
+      <div class="quote">"הכי בקטנה ובקבוע מה שנקרא המנה שאכלתי כבר נראה לי זה 20 פעמים"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=KPSWuKln4ec&t=186s" target="_blank">▶ פרק 149 - מדברים מהבטן: מהדורת מעמד #2</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/places/ANXAkqGvOmOgHi3ehPK8oJfE8ZOeSuQohuFUp_P3ug3ANtMT7wc_LdaRipmZodvYI-KLTKFH50Hywx9c7Lkpx-DprihaDjJq4ygVLjk=s4800-w800" alt="דלל" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">דלל</div>
+      <div class="card-name-en">Dallal</div>
+      <div class="tags"><span class="tag city">תל אביב</span><span class="tag cuisine">קונדיטוריה</span><span class="tag price">בינוני</span><span class="tag rating">⭐ 4.1 ()</span><span class="tag mention">נטעם</span></div>
+      <div class="quote">"קיבלתי את קולקציית החג...פשוט מעולה"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=KPSWuKln4ec&t=610s" target="_blank">▶ פרק 149 - מדברים מהבטן: מהדורת מעמד #2</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/places/ANXAkqGAYgfAzZz-_4R7bJw97nYUpXX9ibtgUatJ59Zrt2rwu0i45B4QouFX-YgRh_8WZu09iY81vHkWJmwLeZhhTB5KqSh4GnyNTKY=s4800-w800" alt="נאופוליטן 26" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">נאופוליטן 26</div>
+      <div class="card-name-en">Neapolitan 26</div>
+      <div class="tags"><span class="tag city">הרצליה</span><span class="tag cuisine">פיצה</span><span class="tag price">בינוני</span><span class="tag rating">⭐ 4.8 ()</span><span class="tag mention">הוזכר</span></div>
+      <div class="quote">"נפתחה ממש עכשיו פיצריה חדשה די מסקרנת נפוליטני סטייל"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=KPSWuKln4ec&t=1003s" target="_blank">▶ פרק 149 - מדברים מהבטן: מהדורת מעמד #2</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/places/ANXAkqGvOmOgHi3ehPK8oJfE8ZOeSuQohuFUp_P3ug3ANtMT7wc_LdaRipmZodvYI-KLTKFH50Hywx9c7Lkpx-DprihaDjJq4ygVLjk=s4800-w800" alt="מייקיז" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">מייקיז</div>
+      <div class="card-name-en">Mikey's</div>
+      <div class="tags"><span class="tag city">אפולה</span><span class="tag cuisine">פיצה</span><span class="tag price">בינוני</span><span class="tag mention">הוזכר</span></div>
+      <div class="quote">"זאת הפיצריה הראשונה בארץ שמנסה לייצר את הפיצות שלה אך ורק מחומרי גלם מקומיים"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=KPSWuKln4ec&t=1034s" target="_blank">▶ פרק 149 - מדברים מהבטן: מהדורת מעמד #2</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/places/ANXAkqGAYgfAzZz-_4R7bJw97nYUpXX9ibtgUatJ59Zrt2rwu0i45B4QouFX-YgRh_8WZu09iY81vHkWJmwLeZhhTB5KqSh4GnyNTKY=s4800-w800" alt="חממה" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">חממה</div>
+      <div class="card-name-en">Hamama</div>
+      <div class="tags"><span class="tag city">תל אביב</span><span class="tag cuisine">בר יין</span><span class="tag price">בינוני</span><span class="tag mention">הוזכר</span></div>
+      <div class="quote">"נפתח איזשהו בר יין שנקרא חממה"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=KPSWuKln4ec&t=1113s" target="_blank">▶ פרק 149 - מדברים מהבטן: מהדורת מעמד #2</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/places/ANXAkqGphE4h2Jclb_ajIEmiBPT6-HkWKox7YFg5gTgjLOzSpO4Bi-wvlP3NEnwf8vTZn58Vxal8m7SxHGaCfmTporXX2D84WTeGKBs=s4800-w800" alt="הרצל 16" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">הרצל 16</div>
+      <div class="card-name-en">Herzl 16</div>
+      <div class="tags"><span class="tag city">תל אביב</span><span class="tag cuisine">אסייתי</span><span class="tag price">בינוני</span><span class="tag rating">⭐ 4.3 ()</span><span class="tag mention">נטעם</span></div>
+      <div class="quote">"משלוח חיובי מאוד של סגי"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=KPSWuKln4ec&t=2853s" target="_blank">▶ פרק 149 - מדברים מהבטן: מהדורת מעמד #2</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/places/ANXAkqFQhCkBz1e1aZFINJIbPJz7IPsuvj26Wkg9VIOOHHFD1jybGs_Z2RQgIcSoaKDdbeWBHFXnwbTnPGWCbYLObf3DXJl0YZwtWVM=s4800-w800" alt="המחלבה הקטנה" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">המחלבה הקטנה</div>
+      <div class="card-name-en">HaMachlava HaKtana</div>
+      <div class="tags"><span class="tag cuisine">מחלבה</span><span class="tag price">בינוני</span><span class="tag mention">הוזכר</span></div>
+      <div class="quote">"מאוד משמח מהמחלבה הקטנה התחילו משלוחים להרצליה"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=KPSWuKln4ec&t=2990s" target="_blank">▶ פרק 149 - מדברים מהבטן: מהדורת מעמד #2</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/places/ANXAkqF8_96p0Ri0q7RYMETosYMW0pPAABhSUG_XOflWkNVrtSxaHa0qKWiRIYWWD_PKVYm8Pmc7uwRuWSOimqucBEHZq7DJt2k4rgg=s1600-w800" alt="קרנבר" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">קרנבר</div>
+      <div class="card-name-en">Carne Bar</div>
+      <div class="tags"><span class="tag city">תל אביב</span><span class="tag cuisine">ארגנטינאי</span><span class="tag price">בינוני</span><span class="tag rating">⭐ 4.6 (96)</span><span class="tag mention">נטעם</span></div>
+      <div class="quote">"פשוט יופי של ביס"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=LXC39QRwVlc&t=516s" target="_blank">▶ מדברים מהבטן - פרק 147</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/places/ANXAkqEo3bqtGT62on5E_zEEhZrABlvfZWDBx7xWXcH8o2qvpQBD41yetpZytLTNB8tMgUrVE26fkjh-U4Pw33wmMvCDqKK2eWL5cvY=s1600-w800" alt="גסטרו מכניקו" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">גסטרו מכניקו</div>
+      <div class="card-name-en">Gastro Mechanico</div>
+      <div class="tags"><span class="tag city">תל אביב</span><span class="tag cuisine">שף</span><span class="tag price">יקר</span><span class="tag rating">⭐ 4 (41)</span><span class="tag mention">נטעם</span></div>
+      <div class="quote">"חזרתי עם איזה חוויה כזאת של מדהים, לא עושה גרוע, לא ידעתי אם באלי לבוא לפה"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=LXC39QRwVlc&t=1017s" target="_blank">▶ מדברים מהבטן - פרק 147</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/places/ANXAkqEdcMntL5qlEU3CkNHTi-kYKb_iK3kDU2Iepx5m3JZWxz1asK18iFHzpBoiQHcD7_Bm7M1-fGmC73vUxGdrCKRY9ySg7qyn5M0=s1600-w800" alt="פופינה" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">פופינה</div>
+      <div class="card-name-en">Popina</div>
+      <div class="tags"><span class="tag city">תל אביב</span><span class="tag cuisine">שף</span><span class="tag price">יקר</span><span class="tag rating">⭐ 4.3 (2312)</span><span class="tag mention">נטעם</span></div>
+      <div class="quote">"היה לנו ערב מדהים באמת כל כך מוצלח"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=rGS7OCpZ8J4&t=2286s" target="_blank">▶ מדברים מהבטן פרק 138</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/places/ANXAkqGsRz-H98zu0T3urCs8tgw1oF6MH4MkD7Nc9zAqwnqeJnVcoJ8wA_FHQ5CnO_b_wC8wtz0mc2ITmca0EC9uL3QvEaVUOyVJv4k=s1600-w800" alt="סיקסנס שחרות" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">סיקסנס שחרות</div>
+      <div class="card-name-en">Six Senses Shaharut</div>
+      <div class="tags"><span class="tag city">שחרות</span><span class="tag cuisine">שף</span><span class="tag price">יקר מאוד</span><span class="tag rating">⭐ 4.4 (337)</span><span class="tag mention">נטעם</span></div>
+      <div class="quote">"באמת מדהים מדהים בכל הרזולוציות והמובנים"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=LXC39QRwVlc&t=2877s" target="_blank">▶ מדברים מהבטן - פרק 147</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/places/ANXAkqEdcMntL5qlEU3CkNHTi-kYKb_iK3kDU2Iepx5m3JZWxz1asK18iFHzpBoiQHcD7_Bm7M1-fGmC73vUxGdrCKRY9ySg7qyn5M0=s1600-w800" alt="בצ'וטה" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">בצ'וטה</div>
+      <div class="card-name-en">Chota</div>
+      <div class="tags"><span class="tag city">ירושלים</span><span class="tag cuisine">שף</span><span class="tag price">יקר</span><span class="tag rating">⭐ 4.9 (82)</span><span class="tag mention">הוזכר</span></div>
+      <div class="quote">"אולי היום המקום הכי מעניין שיש לעיר הבירה להציע"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=LXC39QRwVlc&t=3557s" target="_blank">▶ מדברים מהבטן - פרק 147</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/place-photos/AL8-SNEadO_9h--GwYgS6akfehl_GgTHtGqOUhn4hYPn5hEcBLIkoOTfB6S-UstMYBPWrOE9dEMITwDfvtI390Dn1ubZbsT-iefW8GdWpUzV-3VtfEya1XEge51QIl3swotV4LQkTWSch-7PBiuvFpI=s1600-w800" alt="טומו קנדי" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">טומו קנדי</div>
+      <div class="card-name-en">Tomo Candy</div>
+      <div class="tags"><span class="tag city">אבן יהודה</span><span class="tag cuisine">סדנת ממתקים</span><span class="tag price">בינוני</span><span class="tag rating">⭐ 4.9 (323)</span><span class="tag mention">נטעם</span></div>
+      <div class="quote">"זו חוויה מגניבה זו חוויה מגניבה לרמות"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=LXC39QRwVlc&t=870s" target="_blank">▶ מדברים מהבטן - פרק 147</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/places/ANXAkqFOhtX5loTCM0mNUhQyTSvnJubPgJDE39EaD9Vr6SIBhBNdxY5X_ip1bZj9nUfStBeWSNSlQeEuXjvGkkHZGCBhAEbEeyuZNA=s1600-w800" alt="בוקה" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">בוקה</div>
+      <div class="card-name-en">Bouquet</div>
+      <div class="tags"><span class="tag city">אבן יהודה</span><span class="tag cuisine">בר יין</span><span class="tag price">בינוני</span><span class="tag rating">⭐ 4.7 (134)</span><span class="tag mention">נטעם</span></div>
+      <div class="quote">"לזניה רגע עגל בקציפת פרמזן"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=LrvQP_2EjxQ&t=227s" target="_blank">▶ בשמל תמיד מנצח | מדברים מהבטן, פרק 140</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://imageproxy.wolt.com/assets/68ac575c96fbe9c58f9797ca" alt="בנגר" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">בנגר</div>
+      <div class="card-name-en">Banger</div>
+      <div class="tags"><span class="tag city">ירושלים</span><span class="tag cuisine">המבורגר</span><span class="tag price">בינוני</span><span class="tag mention">נטעם</span></div>
+      <div class="quote">"וואו איזה המבורגר טעים"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=LrvQP_2EjxQ&t=436s" target="_blank">▶ בשמל תמיד מנצח | מדברים מהבטן, פרק 140</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/place-photos/AL8-SNE6q-cWcR7lHSUNZQWAAY2cHpqWwOod4ui0u2JhSw5LocTuuwzl0pmjbudCwpwWnwvscV0BBNMTmD_mOekq0Ejcx1wuvaafzHaCncQ0ueIDgpCl8ObOqt1XRksdtcOnE2NvE6Qi-AVr_j012g=s1600-w800" alt="סודוך" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">סודוך</div>
+      <div class="card-name-en">Suduch</div>
+      <div class="tags"><span class="tag city">תל אביב</span><span class="tag cuisine">אוכל רחוב</span><span class="tag price">זול</span><span class="tag rating">⭐ 4.5 (521)</span><span class="tag mention">נטעם</span></div>
+      <div class="quote">"תופעת אוכל רחוב שאי אפשר שלא להצדיע לה"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=LrvQP_2EjxQ&t=722s" target="_blank">▶ בשמל תמיד מנצח | מדברים מהבטן, פרק 140</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/places/ANXAkqGhPNms91ABIPtFaGTuyoLJmD13peYwtD0FrChBBqL8bRTGtlYqnl7EOGvgxAVMC_i-g837bWuEWucdOhdd1QW9QIT7bTXJRt0=s1600-w800" alt="קפה סמדר" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">קפה סמדר</div>
+      <div class="card-name-en">Cafe Smadar</div>
+      <div class="tags"><span class="tag city">ירושלים</span><span class="tag cuisine">קפה</span><span class="tag price">בינוני</span><span class="tag rating">⭐ 4.4 (778)</span><span class="tag mention">הוזכר</span></div>
+      <div class="quote">"רגע שלפחות עבורנו כירושלמים מרגש אותנו"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=LrvQP_2EjxQ&t=1920s" target="_blank">▶ בשמל תמיד מנצח | מדברים מהבטן, פרק 140</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/place-photos/AL8-SNEoFSyBYTvzLNI5u6FIyvwQCQOuZ1EWDTJd55BZW6cUGFCJbq1p85QD-YnuMSEO5AnzNPAY2vb_zmgrkO8qalxabcdtlrMEwBMastJzAfYNJHiPwMf1RfqohQczOTye_Oi0k-EWT7qA66Y8oTc=s1600-w800" alt="טמרלין" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">טמרלין</div>
+      <div class="card-name-en">Tamarlin</div>
+      <div class="tags"><span class="tag city">נהלל</span><span class="tag cuisine">בשרים</span><span class="tag price">בינוני</span><span class="tag rating">⭐ 4.4 (1073)</span><span class="tag mention">נטעם</span></div>
+      <div class="quote">"גם הנתח עצמו, גם הצליע, גם החיתוך היו משובחים"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=LrvQP_2EjxQ&t=2452s" target="_blank">▶ בשמל תמיד מנצח | מדברים מהבטן, פרק 140</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/place-photos/AL8-SNHcGANBBEBBe1p56H8FDfZ_iwu_KlWFFbJPezYgD_Ixwylf0afla7OSQiJdql_pAU7aYKCH23PBYWdhJT0vDwQm8PGW9qgCS9kLLc6YZqF61bEw0ho1dzNxIHdEMOp51xiz0L_FP24lvPrm49w=s1600-w800" alt="פורינה" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">פורינה</div>
+      <div class="card-name-en">Furina</div>
+      <div class="tags"><span class="tag city">פרדס חנה-כרכור</span><span class="tag cuisine">פיצה</span><span class="tag price">בינוני</span><span class="tag rating">⭐ 4.8 (391)</span><span class="tag mention">נטעם</span></div>
+      <div class="quote">"מלנזן החצילים לוחהת מהטבון - שנמסה בפה וזה פשוט אחד הביסים המענגים שקיימים"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=LrvQP_2EjxQ&t=2710s" target="_blank">▶ בשמל תמיד מנצח | מדברים מהבטן, פרק 140</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/places/ANXAkqHNBbns4xXjW8jVoL4Bz9B2JJbajfU3AbRtjNii2-5m4FuhY6w-2m7quEqaJwbo7Oy-ABi7oFaDyHO7Heoc9WTFdlMyMF_aOp0=s1600-w800" alt="ג'ורג' וג'ון" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">ג'ורג' וג'ון</div>
+      <div class="card-name-en">George & John</div>
+      <div class="tags"><span class="tag city">תל אביב</span><span class="tag cuisine">שף</span><span class="tag price">יקר</span><span class="tag rating">⭐ 4.5 (1595)</span><span class="tag mention">נטעם</span></div>
+      <div class="quote">"נתוני הפתיחה של ג'ורג' וג'ון הם מעולים תמיד"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=LrvQP_2EjxQ&t=2941s" target="_blank">▶ בשמל תמיד מנצח | מדברים מהבטן, פרק 140</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/place-photos/AL8-SNHcGANBBEBBe1p56H8FDfZ_iwu_KlWFFbJPezYgD_Ixwylf0afla7OSQiJdql_pAU7aYKCH23PBYWdhJT0vDwQm8PGW9qgCS9kLLc6YZqF61bEw0ho1dzNxIHdEMOp51xiz0L_FP24lvPrm49w=s1600-w800" alt="גיוזה תופס" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">גיוזה תופס</div>
+      <div class="card-name-en">Gyoza Tofes</div>
+      <div class="tags"><span class="tag city">תל אביב</span><span class="tag cuisine">אסייתי</span><span class="tag price">בינוני</span><span class="tag mention">נטעם</span></div>
+      <div class="quote">"המילוי היה מאוד מאוד מפתיע לטובה"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=ZK4yPvErXIc&t=123s" target="_blank">▶ מדברים מהבטן פרק 145 - סיכום מחזור קולינ</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/places/ANXAkqHNBbns4xXjW8jVoL4Bz9B2JJbajfU3AbRtjNii2-5m4FuhY6w-2m7quEqaJwbo7Oy-ABi7oFaDyHO7Heoc9WTFdlMyMF_aOp0=s1600-w800" alt="ממתקי אל דמסקי" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">ממתקי אל דמסקי</div>
+      <div class="card-name-en">Mamtakey Al Damaski</div>
+      <div class="tags"><span class="tag city">ירושלים</span><span class="tag cuisine">מתוקים ערביים</span><span class="tag price">זול</span><span class="tag mention">נטעם</span></div>
+      <div class="quote">"הכי טובים שיש ובמחירים מדהימים"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=ZK4yPvErXIc&t=463s" target="_blank">▶ מדברים מהבטן פרק 145 - סיכום מחזור קולינ</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/places/ANXAkqEOdhhfjMHVnALwxnTAqj6xrBgLyXwMrXQenXhNrDQKDLGmCgiy7XN4NywBPQkz0bT-9lIKIRp4w4nJToSBbBHA3uIk1hW52J4=s4800-w800" alt="מלא" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">מלא</div>
+      <div class="card-name-en">Mala</div>
+      <div class="tags"><span class="tag city">תל אביב</span><span class="tag cuisine">קפה</span><span class="tag price">בינוני</span><span class="tag mention">נטעם</span></div>
+      <div class="quote">"בית הקפה המשובח והחביב עליי עד מאוד מלא"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=ZK4yPvErXIc&t=633s" target="_blank">▶ מדברים מהבטן פרק 145 - סיכום מחזור קולינ</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/place-photos/AL8-SNHkRczcDv9xE468q3bfEUPpkEV8vztclQbr2io-wjCh_VzDHqyOIRLDqhIF9By9bFudTc-kN6NK0aFYvd5XEmUsc1ZyWiR5Pu4CJEPZO47l7pOdSsIALqsLv3i3A-EOhz4hibH79wi9iUOTizY=s4800-w800" alt="שוארמה אסולין" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">שוארמה אסולין</div>
+      <div class="card-name-en">Shawarma Assoulin</div>
+      <div class="tags"><span class="tag city">תל אביב</span><span class="tag cuisine">שוארמה</span><span class="tag price">בינוני</span><span class="tag rating">⭐ 5 (11)</span><span class="tag mention">נטעם</span></div>
+      <div class="quote">"השוארמה מהעגל שלהם הייתה מעולה ממש כאילו בלי קשר"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=ZK4yPvErXIc&t=1459s" target="_blank">▶ מדברים מהבטן פרק 145 - סיכום מחזור קולינ</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/places/ANXAkqEzgR6gDEXQ3gPoWyFJ8zeIoyld_0CmzE2CgI-_7lFHHdAmOXhJV6LUc32_-S6-ueM-QaRwcEun01kZerB_jX8U-edlB7dU4m0=s4800-w800" alt="סוד" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">סוד</div>
+      <div class="card-name-en">Sod</div>
+      <div class="tags"><span class="tag city">ירושלים</span><span class="tag cuisine">סושי ויין</span><span class="tag price">בינוני</span><span class="tag mention">נטעם</span></div>
+      <div class="quote">"מקום נועז קצת אוונגרדי ייחודי מאוד נאמן לעצמו"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=ZK4yPvErXIc&t=1775s" target="_blank">▶ מדברים מהבטן פרק 145 - סיכום מחזור קולינ</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/places/ANXAkqEt2weYQOfASqZ9zh9SJ79ersFOCCpIc7YZc4SRksFdJxJr2DIFM9MZ2dZkzayHElDZpupVWAHOv3ob6OiIo0xrwgHmqWcz7yw=s1600-w800" alt="גוש ודניאל" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">גוש ודניאל</div>
+      <div class="card-name-en">Gouje and Daniel</div>
+      <div class="tags"><span class="tag city">בני ציון</span><span class="tag cuisine">שף</span><span class="tag price">יקר</span><span class="tag rating">⭐ 4.6 (5287)</span><span class="tag mention">נטעם</span></div>
+      <div class="quote">"המקום מהמם המסעדה מהממת נוף היסטרי פנינה ירוקה"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=ZK4yPvErXIc&t=2075s" target="_blank">▶ מדברים מהבטן פרק 145 - סיכום מחזור קולינ</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/places/ANXAkqFgkdp_HuNh9idVHwICXd3jTAvBOE_gB57Y18lq4PyhriFpHPCDolzHZQ-wdk7PvRYJod0KBUEV2lXYtnT4vf1MQA9VGOClSsg=s1600-w800" alt="קפה אליפלט" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">קפה אליפלט</div>
+      <div class="card-name-en">Cafe Elifelet</div>
+      <div class="tags"><span class="tag city">תל אביב</span><span class="tag cuisine">קפה</span><span class="tag price">בינוני</span><span class="tag rating">⭐ 4.6 (145)</span><span class="tag mention">נטעם</span></div>
+      <div class="quote">"אחת מעוגות הגזר הכי טובות בעיר"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=_abbCYlWlg8&t=216s" target="_blank">▶ מדברים מהבטן - פרק 141</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/place-photos/AL8-SNENb_mMtJkAJq5fFBFu0ieoSVJzc3qbWkqXDYJT_ZVGpcDaV3cPNgDhvGRCaEd1R5xBZm3G1fvTGpLZIsZ0-bxuPOVy2rqbZYfVVnngH-baH96jz8GoYwgtXvR1WzE9k-X5bgp2DQGbQWP18x8=s1600-w800" alt="הבגט הלוהט של אמוס" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">הבגט הלוהט של אמוס</div>
+      <div class="card-name-en">Amos Hot Baguette</div>
+      <div class="tags"><span class="tag city">בת ים</span><span class="tag cuisine">סנדוויצ'ים</span><span class="tag price">זול</span><span class="tag rating">⭐ 4.7 (292)</span><span class="tag mention">נטעם</span></div>
+      <div class="quote">"יופי של מקום, מקום לנחמה"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=_abbCYlWlg8&t=462s" target="_blank">▶ מדברים מהבטן - פרק 141</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/places/ANXAkqFgkdp_HuNh9idVHwICXd3jTAvBOE_gB57Y18lq4PyhriFpHPCDolzHZQ-wdk7PvRYJod0KBUEV2lXYtnT4vf1MQA9VGOClSsg=s1600-w800" alt="הפילמניה" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">הפילמניה</div>
+      <div class="card-name-en">HaPelmania</div>
+      <div class="tags"><span class="tag city">טירת כרמל</span><span class="tag cuisine">רוסי</span><span class="tag price">זול</span><span class="tag mention">נטעם</span></div>
+      <div class="quote">"הכל כל עבודת יד, הכל טבעי"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=_abbCYlWlg8&t=598s" target="_blank">▶ מדברים מהבטן - פרק 141</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/places/ANXAkqHTcN66FRur5rZZlu-BmVNRUz8V9SEHzgrYzRWzrBXvRBXBtl1VC5INbQ6Y5cJEFKGCU9CYLerTf6HZGbCW34JCsgFY_ZNyP5I=s1600-w800" alt="דגי הראס" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">דגי הראס</div>
+      <div class="card-name-en">Dagei HaRaes</div>
+      <div class="tags"><span class="tag city">שפרעם</span><span class="tag cuisine">דגים</span><span class="tag price">בינוני</span><span class="tag rating">⭐ 4.7 (543)</span><span class="tag mention">נטעם</span></div>
+      <div class="quote">"בסכום מאוד קטן והגון אפשר להרכיב סעודת דגים מגוונת עשירה מטופלת ביד מקצועית"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=_abbCYlWlg8&t=1750s" target="_blank">▶ מדברים מהבטן - פרק 141</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/places/ANXAkqFHfFqvwjjP86OmySjKVmJKfm1oo5oPZ6QgiE9d3PB4FpKzF0dJvI9rdhqq1riVMRHhXWI1wqk1vPfvsxsGproPEw-WHJJ0Ovk=s1600-w800" alt="שביל ישראל ב-7to1" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">שביל ישראל ב-7to1</div>
+      <div class="card-name-en">Shvil Israel at 7to1 Lab</div>
+      <div class="tags"><span class="tag city">תל אביב</span><span class="tag cuisine">שף</span><span class="tag price">יקר</span><span class="tag rating">⭐ 4.3 (437)</span><span class="tag mention">נטעם</span></div>
+      <div class="quote">"התפריט אולי הכי מהודק ובוגר שלו"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=_abbCYlWlg8&t=2092s" target="_blank">▶ מדברים מהבטן - פרק 141</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/places/ANXAkqHTcN66FRur5rZZlu-BmVNRUz8V9SEHzgrYzRWzrBXvRBXBtl1VC5INbQ6Y5cJEFKGCU9CYLerTf6HZGbCW34JCsgFY_ZNyP5I=s1600-w800" alt="זות" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">זות</div>
+      <div class="card-name-en">Zot</div>
+      <div class="tags"><span class="tag city">תל אביב</span><span class="tag cuisine">פיצה</span><span class="tag price">בינוני</span><span class="tag mention">נטעם</span></div>
+      <div class="quote">"אני מופתעת מכמה טובה הייתה הפיצה"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=_abbCYlWlg8&t=2498s" target="_blank">▶ מדברים מהבטן - פרק 141</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/places/ANXAkqE2bth0qAuZHobUHEkM2fsB_miRRMWGIufwyBKqJPymYXGmqVJTVMQGoYbmibgaIt8XfGy7zgXfnRAGW6FKkEZOR8QvCSrDRG4=s1600-w800" alt="קוקוזן" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">קוקוזן</div>
+      <div class="card-name-en">Koko Zen</div>
+      <div class="tags"><span class="tag city">תל אביב</span><span class="tag cuisine">יפני</span><span class="tag price">בינוני</span><span class="tag rating">⭐ 4.5 (138)</span><span class="tag mention">נטעם</span></div>
+      <div class="quote">"כל דבר שם מה זה חשבו עליו לעומק ובאמת הביצוע הפנומנלי"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=rGS7OCpZ8J4&t=135s" target="_blank">▶ מדברים מהבטן פרק 138</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/places/ANXAkqGfzHV98aoVkOYFWjZjHXp_GsK7RmaYmYxzmQ5t0nrcjGMVaWJU7mSZUq4I06jgzaLFEOLaZaThZfSvwjsADmGiyxe7IyCBQmI=s1600-w800" alt="קפה רימונה" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">קפה רימונה</div>
+      <div class="card-name-en">Cafe Rimona</div>
+      <div class="tags"><span class="tag city">באר שבע</span><span class="tag cuisine">קפה-מעדנייה</span><span class="tag price">בינוני</span><span class="tag rating">⭐ 4.9 (54)</span><span class="tag mention">נטעם</span></div>
+      <div class="quote">"ממש מגניב ממש כיפי סמנו לכם במפה"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=rGS7OCpZ8J4&t=504s" target="_blank">▶ מדברים מהבטן פרק 138</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/places/ANXAkqE2bth0qAuZHobUHEkM2fsB_miRRMWGIufwyBKqJPymYXGmqVJTVMQGoYbmibgaIt8XfGy7zgXfnRAGW6FKkEZOR8QvCSrDRG4=s1600-w800" alt="סולט" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">סולט</div>
+      <div class="card-name-en">Salt</div>
+      <div class="tags"><span class="tag city">חיפה</span><span class="tag cuisine">דגים ופירות ים</span><span class="tag price">בינוני</span><span class="tag rating">⭐ 4.3 (42)</span><span class="tag mention">נטעם</span></div>
+      <div class="quote">"עשית לנו חשק בטירוף"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=rGS7OCpZ8J4&t=1483s" target="_blank">▶ מדברים מהבטן פרק 138</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/place-photos/AL8-SNFAEVhaL8Iv6GRXcLgTE-NtK15rmLHmm6aVidyIufWIGjBKVM71Df8Wof5UyZIWuXyQivaz1Q-LA0n4fRcmyHjMO8Ba3wjSHtsLZS4FFutFTC02tyMjgXNavXA0aOai2FAGoJlMAMWC3ghg1w=s1600-w800" alt="קפה אלנבי" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">קפה אלנבי</div>
+      <div class="card-name-en">Cafe Allenby</div>
+      <div class="tags"><span class="tag city">תל אביב</span><span class="tag cuisine">קפה-ביסטרו</span><span class="tag price">בינוני</span><span class="tag rating">⭐ 4.6 (241)</span><span class="tag mention">נטעם</span></div>
+      <div class="quote">"מקום שהייתי רוצה שיהיה שלי"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=rGS7OCpZ8J4&t=1947s" target="_blank">▶ מדברים מהבטן פרק 138</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/places/ANXAkqFa71b21-IBB1WitOzhFHQIjWB4YWSU8J20U_iVDMY2fAjNyQT13yPeSFcgfOsM4WC8VHIscYkCxGQywTSd8bPDNz_w1frTvpg=s1600-w800" alt="טנא דלי" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">טנא דלי</div>
+      <div class="card-name-en">Tenne Deli</div>
+      <div class="tags"><span class="tag city">תל אביב</span><span class="tag cuisine">מעדנייה</span><span class="tag price">בינוני</span><span class="tag rating">⭐ 4.1 (29)</span><span class="tag mention">נטעם</span></div>
+      <div class="quote">"הדברים ברובם פשוט נהדרים"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=w-n3zFXTuGM&t=227s" target="_blank">▶ מדברים מהבטן 148 - מהדורת ממ"ד</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/place-photos/AL8-SNFAEVhaL8Iv6GRXcLgTE-NtK15rmLHmm6aVidyIufWIGjBKVM71Df8Wof5UyZIWuXyQivaz1Q-LA0n4fRcmyHjMO8Ba3wjSHtsLZS4FFutFTC02tyMjgXNavXA0aOai2FAGoJlMAMWC3ghg1w=s1600-w800" alt="ג'אנגו" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">ג'אנגו</div>
+      <div class="card-name-en">Jango Burger</div>
+      <div class="tags"><span class="tag city">תל אביב</span><span class="tag cuisine">המבורגר</span><span class="tag price">בינוני</span><span class="tag rating">⭐ 4.1 ()</span><span class="tag mention">נטעם</span></div>
+      <div class="quote">"התל אביבי המוכר ואהוב שיודע לספק את הסחורה מדהים הוא הג'אנגו"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=w-n3zFXTuGM&t=333s" target="_blank">▶ מדברים מהבטן 148 - מהדורת ממ"ד</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/places/ANXAkqFa71b21-IBB1WitOzhFHQIjWB4YWSU8J20U_iVDMY2fAjNyQT13yPeSFcgfOsM4WC8VHIscYkCxGQywTSd8bPDNz_w1frTvpg=s1600-w800" alt="דנבר" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">דנבר</div>
+      <div class="card-name-en">Denver</div>
+      <div class="tags"><span class="tag city">כפר סבא</span><span class="tag cuisine">המבורגר</span><span class="tag price">בינוני</span><span class="tag rating">⭐ 4.3 ()</span><span class="tag mention">נטעם</span></div>
+      <div class="quote">"ההמבורגר של הדבר בכפר סבא. אני הנדסטי כל ביס יגמר לי"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=w-n3zFXTuGM&t=384s" target="_blank">▶ מדברים מהבטן 148 - מהדורת ממ"ד</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/places/ANXAkqGMRm89Mt_IQVLDbdR7rVs0bXPtyuk4Ti23BdWZzFMwrjcsb0GDlXMpsuB4jtQXS2rfPDdIYAGi5fJBPog1etSQY5lHoPPnmRQ=s4800-w800" alt="ימה" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">ימה</div>
+      <div class="card-name-en">Yama</div>
+      <div class="tags"><span class="tag city">תל אביב</span><span class="tag cuisine">דגים</span><span class="tag price">בינוני</span><span class="tag rating">⭐ 4.3 ()</span><span class="tag mention">נטעם</span></div>
+      <div class="quote">"כבד קצוץ חמים עסיסי על בסיס של שומן עוף כזה וואו וואו וואו תענוג"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=w-n3zFXTuGM&t=418s" target="_blank">▶ מדברים מהבטן 148 - מהדורת ממ"ד</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/place-photos/AL8-SNFA0Bx-e7A0tX_jTSJOxgWRu35Um6v_fSy7SxhCX4TFnlQkATIerwQk5nNd6SAjGG4lQQSr1KTpS4qjlUlFGwEsRYq5CE2Yb5nDk4uzyeG2Iw2GEdstmz7GFZwWa6ANeib_5AWesgX8PUtnyw=s1600-w800" alt="המחמצת של חגאי" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">המחמצת של חגאי</div>
+      <div class="card-name-en">Hagay Bread</div>
+      <div class="tags"><span class="tag city">תל אביב</span><span class="tag cuisine">מאפייה</span><span class="tag price">בינוני</span><span class="tag rating">⭐ 4.8 (305)</span><span class="tag mention">נטעם</span></div>
+      <div class="quote">"הלחם הכי טוב שיש הכי טעים שיש"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=w-n3zFXTuGM&t=677s" target="_blank">▶ מדברים מהבטן 148 - מהדורת ממ"ד</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/place-photos/AL8-SNHRglU2wYqAeKr6D250Faeh-xlqs-WB5u7AfnFQcdokCOS9YAbUrUMmYHe11jpDR5PvGfyaCJJ07TBfoF3ltaLQ3GzYiIwIv4XhmXJg0wSSTQ4eUESPZGLL-OaYTisKFXqRfyxabtmurnmWouQ=s4800-w800" alt="דוכן של אילנה דן בשוק לווינסקי" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">דוכן של אילנה דן בשוק לווינסקי</div>
+      <div class="card-name-en">Ilana Dan at Levinsky Market</div>
+      <div class="tags"><span class="tag city">תל אביב</span><span class="tag cuisine">מאפייה</span><span class="tag price">בינוני</span><span class="tag mention">נטעם</span></div>
+      <div class="quote">"וואו מה זה היה"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=w-n3zFXTuGM&t=696s" target="_blank">▶ מדברים מהבטן 148 - מהדורת ממ"ד</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/place-photos/AL8-SNGws--3UAbv1hEuPduzjsrCX-ik451SoLEAu34-nxlv8wvx5A21DYjK3tzEjN8q-drtqFTk_F0FcPR9opK8NSV2d2EdPAsFl6i7EhMRQiFfYfzzM6HliwMgk9Xm7jEjcts-xpZfiPrGKCyopn8=s1600-w800" alt="רב יולו" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">רביולון</div>
+      <div class="card-name-en">Raviolon</div>
+      <div class="tags"><span class="tag city">אשקלון</span><span class="tag cuisine">פסטה</span><span class="tag price">בינוני</span><span class="tag rating">⭐ 4.1 (34)</span><span class="tag mention">נטעם</span></div>
+      <div class="quote">"כיף מאוד, טעים מאוד"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=w-n3zFXTuGM&t=511s" target="_blank">▶ מדברים מהבטן 148 - מהדורת ממ"ד</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/places/ANXAkqFE8erpzeKNUuSQVe-_kIXpL0UXUkHkD19G47qCbLUCYw43n4BiGy6bqUkEjbY_0UA2H_cT8kl6_22uH3SYayQ9PePG7WQsP7k=s1600-w800" alt="אגדיר" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">אגדיר</div>
+      <div class="card-name-en">Agadir</div>
+      <div class="tags"><span class="tag city">הרצליה</span><span class="tag cuisine">המבורגר</span><span class="tag price">יקר</span><span class="tag rating">⭐ 3.9 (2714)</span><span class="tag mention">נטעם</span></div>
+      <div class="quote">"שני המבורגרים מאוד מאוד מוצלחים"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=wlCpj1zPzEA&t=194s" target="_blank">▶ מחרוזת מתוקים | מדברים מהבטן, פרק 142</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/place-photos/AL8-SNEEonoWcNxHen5BriNRfNw_9MqCN9LmH8XPkmKoF9Te4jHEFMF2sJCha-KCkEcWvIf-4At6B73SIatRtnmMspfbZXnE2ik1_1vh-Cbb_C7nc5INxrxCxTofVGz_zbCVH8N4_zTzthC4OR9V930=s1600-w800" alt="בבקה" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">בבקה</div>
+      <div class="card-name-en">Babka</div>
+      <div class="tags"><span class="tag city">תל אביב</span><span class="tag cuisine">מאפייה</span><span class="tag price">בינוני</span><span class="tag rating">⭐ 4.5 (609)</span><span class="tag mention">נטעם</span></div>
+      <div class="quote">"הרוגלך של הבבקה שזה רוגלח סיסי ורטוב וטוב"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=wlCpj1zPzEA&t=810s" target="_blank">▶ מחרוזת מתוקים | מדברים מהבטן, פרק 142</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/place-photos/AL8-SNGxPvwskf8pH313h5TAVFcq3d_QHk4qlVqX1SO19wSYyReltntqx4hiQ3y9pFHMc8YbekqCC0M9MQBiDM-awbGP3DT3n3ntYFOpUPp5apQLgGXdCpLd7Q9VcW95LhblAi5DZjW-KRdNOiYY5AA=s1600-w800" alt="דוק" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">דוק</div>
+      <div class="card-name-en">Dok</div>
+      <div class="tags"><span class="tag city">תל אביב</span><span class="tag cuisine">שף</span><span class="tag price">יקר</span><span class="tag rating">⭐ 4.2 (1184)</span><span class="tag mention">נטעם</span></div>
+      <div class="quote">"היה פשוט מעולה מעולה באמת"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=wlCpj1zPzEA&t=2754s" target="_blank">▶ מחרוזת מתוקים | מדברים מהבטן, פרק 142</a></div>
+    </div>
+  </div>
+  <div class="card">
+    <img class="card-img" src="https://lh3.googleusercontent.com/places/ANXAkqGkJy-dYumxUsYeLrxO85jC713S33Z_cx245sh54cxw_hqGXeRysJ70ywOqnaM5BjB5iZ3DQoDcAHZpJto2BhXzEy3raj-YHnA=s1600-w800" alt="טאורוס" loading="lazy" onerror="this.outerHTML='<div class=no-img>🍽</div>'">
+    <div class="card-body">
+      <div class="card-name">טאורוס</div>
+      <div class="card-name-en">Taurus Smokehouse</div>
+      <div class="tags"><span class="tag city">סביון</span><span class="tag cuisine">שיפודים</span><span class="tag price">בינוני</span><span class="tag rating">⭐ 3.9 (46)</span><span class="tag mention">הוזכר</span></div>
+      <div class="quote">"כל התוצרים שלו הן מעולים והטאורוס הזה נראה פגז"</div>
+      <div class="meta"><a class="episode-link" href="https://www.youtube.com/watch?v=wlCpj1zPzEA&t=1429s" target="_blank">▶ מחרוזת מתוקים | מדברים מהבטן, פרק 142</a></div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

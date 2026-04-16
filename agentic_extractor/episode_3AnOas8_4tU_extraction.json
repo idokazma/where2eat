@@ -1,0 +1,634 @@
+{
+  "episode": {
+    "video_id": "3AnOas8_4tU",
+    "video_url": "https://www.youtube.com/watch?v=3AnOas8_4tU",
+    "title": "טעימת חלב עיוורת | מדברים מהבטן, פרק 132",
+    "channel_name": "מדברים מהבטן - הפודיום",
+    "published_at": "2025-11-12",
+    "hosts": [
+      "עמית אהרונסון",
+      "יהונתן כהן",
+      "נתה סלונים"
+    ],
+    "guests": [],
+    "language": "he",
+    "transcript_length": 41446,
+    "segment_count": 1254,
+    "episode_id": null,
+    "summary": "פרק 132 של מדברים מהבטן. עמית מדווח על ערב מיוחד של חיים כהן ביפו תל אביב שהחזיר את מסעדת קרן ל-2 ערבים. נתה מגלה את בסטה דגים בשכונת לבונטין ואת חווית התורו טונה הביתית. יהונתן מגלה את החצר של אסף - מקום סירים מרוקאיים-פרסיים בחצר של מוסך בבני ברק. חלק מרכזי של הפרק מוקדש לטעימת חלב עיוורת - חלב גד סינתטי (רימילק) מול חלב אמיתי. בחדשות: צ'קולי פותחים צהריים, נעה ביסטרו עוברת לפורמט צהריים, פסקדו פותחים קריחי דגים באשדוד. יהונתן סוקר בהרחבה את הסתקייה של מחניהודה - השיפודייה החדשה של קבוצת מחניהודה שהיא לדבריו הכי טעימה שיש. עמית מספר על סניור - ביסטרו חדש וצנוע בתל אביב. נתה מספרת על שוק הפשפשים ביום רביעי. במבקרים: סגי כהן בסנה בית גניה, אבי הפרטי בבנדיט, קובי רובין בביטן האוכל."
+  },
+  "extraction": {
+    "date": "2026-04-03",
+    "agent": "episode-processor",
+    "total_mentions": 15,
+    "add_to_page": 4,
+    "reference_only": 9,
+    "rejected": 2,
+    "already_in_db": 2,
+    "new_to_add": 2
+  },
+  "restaurants": [
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "סטקייה",
+      "name_english": "Steakiya",
+      "name_in_transcript": "סתקייה",
+      "google_name": "Steakiya",
+      "timestamp": {
+        "seconds": 2110,
+        "display": "35:10",
+        "youtube_url": "https://www.youtube.com/watch?v=3AnOas8_4tU&t=2110s"
+      },
+      "location": {
+        "city": "ירושלים",
+        "neighborhood": "מחנה יהודה",
+        "address": "הדקל 1, ירושלים, ישראל",
+        "region": "ירושלים",
+        "latitude": 31.785278499999997,
+        "longitude": 35.2113499
+      },
+      "cuisine_type": "שיפודים",
+      "price_range": "בינוני",
+      "status": "חדש",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "שזו ככל הנראה המסעדה הכי טעימה של מחנה יהודה",
+        "טעים פשוט לא עכשיו שילובי טעמים",
+        "בערב אחד כבשו את הפסגה. זו השיפודיה הכי טובה בארץ במכלול שלה בפער",
+        "11 צלוכיות כל אחת מהן היא לא פחות מוואו מדוייקת מעולאת"
+      ],
+      "host_comments": "יהונתן מדווח שהסתקייה של מחניהודה היא השיפודייה הכי טעימה של כל קבוצת מחניהודה. מוגדר כפופאפ על חורבות צמח ברחוב בית יעקב. 11 סלטים מדויקים ומעולים, שיפודים גדולים וטובים. קמל השלמון שותף לתפריט על המנגל. פתיחת שולחן ב-60-70 שקל כולל שיפוד, סלטים, צ'יפס ופיטות. ראשונות מרשימות: חומוס חשוויה, סלט מוריס, סמבוסק ארטישוק ירושלמי, פנדס ירושלמיים.",
+      "dishes_mentioned": [
+        "שיפודים",
+        "חומוס חשוויה",
+        "סלט מוריס",
+        "סמבוסק ארטישוק ירושלמי",
+        "פנדס ירושלמיים",
+        "צ'יפס",
+        "פיטות"
+      ],
+      "special_features": [
+        "שיפודייה",
+        "קבוצת מחניהודה",
+        "פופאפ",
+        "כשר",
+        "קמל השלמון על המנגל"
+      ],
+      "mention_context": "יהונתן סוקר בהרחבה את הסתקייה החדשה של מחניהודה, מכריז שזו השיפודייה הכי טובה בארץ",
+      "speaker": "יהונתן כהן",
+      "google_places": {
+        "place_id": "ChIJf6EM_LvXAhURgDIqJLgFhBI",
+        "google_url": "https://maps.google.com/?cid=1297596710367756032",
+        "rating": 4.2,
+        "review_count": 1344,
+        "price_level": null,
+        "phone": "02-533-3444",
+        "website": null,
+        "photo_url": "places/ChIJf6EM_LvXAhURgDIqJLgFhBI/photos/AU_ZVEHtJHlFW9OgeQ3r4n4WhcM1jPwYcn3EI6wIyewJkK6XjuZPxbmNBurVER958_CxRZVYpYY66Hz2YJQfIA9FsAF0v9-kdJzKyX4AzSvk5K9K6scWqrxU6UzNrhg7XbTWafFIt1LN82vSHhpFns5mIV0jNt81h-TKnugsOZaJmxFITkc0t8GVwSgCJ26mmFj2OVCzyOFQIWQTkJOC_3lshjcHHuNL4ytZ4YO7bYhvJvF1hQcaG4UE43ZdoU1Yu558QAUyF5hfR66kOxanfM3cZZDvP8oasq9UZJV-s8f7P62rIYtG8hKHFhelJHcES-DG07IyIKRMrPM8tBZQvpYFDRNNppneU1-l78QMwR3Sa9BsOQnui34bzl3iTJ94sVKneH2BYoymVDHYKavQQdT-EvpIi9fXUEu65dd_IUXKkSO_zA",
+        "instagram_url": "https://www.instagram.com/steakiya.il/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": true,
+        "id": "9df2a644-614b-4ba9-8ff6-63ff29fe7891"
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "סניור",
+      "name_english": "Senior",
+      "name_in_transcript": "סניור",
+      "google_name": "סניור",
+      "timestamp": {
+        "seconds": 2615,
+        "display": "43:35",
+        "youtube_url": "https://www.youtube.com/watch?v=3AnOas8_4tU&t=2615s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "יצחק שדה",
+        "address": "רבניצקי 4, תל אביב-יפו, ישראל",
+        "region": "מרכז",
+        "latitude": 32.065780499999995,
+        "longitude": 34.7897296
+      },
+      "cuisine_type": "ביסטרו",
+      "price_range": "בינוני",
+      "status": "חדש",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "אוכל נורא נורא מדויק",
+        "איזה גוון מאוד אישי ונעים של חריפות כזאת שעובר בלא מעט מהמנות",
+        "מסעדה קטנה צנועה מהנה",
+        "ריזוטו מפוצץ בקוביות של שומר ושרמס קצוץ פשוט מעולה"
+      ],
+      "host_comments": "עמית מגלה ביסטרו חדש וצנוע באזור יצחק שדה בתל אביב. אייל סניור (לשעבר גינתון/מטבח חצר) וגל נוי (לשעבר טייזו) פתחו מקום קטן ואישי. ישבו על כיסאות ישנים של שילה שנמכרו, בר מחומוסייה שנסגרה. אוכל מדויק בלי להמציא את הגלגל: סשימי, שיפוד כבד עגל, פרגית בגריל פחם, ריזוטו מעולה, קינוח עוגת מייפל ביתי.",
+      "dishes_mentioned": [
+        "סשימי פלמידה",
+        "שיפוד כבד עגל עם בצל כבוש",
+        "חסה בגריל ברוטב קיסר",
+        "פרגית בגריל פחם עם מטריות סיניות ומח עצם וחלמון",
+        "ריזוטו עם שומר ושרמס",
+        "קרם פרש תאנים צ'ילי",
+        "עוגת מייפל"
+      ],
+      "special_features": [
+        "ביסטרו אישי",
+        "כיסאות של שילה ההיסטורית",
+        "בקבוקי יין פתוחים"
+      ],
+      "mention_context": "עמית מספר על מסעדה חדשה וצנועה שמזכירה את הרוח של שילה בתחילת דרכה",
+      "speaker": "עמית אהרונסון",
+      "google_places": {
+        "place_id": "ChIJvVeZRgBLHRUR0O0FcoSl28Q",
+        "google_url": "https://maps.google.com/?cid=14185113439600766416",
+        "rating": 4.8,
+        "review_count": 38,
+        "price_level": null,
+        "phone": "077-303-4202",
+        "website": "https://www.senior-rest.com/",
+        "photo_url": "places/ChIJvVeZRgBLHRUR0O0FcoSl28Q/photos/AU_ZVEEtShwbi-4CjQlEB6gNCCU39Y7qgEOELrXrjKYG87UsBSOVmlR5OWMixrHZO8enOOHo64_1b5q0tCh8bbHkqm--m2hQkhTpyCx4OiqKHWSik-v08EVBTp_A3rvzt0OzlRoeKjm_a5kgYN49WaE8S7QILXKvzq0WQWhrliapETXFM6HJwoUS3o3cPSoo2IKuUu_TZ3oTWMGCeOdN3CJPcFphGSQCSy8mHySBOyf4lMRxPuA0EpbCKUU1fcQS2CmzrUGGYZl3INRUbeJYb1FevJUzC4F0i-oLQrXFJqadrYW0Og",
+        "instagram_url": "https://www.instagram.com/senior.rest/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "בסטה דגים",
+      "name_english": "Basta Dagim",
+      "name_in_transcript": "בסטה דגים",
+      "google_name": "בסטה דגים",
+      "timestamp": {
+        "seconds": 587,
+        "display": "09:47",
+        "youtube_url": "https://www.youtube.com/watch?v=3AnOas8_4tU&t=587s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "לבונטין",
+        "address": "מקווה ישראל 22, תל אביב-יפו, 6511519, ישראל",
+        "region": "מרכז",
+        "latitude": 32.062561599999995,
+        "longitude": 34.776119
+      },
+      "cuisine_type": "דגים",
+      "price_range": "בינוני",
+      "status": "חדש",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "פתחו שם חנות מהממת",
+        "הכל שם טרי יש ויטרינה כזו יפה",
+        "אחלה מקום כל הכבול להם שיצליחו"
+      ],
+      "host_comments": "נתה מגלה את חנות הדגים החדשה בשכונת לבונטין. בסטה דגים היו אינטרנטיים ופתחו חנות פיזית. קו אסיאתי עם מזווה של מוצרים מיפן, רטבים תוצרת בית, אפשרות לישיבה ואכילה במקום. תורו טונה ב-40 שקל ל-100 גרם, דגים חתוכים מוכנים. נתה הכינה תורו טונה ביתית עם אבוקדו ורוטב אסיאתי.",
+      "dishes_mentioned": [
+        "תורו טונה",
+        "דגים נאים",
+        "פלטת דגים",
+        "פירות ים"
+      ],
+      "special_features": [
+        "חנות דגים פיזית חדשה",
+        "קו אסיאתי",
+        "מזווה יפנית",
+        "רטבים תוצרת בית",
+        "ישיבה במקום"
+      ],
+      "mention_context": "נתה מספרת על חנות דגים חדשה בשכונת לבונטין עם חוויית קנייה מעולה ותורו טונה ביתית",
+      "speaker": "נתה סלונים",
+      "google_places": {
+        "place_id": "ChIJ711oBABLHRURVZYoBETDvdU",
+        "google_url": "https://maps.google.com/?cid=15390397704193045845",
+        "rating": 4.5,
+        "review_count": 58,
+        "price_level": null,
+        "phone": "050-395-9995",
+        "website": "http://www.bastadagim.co.il/",
+        "photo_url": "places/ChIJ711oBABLHRURVZYoBETDvdU/photos/AU_ZVEG2Ht55nVdEa2flsEMpfMgM5v_9LQkDNPVSpuZgte_0JBELHpRlbLYm2doQcciiMzfOnRDKLt0G6YZzZjgeYW_SSyEo48nF5wuAfedTPxO2H34F3Qbh3GHnL9ofpr5ucv15I4GMKrnjmLQzY2LGdwzizU-afQROplN5nBLnvnG-lZ2m0F2kowlhUqW3aaPbcgBrK71qqTtBZjYMmTJs2tItNDiQEnObJE8P-frxADyiGZA2BVncdssI7qHDrHXM1jk_sVB4hkDpQtCHKnNcllASz_jzVP-kA5Vy9O-Aey343A",
+        "instagram_url": "https://www.instagram.com/basta_dagim/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "החצר של אסף",
+      "name_english": "Hachatzer Shel Asaf",
+      "name_in_transcript": "החצר של הסף",
+      "google_name": "החצר של אסף",
+      "timestamp": {
+        "seconds": 943,
+        "display": "15:43",
+        "youtube_url": "https://www.youtube.com/watch?v=3AnOas8_4tU&t=943s"
+      },
+      "location": {
+        "city": "בני ברק",
+        "neighborhood": null,
+        "address": "הירקון 64, בני ברק, ישראל",
+        "region": "מרכז",
+        "latitude": 32.097688,
+        "longitude": 34.831151
+      },
+      "cuisine_type": "מרוקאי-פרסי",
+      "price_range": "זול",
+      "status": "חדש",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "זה מקום מעולה",
+        "שמן וטעים ברמות אחרות",
+        "יופי של דבר"
+      ],
+      "host_comments": "יהונתן מגלה מקום סירים בחצר של מוסך ישן בבני ברק. אסף אקלר, שף פרטי בדימוס, מעמיד 5-7 סירים יומיים משתנים עם השראה מרוקאית-פרסית. מנת בשר עם תוספות ב-55 שקל, טעימות ב-100 שקל. חורש זבזצוך (סביזי לימון פרסי), קציצות דגים מרוקאיות, מקלובה עוף, בשר סאדו מפורק. מקום מאוד לא צפוי באזור תעשייתי.",
+      "dishes_mentioned": [
+        "חורש סבזי (זבזצוך) לימון פרסי",
+        "קציצות דגים מרוקאיות",
+        "קציצות אורז קיפודיות",
+        "כבש עם פולים",
+        "מקלובה עוף בלימון אסיאתי",
+        "בשר סאדו מפורק"
+      ],
+      "special_features": [
+        "בחצר של מוסך ישן",
+        "סירים משתנים יומיים",
+        "שף פרטי בדימוס",
+        "מטבח מרוקאי-פרסי",
+        "מחירים נמוכים"
+      ],
+      "mention_context": "יהונתן מגלה מקום סירים נסתר בחצר מוסך בבני ברק, גילוי מטיק טוק",
+      "speaker": "יהונתן כהן",
+      "google_places": {
+        "place_id": "ChIJYf34fABJHRURR1OSV-dC-qI",
+        "google_url": "https://maps.google.com/?cid=11743772539696075591",
+        "rating": 4.4,
+        "review_count": 24,
+        "price_level": null,
+        "phone": null,
+        "website": null,
+        "photo_url": null,
+        "instagram_url": null,
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "sub_tag": "הוזכר",
+      "name_hebrew": "קרן",
+      "name_english": "Keren",
+      "name_in_transcript": "קרן",
+      "google_name": null,
+      "timestamp": {
+        "seconds": 224,
+        "display": "03:44",
+        "youtube_url": "https://www.youtube.com/watch?v=3AnOas8_4tU&t=224s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "יפו",
+        "address": null,
+        "region": "מרכז"
+      },
+      "cuisine_type": "שף",
+      "skip_reason": "מסעדה סגורה שחזרה לחיים לשני ערבים מיוחדים בלבד, אירוע סולדאאוט חד-פעמי. לא מסעדה פעילה שניתן לבקר בה.",
+      "host_quotes": [
+        "ביסור רקסרטנים מנה שהיא מקור לאינסוף חיקויים עד היום",
+        "הרבה זמן לא הייתי באירוע מיוחד כזה במסעדה שהיה כל כך אמיתי וכל כך מרגש"
+      ],
+      "mention_context": "חיים כהן החזיר את מסעדת קרן המיתולוגית שנסגרה ב-2002 לשני ערבים ביפו תל אביב לכבוד יום הולדת 14. אירוע סולדאאוט.",
+      "google_places": {
+        "place_id": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "sub_tag": "הוזכר",
+      "name_hebrew": "צ'קולי",
+      "name_english": "Chacoli",
+      "name_in_transcript": "הצ'קולי",
+      "google_name": "Chacoli",
+      "timestamp": {
+        "seconds": 1817,
+        "display": "30:17",
+        "youtube_url": "https://www.youtube.com/watch?v=3AnOas8_4tU&t=1817s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": null,
+        "address": "רציף הרברט סמואל 3, תל אביב-יפו, ישראל",
+        "region": "מרכז",
+        "latitude": 32.0678001,
+        "longitude": 34.7622449
+      },
+      "cuisine_type": "ים תיכוני",
+      "skip_reason": "חדשות בלבד - הכרזה על פתיחת ארוחות צהריים חדשות. המנחים לא אכלו שם.",
+      "host_quotes": [
+        "39 שקל למגש של שישה מזטים"
+      ],
+      "mention_context": "צ'קולי פותחים ארוחות צהריים עם דיל של 39 שקל ל-6 מזטים",
+      "google_places": {
+        "place_id": "ChIJzR-iXgBNHRUR92oIpgbfTek",
+        "rating": 4.1,
+        "review_count": 556,
+        "phone": "03-656-4740",
+        "photo_url": "places/ChIJzR-iXgBNHRUR92oIpgbfTek/photos/AU_ZVEEoWvyjqEmFXAXhM5A-VbFRgKuxwJ-hV4cZNPDN82UnOzNFoCpeV3ajzTqUctUJPlpDC_yq5ozbybMYrdmk55XvPPorANzpC5NsFSjjCi7HcdW3lgt3W8_NEu626FtYW_8jk-UvVLi8O7FTd65aWFopfjc2nVxU3dZpm6-RTg4L9DM7bhieOSOxiE9ucSpujOpXAk7UP5tdUAsRkq0XbZ0-CuN3iGyEihu6ahaNapmXrocghwtGf6wWjT9G0mPiR4iGzN2ACKtq7R2N6KTXZL_jJmNvjTwhHdFrQFG4EHdExw",
+        "verified": true
+      },
+      "production_db": {
+        "exists": true,
+        "id": "08078e19-f1eb-4c71-ab70-5dd8792b8e1a"
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "sub_tag": "הוזכר",
+      "name_hebrew": "נעה ביסטרו",
+      "name_english": "Noa Bistro",
+      "name_in_transcript": "נוע ביסטרופ",
+      "google_name": "נעה - אפייה מקומית, מסעדה ומאפייה",
+      "timestamp": {
+        "seconds": 1859,
+        "display": "30:59",
+        "youtube_url": "https://www.youtube.com/watch?v=3AnOas8_4tU&t=1859s"
+      },
+      "location": {
+        "city": "קרית ענבים",
+        "neighborhood": null,
+        "address": "קרית ענבים, ישראל",
+        "region": "ירושלים",
+        "latitude": 31.806256700000002,
+        "longitude": 35.1217098
+      },
+      "cuisine_type": "ביסטרו",
+      "skip_reason": "חדשות בלבד - אלדד שמואלי עובר מפורמט ערב לצהריים. המנחים לא אכלו שם.",
+      "host_quotes": [
+        "אלדד שמואלי עושה המבורגר אני רוצה ללכת לאכול אותו"
+      ],
+      "mention_context": "נעה ביסטרו של אלדד שמואלי סגר את הערבים ועובר לפורמט צהריים ביסטרואלי",
+      "google_places": {
+        "place_id": "ChIJ6zS-MIrRAhUR_c8hRRJNEbs",
+        "rating": 4.1,
+        "review_count": 419,
+        "phone": "02-565-5390",
+        "website": "https://www.noa-rest.co.il/",
+        "photo_url": "places/ChIJ6zS-MIrRAhUR_c8hRRJNEbs/photos/AU_ZVEFn7N_BDA0Ldto-X3_kn2hpou1WvbckFybQLDB2pNiygx-8f879UU34dW7UBvPoIYcbSB6c0fp_Yw4EEchzswCBSGw4mLPUBC4TgiMykGy4J-E9y5etDU08AUgXgFGQVe14pEKZxw9bYULrWUEaNtW59OXv8eg1zGswwK3h__6sRvuxmyiOsgLIszo8G2X5iYRZEbAoiDEYgSziVPC_ZQWTtKtLbTscPCzs5zTkHn_rimOysX9WUwHL0H7DLwXJAP4-sckIgUTPfpWRmsyMuimIPIRL0No33oBS59a9FZn7MQ",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "sub_tag": "הוזכר",
+      "name_hebrew": "פסקדו",
+      "name_english": "Peskado",
+      "name_in_transcript": "פסקדו",
+      "google_name": "Pescado",
+      "timestamp": {
+        "seconds": 1941,
+        "display": "32:21",
+        "youtube_url": "https://www.youtube.com/watch?v=3AnOas8_4tU&t=1941s"
+      },
+      "location": {
+        "city": "אשדוד",
+        "neighborhood": null,
+        "address": "מרטין בובר 1/12, אשדוד, ישראל",
+        "region": "דרום",
+        "latitude": 31.8129082,
+        "longitude": 34.6414107
+      },
+      "cuisine_type": "דגים",
+      "skip_reason": "חדשות על פתיחת קריחי דגים חדשים על החוף. המנחים לא אכלו שם.",
+      "host_quotes": [
+        "מעל הקשרות זה כמובן מסעדת פסקדו באשדוד האהובה והאדירה"
+      ],
+      "mention_context": "פסקדו פותחים קיוסק קריחי דגים על שפך נחל לכיש באשדוד",
+      "google_places": {
+        "place_id": "ChIJUUxvh6CjAhURs9np0Z_2At4",
+        "rating": 4.5,
+        "review_count": 1963,
+        "phone": "08-852-3063",
+        "website": "http://www.pescado.co.il/",
+        "photo_url": "places/ChIJUUxvh6CjAhURs9np0Z_2At4/photos/AU_ZVEH4G3fQEI1-hoLSTFGG1fBenFxWZVJ32ajmcm0gfELx4JrpYo_W5fPLbrG4cju6FA1e6pVQUS7DCJvRwtXCOqTKeqv4zXs71OaAPOyQrV7O95ah4i5jUTrNplTIUnQqNlW6YwrsEPmia1Mp4kw-55B_OUFI0qrp9Y27Lc4wns6HgKjOTME-arLP3WZkW2z8-ddoG8WNXPJqd3f9HVx1iSJVEGiBcyAGnD9RXn5cffVy-RVjVJtLcm4t0VGGi59x5ELy87M7jR1wr-E_OOyAPyP9WUDlc4ljzMDMRJqqsPtQsA",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "sub_tag": "הוזכר",
+      "name_hebrew": "בנדיט",
+      "name_english": "Bandit",
+      "name_in_transcript": "בנדיט",
+      "google_name": "Bandit",
+      "timestamp": {
+        "seconds": 3168,
+        "display": "52:48",
+        "youtube_url": "https://www.youtube.com/watch?v=3AnOas8_4tU&t=3168s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": null,
+        "address": "ניצנה 20, תל אביב-יפו, 67293, ישראל",
+        "region": "מרכז",
+        "latitude": 32.0553065,
+        "longitude": 34.7616085
+      },
+      "cuisine_type": "שף",
+      "skip_reason": "הפניה לביקורת של אבי הפרטי בלבד, המנחים לא אכלו שם בפרק הזה.",
+      "host_quotes": [
+        "אבי הפרטי כמובן אחרי כולם מגיע לבנדיט של יוסי שיטריט וחוויתו היא באופן מפתיע טובה"
+      ],
+      "mention_context": "אבי הפרטי ביקר בבנדיט של יוסי שיטריט וחוויתו הייתה טובה עד טובה מאוד",
+      "google_places": {
+        "place_id": "ChIJJb3rfS9NHRURKlMSaKp4jrQ",
+        "rating": 4.0,
+        "review_count": 169,
+        "phone": "077-303-4034",
+        "photo_url": "places/ChIJJb3rfS9NHRURKlMSaKp4jrQ/photos/AU_ZVEEZU7INeoEDm4ndwlAKyqvzCJbNH9EHnESPRPHi19kHKBOHctCWOkm1jRbQ853tcMi10OIzUYq5FCyECcyNpmPNy_AEyExMngYd-xJcbjCGt6--9lB3ZqRQxAHaXbOaMV0rzcj-LfiHpxuyGx292pxfgT_6O5AV0C-0x8yMJ5uSeoz9f5ImcI6gcwX0U5COM_S_AVp4o8RnddRIv3MsyQCCn_Xg0xDT3ddRR03vjVaH6UKP5hHdyrF9IHmJc0Mf3VZ8kBN09Q07oSDUZFhxem_UEI1MNf2t3VjSVy4cK0BUOg",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "sub_tag": "הוזכר",
+      "name_hebrew": "סנה",
+      "name_english": "SANA",
+      "name_in_transcript": "סנה בית גניה",
+      "google_name": "SANA",
+      "timestamp": {
+        "seconds": 3052,
+        "display": "50:52",
+        "youtube_url": "https://www.youtube.com/watch?v=3AnOas8_4tU&t=3052s"
+      },
+      "location": {
+        "city": "דגניה ב'",
+        "neighborhood": null,
+        "address": "דגניה ב', 1513000, ישראל",
+        "region": "צפון",
+        "latitude": 32.7020948,
+        "longitude": 35.578302
+      },
+      "cuisine_type": "אסיאתי",
+      "skip_reason": "הפניה לביקורת של סגי כהן בלבד. המנחים לא אכלו שם בפרק הזה.",
+      "host_quotes": [
+        "מאוד נהנה מלראות מקום בשישי בערב גניה שעמוס ופועל ושוקק ומלא אנשים"
+      ],
+      "mention_context": "סגי כהן ביקר בסנה בית גניה האסיאתית של אירן שוורצד. ביקורת חיובית למרות הערות על מנות בודדות.",
+      "google_places": {
+        "place_id": "ChIJJ7Rf6uNrHBURofKk-QjGwaQ",
+        "rating": 4.7,
+        "review_count": 185,
+        "phone": "077-880-1740",
+        "website": "https://tabitisrael.co.il/site/sana",
+        "photo_url": "places/ChIJJ7Rf6uNrHBURofKk-QjGwaQ/photos/AU_ZVEH1lBBVabsVIXdSotksysAjeZmNf-0JTiG0_jICbBc-VHEh2W-4JMMMBVGZtfSnY0gjJkbUVs5NNHviU_mJI2xamzSAzw5nuRaHinVTqAq0GXGUTL8RTQhDiMM8wPjtIwTwpphCJXvxDLGjPEiyHqjvKXfYw7onb4KJApUMC038EBtpgGZLNvw7rd3J9R8pdOH5maOrK0j2sVA9cZwaTNgZQ-I2lxhlrbIhluHeCDm-pbysU76EGzcdqZ2iUp9glzLtF8TZwVOmUj_m-FQ_bxKLWTt16G9Mhfp_zub8AeI",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "sub_tag": "הוזכר",
+      "name_hebrew": "ביטן האוכל",
+      "name_english": "Bitan HaOchel",
+      "name_in_transcript": "ביטן האוכל",
+      "timestamp": {
+        "seconds": 3229,
+        "display": "53:49",
+        "youtube_url": "https://www.youtube.com/watch?v=3AnOas8_4tU&t=3229s"
+      },
+      "location": {
+        "city": "בני ברק",
+        "neighborhood": null,
+        "address": "ארונוביץ', בני ברק",
+        "region": "מרכז"
+      },
+      "cuisine_type": "פלאפל",
+      "skip_reason": "הפניה לביקורת של קובי רובין בלבד. פלאפל ב-16 שקל. המנחים לא אכלו שם.",
+      "host_quotes": [
+        "16 שק למענת פלאפל באזור המרכז זה מחיר איזה מחיר יפה"
+      ],
+      "mention_context": "קובי רובין מצא פלאפל בבני ברק ברחוב ארונוביץ'. 16 שקל למנת פלאפל.",
+      "google_places": {
+        "place_id": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "sub_tag": "הוזכר",
+      "name_hebrew": "שוק הפשפשים יום רביעי",
+      "name_english": "Flea Market Wednesday",
+      "name_in_transcript": "שוק הפשפשים",
+      "timestamp": {
+        "seconds": 2886,
+        "display": "48:06",
+        "youtube_url": "https://www.youtube.com/watch?v=3AnOas8_4tU&t=2886s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "יפו",
+        "address": "רחבת שוק הפשפשים, יפו",
+        "region": "מרכז"
+      },
+      "skip_reason": "אירוע שוק שבועי (ימי רביעי) ולא מסעדה. שוק אוכל ויצרנים ארטיזנליים עם שף מתחלף.",
+      "host_quotes": [
+        "לא ציפיתי שזה יהיה כל כך טוב",
+        "יצרו שם משהו מאוד הוליסטי"
+      ],
+      "mention_context": "נתה מספרת על שוק חדש ביום רביעי ברחבת שוק הפשפשים ליד הקיצוקי. יצרנים ארטיזנליים, שף מתחלף, יקב ישראלי, יין של הגפן.",
+      "google_places": {
+        "place_id": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "sub_tag": "הוזכר",
+      "name_hebrew": "יורגוס",
+      "name_english": "Yorgos",
+      "name_in_transcript": "יורגוס",
+      "timestamp": {
+        "seconds": 1143,
+        "display": "19:03",
+        "youtube_url": "https://www.youtube.com/watch?v=3AnOas8_4tU&t=1143s"
+      },
+      "location": {
+        "city": null,
+        "neighborhood": null,
+        "address": null,
+        "region": null
+      },
+      "cuisine_type": "יווני",
+      "skip_reason": "עדכון אישי בלבד - יורגוס עשה קעקוע 'אני עומד לצד ישראל'. לא ביקורת או חוויית אוכל.",
+      "host_quotes": [
+        "תזכרו כמובן את המקום של יורגוס כשאתם באזור"
+      ],
+      "mention_context": "יורגוס היווני עשה קעקוע בעברית 'אני עומד לצד ישראל'. עדכון חמוד, לא ביקורת.",
+      "google_places": {
+        "place_id": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "rejected",
+      "name_in_transcript": "רימילק / קאופרי",
+      "reject_reason": "מוצרי מזון תעשייתיים (חלב סינתטי), לא מסעדה",
+      "timestamp": {
+        "seconds": 1300,
+        "display": "21:40"
+      }
+    },
+    {
+      "verdict": "rejected",
+      "name_in_transcript": "שילה",
+      "reject_reason": "הפניה היסטורית בלבד - שילה הוזכרה כהקשר לסניור (הכיסאות והשולחנות הישנים של שילה). לא ביקורת על שילה עצמה.",
+      "timestamp": {
+        "seconds": 2576,
+        "display": "42:56"
+      }
+    }
+  ]
+}

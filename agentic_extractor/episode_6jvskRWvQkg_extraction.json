@@ -1,0 +1,1013 @@
+{
+  "episode": {
+    "video_id": "6jvskRWvQkg",
+    "video_url": "https://www.youtube.com/watch?v=6jvskRWvQkg",
+    "title": "סיכום שנה 2025 | מדברים מהבטן",
+    "channel_name": "מדברים מהבטן - הפודיום",
+    "published_at": "2025-12-31",
+    "hosts": [
+      "עמית אהרונסון",
+      "יונתן כהן",
+      "נטע סלונים"
+    ],
+    "guests": [
+      "אוהד זלג"
+    ],
+    "language": "he",
+    "transcript_length": 52632,
+    "segment_count": 1534,
+    "episode_id": "a6564baa-0913-4df7-a91a-e2dd968f53da",
+    "summary": "מהדורת סיכום השנה של הפודקאסט מדברים מהבטן. המנחים בוחרים כל אחד את ביסי השנה, מסעדות השנה ומתוקי השנה שלהם ל-2025. כולל ראיון עם השף אוהד זלג מפריז על עזיבתו את עולם המסעדנות הפעילה ומעבר ליצירת תוכן. דיון על מגמות השנה: ספשלטי קפה, הגל היפני, ירידת ירושלים וצמיחת אשדוד וחיפה."
+  },
+  "extraction": {
+    "date": "2026-03-25",
+    "agent": "episode-processor",
+    "total_mentions": 24,
+    "add_to_page": 13,
+    "reference_only": 9,
+    "rejected": 2,
+    "already_in_db": 10,
+    "new_to_add": 3
+  },
+  "restaurants": [
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "מרי פוסה",
+      "name_english": "Mariposa",
+      "name_in_transcript": "מרי פוסה",
+      "google_name": "Mariposa",
+      "timestamp": {
+        "seconds": 412,
+        "display": "06:52",
+        "youtube_url": "https://www.youtube.com/watch?v=6jvskRWvQkg&t=412s"
+      },
+      "location": {
+        "city": "קיסריה",
+        "neighborhood": null,
+        "address": "מגרש הגולף, Caesarea, Israel",
+        "region": "שרון",
+        "latitude": 32.5016639,
+        "longitude": 34.907233
+      },
+      "cuisine_type": "שף",
+      "price_range": "יקר",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "חמוסטה התאילנדית והיא מוגשת אחת לבתאם למצב רוחו של השף",
+        "זו מסעדה נהדרת והיא אופציה מעולה לכל מי שחי ונמצא שם באזור",
+        "זה פשוט היה וואו יצירתי אחר ואחד מביסא השנה"
+      ],
+      "host_comments": "יונתן בוחר את החמוסטה התאילנדית של השף חביב משה כביס השנה מספר 1. ציר עוף תאילנדי, שום, צ'ילי, קפיר ליים. קובות מופלאות עם גרס וג'ינג'ר.",
+      "dishes_mentioned": [
+        "חמוסטה תאילנדית",
+        "קובות עם גרס וג'ינג'ר"
+      ],
+      "special_features": [
+        "מסעדת שף",
+        "מטבח ישראלי-תאילנדי",
+        "אזור הגולף"
+      ],
+      "mention_context": "ביס השנה מספר 1 של יונתן כהן",
+      "speaker": "יונתן כהן",
+      "google_places": {
+        "place_id": "ChIJV9hVLagNHRURQDNbTYDDB4Q",
+        "google_url": "https://maps.google.com/?cid=9513787693664514880",
+        "rating": 4.5,
+        "review_count": 2277,
+        "price_level": 3,
+        "phone": "04-626-5000",
+        "website": "https://www.mariposa.co.il/",
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqEwS_C4ZkJFFTGEb4gh70z5WKWGgqJosQmuqdteeoXq6_HzAtU-VYaqK-N5t8gyuqTP23U4gHi1CppKad2V2FD27uhdbi96W1s=s1600-w800",
+        "instagram_url": "https://www.instagram.com/mariposa_rest/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": true,
+        "id": "7edc24df-7bad-42e6-afa0-9d85b742fafc"
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "משיה",
+      "name_english": "Mashya",
+      "name_in_transcript": "משיה",
+      "google_name": "Mashya",
+      "timestamp": {
+        "seconds": 470,
+        "display": "07:50",
+        "youtube_url": "https://www.youtube.com/watch?v=6jvskRWvQkg&t=470s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": null,
+        "address": "מנדלי מוכר ספרים 5, תל אביב",
+        "region": "מרכז",
+        "latitude": 32.0792599,
+        "longitude": 34.768714
+      },
+      "cuisine_type": "שף",
+      "price_range": "יקר",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "אחד הכישרונות העולים בעיניי של המטבח הישראלי החדש גיל דהן",
+        "שילוב באמת מבריק של חדש וישן והשפעות מהעולם לצד אוכל נשמה ותכניקה",
+        "פיצוץ של טעמים מהסוג שלא תוכלו למצוא באחריות בשום מקום אחר בעולם"
+      ],
+      "host_comments": "עמית בוחר את מנת הסקלופ צלוי, קלמרי ממולא צ'וריסו, ניוקי אורז וציר חמוסטה של גיל דהן במשיה כביס השנה.",
+      "dishes_mentioned": [
+        "סקלופ צלוי",
+        "קלמרי ממולא צ'וריסו",
+        "ניוקי אורז",
+        "ציר חמוסטה"
+      ],
+      "special_features": [
+        "מטבח ישראלי חדש",
+        "שף גיל דהן"
+      ],
+      "mention_context": "ביס השנה מספר 1 של עמית אהרונסון",
+      "speaker": "עמית אהרונסון",
+      "google_places": {
+        "place_id": "ChIJh3glpn5MHRUR6jwTBg3yMK4",
+        "google_url": "https://maps.google.com/?cid=12551798299231993066",
+        "rating": 4.4,
+        "review_count": 5329,
+        "price_level": 3,
+        "phone": "03-750-0999",
+        "website": "http://www.mashya.co.il/",
+        "photo_url": "https://lh3.googleusercontent.com/place-photos/AL8-SNEws9-B-voF-nA_cpNUvsFp4DhqLHAaVETX3YChf0W-dPnTiIngCNUclqA9UlbIkY-ko3cTA2pZB9-conCGCB9rPuoGzrLQyvam5roZ3fcCTiy0_nmDPNxWbDS0Enx_xGZVn8P-gLSoBFJvAw=s1600-w800",
+        "instagram_url": "https://www.instagram.com/mashya_restaurant/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "גורמה סבזי",
+      "name_english": "Gourmet Sabzi",
+      "name_in_transcript": "גורמי סבזי",
+      "google_name": "Gourmet Sabzi",
+      "timestamp": {
+        "seconds": 513,
+        "display": "08:33",
+        "youtube_url": "https://www.youtube.com/watch?v=6jvskRWvQkg&t=513s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "שוק לוינסקי",
+        "address": "לוינסקי 47, תל אביב",
+        "region": "מרכז",
+        "latitude": 32.0597676,
+        "longitude": 34.7723295
+      },
+      "cuisine_type": "פרסי",
+      "price_range": "זול",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "הגונדי האחד והיחיד בעיניי של גורמי סבזי בשוק לוינסקי",
+        "ביס מהחלומות לכל שעה ביום",
+        "קופטה נפלאה, ביס מהחלומות לכל שעה ביום. מניסיון עובד גם במאנץ'"
+      ],
+      "host_comments": "נטע בוחרת את הגונדי של גורמה סבזי כביס השנה. ציר עוף איכותי עם קורכום ומקופטה עם חומוס. ביס שניחם אותה כל השנה והציל אותה מחולי.",
+      "dishes_mentioned": [
+        "גונדי",
+        "ציר עוף עם קורכום",
+        "קופטה"
+      ],
+      "special_features": [
+        "מטבח פרסי",
+        "שוק לוינסקי"
+      ],
+      "mention_context": "ביס השנה מספר 1 של נטע סלונים",
+      "speaker": "נטע סלונים",
+      "google_places": {
+        "place_id": "ChIJr4h_w51MHRUR_C_KhIPCTb4",
+        "google_url": "https://maps.google.com/?cid=13710968397613805308",
+        "rating": 4.2,
+        "review_count": 414,
+        "price_level": null,
+        "phone": "03-508-0709",
+        "website": "https://www.gormesabzitlv.com/",
+        "photo_url": "https://lh3.googleusercontent.com/place-photos/AL8-SNG6gqfZsePlMA5uMPYFw3OWOIAenj0lEXqnbYU1dG8McKlCv1zimm61fQ8p3MYVEnqETv76AlEvcmy3FCSbTaubQrHNhQ7OLXVI3qHOX77XPbIPhP4X3JWKks_0TPd9Tl1Ky22xmfpAjphgIl0=s4800-w800",
+        "instagram_url": "https://www.instagram.com/gorme_sabzi_rest/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "מיז'נה",
+      "name_english": "Mijana",
+      "name_in_transcript": "מיז'נה",
+      "google_name": null,
+      "timestamp": {
+        "seconds": 535,
+        "display": "08:55",
+        "youtube_url": "https://www.youtube.com/watch?v=6jvskRWvQkg&t=535s"
+      },
+      "location": {
+        "city": "חיפה",
+        "neighborhood": "הדר הכרמל",
+        "address": null,
+        "region": "צפון",
+        "latitude": null,
+        "longitude": null
+      },
+      "cuisine_type": "ערבי מודרני",
+      "price_range": "בינוני",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "המסעדה הערבית המודרנית בהר...שמצליחה סוף סוף להעמיד פייט אמיתי",
+        "הקובות המתוגנות...במרקם משוגע שפריך ונמס ומענג",
+        "זו הקובה המתוגנת הטובה במזרח התיכון"
+      ],
+      "host_comments": "יונתן בוחר את הקובות המתוגנות של מיז'נה כביס שנה מספר 2. מסעדה ערבית מודרנית בחיפה עם חותם של השף עומר אלואן. קובות על יוגורט.",
+      "dishes_mentioned": [
+        "קובות מתוגנות",
+        "קובות על יוגורט"
+      ],
+      "special_features": [
+        "מסעדה ערבית מודרנית",
+        "השפעת עומר אלואן"
+      ],
+      "mention_context": "ביס השנה מספר 2 של יונתן כהן",
+      "speaker": "יונתן כהן",
+      "google_places": {
+        "place_id": "ChIJM_AKuVoHHRUR6lnZ6kqTPYY",
+        "google_url": "https://maps.google.com/?cid=9673049524638669290&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+        "rating": null,
+        "review_count": null,
+        "price_level": null,
+        "phone": null,
+        "website": null,
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqHwfaqs52J9XR5S2ftes83cBR4zOv0pCrnhHrui5TTaNh4dandXfAm2pVtn794X3V2dPGH5m4AGU33LmahaNKZS1S1G4gcaQIc=s4800-w800",
+        "instagram_url": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "אלקבר",
+      "name_english": "Al Kaber",
+      "name_in_transcript": "אלקבר",
+      "google_name": null,
+      "timestamp": {
+        "seconds": 596,
+        "display": "09:56",
+        "youtube_url": "https://www.youtube.com/watch?v=6jvskRWvQkg&t=596s"
+      },
+      "location": {
+        "city": "עין זיוון",
+        "neighborhood": null,
+        "address": "כניסה לעין זיוון, רמת הגולן",
+        "region": "צפון",
+        "latitude": null,
+        "longitude": null
+      },
+      "cuisine_type": "אוכל רחוב",
+      "price_range": "זול",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "בייגל קריספי צ'יקן...נתח עוף כזה עסיסי מהאש, קולסלו, רוטב ברביקיו ביתי, פלפלים מוחמצים",
+        "מהמנות האלה שלא אכפת לכם מי מסתכל עליכם אתם פשוט צוללים"
+      ],
+      "host_comments": "עמית בוחר את בייגל הקריספי צ'יקן של אלקבר בעין זיוון. פוד טראק/עגלת קפה בכניסה לעין זיוון בגולן. דור ואילי הבעלים לא הרימו ידיים בשנה קשה לצפון.",
+      "dishes_mentioned": [
+        "בייגל קריספי צ'יקן",
+        "קולסלו",
+        "רוטב ברביקיו ביתי",
+        "פלפלים מוחמצים"
+      ],
+      "special_features": [
+        "פוד טראק",
+        "צפון",
+        "אוכל רחוב"
+      ],
+      "mention_context": "ביס השנה של עמית אהרונסון - הצדעה לצפון",
+      "speaker": "עמית אהרונסון",
+      "google_places": {
+        "place_id": "ChIJc9l9-wKvHhURAAFIs4BGpC8",
+        "google_url": "https://maps.google.com/?cid=3432946334540759296&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+        "rating": null,
+        "review_count": null,
+        "price_level": null,
+        "phone": null,
+        "website": null,
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqE_Na8H9w6ki9YUccecaqZLGaFkVxkb5kJVUzgVnI6xvsN8wHfa0OlRgCmFboY-GRUB1sLJz_qpCPpipplndpWbjmVvPi4eTWc=s4800-w800",
+        "instagram_url": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": true,
+        "id": "562b1b8c-fe0b-4286-89a1-720368f1093e"
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "הסתקייה",
+      "name_english": "Hastakia",
+      "name_in_transcript": "הסתקיה",
+      "google_name": null,
+      "timestamp": {
+        "seconds": 707,
+        "display": "11:47",
+        "youtube_url": "https://www.youtube.com/watch?v=6jvskRWvQkg&t=707s"
+      },
+      "location": {
+        "city": "ירושלים",
+        "neighborhood": "מחנה יהודה",
+        "address": null,
+        "region": "ירושלים",
+        "latitude": null,
+        "longitude": null
+      },
+      "cuisine_type": "מזרחי",
+      "price_range": "בינוני",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "המסעדה הכי טעימה של אסף גרנית וקבוצת מחנה יהודה",
+        "חומוס חשויה...קומבינציה אלוהית של אותו בשר טחון מטוגן ממושכות על חומוס נהדר",
+        "בגזרת הראשונות יש יציאות מדהימות שרובן אין הומז למנות מוכרות"
+      ],
+      "host_comments": "יונתן בוחר את חומוס חשויה של הסתקייה כביס שנה. מסעדה של אסף גרנית וקבוצת מחנה יהודה בירושלים. משחת חומוס עם חשויה - בשר טחון מטוגן ממושכות.",
+      "dishes_mentioned": [
+        "חומוס חשויה",
+        "קבב",
+        "ראשונות יצירתיות"
+      ],
+      "special_features": [
+        "קבוצת מחנה יהודה",
+        "אסף גרנית"
+      ],
+      "mention_context": "ביס השנה מספר 3 של יונתן כהן",
+      "speaker": "יונתן כהן",
+      "google_places": {
+        "place_id": "ChIJf6EM_LvXAhURgDIqJLgFhBI",
+        "google_url": "https://maps.google.com/?cid=1334197678047376000&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+        "rating": null,
+        "review_count": null,
+        "price_level": null,
+        "phone": null,
+        "website": null,
+        "photo_url": "https://lh3.googleusercontent.com/place-photos/AL8-SNF3JB00yiCEbuS8ZcTuY_Q_0GcQdJBf6eMJYI4JHvKqMZeR9Xa-RL4glGOUTIPFRVOgVtkZSzOikgllyWlxx221qIqhKVAFEJP5vUlvu3X6dxZUwNW6Gsc1lOmZvP2XtjhtLyZSWATtVw1b4A=s4800-w800",
+        "instagram_url": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": true,
+        "id": "0b58c56c-7c76-4f9f-bdb4-1d7919478199"
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "אלנה",
+      "name_english": "Alena",
+      "name_in_transcript": "הלנסן",
+      "google_name": "ALENA - מסעדת אלנה",
+      "timestamp": {
+        "seconds": 856,
+        "display": "14:16",
+        "youtube_url": "https://www.youtube.com/watch?v=6jvskRWvQkg&t=856s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "לב העיר",
+        "address": "נחמני 23-25, תל אביב-יפו",
+        "region": "מרכז",
+        "latitude": 32.0669,
+        "longitude": 34.7741
+      },
+      "cuisine_type": "איטלקי-ים תיכוני",
+      "price_range": "בינוני",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "הפיצ'יקו פפה של הלנסן",
+        "המנה הזו לא נפלה אם לא הובילה על מנות שהיו באיטליה",
+        "הרוטב הנפלא שלהם בועט מפולפל חריף טעים מאוד"
+      ],
+      "host_comments": "נטע בוחרת את פסטת הפיצ'י (קאצ'ו א פפה) של אלנה כביס שנה. רוטב בועט מפולפל וחריף. השוותה את הפסטה לאוכל באיטליה בירח דבש. אלנה היא מסעדת המלון של דה נורמן בתל אביב.",
+      "dishes_mentioned": [
+        "פיצ'י קאצ'ו א פפה",
+        "רוטב חריף מפולפל"
+      ],
+      "special_features": [
+        "מסעדת מלון דה נורמן",
+        "מטבח איטלקי-ים תיכוני"
+      ],
+      "mention_context": "ביס השנה של נטע סלונים",
+      "speaker": "נטע סלונים",
+      "google_places": {
+        "place_id": "ChIJOxaZmH1LHRURboLnTyBU6M8",
+        "google_url": "https://maps.google.com/?cid=14987917938530255726",
+        "rating": 4.1,
+        "review_count": 1096,
+        "price_level": 3,
+        "phone": "03-543-5400",
+        "website": "https://www.thenorman.com/restaurants-and-bar/alena/",
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqHsF1-F8aXZLkLXuwO-1rw6JC0RHO8LBlHI4bG4a_1PsjjNv5en2Dmb2Tn5YvnNTspZVbLACTG0t4eUbvOLvnN-zbgf6AAJAQ=s4800-w675",
+        "instagram_url": "https://www.instagram.com/alena.restaurant/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "צפרירים",
+      "name_english": "Zafririm",
+      "name_in_transcript": "צפרירים",
+      "google_name": "Zafririm 1",
+      "timestamp": {
+        "seconds": 901,
+        "display": "15:01",
+        "youtube_url": "https://www.youtube.com/watch?v=6jvskRWvQkg&t=901s"
+      },
+      "location": {
+        "city": "חיפה",
+        "neighborhood": null,
+        "address": "צפרירים 1, חיפה",
+        "region": "צפון",
+        "latitude": 32.7968544,
+        "longitude": 34.983835
+      },
+      "cuisine_type": "בשרים",
+      "price_range": "בינוני",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "השוארמה כן שנכנסת ששוברת",
+        "עמוד יפה יפה של עגל וכבש ותועפות שומן",
+        "זה היום בטופ של השוארמות בחיפה ולהיות בטופ של השוארמות בחיפה זה לא עניין של מה בכך"
+      ],
+      "host_comments": "יונתן בוחר את השוארמה של צפרירים כביס שנה. ביסטרו ותיק בחיפה שפתח מנגליה עם עמוד שוארמה של עגל וכבש. בטופ השוארמות בחיפה.",
+      "dishes_mentioned": [
+        "שוארמה עגל וכבש"
+      ],
+      "special_features": [
+        "ביסטרו ותיק",
+        "שוארמה",
+        "מנגליה"
+      ],
+      "mention_context": "ביס השנה מספר 4 של יונתן כהן",
+      "speaker": "יונתן כהן",
+      "google_places": {
+        "place_id": "ChIJX5wxVQ-7HRURJLhDG5qS5V4",
+        "google_url": "https://maps.google.com/?cid=6844001476744775460",
+        "rating": 4.5,
+        "review_count": 3648,
+        "price_level": null,
+        "phone": "04-811-2235",
+        "website": "http://www.zafririm1.co.il/",
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqHFHwyYqeY_ZoSjRPiTHfpUUGJpiRZqm79rZgzCRK975ZVmUsMtiWVycZNQ2BowpNJVa5wv7Q_IVT_I9Y6TT3WIVwaN2Y2VNLw=s4800-w800",
+        "instagram_url": "https://www.instagram.com/zafririm1/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": true,
+        "id": "4477ae95-6900-423b-8ede-218250c32327"
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "צ'קולי",
+      "name_english": "Chacoli",
+      "name_in_transcript": "צ'קולי",
+      "google_name": "Chacoli",
+      "timestamp": {
+        "seconds": 1077,
+        "display": "17:57",
+        "youtube_url": "https://www.youtube.com/watch?v=6jvskRWvQkg&t=1077s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "טיילת הרברט סמואל",
+        "address": "רציף הרברט סמואל 3, תל אביב",
+        "region": "מרכז",
+        "latitude": 32.0678001,
+        "longitude": 34.7622449
+      },
+      "cuisine_type": "ספרדי",
+      "price_range": "יקר",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "כמעט כל פעם שיש לי הזדמנות ליציאה שאיננה מחויבת המציאות...זה אולי המקום הראשון שקופץ לי לראש",
+        "מסעדה שמציאה את המצרך הכי חשוב לכולנו - תחושה של נורמליות",
+        "כשיושבים במקום כמו צ'קולי מקווים שזה לא יגמר לעולם באמת"
+      ],
+      "host_comments": "עמית בוחר את צ'קולי כמסעדת השנה. מסעדת טאפס ספרדית על הטיילת של ירדן שי. שילוב של קלאסיקות עם חתימה אישית. סלט עגבניות, קרוקט אחי עגל, כנפיים דג, עששים עם פרלינאה.",
+      "dishes_mentioned": [
+        "טאפס",
+        "עששים עם פרלינאה",
+        "טטקי דג חרב עם מוכמניות ובמיה",
+        "סלט עגבניות",
+        "קרוקט אחי עגל",
+        "כנפיים דג"
+      ],
+      "special_features": [
+        "טאפס ספרדי",
+        "טיילת",
+        "ירדן שי",
+        "שפית השנה"
+      ],
+      "mention_context": "מסעדת השנה של עמית אהרונסון ושפית השנה - ירדן שי",
+      "speaker": "עמית אהרונסון",
+      "google_places": {
+        "place_id": "ChIJzR-iXgBNHRUR92oIpgbfTek",
+        "google_url": null,
+        "rating": 4.1,
+        "review_count": 553,
+        "price_level": null,
+        "phone": "03-656-4740",
+        "website": null,
+        "photo_url": "AU_ZVEGSuvGVYfsaDsTOG2jTkQZ2z6ORtUWLyG4hvr5GZRQtsImbTFt8rtcbGvY0adxD-dl04ABzyqKmpIReTkp3GxC7O5nLxGusSdBCzzzuCMucEa3DvfDN8uPjOcwoHx9NkPG472cv5qVbEvFJ1nEvdo3hQD7yrZnJbEwXKCqAs7CVfMQWllK_noBVeE3EaiS__qHnbwyWVzPIWqDPYeTFsNy2dE9qha9l3mq2ynyQ_OzU6mvhvk0iEzQTovPW9i5FRxAp6qaq92e7Slp21ZDX-Q77uLqgI7ROnrHJsklIi4ceeQ",
+        "instagram_url": null,
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "סטודיו גורושה",
+      "name_english": "Studio Gursha",
+      "name_in_transcript": "סטודיו גורשה",
+      "google_name": "STUDIO GURSHA - סטודיו גורשה",
+      "timestamp": {
+        "seconds": 1199,
+        "display": "19:59",
+        "youtube_url": "https://www.youtube.com/watch?v=6jvskRWvQkg&t=1199s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": null,
+        "address": "שלמה 13, תל אביב",
+        "region": "מרכז",
+        "latitude": 32.0549421,
+        "longitude": 34.7617025
+      },
+      "cuisine_type": "שף",
+      "price_range": "יקר",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "כזו כמו סטודיו גורשה אין וגם הרבה שנים לא הייתה",
+        "לא היה פה מישהו שהביא משהו כל כך שונה",
+        "זו באמת בשורה ובעיקר משהו אחר"
+      ],
+      "host_comments": "יונתן בוחר את סטודיו גורושה כמסעדת השנה כבר מחצי השנה. מסעדה של אלעזר שהביא משהו שונה לחלוטין לסצנה הישראלית. יש ברנץ' חדש. עומד במבחן הזמן בהצלחה.",
+      "dishes_mentioned": [],
+      "special_features": [
+        "שף אלעזר",
+        "מטבח חדשני",
+        "ברנץ' חדש"
+      ],
+      "mention_context": "מסעדת השנה של יונתן כהן - נבחרה כבר ביוני 2025",
+      "speaker": "יונתן כהן",
+      "google_places": {
+        "place_id": "ChIJd6-dGgBNHRURow2OAOvvkR8",
+        "google_url": null,
+        "rating": 4.8,
+        "review_count": 474,
+        "price_level": null,
+        "phone": "077-880-1768",
+        "website": "https://ontopo.com/he/il/page/46507127",
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqFiexEg9A3N_VOqzU0kd9mZUbiJFeLBZIH=s1600-w800",
+        "instagram_url": "https://www.instagram.com/studio_gursha/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "פרינו",
+      "name_english": "Farino / Prino",
+      "name_in_transcript": "פרינו",
+      "google_name": "Farino Pizza",
+      "timestamp": {
+        "seconds": 1329,
+        "display": "22:09",
+        "youtube_url": "https://www.youtube.com/watch?v=6jvskRWvQkg&t=1329s"
+      },
+      "location": {
+        "city": "אשדוד",
+        "neighborhood": null,
+        "address": "האשל 9, אשדוד",
+        "region": "דרום",
+        "latitude": 31.80729239999999,
+        "longitude": 34.6418874
+      },
+      "cuisine_type": "פיצה",
+      "price_range": "בינוני",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "הפיצריה הנפוליטנית של פרינו שהוא גם אמן ברמת הבצק",
+        "שילוב הטעמים, היכולת שלו שם לפתח ביסים כל כך עוצמתיים וזכירים בסך הכל בפיצה זה מדהים",
+        "אם יש מישהו שעוד לא היה בפרינו שעיסה ודחוף"
+      ],
+      "host_comments": "נטע בוחרת את קומפלקס פרינו/פת באשדוד כמסעדת השנה. פיצריה נפוליטנית של יאן ארוש עם פוקצות נהדרות ובית קפה נפוליטני. גם טירמיסו פנטסטי.",
+      "dishes_mentioned": [
+        "פיצה נפוליטנית",
+        "פוקצ'ה",
+        "טירמיסו"
+      ],
+      "special_features": [
+        "פיצריה נפוליטנית",
+        "יאן ארוש",
+        "קומפלקס פת+פרינו"
+      ],
+      "mention_context": "מסעדת השנה של נטע סלונים - הפיאצה האיטלקית של יאן ארוש באשדוד",
+      "speaker": "נטע סלונים",
+      "google_places": {
+        "place_id": "ChIJlZpdJZ6jAhURil-9y-a8Tog",
+        "google_url": null,
+        "rating": 4.5,
+        "review_count": 577,
+        "price_level": null,
+        "phone": "08-617-6648",
+        "website": null,
+        "photo_url": "https://lh3.googleusercontent.com/place-photos/AL8-SNEE4sIVC_mpyChM9udS1IljhbQCr=s1600-w800",
+        "instagram_url": "https://www.instagram.com/farino_pizza/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": true,
+        "id": "38547b89-d3b1-434c-87da-a777a4942fbe"
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "מושיק",
+      "name_english": "Moshik",
+      "name_in_transcript": "מושיק",
+      "google_name": null,
+      "timestamp": {
+        "seconds": 1521,
+        "display": "25:21",
+        "youtube_url": "https://www.youtube.com/watch?v=6jvskRWvQkg&t=1521s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": null,
+        "address": null,
+        "region": "מרכז",
+        "latitude": null,
+        "longitude": null
+      },
+      "cuisine_type": "שף",
+      "price_range": "יקר מאוד",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "ארוחת השנה...גובלת בשלמות",
+        "לראשונה הייתה לי ארוחת טעימות שנהניתי מכל מנה",
+        "היכולת לחבר חומוס וקביאר זה לא פחות מגאונות"
+      ],
+      "host_comments": "נטע בוחרת את הארוחה במושיק כארוחת השנה. ארוחת טעימות ב-950 שקל לאדם. טרטלט אבוקדו-קביאר-חומוס, ברוסקטה מרנגז, סלט שירן משודרג, מחמצת בת 22 שנה. ארוחה שגבלה בשלמות.",
+      "dishes_mentioned": [
+        "טרטלט אבוקדו קביאר חומוס",
+        "ברוסקטה מרנגז",
+        "סלט שירן",
+        "מחמצת",
+        "ירקות עונתיים חמימים"
+      ],
+      "special_features": [
+        "ארוחת טעימות",
+        "מטבח פתוח",
+        "מחמצת בת 22 שנה"
+      ],
+      "mention_context": "ארוחת השנה של נטע סלונים",
+      "speaker": "נטע סלונים",
+      "google_places": {
+        "place_id": "ChIJ-RF64u9LHRURsB8OYTRRl_U",
+        "google_url": "https://maps.google.com/?cid=17696702546184118192&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+        "rating": null,
+        "review_count": null,
+        "price_level": null,
+        "phone": null,
+        "website": null,
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqG8V5JpsdLE4_cjwkf3Yg0OC52zbylR8yJKU1aAiiSQgCTGQx4t5ogpXd9zkwxJlT2FPbEvjuaAE3JCIx6YSuMqLl6H3YmBDmQ=s4800-w800",
+        "instagram_url": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "הוזכר",
+      "name_hebrew": "ריבנו",
+      "name_english": "Buono",
+      "name_in_transcript": "ריבנו",
+      "google_name": null,
+      "timestamp": {
+        "seconds": 3259,
+        "display": "54:19",
+        "youtube_url": "https://www.youtube.com/watch?v=6jvskRWvQkg&t=3259s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": null,
+        "address": null,
+        "region": "מרכז",
+        "latitude": null,
+        "longitude": null
+      },
+      "cuisine_type": "גלידה",
+      "price_range": "בינוני",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "הגלידה של ריבנו",
+        "ג'לטו איטלקי ראוי וטוב עם חומרי גלם פצצה",
+        "גלילות אגוזיות ועמוקות וטעימות ועשירות בטעם"
+      ],
+      "host_comments": "נטע בוחרת את הגלידה של ריבנו כמתוק השנה. ג'לטו איטלקי עם חומרי גלם מעולים. רשת עולמית שהגיעה לישראל.",
+      "dishes_mentioned": [
+        "ג'לטו"
+      ],
+      "special_features": [
+        "ג'לטריה איטלקית",
+        "רשת עולמית"
+      ],
+      "mention_context": "מתוק השנה של נטע סלונים",
+      "speaker": "נטע סלונים",
+      "google_places": {
+        "place_id": "ChIJs5ddXthJHRURFCqN77KSlg8",
+        "google_url": "https://maps.google.com/?cid=1123246454296357396&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+        "rating": null,
+        "review_count": null,
+        "price_level": null,
+        "phone": null,
+        "website": null,
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqHQaRB48ngbFSDqdKn4wOogh4dxgbgALHaK1XdKx2AzQRx5K44Bv2FsxntDlzVk5ZxQIYgv-mQOqqINc5g6rJVIrf-F6u1bUp4=s4800-w800",
+        "instagram_url": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "בוץ",
+      "name_english": "Botz",
+      "name_in_transcript": "בוץ",
+      "skip_reason": "הוזכר בהקשר של שפים אמיצים שפתחו מסעדות עצמאיות - ללא חוות דעת או ביקורת על האוכל",
+      "timestamp": {
+        "seconds": 1863,
+        "display": "31:03",
+        "youtube_url": "https://www.youtube.com/watch?v=6jvskRWvQkg&t=1863s"
+      },
+      "location": {
+        "city": "מצפה רמון",
+        "address": null
+      },
+      "mention_context": "הצדעה לשפים אמיצים: טל אשכנזי ועומר סלצר בבוץ במצפה רמון",
+      "google_places": {
+        "place_id": null,
+        "verified": false,
+        "instagram_url": "https://www.instagram.com/botz.dining/"
+      },
+      "production_db": {
+        "exists": true,
+        "id": "4ab21b4f-0aa3-4ee3-97a1-9ce6699c18db"
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "אמיה",
+      "name_english": "Amia",
+      "name_in_transcript": "אמיה",
+      "skip_reason": "הוזכרה בהקשר של שפים אמיצים שפתחו מסעדות עצמאיות - ללא חוות דעת על האוכל",
+      "timestamp": {
+        "seconds": 1866,
+        "display": "31:06",
+        "youtube_url": "https://www.youtube.com/watch?v=6jvskRWvQkg&t=1866s"
+      },
+      "location": {
+        "city": "ירושלים"
+      },
+      "mention_context": "אושי בסון באמיה הירושלמית - מטבח שף נועז שגם בפריז היה פורץ דרך",
+      "google_places": {
+        "place_id": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": true,
+        "id": "63972de5-ef36-4ee5-8302-0fb715fa5be6"
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "סניור",
+      "name_english": "Senior",
+      "name_in_transcript": "סניור",
+      "skip_reason": "הוזכרה בהקשר של שפים אמיצים שפתחו מסעדות עצמאיות - ללא חוות דעת על האוכל",
+      "timestamp": {
+        "seconds": 1890,
+        "display": "31:30",
+        "youtube_url": "https://www.youtube.com/watch?v=6jvskRWvQkg&t=1890s"
+      },
+      "location": {
+        "city": "תל אביב"
+      },
+      "mention_context": "אייל סניור וגל נוי שפתחו את סניור באזור של מוסכים בתל אביב",
+      "google_places": {
+        "place_id": "ChIJvVeZRgBLHRUR0O0FcoSl28Q",
+        "rating": 4.8,
+        "review_count": 38,
+        "verified": true,
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqEG9wi8nWpO9VI5WoPQYFpxWHPBx_9BDuVk49jqOl_cetzJ4vq_jVsz-3xsfvhZikqPTJVBeAk9oEa9DI4bMXWjWXerIbv2s8c=s4800-w800",
+        "instagram_url": "https://www.instagram.com/senior.rest/"
+      },
+      "production_db": {
+        "exists": true,
+        "id": "0321093b-6842-4963-b88e-0635a3c99dd6"
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "מטרלו",
+      "name_english": "Mattarello",
+      "name_in_transcript": "מטרלו",
+      "skip_reason": "הודעה על פתיחה עתידית - אמרו במפורש 'לא אומרים מילה על מטרלו החדשה לפחות שנה'",
+      "timestamp": {
+        "seconds": 3997,
+        "display": "66:37",
+        "youtube_url": "https://www.youtube.com/watch?v=6jvskRWvQkg&t=3997s"
+      },
+      "location": {
+        "city": "בנימינה"
+      },
+      "mention_context": "דני פרץ פותח מטרלו חדשה בבנימינה - המנחים אומרים במפורש שלא נדבר עליה שנה",
+      "google_places": {
+        "place_id": "ChIJ27CZRwANHRURprF35Du51ow",
+        "rating": 5,
+        "review_count": 2,
+        "verified": true,
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqFqbIQRpKtLX_Cy8NLZgfQ090la3tpyTw9_4P4NJuougCaGPdst9eg77FBaSlK7w83KHws8e3E8u89kkqeTwhoTR1ceAHUSsdU=s4800-w800"
+      },
+      "production_db": {
+        "exists": true,
+        "id": "41d47b6b-e26a-4520-ae08-851b07b65bff"
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "ג'ורג' וג'ון",
+      "name_english": "George & John",
+      "name_in_transcript": "ג'ורג' וג'ון",
+      "skip_reason": "עמית מציין שהוא הולך מחר לראות תפריט חדש - עדיין לא אכל שם",
+      "timestamp": {
+        "seconds": 4125,
+        "display": "68:45",
+        "youtube_url": "https://www.youtube.com/watch?v=6jvskRWvQkg&t=4125s"
+      },
+      "location": {
+        "city": "תל אביב"
+      },
+      "mention_context": "עמית: 'מחר אני הולך לראות מה מעולה ליון פישניק בתפריט החדש שלו בג'ורג' וג'ון'",
+      "google_places": {
+        "place_id": "ChIJl5CMejNNHRURXa-pmIKHL9c",
+        "rating": 4.5,
+        "review_count": 1595,
+        "verified": true,
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqF33NhwEwCoCcFH96n5ZMMjXFswjxK5Sv-bpOkG__UbDfMuwh9ViqXbNVCWJrX9tNVl0oKKaSz0UlR12Wa4RM8tBSBXgebozCo=s4800-w800"
+      },
+      "production_db": {
+        "exists": true,
+        "id": "fc3a7eb3-f12c-437e-93fb-2d3f495a795d"
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "הגפן",
+      "name_english": "HaGefen",
+      "name_in_transcript": "הגפן",
+      "skip_reason": "מסעדה של אוהד זלג בפריז - ראיון על עזיבתו מהמסעדנות, לא ביקורת",
+      "timestamp": {
+        "seconds": 2460,
+        "display": "41:00",
+        "youtube_url": "https://www.youtube.com/watch?v=6jvskRWvQkg&t=2460s"
+      },
+      "location": {
+        "city": "פריז, צרפת"
+      },
+      "mention_context": "ראיון עם אוהד זלג על עזיבתו - הגפן נכנסה למדריך מישלן, מסעדה כשרה ראשונה בהיסטוריה",
+      "google_places": {
+        "place_id": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": true,
+        "id": "ad446277-74a0-40f3-8580-c6e1466b53b7"
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "הריס",
+      "name_english": "Haris",
+      "name_in_transcript": "הריס",
+      "skip_reason": "הוזכרה כטיפ חולף - מסעדת דגים מעולה בשפרעם, ללא ביקורת אישית",
+      "timestamp": {
+        "seconds": 3711,
+        "display": "61:51",
+        "youtube_url": "https://www.youtube.com/watch?v=6jvskRWvQkg&t=3711s"
+      },
+      "location": {
+        "city": "שפרעם"
+      },
+      "mention_context": "יונתן: 'הריס קוראים להריס הריס בשפרם' - מסעדת דגים מעולה",
+      "google_places": {
+        "place_id": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": true,
+        "id": "c4826503-2cec-421c-99b4-53b00cb4fa8d"
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "פרדס",
+      "name_english": "Pardes",
+      "name_in_transcript": "פרדס",
+      "skip_reason": "הוזכר כפתיחה עתידית - תומר טל חוזר למקום",
+      "timestamp": {
+        "seconds": 4057,
+        "display": "67:37",
+        "youtube_url": "https://www.youtube.com/watch?v=6jvskRWvQkg&t=4057s"
+      },
+      "location": {
+        "city": null
+      },
+      "mention_context": "פרדס החדשה - תומר טל חוזר למקום, בקרוב",
+      "google_places": {
+        "place_id": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "rejected",
+      "name_in_transcript": "חגאי בן יהודה",
+      "reject_reason": "אומן לחם - לא מסעדה, מוצר צריכה ביתי ללא כתובת פיזית של מסעדה",
+      "timestamp": {
+        "seconds": 649,
+        "display": "10:49"
+      }
+    },
+    {
+      "verdict": "rejected",
+      "name_in_transcript": "Peace of Nature",
+      "reject_reason": "חברת שוקולדים/פרלינים מכפר סבא - מוצר ביתי, לא מסעדה פיזית",
+      "timestamp": {
+        "seconds": 3336,
+        "display": "55:36"
+      }
+    }
+  ]
+}

@@ -1,0 +1,743 @@
+{
+  "episode": {
+    "video_id": "_abbCYlWlg8",
+    "video_url": "https://www.youtube.com/watch?v=_abbCYlWlg8",
+    "title": "מדברים מהבטן - פרק 141",
+    "channel_name": "מדברים מהבטן - הפודיום",
+    "published_at": "2026-01-14",
+    "hosts": [
+      "עמית אהרונסון",
+      "נטע סלונים",
+      "יהונתן כהן"
+    ],
+    "guests": [],
+    "language": "he",
+    "transcript_length": 42977,
+    "segment_count": 1336,
+    "episode_id": "88e25c90-ed53-4e79-8a6b-5af6e2734437",
+    "summary": "פרק 141 של מדברים מהבטן. נפתח עם ביסים: נטע חושפת את עוגת הגזר של קפה אליפלט בפארק המסילה שהיא שמרה לעצמה יותר משנה, יונתן ממליץ על הבגט הלוהט של אמוס בבת ים, ואמית משבח את הפילמני הביתי של הפילמניה מטירת כרמל. אמית מכין חומוס מאבקה (חומיקס) באולפן שנכשל בצורה מחפירה. בחלק המרכזי: חדשות תעשייה על רפי כהן שחוזר לפופאפ, סורין התאילנדית החדשה בסביון, חצר של אסף שעוברת למקום סגור, ונומא שפותחת פופאפ בלוס אנג'לס ב-1500 דולר לאדם. יונתן סוקר את דגי הראס בשפרעם - דגים טריים במחירים הגונים, אמית נדהם מתפריט הטעימות 'שביל ישראל' של יניב גור אריה ב-7to1 בנווה צדק, ונטע מופתעת מהפיצה של זות במלון לינק. בסקירת מבקרים: סגי כהן בזיגו, אבי פטי בגריל רום, וקובי רובין בפלאפל מאמיז."
+  },
+  "extraction": {
+    "date": "2026-03-25",
+    "agent": "episode-processor",
+    "total_mentions": 19,
+    "add_to_page": 6,
+    "reference_only": 11,
+    "rejected": 2,
+    "already_in_db": 4,
+    "new_to_add": 2
+  },
+  "restaurants": [
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "קפה אליפלט",
+      "name_english": "Cafe Elifelet",
+      "name_in_transcript": "קפה אליפלט",
+      "google_name": "אליפלט | ELIFELET",
+      "timestamp": {
+        "seconds": 216,
+        "display": "03:36",
+        "youtube_url": "https://www.youtube.com/watch?v=_abbCYlWlg8&t=216s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "פארק המסילה",
+        "address": "פארק המסילה, מול תחנת הרכבת, אליפלט, תל אביב-יפו",
+        "region": "מרכז",
+        "latitude": 32.0587705,
+        "longitude": 34.764389
+      },
+      "cuisine_type": "קפה",
+      "price_range": "בינוני",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "אחת מעוגות הגזר הכי טובות בעיר",
+        "היא פשוט עוגה מופלאה",
+        "עוגת הסופש הכי כיפית שיהיה עם קפה"
+      ],
+      "host_comments": "נטע חשפה סוד ששמרה לעצמה יותר משנה - עוגת הגזר של קפה אליפלט, בית קפה קטן על פארק המסילה. העוגה שלמה, לא מתפוררת, עסיסית מאוד, טיבול חזק, וקרם שמנת מעל",
+      "dishes_mentioned": [
+        "עוגת גזר",
+        "קפה"
+      ],
+      "special_features": [
+        "על פארק המסילה",
+        "ליד תחנת הרכבת"
+      ],
+      "mention_context": "ביס של נטע - עוגת גזר שהיא שמרה לעצמה יותר משנה",
+      "speaker": "נטע סלונים",
+      "google_places": {
+        "place_id": "ChIJceBgFIRNHRUR-uTVkmmNYbg",
+        "google_url": "https://maps.google.com/?cid=13286055860294247674",
+        "rating": 4.6,
+        "review_count": 145,
+        "price_level": null,
+        "phone": null,
+        "website": "https://www.instagram.com/_elifelet?igsh=MXZqZGUzcGMwaHNhNw==",
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqFgkdp_HuNh9idVHwICXd3jTAvBOE_gB57Y18lq4PyhriFpHPCDolzHZQ-wdk7PvRYJod0KBUEV2lXYtnT4vf1MQA9VGOClSsg=s1600-w800",
+        "instagram_url": "https://www.instagram.com/_elifelet?igsh=MXZqZGUzcGMwaHNhNw==",
+        "verified": true
+      },
+      "production_db": {
+        "exists": true,
+        "id": "f25e1915-8e7f-49a9-88b0-888a218995c9"
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "הבגט הלוהט של אמוס",
+      "name_english": "Amos Hot Baguette",
+      "name_in_transcript": "הבגט הלוהט של אמוס",
+      "google_name": "Amos Hot Baguette",
+      "timestamp": {
+        "seconds": 462,
+        "display": "07:42",
+        "youtube_url": "https://www.youtube.com/watch?v=_abbCYlWlg8&t=462s"
+      },
+      "location": {
+        "city": "בת ים",
+        "neighborhood": null,
+        "address": "HaOrgim St 12, Bat Yam, Israel",
+        "region": "מרכז",
+        "latitude": 32.0095952,
+        "longitude": 34.7447771
+      },
+      "cuisine_type": "סנדוויצ'ים",
+      "price_range": "זול",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "יופי של מקום, מקום לנחמה",
+        "נורא נורא פשוט. אוכל שפשוט עושה טוב על הלב",
+        "הבגט הופך ללוהט"
+      ],
+      "host_comments": "יונתן מספר על מקום קסום בדרום בת ים, במרכז מסחרים מיושן. שניצלים, חביתות, מרגזים, מעורב בבגט, פיטה או צלחת. בשלישי האמא מביאה קוסקוס עם מפרום. סלטים טובים עם ריח לימון כבוש שמטיס. מקום משפחתי שנקרא על שם האב אמוס ז'ל, והילדים מפעילים אותו בתשוקה",
+      "dishes_mentioned": [
+        "שניצל בבגט",
+        "חביתה",
+        "מרגז",
+        "מעורב",
+        "קוסקוס עם מפרום",
+        "סלטים"
+      ],
+      "special_features": [
+        "מקום משפחתי",
+        "הבגט נקלה בטוסטר לפני הגשה",
+        "קוסקוס ביום שלישי"
+      ],
+      "mention_context": "ביס של יונתן - מקום בבת ים שגילה בעקבות הילדים",
+      "speaker": "יהונתן כהן",
+      "google_places": {
+        "place_id": "ChIJVTIs8A6zAhURNP7MoqH-cwU",
+        "google_url": "https://maps.google.com/?cid=392937562685898292",
+        "rating": 4.7,
+        "review_count": 292,
+        "price_level": 1,
+        "phone": "03-525-2353",
+        "website": "https://www.instagram.com/amos_abaguette_alohet?igsh=ZXZudXlmMHhmMmk2",
+        "photo_url": "https://lh3.googleusercontent.com/place-photos/AL8-SNENb_mMtJkAJq5fFBFu0ieoSVJzc3qbWkqXDYJT_ZVGpcDaV3cPNgDhvGRCaEd1R5xBZm3G1fvTGpLZIsZ0-bxuPOVy2rqbZYfVVnngH-baH96jz8GoYwgtXvR1WzE9k-X5bgp2DQGbQWP18x8=s1600-w800",
+        "instagram_url": "https://www.instagram.com/amos_abaguette_alohet?igsh=ZXZudXlmMHhmMmk2",
+        "verified": true
+      },
+      "production_db": {
+        "exists": true,
+        "id": "031fd638-f5b1-49fb-be3c-6b9c9aaf5859"
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "הפילמניה",
+      "name_english": "HaPelmania",
+      "name_in_transcript": "הפילמניה",
+      "google_name": null,
+      "timestamp": {
+        "seconds": 598,
+        "display": "09:58",
+        "youtube_url": "https://www.youtube.com/watch?v=_abbCYlWlg8&t=598s"
+      },
+      "location": {
+        "city": "טירת כרמל",
+        "neighborhood": null,
+        "address": null,
+        "region": "צפון",
+        "latitude": null,
+        "longitude": null
+      },
+      "cuisine_type": "רוסי",
+      "price_range": "זול",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "הכל כל עבודת יד, הכל טבעי",
+        "רואים את זה ברשימת המרכיבים, מרגישים את זה מאוד בטעם",
+        "ממש עסק קטן ביתי ומגיע לו כל התמיכה"
+      ],
+      "host_comments": "אמית ממליץ על פילמני ביתי של טל בוגוסלבסקי, בן לעולים מברית המועצות שלמד מסבתא שלו. ארבעה סוגים: תפוחי אדמה ובצל מטוגן, בקר ועוף ביחד (השילוב הקדוש), פילמנצ'יקן (עוף עם בצק צהוב), ובקר בלבד. 50-65 ש'ח לקופסה. מזמינים דרך האתר, מגיע למרכז בסופי שבוע",
+      "dishes_mentioned": [
+        "פילמני תפוחי אדמה ובצל מטוגן",
+        "פילמני בקר ועוף",
+        "פילמנצ'יקן",
+        "פילמני בקר"
+      ],
+      "special_features": [
+        "עבודת יד ביתית",
+        "משלוח למרכז בסופי שבוע",
+        "קפוא לפריזר"
+      ],
+      "mention_context": "ביס של אמית - נשק סודי לפריזר, כמו הקובות של ג'מילה והבורקס של עזר ססון",
+      "speaker": "עמית אהרונסון",
+      "google_places": {
+        "place_id": "ChIJV-ajKQmlHRURglNR2OjO1YM",
+        "google_url": "https://maps.google.com/?cid=9499726488464872322&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+        "rating": null,
+        "review_count": null,
+        "price_level": null,
+        "phone": null,
+        "website": null,
+        "photo_url": "https://lh3.googleusercontent.com/place-photos/AL8-SNF0olL76ltVAWUzKrNCOxULllchUCxF2VB1gtyI5EeULUqgE0zLyE5q4fR_8NhhA_Hwf4jU53-6ctTYIqZ12YGashP4baows1aChhLypbp1qtVbI40aIt8BHlx83I7ZIIlNIekSAVAgpuL5FA=s4800-w800",
+        "instagram_url": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": true,
+        "id": "5c2c99a8-6bc5-41d3-960f-76a67cfde6f2"
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "דגי הראס",
+      "name_english": "Dagei HaRaes",
+      "name_in_transcript": "דגי הרעס",
+      "google_name": "דגי הרייס",
+      "timestamp": {
+        "seconds": 1750,
+        "display": "29:10",
+        "youtube_url": "https://www.youtube.com/watch?v=_abbCYlWlg8&t=1750s"
+      },
+      "location": {
+        "city": "שפרעם",
+        "neighborhood": null,
+        "address": "Mahmud Darwish St, Shefa-Amr, Israel",
+        "region": "צפון",
+        "latitude": 32.7980715,
+        "longitude": 35.1699179
+      },
+      "cuisine_type": "דגים",
+      "price_range": "בינוני",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "בסכום מאוד קטן והגון אפשר להרכיב סעודת דגים מגוונת עשירה מטופלת ביד מקצועית",
+        "אין צ'יפס, אין מנות ילדים, אין קינוחים, יש רק דג דג ועוד דג",
+        "פלמידה שמנמנה וטובה, זה פשוט ביס שמעיף"
+      ],
+      "host_comments": "יונתן ביקר בדגי הראס שעבר שיפוץ מרשים. משפחה מאבלין שמחזיקה חנות דגים בשוק טלפיות בחיפה ומספקת לרוב המסעדות. מקרר דגים של 40 מטר, בוחרים דג, משלמים מחיר קילו + 40 ש'ח לטיפול ופתיחת שולחן. אפשר טיגון, אפייה או בישול. אכל פלמידה סשימי, ברבוניות ומליטות מטוגנות, בן גוריון (גמל הים) בתנור, ולוקוס מבושל בסלסה. שניים אכלו 550 ש'ח",
+      "dishes_mentioned": [
+        "פלמידה סשימי",
+        "ברבוניות מטוגנות",
+        "מליטות מטוגנות",
+        "בן גוריון בתנור",
+        "זנב לוקוס בסלסה",
+        "סלטים"
+      ],
+      "special_features": [
+        "מקרר דגים 40 מטר",
+        "בוחרים דג ושיטת הכנה",
+        "ללא אלכוהול",
+        "מקום שעבר שיפוץ"
+      ],
+      "mention_context": "יונתן נסע לשפרעם לדגי הראס שעבר שיפוץ מרשים ופתיחה חדשה",
+      "speaker": "יהונתן כהן",
+      "google_places": {
+        "place_id": "ChIJWdP7-g21HRURtVj0WkYRs-g",
+        "google_url": "https://maps.google.com/?cid=16767764831501834421",
+        "rating": 4.7,
+        "review_count": 543,
+        "price_level": 2,
+        "phone": "04-601-9795",
+        "website": null,
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqHTcN66FRur5rZZlu-BmVNRUz8V9SEHzgrYzRWzrBXvRBXBtl1VC5INbQ6Y5cJEFKGCU9CYLerTf6HZGbCW34JCsgFY_ZNyP5I=s1600-w800",
+        "instagram_url": "https://www.instagram.com/raies_fish_1/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": true,
+        "id": "5bfb0a0d-2a68-4205-bf61-7343e68c3666"
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "שביל ישראל ב-7to1",
+      "name_english": "Shvil Israel at 7to1 Lab",
+      "name_in_transcript": "שביל ישראל / 7 one",
+      "google_name": "7to1 Lab",
+      "timestamp": {
+        "seconds": 2092,
+        "display": "34:52",
+        "youtube_url": "https://www.youtube.com/watch?v=_abbCYlWlg8&t=2092s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "נווה צדק",
+        "address": "Ahad Ha'Am St 1, Tel Aviv-Yafo",
+        "region": "מרכז",
+        "latitude": 32.0632313,
+        "longitude": 34.7680757
+      },
+      "cuisine_type": "שף",
+      "price_range": "יקר",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "התפריט אולי הכי מהודק ובוגר שלו",
+        "האוכל הוא אוכל ושנית הוא אוכל טעים",
+        "טעים טעים טעים טעים",
+        "יופי של ארוחה"
+      ],
+      "host_comments": "אמית סוקר את תפריט הטעימות 'שביל ישראל' של השף יניב גור אריה, שרץ כל יום שני עד סוף פברואר ב-7to1 (מעבדת קוקטיילים צמוד ל-TYO בנווה צדק). 14 מנות ב-450 ש'ח, התאמת קוקטיילים 200 ש'ח נוספים. מנה גאונית של פסטה מקקאו עם תבשיל זנב שור, קרמבל חם של שומר, פילה בורי מהכנרת, לחם מסעורה עם סחוג גויבות, רקפות ממולאים כרביולי. הכל חומרי גלם ישראליים בלבד",
+      "dishes_mentioned": [
+        "פסטה מקקאו עם זנב שור",
+        "קרמבל חם שומר",
+        "פילה בורי מהכנרת",
+        "לחם מסעורה עם סחוג גויבות",
+        "רקפות ממולאים",
+        "תבשיל חמוסתם ולוף"
+      ],
+      "special_features": [
+        "תפריט טעימות עונתי",
+        "חומרי גלם ישראליים",
+        "בר קוקטיילים",
+        "אינטימי",
+        "מטבח שקוף"
+      ],
+      "mention_context": "אמית סוקר את תפריט החורף של יניב גור אריה שרץ עד סוף פברואר",
+      "speaker": "עמית אהרונסון",
+      "google_places": {
+        "place_id": "ChIJrUCCWhNNHRURWNyoncUkIZU",
+        "google_url": "https://maps.google.com/?cid=10745910617054960728",
+        "rating": 4.3,
+        "review_count": 437,
+        "price_level": null,
+        "phone": "03-670-0112",
+        "website": "https://ontopo.co.il/7to1LAB?source=google",
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqFHfFqvwjjP86OmySjKVmJKfm1oo5oPZ6QgiE9d3PB4FpKzF0dJvI9rdhqq1riVMRHhXWI1wqk1vPfvsxsGproPEw-WHJJ0Ovk=s1600-w800",
+        "instagram_url": "https://www.instagram.com/7to1lab/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "זות",
+      "name_english": "Zot",
+      "name_in_transcript": "זות",
+      "google_name": null,
+      "timestamp": {
+        "seconds": 2498,
+        "display": "41:38",
+        "youtube_url": "https://www.youtube.com/watch?v=_abbCYlWlg8&t=2498s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "שאול המלך",
+        "address": "מלון לינק, שאול המלך, תל אביב",
+        "region": "מרכז",
+        "latitude": null,
+        "longitude": null
+      },
+      "cuisine_type": "פיצה",
+      "price_range": "בינוני",
+      "status": "חדש",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "אני מופתעת מכמה טובה הייתה הפיצה",
+        "אכלתי לא מעט פיצה ולא יצאתי שאני רוצה למות",
+        "מרגריתה פשוט מצוינת בעיניי"
+      ],
+      "host_comments": "נטע מספרת על פיצריה חדשה שנפתחה לפני פחות משבועיים במלון לינק בתל אביב, קומה מינוס אחת. סגנון בין נפוליטנית לניו יורקית, תנור אבן, תערובת קמחים עם קמח מלא. בצק עם אופי וטעם, קליל. פיצה לבנה עם פטריות (רעמת אריה, אויסטר), פיצה עם תפוח אדמה מדורה וגורגונזולה, מרגריטה מצוינת. סלט קיסר טוב, עגבניית מגי עם מוצרלה ואנשובי אורטיז. קלצונה נוטלה וטירמיסו משפחתי. שירות עצמי",
+      "dishes_mentioned": [
+        "פיצה לבנה עם פטריות",
+        "פיצה תפוח אדמה וגורגונזולה",
+        "מרגריטה",
+        "סלט קיסר",
+        "עגבניית מגי עם מוצרלה ואנשובי",
+        "קלצונה נוטלה",
+        "טירמיסו"
+      ],
+      "special_features": [
+        "במלון לינק",
+        "עיצוב גרפיטי",
+        "שולחן סנוקר ומכונות משחקים",
+        "שירות עצמי",
+        "תנור אבן"
+      ],
+      "mention_context": "נטע מגיעה ספקנית ומופתעת מהפיצה החדשה במלון לינק",
+      "speaker": "נטע סלונים",
+      "google_places": {
+        "place_id": "ChIJlzvtN59MHRURYqWTEZcthow",
+        "google_url": "https://maps.google.com/?cid=10125830939047339362&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+        "rating": null,
+        "review_count": null,
+        "price_level": null,
+        "phone": null,
+        "website": null,
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqEqKOOmdfiQrWOce3kEj9afdQIRv662xkuUXZzQlWH9qxHh-pgjP55c6l6L-V39AIIUItLmMPbEiJLwrYaayKPneZK5FJ03GfI=s4800-w800",
+        "instagram_url": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "סורין",
+      "name_english": "Surin",
+      "name_in_transcript": "סורין",
+      "skip_reason": "חדשות תעשייה - מסעדה תאילנדית חדשה שנפתחה בסביון, המארחים לא אכלו שם",
+      "timestamp": {
+        "seconds": 1422,
+        "display": "23:42",
+        "youtube_url": "https://www.youtube.com/watch?v=_abbCYlWlg8&t=1422s"
+      },
+      "location": {
+        "city": "סביון",
+        "address": "HaShikma St 1, Savyon"
+      },
+      "host_quotes": [
+        "נראה מסקרן נורא"
+      ],
+      "mention_context": "מסעדה תאילנדית חדשה שנפתחה, 150 מקומות ישיבה, מקבוצת 218",
+      "google_places": {
+        "place_id": "ChIJF06UbgA1HRURjBjnvKvlB6c",
+        "rating": 4.7,
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "חצר של אסף",
+      "name_english": "Hatzer shel Asaf",
+      "name_in_transcript": "חצר של אסף",
+      "skip_reason": "עדכון תעשייה - המקום עבר ממיקום חיצוני בחניון למקום סגור, המארחים לא אכלו שם בפרק זה",
+      "timestamp": {
+        "seconds": 1520,
+        "display": "25:20",
+        "youtube_url": "https://www.youtube.com/watch?v=_abbCYlWlg8&t=1520s"
+      },
+      "location": {
+        "city": "בני ברק",
+        "address": "Ha-Yarkon St 64, Bnei Brak"
+      },
+      "host_quotes": [],
+      "mention_context": "עדכון שהמקום העתיק פעילות ממיקום חיצוני בחניון למקום סגור ברחוב הלח'י",
+      "google_places": {
+        "place_id": "ChIJYf34fABJHRURR1OSV-dC-qI",
+        "rating": 4.4,
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "נומא",
+      "name_english": "Noma",
+      "name_in_transcript": "נומה",
+      "skip_reason": "חדשות תעשייה בינלאומיות - פופאפ של נומא בלוס אנג'לס ב-1500 דולר לאדם, לא ביקורת",
+      "timestamp": {
+        "seconds": 1568,
+        "display": "26:08",
+        "youtube_url": "https://www.youtube.com/watch?v=_abbCYlWlg8&t=1568s"
+      },
+      "location": {
+        "city": "קופנהגן",
+        "address": "Refshalevej 96, Copenhagen, Denmark"
+      },
+      "host_quotes": [
+        "1500 דולר לאדם",
+        "מאוד מאוד מאוד ממוסחר"
+      ],
+      "mention_context": "נומא מודיעה על פופאפ בלוס אנג'לס למשך 3.5 חודשים, 1500 דולר כולל שתייה",
+      "google_places": {
+        "place_id": "ChIJpYCQZztTUkYRFOE368Xs6kI",
+        "rating": 4.6,
+        "verified": true,
+        "photo_url": "https://lh3.googleusercontent.com/place-photos/AL8-SNHQtkcs-5fIY7-hGu79owZvyZmdLj0mdEHh6Kibw59mnr2MY62dt6_GICrOVd0tWA0-S4Cp-ztQz2amG6sFGVR8KEvYQ7YNlgADbvL4-fPh2_ymwGqnzqZmOWb9m-pjKPF52mELup0Mbju4K8o=s4800-w800"
+      },
+      "production_db": {
+        "exists": true,
+        "id": "1481de0b-df9e-4f60-bd64-8bece4306708"
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "רפי כהן בסנטי",
+      "name_english": "Rafi Cohen pop-up at Santi",
+      "name_in_transcript": "רפי כהן בסנטי",
+      "skip_reason": "אירוע פופאפ עתידי - רפי כהן חוזר לבשל ב-20 לינואר, לא ביקורת",
+      "timestamp": {
+        "seconds": 1244,
+        "display": "20:44",
+        "youtube_url": "https://www.youtube.com/watch?v=_abbCYlWlg8&t=1244s"
+      },
+      "location": {
+        "city": "תל אביב"
+      },
+      "host_quotes": [
+        "רפי כהן מספר אחד מלך מלכי המלכים"
+      ],
+      "mention_context": "ארוחת פופאפ של רפי כהן ב-20 לינואר בסנטי, ערב אחד",
+      "google_places": {
+        "place_id": null,
+        "rating": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "ג'וני",
+      "name_english": "Joni",
+      "name_in_transcript": "הג'וני",
+      "skip_reason": "הוזכר בהקשר של מוטי טיטמן שמכניס ארוחות שף, המארחים לא אכלו שם",
+      "timestamp": {
+        "seconds": 1385,
+        "display": "23:05",
+        "youtube_url": "https://www.youtube.com/watch?v=_abbCYlWlg8&t=1385s"
+      },
+      "location": {
+        "city": "קריית אונו",
+        "address": "Shlomo ha-Melekh St 6, Kiryat Ono"
+      },
+      "host_quotes": [
+        "אני מאוד אוהבת את היד של מוטי"
+      ],
+      "mention_context": "המקום של מוטי טיטמן שמכניס ארוחות שף בימי רביעי וחמישי",
+      "google_places": {
+        "place_id": "ChIJA5uEHABLHRURMe1pOwuhPNk",
+        "rating": 4.1,
+        "verified": true,
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqERvnmWmAZa9AJ8hVSpUdWUQZbEj4S7NeqQ-qDoq_7VeP6iw8mUwiqZrD6a0SkUDwmUKbg6DzBKT5iV3hVbQNGi5MfrfQ6rzxU=s4800-w800"
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "זיגו",
+      "name_english": "Zigo",
+      "name_in_transcript": "זיגו",
+      "skip_reason": "הוזכר בהקשר סקירת מבקרים - סגי כהן כתב טור על זיגו, המארחים דנים בטור ולא בחוויית אכילה שלהם",
+      "timestamp": {
+        "seconds": 2801,
+        "display": "46:41",
+        "youtube_url": "https://www.youtube.com/watch?v=_abbCYlWlg8&t=2801s"
+      },
+      "location": {
+        "city": "תל אביב"
+      },
+      "host_quotes": [
+        "זיגו זאת לא מסעדה"
+      ],
+      "mention_context": "דיון על טור של סגי כהן על זיגו - בית קפה/מאפייה שפתח גם ערבי מסעדה",
+      "google_places": {
+        "place_id": null,
+        "google_url": null,
+        "rating": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "גריל רום",
+      "name_english": "The Grill Room",
+      "name_in_transcript": "גריל רום",
+      "skip_reason": "הוזכר בהקשר סקירת מבקרים - אבי פטי כתב ביקורת חיובית, המארחים לא אכלו שם",
+      "timestamp": {
+        "seconds": 2931,
+        "display": "48:51",
+        "youtube_url": "https://www.youtube.com/watch?v=_abbCYlWlg8&t=2931s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "address": "HaYarkon St 87, Tel Aviv-Yafo"
+      },
+      "host_quotes": [
+        "המקום עובד טוב",
+        "סטייק טוב"
+      ],
+      "mention_context": "אבי פטי כתב ביקורת מצוינת, ניקו מנהל שעובד טוב, התחיל כפופאפ והשתגר",
+      "google_places": {
+        "place_id": "ChIJHZpMbV1NHRURBJfoEz5LYQQ",
+        "rating": 4.1,
+        "verified": true,
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqGkCaN44YA_eDVmupnGMuTxXQrqwCRQZRev5Mdset6viG-4OAXNeCd1ajSPWp2LFUGdn7mJAgLYhB9-aEa8DwdYIW1zexX9UHI=s4800-w800"
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "נורדיניו",
+      "name_english": "Nordinio",
+      "name_in_transcript": "הנורדיניו",
+      "skip_reason": "הוזכר כמקום עם עוגת גזר מעולה ומוכרת, אבל לא נסקר בפרק זה",
+      "timestamp": {
+        "seconds": 284,
+        "display": "04:44",
+        "youtube_url": "https://www.youtube.com/watch?v=_abbCYlWlg8&t=284s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "address": "Nahalat Binyamin St 27, Tel Aviv-Yafo"
+      },
+      "host_quotes": [
+        "מעולה מעולה ממש מעולה"
+      ],
+      "mention_context": "הוזכר כמקום עם עוגת גזר טובה ומוכרת בניגוד לאליפלט הלא מוכר",
+      "google_places": {
+        "place_id": "ChIJo3E23q5NHRURxYf34GDXwrY",
+        "rating": 4.4,
+        "verified": true,
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqFendqTFeTqs2d96itD5ij0jImxupv7X083mf_wpR54UCQGEvpVOot_OiLHBTzfc5LzDDHf2DcdWBoITFJPQVnIcK6lBjPmHDk=s4800-w800"
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "ברבוניה",
+      "name_english": "Barbunia",
+      "name_in_transcript": "ברבוניה",
+      "skip_reason": "הוזכר כמקום שרפי כהן ייעץ לו, אזכור חולף",
+      "timestamp": {
+        "seconds": 1270,
+        "display": "21:10",
+        "youtube_url": "https://www.youtube.com/watch?v=_abbCYlWlg8&t=1270s"
+      },
+      "location": {
+        "city": "קריית אונו"
+      },
+      "host_quotes": [],
+      "mention_context": "רפי כהן ייעץ לברבוניה בקריית אונו ולמיץ בהרי ירושלים",
+      "google_places": {
+        "place_id": "ChIJ310ySAA1HRURpI2XYxwbgFs",
+        "rating": 4.1,
+        "verified": true
+      },
+      "production_db": {
+        "exists": true,
+        "id": "3a1785f2-b061-40c5-b1d4-31c87c822975"
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "סביך פרישמן",
+      "name_english": "Sabich Frishman",
+      "name_in_transcript": "סביך פרישמן",
+      "skip_reason": "הוזכר כדוגמה שלילית למחירי פלאפל מוגזמים, לא ביקורת מסעדה",
+      "timestamp": {
+        "seconds": 3069,
+        "display": "51:09",
+        "youtube_url": "https://www.youtube.com/watch?v=_abbCYlWlg8&t=3069s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "address": "Frishman St 42, Tel Aviv-Yafo"
+      },
+      "host_quotes": [
+        "תגיד לבעל הבית שלך שהוא קמצן"
+      ],
+      "mention_context": "אמית סיפר שקנה חצי מנה פלאפל עם 3 כדורים ב-24 ש'ח וטען שזה קמצנות",
+      "google_places": {
+        "place_id": "ChIJ5_6wvXhMHRURT2GMyDEO1ig",
+        "rating": 4.6,
+        "verified": true,
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqGmL5bkVpHFfaLEcfpvt3bGwhy5WKrEz0XW3ZmKuNy2xXFvjeYNmQAc_DQNDGDtvSB-E3timn9_u3L7dwydwb8_H-wVtLGHq4o=s4800-w800"
+      },
+      "production_db": {
+        "exists": true,
+        "id": "f4be741b-f111-4d65-a9b9-8607c38b6bc7"
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "קפה אחד",
+      "name_english": "Cafe Ahad Ha'am",
+      "name_in_transcript": "קפה אחד",
+      "skip_reason": "הוזכר בקצרה כבית קפה חדש שנפתח במתחם מלון לינק, ללא ביקורת",
+      "timestamp": {
+        "seconds": 2750,
+        "display": "45:50",
+        "youtube_url": "https://www.youtube.com/watch?v=_abbCYlWlg8&t=2750s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "address": "Ahad Ha'Am St 51, Tel Aviv-Yafo"
+      },
+      "host_quotes": [
+        "גם נראה חמוד"
+      ],
+      "mention_context": "הוזכר כבית קפה ספשלטי חדש שנפתח במתחם מלון לינק",
+      "google_places": {
+        "place_id": "ChIJ20xnH31LHRURtcRHz2toQYU",
+        "rating": 4.6,
+        "verified": true,
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqHqgbJElvtKyzE7g-xqLYP_9g5bY65Vg4e8tO9fi2HXt9A__OJZW4al4gfptsARBZqXITfIHIc24kSCZD3GvpLHs23xUIOzdJg=s4800-w800"
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "rejected",
+      "name_in_transcript": "חומיקס",
+      "reject_reason": "מוצר מזון (חומוס באבקה), לא מסעדה. נוסה באולפן ונכשל",
+      "timestamp": {
+        "seconds": 780,
+        "display": "13:00"
+      }
+    },
+    {
+      "verdict": "rejected",
+      "name_in_transcript": "האיץ",
+      "reject_reason": "לא ניתן לאמת שם מסעדה - הוזכר כמקום עם עוגת גזר נהדרת כשיעורי בית, אך אין מידע מספיק לזיהוי מדויק. ייתכן שמדובר ב-HaEtz אך לא נמצא בגוגל",
+      "timestamp": {
+        "seconds": 3216,
+        "display": "53:36"
+      }
+    }
+  ]
+}

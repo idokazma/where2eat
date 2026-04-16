@@ -1,0 +1,788 @@
+{
+  "episode": {
+    "video_id": "uFHpFiJXlxw",
+    "video_url": "https://www.youtube.com/watch?v=uFHpFiJXlxw",
+    "title": "נחלת בנימין של אילבון | מדברים מהבטן, פרק 135",
+    "channel_name": "מדברים מהבטן - הפודיום",
+    "published_at": "2025-12-03",
+    "hosts": [
+      "עמית אהרונסון",
+      "יהונתן כהן",
+      "נתה סלונים"
+    ],
+    "guests": [
+      "מרקוס גרשקוביץ'"
+    ],
+    "language": "he",
+    "transcript_length": 37764,
+    "segment_count": 1145,
+    "episode_id": null,
+    "summary": "פרק 135 של מדברים מהבטן. עמית ממליץ על השמטה בישף פנדה בשוסטר רמת אביב ועל פנדה בשוק הכרמל. עמית גם מבקר במינאטו סושי כשר בהרצליה ונותן המלצה חמה. יהונתן מבקר בקוביה בירושלים ובשיפודית אלמשי באילבון עם שוארמת חזיר. נתה ממליצה על זה אשדוד שהפך ממוסד המבורגרים למסעדת בשר מודרנית. ראיון עם השף מרקוס גרשקוביץ' על מסעדת זהרה החדשה ובר נוצ'ה רופטופ בירושלים. חדשות על טום אביב, ארז קומרובסקי ומיזון קייזר. פינת מבקרים על סניור, קפה אירופה ופטפוטים."
+  },
+  "extraction": {
+    "date": "2026-04-03",
+    "agent": "episode-processor",
+    "total_mentions": 22,
+    "add_to_page": 7,
+    "reference_only": 12,
+    "rejected": 3,
+    "already_in_db": 0,
+    "new_to_add": 7
+  },
+  "restaurants": [
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "הסמטה בשוסטר",
+      "name_english": "Hasimta at Schuster",
+      "name_in_transcript": "השמתה בישף פנדה",
+      "google_name": "הסמטה בשוסטר - Hasimta at schuster",
+      "timestamp": {
+        "seconds": 225,
+        "display": "03:45",
+        "youtube_url": "https://www.youtube.com/watch?v=uFHpFiJXlxw&t=225s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "רמת אביב",
+        "address": "אבא אחימאיר 17, תל אביב-יפו, ישראל",
+        "region": "מרכז",
+        "latitude": 32.1252192,
+        "longitude": 34.8019009
+      },
+      "cuisine_type": "המבורגר",
+      "price_range": "זול",
+      "status": "חדש",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "כל כך טעים",
+        "המבורגר שלם כיפי נורא עם לחמניה שקלויה כמו שצריך",
+        "הכל נורא טעים באמת כזה אוכל סליזי אבל עשוי היטב"
+      ],
+      "host_comments": "עמית ביקר בסניף שוסטר רמת אביב של השמטה בישף פנדה. תפריט קטן ותמציתי - המבורגר, קריספי צ'יקן ואופציה צמחונית. מחירים שוברי שוק: המבורגר 100 גרם עם ארוחה ושתייה ב-50-55 שקל. נגטס פטריות ברוטב ריבת בייקון מושחת",
+      "dishes_mentioned": [
+        "המבורגר 100 גרם",
+        "קריספי צ'יקן",
+        "נגטס פטריות ברוטב ריבת בייקון",
+        "כדורי חלפניו צ'דר",
+        "צ'יפס"
+      ],
+      "special_features": [
+        "שיתוף פעולה בין פנדה להמבורגר השמטה",
+        "מחירים שוברי שוק",
+        "סניף דגל בעזריאלי בקרוב"
+      ],
+      "mention_context": "ביס השבוע של עמית - סניף חדש של השמטה בישף פנדה בשוסטר רמת אביב",
+      "speaker": "עמית אהרונסון",
+      "google_places": {
+        "place_id": "ChIJa9MXyZxJHRURrOfcDGlc2gY",
+        "google_url": "https://maps.google.com/?cid=493808715407615916",
+        "rating": 4.5,
+        "review_count": 74,
+        "price_level": null,
+        "phone": "058-437-5060",
+        "website": "https://www.instagram.com/hasimta",
+        "photo_url": "places/ChIJa9MXyZxJHRURrOfcDGlc2gY/photos/AU_ZVEHm1TTujF4LoTi_RR1Uavmbn3S0pDiLFngSm09wTz9ShRsrqlAthH-eMc3GxfHknnVwPpQ4Y4ofmoYUUc_txOhWrnfBG3H4JiLvM36t_OhGoPsXA_uDnlao_pZzWbDlFkGLY6rES4ve5uL-kd1ger4k4IjwXRM4yhTMWVaIZ6irUZYeR2FDzVnSqsb57sxL0JkBGZ2Tm5r_CCFralWHXN7GQPq5NHUEP7fo4_8TZVCHZWCZikiFE2pMoeCyrp-gtNX-4LGrrVIjxH7kjyeDL5WgNH4ovF07bVs8EUUUDzGCLw",
+        "instagram_url": "https://www.instagram.com/hasimta",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "קוביה",
+      "name_english": "Kubia",
+      "name_in_transcript": "הקוביה",
+      "google_name": "קוביה",
+      "timestamp": {
+        "seconds": 584,
+        "display": "09:44",
+        "youtube_url": "https://www.youtube.com/watch?v=uFHpFiJXlxw&t=584s"
+      },
+      "location": {
+        "city": "ירושלים",
+        "neighborhood": "מרכז העיר",
+        "address": "הלל 19, ירושלים, ישראל",
+        "region": "ירושלים",
+        "latitude": 31.780469999999998,
+        "longitude": 35.2177538
+      },
+      "cuisine_type": "ביתי",
+      "price_range": "זול",
+      "status": "פתוח",
+      "host_opinion": "חיובית",
+      "host_quotes": [
+        "השירות פה הוא חם ולבבי ומכניס ולפעמים זה שווה הכל",
+        "יחס חם ואישי לכל הלקוחות ולפעמים זה ביס מאוד מאוד טעים"
+      ],
+      "host_comments": "עמית ביקר בקוביה ברחוב הלל בירושלים. מקום פשוט של תבשילים ומרקי קובה עם אווירה ביתית. הכדורים לא ברמה גבוהה אבל השירות החם והאישי של המוכרת שמכירה כל לקוח בשם הפך את הביקור לחוויה מיוחדת",
+      "dishes_mentioned": [
+        "חמוסטה",
+        "מרק קובה",
+        "שניצלים",
+        "פסטה אדומה",
+        "דג מטוגן",
+        "אורז שועית"
+      ],
+      "special_features": [
+        "אוכל ביתי",
+        "שירות אישי וחם",
+        "מקום ותיק"
+      ],
+      "mention_context": "ביס השבוע של עמית - לא הספיק לגולדן בורגר ומצא את עצמו בקוביה ברחוב הלל. הביס היה יותר מכל השירות החם",
+      "speaker": "עמית אהרונסון",
+      "google_places": {
+        "place_id": "ChIJ62v5kdYpAxUR3YaSPfP9o6Q",
+        "google_url": "https://maps.google.com/?cid=11863605064575911645",
+        "rating": 4.5,
+        "review_count": 165,
+        "price_level": null,
+        "phone": "02-624-0505",
+        "website": null,
+        "photo_url": "places/ChIJ62v5kdYpAxUR3YaSPfP9o6Q/photos/AU_ZVEESg4unE02U0B-ZiR6woOG30Hk-NEMAzBSq-aQOGJpveRgiquw_9uDWmKdXDzhnBpGjhWkO-vGjQhO98oxpb2ZrGW4LZ--HdnWXJtWq3ISZZFZdNuT6z_QPzpE9cE5e8oETCK3Ak5zQ-12_V5h7uegFUnql5drbNDV95-uvh6OE0eObcMO_7gvbdve-SWpjB2-YESgd498_nU_JYMPe0QXyx06eOKpNbBCfDD2Bu_eeNuXM-q8wbutR7WkV2iqRvRCC1TAqqt2RhzaYjfclaxO2-q1u-8RJ1C0l96-itsNjPEre0hhiQBA6fLm0OHugU8C3-t-2yhv58jbCoGnlRoc01GzFA2eqbooZZJWB3JdzYuCy1FJfPKjMIG64zwmkmKpRF1KrQWlOpHkkFSAxPDQ7njf75ZZqvoaMDuwieupUYta5",
+        "instagram_url": "https://www.instagram.com/cubbeya/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "הוזכר",
+      "name_hebrew": "זהרה",
+      "name_english": "Zahara",
+      "name_in_transcript": "זהרה",
+      "google_name": "מסעדת זהרה | Zahara",
+      "timestamp": {
+        "seconds": 1422,
+        "display": "23:42",
+        "youtube_url": "https://www.youtube.com/watch?v=uFHpFiJXlxw&t=1422s"
+      },
+      "location": {
+        "city": "ירושלים",
+        "neighborhood": "מרכז העיר",
+        "address": "בן סירא 16, ירושלים, ישראל",
+        "region": "ירושלים",
+        "latitude": 31.7788155,
+        "longitude": 35.2218539
+      },
+      "cuisine_type": "שף",
+      "price_range": "יקר",
+      "status": "חדש",
+      "host_opinion": "חיובית",
+      "host_quotes": [
+        "מסעדה חדשה ומסקרנת",
+        "במטבח הכשר הוא זה אחד המקומות היחידים שבו אנחנו יכולים להציג את יכולתנו הקולינרית ללא הפרעות"
+      ],
+      "host_comments": "ראיון עם השף מרקוס גרשקוביץ' שפותח מסעדה כשרה חדשה במלון בירושלים ברחוב בן סירה. קונספט של ארוחה מונחית מלצר ללא ראשונות ועיקריות קלאסיות. תפריט כולל פסטה עם אנצ'ובי, ניוקי עם שקדע עגל, סשימי, שיפודים ועוד",
+      "dishes_mentioned": [
+        "פסטה עם אנצ'ובי ודג קונפי",
+        "ניוקי עם שקדע עגל",
+        "סשימי",
+        "שיפודים",
+        "מרקות"
+      ],
+      "special_features": [
+        "כשר",
+        "מסעדה במלון",
+        "ארוחה מונחית מלצר",
+        "של השף מרקוס גרשקוביץ'",
+        "רחוב בן סירה המתחדש"
+      ],
+      "mention_context": "ראיון עם השף מרקוס גרשקוביץ' לרגל פתיחת מסעדת זהרה החדשה בירושלים. המנחים לא אכלו שם עדיין",
+      "speaker": "מרקוס גרשקוביץ'",
+      "google_places": {
+        "place_id": "ChIJJ0WGfuwpAxURdsrM-sxY9dQ",
+        "google_url": "https://maps.google.com/?cid=15345268942739130998",
+        "rating": 4.8,
+        "review_count": 52,
+        "price_level": null,
+        "phone": "077-303-4180",
+        "website": "https://tbit.be/snpXPg",
+        "photo_url": "places/ChIJJ0WGfuwpAxURdsrM-sxY9dQ/photos/AU_ZVEFBgP0nn8mC1qqRgLENsrDWKdt8_SI4Gb5Gq7uFjavx6d-xDi0vwlahYhQoHYCfkRyo5iGgNS11ePqDp_AuSJk68hDOadx1Zwuc2gI4omfs_c3dd6D-2ZN6JYlszM4MlSuNCErIt_j6Ju1SujpCw-8XP0RpDPsGEeyC4VwfCLXpv7eYVqatpHQHNKdwx6JQwGxtpqPlLHWPRw3o2mVPsYuKPNuA5GKoKCPLduA5XmPQfToeiwFJ0qZDmxxPDZUR8GmKR8IEPk00yu0sepdQzOTc9STUz-d6NSZUa3klEPN1cA",
+        "instagram_url": "https://www.instagram.com/zahara.restaurant/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "שיפודית אלמשי",
+      "name_english": "Almashi Grill",
+      "name_in_transcript": "אלמשי",
+      "google_name": "שיפודית אלמשי",
+      "timestamp": {
+        "seconds": 2037,
+        "display": "33:57",
+        "youtube_url": "https://www.youtube.com/watch?v=uFHpFiJXlxw&t=2037s"
+      },
+      "location": {
+        "city": "עיילבון",
+        "neighborhood": null,
+        "address": "עיילבון, ישראל",
+        "region": "צפון",
+        "latitude": 32.8349535,
+        "longitude": 35.3995635
+      },
+      "cuisine_type": "שיפודים",
+      "price_range": "זול",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "באמת רב קסם ואדיר בפשוט",
+        "ההמלצה הכי אגזוטית שהצלחת להביא לנו עד היום"
+      ],
+      "host_comments": "יהונתן נסע לסכנין למשחק כדורגל ובדרך חזרה מצא שיפודיה בחצר של בית באילבון. גזיבו עם גריל פחמים ועמוד שוארמה. בשר לבן (חזיר) על שיפוד יווני, בייקון, כבב וסטייק סיני. מפעל משפחתי אותנטי",
+      "dishes_mentioned": [
+        "שוארמת חזיר",
+        "כבב",
+        "בייקון",
+        "סטייק סיני",
+        "פרגית",
+        "צ'יפס"
+      ],
+      "special_features": [
+        "שיפודיה בחצר בית",
+        "גריל פחמים",
+        "עמוד שוארמה",
+        "מפעל משפחתי",
+        "ישוב נוצרי - בשר לבן"
+      ],
+      "mention_context": "ההמלצה השבועית של יהונתן - שיפודיה בחצר בית באילבון שמצא במקרה בנסיעה לסכנין",
+      "speaker": "יהונתן כהן",
+      "google_places": {
+        "place_id": null,
+        "google_url": null,
+        "rating": null,
+        "review_count": null,
+        "price_level": null,
+        "phone": null,
+        "website": null,
+        "photo_url": null,
+        "instagram_url": "https://www.instagram.com/almashi_grill_restaurant/",
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "זה אשדוד",
+      "name_english": "Ze Ashdod",
+      "name_in_transcript": "זה וזאת",
+      "google_name": "זה אשדוד",
+      "timestamp": {
+        "seconds": 2271,
+        "display": "37:51",
+        "youtube_url": "https://www.youtube.com/watch?v=uFHpFiJXlxw&t=2271s"
+      },
+      "location": {
+        "city": "אשדוד",
+        "neighborhood": null,
+        "address": "מפקורה 1, אשדוד, ישראל",
+        "region": "דרום",
+        "latitude": 31.7996285,
+        "longitude": 34.6331177
+      },
+      "cuisine_type": "בשרים",
+      "price_range": "בינוני",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "אמא'לה רוץ לאשדוד תכתוב עליהם וואו אתה לא מבין איזה מקום",
+        "ארוחה מצויינת",
+        "מקום מושלם לשישי שבת"
+      ],
+      "host_comments": "נתה ממליצה על מסעדת זה באשדוד שהפכה ממוסד המבורגרים למסעדת בשר מודרנית בסגנון תל אביבי. קו ראשון לים, מקום מהמם לשבת. השף אלכס קוסטריקין מעל הסור של רטי בודו. קרפצ'ו בקר עם שפיץ שייטל, טרטר בקר, טקו בשר מפורק, פיקנה במעשן, אנטריקוט לא פרוס. תפוחי אדמה מהטובים שנתה אכלה",
+      "dishes_mentioned": [
+        "קרפצ'ו בקר עם שפיץ שייטל",
+        "טרטר בקר",
+        "טקו עם בשר מפורק",
+        "חמת שומנוז עם טימין ובצל מקורמל",
+        "פיקנה במעשן",
+        "אנטריקוט על העצם",
+        "תפוחי אדמה קריספי",
+        "רבע עוף על הגריל"
+      ],
+      "special_features": [
+        "קו ראשון לים",
+        "שף מעל הסור של רטי בודו",
+        "עובדים עם מעשנה וגריל פחמים",
+        "הנחות בשישי",
+        "פתוח בשבת"
+      ],
+      "mention_context": "ההמלצה השבועית של נתה - מסעדת בשר מודרנית באשדוד שעברה שינוי מהמבורגריה למסעדה רצינית עם קו ראשון לים",
+      "speaker": "נתה סלונים",
+      "google_places": {
+        "place_id": "ChIJ0yYf36yjAhURT7a1M31bXyk",
+        "google_url": "https://maps.google.com/?cid=2981202071639144015",
+        "rating": 4.3,
+        "review_count": 1555,
+        "price_level": null,
+        "phone": "050-284-4004",
+        "website": "https://zehashdod.wixsite.com/menu",
+        "photo_url": "places/ChIJ0yYf36yjAhURT7a1M31bXyk/photos/AU_ZVEHZwvEdV9or1kcaP0aLKD6PjwhLiMTI6dhYWYMqlb9_aUVf6qi5iJihG_uvAS-WH_2Xf1MEnxAmg7YeiyTTEnUWR9_YDnb-Dv6p28vJgBXZYiqY-ZMy76sbpL5RK3KwuhaR8t3tr29JFiGogyJ5yswCQj9KS-qUOa7OQ1vqgvcdnybHkN6MuHIzliHI7w_Znmm_1VjLVY7ySB6ArBlmojUtEYckQ-mE_42GogPdTCWG0T1I30fwHnEIC0OUNLVU6wSd-fwDaY2PnH-8v4yxqHK49Ya5X3sbb22q9MFoJSjXCQ",
+        "instagram_url": "https://www.instagram.com/zeh.ba.insta/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "מינאטו",
+      "name_english": "Minato",
+      "name_in_transcript": "מינטו",
+      "google_name": "מינאטו",
+      "timestamp": {
+        "seconds": 2531,
+        "display": "42:11",
+        "youtube_url": "https://www.youtube.com/watch?v=uFHpFiJXlxw&t=2531s"
+      },
+      "location": {
+        "city": "הרצליה",
+        "neighborhood": "הרצליה פיתוח",
+        "address": "בניין בית אופק, המנופים 8, הרצליה, ישראל",
+        "region": "שרון",
+        "latitude": 32.159985899999995,
+        "longitude": 34.8079712
+      },
+      "cuisine_type": "יפני",
+      "price_range": "יקר",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "מסדת סושי מאוד מאוד מוצלחת",
+        "ערב של כיף פשוט ישבנו על הבר גרגרנו סושי",
+        "היה לי יום שני כמדומני אמצע שבוע מקום מפורק"
+      ],
+      "host_comments": "עמית ביקר במינאטו סושי כשר בהרצליה פיתוח כשיעורי בית על מסעדות יפניות ותיקות. מגוון דגים מצוין - פלמידה, אמצ'י, סלמון, טונה, איקורה. סושי נוסטלגי ברוח המסעדות היפניות הראשונות בישראל. טרטר טונה בגרסת מילקי עם פנקו מטוגן מנה יקרה (110 שקל) אבל נדיבה. כשר עם תעודה",
+      "dishes_mentioned": [
+        "טרטר טונה בגרסת מילקי",
+        "סלט טריות שועית עם פלמידה ויוזו",
+        "ניגירים קלאסיים",
+        "רולים מתפריט מיוחדים"
+      ],
+      "special_features": [
+        "כשר",
+        "ותיקה - 20 שנה בקיסריה, 14 בהרצליה",
+        "סושי נוסטלגי קרוב למקור",
+        "השף אקי תמורה"
+      ],
+      "mention_context": "שיעורי בית של עמית - ביקור במסעדה יפנית ותיקה כנגד הגל היפני החדש. חזרה לשורשים של סושי ישראלי",
+      "speaker": "עמית אהרונסון",
+      "google_places": {
+        "place_id": "ChIJ5etagPJIHRURVXQ8AAVV8vY",
+        "google_url": "https://maps.google.com/?cid=17794378557661410389",
+        "rating": 4.2,
+        "review_count": 1092,
+        "price_level": null,
+        "phone": "09-773-1703",
+        "website": "http://minato.co.il/",
+        "photo_url": "places/ChIJ5etagPJIHRURVXQ8AAVV8vY/photos/AU_ZVEHXeo6LTwTT0kWqCfAUrD1tEtHZ-r-6gzSuCxNAwaHJGqRn_OP4dLh4rkUQzeHxKbXjaPdTewWAdU2jROKJhQrcwMrcCvdIYXEzWLpfbh69mw3X26l5mykNrMBoAbdLkgLIRLvGMB1ow08-cF-MpfnPdEjixMzyxcbu5nA3TaWjjkNN8EER3N6IkXWkwczG0Wn_mUI33aAvkjHgrr3ZCGgfiKloF_rfa4BeRspvmrIUdZMqyErRriPgatzae8VRDBj7QrbA_YJcb_Pddfzar3QUG3dCWcuSpX9Gxh0H_vBhDQ",
+        "instagram_url": "https://www.instagram.com/minatorest/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "הוזכר",
+      "name_hebrew": "נוצ'ה רופטופ",
+      "name_english": "Nucha Rooftop",
+      "name_in_transcript": "הנוצ'ה",
+      "google_name": "Nucha Rooftop - נוצ׳ה רופטופ",
+      "timestamp": {
+        "seconds": 1506,
+        "display": "25:06",
+        "youtube_url": "https://www.youtube.com/watch?v=uFHpFiJXlxw&t=1506s"
+      },
+      "location": {
+        "city": "ירושלים",
+        "neighborhood": "מרכז העיר",
+        "address": "בן סירא 16, ירושלים, ישראל",
+        "region": "ירושלים",
+        "latitude": 31.7788155,
+        "longitude": 35.2218539
+      },
+      "cuisine_type": "בר",
+      "price_range": "בינוני",
+      "status": "חדש",
+      "host_opinion": "חיובית",
+      "host_quotes": [
+        "הנוצ'ה רוף טופ שהוא על המקום השני הוא כבר נפתח כבר לפני איזה חודש וחצי"
+      ],
+      "host_comments": "בר על הגג של מלון גפסו החדש בירושלים ברחוב בן סירה. נפתח חודש וחצי לפני ההקלטה. מרקוס גרשקוביץ' עומד מאחוריו יחד עם מסעדת זהרה",
+      "dishes_mentioned": [],
+      "special_features": [
+        "בר על הגג",
+        "מלון גפסו",
+        "של מרקוס גרשקוביץ'"
+      ],
+      "mention_context": "מוזכר בראיון עם מרקוס גרשקוביץ' כחלק מהפרויקט החדש בירושלים - בר על הגג שכבר נפתח",
+      "speaker": "מרקוס גרשקוביץ'",
+      "google_places": {
+        "place_id": "ChIJv8h4JQApAxURir05a8JLPmc",
+        "google_url": "https://maps.google.com/?cid=",
+        "rating": 4.6,
+        "review_count": 52,
+        "price_level": null,
+        "phone": null,
+        "website": null,
+        "photo_url": "places/ChIJv8h4JQApAxURir05a8JLPmc/photos/AU_ZVEGCzoJ4MkDEWxXc3dygpYfcIGMzOTbN2o_c1bMApsDef8PUBrYmbZIbfaei5BK8aC4ygks-ofG5zVWtGfmes-PvW5qiAnVnMO8qT9KsJ2HVUt87BdLJDznVlCHS9eYRB5FS2mUmpNqYhye7FffCo4YrQBzRbsnWPlREfdUmBpqtg5ACo2RS4vLQFqAmsXL9bAJYbcssth0CALXBdSbudgRuuLia6JrqHle6Xpy4YyC7uGrLH6srFCK3QBMKlzFf9UKWGat7VmB1IdYZHrDYpVj7QdE7CxQF8vsDbWioMuA",
+        "instagram_url": "https://www.instagram.com/nucha.rooftop/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "פנדה",
+      "name_english": "Panda",
+      "name_in_transcript": "פנדה",
+      "skip_reason": "הדוכן בכרמל מוזכר בקצרה כהשלמה לביס של עמית, ללא ביקורת ממשית על הדוכן עצמו",
+      "timestamp": {
+        "seconds": 418,
+        "display": "06:58",
+        "youtube_url": "https://www.youtube.com/watch?v=uFHpFiJXlxw&t=418s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "address": "שוק הכרמל, תל אביב"
+      },
+      "host_quotes": [
+        "פיטה של פנדה מהודה עם ממרך כבד עוף מפורק כל העשבים הוייטנמים"
+      ],
+      "mention_context": "עמית מציין ספשל של פנדה בכרמל - פיטה ויאטנמית עם כבד ועוף מפורק",
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "גולדן בורגר",
+      "name_english": "Golden Burger",
+      "name_in_transcript": "גולדן בורגר",
+      "skip_reason": "עמית ניסה להגיע אבל היה תור של שעה ולא אכל שם. ללא חוויה אישית",
+      "timestamp": {
+        "seconds": 508,
+        "display": "08:28",
+        "youtube_url": "https://www.youtube.com/watch?v=uFHpFiJXlxw&t=508s"
+      },
+      "location": {
+        "city": "ירושלים",
+        "address": "ירושלים"
+      },
+      "host_quotes": [
+        "אומרים שהם עושים משהו מיוחד ונורא נורא מדובר",
+        "הבחור בדלפק אמר לי שזמן ההמתנה הוא כמעט שעה"
+      ],
+      "mention_context": "עמית ניסה להגיע לגולדן בורגר בירושלים אבל התור היה כמעט שעה וויתר",
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "טום אביב",
+      "name_english": "Tom Aviv",
+      "name_in_transcript": "טום אביב",
+      "skip_reason": "חדשות תעשייה - פתיחת המבורגריה כשרה חדשה בשוק הכרמל, ללא ביקורת או טעימה",
+      "timestamp": {
+        "seconds": 1088,
+        "display": "18:08",
+        "youtube_url": "https://www.youtube.com/watch?v=uFHpFiJXlxw&t=1088s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "address": "שוק הכרמל, תל אביב"
+      },
+      "host_quotes": [
+        "טום אביב פותח המבורגריה כשרה בשוק הכרמל"
+      ],
+      "mention_context": "חדשות - טום אביב פותח המבורגריה כשרה בשוק הכרמל, ליד הטוורנה שלו",
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "ארז קומרובסקי",
+      "name_english": "Erez Komarovsky",
+      "name_in_transcript": "ארזק קומרובסקי",
+      "skip_reason": "חדשות תעשייה - פופאפ/ארוחת טעימות חדשה של ארז קומרובסקי, ללא ביקורת",
+      "timestamp": {
+        "seconds": 1138,
+        "display": "18:58",
+        "youtube_url": "https://www.youtube.com/watch?v=uFHpFiJXlxw&t=1138s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "address": "תל אביב"
+      },
+      "host_quotes": [
+        "ארז קומרובסקי אור חוזר לתל אביב שוב עם איזה פופאפ"
+      ],
+      "mention_context": "חדשות - ארז קומרובסקי חוזר לתל אביב עם ארוחת טעימות באויגדור, 350 שקל לסועד",
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "מיזון קייזר",
+      "name_english": "Maison Kayser",
+      "name_in_transcript": "מיזון קייזר",
+      "skip_reason": "חדשות תעשייה - פתיחת סניף חדש בכיכר דיזנגוף, ללא ביקורת",
+      "timestamp": {
+        "seconds": 1250,
+        "display": "20:50",
+        "youtube_url": "https://www.youtube.com/watch?v=uFHpFiJXlxw&t=1250s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "address": "כיכר דיזנגוף, תל אביב"
+      },
+      "host_quotes": [
+        "כיכר דיזנגוף מתחדשת עם סניף של מיזון קייזר"
+      ],
+      "mention_context": "חדשות - מיזון קייזר פותח סניף בכיכר דיזנגוף במקום קפה נחת",
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "אנג'ליקה",
+      "name_english": "Angelica",
+      "name_in_transcript": "אנג'ליקה",
+      "skip_reason": "מוזכרת כמסעדה קיימת של מרקוס גרשקוביץ' לצורך רקע, ללא ביקורת חדשה",
+      "timestamp": {
+        "seconds": 1327,
+        "display": "22:06",
+        "youtube_url": "https://www.youtube.com/watch?v=uFHpFiJXlxw&t=1327s"
+      },
+      "location": {
+        "city": "ירושלים",
+        "address": "ירושלים"
+      },
+      "host_quotes": [
+        "אנג'ליקה כמובן של השף מרקוס גרשקוביץ"
+      ],
+      "mention_context": "רקע לראיון עם מרקוס - אנג'ליקה כמסעדה כשרה מוערכת ותיקה שלו מ-2008",
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "עכיף כיפק",
+      "name_english": "Akif Kifak",
+      "name_in_transcript": "עקיף קפק",
+      "skip_reason": "מוזכרת כשיפודיה מומלצת נוספת באילבון שהייתה סגורה באותו ערב. ללא ביקורת",
+      "timestamp": {
+        "seconds": 2182,
+        "display": "36:22",
+        "youtube_url": "https://www.youtube.com/watch?v=uFHpFiJXlxw&t=2182s"
+      },
+      "location": {
+        "city": "עיילבון",
+        "address": "עיילבון, ישראל"
+      },
+      "host_quotes": [
+        "השיפודיה המומלצת הנוספת באילבון נקראת עקיף קפק"
+      ],
+      "mention_context": "יהונתן מציין שיפודיה מומלצת נוספת באילבון שהייתה סגורה",
+      "google_places": {
+        "place_id": "ChIJsdT9QtA5HBURrKb1q2ykOxY",
+        "rating": 4.7,
+        "review_count": 63,
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "טקסס בורגר אילבון",
+      "name_english": "Texas Burger Ilabun",
+      "name_in_transcript": "טקסס בורגר אילבון",
+      "skip_reason": "מוזכר בקצרה כהמבורגר חדש באילבון, ללא ביקורת או טעימה",
+      "timestamp": {
+        "seconds": 2005,
+        "display": "33:25",
+        "youtube_url": "https://www.youtube.com/watch?v=uFHpFiJXlxw&t=2005s"
+      },
+      "location": {
+        "city": "עיילבון",
+        "address": "עיילבון"
+      },
+      "host_quotes": [
+        "המבורגר חדש שנקרא טקסס בורגר אילבון ונחמד"
+      ],
+      "mention_context": "מוזכר כעסק חדש באילבון ביחד עם סצנת האוכל המקומית",
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "סניור",
+      "name_english": "Senior",
+      "name_in_transcript": "סניור",
+      "skip_reason": "פינת מבקרים - סגי כהן כתב חיובי על סניור. דיון על הביקורת אבל המנחים לא אכלו שם בפרק הזה",
+      "timestamp": {
+        "seconds": 2810,
+        "display": "46:50",
+        "youtube_url": "https://www.youtube.com/watch?v=uFHpFiJXlxw&t=2810s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "address": "תל אביב"
+      },
+      "host_quotes": [
+        "סגי עף על סניור",
+        "מחתיר את הריזוטו שם לאחת ממנות האורז הימי הטובות שאכלתי בישראל"
+      ],
+      "mention_context": "פינת מבקרים - דיון על ביקורת חיובית של סגי כהן על סניור. עמית מסכים על הריזוטו מניסיון אישי",
+      "production_db": {
+        "exists": false,
+        "id": null
+      },
+      "google_places": {
+        "instagram_url": "https://www.instagram.com/senior.rest/"
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "קפה אירופה",
+      "name_english": "Cafe Europa",
+      "name_in_transcript": "קפה אירופה",
+      "skip_reason": "פינת מבקרים - אבי הפרט כתב שלילי. דיון על הביקורת ללא חוויה אישית של המנחים",
+      "timestamp": {
+        "seconds": 2888,
+        "display": "48:08",
+        "youtube_url": "https://www.youtube.com/watch?v=uFHpFiJXlxw&t=2888s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "address": "תל אביב"
+      },
+      "host_quotes": [
+        "הוא מאוד לא נהנה בקפה אירופה",
+        "דרוש בדק בית קל במטבח של קפה אירופה"
+      ],
+      "mention_context": "פינת מבקרים - אבי הפרט כתב ביקורת שלילית על קפה אירופה",
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "פטפוטים",
+      "name_english": "Patputim",
+      "name_in_transcript": "פטפוטים",
+      "skip_reason": "פינת מבקרים - קובי רובין כתב על מאפיית כוסמין באמיעד. ללא חוויה אישית של המנחים",
+      "timestamp": {
+        "seconds": 2917,
+        "display": "48:37",
+        "youtube_url": "https://www.youtube.com/watch?v=uFHpFiJXlxw&t=2917s"
+      },
+      "location": {
+        "city": "אמיעד",
+        "address": "כניסה לאמיעד"
+      },
+      "host_quotes": [
+        "מקום שנקרא פטפוטים ונמצא בכניסה לאמיעד"
+      ],
+      "mention_context": "פינת מבקרים - קובי רובין כותב על מאפיית כוסמין באמיעד",
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "מי שוארמה",
+      "name_english": "My Shawarma",
+      "name_in_transcript": "מי שוארמה",
+      "skip_reason": "מוזכרת כסגורה - מסעדה שנסגרה באילבון. חדשות תעשייה",
+      "timestamp": {
+        "seconds": 1991,
+        "display": "33:11",
+        "youtube_url": "https://www.youtube.com/watch?v=uFHpFiJXlxw&t=1991s"
+      },
+      "location": {
+        "city": "עיילבון",
+        "address": "עיילבון"
+      },
+      "host_quotes": [
+        "מי שוארמה קראו לה היא ממש סגרה לפני כמה שבועות"
+      ],
+      "mention_context": "מוזכרת כמסעדת שוארמה מוכרת באילבון שנסגרה לאחרונה",
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "rejected",
+      "name_in_transcript": "הfe",
+      "reject_reason": "שם מנוגל של מסעדה של אביב כהן - לא ניתן לזהות את השם האמיתי מהתמלול",
+      "timestamp": {
+        "seconds": 478,
+        "display": "07:58"
+      }
+    },
+    {
+      "verdict": "rejected",
+      "name_in_transcript": "קפה נחת",
+      "reject_reason": "מוזכר כעסק שסגר/עבר - לא המלצה על מסעדה פעילה",
+      "timestamp": {
+        "seconds": 1258,
+        "display": "20:58"
+      }
+    },
+    {
+      "verdict": "rejected",
+      "name_in_transcript": "סקורה",
+      "reject_reason": "מסעדה מיתולוגית סגורה בירושלים - אזכור נוסטלגי בלבד",
+      "timestamp": {
+        "seconds": 2616,
+        "display": "43:36"
+      }
+    }
+  ]
+}

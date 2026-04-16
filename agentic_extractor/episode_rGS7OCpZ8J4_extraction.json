@@ -1,0 +1,693 @@
+{
+  "episode": {
+    "video_id": "rGS7OCpZ8J4",
+    "video_url": "https://www.youtube.com/watch?v=rGS7OCpZ8J4",
+    "title": "מדברים מהבטן פרק 138",
+    "channel_name": "מדברים מהבטן - הפודיום",
+    "published_at": "2025-12-24",
+    "hosts": [
+      "עמית אהרנסון",
+      "נטע סלונים"
+    ],
+    "guests": [
+      "עלה מוסה"
+    ],
+    "language": "he",
+    "transcript_length": 38201,
+    "segment_count": 1153,
+    "episode_id": "3b877141-11fd-4b27-8bdf-d6bc42c81757",
+    "summary": "פרק 138 של מדברים מהבטן, פרק זוגי חורפי עם אמית ונטע (יהונתן נעדר). כולל ביסי שבוע מקוקוזן (בית קפה יפני חדש בפלורנטין) וקפה רימונה בבאר שבע, פופאפ של ארז קומורובסקי בבת הוויגדור ופופאפ של בבלה, חדשות על רכישת התקריה על ידי קבוצת נו, סגירת מנטריי, ראיון עם עלה מוסה על מסעדת סולט החדשה בחיפה, ביקורים בקפה אלנבי ופופינה בתל אביב, ודיון על צ'ופק ומבקרי אוכל."
+  },
+  "extraction": {
+    "date": "2026-03-25",
+    "agent": "episode-processor",
+    "total_mentions": 18,
+    "add_to_page": 5,
+    "reference_only": 10,
+    "rejected": 3,
+    "already_in_db": 11,
+    "new_to_add": 0
+  },
+  "restaurants": [
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "קוקוזן",
+      "name_english": "Koko Zen",
+      "name_in_transcript": "קוקוזן",
+      "google_name": "Koko Zen",
+      "timestamp": {
+        "seconds": 135,
+        "display": "2:15",
+        "youtube_url": "https://www.youtube.com/watch?v=rGS7OCpZ8J4&t=135s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "פלורנטין",
+        "address": "Florentin St 5, Tel Aviv-Yafo",
+        "region": "מרכז",
+        "latitude": 32.0562559,
+        "longitude": 34.7675268
+      },
+      "cuisine_type": "יפני",
+      "price_range": "בינוני",
+      "status": "חדש",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "כל דבר שם מה זה חשבו עליו לעומק ובאמת הביצוע הפנומנלי",
+        "ממש כזה בכל דבר קטן מורגש",
+        "כל הכבוד להם השקיעו ויצא מהמם"
+      ],
+      "host_comments": "בית קפה יפני חדש, האח הקטן של קוקו רמן. נטע שיבחה את העיצוב הפנומנלי (שער טורי, בריכת דגי קוי, טרריום), את הפנקייקים היפניים המתוקים והמלוחים, את סנדוויץ' הסלט ביצים ואת משקה ג'לי הקפה.",
+      "dishes_mentioned": [
+        "פנקייקים יפנים",
+        "סנדו סלט ביצים",
+        "משקה ג'לי קפה",
+        "מנות ברנץ'",
+        "קריספי סנדו"
+      ],
+      "special_features": [
+        "עיצוב יפני מרהיב",
+        "האח הקטן של קוקו רמן",
+        "פנקייקים יפניים יחידים בארץ"
+      ],
+      "mention_context": "ביס השבוע של נטע - ביקורת נרחבת על המקום החדש",
+      "speaker": "נטע סלונים",
+      "google_places": {
+        "place_id": "ChIJ8TACEQBNHRURv4yKqnZ2MpA",
+        "google_url": "https://maps.google.com/?cid=10390497542336580799",
+        "rating": 4.5,
+        "review_count": 138,
+        "price_level": null,
+        "phone": "053-531-6424",
+        "website": "https://www.instagram.com/koko_zen_tlv",
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqE2bth0qAuZHobUHEkM2fsB_miRRMWGIufwyBKqJPymYXGmqVJTVMQGoYbmibgaIt8XfGy7zgXfnRAGW6FKkEZOR8QvCSrDRG4=s1600-w800",
+        "instagram_url": "https://www.instagram.com/koko_zen_tlv?igsh=MWk2andxMjNoeW5qYg==",
+        "verified": true
+      },
+      "production_db": {
+        "exists": true,
+        "id": "5c64bee3-1a44-46a5-a8df-206368646737"
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "קפה רימונה",
+      "name_english": "Cafe Rimona",
+      "name_in_transcript": "קפה רימונה",
+      "google_name": "רימונה",
+      "timestamp": {
+        "seconds": 504,
+        "display": "8:24",
+        "youtube_url": "https://www.youtube.com/watch?v=rGS7OCpZ8J4&t=504s"
+      },
+      "location": {
+        "city": "באר שבע",
+        "neighborhood": "ד",
+        "address": "Alexander Yannai St 14, Be'er Sheva",
+        "region": "דרום",
+        "latitude": 31.2644048,
+        "longitude": 34.7973409
+      },
+      "cuisine_type": "קפה-מעדנייה",
+      "price_range": "בינוני",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "ממש מגניב ממש כיפי סמנו לכם במפה",
+        "בית קפה שהייתי יכול להשתיל אותו ליד הקוקונקו והוא היה עובד ועובד טוב",
+        "מאוד מקומי ומאוד נאמן להגדרה"
+      ],
+      "host_comments": "בית קפה מוקפד בבאר שבע שמופעל על ידי עמותת חוות רימון. מעסיקים בני נוער מהאזור, משתמשים בתוצרת חקלאית מקומית, לחמים ומאפים נעשים במקום. אמית שיבח את טארט הדבש וההל ואת הקפה.",
+      "dishes_mentioned": [
+        "טארט דבש והל",
+        "לחמי מחמצת",
+        "ברד פודינג מלוח",
+        "אפוקצ'ות"
+      ],
+      "special_features": [
+        "עמותת חוות רימון",
+        "תוצרת חקלאית מקומית",
+        "מעסיקים בני נוער"
+      ],
+      "mention_context": "ביס השבוע של אמית - מקום מפתיע בבאר שבע",
+      "speaker": "עמית אהרנסון",
+      "google_places": {
+        "place_id": "ChIJgznpUgBnAhURrZ4dn3zWGW0",
+        "google_url": "https://maps.google.com/?cid=7861550455285718701",
+        "rating": 4.9,
+        "review_count": 54,
+        "price_level": null,
+        "phone": "052-642-9412",
+        "website": "https://www.rimon-farm.org.il/",
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqGfzHV98aoVkOYFWjZjHXp_GsK7RmaYmYxzmQ5t0nrcjGMVaWJU7mSZUq4I06jgzaLFEOLaZaThZfSvwjsADmGiyxe7IyCBQmI=s1600-w800",
+        "instagram_url": "https://www.instagram.com/rimon.farm/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": true,
+        "id": "2f7a9dc5-1c06-4a80-a2b5-9194e3cc2476"
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "סולט",
+      "name_english": "Salt",
+      "name_in_transcript": "סולט",
+      "google_name": "SALT מסעדת פיש אנד נאגטס",
+      "timestamp": {
+        "seconds": 1483,
+        "display": "24:43",
+        "youtube_url": "https://www.youtube.com/watch?v=rGS7OCpZ8J4&t=1483s"
+      },
+      "location": {
+        "city": "חיפה",
+        "neighborhood": null,
+        "address": "Derech HaAtsma'ut 33, Haifa",
+        "region": "צפון",
+        "latitude": 32.8188172,
+        "longitude": 35.000065
+      },
+      "cuisine_type": "דגים ופירות ים",
+      "price_range": "בינוני",
+      "status": "חדש",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "עשית לנו חשק בטירוף",
+        "למה זה נשמע הכי טוב בעולם ואף אחד לא עשה את זה ככה לפני"
+      ],
+      "host_comments": "מסעדה חדשה של עלה מוסה (שף לוקס וקרוד) בחיפה - אוכל רחוב מהיר מבוסס דגים ופירות ים. ניתן לבחור בפיטה או בצלחת. תפריט של 8 מנות כולל קריספי פיש, פיש כבב, שרימפס מתוגן, דג לברק בג'וספר. מטבח פתוח, שירות עצמי, מחירים נגישים.",
+      "dishes_mentioned": [
+        "קריספי פיש",
+        "פיש כבב",
+        "שרימפס מתוגן",
+        "דג לברק בג'וספר",
+        "אנשו קריספי",
+        "פיש נגטס",
+        "בירות"
+      ],
+      "special_features": [
+        "אוכל רחוב ים-תיכוני מהיר",
+        "של עלה מוסה",
+        "מטבח פתוח",
+        "שירות עצמי"
+      ],
+      "mention_context": "ראיון טלפוני עם עלה מוסה על המקום החדש",
+      "speaker": "עלה מוסה",
+      "google_places": {
+        "place_id": "ChIJWfv5EgC7HRURw3d6X5CWcbU",
+        "google_url": "https://maps.google.com/?cid=13074396740054579139",
+        "rating": 4.3,
+        "review_count": 42,
+        "price_level": null,
+        "phone": null,
+        "website": null,
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqE_bVXgHb5Mz7sHXsNLwTz0ETr7D_1qUernNVem35wxcP4TMqkl05SKwVPB-rMfXRn8xWEfp8k0VI2EZIeH2LE4VtebUl0BF9Y=s4800-w800",
+        "instagram_url": "https://www.instagram.com/salt.haifa/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": true,
+        "id": "64d86eb5-e213-4487-af47-d7e5158c8cdd"
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "קפה אלנבי",
+      "name_english": "Cafe Allenby",
+      "name_in_transcript": "קפה אלנבי",
+      "google_name": "Allenby 75",
+      "timestamp": {
+        "seconds": 1947,
+        "display": "32:27",
+        "youtube_url": "https://www.youtube.com/watch?v=rGS7OCpZ8J4&t=1947s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "לב העיר",
+        "address": "Allenby St 75, Tel Aviv-Yafo",
+        "region": "מרכז",
+        "latitude": 32.0673098,
+        "longitude": 34.7715062
+      },
+      "cuisine_type": "קפה-ביסטרו",
+      "price_range": "בינוני",
+      "status": "חדש",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "מקום שהייתי רוצה שיהיה שלי",
+        "פשוט מקום חמוד להפליא באמת עשה לי ממש",
+        "מחירים שפויים לגמרי"
+      ],
+      "host_comments": "בית קפה חדש בפינת לוונטין ואלנבי, מופעל על ידי ינאי הימלפרב. בית קפה של פעם עם אופי ביסטרו-ברסרי. אמית שיבח את מרק החתונות האיטלקי, סלט הביצים בלחם עם מקרל, הביף בורגניון על פירה ביתי, וגלידת אפרסקים ביתית.",
+      "dishes_mentioned": [
+        "מרק חתונות איטלקי",
+        "סלט ביצים בלחם",
+        "סלט ניסואז עם מקרל",
+        "ביף בורגניון על פירה",
+        "גלי תפרסקים",
+        "חביתה בפיטה"
+      ],
+      "special_features": [
+        "בית קפה של פעם",
+        "לחמים ומאפים במקום",
+        "בישול ביתי"
+      ],
+      "mention_context": "ביקורת מפורטת של אמית על בית הקפה החדש",
+      "speaker": "עמית אהרנסון",
+      "google_places": {
+        "place_id": "ChIJedOmkkRNHRURg6N1siKaSSQ",
+        "google_url": "https://maps.google.com/?cid=2614790532478903171",
+        "rating": 4.6,
+        "review_count": 241,
+        "price_level": null,
+        "phone": null,
+        "website": null,
+        "photo_url": "https://lh3.googleusercontent.com/place-photos/AL8-SNFAEVhaL8Iv6GRXcLgTE-NtK15rmLHmm6aVidyIufWIGjBKVM71Df8Wof5UyZIWuXyQivaz1Q-LA0n4fRcmyHjMO8Ba3wjSHtsLZS4FFutFTC02tyMjgXNavXA0aOai2FAGoJlMAMWC3ghg1w=s1600-w800",
+        "instagram_url": "https://www.instagram.com/cafeallenbytlv/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": true,
+        "id": "6291d21f-3ae1-4b74-85e3-118520038cd7"
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "פופינה",
+      "name_english": "Popina",
+      "name_in_transcript": "פופינה",
+      "google_name": "Popina",
+      "timestamp": {
+        "seconds": 2286,
+        "display": "38:06",
+        "youtube_url": "https://www.youtube.com/watch?v=rGS7OCpZ8J4&t=2286s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "נווה צדק",
+        "address": "Ahad Ha'Am St 3, Tel Aviv-Yafo",
+        "region": "מרכז",
+        "latitude": 32.0633936,
+        "longitude": 34.7684645
+      },
+      "cuisine_type": "שף",
+      "price_range": "יקר",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "היה לנו ערב מדהים באמת כל כך מוצלח",
+        "קרם ברולה מכווה... נורא נורא טעים",
+        "הייתה ארוחה כל כך טעימה"
+      ],
+      "host_comments": "מסעדת שף בנווה צדק בבעלות אורל קמחי, 13 שנה. נטע שיבחה את האווירה האישית, את הצוות המשפחתי, את אופציית תפריט הטעימות, קרם ברולה כרישה עם אספרגוס, רולדה של דג עם ניוקי, והסופלה הייחודי.",
+      "dishes_mentioned": [
+        "קרם ברולה כרישה ואספרגוס",
+        "רולדה של דג עם ניוקי",
+        "סופלה",
+        "תפריט טעימות"
+      ],
+      "special_features": [
+        "13 שנה",
+        "תפריט טעימות ללא הזמנה מראש",
+        "סופלה בתפריט קבוע",
+        "מרתף יין",
+        "מטבח פתוח"
+      ],
+      "mention_context": "ביקורת מפורטת של נטע על ארוחת ערב",
+      "speaker": "נטע סלונים",
+      "google_places": {
+        "place_id": "ChIJW_PEYptMHRURb-4h9AYDN_w",
+        "google_url": "https://maps.google.com/?cid=18173998149677477487",
+        "rating": 4.3,
+        "review_count": 2312,
+        "price_level": 4,
+        "phone": "03-575-7477",
+        "website": "http://popina.co.il/",
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqEdcMntL5qlEU3CkNHTi-kYKb_iK3kDU2Iepx5m3JZWxz1asK18iFHzpBoiQHcD7_Bm7M1-fGmC73vUxGdrCKRY9ySg7qyn5M0=s1600-w800",
+        "instagram_url": "https://www.instagram.com/popina_chef_restaurant/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": true,
+        "id": "774556a1-0b28-470d-98b3-a6abe91157a2"
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "ווינטרפסט / בת הוויגדור",
+      "name_english": "Winterfest at Bat HaVigdor",
+      "name_in_transcript": "ווינטרפסט",
+      "skip_reason": "פופאפ זמני של ארז קומורובסקי וחנן עזרן - אירוע חד-פעמי חורפי, לא מסעדה קבועה",
+      "timestamp": {
+        "seconds": 713,
+        "display": "11:53",
+        "youtube_url": "https://www.youtube.com/watch?v=rGS7OCpZ8J4&t=713s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "address": "בת הוויגדור"
+      },
+      "host_quotes": [
+        "ניוקי סולת רומאי עם עולש בר עם ריבת לימון וג'יבנייזים... ביס מדהים",
+        "רמן טלה עם טעמים עמוקים ועוצמתיים"
+      ],
+      "mention_context": "נטע ביקרה בפופאפ החורפי - שיבחה מאוד את הניוקי ואת הרמן של ארז קומורובסקי",
+      "google_places": {
+        "place_id": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": true,
+        "id": "a9cad76a-bafb-49c9-9aa9-e8db6e85e766"
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "בבלה",
+      "name_english": "Babele",
+      "name_in_transcript": "בבלה",
+      "skip_reason": "פופאפ של מסעדת בבלה עם קרפלח - אירוע זמני, הוזכר בקיצור כביס נוסף ולא כביקורת מלאה",
+      "timestamp": {
+        "seconds": 942,
+        "display": "15:42",
+        "youtube_url": "https://www.youtube.com/watch?v=rGS7OCpZ8J4&t=942s"
+      },
+      "location": {
+        "city": "תל אביב"
+      },
+      "host_quotes": [
+        "קרפלח במילוי כבד קצוץ... באמת היו פנטסטיים"
+      ],
+      "mention_context": "אמית הזכיר פופאפ של בבלה עם אוכל אשכנזי - קרפלח, כבד קצוץ, פלטת צלטים. ביס קצר.",
+      "google_places": {
+        "place_id": "ChIJK-6lop5MHRURCG9Z5AEvuoo",
+        "google_url": "https://maps.google.com/?cid=9996354008074776328",
+        "rating": 5.0,
+        "review_count": 2,
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "התקריה",
+      "name_english": "HaTakriya",
+      "name_in_transcript": "התקריה",
+      "skip_reason": "חדשות עסקיות - רכישה על ידי קבוצת נו ב-30-35 מיליון שקלים. לא ביקורת או המלצה.",
+      "timestamp": {
+        "seconds": 1017,
+        "display": "16:57",
+        "youtube_url": "https://www.youtube.com/watch?v=rGS7OCpZ8J4&t=1017s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "address": "Levontin St 28, Tel Aviv-Yafo"
+      },
+      "host_quotes": [
+        "תקריה אני חושב שאנשים לא כל כך יודעים את זה אבל זאת המסעדה הכי פופולרית בישראל בוולט"
+      ],
+      "mention_context": "חדשות עסקיות - קבוצת נו רכשה את התקריה, המסעדה הפופולרית ביותר בוולט, ב-30-35 מיליון שקלים",
+      "google_places": {
+        "place_id": "ChIJn8r3K31LHRUR2ukbvsMFT_w",
+        "google_url": "https://maps.google.com/?cid=18180756558984243674",
+        "rating": 4.4,
+        "review_count": 6883,
+        "verified": true,
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqEypCXIFB1AgqopAJHolimy8VbsrvzHY27PB8K8qAh9GPb6Izr2CtS2pAve3E5Mq38uYlsRTrFnx7Wucq1uAZSTuUQG3ukbrAg=s4800-w800"
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "מנטריי",
+      "name_english": "Manta Ray",
+      "name_in_transcript": "מנטריי",
+      "skip_reason": "הכרזת סגירה - מסעדה מיתולוגית שנסגרת. דיון היסטורי על תרומתה לתחום, לא המלצה.",
+      "timestamp": {
+        "seconds": 1164,
+        "display": "19:24",
+        "youtube_url": "https://www.youtube.com/watch?v=rGS7OCpZ8J4&t=1164s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "address": "חוף הים, תל אביב"
+      },
+      "host_quotes": [
+        "מנטרי הייתה אחד המקומות הכי טובים בארץ חד משמעית",
+        "מסעדה שהזדקנה קצת פחות טוב"
+      ],
+      "mention_context": "סגירת מנטריי - דיון על המורשת שלה כמסעדת חוף חלוצית ועל ירידת האיכות לאורך השנים",
+      "google_places": {
+        "place_id": "ChIJQ-lagPJIHRURXAbR4pgmrtE",
+        "google_url": "https://maps.google.com/?cid=15109056237956826716",
+        "rating": 4.3,
+        "review_count": 8293,
+        "verified": true,
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqEetalPkgNogwF8Ywwa4fhqpmIZTMVXoUrjvj8oM1DNEanNJEm6xRa07bsVYqrZ3skpdzWsyUWnVamRQRHVMfRb8ADz8qk3vA=s4800-w800"
+      },
+      "production_db": {
+        "exists": true,
+        "id": "8fad0a04-bfe6-4f18-9816-1cb40a2a6567"
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "שקולת",
+      "name_english": "Shekulat",
+      "name_in_transcript": "שקולת",
+      "skip_reason": "הוזכרה כיורשת של מנטריי על חוף הרצליה - שם דרופ בהקשר של סגירת מנטריי, ללא ביקורת",
+      "timestamp": {
+        "seconds": 1272,
+        "display": "21:12",
+        "youtube_url": "https://www.youtube.com/watch?v=rGS7OCpZ8J4&t=1272s"
+      },
+      "location": {
+        "city": "הרצליה"
+      },
+      "mention_context": "הוזכרה כמקום שמילא את הנישה של מנטריי בחוף - בוקר, קפה, ברנץ' וארוחת צהריים",
+      "google_places": {
+        "place_id": null,
+        "google_url": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "קפה סמדר",
+      "name_english": "Cafe Smadar",
+      "name_in_transcript": "קפה סמדר",
+      "skip_reason": "חדשות - בית הקפה סגור מאז הקורונה, עכשיו משק אופעים לוקחים את המקום. סיפור נוסטלגי, לא המלצה.",
+      "timestamp": {
+        "seconds": 1349,
+        "display": "22:29",
+        "youtube_url": "https://www.youtube.com/watch?v=rGS7OCpZ8J4&t=1349s"
+      },
+      "location": {
+        "city": "ירושלים",
+        "neighborhood": "המושבה הגרמנית",
+        "address": "Lloyd George St 4, Jerusalem"
+      },
+      "mention_context": "בית הקפה של קולנוע סמדר - סגור מאז הקורונה, רשת משק אופעים לוקחת את המקום",
+      "google_places": {
+        "place_id": "ChIJw2qTGi8oAxURiHzAiQHxudc",
+        "google_url": "https://maps.google.com/?cid=15544720577754332296",
+        "rating": 4.4,
+        "review_count": 778,
+        "verified": true,
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqHANCdb-_M8DDJ1IPqcMIaT5iG5EbzPcZ188xxsQM-2qkvExspS9ZA02bUWuBqMIR5U6zXrSnry2ttdEBnRSbj2aRFlHPp4Voo=s4800-w800",
+        "instagram_url": "https://www.instagram.com/smadar_restaurant/"
+      },
+      "production_db": {
+        "exists": true,
+        "id": "4deb9546-a4fc-4f7d-aac9-889481c7daf2"
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "משק אופעים",
+      "name_english": "Meshek Ofaim",
+      "name_in_transcript": "משק אופעים",
+      "skip_reason": "חדשות - רשת משק אופעים לוקחת את מקום קפה סמדר בירושלים. לא ביקורת.",
+      "timestamp": {
+        "seconds": 1415,
+        "display": "23:35",
+        "youtube_url": "https://www.youtube.com/watch?v=rGS7OCpZ8J4&t=1415s"
+      },
+      "location": {
+        "city": "ירושלים"
+      },
+      "mention_context": "רשת משק אופעים נכנסת למקום של קפה סמדר בירושלים",
+      "google_places": {
+        "place_id": "ChIJtVSsALXXAhURoVzOZPMWRTU",
+        "google_url": "https://maps.google.com/?cid=3838499492027325601",
+        "rating": 4.4,
+        "review_count": 1230,
+        "verified": true,
+        "photo_url": "https://lh3.googleusercontent.com/place-photos/AL8-SNHIeef17xW1zoNw_MFB-TUyHrhJLQI-6tqb3f1_oqywm8-vRZ1GckGmojJINZJvQnnQVxuXO0F0pkcqnwm7o2g7EciqHwTEi1bN4clafm09X7zUU3GTiNZs_6H5ZTF1OprycLhqNgEill_p=s4800-w800"
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "לוקס",
+      "name_english": "Luks",
+      "name_in_transcript": "לוקס",
+      "skip_reason": "הוזכרה כמסעדה קיימת של עלה מוסה - הקשר של הראיון, לא ביקורת",
+      "timestamp": {
+        "seconds": 1680,
+        "display": "28:00",
+        "youtube_url": "https://www.youtube.com/watch?v=rGS7OCpZ8J4&t=1680s"
+      },
+      "location": {
+        "city": "חיפה",
+        "address": "Ha-Namal St 13, Haifa"
+      },
+      "mention_context": "עלה מוסה מזכיר את לוקס כאחת משתי מסעדות השף שלו בחיפה",
+      "google_places": {
+        "place_id": "ChIJEYsAQza6HRURqgwegfifc_E",
+        "google_url": "https://maps.google.com/?cid=17398425675129293994",
+        "rating": 4.6,
+        "review_count": 4090,
+        "verified": true,
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqFuyRcYaCQkd3f7Hdje12plFG9CYnBGuSPSVx00T8-4fUv9B7qmOfbaAfLVKtM42OYl66nvTb28XAVmkxg26T0enF1r5SZeFpI=s4800-w800"
+      },
+      "production_db": {
+        "exists": true,
+        "id": "7e0a9c1c-1087-44c1-9757-07f1e2ae3929"
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "קרוד",
+      "name_english": "Crudo",
+      "name_in_transcript": "קרוד",
+      "skip_reason": "הוזכרה כמסעדה קיימת של עלה מוסה - הקשר של הראיון, לא ביקורת",
+      "timestamp": {
+        "seconds": 1682,
+        "display": "28:02",
+        "youtube_url": "https://www.youtube.com/watch?v=rGS7OCpZ8J4&t=1682s"
+      },
+      "location": {
+        "city": "חיפה",
+        "address": "Ha-Namal St 15, Haifa"
+      },
+      "mention_context": "עלה מוסה מזכיר את קרוד כאחת משתי מסעדות השף שלו בחיפה",
+      "google_places": {
+        "place_id": "ChIJU-kp_6u7HRURgyGeXmNnSS8",
+        "google_url": "https://maps.google.com/?cid=3407368269569335683",
+        "rating": 4.7,
+        "review_count": 1772,
+        "verified": true,
+        "photo_url": "https://lh3.googleusercontent.com/place-photos/AL8-SNG2Ho1K-cnIv4oICfebPJFzHuW5nXpX6_3hLFzKwAiEaXi4Wlpg55QhCqyfnKYlb3__XQFPz-2jzLq33KV7QELlZ4CANO1522YRdqWLDidn7PV-eAMkbCz6-VwGoKGPkh6_GZoLSylEjtleAtE=s4800-w800"
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "צ'ופק",
+      "name_english": "Shtsupak",
+      "name_in_transcript": "צ'ופק",
+      "skip_reason": "הוזכרה בהקשר ביקורת שלילית של מבקר אוכל (אפריטי), לא ביקורת של המגישים",
+      "timestamp": {
+        "seconds": 2626,
+        "display": "43:46",
+        "youtube_url": "https://www.youtube.com/watch?v=rGS7OCpZ8J4&t=2626s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "address": "Ben Yehuda St 256, Tel Aviv-Yafo"
+      },
+      "mention_context": "דיון על ביקורת שלילית של מבקר אפריטי על צ'ופק, מסעדת דגים מיתולוגית",
+      "google_places": {
+        "place_id": "ChIJwZ2kDPVLHRURCww-4mooLwI",
+        "google_url": "https://maps.google.com/?cid=157388951508618251",
+        "rating": 4.4,
+        "review_count": 2799,
+        "verified": true,
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqFYixEuMcvZL4v5lCkRINJxQZ54xl3YKy_X9-Lx23gb16ZAzYmuKkFMQsNR2IJ1hKUHNsoFVkYorFATkqOjBJkbyyMEtrfKLLY=s4800-w800"
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "ביסטרו אופנהיימר",
+      "name_english": "Bistro Oppenheimer",
+      "name_in_transcript": "אופנהיימר",
+      "skip_reason": "הוזכר בהקשר ביקורת של סגי כהן (מבקר אוכל), לא ביקורת של המגישים",
+      "timestamp": {
+        "seconds": 2556,
+        "display": "42:36",
+        "youtube_url": "https://www.youtube.com/watch?v=rGS7OCpZ8J4&t=2556s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "רמת אביב",
+        "address": "Oppenheimer St 11, Tel Aviv-Yafo"
+      },
+      "mention_context": "אמית מזכיר ביקורת חיובית של סגי כהן על ביסטרו שכונתי אמיתי",
+      "google_places": {
+        "place_id": "ChIJacGlaABJHRURn0osMYxjwug",
+        "google_url": "https://maps.google.com/?cid=16772077416052705951",
+        "rating": 4.0,
+        "review_count": 61,
+        "verified": true,
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqEAuIkD-aWWk3OtLjEjkSJX3_OiPB-vL_6kN6GkL_v9z7R__8FI52-zq-aUM4JDDyw3tADgcE85iR1CMsELml_ciO3sVwkqHYk=s4800-w800"
+      },
+      "production_db": {
+        "exists": true,
+        "id": "119c1368-c456-4c49-b666-65090c66f167"
+      }
+    },
+    {
+      "verdict": "rejected",
+      "name_in_transcript": "ג'ירף",
+      "reject_reason": "הוזכר רק כרכישה קודמת של קבוצת נו - שם דרופ היסטורי בהקשר עסקי",
+      "timestamp": {
+        "seconds": 1026,
+        "display": "17:06"
+      }
+    },
+    {
+      "verdict": "rejected",
+      "name_in_transcript": "סניור",
+      "reject_reason": "הוזכר רק כהשוואה - אמית אומר שקפה אלנבי הזכיר לו את סניור, לא ביקורת",
+      "timestamp": {
+        "seconds": 1887,
+        "display": "31:27"
+      }
+    },
+    {
+      "verdict": "rejected",
+      "name_in_transcript": "כנפי דילוקס",
+      "reject_reason": "העסק הקודם של עלה מוסה באותו לוקיישן - כבר לא פעיל, הוחלף על ידי סולט",
+      "timestamp": {
+        "seconds": 1670,
+        "display": "27:50"
+      }
+    }
+  ]
+}

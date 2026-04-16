@@ -1,0 +1,732 @@
+{
+  "episode": {
+    "video_id": "qKCaJb-ZsNc",
+    "video_url": "https://www.youtube.com/watch?v=qKCaJb-ZsNc",
+    "title": "הוידוי המסעיר של יהונתן | מדברים מהבטן, פרק 151",
+    "channel_name": "מדברים מהבטן - הפודיום",
+    "published_at": "2026-04-15",
+    "hosts": [
+      "עמית אהרונסון",
+      "יהונתן כהן",
+      "נתה סלונים"
+    ],
+    "guests": [
+      "אן ומאי (סאנפלאור)"
+    ],
+    "language": "he",
+    "transcript_length": 47198,
+    "segment_count": 1453,
+    "episode_id": null,
+    "summary": "פרק 151 של מדברים מהבטן. יהונתן מתוודה על שינוי תזונתי דרסטי בעקבות ממצאים רפואיים. עמית ביקר בבוץ' בכפר שמריהו (המבורגר פגזי), נתה הזמינה ממשק לגזיאל ובורקס אבא תודה. ראיון עם בעלי סאנפלאור על פיצריה חדשה בבת גלים. חדשות קולינריות מחיפה - מפגש בבת גלים, מבסוטה. שרביט עוזב את מילה/טורוס, אורן אסידו עובר ללאמיה. עמית סוקר את מרטינט - בר הקוקטיילים החדש של אדר לוטן. יהונתן מבקר בגלוטריה ומתוודה על הצורך בשינוי תזונתי."
+  },
+  "extraction": {
+    "date": "2026-04-03",
+    "agent": "episode-processor",
+    "total_mentions": 18,
+    "add_to_page": 5,
+    "reference_only": 11,
+    "rejected": 2,
+    "already_in_db": 0,
+    "new_to_add": 5
+  },
+  "restaurants": [
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "בוץ'",
+      "name_english": "BUTCH",
+      "name_in_transcript": "בוץ'",
+      "google_name": "BUTCH",
+      "timestamp": {
+        "seconds": 178,
+        "display": "02:58",
+        "youtube_url": "https://www.youtube.com/watch?v=qKCaJb-ZsNc&t=178s"
+      },
+      "location": {
+        "city": "כפר שמריהו",
+        "neighborhood": null,
+        "address": "הראשונים 1, כפר שמריהו, 4691000, ישראל",
+        "region": "שרון",
+        "latitude": 32.1799162,
+        "longitude": 34.8192814
+      },
+      "cuisine_type": "המבורגר",
+      "price_range": "בינוני",
+      "status": "חדש",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "המבורגר טעים בצורה חריגה",
+        "הילדים שלי לקחו כל אחד ביס מהצ'יזבורגר ואמרו מה זה? זה נורא טעים הבשר הזה",
+        "ארוחה יוצאת מן הכלל טובה",
+        "שווה כל שקל טעים בטירוף"
+      ],
+      "host_comments": "עמית ביקר בבוץ' - הגלגול החדש של יוזי, אטליז ומעדנייה מיתולוגיים בכפר שמריהו. קציצת המבורגר 240 גרם, בשר שלוש אומנים, מטובל בפלפל שחור. גם הילדים התלהבו. יש גם קריך עוף ורוטיסרי",
+      "dishes_mentioned": [
+        "המבורגר 240 גרם",
+        "צ'יזבורגר עם בייקון",
+        "קריך עוף",
+        "רוטיסרי עוף",
+        "צ'יפס"
+      ],
+      "special_features": [
+        "אטליז ומעדנייה",
+        "גלגול חדש של יוזי",
+        "גרילמנים משלהם",
+        "בקרוב משלוחים ופתוח בשבת"
+      ],
+      "mention_context": "ביס השבוע של עמית - ביקר במקום החדש בכפר שמריהו והתלהב מהמבורגר",
+      "speaker": "עמית אהרונסון",
+      "google_places": {
+        "place_id": "ChIJZ40UnzZHHRURhtTd17GpdaE",
+        "google_url": "https://maps.google.com/?cid=11634391793677489286",
+        "rating": 5.0,
+        "review_count": 2,
+        "price_level": null,
+        "phone": "052-619-9777",
+        "website": "https://tabitisrael.co.il/tabit-order?site=6950f9e7ed69608a3bc84df0&step=menu",
+        "photo_url": "places/ChIJZ40UnzZHHRURhtTd17GpdaE/photos/AU_ZVEGks8L8nnF6NY9gCP2IasnqY0fcHDCUdfwEHm5RW5_12mUBy85E4eWBlm0a8YM6UREBvHBYByF0jncXnRZxhfhAvYHMC9PTgb_15lftXt7oYhlaIKvw9FDv1zkuOJ_WlMnWAzrUiyTU2XRhSlmxbASIPG5dilEKZEcAQsnRGV-FNuyQHzncPEFL_KeK3Ol4W9N77LBNj2gnJDKcrQD34_HX0IybSWxX9LT4YxBYIZCC6WHcOnk8zf3pUZ8zajZV3XUjIwmB3Q1M-956bAB-VJLnk0PCTGtsU3VBbfGjuFY",
+        "instagram_url": "https://www.instagram.com/butch_restaurant/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "בורקס אבא תודה",
+      "name_english": "Burekas Aba Toda",
+      "name_in_transcript": "בורקס אבא תודה",
+      "google_name": "בורקס אבא תודה",
+      "timestamp": {
+        "seconds": 2669,
+        "display": "44:29",
+        "youtube_url": "https://www.youtube.com/watch?v=qKCaJb-ZsNc&t=2669s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "פארק המסילה",
+        "address": "סמטת אהרון שלוש 9, תל אביב-יפו, ישראל",
+        "region": "מרכז",
+        "latitude": 32.0584603,
+        "longitude": 34.7639468
+      },
+      "cuisine_type": "בורקס",
+      "price_range": "זול",
+      "status": "חדש",
+      "host_opinion": "חיובית",
+      "host_quotes": [
+        "בצק נהדר עם חלקים יותר קריספים וטובים",
+        "מילוי טוב",
+        "עובר נהדר במשלוח"
+      ],
+      "host_comments": "נתה הזמינה במשלוח. בורקס עלים חצי קריספי, מגיע בצמדים. גבינה או תרד. פתוח 24/6, כשר. 33 שקל במשלוח, 28 במקום. סניף שני (מקורי בראשון לציון). אפשר גם לקנות קפואים",
+      "dishes_mentioned": [
+        "בורקס גבינה",
+        "בורקס תרד",
+        "בורקס תרד גבינה",
+        "בורקס תפוח אדמה"
+      ],
+      "special_features": [
+        "פתוח 24/6",
+        "כשר",
+        "בלי חמאה בלי מרגרינה",
+        "אפשר לקנות קפואים"
+      ],
+      "mention_context": "ביס השבוע של נתה - תוספת חדשה ומרעננת לפארק המסילה",
+      "speaker": "נתה סלונים",
+      "google_places": {
+        "place_id": "ChIJtfMYZM1NHRURZmyfxhr9pTQ",
+        "google_url": "https://maps.google.com/?cid=3793716552572824678",
+        "rating": 4.8,
+        "review_count": 23,
+        "price_level": null,
+        "phone": "050-817-7007",
+        "website": "https://wolt.com/he/isr/tel-aviv/restaurant/burekas-aba-toda-tel-aviv",
+        "photo_url": "places/ChIJtfMYZM1NHRURZmyfxhr9pTQ/photos/AU_ZVEGMFigk9-qEGlTsZkaGFzAsLgRdTtVmaO3CIskCLM42hw8BXaNVjYni85t5QPhQZf0Ee-7U3RH4pqpTiET-tonGaQIOlrFwmjlCkIF6POZIDrnLZh79MdXydw2VC3YU3JhOob2rSCezjd3STwsJjyG8VyME5oWFUsrD3RuYohM7-ACuouHnSQN7GYjmQb_9UlgXKaWUxjVdqWcN3tzluO6wphHbtmTdB6opk0wEiMxs_r9z2DWb1EmsHGsnwekEvJwnYuK4Gu3Xs6fxy-fVQCo2Z0kYsjliNDncWVuyZ2OWlw",
+        "instagram_url": "https://www.instagram.com/burekas_aba_toda/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "מרטינט",
+      "name_english": "Martinet",
+      "name_in_transcript": "מרטינט",
+      "google_name": "מרטינט",
+      "timestamp": {
+        "seconds": 2980,
+        "display": "49:40",
+        "youtube_url": "https://www.youtube.com/watch?v=qKCaJb-ZsNc&t=2980s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "אחוזת בית",
+        "address": "אחוזת בית 5, תל אביב-יפו, ישראל",
+        "region": "מרכז",
+        "latitude": 32.064285,
+        "longitude": 34.770695
+      },
+      "cuisine_type": "בר קוקטיילים ואוכל",
+      "price_range": "יקר",
+      "status": "חדש",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "קוקטיילים פשוט פשוט פשוט נהדרים",
+        "מנה מדהימה באמת",
+        "מנה מטורפת מטורפת מטורפת מטורפת",
+        "מקום יפה נוטף נוטף נוטף סטייל",
+        "ממש ראוי הומלצתם"
+      ],
+      "host_comments": "עמית ביקר במרטינט - בר קוקטיילים ואוכל חדש של השף אדר לוטן והמיקסולוג אורי גופר. מטבח אסיאתי על יסודות צרפתיים. בשר סרטנים עם אספרגוס בטמפורה, בטן חזיר צלויה, שיפוד לבבות, האמאצ'י קוביות דגנה. מנות באזור 75 שקל, קוקטיילים באזור 50 שקל",
+      "dishes_mentioned": [
+        "בשר סרטנים עם אספרגוס בטמפורה",
+        "בטן חזיר צלויה",
+        "שיפוד לבבות עוף",
+        "האמאצ'י קוביות דגנה עם שקדי עגל בקרי",
+        "טרטר בקר"
+      ],
+      "special_features": [
+        "בר קוקטיילים",
+        "שף אדר לוטן",
+        "מיקסולוג אורי גופר",
+        "ליד אברי",
+        "אסיאתי על יסודות צרפתיים"
+      ],
+      "mention_context": "שיעורי בית של עמית - ביקר ביום חמישי אחרי הפסקת אש ונהנה מאוד מהאוכל והקוקטיילים",
+      "speaker": "עמית אהרונסון",
+      "google_places": {
+        "place_id": "ChIJGRRMBQBNHRUR7KV5H1w5rBE",
+        "google_url": "https://maps.google.com/?cid=1273455862466848236",
+        "rating": 4.4,
+        "review_count": 8,
+        "price_level": null,
+        "phone": "050-6473-444",
+        "website": null,
+        "photo_url": "https://res.cloudinary.com/ontopo/image/upload/q_auto:eco,c_crop,x_0,y_608,w_2048,h_759/v1774272070/assets/6975f92ecd4e98002e5c8f3d/6975f92ecd4e98002e5c8f3d/2.jpg",
+        "instagram_url": null,
+        "verified": true,
+        "og_image_url": "https://res.cloudinary.com/ontopo/image/upload/q_auto:eco,c_crop,x_0,y_608,w_2048,h_759/v1774272070/assets/6975f92ecd4e98002e5c8f3d/6975f92ecd4e98002e5c8f3d/2.jpg"
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "גלוטריה",
+      "name_english": "Gluteria",
+      "name_in_transcript": "הגלוטריה",
+      "google_name": "גלוטריה",
+      "timestamp": {
+        "seconds": 3254,
+        "display": "54:14",
+        "youtube_url": "https://www.youtube.com/watch?v=qKCaJb-ZsNc&t=3254s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "צפון תל אביב",
+        "address": "אריה דיסנצ'יק 5, תל אביב-יפו, ישראל",
+        "region": "מרכז",
+        "latitude": 32.1167971,
+        "longitude": 34.8269284
+      },
+      "cuisine_type": "ללא גלוטן",
+      "price_range": "בינוני",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "הלחם עצמו היה פגז",
+        "הרגיש לי ברובו מאוד רגיל, אתה לא מרגיש שאתה מתפשר",
+        "אכלתי כמו משוגע אבל הרגשתי ממש טוב וקליל"
+      ],
+      "host_comments": "יהונתן ביקר בגלוטריה - מאפייה ומסעדה ללא גלוטן בצפון תל אביב. התחיל כפופאפ בשוק הפשפשים ביפו. מציע הכל ללא גלוטן - פיצה, פסטה, ניוקי, סנדוויצ'ים, שניצל, קינוחים. הביקור הוביל את יהונתן לגילוי רפואי חשוב",
+      "dishes_mentioned": [
+        "פיצה",
+        "פסטה",
+        "ניוקי",
+        "סנדוויצ'ים",
+        "שניצל",
+        "טארט תותים",
+        "עוגת שוקולד",
+        "מאפין פיסטוק"
+      ],
+      "special_features": [
+        "100% ללא גלוטן",
+        "מאפייה ומסעדה",
+        "התחיל כפופאפ בשוק הפשפשים",
+        "של זוג שהילדים שלהם צליאקים"
+      ],
+      "mention_context": "יהונתן ביקר כחלק מהתעניינות בעולם ללא גלוטן, והתרשם מאוד. החוויה הובילה אותו לגילוי רפואי אישי",
+      "speaker": "יהונתן כהן",
+      "google_places": {
+        "place_id": "ChIJ8wdXqrJJHRURsxSuIMXze3o",
+        "google_url": "https://maps.google.com/?cid=8825915922745005235",
+        "rating": 4.5,
+        "review_count": 682,
+        "price_level": null,
+        "phone": "03-683-7680",
+        "website": "https://www.gluteriazino.com/",
+        "photo_url": "places/ChIJ8wdXqrJJHRURsxSuIMXze3o/photos/AU_ZVEGAQs-PKJ1BReQmneistZ8qKtRtjJfLxbD9IsdKHha8KQLeSdEm4HngVMnzcm5tkqs5hgLQsDns8UHtFHYJA8Qi-KRcuW9H3hGIKwFqcURXLFgpBNEo3KLi_Ho8dkq4IMH_sTp_DPfL_TB8r7yaTGWONa_tFVrmf-mFeEgisvigXZ6CDQ9UJQ1Hv97id9BifqvWo8Pt3ey3HF0T-C4qtuQfjySJqpGdN_GRYfrf1yzGq0-6u6VZ_WRzI74Sz3thdkzK5ogaJF_Zev7ASRWBAKppKI_DWC7rKM_O3B36FEqwGQ",
+        "instagram_url": "https://www.instagram.com/gluteria.zino/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "הוזכר",
+      "name_hebrew": "פיצה סאנפלאור",
+      "name_english": "Pizza Sunflour",
+      "name_in_transcript": "סאנפלאור",
+      "google_name": "Sunflour Bakery",
+      "timestamp": {
+        "seconds": 1253,
+        "display": "20:53",
+        "youtube_url": "https://www.youtube.com/watch?v=qKCaJb-ZsNc&t=1253s"
+      },
+      "location": {
+        "city": "חיפה",
+        "neighborhood": "בת גלים",
+        "address": "שדרות בת גלים 16, חיפה, ישראל",
+        "region": "צפון",
+        "latitude": 32.832312,
+        "longitude": 34.977742299999996
+      },
+      "cuisine_type": "פיצה",
+      "price_range": "בינוני",
+      "status": "חדש",
+      "host_opinion": "חיובית",
+      "host_quotes": [
+        "הפיצה נראית נהדרת",
+        "פיצה מסחן קנה אותך"
+      ],
+      "host_comments": "ראיון עם אן ומאי בעלי סאנפלאור על פתיחת פיצריה חדשה בבת גלים. פיצות גדולות קריספיות עם בצק על בסיס מחמצת קמח מלא. סלייסים ומישים. שירות עצמי, אווירה כיסית. פתוח כל יום חמישי-שישי אחה\"צ עד 11 בלילה",
+      "dishes_mentioned": [
+        "פיצה פפרוני",
+        "פיצה מסחן",
+        "סלייסים"
+      ],
+      "special_features": [
+        "מבית סאנפלאור בייקרי",
+        "בצק מחמצת קמח מלא",
+        "שירות עצמי",
+        "יין מצנצנות"
+      ],
+      "mention_context": "ראיון עם בעלי סאנפלאור שפתחו פיצריה חדשה ליד המאפייה בבת גלים. עדיין לא אכלו שם אבל מתרשמים מאוד",
+      "speaker": "hosts",
+      "google_places": {
+        "place_id": "ChIJi0CgP8-7HRURhtxRgVmky2Q",
+        "google_url": "https://maps.google.com/?cid=7263079528393727110",
+        "rating": 4.5,
+        "review_count": 463,
+        "price_level": null,
+        "phone": "052-862-6883",
+        "website": "https://instagram.com/sunflourbakerybg",
+        "photo_url": "places/ChIJi0CgP8-7HRURhtxRgVmky2Q/photos/AU_ZVEEhDTCWXpZyRvQ1EZqbvXTdZQGLehHLP2W2NMYlK-mHh6j0AT4lhgEVmTGI9-XcmYRdWja4CKXslaGQ9rAd-EhOwkVVt4HahgODYUZN3Ogo4Q2ZDCpQptd3JD9dxXLPOZl_az-wexYXMdKBLenMv5c0FBPpZLeC4XHJ0xe5lmikGI8fROqpwJEWlLF_AVnlIkcVaxUpVX0YDi2FuXwrDDgi4KsgIgD88WRHMH4q86gYdpHTKzBxy4UPNjEYdrMXg3mMRXpaBGgjPhjUkDZMqUDTNTuE2gCzFu5eaXG-ggLd8XU1l6OwW5LDUmXcPz6tkDWxeguXkgHAqWgQRElt3A1kEO10Own2wFc4YP2kRhGlKS8skxvL1ft-Mddyzc7ybEzNog87NgXxNVnnWX2EOPPr1bLobvSXfJEdcfSR0tjohufE",
+        "instagram_url": "https://www.instagram.com/sunflourbakerybg/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "משק לגזיאל",
+      "name_english": "Meshek Lagziel",
+      "name_in_transcript": "משק להגזיל",
+      "skip_reason": "נתה הזמינה בשר במשלוח לבישול ביתי - לא ביקור במסעדה",
+      "timestamp": {
+        "seconds": 362,
+        "display": "06:02",
+        "youtube_url": "https://www.youtube.com/watch?v=qKCaJb-ZsNc&t=362s"
+      },
+      "location": {
+        "city": "רמת גן",
+        "address": "עוזיאל 83, רמת גן, ישראל"
+      },
+      "cuisine_type": "בשרים",
+      "host_quotes": [
+        "קודם כל יפה, מבוקם, מושלם",
+        "ההמבורגרים שלהם במיוחד מצוינים",
+        "מדהים לכמה שהבשר שלהם טוב"
+      ],
+      "mention_context": "נתה הזמינה בשר במשלוח לבישול ביתי - תיאור של המוצר (מבוקם, קל להפשיר) אבל לא ביקור במקום",
+      "google_places": {
+        "place_id": "ChIJe0SoMExKHRURLEnkBt5XnVA",
+        "rating": 4.4,
+        "review_count": 251,
+        "phone": "03-676-2420",
+        "website": "http://www.lagziel-meat.co.il/",
+        "photo_url": "places/ChIJe0SoMExKHRURLEnkBt5XnVA/photos/AU_ZVEFWMnz1bggPexWmYExnI6R7JLgubp5eCiqcbsMVogKLNeDPfZ44055Tu6OJhonvTaPhTZG-JFLIGBlaPjCFzSa3Xi3HDqJTiV7HEp5xbUZg3P22rLBuKK_i_B0MlCueKhBmiUrk0j2B1QOeHU4Gnuc4BSq28J8bc786M91hDoLNHvffeYCsP6Hphqf5ijJlUkcUjC8yOq1JuBe3Es08EgZ-jhKm0IUN2oiqG9yDCrm7QZf370Fo_thZvriVg3TWIMkPlNLOjEB9IYNX3kwpZj1fe04UmzFyV_ovPx40nnKEQQ",
+        "verified": true,
+        "instagram_url": "https://www.instagram.com/meshek_lagziel/"
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "מפגש בבת גלים",
+      "name_english": "Mifgash BeBat Galim",
+      "name_in_transcript": "מפגש בהתגלים",
+      "skip_reason": "מקום חדש בחיפה - הוזכר כחדשות, לא ביקרו שם",
+      "timestamp": {
+        "seconds": 1176,
+        "display": "19:36",
+        "youtube_url": "https://www.youtube.com/watch?v=qKCaJb-ZsNc&t=1176s"
+      },
+      "location": {
+        "city": "חיפה",
+        "neighborhood": "בת גלים",
+        "address": "שדרות בת גלים 11, חיפה",
+        "latitude": 32.8327155,
+        "longitude": 34.9778181
+      },
+      "host_quotes": [],
+      "mention_context": "מקום חדש של חבורה מאחורי האפו 26 ותא קיה. גרסה חיפאית לשחף - מסעדת דגים",
+      "google_places": {
+        "place_id": "ChIJ7Q73cq27HRURYFRz2L3edaY",
+        "verified": false,
+        "rating": 5.0,
+        "review_count": 9,
+        "photo_url": "AU_ZVEGmXP2SuNDq1XxzyT8tia6MH93gpEy_SQQzn0z6chx6A4LuNi7Nu6dO7vnr17S8tsv_AJgR0QkMzHKYCIamim8-sWcgnsaUgOeauMZ-JEbey9qTqbKhKQZmAHnrixmlZMzJHiK0XOC2rlORPc3QxH2lfSwrluCYhNhEKVGy5Kye-X9dL7RuC6faXgfWYwARx8bOxBGZ2csqWAOqmVVSUfRh021oLqUfvs6bqDeOS201usE-i7bDPFEN9tEskQR1LwaK1pzyTQpz4jrjQZz57Ml0usgw8_BfnWeWAfgsxUwcng",
+        "google_url": "https://maps.google.com/?cid=11994738089532806240",
+        "instagram_url": "https://www.instagram.com/mifgash_bat_galim"
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "מבסוטה",
+      "name_english": "Mabsuta",
+      "name_in_transcript": "מבסוטה",
+      "skip_reason": "מקום חדש בחיפה - חדשות בלבד, לא ביקרו",
+      "timestamp": {
+        "seconds": 1673,
+        "display": "27:53",
+        "youtube_url": "https://www.youtube.com/watch?v=qKCaJb-ZsNc&t=1673s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "address": "לוינסקי 39, תל אביב-יפו",
+        "latitude": 32.0600152,
+        "longitude": 34.7716977
+      },
+      "host_quotes": [],
+      "mention_context": "גריל חדש של משפחת הבושקרה מוואדי נסנס - קצבים מפורסמים. ארייסים ומנות גריל",
+      "google_places": {
+        "place_id": "ChIJf-jNzZ1MHRUR8JaFsI_CmLo",
+        "verified": false,
+        "rating": 4.8,
+        "review_count": 297,
+        "photo_url": "AU_ZVEF3_orauaw0sXGfwitXiT6Y8CZbv_8Lrh0x7AOT1Q7dNcfyCWcjw_j5fYT1zUGb2U7c1u0Cc2E0Wgmqdt_W7joGApOe2wKkrp2gMKp88AIEnTMMbwim6pg6ND9Ch5FAJ1OuhXZprrPhPI0OrN6xy6ztyAIp_YqHXk6XKDHv7tQnerG-saDB0-vsO4zJVU49kavhaC5KjcwlIheZCajTfB4JZPyl4u_uw-rZ_v7B57GSSpLzsfy-5JqZfwSZqGRmLVI-wM08LmI8XCHnkQyX-fFaCLPRgakbgsEg_IqE8NGtIZh-GXuqvrEKxcgKEq_L9_kcf_vdMEIoH32mHjr_Q7RHG9_XGpTpLWy66BzmDFNMtUCFmAAZKCCduldR3tfbwWi2dU628tDGjJpZTiPCgV1mTwmbk9SJ5Mc2Cyy36Qc",
+        "google_url": "https://maps.google.com/?cid=13445710609912272624",
+        "phone": "03-949-7341",
+        "instagram_url": "https://www.instagram.com/mabsutatlv/"
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "מילה",
+      "name_english": "Mila",
+      "name_in_transcript": "מילה",
+      "skip_reason": "חדשות תעשייה - יונתן שרביט עוזב",
+      "timestamp": {
+        "seconds": 1789,
+        "display": "29:49",
+        "youtube_url": "https://www.youtube.com/watch?v=qKCaJb-ZsNc&t=1789s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "address": "דיזנגוף 164, תל אביב-יפו",
+        "latitude": 32.0841232,
+        "longitude": 34.7743659
+      },
+      "host_quotes": [],
+      "mention_context": "יונתן שרביט עוזב את מילה וטורוס. מינו שף חדש. דיון על שמירת הרמה",
+      "google_places": {
+        "place_id": "ChIJuT8zHIhLHRURXA8MF5eiy08",
+        "verified": false,
+        "rating": 4.2,
+        "review_count": 602,
+        "photo_url": "AU_ZVEGjH0NjBCjVShY04ZzL77H2_ToQCPKZJbTGlOi3tfR69nEpXAsmTv9tR8IC-ye90Z-Z6ATBkKHSZqUhvz0Uu1GUjUEl1TwIiu-OAnDQZiXW_l7X5KRKWnmBe1_0h8YdTs3i1qPIusn_WyUwP4BmgiOq_HkZ7dN-HdszcNdvXvaW3a3KTqZJFPP_osUPZhqUmInNK7roYcQlzqGdUVwZB5amF_IbGT-3449iPsfFlF4yUacQTtruCal6pM5TX8pTOfTo-_WUW9nf24RsM9X_cv6Adc6w36M6w3z39c0xDancxvFTMfZ3qRu-RtJwU1hIgi5jfjDnNFE2Vr5wXPzVxHs57tSmHrzSEaSXlkzmgZq3zKRPT8StUgARIx3bX1N7atrEg50_Jr2_opT5BRFMwuC3KfTdP1gbFjnBFEcNEHnLCA",
+        "google_url": "https://maps.google.com/?cid=5749868119078997852",
+        "phone": "052-833-3668"
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "טורוס",
+      "name_english": "Toros",
+      "name_in_transcript": "טורוס",
+      "skip_reason": "חדשות תעשייה - יונתן שרביט עוזב, לא ביקור",
+      "timestamp": {
+        "seconds": 1793,
+        "display": "29:53",
+        "youtube_url": "https://www.youtube.com/watch?v=qKCaJb-ZsNc&t=1793s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "address": "אצל 44, תל אביב-יפו",
+        "latitude": 32.0506637,
+        "longitude": 34.7916927
+      },
+      "host_quotes": [],
+      "mention_context": "חלק מקבוצת המסעדות שיונתן שרביט עוזב",
+      "google_places": {
+        "place_id": "ChIJc4deyWtLHRURfGPNvCj1fEw",
+        "verified": false,
+        "rating": 4.1,
+        "review_count": 262,
+        "photo_url": "AU_ZVEEqXVWIcZnbT4q2oF_DLBtkhQOVHD0ZFLguih9eYJnoArRcaqbXZoERBYg6e4DDtxKE531iUxlI5lf-q35NBK1t5jHOUW9y3BoNPnZJfRcxpGbzdiL_0sBeq4VWCuw7vkjcC1pN_-dSWygMoIlcq8UIq-QUVO2roDedUkEt8-xnY4-Cwk0tJvFoAVzGmdECvitRvOPLz8IifSfVb7ZobjbLzH2MieQ-85mHD8FzHYQYzxe1b-t5ZjI_XMoVrQNFRZxP-ZXNLHf72UapqYShK0KaMf0S9hRsmUd2WhE3tSCPIjOel6_OdHIrHOgnbvIWbsKjezuBiRCbCQZx0BZLJeMR0P3y8P7r5vJU1XGNS3-Nuq7CO2dE4xBZAivG1K9QrsaKoXXlJ2PYAZZNiXtTZoGHk25weCmjiT94PJFqbtBV8A",
+        "google_url": "https://maps.google.com/?cid=5511549599309718396",
+        "instagram_url": "https://www.instagram.com/toros_tlv/"
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "פליים",
+      "name_english": "Flame",
+      "name_in_transcript": "פליים",
+      "skip_reason": "חדשות תעשייה - אורן אסידו עוזב",
+      "timestamp": {
+        "seconds": 1886,
+        "display": "31:26",
+        "youtube_url": "https://www.youtube.com/watch?v=qKCaJb-ZsNc&t=1886s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "address": "אליעזר פרי 10, תל אביב-יפו",
+        "latitude": 32.08653,
+        "longitude": 34.7695666
+      },
+      "host_quotes": [],
+      "mention_context": "אורן אסידו עוזב את פליים במלון קרלטון ועובר ללאמיה ברחובות",
+      "google_places": {
+        "place_id": "ChIJ13Xs3QhNHRURYmwbpgxOH_4",
+        "verified": false,
+        "rating": 4.2,
+        "review_count": 291,
+        "photo_url": "AU_ZVEHKQyvBOhXNqR7LXRIqgSxjV8prMTFqvFTv_8n9YR8WsofLUidGIiiCw_Z9BfT2UTy5BuZtpB7baZQfEe6AJxdWglItXUFxQ1VEofgKFoBGvs3lwA997BJwcEhQ8FB9nC4nM8Bp9HcXd4Yb9a7fh0S5UuLCd_lGUDG59hE8Y_GmY3d-ouNEwAU8OD_HBqIaBGH7bl0MkQ_oscbzSNpJoHsuUDjrV-TvrUGunQxZT9MucNlsJ-i7ZOWgzTb7BwWrX1w7HngGQgx-_FPgYCTv93nr_6wYGQKPUyuXGivSuCRec9YZN4DMdIIkj5W7E-mgin-Lti3OFKOwJo1eVCR_99xZLH1MsNBtULPtHYQ18fw17NvuJvPO9dWJmMaZli1x-wcCoYG5BBwiHRu7f84xLgO-xidGBhjtZsLoocWrpRDG5A",
+        "google_url": "https://maps.google.com/?cid=18311440426145115234",
+        "phone": "073-338-3833",
+        "website": "https://www.flametlv.co.il/",
+        "instagram_url": "https://www.instagram.com/flame_tlv/"
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "לאמיה",
+      "name_english": "Lamia",
+      "name_in_transcript": "לאמיה",
+      "skip_reason": "חדשות תעשייה - אורן אסידו מצטרף, לא ביקור",
+      "timestamp": {
+        "seconds": 1894,
+        "display": "31:34",
+        "youtube_url": "https://www.youtube.com/watch?v=qKCaJb-ZsNc&t=1894s"
+      },
+      "location": {
+        "city": "רחובות",
+        "address": null
+      },
+      "host_quotes": [],
+      "mention_context": "מסעדת שף כשרה מאוד גדולה ברחובות. אורן אסידו מצטרף כשף. דיון על שלוש מסעדות בשם אמיה/לאמיה",
+      "google_places": {
+        "place_id": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "סורי",
+      "name_english": "Souri",
+      "name_in_transcript": "סורי",
+      "skip_reason": "חדשות - סניף חדש בסביון, לא ביקור",
+      "timestamp": {
+        "seconds": 1867,
+        "display": "31:07",
+        "youtube_url": "https://www.youtube.com/watch?v=qKCaJb-ZsNc&t=1867s"
+      },
+      "location": {
+        "city": "סביון",
+        "address": null
+      },
+      "host_quotes": [],
+      "mention_context": "סורי נפתחה - גרסה של 148 מדיזנגוף בסביון",
+      "google_places": {
+        "place_id": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "נועמה",
+      "name_english": "Noama",
+      "name_in_transcript": "נועמה",
+      "skip_reason": "ביקורת של סגי כהן, הוזכר בקצרה",
+      "timestamp": {
+        "seconds": 3628,
+        "display": "60:28",
+        "youtube_url": "https://www.youtube.com/watch?v=qKCaJb-ZsNc&t=3628s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "נחלת בנימין",
+        "address": "נחלת בנימין 59, תל אביב-יפו",
+        "latitude": 32.0639314,
+        "longitude": 34.7715317
+      },
+      "host_quotes": [
+        "מאוד נהנה בנועמה בנחלת בנימין"
+      ],
+      "mention_context": "סגי כהן ביקר שם, נהנה. אין תוכן של המארחים עצמם",
+      "google_places": {
+        "place_id": "ChIJvQ4xnrJNHRURy4G0z_I86l0",
+        "verified": false,
+        "rating": 3.9,
+        "review_count": 524,
+        "photo_url": "AU_ZVEEAXjZRxVRxntyaUDrJ14PCoA4nQM22ondDnyphQnPqsYQd5w3mw2qNI0GnJwKI1jjXnQ3LJDQPtSAykd--mHyiW8Q2ENG8vrPc_iR2zuaEst1xLD3kiNZs6nWvWKwUFwCSNx1OrHENexL0HfT7g0J5Ejdx15hQ4v21Ix5y3hXDobf5ZaQkLHA48IexHBFBWV0_QiNGB_eXhEeui3KRRKHlGHz1Vonv1IAzSY-bIi-u2Ny2NlMOvFNEolKzIBhEnGxpju2-Rpeg-YHVuLq8hBlHZzYPm0UbNUI84PHhsY5j5w",
+        "google_url": "https://maps.google.com/?cid=6767288403642057163",
+        "phone": "077-938-6186",
+        "instagram_url": "https://www.instagram.com/noema.tlv/"
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "מאפיית סנהדריה",
+      "name_english": "Maapiat Sanhedria",
+      "name_in_transcript": "מאפיית סנהדריה",
+      "skip_reason": "הוזכר בקצרה דרך קובי רובין - ציפורי במשלוח",
+      "timestamp": {
+        "seconds": 3644,
+        "display": "60:44",
+        "youtube_url": "https://www.youtube.com/watch?v=qKCaJb-ZsNc&t=3644s"
+      },
+      "location": {
+        "city": "ירושלים",
+        "neighborhood": "גבעת שאול",
+        "address": "ים סוף 101, ירושלים",
+        "latitude": 31.8006133,
+        "longitude": 35.2180333
+      },
+      "host_quotes": [],
+      "mention_context": "קובי רובין אכל ציפורי/סמבוסק במאפיית סנהדריה. הוזכר בקיצור",
+      "google_places": {
+        "place_id": "ChIJL2_Mu-MpAxURTqrm7ppnCMw",
+        "verified": false,
+        "rating": 4.1,
+        "review_count": 402,
+        "photo_url": "AU_ZVEEMXNPSvLIvNYM7SumB-c2LFK0xNeceDUetjxsXoVOgFiJUqspEqxHZFoe3d1Vtu_swS-TY-PpLcyWonZ76N-HI1e_cGkekk5Yt7shZWvLO21ilX5L7vMx2BHDaz6E1mmNzlJ5eU0ryLkAMIqs3wKY0jT3MYQe65wBnvlb77W_3ufWd9GXUR_bUPiIKkWXFtcEqZ8mDmZYMR-JLNABomH1lygbLFwiyTOegHmFtt_Yy6Gim68c964sjmjjQrL4N-zFs0NmkiCaYI6nCkQ8-_rQ2f-Rkv9dpGKn_qvcqbI2h__2L079G2gJLKUomh9iK7J7A3yGGxt7PUkO2curikSeXborJkM8hgVOKg91GoWScTZTxqB04TDsifthZeKF0y7bGvvC0niR2LmFSYlmcGmBBFnouxF0BeyMFQNEkgS1rpNw",
+        "google_url": "https://maps.google.com/?cid=14702114898681702990",
+        "phone": "02-540-0962"
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "לחמנינה",
+      "name_english": "Lachmanina",
+      "name_in_transcript": "לחמנינה",
+      "skip_reason": "הוזכר כמביא מתנת יום הולדת לעמית, לא ביקור",
+      "timestamp": {
+        "seconds": 951,
+        "display": "15:51",
+        "youtube_url": "https://www.youtube.com/watch?v=qKCaJb-ZsNc&t=951s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "address": "ראול ולנברג 18, תל אביב-יפו",
+        "latitude": 32.1096992,
+        "longitude": 34.8373336
+      },
+      "host_quotes": [
+        "אני מאוד אוהב את הבגט של לחמנינה"
+      ],
+      "mention_context": "הביאו בגט של לחמנינה למתנת יום הולדת של עמית",
+      "google_places": {
+        "place_id": "ChIJl25Z9pRJHRURhwl-5YExtwc",
+        "verified": false,
+        "rating": 4.5,
+        "review_count": 302,
+        "photo_url": "AU_ZVEGubWqcPDS4c0cQpDgM_u73kzFzGkHG_mF-Fmet05AaE2e83nsN8xqzgVx6ucjUd5b_0UJK5BQuHbmsa4UgFZ21fHtYTj_YrVjjdYxYmecHwiu4XAR3FsVAFZUJa7-lhTqDNGy0LzgLxcSWcq5GeVUKzH3H3wQSDr59o2-gH2BgVPRPAIB79x2Q7HKjMXXdKEXadjmrAgsES9uGn7FKor0WjGpdV-tPSXNgHMgOLfE2FUUME4XMplGZPpdi74B_P5BfuWs_wdwspofugwgMPeRKIrD25-0s1I81AOcVujmR_zGE74u7qV9f-NTGwank2C-iFz_kNPbC6aQarCBJ7UTMnar4VCsQBwJLRvOK4h2LGUvJ_E9MN6NyGaVVW1WIPLcE8aTmIYD2nnw2cQeXUAlgGULe0c_HiGIOr-g51yVBbw",
+        "google_url": "https://maps.google.com/?cid=555967512974330247",
+        "phone": "03-561-9960",
+        "website": "https://lachmanina.co.il/",
+        "instagram_url": "https://www.instagram.com/lachmanina/"
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "rejected",
+      "name_in_transcript": "הבריא",
+      "reject_reason": "The mention of 'הבריא' refers to a bistro named BRIA at Achuzat Bayit street by Adar Lotan, but it's only name-dropped as 'ליד זה יש את הבריא' without any food discussion or recommendation",
+      "timestamp": {
+        "seconds": 2974,
+        "display": "49:34"
+      }
+    },
+    {
+      "verdict": "rejected",
+      "name_in_transcript": "GMT JMT",
+      "reject_reason": "Korean restaurant on same street briefly name-dropped as geographical context, no discussion or recommendation",
+      "timestamp": {
+        "seconds": 2959,
+        "display": "49:19"
+      }
+    }
+  ]
+}

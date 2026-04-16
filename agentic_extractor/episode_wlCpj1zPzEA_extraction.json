@@ -1,0 +1,660 @@
+{
+  "episode": {
+    "video_id": "wlCpj1zPzEA",
+    "video_url": "https://www.youtube.com/watch?v=wlCpj1zPzEA",
+    "title": "מחרוזת מתוקים | מדברים מהבטן, פרק 142",
+    "channel_name": "מדברים מהבטן - הפודיום",
+    "published_at": "2026-01-21",
+    "hosts": [
+      "עמית אהרונסון",
+      "נטע סלונים",
+      "יהונתן כהן"
+    ],
+    "guests": [
+      "חמודי אוקלה"
+    ],
+    "language": "he",
+    "transcript_length": 45124,
+    "segment_count": 1383,
+    "episode_id": "dd9a4859-5e88-40c1-90c2-64b6f9dc6382",
+    "summary": "פרק 142 של מדברים מהבטן - פרק סיכום מחזור של הקולינריה הישראלית. הפרק נפתח בביסים של השבוע: עמית אכל המבורגר באגדיר בהרצליה, נטע המליצה על רוגלך של בבקה, ויהונתן סיפר על טביט עיראקי ביתי. הראיון המרכזי היה עם השף חמודי אוקלה על המסעדה החדשה שלו גריל 65 בפרדס חנה. הפרק כלל גם חדשות על מסעדה חדשה של יוסי שיטריט, הפיטמסטר שמתרחבים למיאמי, דירוג המנות המגעילות של טייסט אטלס, ביקורת מרשימה של יהונתן על דוק של אסף דוקטור, ביקורת מעודקת על מסעדה באשדוד, ודיון על ביקורת סגי כהן לקולינה בקיסריה."
+  },
+  "extraction": {
+    "date": "2026-03-25",
+    "agent": "episode-processor",
+    "total_mentions": 17,
+    "add_to_page": 5,
+    "reference_only": 12,
+    "rejected": 0,
+    "already_in_db": 4,
+    "new_to_add": 1
+  },
+  "restaurants": [
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "אגדיר",
+      "name_english": "Agadir",
+      "name_in_transcript": "אגדיר",
+      "google_name": "אגאדיר בורגר",
+      "timestamp": {
+        "seconds": 194,
+        "display": "03:14",
+        "youtube_url": "https://www.youtube.com/watch?v=wlCpj1zPzEA&t=194s"
+      },
+      "location": {
+        "city": "הרצליה",
+        "neighborhood": null,
+        "address": "Ha-Menofim St 9, Herzliya, Israel",
+        "region": "שרון",
+        "latitude": 32.160579,
+        "longitude": 34.807712
+      },
+      "cuisine_type": "המבורגר",
+      "price_range": "יקר",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "שני המבורגרים מאוד מאוד מוצלחים",
+        "איזון טעמים מאוד מאוד טוב מאוד טעים",
+        "בדיוק אותו הטעם שאני זוכר מאגדיר ההיסטורית",
+        "ממש כיפי"
+      ],
+      "host_comments": "עמית הזמין שני ספשלים - קנטינה (מקסיקני עם אבוקדו, רוטב חריף, פרייחולס ושעועית שחורה) ויקוזה (יפני עם מיונז אוממי וג'ינג'ר כבוש). שניהם מוצלחים מאוד עם תוספות חכמות ויצירתיות. הקציצות בדיוק כמו שהוא זוכר מאגדיר ההיסטורית.",
+      "dishes_mentioned": [
+        "המבורגר קנטינה",
+        "המבורגר יקוזה",
+        "צ'יפס",
+        "טבעות בצל"
+      ],
+      "special_features": [
+        "ספשלים עונתיים",
+        "רשת מ-1995",
+        "סניף ותיק מ-2001"
+      ],
+      "mention_context": "ביס השבוע של עמית - הלך עם הילדים לסניף בהרצליה",
+      "speaker": "עמית אהרונסון",
+      "google_places": {
+        "place_id": "ChIJ8eG-h_JIHRURee-9SOlfKVc",
+        "google_url": "https://maps.google.com/?cid=6280656610897293177",
+        "rating": 3.9,
+        "review_count": 2714,
+        "price_level": 2,
+        "phone": "03-711-3333",
+        "website": "http://www.agadir.co.il/",
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqFE8erpzeKNUuSQVe-_kIXpL0UXUkHkD19G47qCbLUCYw43n4BiGy6bqUkEjbY_0UA2H_cT8kl6_22uH3SYayQ9PePG7WQsP7k=s1600-w800",
+        "instagram_url": "https://www.instagram.com/agadirburger/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": true,
+        "id": "19b9556f-c33b-41f3-8d85-125a27c2146e"
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "בבקה",
+      "name_english": "Babka",
+      "name_in_transcript": "בבקה",
+      "google_name": "Babka Bakery",
+      "timestamp": {
+        "seconds": 810,
+        "display": "13:30",
+        "youtube_url": "https://www.youtube.com/watch?v=wlCpj1zPzEA&t=810s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": null,
+        "address": "Moshe Sneh St 21, Tel Aviv-Yafo, Israel",
+        "region": "מרכז",
+        "latitude": 32.1209107,
+        "longitude": 34.8249329
+      },
+      "cuisine_type": "מאפייה",
+      "price_range": "בינוני",
+      "status": "פתוח",
+      "host_opinion": "חיובית",
+      "host_quotes": [
+        "הרוגלך של הבבקה שזה רוגלח סיסי ורטוב וטוב",
+        "גם אפוי שזה חשוב שזה יהיה גם אפוי"
+      ],
+      "host_comments": "ביס השבוע של נטע - רוגלך של בבקה. סיסי, רטוב, טעם של פעם. דיון ער על רוגלחים וטעמי בית.",
+      "dishes_mentioned": [
+        "רוגלך"
+      ],
+      "special_features": [
+        "מאפייה",
+        "רוגלח קלאסי"
+      ],
+      "mention_context": "ביס השבוע של נטע - המשך למגמת המתוקים",
+      "speaker": "נטע סלונים",
+      "google_places": {
+        "place_id": "ChIJR-7P8qNJHRURYaz8f27SgAw",
+        "google_url": "https://maps.google.com/?cid=900951297509600353",
+        "rating": 4.5,
+        "review_count": 609,
+        "price_level": 2,
+        "phone": "03-641-8088",
+        "website": "http://www.babka.co.il/",
+        "photo_url": "https://lh3.googleusercontent.com/place-photos/AL8-SNEEonoWcNxHen5BriNRfNw_9MqCN9LmH8XPkmKoF9Te4jHEFMF2sJCha-KCkEcWvIf-4At6B73SIatRtnmMspfbZXnE2ik1_1vh-Cbb_C7nc5INxrxCxTofVGz_zbCVH8N4_zTzthC4OR9V930=s1600-w800",
+        "instagram_url": "https://www.instagram.com/pizzababka/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "הוזכר",
+      "name_hebrew": "גריל 65",
+      "name_english": "Grill 65",
+      "name_in_transcript": "גריל 65",
+      "google_name": "גריל 65",
+      "timestamp": {
+        "seconds": 1594,
+        "display": "26:34",
+        "youtube_url": "https://www.youtube.com/watch?v=wlCpj1zPzEA&t=1594s"
+      },
+      "location": {
+        "city": "פרדס חנה",
+        "neighborhood": null,
+        "address": "Camp 80 Junction, Pardes Hanna-Karkur, Israel",
+        "region": "שרון",
+        "latitude": 32.4591894,
+        "longitude": 34.988227
+      },
+      "cuisine_type": "שיפודים",
+      "price_range": "בינוני",
+      "status": "חדש",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "מה שנקרא קנית אותי מיד לגמרי זה נשמע מעולה",
+        "אתה מקבל שמש מטורף",
+        "שיפוד שיפודי קבה פרגית שיפודי עוף"
+      ],
+      "host_comments": "ראיון עם השף חמודי אוקלה שחזר ארצה אחרי שנה בארה\"ב ופתח מסעדה חדשה בפרדס חנה. שיפודיה עם מענה רחב - קבב אורפלי אותנטי, 24 מזטים, סלטים, סמבוסק. הכל על גחלים. המארחים מתלהבים מאוד מהקונספט.",
+      "dishes_mentioned": [
+        "קבב אורפלי",
+        "שיש טעוק",
+        "סלט לבנה",
+        "סלט עדשים",
+        "מג'דרה",
+        "סמבוסק גבינה",
+        "טבולי",
+        "חתוש"
+      ],
+      "special_features": [
+        "שיפודיה",
+        "הכל על גחלים",
+        "חומרי גלם מקומיים",
+        "השף חמודי אוקלה"
+      ],
+      "mention_context": "ראיון חי עם השף חמודי אוקלה על המקום החדש שלו",
+      "speaker": "חמודי אוקלה",
+      "google_places": {
+        "place_id": "ChIJpUbmPwAPHRURbpSDoj4b4nQ",
+        "google_url": "https://maps.google.com/?cid=8422324208964703342",
+        "rating": 4.2,
+        "review_count": 156,
+        "price_level": null,
+        "phone": "077-905-8000",
+        "website": null,
+        "photo_url": "https://img.mako.co.il/2026/02/11/grill65_autoOrient_i.jpg",
+        "instagram_url": null,
+        "verified": true
+      },
+      "production_db": {
+        "exists": true,
+        "id": "c0c4d64a-c664-4d51-9fc9-24644c77b750"
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "דוק",
+      "name_english": "Dok",
+      "name_in_transcript": "דוק",
+      "google_name": "Dok RESTAURANT",
+      "timestamp": {
+        "seconds": 2754,
+        "display": "45:54",
+        "youtube_url": "https://www.youtube.com/watch?v=wlCpj1zPzEA&t=2754s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": null,
+        "address": "Shlomo Ibn Gabirol St 27, Tel Aviv-Yafo, Israel",
+        "region": "מרכז",
+        "latitude": 32.0745716,
+        "longitude": 34.7815645
+      },
+      "cuisine_type": "שף",
+      "price_range": "יקר",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "היה פשוט מעולה מעולה באמת",
+        "האוכל פשוט מעולה",
+        "עוד מסעדה לרשימה הדי מצומצמת של מקומות שהם הראשונים שצריך להגיע אליהם כדי להבין מה זה מטבח ישראלי חדש"
+      ],
+      "host_comments": "יהונתן אכל ארוחת ערב ושיבח מאוד. תפריט גדול מפתיע - 8 מנות ירקות, 4 לחמים, שרימפס מגידול מקומי, דגים, בשר. נתחי וסיו ברוטב טופי עם גבינה, סבידה צלויה בשומן טלה, סשימי עם קרם לימוני, טרטר עם וואסבי. הקולרבי הצלוי הקלאסי עדיין חובה.",
+      "dishes_mentioned": [
+        "נתחי וסיו ברוטב טופי",
+        "סבידה צלויה בשומן טלה",
+        "סשימי עם קרם לימוני",
+        "טרטר עם וואסבי",
+        "קולרבי צלוי בפחם",
+        "סלט ירוקים"
+      ],
+      "special_features": [
+        "מסעדת שף",
+        "אסף דוקטור",
+        "מטבח ישראלי חדש",
+        "רק מקומי",
+        "יין מקומי"
+      ],
+      "mention_context": "יהונתן אכל ארוחת ערב בדוק ומשבח מאוד",
+      "speaker": "יהונתן כהן",
+      "google_places": {
+        "place_id": "ChIJj9RnZ4JLHRURYDRoBrwStiQ",
+        "google_url": "https://maps.google.com/?cid=2645322429897389152",
+        "rating": 4.2,
+        "review_count": 1184,
+        "price_level": 2,
+        "phone": "03-609-8118",
+        "website": "https://dok.haachim.co.il/",
+        "photo_url": "https://lh3.googleusercontent.com/place-photos/AL8-SNGxPvwskf8pH313h5TAVFcq3d_QHk4qlVqX1SO19wSYyReltntqx4hiQ3y9pFHMc8YbekqCC0M9MQBiDM-awbGP3DT3n3ntYFOpUPp5apQLgGXdCpLd7Q9VcW95LhblAi5DZjW-KRdNOiYY5AA=s1600-w800",
+        "instagram_url": "https://www.instagram.com/dok.restaurant/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": true,
+        "id": "5799dbaa-304c-4f9e-9773-c64174339754"
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "הוזכר",
+      "name_hebrew": "טאורוס",
+      "name_english": "Taurus Smokehouse",
+      "name_in_transcript": "טאורוס",
+      "google_name": "Taurus Smokehouse by Mila",
+      "timestamp": {
+        "seconds": 1429,
+        "display": "23:49",
+        "youtube_url": "https://www.youtube.com/watch?v=wlCpj1zPzEA&t=1429s"
+      },
+      "location": {
+        "city": "סביון",
+        "neighborhood": null,
+        "address": "HaShikma St 1, Savyon, Israel",
+        "region": "מרכז",
+        "latitude": 32.0491961,
+        "longitude": 34.8758578
+      },
+      "cuisine_type": "שיפודים",
+      "price_range": "בינוני",
+      "status": "חדש",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "כל התוצרים שלו הן מעולים והטאורוס הזה נראה פגז",
+        "אני ממש מת להגיע לשם"
+      ],
+      "host_comments": "יהונתן שרביץ פותח שיפודיה חדשה בסביון. תפריט צהריים עם שיפודי קבה, פרגית, עוף, קריספי צ'יקן. עמית אומר שהוא מעריץ את שרביץ ואת האוכל שלו ומת להגיע.",
+      "dishes_mentioned": [
+        "שיפודי קבה",
+        "פרגית",
+        "שיפודי עוף",
+        "קריספי צ'יקן",
+        "טאקוס"
+      ],
+      "special_features": [
+        "שיפודיה",
+        "יונתן שרביץ",
+        "תפריט צהריים",
+        "גריל ישראלי"
+      ],
+      "mention_context": "חדשות - יונתן שרביץ פתח מקום חדש כשיפודיה בצהריים",
+      "speaker": "hosts",
+      "google_places": {
+        "place_id": "ChIJwQDQQQA1HRURzaS-Lvl4yBU",
+        "google_url": "https://maps.google.com/?cid=1569637481765053645",
+        "rating": 3.9,
+        "review_count": 46,
+        "price_level": null,
+        "phone": null,
+        "website": "https://www.milas.co.il/taurus-smokehouse",
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqGkJy-dYumxUsYeLrxO85jC713S33Z_cx245sh54cxw_hqGXeRysJ70ywOqnaM5BjB5iZ3DQoDcAHZpJto2BhXzEy3raj-YHnA=s1600-w800",
+        "instagram_url": "https://www.instagram.com/taurussmokehouse/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "מסעדה חדשה של יוסי שיטריט",
+      "name_english": "Yossi Shitrit New Restaurant",
+      "name_in_transcript": "יוסי שיטריט",
+      "skip_reason": "מסעדה שעוד לא נפתחה, אין שם, צפויה להיפתח בעוד חצי שנה במתחם דווינצ'י בתל אביב",
+      "timestamp": {
+        "seconds": 1334,
+        "display": "22:14",
+        "youtube_url": "https://www.youtube.com/watch?v=wlCpj1zPzEA&t=1334s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "address": "מתחם דווינצ'י (הקריה)"
+      },
+      "host_quotes": [
+        "מדליף מתזר אותנו במסעדה חדשה"
+      ],
+      "mention_context": "חדשות - יוסי שיטריט פותח מסעדת אש חדשה במתחם דווינצ'י, עוד כחצי שנה"
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "הבנדיט",
+      "name_english": "Bandit",
+      "name_in_transcript": "הבנדיט",
+      "google_name": "Bandit",
+      "skip_reason": "הוזכר בחולף כבר יין של יוסי שיטריט, ללא ביקורת או המלצה",
+      "timestamp": {
+        "seconds": 1401,
+        "display": "23:21",
+        "youtube_url": "https://www.youtube.com/watch?v=wlCpj1zPzEA&t=1401s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "address": "Nitsana St 20, Tel Aviv-Yafo"
+      },
+      "google_places": {
+        "place_id": "ChIJJb3rfS9NHRURKlMSaKp4jrQ",
+        "rating": 4.0,
+        "review_count": 167,
+        "verified": true,
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqH5Q5doMXxxjx-Vxfm28CCFiYU1UtrW6ExZ5mHmVpBglfy0RJCjnPjOIFvRQ-_dCVSDd_OZydK7km5Ii4QQjzpUDDuHgrklsS4=s4800-w800"
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "היבה",
+      "name_english": "Hiba",
+      "name_in_transcript": "היבה",
+      "google_name": "HIBA Restaurant",
+      "skip_reason": "הוזכר בחולף כמסעדת דגלזה של יוסי שיטריט, ללא ביקורת",
+      "timestamp": {
+        "seconds": 1352,
+        "display": "22:32",
+        "youtube_url": "https://www.youtube.com/watch?v=wlCpj1zPzEA&t=1352s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "address": "Menakhem Begin Rd 144, Tel Aviv-Yafo"
+      },
+      "google_places": {
+        "place_id": "ChIJ0_0kufVLHRURbEnQPFPvfXI",
+        "rating": 4.6,
+        "review_count": 1043,
+        "verified": true,
+        "photo_url": "https://lh3.googleusercontent.com/place-photos/AL8-SNEzV47BUPqE0Tut62oN9HXMOID9SokJpw0Zs_FAJXXpG1GrKA5-0k6DcFtp5kYHcauzb3rhUc-ISEmYxJOXtYRGqU_o3sK6fhpeNHI16ToW3A0Q9R0olRnF5xOck0Wns_yEL409ucOaMEbf=s4800-w800"
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "הפיטמסטר",
+      "name_english": "The Pitmaster",
+      "name_in_transcript": "הפיטמסטר",
+      "google_name": "Pitmaster",
+      "skip_reason": "חדשות תעשייה - התרחבות למיאמי וניו יורק. לא ביקורת או המלצה",
+      "timestamp": {
+        "seconds": 2101,
+        "display": "35:01",
+        "youtube_url": "https://www.youtube.com/watch?v=wlCpj1zPzEA&t=2101s"
+      },
+      "location": {
+        "city": "פתח תקווה",
+        "address": "Bareket St 4, Petah Tikva"
+      },
+      "google_places": {
+        "place_id": "ChIJURYnR5xJHRURX55G7FvA8Rc",
+        "rating": 4.8,
+        "review_count": 3933,
+        "verified": true,
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqE0wjaYVSUx2udR77Eu7kjW8RhH59pCN-K8AZjrO-QD-iZdO0y7MKIvPMCKU9g7nbyzFfXQ1QpZKQz8Rew5T4rl-sV2XupQcZ0=s4800-w800"
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "בית תאילנדי",
+      "name_english": "Thai House",
+      "name_in_transcript": "בית תאילנדי",
+      "google_name": "Thai House",
+      "skip_reason": "הוזכר פעמיים - פעם בדיון על שוארמות ירושלים ופעם כשנטע ויהונתן מזכירים שאבי פרטי היה שם. המארחים לא אכלו שם בפרק הזה, רק הזכרה בחולף",
+      "timestamp": {
+        "seconds": 3427,
+        "display": "57:07",
+        "youtube_url": "https://www.youtube.com/watch?v=wlCpj1zPzEA&t=3427s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "address": "Bograshov St 8, Tel Aviv-Yafo"
+      },
+      "host_quotes": [
+        "אני לא מכיר תאילנדית יותר טובה מבית תאילנדי"
+      ],
+      "google_places": {
+        "place_id": "ChIJP841K3xMHRURebdaloB-MZA",
+        "rating": 4.4,
+        "review_count": 9087,
+        "verified": true,
+        "photo_url": "https://lh3.googleusercontent.com/place-photos/AL8-SNHRRmXQGFfCaEbV7-7af5M2QntB0St2FK5rpDl4sen1Hzv_4snRMh_3oODERL5zLpjC2lTqduTxhV8trkS1QZkU157LSzvXlRasOB6k5firOzoVzltvtWVoH5gi_MF3RTpd6etRo6w5lwqXcA=s4800-w800"
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "מרציפן",
+      "name_english": "Marzipan",
+      "name_in_transcript": "מרציפן",
+      "google_name": "Marzipan Bakery and Pastry",
+      "skip_reason": "הוזכר בהקשר דיון על רוגלחים - כבעלי הרוגלך הטוב ביותר, ללא ביקורת מעמיקה",
+      "timestamp": {
+        "seconds": 846,
+        "display": "14:06",
+        "youtube_url": "https://www.youtube.com/watch?v=wlCpj1zPzEA&t=846s"
+      },
+      "location": {
+        "city": "ירושלים",
+        "address": "Agripas St 44, Jerusalem"
+      },
+      "host_quotes": [
+        "מרציפן אין לו מתחרים גם בטעם בעיניי"
+      ],
+      "google_places": {
+        "place_id": "ChIJPRHCOSjWAhURr08Um1BgrIA",
+        "rating": 4.6,
+        "review_count": 1520,
+        "verified": true,
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqGp6gQlg4jHRQJiZ9rDaLCMyPXrnnjtFN3zS4TI_6GLxRaLhFzF33m1KsDwkVcPIJCVCKsgCkt-j94j9k-Fflpv63SwcxqTMrQ=s4800-w800"
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "נומי",
+      "name_english": "Nomi",
+      "name_in_transcript": "נומי",
+      "skip_reason": "הוזכר בחולף בדיון על רוגלחים - ביס השנה של עמית ל-2025 הוא הרוגלך של נומי. ללא ביקורת מעמיקה, רק הזכרה בודדת",
+      "timestamp": {
+        "seconds": 930,
+        "display": "15:30",
+        "youtube_url": "https://www.youtube.com/watch?v=wlCpj1zPzEA&t=930s"
+      },
+      "location": {
+        "city": "תל אביב"
+      },
+      "host_quotes": [
+        "ביסה השנה של 2025 זה הרוגלך של נומי"
+      ],
+      "mention_context": "הזכרה בודדת בדיון על רוגלחים טובים",
+      "production_db": {
+        "exists": true,
+        "id": "90f6e7f7-be9b-40a3-9933-38ee8596a7bc"
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "קולינה",
+      "name_english": "Colina",
+      "name_in_transcript": "קולינה",
+      "google_name": "קולינה קיסריה",
+      "skip_reason": "דיון על ביקורת של סגי כהן - המארחים עצמם לא אכלו שם, רק מתייחסים לביקורת שלו",
+      "timestamp": {
+        "seconds": 3283,
+        "display": "54:43",
+        "youtube_url": "https://www.youtube.com/watch?v=wlCpj1zPzEA&t=3283s"
+      },
+      "location": {
+        "city": "קיסריה",
+        "address": "Rothschild St 100, Caesarea"
+      },
+      "host_quotes": [
+        "ביקורת נדירה של סגי כהן במובן הזה שהיא באמצע"
+      ],
+      "google_places": {
+        "place_id": "ChIJdxfkfesNHRURiVaQ566lh1M",
+        "rating": 4.7,
+        "review_count": 179,
+        "verified": true,
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqFV-00N2XrLzzL5RiZ-MFKqlehaOR6MHiP6qZ5QaFtQPOP9VNjMg9wDjAJw3ZyXe9eG3TMqQBpBbbRaMOC3BA3e7crIjOV7yyo=s4800-w800"
+      },
+      "production_db": {
+        "exists": true,
+        "id": "6a05ecf6-6491-46dd-8417-d294deae7653"
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "מסעדה באשדוד (שם לא ברור)",
+      "name_english": "Unknown Ashdod Restaurant",
+      "name_in_transcript": "הזה באשדוד",
+      "skip_reason": "יהונתן ביקר ושיבח מסעדת המבורגר-ברסרי בחוף הקשטות באשדוד, אך שם המסעדה לא נשמע בבירור בתמליל. ללא זיהוי ודאי של המקום לא ניתן להוסיף",
+      "timestamp": {
+        "seconds": 3088,
+        "display": "51:28",
+        "youtube_url": "https://www.youtube.com/watch?v=wlCpj1zPzEA&t=3088s"
+      },
+      "location": {
+        "city": "אשדוד",
+        "neighborhood": "חוף הקשטות"
+      },
+      "host_quotes": [
+        "הם שמרו על המורשת והמבורגר שלהם הוא יוצא מן הכלל",
+        "מסדת חוף מאוד מאוד מעניינת",
+        "המבורגר עם הלחמניה לחמניה גמרה אותי"
+      ],
+      "mention_context": "יהונתן ביקר במקום שנטע המליצה עליו. המבורגר מעולה, לחמניה מיוחדת, שדרוג לברסרי. חוף ים באשדוד"
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "אקה",
+      "name_english": "AKA",
+      "name_in_transcript": "אקה",
+      "google_name": "AKA",
+      "skip_reason": "הוזכר בקצרה כשוארמייה שנפתחה בשוק מחנה יהודה, ללא ביקורת",
+      "timestamp": {
+        "seconds": 3565,
+        "display": "59:25",
+        "youtube_url": "https://www.youtube.com/watch?v=wlCpj1zPzEA&t=3565s"
+      },
+      "location": {
+        "city": "ירושלים",
+        "address": "Ha-Shikma St 6, Jerusalem"
+      },
+      "google_places": {
+        "place_id": "ChIJv0a8imjXAhURc8UE5SMxIPw",
+        "rating": 4.4,
+        "review_count": 628,
+        "verified": true,
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqEnTZTl-WViSsZDDWuQ2JPMn78VzgixGRdS11TSjm-2f4NUrRoMce3_94DPvbXorKzqWsG3jcUxqp2rztFMyHBvhFUmiTuUGoA=s4800-w800"
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "שרדר",
+      "name_english": "Shreder",
+      "name_in_transcript": "שרדר",
+      "skip_reason": "הוזכר בקצרה כשוארמייה חדשה שנפתחה בשוק מחנה יהודה, ללא ביקורת",
+      "timestamp": {
+        "seconds": 3565,
+        "display": "59:25",
+        "youtube_url": "https://www.youtube.com/watch?v=wlCpj1zPzEA&t=3565s"
+      },
+      "location": {
+        "city": "ירושלים",
+        "neighborhood": "שוק מחנה יהודה"
+      },
+      "mention_context": "חדשות - שוארמייה חדשה בשוק מחנה יהודה"
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "השמן",
+      "name_english": "HaShemen",
+      "name_in_transcript": "השמן",
+      "skip_reason": "הוזכר בקצרה כשוארמייה שפתחה סניף בשוק מחנה יהודה, ללא ביקורת",
+      "timestamp": {
+        "seconds": 3570,
+        "display": "59:30",
+        "youtube_url": "https://www.youtube.com/watch?v=wlCpj1zPzEA&t=3570s"
+      },
+      "location": {
+        "city": "ירושלים",
+        "neighborhood": "שוק מחנה יהודה"
+      },
+      "mention_context": "חדשות - השמן פתחו סניף בשוק מחנה יהודה"
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "קרנבל של בשר",
+      "name_english": "Carnival Shel Basar",
+      "name_in_transcript": "קרנבל של בשר",
+      "skip_reason": "חברת קייטרינג/אירועי בשר, לא מסעדה. הוזכר בהקשר אירועים בארצות הברית",
+      "timestamp": {
+        "seconds": 2183,
+        "display": "36:23",
+        "youtube_url": "https://www.youtube.com/watch?v=wlCpj1zPzEA&t=2183s"
+      },
+      "location": {
+        "city": null
+      },
+      "mention_context": "הוזכר בהקשר אירועי בשר בטקסס ובארה\"ב"
+    }
+  ]
+}

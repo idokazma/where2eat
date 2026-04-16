@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Episode Preview: ZK4yPvErXIc</title>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Heebo', sans-serif; background: #FAFAF8; padding: 1rem; max-width: 480px; margin: 0 auto; }
+
+    .header { text-align: center; padding: 1.5rem 0; border-bottom: 1px solid #eee; margin-bottom: 1rem; }
+    .header h1 { font-size: 1.25rem; color: #333; }
+    .header .meta { font-size: 0.85rem; color: #888; margin-top: 0.25rem; }
+    .header .stats { display: flex; gap: 1rem; justify-content: center; margin-top: 0.75rem; font-size: 0.8rem; flex-wrap: wrap; }
+    .header .stat { background: #f0f0f0; padding: 0.25rem 0.75rem; border-radius: 999px; }
+    .header .stat.add { background: #E8F5E9; color: #2E7D32; }
+    .header .stat.skip { background: #FFF3E0; color: #E65100; }
+
+    .card { background: white; border-radius: 12px; overflow: hidden; margin-bottom: 1rem; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+    .card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.12); transition: all 0.2s; }
+
+    .card-image { width: 100%; aspect-ratio: 16/10; object-fit: cover; display: block; }
+    .card-image-fallback { width: 100%; aspect-ratio: 16/10; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem; font-weight: 700; }
+
+    .card-body { padding: 1rem; }
+    .card-title { font-size: 1.5rem; font-weight: 900; color: #1a1a1a; margin-bottom: 0.25rem; }
+    .card-meta { display: flex; gap: 0.5rem; align-items: center; color: #888; font-size: 0.85rem; margin-bottom: 0.5rem; flex-wrap: wrap; }
+    .card-meta .dot { color: #ccc; }
+    .card-date { font-size: 0.8rem; color: #999; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.25rem; }
+    .badge-new { background: #E63B2E; color: white; font-size: 0.7rem; padding: 0.1rem 0.4rem; border-radius: 4px; font-weight: 700; }
+    .badge-reviewed { background: #FF9800; color: white; font-size: 0.7rem; padding: 0.1rem 0.4rem; border-radius: 4px; font-weight: 700; }
+    .badge-mentioned { background: #9E9E9E; color: white; font-size: 0.7rem; padding: 0.1rem 0.4rem; border-radius: 4px; font-weight: 700; }
+
+    .card-quote { font-style: italic; background: #f5f5f5; padding: 0.75rem; border-radius: 8px; color: #555; font-size: 0.9rem; margin: 0.5rem 0; line-height: 1.6; }
+
+    .card-actions { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #f0f0f0; padding-top: 0.75rem; margin-top: 0.5rem; }
+    .rating { display: flex; align-items: center; gap: 0.25rem; font-weight: 700; color: #333; }
+    .rating .star { color: #FFB400; }
+    .timestamp-link { font-size: 0.8rem; color: #E63B2E; text-decoration: none; }
+    .timestamp-link:hover { text-decoration: underline; }
+
+    .verdict-badge { position: absolute; top: 0.5rem; left: 0.5rem; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.7rem; font-weight: 700; }
+    .verdict-add { background: #E8F5E9; color: #2E7D32; }
+    .verdict-exists { background: #E3F2FD; color: #1565C0; }
+    .card-image-wrapper { position: relative; }
+
+    .section-title { font-size: 1rem; color: #888; margin: 1.5rem 0 0.75rem; padding-bottom: 0.25rem; border-bottom: 1px solid #eee; }
+
+    .ref-card { background: white; border-radius: 8px; padding: 0.75rem; margin-bottom: 0.5rem; border-right: 3px solid #FFB300; }
+    .ref-card .name { font-weight: 700; font-size: 0.95rem; }
+    .ref-card .reason { font-size: 0.8rem; color: #888; margin-top: 0.25rem; }
+    .ref-card .timestamp { font-size: 0.75rem; color: #E63B2E; }
+
+    .gradient-asian { background: linear-gradient(135deg, #FF6B35, #F7C948); }
+    .gradient-sweets { background: linear-gradient(135deg, #D4145A, #FBB03B); }
+    .gradient-cafe { background: linear-gradient(135deg, #6B4226, #D4A574); }
+    .gradient-shawarma { background: linear-gradient(135deg, #E63B2E, #FF6B5A); }
+    .gradient-sushi { background: linear-gradient(135deg, #1A237E, #4FC3F7); }
+    .gradient-chef { background: linear-gradient(135deg, #2E7D32, #81C784); }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>מדברים מהבטן פרק 145</h1>
+    <div class="meta">מדברים מהבטן - הפודיום &bull; 11.02.2026</div>
+    <div class="stats">
+      <span class="stat add">&#x2705; 1 חדש</span>
+      <span class="stat">&#x1F4CB; 5 קיימים</span>
+      <span class="stat skip">&#x23ED;&#xFE0F; 6 הפניות</span>
+    </div>
+  </div>
+
+  <!-- 1. גיוזה תופס - 02:03 -->
+  <div class="card">
+    <div class="card-image-wrapper">
+      <div class="card-image-fallback gradient-asian">אסייתי</div>
+      <span class="verdict-badge verdict-add">NEW</span>
+    </div>
+    <div class="card-body">
+      <div class="card-title">גיוזה תופס</div>
+      <div class="card-meta">
+        <span>תל אביב - שוק הכרמל</span><span class="dot">&bull;</span>
+        <span>אסייתי</span><span class="dot">&bull;</span>
+        <span>בינוני</span>
+        <span class="badge-reviewed">נטעם</span>
+      </div>
+      <div class="card-date">&#x1F4C5; 11.02.2026 <span class="badge-new">חדש</span></div>
+      <div class="card-quote">"המילוי היה מאוד מאוד מפתיע לטובה"</div>
+      <div class="card-actions">
+        <div class="rating"><span style="color:#999">ללא דירוג</span></div>
+        <a class="timestamp-link" href="https://www.youtube.com/watch?v=ZK4yPvErXIc&t=123s" target="_blank">&#x25B6; 02:03</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. ממתקי אל דמסקי - 07:43 -->
+  <div class="card">
+    <div class="card-image-wrapper">
+      <div class="card-image-fallback gradient-sweets">מתוקים ערביים</div>
+      <span class="verdict-badge verdict-exists">קיים</span>
+    </div>
+    <div class="card-body">
+      <div class="card-title">ממתקי אל דמסקי</div>
+      <div class="card-meta">
+        <span>ירושלים - מזרח ירושלים</span><span class="dot">&bull;</span>
+        <span>מתוקים ערביים</span><span class="dot">&bull;</span>
+        <span>זול</span>
+        <span class="badge-reviewed">נטעם</span>
+      </div>
+      <div class="card-date">&#x1F4C5; 11.02.2026 <span class="badge-new">חדש</span></div>
+      <div class="card-quote">"הכי טובים שיש ובמחירים מדהימים"</div>
+      <div class="card-actions">
+        <div class="rating"><span style="color:#999">ללא דירוג</span></div>
+        <a class="timestamp-link" href="https://www.youtube.com/watch?v=ZK4yPvErXIc&t=463s" target="_blank">&#x25B6; 07:43</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. מלא - 10:33 -->
+  <div class="card">
+    <div class="card-image-wrapper">
+      <div class="card-image-fallback gradient-cafe">קפה</div>
+      <span class="verdict-badge verdict-exists">קיים</span>
+    </div>
+    <div class="card-body">
+      <div class="card-title">מלא</div>
+      <div class="card-meta">
+        <span>תל אביב</span><span class="dot">&bull;</span>
+        <span>קפה</span><span class="dot">&bull;</span>
+        <span>בינוני</span>
+        <span class="badge-reviewed">נטעם</span>
+      </div>
+      <div class="card-date">&#x1F4C5; 11.02.2026 <span class="badge-new">חדש</span></div>
+      <div class="card-quote">"ממכר בצורה שקשה להסביר"</div>
+      <div class="card-actions">
+        <div class="rating"><span style="color:#999">ללא דירוג</span></div>
+        <a class="timestamp-link" href="https://www.youtube.com/watch?v=ZK4yPvErXIc&t=633s" target="_blank">&#x25B6; 10:33</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. שוארמה אסולין - 24:19 -->
+  <div class="card">
+    <div class="card-image-wrapper">
+      <div class="card-image-fallback gradient-shawarma">שוארמה</div>
+      <span class="verdict-badge verdict-exists">קיים</span>
+    </div>
+    <div class="card-body">
+      <div class="card-title">שוארמה אסולין</div>
+      <div class="card-meta">
+        <span>תל אביב - נוה אביבים</span><span class="dot">&bull;</span>
+        <span>שוארמה</span><span class="dot">&bull;</span>
+        <span>בינוני</span>
+        <span class="badge-reviewed">נטעם</span>
+      </div>
+      <div class="card-date">&#x1F4C5; 11.02.2026 <span class="badge-new">חדש</span></div>
+      <div class="card-quote">"השוארמה מהעגל שלהם הייתה מעולה ממש"</div>
+      <div class="card-actions">
+        <div class="rating"><span class="star">&#x2605;</span> 5.0 (11 reviews)</div>
+        <a class="timestamp-link" href="https://www.youtube.com/watch?v=ZK4yPvErXIc&t=1459s" target="_blank">&#x25B6; 24:19</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. סוד - 29:35 -->
+  <div class="card">
+    <div class="card-image-wrapper">
+      <div class="card-image-fallback gradient-sushi">סושי ויין</div>
+      <span class="verdict-badge verdict-exists">קיים</span>
+    </div>
+    <div class="card-body">
+      <div class="card-title">סוד</div>
+      <div class="card-meta">
+        <span>ירושלים - סמטת דרום</span><span class="dot">&bull;</span>
+        <span>סושי ויין</span><span class="dot">&bull;</span>
+        <span>בינוני</span>
+        <span class="badge-reviewed">נטעם</span>
+      </div>
+      <div class="card-date">&#x1F4C5; 11.02.2026 <span class="badge-new">חדש</span></div>
+      <div class="card-quote">"באמת מקום מרגש אין מילה אחרת"</div>
+      <div class="card-actions">
+        <div class="rating"><span style="color:#999">ללא דירוג</span></div>
+        <a class="timestamp-link" href="https://www.youtube.com/watch?v=ZK4yPvErXIc&t=1775s" target="_blank">&#x25B6; 29:35</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. גוש ודניאל - 34:35 -->
+  <div class="card">
+    <div class="card-image-wrapper">
+      <img class="card-image" src="https://lh3.googleusercontent.com/places/ANXAkqEt2weYQOfASqZ9zh9SJ79ersFOCCpIc7YZc4SRksFdJxJr2DIFM9MZ2dZkzayHElDZpupVWAHOv3ob6OiIo0xrwgHmqWcz7yw=s1600-w800" alt="גוש ודניאל" onerror="this.outerHTML='<div class=card-image-fallback style=background:linear-gradient(135deg,#2E7D32,#81C784)>שף</div>'">
+      <span class="verdict-badge verdict-exists">קיים</span>
+    </div>
+    <div class="card-body">
+      <div class="card-title">גוש ודניאל</div>
+      <div class="card-meta">
+        <span>בני ציון</span><span class="dot">&bull;</span>
+        <span>שף</span><span class="dot">&bull;</span>
+        <span>יקר</span>
+        <span class="badge-reviewed">נטעם</span>
+      </div>
+      <div class="card-date">&#x1F4C5; 11.02.2026 <span class="badge-new">חדש</span></div>
+      <div class="card-quote">"המקום מהמם המסעדה מהממת נוף היסטרי פנינה ירוקה"</div>
+      <div class="card-actions">
+        <div class="rating"><span class="star">&#x2605;</span> 4.6 (5,287 reviews)</div>
+        <a class="timestamp-link" href="https://www.youtube.com/watch?v=ZK4yPvErXIc&t=2075s" target="_blank">&#x25B6; 34:35</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- REFERENCE ONLY section -->
+  <div class="section-title">&#x23ED;&#xFE0F; הפניות בלבד</div>
+
+  <div class="ref-card">
+    <div class="name">אונמי</div>
+    <div class="reason">חדשות תעשייה - מתיחת פנים ושיתוף פעולה עם שפרי סופר</div>
+    <div class="timestamp"><a href="https://www.youtube.com/watch?v=ZK4yPvErXIc&t=777s" target="_blank">&#x25B6; 12:57</a></div>
+  </div>
+
+  <div class="ref-card">
+    <div class="name">ארקיע / שחף שבתאי</div>
+    <div class="reason">חדשות תעשייה - מינוי שף ראשי לחברת תעופה</div>
+    <div class="timestamp"><a href="https://www.youtube.com/watch?v=ZK4yPvErXIc&t=854s" target="_blank">&#x25B6; 14:14</a></div>
+  </div>
+
+  <div class="ref-card">
+    <div class="name">שמעוני</div>
+    <div class="reason">אזכור חולף - רשת שוארמה באזור נוה אביבים</div>
+    <div class="timestamp"><a href="https://www.youtube.com/watch?v=ZK4yPvErXIc&t=1716s" target="_blank">&#x25B6; 28:36</a></div>
+  </div>
+
+  <div class="ref-card">
+    <div class="name">בנגר</div>
+    <div class="reason">הקשר - הבעלים פתחו את סוד. לא נטעם בפרק.</div>
+    <div class="timestamp"><a href="https://www.youtube.com/watch?v=ZK4yPvErXIc&t=1760s" target="_blank">&#x25B6; 29:20</a></div>
+  </div>
+
+  <div class="ref-card">
+    <div class="name">לייצ'ה (פריז)</div>
+    <div class="reason">מסעדה בחו"ל - ביקורת של סגי כהן</div>
+    <div class="timestamp"><a href="https://www.youtube.com/watch?v=ZK4yPvErXIc&t=2373s" target="_blank">&#x25B6; 39:33</a></div>
+  </div>
+
+  <div class="ref-card">
+    <div class="name">לשוק</div>
+    <div class="reason">דיון בביקורת של אבי הפרטי - המנחים לא אכלו שם</div>
+    <div class="timestamp"><a href="https://www.youtube.com/watch?v=ZK4yPvErXIc&t=2500s" target="_blank">&#x25B6; 41:40</a></div>
+  </div>
+
+</body>
+</html>
