@@ -1,0 +1,749 @@
+{
+  "episode": {
+    "video_id": "LrvQP_2EjxQ",
+    "video_url": "https://www.youtube.com/watch?v=LrvQP_2EjxQ",
+    "title": "בשמל תמיד מנצח | מדברים מהבטן, פרק 140",
+    "channel_name": "בית הפודיום",
+    "published_at": "2026-01-07",
+    "hosts": [
+      "עמית אהרונסון",
+      "נטע סלונים",
+      "יהונתן כהן"
+    ],
+    "guests": [
+      "עדי יופעים"
+    ],
+    "language": "he",
+    "transcript_length": 47256,
+    "segment_count": 1437,
+    "episode_id": "83c40d60-3619-424f-a814-dd79a52b1154",
+    "summary": "פרק 140 של מדברים מהבטן, המהדורה הראשונה של 2026. הפרק כולל ביסים של השבוע (בוקה באבן יהודה, בנגר בירושלים, סודוך), חדשות על המסעדה החדשה של תומר טל (בואו), כניסת הת לתל אביב, האקזיט של ג'פניקה, סגירת קלאסית, ראיון עם עדי יופעים על החזרת קפה סמדר, וביקורות במסעדות טמרלין בנהלל, פורינה בפרדס חנה, ג'ורג' וג'ון בתל אביב, ודיון על ביקורת סגי כהן לבלמי."
+  },
+  "extraction": {
+    "date": "2026-03-25",
+    "agent": "episode-processor",
+    "total_mentions": 21,
+    "add_to_page": 7,
+    "reference_only": 11,
+    "rejected": 3,
+    "already_in_db": 5,
+    "new_to_add": 2
+  },
+  "restaurants": [
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "בוקה",
+      "name_english": "Bouquet",
+      "name_in_transcript": "בוקה",
+      "google_name": "Bouquet בוקה",
+      "timestamp": {
+        "seconds": 227,
+        "display": "03:47",
+        "youtube_url": "https://www.youtube.com/watch?v=LrvQP_2EjxQ&t=227s"
+      },
+      "location": {
+        "city": "אבן יהודה",
+        "neighborhood": null,
+        "address": "Ha-Meyasdim St 62, Even Yehuda",
+        "region": "שרון",
+        "latitude": 32.2698768,
+        "longitude": 34.8886212
+      },
+      "cuisine_type": "בר יין",
+      "price_range": "בינוני",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "לזניה רגע עגל בקציפת פרמזן",
+        "ארוחה מצוינת והיינות מהרצו מהעולם מבחר מאוד גדול",
+        "מכניס את כל הברי יין של תל אביב בכיס הקטן",
+        "מחיר מדף בלי דמי חליצה"
+      ],
+      "host_comments": "נטע סיפרה על הביס שלה - לזניה רגו עגל בקציפת פרמזן. שבחה את השף נאור אורדמן (מתמודד במשחקי השף), את הקינוחים (גלידה אגוזי לוז עם קרמל אספרסו), ואת מבחר היינות במחיר מדף. בר יין שפתוח כמעט 4 שנים ונמצא מתחת לרדאר.",
+      "dishes_mentioned": [
+        "לזניה רגו עגל בקציפת פרמזן",
+        "קרפצ'ו עגל עם רוטב טונטו על ברוסקטה",
+        "תירמיסו",
+        "גלידה אגוזי לוז עם קרמל אספרסו ושמן זית"
+      ],
+      "special_features": [
+        "בר יין",
+        "חנות יין",
+        "מחירי מדף ליינות",
+        "שף נאור אורדמן"
+      ],
+      "mention_context": "ביס השבוע של נטע סלונים - לזניה רגו עגל בקציפת פרמזן בבוקה באבן יהודה",
+      "speaker": "נטע סלונים",
+      "google_places": {
+        "place_id": "ChIJs5TX-pA_HRURq4WR6TnFzXc",
+        "google_url": "https://maps.google.com/?cid=8632772913261544875",
+        "rating": 4.7,
+        "review_count": 134,
+        "price_level": null,
+        "phone": "09-862-5621",
+        "website": "https://tabitisrael.co.il/online-reservations/create-reservation?step=search&orgId=626e364d6991c39afaec965e&source=google",
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqFOhtX5loTCM0mNUhQyTSvnJubPgJDE39EaD9Vr6SIBhBNdxY5X_ip1bZj9nUfStBeWSNSlQeEuXjvGkkHZGCBhAEbEeyuZNA=s1600-w800",
+        "instagram_url": "https://www.instagram.com/bouquet_wine/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "בנגר",
+      "name_english": "Banger",
+      "name_in_transcript": "בנגר",
+      "google_name": null,
+      "timestamp": {
+        "seconds": 436,
+        "display": "07:16",
+        "youtube_url": "https://www.youtube.com/watch?v=LrvQP_2EjxQ&t=436s"
+      },
+      "location": {
+        "city": "ירושלים",
+        "neighborhood": "הפסאז' שבין הלל לשמאי",
+        "address": "רחוב דרום, ירושלים",
+        "region": "ירושלים",
+        "latitude": null,
+        "longitude": null
+      },
+      "cuisine_type": "המבורגר",
+      "price_range": "בינוני",
+      "status": "חדש",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "וואו איזה המבורגר טעים",
+        "על דעתי מתברג היום בקלות בטופ העירוני",
+        "המבורגריה נועזת ביותר לא רק ברמה המקומית אלא בכלל",
+        "מה שאנחנו לא יכולים לעשות הכי טוב לא רוצים שיהיה פה"
+      ],
+      "host_comments": "עמית ביקר בהמבורגריה מינימליסטית חדשה בפסאז' בירושלים. שתי קציצות סמאש (~130 גרם), לחמניה רכה אווררית, גבינה אמריקאית, חרדל מאושרן, בצל מקורמל. צ'יפס עבודת יד. בסופ\"ש גם קריספי צ'יקן. מאחורי המקום ניר משה ותומר קרמני.",
+      "dishes_mentioned": [
+        "סמאשבורגר",
+        "צ'יפס עבודת יד",
+        "קריספי צ'יקן",
+        "גלידה"
+      ],
+      "special_features": [
+        "מינימליסטי",
+        "פתוח בשבת",
+        "לא כשר",
+        "רחוב דרום בפסאז'"
+      ],
+      "mention_context": "ביס השבוע של עמית - המבורגריה חדשה ומינימליסטית בפסאז' הירושלמי המיתולוגי",
+      "speaker": "עמית אהרונסון",
+      "google_places": {
+        "place_id": "ChIJhbzUUQApAxURkq5iA7x-G5M",
+        "google_url": "https://maps.google.com/?cid=10600205493922344594&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+        "rating": null,
+        "review_count": null,
+        "price_level": null,
+        "phone": null,
+        "website": null,
+        "photo_url": "https://imageproxy.wolt.com/assets/68ac575c96fbe9c58f9797ca",
+        "instagram_url": "https://www.instagram.com/bungerburgerr/",
+        "verified": false,
+        "note": "Google Places match was wrong (HaNagar Street). Restaurant is likely too new for Google Places."
+      },
+      "production_db": {
+        "exists": true,
+        "id": "b2454f6b-4d44-4371-9c21-2ca3d94164bd"
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "סודוך",
+      "name_english": "Suduch",
+      "name_in_transcript": "סודוך",
+      "google_name": "Suduch",
+      "timestamp": {
+        "seconds": 722,
+        "display": "12:02",
+        "youtube_url": "https://www.youtube.com/watch?v=LrvQP_2EjxQ&t=722s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": null,
+        "address": "Carlebach St 20, Tel Aviv-Yafo",
+        "region": "מרכז",
+        "latitude": 32.0709882,
+        "longitude": 34.7822891
+      },
+      "cuisine_type": "אוכל רחוב",
+      "price_range": "זול",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "תופעת אוכל רחוב שאי אפשר שלא להצדיע לה",
+        "הכל שם סבבה, טוב אחיד נקי, סטנדרט שעובר בין כל הסניפים",
+        "בית ספר לזכיינויות וביצוע אחיד של דברים",
+        "הרמת ניקיון שם היא מדהימה"
+      ],
+      "host_comments": "ביס השבוע של יהונתן כהן - טוסט נקניק בסודוך. קונסנזוס מלא בין שלושת המנחים. שבחו את האחידות בין הסניפים, הניקיון, והטעם. דנו בהזמנות האישיות שלהם ותהו מדוע אין להם 200 סניפים בפריסה עולמית.",
+      "dishes_mentioned": [
+        "טוסט נקניק",
+        "שום צ'ילי פסטו",
+        "פסטרמה",
+        "סלמי",
+        "חמוצים"
+      ],
+      "special_features": [
+        "רשת סניפים",
+        "אחידות גבוהה",
+        "אוכל רחוב",
+        "פועלים מעל 20 שנה"
+      ],
+      "mention_context": "ביס השבוע של יהונתן - הצדעה לסודוך כתופעת אוכל רחוב ישראלית, קונסנזוס מלא מכל המנחים",
+      "speaker": "יהונתן כהן",
+      "google_places": {
+        "place_id": "ChIJPTmef4JLHRURT95iJgBzbSY",
+        "google_url": "https://maps.google.com/?cid=2768995790383930959",
+        "rating": 4.5,
+        "review_count": 521,
+        "price_level": 1,
+        "phone": "03-696-5939",
+        "website": "http://suduch.co.il/",
+        "photo_url": "https://lh3.googleusercontent.com/place-photos/AL8-SNE6q-cWcR7lHSUNZQWAAY2cHpqWwOod4ui0u2JhSw5LocTuuwzl0pmjbudCwpwWnwvscV0BBNMTmD_mOekq0Ejcx1wuvaafzHaCncQ0ueIDgpCl8ObOqt1XRksdtcOnE2NvE6Qi-AVr_j012g=s1600-w800",
+        "instagram_url": null,
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "הוזכר",
+      "name_hebrew": "קפה סמדר",
+      "name_english": "Cafe Smadar",
+      "name_in_transcript": "קפה סמדר",
+      "google_name": "Smadar",
+      "timestamp": {
+        "seconds": 1920,
+        "display": "32:00",
+        "youtube_url": "https://www.youtube.com/watch?v=LrvQP_2EjxQ&t=1920s"
+      },
+      "location": {
+        "city": "ירושלים",
+        "neighborhood": "המושבה הגרמנית",
+        "address": "Lloyd George St 4, Jerusalem",
+        "region": "ירושלים",
+        "latitude": 31.76494049999999,
+        "longitude": 35.22221860000001
+      },
+      "cuisine_type": "קפה",
+      "price_range": "בינוני",
+      "status": "עומד להיפתח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "רגע שלפחות עבורנו כירושלמים מרגש אותנו",
+        "כריך שקראנו לו דג בים שזה יהיה מין מחבל בליקנק הטורקי",
+        "להיכנס לסרט בשבת בבוקר בירושלים"
+      ],
+      "host_comments": "ראיון עם עדי יופעים על החזרת קפה סמדר לחיים בקולנוע סמדר בירושלים. יוזמה קהילתית-חברתית. התפריט יכלול כריכים (כולל כריך דג בים - מקרל בבייגל ירושלמי), סלטים, קינוחים, אלכוהול ויינות מקומיים. פתוח בשבת.",
+      "dishes_mentioned": [
+        "כריך דג בים (מקרל בבייגל ירושלמי)",
+        "כריכים",
+        "סלטים",
+        "קינוחים"
+      ],
+      "special_features": [
+        "יוזמה קהילתית",
+        "קולנוע סמדר",
+        "פתוח בשבת",
+        "יינות מקומיים",
+        "עדי יופעים"
+      ],
+      "mention_context": "ראיון עם עדי יופעים על החזרת קפה סמדר לפעילות - יוזמה חברתית לשמר את הקפה המיתולוגי בקולנוע סמדר בירושלים",
+      "speaker": "עדי יופעים",
+      "google_places": {
+        "place_id": "ChIJw2qTGi8oAxURiHzAiQHxudc",
+        "google_url": "https://maps.google.com/?cid=15544720577754332296",
+        "rating": 4.4,
+        "review_count": 778,
+        "price_level": 3,
+        "phone": "02-544-3666",
+        "website": null,
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqGhPNms91ABIPtFaGTuyoLJmD13peYwtD0FrChBBqL8bRTGtlYqnl7EOGvgxAVMC_i-g837bWuEWucdOhdd1QW9QIT7bTXJRt0=s1600-w800",
+        "instagram_url": "https://www.instagram.com/smadar_restaurant/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": true,
+        "id": "4deb9546-a4fc-4f7d-aac9-889481c7daf2"
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "טמרלין",
+      "name_english": "Tamarlin",
+      "name_in_transcript": "טמרלין",
+      "google_name": "תמרלין",
+      "timestamp": {
+        "seconds": 2452,
+        "display": "40:52",
+        "youtube_url": "https://www.youtube.com/watch?v=LrvQP_2EjxQ&t=2452s"
+      },
+      "location": {
+        "city": "נהלל",
+        "neighborhood": null,
+        "address": "Nahalal",
+        "region": "צפון",
+        "latitude": 32.6821269,
+        "longitude": 35.2013936
+      },
+      "cuisine_type": "בשרים",
+      "price_range": "בינוני",
+      "status": "פתוח",
+      "host_opinion": "חיובית",
+      "host_quotes": [
+        "גם הנתח עצמו, גם הצליע, גם החיתוך היו משובחים",
+        "בדבר המז'ורי הקריטי של העסק הם לגמרי מבינים ויודעים לספק את הסחורה",
+        "400 גרם אנטריקות 180 ש\"ח שעם כמה ראשונות קטנות זה לגמרי מנה זוגית",
+        "חוויה שלמה, בטח משפחות"
+      ],
+      "host_comments": "יהונתן ביקר עם שלמה שרף בטמרלין בנהלל. מקום יפה עם שדות ונוף. חוגגים 4 שנים. אטליז צמוד, חנות דליקטסים. הבשר איכותי מאוד - אנטריקוט 400 גרם ב-180 ש\"ח. יש מה לשפר בחלק מהמנות אבל הבשר מצוין. התפריט רחב אולי טיפה מדי.",
+      "dishes_mentioned": [
+        "אנטריקוט 400 גרם",
+        "פנדס",
+        "כריך מאושנים"
+      ],
+      "special_features": [
+        "אטליז צמוד",
+        "חנות דליקטסים",
+        "מחירים הוגנים לבשר",
+        "נוף שדות",
+        "7 ימים בשבוע"
+      ],
+      "mention_context": "ביקור של יהונתן בטמרלין בנהלל - מסעדת בשר עם אטליז צמוד, נוף יפה ומחירים הוגנים",
+      "speaker": "יהונתן כהן",
+      "google_places": {
+        "place_id": "ChIJbaXI5jutHRURvGVlWj90ZMY",
+        "google_url": "https://maps.google.com/?cid=14295678932629153212",
+        "rating": 4.4,
+        "review_count": 1073,
+        "price_level": null,
+        "phone": "077-724-2042",
+        "website": "https://ontopo.co.il/temerlindeli?source=google",
+        "photo_url": "https://lh3.googleusercontent.com/place-photos/AL8-SNEoFSyBYTvzLNI5u6FIyvwQCQOuZ1EWDTJd55BZW6cUGFCJbq1p85QD-YnuMSEO5AnzNPAY2vb_zmgrkO8qalxabcdtlrMEwBMastJzAfYNJHiPwMf1RfqohQczOTye_Oi0k-EWT7qA66Y8oTc=s1600-w800",
+        "instagram_url": "https://www.instagram.com/temerlin_nahalal/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": true,
+        "id": "021b7b4f-caf0-4a8d-ad73-91ccaae22f38"
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "פורינה",
+      "name_english": "Furina",
+      "name_in_transcript": "פורינה",
+      "google_name": "פיצרייה נאפוליטנית פורינה",
+      "timestamp": {
+        "seconds": 2710,
+        "display": "45:10",
+        "youtube_url": "https://www.youtube.com/watch?v=LrvQP_2EjxQ&t=2710s"
+      },
+      "location": {
+        "city": "פרדס חנה-כרכור",
+        "neighborhood": null,
+        "address": "Ha-Moshav St 33, Pardes Hanna-Karkur",
+        "region": "שרון",
+        "latitude": 32.4735766,
+        "longitude": 34.9929573
+      },
+      "cuisine_type": "פיצה",
+      "price_range": "בינוני",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "מלנזן החצילים לוחהת מהטבון - שנמסה בפה וזה פשוט אחד הביסים המענגים שקיימים",
+        "פיצות מאוד מאוד מאוד יפות ומראות באמת פצצה",
+        "אחלה פיצה פורינה",
+        "פיצה עם שומשום וזה עובד בטירוף"
+      ],
+      "host_comments": "נטע ביקרה בפורינה, פיצריה נאפוליטנית בפרדס חנה. שיבחה את מלנזן החצילים, קלסוני זוקיני, בורטה עיזים, פיצת מרגריטה מצוינת (הפחה 72 שעות), פיצת זוקיני לימונית עם שומשום, ופיצת קרם בטטה עם גבינה כחולה ודבש. קיימת כבר שנתיים פלוס.",
+      "dishes_mentioned": [
+        "מלנזן (חצילים מהטבון)",
+        "קלסוני זוקיני",
+        "בורטה עיזים עם קרם בטטה",
+        "מרגריטה",
+        "פיצת זוקיני לימונית עם שומשום",
+        "פיצת קרם בטטה עם גבינה כחולה ודבש",
+        "מרינרה"
+      ],
+      "special_features": [
+        "פיצריה נאפוליטנית",
+        "הפחת בצק 72 שעות",
+        "טאבון עם עץ",
+        "ליד פרדס חנה"
+      ],
+      "mention_context": "ביקור של נטע בפיצריה נאפוליטנית משובחת בפרדס חנה שנמצאת מתחת לרדאר",
+      "speaker": "נטע סלונים",
+      "google_places": {
+        "place_id": "ChIJFzRsQCAPHRURl34Kn5e0zmw",
+        "google_url": "https://maps.google.com/?cid=7840402564599938711",
+        "rating": 4.8,
+        "review_count": 391,
+        "price_level": null,
+        "phone": "04-666-3369",
+        "website": null,
+        "photo_url": "https://lh3.googleusercontent.com/place-photos/AL8-SNHcGANBBEBBe1p56H8FDfZ_iwu_KlWFFbJPezYgD_Ixwylf0afla7OSQiJdql_pAU7aYKCH23PBYWdhJT0vDwQm8PGW9qgCS9kLLc6YZqF61bEw0ho1dzNxIHdEMOp51xiz0L_FP24lvPrm49w=s1600-w800",
+        "instagram_url": "https://www.instagram.com/forrina_pizzeria/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": true,
+        "id": "0cd1ccb5-a049-47b8-a1de-04930de97582"
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "ג'ורג' וג'ון",
+      "name_english": "George & John",
+      "name_in_transcript": "ג'ורג' וג'ון",
+      "google_name": "George & John - Relais & Chateaux",
+      "timestamp": {
+        "seconds": 2941,
+        "display": "49:01",
+        "youtube_url": "https://www.youtube.com/watch?v=LrvQP_2EjxQ&t=2941s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": null,
+        "address": "Auerbach St 6, Tel Aviv-Yafo",
+        "region": "מרכז",
+        "latitude": 32.0568582,
+        "longitude": 34.7625935
+      },
+      "cuisine_type": "שף",
+      "price_range": "יקר",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "נתוני הפתיחה של ג'ורג' וג'ון הם מעולים תמיד",
+        "באמת אחת המסעדות הכי אולי אירופאיות ונינוחות ונעימות שיש לנו",
+        "יש סיכוי מאוד טוב שאת קינוח על הדעת הזה אתם תפגשו באולפן עוד 360 וקצת",
+        "ארוחה זוגית שלמה ב-560 שק, אין דברים כאלה ברמת ביצוע הזאת"
+      ],
+      "host_comments": "עמית חזר לג'ורג' וג'ון עם שף חדש - ירון פישניאק (עבד עם תומר טל, צעיר, עוד לא בן 30). המחירים ירדו, ארוחה זוגית ב-560 ש\"ח. התפריט פיין דיינינג ישראלי מקורי - רביולי טבעוני בקשיו ברוטב דחינה, סשימי אינטיאס בפפריקה מרוקאית, טרטר בפפאיה ירוקה, ספרי בסטלה. קינוח דלעת מושלם.",
+      "dishes_mentioned": [
+        "רביולי טבעוני ממולא בקשיו ברוטב דחינה",
+        "סשימי אינטיאס בפפריקה מרוקאית",
+        "טרטר אינטיאס בפפאיה ירוקה",
+        "ספרי בסטלה",
+        "קינוח דלעת עם עוגת סולת וגלידת יוגורט"
+      ],
+      "special_features": [
+        "שף חדש ירון פישניאק",
+        "פיין דיינינג",
+        "ירידת מחירים",
+        "ארוחה זוגית ב-560 ש\"ח",
+        "בלובי מלון"
+      ],
+      "mention_context": "ביקור חוזר של עמית בג'ורג' וג'ון עם שף חדש - התרשמות חיובית מאוד, מחירים נמוכים יותר, מנות מקוריות",
+      "speaker": "עמית אהרונסון",
+      "google_places": {
+        "place_id": "ChIJl5CMejNNHRURXa-pmIKHL9c",
+        "google_url": "https://maps.google.com/?cid=15505761037036662621",
+        "rating": 4.5,
+        "review_count": 1595,
+        "price_level": 4,
+        "phone": "03-726-9309",
+        "website": "http://gandj.co.il/",
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqHNBbns4xXjW8jVoL4Bz9B2JJbajfU3AbRtjNii2-5m4FuhY6w-2m7quEqaJwbo7Oy-ABi7oFaDyHO7Heoc9WTFdlMyMF_aOp0=s1600-w800",
+        "instagram_url": "https://www.instagram.com/georgeandjohn.restaurant/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": true,
+        "id": "5bd4f616-05f7-4665-bc8f-01d45de8e935"
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "בואו",
+      "name_english": "Bo'u",
+      "name_in_transcript": "בואו",
+      "skip_reason": "מסעדה חדשה של תומר טל שעדיין לא נפתחה - חדשות תעשייה בלבד, אין ביקורת או חוויה אישית",
+      "timestamp": {
+        "seconds": 1181,
+        "display": "19:41",
+        "youtube_url": "https://www.youtube.com/watch?v=LrvQP_2EjxQ&t=1181s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "address": null
+      },
+      "mention_context": "חדשות על המסעדה החדשה של תומר טל - נחשף השם בואו, דנו בשם ובקונספט",
+      "google_places": {
+        "place_id": "ChIJge2KTQBLHRURduScfxEaoJ0",
+        "verified": false,
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqGL-7fN3B1lUZAOh1yuWcHhlEtkbPflGPqZX3nuYl7iNHe9aQd0oNBnPXp4Ec5iYDUmvyiyj47m0UZm7azdU9dn3FLucaxzwdw=s4800-w800",
+        "google_url": "https://maps.google.com/?cid=11358106922686145654&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+      },
+      "production_db": {
+        "exists": true,
+        "id": "a2ac40bb-0e8e-447e-bbe3-fde3d5b3a17c"
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "קלאסית",
+      "name_english": "Klassit",
+      "name_in_transcript": "קלאסית",
+      "skip_reason": "הודעת סגירה - מקום שסגר אחרי למעלה מעשור של פעילות, חדשות תעשייה",
+      "timestamp": {
+        "seconds": 1764,
+        "display": "29:24",
+        "youtube_url": "https://www.youtube.com/watch?v=LrvQP_2EjxQ&t=1764s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "address": "פינת יהודה מכבי ווייצמן"
+      },
+      "host_quotes": [
+        "סגירה של מוסד שכונתי אחרי למעלה מעשור"
+      ],
+      "mention_context": "סגירת קלאסית (השילוב של וולף נייטס והמבורגר עם פיצה בזיליקום) בצומת יהודה מכבי-ויצמן בתל אביב",
+      "production_db": {
+        "exists": true,
+        "id": "fbc452cf-0e5f-478f-947a-990b6a50e5a5"
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "ג'פניקה",
+      "name_english": "Japonica",
+      "name_in_transcript": "ג'פניקה",
+      "skip_reason": "חדשות אקזיט/השקעות - כניסת זרוע השקאות של בנק לאומי לקבוצת לנדורה לפי שווי מיליארד שקל",
+      "timestamp": {
+        "seconds": 1613,
+        "display": "26:53",
+        "youtube_url": "https://www.youtube.com/watch?v=LrvQP_2EjxQ&t=1613s"
+      },
+      "location": {
+        "city": "רשת ארצית"
+      },
+      "mention_context": "חדשות עסקיות - אקזיט של ג'פניקה, כניסת משקיע מוסדי לקבוצת לנדורה (44 סניפים)",
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "לימוזין",
+      "name_english": "Limousine",
+      "name_in_transcript": "לימוזין",
+      "skip_reason": "הוזכרה כמתחרה קרובה של טמרלין - ללא ביקורת או חוויה אישית",
+      "timestamp": {
+        "seconds": 2639,
+        "display": "43:59",
+        "youtube_url": "https://www.youtube.com/watch?v=LrvQP_2EjxQ&t=2639s"
+      },
+      "location": {
+        "city": "עמק יזרעאל"
+      },
+      "mention_context": "הוזכרה כמסעדת בשר איכותית מובילה, 4 ק\"מ מטמרלין",
+      "production_db": {
+        "exists": true,
+        "id": "5978f8d0-44c4-4357-bd8e-7a835ffb741b"
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "בלמי",
+      "name_english": "Bellamy",
+      "name_in_transcript": "בלמי",
+      "skip_reason": "דיון על ביקורת של סגי כהן - המנחים לא אכלו שם בפרק הזה, רק מגיבים לביקורת שלילית של מבקר חיצוני",
+      "timestamp": {
+        "seconds": 3381,
+        "display": "56:21",
+        "youtube_url": "https://www.youtube.com/watch?v=LrvQP_2EjxQ&t=3381s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "address": "Ben Ami St 14, Tel Aviv-Yafo"
+      },
+      "host_quotes": [
+        "הרבה כסף הרבה פוזה מעט סיבות לחזור זו הכותרת",
+        "שקדי עגל ב210 שק צלחת עגבניות ב70"
+      ],
+      "mention_context": "דיון על ביקורת שלילית של סגי כהן למסעדת בלמי של האחים ירזין והשף אדרי - המנחים מגיבים לביקורת ומתייחסים למחירים",
+      "google_places": {
+        "place_id": "ChIJByAlCABNHRURJ6_-cs-xqAs",
+        "google_url": "https://maps.google.com/?cid=840116835050237735",
+        "rating": 4.1,
+        "review_count": 142,
+        "verified": true,
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqGm-p0w8z9HSCYKeQnXo25TG8EzsokY5-I1KysCAPIflBjze68lb2o4o2kC85z_nK1u4ajRJq4kMSU1Wv6xIrKJGeZO6oL2GLA=s4800-w800"
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "חומוס אליהו",
+      "name_english": "Hummus Eliyahu",
+      "name_in_transcript": "חומוס אליהו",
+      "skip_reason": "הוזכר בהקשר של רשתות ישראליות שמתרחבות לחו\"ל (מיאמי) - אזכור חולף",
+      "timestamp": {
+        "seconds": 828,
+        "display": "13:48",
+        "youtube_url": "https://www.youtube.com/watch?v=LrvQP_2EjxQ&t=828s"
+      },
+      "location": {
+        "city": "רשת ארצית"
+      },
+      "mention_context": "הוזכר כדוגמה לרשתות ישראליות שפועלות בחו\"ל",
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "פרין",
+      "name_english": "Prine",
+      "name_in_transcript": "פרין",
+      "skip_reason": "הוזכר כאופציה לארוחה באשדוד - אזכור חולף ללא ביקורת",
+      "timestamp": {
+        "seconds": 3732,
+        "display": "62:12",
+        "youtube_url": "https://www.youtube.com/watch?v=LrvQP_2EjxQ&t=3732s"
+      },
+      "location": {
+        "city": "אשדוד"
+      },
+      "mention_context": "יהונתן מתלבט האם ללכת לפרין או למקום אחר באשדוד",
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "וולף נייטס",
+      "name_english": "Wolf Nights",
+      "name_in_transcript": "וולףנייטס",
+      "skip_reason": "הוזכר כחלק מקלאסית שנסגרה - הקשר היסטורי",
+      "timestamp": {
+        "seconds": 1775,
+        "display": "29:35",
+        "youtube_url": "https://www.youtube.com/watch?v=LrvQP_2EjxQ&t=1775s"
+      },
+      "location": {
+        "city": "תל אביב"
+      },
+      "mention_context": "הוזכר כחלק מהשילוב בקלאסית (וולף נייטס המבורגר + פיצה בזיליקום)",
+      "production_db": {
+        "exists": true,
+        "id": "91167d5f-d329-4beb-a23a-7d40252bdfd8"
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "גרינברג",
+      "name_english": "Greenberg",
+      "name_in_transcript": "גרינברג",
+      "skip_reason": "הוזכר כמי שהיה אמור להיכנס לנכס של קלאסית אך ביטל - אזכור חולף",
+      "timestamp": {
+        "seconds": 1849,
+        "display": "30:49",
+        "youtube_url": "https://www.youtube.com/watch?v=LrvQP_2EjxQ&t=1849s"
+      },
+      "location": {
+        "city": "תל אביב"
+      },
+      "mention_context": "היה דיבור שגרינברג ייכנס לנכס של קלאסית אבל ביטלו ברגע האחרון",
+      "production_db": {
+        "exists": true,
+        "id": "73089a44-7ce9-4dee-bd6b-bae223a04633"
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "צ'ימי צ'נגה",
+      "name_english": "Chimi Changa",
+      "name_in_transcript": "צ'ימי צ'נגה",
+      "skip_reason": "הקשר היסטורי - מסעדה שנסגרה שעמית מתגעגע אליה, אין רלוונטיות נוכחית",
+      "timestamp": {
+        "seconds": 3406,
+        "display": "56:46",
+        "youtube_url": "https://www.youtube.com/watch?v=LrvQP_2EjxQ&t=3406s"
+      },
+      "location": {
+        "city": "תל אביב"
+      },
+      "mention_context": "עמית מציין שצ'ימי צ'נגה היא המסעדה שהוא הכי מתגעגע אליה",
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "פיצה בזיליקום",
+      "name_english": "Pizza Bazilicum",
+      "name_in_transcript": "פיצה בזיליקום",
+      "skip_reason": "הוזכר כחלק מקלאסית שנסגרה - הקשר היסטורי",
+      "timestamp": {
+        "seconds": 1775,
+        "display": "29:35",
+        "youtube_url": "https://www.youtube.com/watch?v=LrvQP_2EjxQ&t=1775s"
+      },
+      "location": {
+        "city": "תל אביב"
+      },
+      "mention_context": "הוזכר כחלק מהשילוב בקלאסית (וולף נייטס + פיצה בזיליקום)",
+      "production_db": {
+        "exists": true,
+        "id": "b48a5e66-ba12-471f-ad1a-c4194917371b"
+      }
+    },
+    {
+      "verdict": "rejected",
+      "name_in_transcript": "הבלולין",
+      "reject_reason": "מקום שמוזכר בהקשר של ביקורת סגי כהן - שם לא ברור, ייתכן שזה מקום אמיתי אך אין מספיק מידע לזהות",
+      "timestamp": {
+        "seconds": 3349,
+        "display": "55:49",
+        "youtube_url": "https://www.youtube.com/watch?v=LrvQP_2EjxQ&t=3349s"
+      }
+    },
+    {
+      "verdict": "rejected",
+      "name_in_transcript": "רג'ר",
+      "reject_reason": "מוזכר כמסעדה בצפון שסגי כהן ביקר בה - שם לא ברור, ייתכן שהתמלול שיבש את השם",
+      "timestamp": {
+        "seconds": 3293,
+        "display": "54:53",
+        "youtube_url": "https://www.youtube.com/watch?v=LrvQP_2EjxQ&t=3293s"
+      }
+    },
+    {
+      "verdict": "rejected",
+      "name_in_transcript": "מקום בלי שם",
+      "reject_reason": "מקום ללא שם בפתח תקווה שקובי רובין ביקר בו - אין שם מזוהה, לא ניתן לאמת",
+      "timestamp": {
+        "seconds": 3607,
+        "display": "60:07",
+        "youtube_url": "https://www.youtube.com/watch?v=LrvQP_2EjxQ&t=3607s"
+      }
+    }
+  ]
+}

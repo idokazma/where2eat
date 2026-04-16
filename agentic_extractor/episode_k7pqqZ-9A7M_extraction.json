@@ -1,0 +1,735 @@
+{
+  "episode": {
+    "video_id": "k7pqqZ-9A7M",
+    "video_url": "https://www.youtube.com/watch?v=k7pqqZ-9A7M",
+    "title": "שיך אחרי מלחמה | מדברים מהבטן, פרק 128",
+    "channel_name": "מדברים מהבטן - הפודיום",
+    "published_at": "2025-10-15",
+    "hosts": [
+      "עמית אהרונסון",
+      "יונתן כהן",
+      "נטע סלונים"
+    ],
+    "guests": [
+      "גל בן משה"
+    ],
+    "language": "he",
+    "transcript_length": 39239,
+    "segment_count": 1189,
+    "episode_id": null,
+    "summary": "פרק חזרה לשגרה אחרי החגים ואחרי פרץ שלום. המנחים חולקים ביס שבוע מיוון (עמית), מסוזנה בבארותיים (נטע) ומחליל ברמלה (יונתן). דיון על פתיחות וסגירות: אסה של גי גמזו, FE של אביב כהן, כפה פרימו, לילי באילת, סזאנקה באשדוד, ושינויים בג'ורג' וג'ון. ראיון עם השף גל בן משה על פרסיבל בפראג וסגירת פריזם בברלין. דיון על מודיעין כעיר אוכל מתפתחת עם צ'קרא פיצה. ביקורות מבקרים על אוגוסטין ברעננה."
+  },
+  "extraction": {
+    "date": "2026-04-03",
+    "agent": "episode-processor",
+    "total_mentions": 20,
+    "add_to_page": 4,
+    "reference_only": 14,
+    "rejected": 2,
+    "already_in_db": 0,
+    "new_to_add": 4
+  },
+  "restaurants": [
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "סוזנה",
+      "name_english": "Suzana",
+      "name_in_transcript": "סוזנה",
+      "google_name": "סוזנה - מקום של בית SUZANA",
+      "timestamp": {
+        "seconds": 405,
+        "display": "06:45",
+        "youtube_url": "https://www.youtube.com/watch?v=k7pqqZ-9A7M&t=405s"
+      },
+      "location": {
+        "city": "בארותיים",
+        "neighborhood": "עמק חפר",
+        "address": "מתחם קליניקות קדם, בארותיים, ישראל",
+        "region": "שרון",
+        "latitude": 32.3326663,
+        "longitude": 34.9685597
+      },
+      "cuisine_type": "קפה",
+      "price_range": "בינוני",
+      "status": "חדש",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "כשרואים את הפוקצ'ה הזאת מבינים שהיא בטופ שלוש שאפשר לאכול באמת רמה פנומנלית של פריך",
+        "ביס חלום כיף לבוקר מאוד שומני וכבד אבל גם מאוד פרשי",
+        "מקום שמבטיח ומקיים ממליצה מאוד"
+      ],
+      "host_comments": "נטע מספרת על בית קפה חדש שנפתח בעמק חפר, של סיבן מגן שעבדה בטוטו, בנומי וגם בג'ורג' וג'ון תחת תומר טל. תפריט קטן ואסתטי ומדויק, עם פוקצ'ה ברמה פנומנלית. ביס השבוע: מנת שוח מלוח - שמנת חמוצה עם עירית, לביבה בסרנית של תפוח אדמה, ביצת עין קריספית עם חלמון נוזלי, פלפל שחור גרוס ומקלות פוקצ'ה.",
+      "dishes_mentioned": [
+        "שוח מלוח",
+        "לביבה בסרנית",
+        "ביצת עין קריספית",
+        "פוקצ'ה"
+      ],
+      "special_features": [
+        "בית קפה חדש",
+        "מטבח של שפית עם רקע מסעדנות",
+        "ארוחות בוקר",
+        "נוף ירוק"
+      ],
+      "mention_context": "ביס השבוע של נטע סלונים - בית קפה חדש בעמק חפר",
+      "speaker": "נטע סלונים",
+      "google_places": {
+        "place_id": "ChIJqWDvn5wXHRURLKOb1ZL57ZE",
+        "google_url": "https://maps.google.com/?cid=10515335114024264492",
+        "rating": 4.4,
+        "review_count": 95,
+        "price_level": null,
+        "phone": "09-864-3555",
+        "website": "https://www.instagram.com/suzana.rest",
+        "photo_url": "places/ChIJqWDvn5wXHRURLKOb1ZL57ZE/photos/AU_ZVEEm87wuxbCra3QAVdkqMe8khPAb_IzgdPDkKqK6zvBLWZGkPF14yuDsQcRkrTr2uFBG4sbGYRecXfD29hiYrbyi0aq4jaKe3alPDcdalYcHU2LPGjpHftjeMU9mHp-_kyCNvhNtZCnGchQJiiK_Oza6axQUjbPJDgjVhRGcKdBn1add1wUPHPwikvwQ6jLa5mGOc4upyHaxrzSpDkLV4zzEPRiLlvbrD5D3E73W-ePsFSQ4atB41Q_f4DWczOxhj4rG9DM0wau5oQEYR-qg5cFjKKOK_n2XygG0YTdg1pgBhQ",
+        "instagram_url": "https://www.instagram.com/suzana.rest",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "חליל",
+      "name_english": "Chalil",
+      "name_in_transcript": "חליל",
+      "google_name": "מסעדת חליל",
+      "timestamp": {
+        "seconds": 630,
+        "display": "10:30",
+        "youtube_url": "https://www.youtube.com/watch?v=k7pqqZ-9A7M&t=630s"
+      },
+      "location": {
+        "city": "רמלה",
+        "neighborhood": null,
+        "address": "קהילת דטרויט 6, רמלה, ישראל",
+        "region": "מרכז",
+        "latitude": 31.925703100000003,
+        "longitude": 34.8729672
+      },
+      "cuisine_type": "חומוס",
+      "price_range": "זול",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "השמועות על חליל שגויות בעיניי",
+        "כיף של מקום מחירים טובים",
+        "צלחת פיטות חמוצים זה ב20 וקצת זה פשוט מנה אדירה"
+      ],
+      "host_comments": "יונתן מספר שנקלע לחליל ברמלה בשבת ומצא מקום פועם ומלא אנשים. חומוס ופלאפלים במחירים מדהימים של 20-25 שח, משולש של משבחה, פול וגרגירים, קבב צלוי טוב, ושיחים. המקום לא נחלש וממלא כבר לפני 12 בצהריים.",
+      "dishes_mentioned": [
+        "חומוס",
+        "פלאפל",
+        "משבחה",
+        "פול",
+        "גרגירים",
+        "קבב",
+        "שיחים",
+        "פיטות"
+      ],
+      "special_features": [
+        "מוסד ותיק",
+        "פתוח בשבת",
+        "מחירים זולים",
+        "חשבון טוויטר מצחיק"
+      ],
+      "mention_context": "ביס השבוע של יונתן כהן - מוסד חומוס ותיק ברמלה",
+      "speaker": "יונתן כהן",
+      "google_places": {
+        "place_id": "ChIJ6zd7MQPKAhURAqDNr40JQWw",
+        "google_url": "https://maps.google.com/?cid=7800526533726937090",
+        "rating": 4.4,
+        "review_count": 4327,
+        "price_level": null,
+        "phone": "08-922-2284",
+        "website": null,
+        "photo_url": "places/ChIJ6zd7MQPKAhURAqDNr40JQWw/photos/AU_ZVEGrJjhBGfNQ-_tyHXx0a_cP1lunVuE890lhBT8O-yCVxECVhcnrnjTrU2pSQ15Cl6JJK3LTL7iw-T5zJ25TU-XmE1km5q68ArmGlpJRQqzHqgBRJntvCM95ZOmCFRL3uADImW3aJfKjMPTIeRsZr6cmVmkscqqAKUj7tq_fDX8_zDw4dXdPiGDUhY0t39szXRb6kBCHRJWRWWGqvBT1ngA7ckzKVmy-rAqzPxDr4eC5fTcmWkO3SpFinhqZoe2GOXNmqsNS8ri4N2cIh528ZkbiFOij9e9YZHeSBQHv25JiNsyGPOm2gJDe2MGBOEWQkmuqLYZfqzhJIlD1p1pF8zwhVmn--SQC2i4kY4DQ9caTVKMVITdeiFOkwl4UXW5AZwyJ-_v4cpXz85GjLSaiq9qczbqMsD9dh7N_NXj4nwAAQg",
+        "instagram_url": "https://www.instagram.com/hummus_halil/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "פיצה צ'קרא",
+      "name_english": "Pizza Chakra",
+      "name_in_transcript": "צ'קרא",
+      "google_name": "פיצה צאקרה מודיעין - Pizza chakra modiin",
+      "timestamp": {
+        "seconds": 2837,
+        "display": "47:17",
+        "youtube_url": "https://www.youtube.com/watch?v=k7pqqZ-9A7M&t=2837s"
+      },
+      "location": {
+        "city": "מודיעין",
+        "neighborhood": "המער",
+        "address": "הרכבת 2, מודיעין מכבים רעות, ישראל",
+        "region": "שפלה",
+        "latitude": 31.902776999999997,
+        "longitude": 35.007219
+      },
+      "cuisine_type": "פיצה",
+      "price_range": "בינוני",
+      "status": "חדש",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "מוסד ירושלמי אדיר עם אנשי מקצוע אדירים",
+        "זה פשוט עובד מעולה",
+        "אם אני הייתי יודע שאפשר לשבת במודיעין על נגרוני והפיצה של צ'קראה וצלחת של פדרונים מטוגנים וספייסי טונה הייתי שוקל לעצור"
+      ],
+      "host_comments": "הדור הצעיר של צ'קרא הירושלמית לקח על עצמו את עניין הפיצה בהצלחה גדולה בירושלים והחליט לשכפל למודיעין. סניף ראשון ויחיד מחוץ לירושלים. אותו תפריט בדיוק: 4-5 מנות ראשונות, 6-7 פיצות. בר פיצות בעצם. הפיצה המנצחת: הסרדנרה - פיצה לבנה עם מוצרלה, סרדינים בכיבוש עדין, ביצים נוזליות, צ'ילי וקוסברה. 98 שח למגש.",
+      "dishes_mentioned": [
+        "פיצה סרדנרה",
+        "פדרונים מטוגנים",
+        "ספייסי טונה"
+      ],
+      "special_features": [
+        "סניף ראשון מחוץ לירושלים",
+        "בר פיצות",
+        "מוסד ירושלמי",
+        "פתוח בסופי שבוע"
+      ],
+      "mention_context": "דיון מורחב על מודיעין כעיר אוכל מתפתחת - צ'קרא כדוגמה מרכזית",
+      "speaker": "hosts",
+      "google_places": {
+        "place_id": "ChIJBzwtaADNAhURJy9qxfDc7EI",
+        "google_url": "https://maps.google.com/?cid=4822472227669290791",
+        "rating": 4.6,
+        "review_count": 135,
+        "price_level": null,
+        "phone": "077-980-0427",
+        "website": "https://tbit.be/B3T415",
+        "photo_url": "places/ChIJBzwtaADNAhURJy9qxfDc7EI/photos/AU_ZVEEICQlPOLljiImYh3lY4ZH7TDegnCiFQ_JYGAWxcuzy5VjlJDqPzzFBRyD2eCaUk73Bolx_8wMabG-AbxqFIM5c9zEaqPBcW52U3qGvYn9ctQx7uIJTN36azRPFF2dw8uru4p5l2vLMsCDrip3h_pyo8IXwctWlCHgYJQYnBJD6PIuCLqP-d38CKyaiaxcX84SHhw-KTOeFU1ACxp6IHk3IOdbK6zjLs4Tr5Jux0fH8xbeXa86WLlu8HZb7fl77gkcmELg2ChqUbEY9ppU6Y3MajLnzLy0ec3fx5-8E7XLXww",
+        "instagram_url": "https://www.instagram.com/pizzabychakra/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "הוזכר",
+      "name_hebrew": "השניצל של מוטי",
+      "name_english": "Hashnitzel Shel Moti",
+      "name_in_transcript": "השניצל של מוטי",
+      "google_name": "השניצל של מוטי - שניצל ביהוד",
+      "timestamp": {
+        "seconds": 3168,
+        "display": "52:48",
+        "youtube_url": "https://www.youtube.com/watch?v=k7pqqZ-9A7M&t=3168s"
+      },
+      "location": {
+        "city": "יהוד",
+        "neighborhood": null,
+        "address": "סעדיה חתוכה 38, יהוד מונוסון, 56000, ישראל",
+        "region": "מרכז",
+        "latitude": 32.0321219,
+        "longitude": 34.8888227
+      },
+      "cuisine_type": "סביח ושניצל",
+      "price_range": "זול",
+      "status": "פתוח",
+      "host_opinion": "חיובית",
+      "host_quotes": [
+        "הרעיון הזה של סביך ושניצל ביחד",
+        "התחיל כפוטראק סוג של התמסד נשמע נחמד ממש"
+      ],
+      "host_comments": "קובי רובין ממליץ על סביך ושניצל ביהוד. התחיל כפוד טראק והתמסד. ברחוב סעדיה חתוכה במרכז העיר.",
+      "dishes_mentioned": [
+        "סביח",
+        "שניצל"
+      ],
+      "special_features": [
+        "התחיל כפוד טראק",
+        "סביך ושניצל"
+      ],
+      "mention_context": "המלצה של קובי רובין - סגמנט קצר של המלצה מאזין",
+      "speaker": "hosts",
+      "google_places": {
+        "place_id": "ChIJv2iS0yY1HRURKwKOV4Y4oRk",
+        "google_url": "https://maps.google.com/?cid=1846819471844311595",
+        "rating": 4.2,
+        "review_count": 39,
+        "price_level": null,
+        "phone": "054-558-0260",
+        "website": null,
+        "photo_url": "places/ChIJv2iS0yY1HRURKwKOV4Y4oRk/photos/AU_ZVEH_-VcgmSKt0OrGEP1FR5DJ4gYLCSJ7YLMCS6OK1_nkNaAQ_FBWgKj8TkdXAqjNPVplEc8jgTWqHVYT5NMIbTUjbYNul6HufXdkrdTJiVoPSScMKdYA8Nkshdo7gmNkgezTV9o8gxINtjH8nu0JCRRotQS83skekCOfkHIhBcBg9CULFtbCU12X73g3HSO67weQmuEiVPnrv2MNSRvB-81D62v8EIl7JPfmKxnkRmnuwDidPbgxrIro2OyncKvvSpUj0jZmM408k4WrRbAQeslkldrc6wXBT9mGmCMASTyFlA",
+        "instagram_url": null,
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "אסה",
+      "name_english": "ASA Izakaya",
+      "name_in_transcript": "אסה",
+      "skip_reason": "פתיחה חדשה - המנחים עדיין לא היו שם, מתכננים ללכת בשבוע הבא",
+      "timestamp": {
+        "seconds": 835,
+        "display": "13:55",
+        "youtube_url": "https://www.youtube.com/watch?v=k7pqqZ-9A7M&t=835s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "address": "אחד העם 54, תל אביב-יפו, ישראל"
+      },
+      "mention_context": "פתיחה רועשת של גי גמזו - איזקאיה יפנית ברחוב ראש בודניק במקום שהיה חנגל. עדיין לא ביקרו.",
+      "google_places": {
+        "place_id": "ChIJJVr-czVLHRUR8Fkls6uMdV4",
+        "rating": 4.1,
+        "review_count": 154,
+        "verified": true,
+        "photo_url": null
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "FE",
+      "name_english": "FE - Fast Elegant",
+      "name_in_transcript": "fe",
+      "skip_reason": "פתיחה חדשה - חדשות בלבד, לא ביקרו ולא המליצו",
+      "timestamp": {
+        "seconds": 906,
+        "display": "15:06",
+        "youtube_url": "https://www.youtube.com/watch?v=k7pqqZ-9A7M&t=906s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "פלורנטין",
+        "address": "סירות וושינגטון, פלורנטין, תל אביב"
+      },
+      "mention_context": "אביב כהן (לוקל בורגר, הכוסית, אוכל בכיקה רבין) פותח מקום חדש. ראשי תיבות של Fast Elegant.",
+      "google_places": {
+        "place_id": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "כפה פרימו",
+      "name_english": "Caffe Primo",
+      "name_in_transcript": "כפ פה פרימו",
+      "skip_reason": "פתיחה חדשה - חדשות בלבד, לא ביקרו ולא המליצו",
+      "timestamp": {
+        "seconds": 915,
+        "display": "15:15",
+        "youtube_url": "https://www.youtube.com/watch?v=k7pqqZ-9A7M&t=915s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "דרום תל אביב",
+        "address": "אליפלט 16, תל אביב-יפו, ישראל"
+      },
+      "mention_context": "אבי שי בן הרוש (לסיטה) פותח מקום חדש. שניהם אנשי אוכל שכבר הוכיחו ידיים טובות.",
+      "google_places": {
+        "place_id": "ChIJ--01Up1NHRURh7Q6lTELxsI",
+        "rating": 4.8,
+        "review_count": 80,
+        "verified": true,
+        "photo_url": null
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "ג'ורג' וג'ון",
+      "name_english": "George & John",
+      "name_in_transcript": "ג'ורג' וג'ון",
+      "skip_reason": "חדשות תעשייה - שינוי שפים, תקופת מעבר, ניתוח מגמות בלבד",
+      "timestamp": {
+        "seconds": 954,
+        "display": "15:54",
+        "youtube_url": "https://www.youtube.com/watch?v=k7pqqZ-9A7M&t=954s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "address": "אוארבך 6, תל אביב-יפו, ישראל"
+      },
+      "mention_context": "תומר טל עזב, אלעד דגן ותל סוחמי מהמנסורה נכנסו ויצאו. עכשיו שני סושפים מנהלים. דיון על עתיד הפיין דיינינג בישראל.",
+      "google_places": {
+        "place_id": "ChIJl5CMejNNHRURXa-pmIKHL9c",
+        "rating": 4.5,
+        "review_count": 1597,
+        "verified": true,
+        "photo_url": null
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "לילי",
+      "name_english": "Lili",
+      "name_in_transcript": "לילי",
+      "skip_reason": "חדשות פתיחה - עודד לוי פותח מסעדה משלו באילת, ללא ביקורת",
+      "timestamp": {
+        "seconds": 1055,
+        "display": "17:35",
+        "youtube_url": "https://www.youtube.com/watch?v=k7pqqZ-9A7M&t=1055s"
+      },
+      "location": {
+        "city": "אילת",
+        "address": "סמטת טורקיז 7, אילת, ישראל"
+      },
+      "mention_context": "עודד לוי סוף סוף פותח מסעדה משלו. תמיד היה פתח תקווה ותפריטים וייעוצים, עכשיו מקום שלו.",
+      "google_places": {
+        "place_id": "ChIJmwgnKbpzABUR-9j2u8Op_kg",
+        "rating": 4.8,
+        "review_count": 154,
+        "verified": true,
+        "photo_url": null
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "סזאנקה",
+      "name_english": "Sezanka",
+      "name_in_transcript": "סזנקה",
+      "skip_reason": "חדשות פתיחה - מסעדת ענק של קבוצת כיסו באשדוד, ללא ביקורת",
+      "timestamp": {
+        "seconds": 1127,
+        "display": "18:47",
+        "youtube_url": "https://www.youtube.com/watch?v=k7pqqZ-9A7M&t=1127s"
+      },
+      "location": {
+        "city": "אשדוד",
+        "address": "דרך הרכבת 1, אשדוד, ישראל"
+      },
+      "mention_context": "קבוצת כיסו עם מסעדת ענק 1200 מ\"ר 300 מקומות ישיבה בביג פאשן אשדוד.",
+      "google_places": {
+        "place_id": "ChIJR2A98jejAhURYi-ub8qUz9I",
+        "rating": 4.5,
+        "review_count": 245,
+        "verified": true,
+        "photo_url": null
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "מטרה",
+      "name_english": "Matra",
+      "name_in_transcript": "מטר",
+      "skip_reason": "חדשות סגירה - מסעדה ישראלית בבודפשט נסגרת, דיון על הסיבות",
+      "timestamp": {
+        "seconds": 1162,
+        "display": "19:22",
+        "youtube_url": "https://www.youtube.com/watch?v=k7pqqZ-9A7M&t=1162s"
+      },
+      "location": {
+        "city": "בודפשט, הונגריה"
+      },
+      "mention_context": "סגירת מטרה בבודפשט - המנחים אומרים שמבאס מאוד, עצוב. חושדים בגורם חיצוני (משקיע) ולא בכישלון קולינרי.",
+      "google_places": {
+        "place_id": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "שיטריט קיטשן",
+      "name_english": "Shitrit Kitchen",
+      "name_in_transcript": "שטריט",
+      "skip_reason": "חדשות חיוביות - יוסי שיטריט ברשימת השפים הטובים בעולם, לא ביקורת",
+      "timestamp": {
+        "seconds": 1287,
+        "display": "21:27",
+        "youtube_url": "https://www.youtube.com/watch?v=k7pqqZ-9A7M&t=1287s"
+      },
+      "location": {
+        "city": "תל אביב"
+      },
+      "mention_context": "יוסי שיטריט מקבל מקום ברשימת השפים הטובים בעולם שנה שנייה ברציפות - הישג מרשים בתקופה הנוכחית.",
+      "google_places": {
+        "place_id": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "בנדיט",
+      "name_english": "Bandit",
+      "name_in_transcript": "בנדיט",
+      "skip_reason": "אזכור חולף - עמית מציין שעדיין לא היה במקום החדש של בנדיט",
+      "timestamp": {
+        "seconds": 1309,
+        "display": "21:49",
+        "youtube_url": "https://www.youtube.com/watch?v=k7pqqZ-9A7M&t=1309s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "address": "ניצנה 20, תל אביב-יפו, ישראל"
+      },
+      "mention_context": "עמית אומר שעדיין לא היה במקום החדש של בנדיט.",
+      "google_places": {
+        "place_id": "ChIJJb3rfS9NHRURKlMSaKp4jrQ",
+        "rating": 4.0,
+        "review_count": 169,
+        "verified": true,
+        "photo_url": null
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "פרסיבל",
+      "name_english": "Parzival",
+      "name_in_transcript": "פרסיבל",
+      "skip_reason": "מסעדה בפראג של גל בן משה - ראיון עם השף, לא ביקורת ישראלית",
+      "timestamp": {
+        "seconds": 1340,
+        "display": "22:20",
+        "youtube_url": "https://www.youtube.com/watch?v=k7pqqZ-9A7M&t=1340s"
+      },
+      "location": {
+        "city": "פראג, צ'כיה",
+        "address": "Karoliny Svetle 323/27, Praha 1, Czechia"
+      },
+      "mention_context": "ראיון עם גל בן משה על פרסיבל בפראג - מסעדת טעימות במלון בוטיק בעיר העתיקה. המשך של פריזם עם נגיעות של גרייס.",
+      "google_places": {
+        "place_id": "ChIJYbmVDyqVC0cRwEJEiD4PzvA",
+        "rating": 4.7,
+        "review_count": 50,
+        "verified": true,
+        "photo_url": null
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "סמיר",
+      "name_english": "Samir",
+      "name_in_transcript": "סמיר",
+      "skip_reason": "אזכור חולף - מוזכר כאופציה נוספת ברמלה ליד חליל",
+      "timestamp": {
+        "seconds": 779,
+        "display": "12:59",
+        "youtube_url": "https://www.youtube.com/watch?v=k7pqqZ-9A7M&t=779s"
+      },
+      "location": {
+        "city": "רמלה",
+        "address": "קהילת דטרויט 7, רמלה, ישראל"
+      },
+      "mention_context": "יש איזה מקום חמוד סמיר ליד - אופציה טובה לשבת",
+      "google_places": {
+        "place_id": "ChIJhZ6FMQPKAhURjvbBRThvD2g",
+        "rating": 4.4,
+        "review_count": 1145,
+        "verified": true,
+        "photo_url": null
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "אוגוסטין",
+      "name_english": "Augustine",
+      "name_in_transcript": "אוגוסטין",
+      "skip_reason": "הוזכרה דרך ביקורות מבקרים חיצוניים (סגי כהן ואבי אפרטי) - המנחים לא ביקרו בעצמם",
+      "timestamp": {
+        "seconds": 2996,
+        "display": "49:56",
+        "youtube_url": "https://www.youtube.com/watch?v=k7pqqZ-9A7M&t=2996s"
+      },
+      "location": {
+        "city": "רעננה",
+        "address": "זרחין 13, רעננה, ישראל"
+      },
+      "mention_context": "סגי כהן כתב ביקורת חיובית, אבי אפרטי כתב ביקורת פושרת/ביקורתית. דיון ארוך על ביקורת אבי הפרטי בנושא החזרת מנת לחם.",
+      "google_places": {
+        "place_id": "ChIJQfD7HwA5HRURRpOqQlSh148",
+        "rating": 4.1,
+        "review_count": 301,
+        "verified": true,
+        "photo_url": null
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "פלאפל שלום",
+      "name_english": "Falafel Shalom",
+      "name_in_transcript": "פלאפל שלום",
+      "skip_reason": "אזכור חולף - מוזכר כאחד החלוצים במודיעין",
+      "timestamp": {
+        "seconds": 2766,
+        "display": "46:06",
+        "youtube_url": "https://www.youtube.com/watch?v=k7pqqZ-9A7M&t=2766s"
+      },
+      "location": {
+        "city": "מודיעין",
+        "address": "המכונאי 9-15, מודיעין מכבים רעות, ישראל"
+      },
+      "mention_context": "מוזכר כאחד החלוצים שפתחו במודיעין - התרגשו כשפתח שם",
+      "google_places": {
+        "place_id": "ChIJRXYcnK_OAhURiBTbyxmFWBw",
+        "rating": 4.6,
+        "review_count": 297,
+        "verified": true,
+        "photo_url": null
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "רחל בשדרה",
+      "name_english": "Rachel Bashdera",
+      "name_in_transcript": "רחל בסדרה",
+      "skip_reason": "אזכור חולף - מוזכרת בקצרה כמקום ירושלמי שנפתח במודיעין",
+      "timestamp": {
+        "seconds": 2807,
+        "display": "46:47",
+        "youtube_url": "https://www.youtube.com/watch?v=k7pqqZ-9A7M&t=2807s"
+      },
+      "location": {
+        "city": "מודיעין",
+        "address": "דם המכבים 47, מודיעין מכבים רעות, ישראל"
+      },
+      "mention_context": "מוזכרת בקצרה כמקום ירושלמי שנפתח במודיעין יחד עם קצפת",
+      "google_places": {
+        "place_id": "ChIJ00nfONfNAhUR2TsCCTTHJr8",
+        "rating": 4.0,
+        "review_count": 59,
+        "verified": true,
+        "photo_url": null
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "קצפת",
+      "name_english": "Katzefet",
+      "name_in_transcript": "קצפת",
+      "skip_reason": "אזכור חולף - מוזכרת בקצרה כמקום שנפתח במודיעין",
+      "timestamp": {
+        "seconds": 2807,
+        "display": "46:47",
+        "youtube_url": "https://www.youtube.com/watch?v=k7pqqZ-9A7M&t=2807s"
+      },
+      "location": {
+        "city": "מודיעין",
+        "address": "דם המכבים 55, מודיעין מכבים רעות, ישראל"
+      },
+      "mention_context": "מוזכרת בקצרה כמקום שנפתח במודיעין",
+      "google_places": {
+        "place_id": "ChIJE7ecT9TNAhURY1RBZFgt40w",
+        "rating": 4.4,
+        "review_count": 276,
+        "verified": true,
+        "photo_url": null
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "תאנה",
+      "name_english": "Te'ena",
+      "name_in_transcript": "תאנה",
+      "skip_reason": "אזכור חולף - סגי כהן כתב עליה ביקורת, ללא חוות דעת אישית של המנחים",
+      "timestamp": {
+        "seconds": 2780,
+        "display": "46:20",
+        "youtube_url": "https://www.youtube.com/watch?v=k7pqqZ-9A7M&t=2780s"
+      },
+      "location": {
+        "city": "מודיעין",
+        "address": "המכונאי 5, מודיעין מכבים רעות, ישראל"
+      },
+      "mention_context": "סגי כהן כתב ביקורת על תאנה - מוצלח מאוד. מודיעין כבר לא מקום של פלאפל והמבורגריה גנרית.",
+      "google_places": {
+        "place_id": "ChIJ70jGnmbJAhURyW6O4VwJOYQ",
+        "rating": 4.8,
+        "review_count": 532,
+        "verified": true,
+        "photo_url": null
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "rejected",
+      "name_in_transcript": "פרוסמית",
+      "reject_reason": "מסעדה ביוון (פרוור של אתונה) - לא רלוונטי לפלטפורמה ישראלית",
+      "timestamp": {
+        "seconds": 173,
+        "display": "02:53",
+        "youtube_url": "https://www.youtube.com/watch?v=k7pqqZ-9A7M&t=173s"
+      }
+    },
+    {
+      "verdict": "rejected",
+      "name_in_transcript": "טו סוקלי",
+      "reject_reason": "מסעדה ביוון (הרחובה, ליד דלפי) - לא רלוונטי לפלטפורמה ישראלית",
+      "timestamp": {
+        "seconds": 2432,
+        "display": "40:32",
+        "youtube_url": "https://www.youtube.com/watch?v=k7pqqZ-9A7M&t=2432s"
+      }
+    }
+  ]
+}

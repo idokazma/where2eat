@@ -1,0 +1,658 @@
+{
+  "episode": {
+    "video_id": "roSNmoPFTrs",
+    "video_url": "https://www.youtube.com/watch?v=roSNmoPFTrs",
+    "title": "זנב לעולם לא יהיה גרון | מדברים מהבטן, פרק 150",
+    "channel_name": "מדברים מהבטן - הפודיום",
+    "published_at": "2026-03-31",
+    "hosts": [
+      "עמית אהרנסון",
+      "יהונתן כהן",
+      "נטע סלונים"
+    ],
+    "guests": [
+      "חן קורן",
+      "קובי אדרי"
+    ],
+    "language": "he",
+    "transcript_length": 72000,
+    "segment_count": 1568,
+    "episode_id": "c7556028-d18e-4e00-aa13-50be9f87b136",
+    "summary": "פרק 150 חגיגי של מדברים מהבטן, בצל המלחמה ולקראת פסח. הפרק כולל ביסים מגוונים - יונתן על הכוסם (קבב חדש!), טרומן אנד קו, ופיטה לווינסקי של חמודי. עמית על לחם אביגיל והמעדניה של אבנר ביפו. ונטע על הבינה של נרכיס אלפי. חדשות: מרטינט הבר החדש של אדר לוטן, סגירת מריפוסה, אורן אסידו עוזב את הפליים. אורחים: חן קורן מתוכנית בואו לאכול איתי, וקובי אדרי על הכנות לפסח. דיון על ביקורת סגי כהן על בואו של תומר טל."
+  },
+  "extraction": {
+    "date": "2026-03-29",
+    "agent": "episode-processor",
+    "total_mentions": 17,
+    "add_to_page": 6,
+    "reference_only": 8,
+    "rejected": 3,
+    "already_in_db": 0,
+    "new_to_add": 6
+  },
+  "restaurants": [
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "טרומן אנד קו",
+      "name_english": "Truman & Co",
+      "name_in_transcript": "תרומן אנקו",
+      "google_name": "טרומן אנד קו Truman & CO",
+      "timestamp": {
+        "seconds": 512,
+        "display": "08:32",
+        "youtube_url": "https://www.youtube.com/watch?v=roSNmoPFTrs&t=512s"
+      },
+      "location": {
+        "city": "איירפורט סיטי",
+        "neighborhood": null,
+        "address": "ערבה 4 קריית שדה התעופה, איירפורט סיטי",
+        "region": "מרכז",
+        "latitude": 31.9869703,
+        "longitude": 34.9111665
+      },
+      "cuisine_type": "המבורגר / דיינר",
+      "price_range": "בינוני",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "המבורגרים כל מה שאתם מדמינים הכי מושחט שיש",
+        "אצבעות מוצרלה שיוצאות חמות מהשמן עם קריספ כזה מבחוץ ונמתחות באופן מדהים",
+        "היה ממש ממש טעים מרמת הלחמניה והקציצה והשילוב"
+      ],
+      "host_comments": "נטע ביקרה בטרומן אנד קו במסגרת פרויקט של שטראוס עם נדב בורנשטיין שחיבר עסקים מהצפון למרכז. טעמה המבורגר מיוחד עם וואסבי (בשיתוף Nishi B) - צ'יזבורגר עטוף בעלי וואסבי עם רוטב ג'ינג'ר ווואסבי. נפרגנה גם לכפיר הבעלים שהוא יוצר תוכן על מסעדנות.",
+      "dishes_mentioned": [
+        "המבורגר וואסבי",
+        "אצבעות מוצרלה",
+        "בצל סופר פריך"
+      ],
+      "special_features": [
+        "דיינר מושחט",
+        "שיתוף פעולה עם חוות וואסבי ישראלית"
+      ],
+      "mention_context": "נטע סיפרה על ביקור במסגרת פרויקט שטראוס-נדב בורנשטיין",
+      "mention_level": "נטעם",
+      "speaker": "נטע סלונים",
+      "google_places": {
+        "place_id": "ChIJWTGZVy01HRURmzQkXpeft1Q",
+        "google_url": "https://maps.google.com/?cid=6104523292392305819",
+        "rating": 4.3,
+        "review_count": 2884,
+        "price_level": null,
+        "phone": "03-979-9922",
+        "website": "http://www.trumanandco.co.il/",
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqGeXSNFjqOPPgV58SBvmxYEOgipsDvKGwJ5w6yqgfhhE2S1OjtWRHrT98jUiw_1WkPlTQXJscNsyinvH7My4vvFtVwf1pukZds=s4800-w800",
+        "instagram_url": "https://www.instagram.com/trumandiner/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "הקוסם",
+      "name_english": "HaKosem",
+      "name_in_transcript": "הכוסם",
+      "google_name": "הקוסם",
+      "timestamp": {
+        "seconds": 787,
+        "display": "13:07",
+        "youtube_url": "https://www.youtube.com/watch?v=roSNmoPFTrs&t=787s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": null,
+        "address": "שלמה המלך 1, תל אביב-יפו",
+        "region": "מרכז",
+        "latitude": 32.0763896,
+        "longitude": 34.7766843
+      },
+      "cuisine_type": "פלאפל / אוכל רחוב",
+      "price_range": "זול",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "בריקינג ניוז יש קבב בכוסם",
+        "אני חושב שזה יכול להיות אחד הדברים הכי כיפים שיפגוש אדם בעת הזו",
+        "הוא עושה אותם כקציצות עגולות קטנות... צול אותם על הפלנצ'ה שם מקבלות ממש קרסט במעטפת הבפנים מאוד עסיסי",
+        "קיצור יש שחקן חדש בכוסם תרשמו"
+      ],
+      "host_comments": "יונתן מדווח על חידוש גדול בהקוסם - קבב חדש שנכנס לתפריט הקבוע. אריק (הבעלים) פיתח קציצות קבב עגולות צלויות על הפלנצ'ה, מבשר בקר עם שומן כבש. יונתן מתלהב ומגדיר את זה כ'בריקינג ניוז'.",
+      "dishes_mentioned": [
+        "קבב",
+        "פלאפל",
+        "שוארמה",
+        "סביח",
+        "שילומכרים"
+      ],
+      "special_features": [
+        "קבב חדש בתפריט",
+        "מוסד תל אביבי"
+      ],
+      "mention_context": "יונתן מדווח על תוספת חדשה לתפריט הקוסם",
+      "mention_level": "נטעם",
+      "speaker": "יהונתן כהן",
+      "google_places": {
+        "place_id": "ChIJi1CK34BLHRURVsjf6-OGlo4",
+        "google_url": "https://maps.google.com/?cid=10274547913365375062",
+        "rating": 4.5,
+        "review_count": 6130,
+        "price_level": null,
+        "phone": "03-525-2033",
+        "website": null,
+        "photo_url": "https://lh3.googleusercontent.com/place-photos/AL8-SNHVCczp0Qc2v_38nsMExvVucFhh6EW829mmL0dA4dwEg83kKdpSfuT6_-QEVcTt3DITmpGmw9_NYgQ1jN_v3CgEtQk8dcvShIaLompnmmxolTW66ROjpi22ABexSKeMGaTAvK1z8JWlDjCsdw=s4800-w800",
+        "instagram_url": "https://www.instagram.com/hakosemofficial/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "לחם אביגיל",
+      "name_english": "Lechem Avigail",
+      "name_in_transcript": "לחם אביגיל",
+      "google_name": "לחם אביגיל",
+      "timestamp": {
+        "seconds": 689,
+        "display": "11:29",
+        "youtube_url": "https://www.youtube.com/watch?v=roSNmoPFTrs&t=689s"
+      },
+      "location": {
+        "city": "יפו",
+        "neighborhood": null,
+        "address": "יהודה הימית 33, תל אביב-יפו",
+        "region": "מרכז",
+        "latitude": 32.049738,
+        "longitude": 34.7562661
+      },
+      "cuisine_type": "מאפייה",
+      "price_range": "בינוני",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "באמת אחד הלחמים הכי הכי טעימים ונשמרים היטב ועסיסיים שאפשר לקנות היום באזור המרכז",
+        "מאפייה באמת לחם פנטסטי"
+      ],
+      "host_comments": "עמית סיפר שהתגעגע ליפו וביקר בלחם אביגיל - מאפייה קטנה ביפו מול גלי צה\"ל ברחוב יהודה הימית. מתמחה בלחמי שיפון וזני חיטה עתיקים, כ-8 סוגי לחם. בימי שישי יש גם פוגס זיתים וגבינת פטה.",
+      "dishes_mentioned": [
+        "לחם שיפון",
+        "לחם יפואי עם עלי מלוכיה",
+        "פוגס זיתים וגבינת פטה"
+      ],
+      "special_features": [
+        "מאפייה ביתית",
+        "לחמי שיפון וחיטה עתיקה",
+        "מול גלי צה\"ל ביפו"
+      ],
+      "mention_context": "עמית קנה לחם ביום שישי במסגרת סיבוב ביפו",
+      "mention_level": "נטעם",
+      "speaker": "עמית אהרנסון",
+      "google_places": {
+        "place_id": "ChIJSVwRw7xNHRUR-b7E0UTRx7g",
+        "google_url": "https://maps.google.com/?cid=13314840916851474169",
+        "rating": 4.9,
+        "review_count": 55,
+        "price_level": null,
+        "phone": "052-801-0522",
+        "website": null,
+        "photo_url": "https://lh3.googleusercontent.com/place-photos/AL8-SNGo-jkhbhjJDGGHXjjxZHR9AQiwr7Yrrl4grrVZN7yFQTY8kKx657PvYfQYwrUa2_Fd_MCTtvn93UsvbxuMFBMFI6Akt0un1RXWJ2NORu3oCZBeANbUAR4v0492DCqIkXyowkJLF7izCl90ysI=s4800-w800",
+        "instagram_url": "https://www.instagram.com/avigail_bread/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "מעדני אבנר",
+      "name_english": "Maadaney Avner",
+      "name_in_transcript": "המעדניה של אבנר",
+      "google_name": "מעדני אבנר",
+      "timestamp": {
+        "seconds": 742,
+        "display": "12:22",
+        "youtube_url": "https://www.youtube.com/watch?v=roSNmoPFTrs&t=742s"
+      },
+      "location": {
+        "city": "יפו",
+        "neighborhood": null,
+        "address": "שדרות ירושלים 70, תל אביב-יפו",
+        "region": "מרכז",
+        "latitude": 32.047917700000006,
+        "longitude": 34.7584034
+      },
+      "cuisine_type": "מעדנייה",
+      "price_range": "בינוני",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "דגים מלוחים ומאושרים והרינג במיונז עם בצל",
+        "ממרח פלפלים הבולגרי הנהדר"
+      ],
+      "host_comments": "עמית קנה מהמעדניה של אבנר ביפו - דגים מלוחים, הרינג במיונז, קציצות ירק, וממרח פלפלים בולגרי. שילב עם הלחם מלחם אביגיל ופתח 'שולחן יפואי' בבית.",
+      "dishes_mentioned": [
+        "דגים מלוחים",
+        "הרינג במיונז עם בצל",
+        "קציצות ירק",
+        "ממרח פלפלים בולגרי"
+      ],
+      "special_features": [
+        "מעדנייה יפואית",
+        "דגים מלוחים"
+      ],
+      "mention_context": "חלק מסיבוב קניות יפואי של עמית ביום שישי",
+      "mention_level": "נטעם",
+      "speaker": "עמית אהרנסון",
+      "google_places": {
+        "place_id": "ChIJhRUSpLBMHRURHZak_IfHouM",
+        "google_url": "https://maps.google.com/?cid=16402892179709924893",
+        "rating": 4.8,
+        "review_count": 61,
+        "price_level": null,
+        "phone": "03-682-9236",
+        "website": null,
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqEwTR9UGn2oT7d7yjpYKUCAOjCC6OBgKmn6s-wSAyp2xyUoexsnkB3o3brJuTZsrVxR1g6vnJ4PNFR-TyG43hhC1kohEBm1WdU=s4800-w800",
+        "instagram_url": null,
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "פיתה לוינסקי",
+      "name_english": "Pita Levinsky",
+      "name_in_transcript": "פיטה לווינסקי",
+      "google_name": "פיתה לוינסקי",
+      "timestamp": {
+        "seconds": 1408,
+        "display": "23:28",
+        "youtube_url": "https://www.youtube.com/watch?v=roSNmoPFTrs&t=1408s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "פלורנטין / לווינסקי",
+        "address": "זבולון 7, תל אביב-יפו",
+        "region": "מרכז",
+        "latitude": 32.060118599999996,
+        "longitude": 34.773058899999995
+      },
+      "cuisine_type": "פיטה / אוכל רחוב",
+      "price_range": "זול",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "השליטה של חמודי שם בקרב באמת כל בעלי החנויות ללא יוצא מן הכלל",
+        "הבן אדם באמת רב אומן בהרכבת פיטות הוא כל הזמן מחדש ומרענן",
+        "פיטה אלוהית מבריקה",
+        "פילה של דניסולק על הפלנצ'ה... רב אומן בלהרכיב את הפיטה"
+      ],
+      "host_comments": "יונתן מפרגן בהתלהבות לחמודי - הפופאפ שכבר לא כל כך פופאפ (9 חודשים באותו ספוט בלווינסקי). כל בעלי החנויות באזור ממליצים עליו. מציע פיטות עם שניצל, קבב, שקדים, כבד, ודג בפיטה. חדש: פילה דניס על הפלנצ'ה.",
+      "dishes_mentioned": [
+        "פיטה עם שניצל",
+        "קבב",
+        "כבד",
+        "שקדים",
+        "דג בפיטה",
+        "פילה דניס על הפלנצ'ה",
+        "חצילים מטוגנים"
+      ],
+      "special_features": [
+        "פופאפ שהפך לקבוע",
+        "רב אומן בפיטות",
+        "חמודי הבולפיה"
+      ],
+      "mention_context": "יונתן מעדכן שהפופאפ של חמודי ממשיך לצבור תאוצה",
+      "mention_level": "נטעם",
+      "speaker": "יהונתן כהן",
+      "google_places": {
+        "place_id": "ChIJxR2mzFtNHRUREfWWItYpC5w",
+        "google_url": "https://maps.google.com/?cid=11244126894340633873",
+        "rating": 4.9,
+        "review_count": 113,
+        "price_level": null,
+        "phone": "03-773-9797",
+        "website": null,
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqFW35_YSTm6bu1WBgNjmxaPw2Owkx_4Pk_WCGARm_sIz45-Zo8iHKX8l6vMOE5A2hz4lh7dqqOPAaECXprkqkR9D105hh4qDwI=s4800-w800",
+        "instagram_url": null,
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "ביינה",
+      "name_english": "Beina",
+      "name_in_transcript": "הבינה",
+      "google_name": "ביינה",
+      "timestamp": {
+        "seconds": 1714,
+        "display": "28:34",
+        "youtube_url": "https://www.youtube.com/watch?v=roSNmoPFTrs&t=1714s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": null,
+        "address": "טשרניחובסקי 4, תל אביב-יפו",
+        "region": "מרכז",
+        "latitude": 32.0709795,
+        "longitude": 34.7704805
+      },
+      "cuisine_type": "פיצה / שף",
+      "price_range": "יקר",
+      "status": "חדש",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "מסעדת שף לכל דבר",
+        "היא עושה שם דברים מופלאים",
+        "הרטטוי... עושה את זה כזה בצורת פרח כזה ספירלה יפה עם יוגורט",
+        "הפיצה הייתה מטורפת. הפפרוני כל כך איכותי",
+        "קינוח נדיר... יוכי של מקום בקיצור"
+      ],
+      "host_comments": "נטע ויונתן ביקרו בביינה - הפיצריה החדשה של נרכיס אלפי ושלי גרבלר (הבעלות). שניהם התלהבו מאוד. נטע מדגישה שלקרוא לזה פיצריה זה מקטין - זו מסעדת שף. הפיצות בכיוון ניו-יורקי עם שתי אפיות, ירקות מופלאים (רטטוי, קישו, מלנזנה), ונקניק ביתי. פתחו בזמן המלחמה למרות קשיים.",
+      "dishes_mentioned": [
+        "פיצה פפרוני",
+        "רטטוי",
+        "קישו",
+        "מלנזנה",
+        "נקניק ביתי",
+        "גלידת פאי לימון"
+      ],
+      "special_features": [
+        "מסעדת שף-פיצה",
+        "נרכיס אלפי",
+        "שתי אפיות לפיצה",
+        "פתחו בזמן המלחמה"
+      ],
+      "mention_context": "נטע ויונתן ביקרו ומתארים בהתלהבות רבה את המקום החדש",
+      "mention_level": "נטעם",
+      "speaker": "hosts",
+      "google_places": {
+        "place_id": "ChIJCS6cUERNHRURagA27JtgNT4",
+        "google_url": "https://maps.google.com/?cid=4482595226916356202",
+        "rating": 4.4,
+        "review_count": 254,
+        "price_level": null,
+        "phone": "03-729-3333",
+        "website": "https://instagram.com/beina.tlv",
+        "photo_url": "https://lh3.googleusercontent.com/place-photos/AL8-SNGcJUKpfZx5LLiZHvEKV6deQRWW4em9DRNQrjZ0jDVVk4UnQ9hQCUo9kNZfLH7HlGHWN1OohdY4cOx9N7N0HAp8-b4DfFX7uO7IMumKs5UuXsnBMMy_0hntMsJCFM9p3QMWk7IehN6u4MbX5WM=s4800-w800",
+        "instagram_url": "https://instagram.com/beina.tlv",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "מרטינט",
+      "name_english": "Martinette",
+      "name_in_transcript": "מרטינט",
+      "skip_reason": "מקום חדש שעוד לא ביקרו בו - הוזכר כחדשות פתיחה",
+      "timestamp": {
+        "seconds": 1588,
+        "display": "26:28",
+        "youtube_url": "https://www.youtube.com/watch?v=roSNmoPFTrs&t=1588s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "address": "אחוזת בית 5, תל אביב-יפו"
+      },
+      "host_quotes": [
+        "אני חושב שזה יהיה אחד המקומות אם לא הראשון שאני אשים נפשי"
+      ],
+      "mention_context": "בר חדש של השף אדר לוטן (בעלים של אברי) - נקסדור עם קוקטיילים וקריצות אסיאטיות. עוד לא ביקרו.",
+      "google_places": {
+        "place_id": "ChIJGRRMBQBNHRUR7KV5H1w5rBE",
+        "rating": 3.7,
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "אברי",
+      "name_english": "Abri",
+      "name_in_transcript": "אברי",
+      "skip_reason": "הוזכר כהקשר למרטינט החדש - לא ביקרו בפרק הזה",
+      "timestamp": {
+        "seconds": 1600,
+        "display": "26:40",
+        "youtube_url": "https://www.youtube.com/watch?v=roSNmoPFTrs&t=1600s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "address": "אחוזת בית 5, תל אביב-יפו"
+      },
+      "host_quotes": [
+        "אחד המקומות... שבשנתיים פלוס שהוא פעיל הפך להיות מהאהובים עליי"
+      ],
+      "mention_context": "מוזכר כמקום הקיים של אדר לוטן, בהקשר לפתיחת מרטינט החדש",
+      "google_places": {
+        "place_id": "ChIJwVmrELxNHRURBDrc5bb1gxA",
+        "rating": 4.5,
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "מריפוסה",
+      "name_english": "Mariposa",
+      "name_in_transcript": "מריפוסה",
+      "skip_reason": "הודעת סגירה - חדשות תעשייה בלבד",
+      "timestamp": {
+        "seconds": 2160,
+        "display": "36:00",
+        "youtube_url": "https://www.youtube.com/watch?v=roSNmoPFTrs&t=2160s"
+      },
+      "location": {
+        "city": "קיסריה",
+        "address": "מגרש הגולף, קיסריה"
+      },
+      "host_quotes": [
+        "מריפוסה יצאו בהודעה שבעצם חבר'ה שם יוצאים"
+      ],
+      "mention_context": "הודעת סגירה - שלושת השפים יומי לוי, מאיר אלוף וחבי משה מסיימים. המגישים מפרגנים על הקולינריה המעולה עם חותמת כשרות.",
+      "google_places": {
+        "place_id": "ChIJV9hVLagNHRURQDNbTYDDB4Q",
+        "rating": 4.5,
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "הפליים - מלון קרלטון",
+      "name_english": "The Flame - Carlton Hotel",
+      "name_in_transcript": "הפליים במלון קרלטון",
+      "skip_reason": "חדשות תעשייה - אורן אסידו עוזב, לא ביקורת",
+      "timestamp": {
+        "seconds": 2270,
+        "display": "37:50",
+        "youtube_url": "https://www.youtube.com/watch?v=roSNmoPFTrs&t=2270s"
+      },
+      "location": {
+        "city": "תל אביב"
+      },
+      "host_quotes": [
+        "אורן אסידו עוזב את הפליים במלון קרלטון"
+      ],
+      "mention_context": "חדשות - השף אורן אסידו עוזב. יונתן מעריך שלא מיצה את הפוטנציאל שם.",
+      "google_places": {
+        "place_id": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "לאקי צ'יקן",
+      "name_english": "Lucky Chicken",
+      "name_in_transcript": "מלקי צ'יקן",
+      "skip_reason": "הוזכר כמתנת יום הולדת ליונתן - לא ביקורת מסעדה",
+      "timestamp": {
+        "seconds": 1176,
+        "display": "19:36",
+        "youtube_url": "https://www.youtube.com/watch?v=roSNmoPFTrs&t=1176s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "address": "נחלת יצחק 18, תל אביב"
+      },
+      "host_quotes": [
+        "בסכום קטן של 160 או 170 שקל... מוצר שהכיל כמעט משפחה"
+      ],
+      "mention_context": "יונתן סיפר שעמית ונטע קנו לו באקט ליום ההולדת. שיבח את היחס מחיר-כמות. אבל זה הקשר של מתנה, לא ביקורת.",
+      "google_places": {
+        "place_id": "ChIJVTcH_iRLHRURYYZjWeh3at8",
+        "rating": 4.7,
+        "verified": true,
+        "photo_url": "https://imageproxy.wolt.com/assets/69cbab5e40343cbb32c7a983",
+        "website": "https://www.eatluckychicken.com/",
+        "instagram_url": "https://www.instagram.com/eatluckychicken/"
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "בואו של תומר טל",
+      "name_english": "Bou by Tomer Tal",
+      "name_in_transcript": "בואו של תומר טל",
+      "skip_reason": "הוזכר בהקשר דיון על ביקורת סגי כהן - לא ביקורת חדשה",
+      "timestamp": {
+        "seconds": 4165,
+        "display": "69:25",
+        "youtube_url": "https://www.youtube.com/watch?v=roSNmoPFTrs&t=4165s"
+      },
+      "location": {
+        "city": "תל אביב"
+      },
+      "host_quotes": [
+        "סגי כהן מגיע לראשונה למסעדה ומפרסם ביקורת מאוד מאוד מאוד לא חיובית"
+      ],
+      "mention_context": "דיון ארוך על ביקורת שלילית של סגי כהן על המסעדה - האם ראוי לפרסם ביקורת שלילית בזמן מלחמה, והבעיה שהביקורת היתה מביקור בשבוע הראשון לפתיחה.",
+      "google_places": {
+        "place_id": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "חומוס מוסינזון",
+      "name_english": "Hummus Mosinzon",
+      "name_in_transcript": "מוסינזון חומוס מוסינזון",
+      "skip_reason": "מוזכר בהקשר טור של קובי רובין - לא ביקרו בו בפרק",
+      "timestamp": {
+        "seconds": 4473,
+        "display": "74:33",
+        "youtube_url": "https://www.youtube.com/watch?v=roSNmoPFTrs&t=4473s"
+      },
+      "location": {
+        "city": "רמת הגולן"
+      },
+      "host_quotes": [
+        "מקום שנקרא מוסינזון חומוס מוסינזון... עשה לי חשק לחומוס"
+      ],
+      "mention_context": "יונתן מזכיר טור של קובי רובין על חומוס מוסינזון ברמת הגולן. לא ביקרו בו.",
+      "google_places": {
+        "place_id": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "ג'סמינו",
+      "name_english": "Jasmino",
+      "name_in_transcript": "ג'סמינו",
+      "skip_reason": "אזכור חולף בהשוואה לפיטה לווינסקי - לא ביקורת",
+      "timestamp": {
+        "seconds": 1511,
+        "display": "25:11",
+        "youtube_url": "https://www.youtube.com/watch?v=roSNmoPFTrs&t=1511s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "address": "אלנבי 97, תל אביב"
+      },
+      "mention_context": "מוזכר בקצרה בהקשר הפיטות הכי טובות בתל אביב - יש ג'סמינו ויש פה ישן.",
+      "google_places": {
+        "place_id": null,
+        "verified": false,
+        "photo_url": "https://eatintlv.com/wp-content/uploads/2017/09/Jasmino-4.jpg"
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "rejected",
+      "name_in_transcript": "המטבח הדיגיטלי",
+      "reject_reason": "חנות ציוד מטבח עם שף מבשל, לא מסעדה",
+      "timestamp": {
+        "seconds": 233,
+        "display": "03:53"
+      }
+    },
+    {
+      "verdict": "rejected",
+      "name_in_transcript": "טולי",
+      "reject_reason": "קונדיטורית ביתית (שיתוף פעולה עם האחים למארז פסח) - לא מסעדה",
+      "timestamp": {
+        "seconds": 1283,
+        "display": "21:23"
+      }
+    },
+    {
+      "verdict": "rejected",
+      "name_in_transcript": "שביבי",
+      "reject_reason": "אזכור חולף של מסעדה בהקשר ארוחת פופ - לא ביקורת",
+      "timestamp": {
+        "seconds": 427,
+        "display": "07:07"
+      }
+    }
+  ]
+}

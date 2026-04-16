@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Episode Preview: 6jvskRWvQkg</title>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Heebo', sans-serif; background: #FAFAF8; padding: 1rem; max-width: 480px; margin: 0 auto; }
+
+    .header { text-align: center; padding: 1.5rem 0; border-bottom: 1px solid #eee; margin-bottom: 1rem; }
+    .header h1 { font-size: 1.25rem; color: #333; }
+    .header .meta { font-size: 0.85rem; color: #888; margin-top: 0.25rem; }
+    .header .stats { display: flex; gap: 1rem; justify-content: center; margin-top: 0.75rem; font-size: 0.8rem; flex-wrap: wrap; }
+    .header .stat { background: #f0f0f0; padding: 0.25rem 0.75rem; border-radius: 999px; }
+    .header .stat.add { background: #E8F5E9; color: #2E7D32; }
+    .header .stat.skip { background: #FFF3E0; color: #E65100; }
+    .header .stat.exists { background: #E3F2FD; color: #1565C0; }
+
+    .card { background: white; border-radius: 12px; overflow: hidden; margin-bottom: 1rem; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+    .card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.12); transition: all 0.2s; }
+
+    .card-image { width: 100%; aspect-ratio: 16/10; object-fit: cover; display: block; }
+    .card-image-fallback { width: 100%; aspect-ratio: 16/10; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem; font-weight: 700; }
+
+    .card-body { padding: 1rem; }
+    .card-title { font-size: 1.5rem; font-weight: 900; color: #1a1a1a; margin-bottom: 0.25rem; }
+    .card-meta { display: flex; gap: 0.5rem; align-items: center; color: #888; font-size: 0.85rem; margin-bottom: 0.5rem; flex-wrap: wrap; }
+    .card-meta .dot { color: #ccc; }
+    .card-date { font-size: 0.8rem; color: #999; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.25rem; }
+
+    .badge-new { background: #E63B2E; color: white; font-size: 0.7rem; padding: 0.1rem 0.4rem; border-radius: 4px; font-weight: 700; }
+    .badge-reviewed { background: #F57C00; color: white; font-size: 0.65rem; padding: 0.15rem 0.4rem; border-radius: 4px; font-weight: 700; }
+    .badge-mentioned { background: #9E9E9E; color: white; font-size: 0.65rem; padding: 0.15rem 0.4rem; border-radius: 4px; font-weight: 700; }
+
+    .card-quote { font-style: italic; background: #f5f5f5; padding: 0.75rem; border-radius: 8px; color: #555; font-size: 0.9rem; margin: 0.5rem 0; line-height: 1.6; }
+
+    .card-actions { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #f0f0f0; padding-top: 0.75rem; margin-top: 0.5rem; }
+    .rating { display: flex; align-items: center; gap: 0.25rem; font-weight: 700; color: #333; }
+    .rating .star { color: #FFB400; }
+    .timestamp-link { font-size: 0.8rem; color: #E63B2E; text-decoration: none; }
+    .timestamp-link:hover { text-decoration: underline; }
+
+    .verdict-badge { position: absolute; top: 0.5rem; left: 0.5rem; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.7rem; font-weight: 700; }
+    .verdict-add { background: #E8F5E9; color: #2E7D32; }
+    .verdict-exists { background: #E3F2FD; color: #1565C0; }
+    .card-image-wrapper { position: relative; }
+
+    .section-title { font-size: 1rem; color: #888; margin: 1.5rem 0 0.75rem; padding-bottom: 0.25rem; border-bottom: 1px solid #eee; }
+
+    .ref-card { background: white; border-radius: 8px; padding: 0.75rem; margin-bottom: 0.5rem; border-right: 3px solid #FFB300; }
+    .ref-card .name { font-weight: 700; font-size: 0.95rem; }
+    .ref-card .reason { font-size: 0.8rem; color: #888; margin-top: 0.25rem; }
+    .ref-card .timestamp { font-size: 0.75rem; color: #E63B2E; margin-top: 0.25rem; }
+
+    .gradient-1 { background: linear-gradient(135deg, #E63B2E, #FF6B5A); }
+    .gradient-2 { background: linear-gradient(135deg, #1565C0, #42A5F5); }
+    .gradient-3 { background: linear-gradient(135deg, #2E7D32, #66BB6A); }
+    .gradient-4 { background: linear-gradient(135deg, #6A1B9A, #AB47BC); }
+    .gradient-5 { background: linear-gradient(135deg, #E65100, #FF9800); }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>סיכום שנה 2025 | מדברים מהבטן</h1>
+    <div class="meta">מדברים מהבטן - הפודיום | 31.12.2025</div>
+    <div class="stats">
+      <span class="stat add">13 to add</span>
+      <span class="stat exists">10 already exist</span>
+      <span class="stat skip">9 reference</span>
+    </div>
+  </div>
+
+  <!-- 1. מרי פוסה - 06:52 -->
+  <div class="card">
+    <div class="card-image-wrapper">
+      <img class="card-image" src="https://lh3.googleusercontent.com/places/ANXAkqEwS_C4ZkJFFTGEb4gh70z5WKWGgqJosQmuqdteeoXq6_HzAtU-VYaqK-N5t8gyuqTP23U4gHi1CppKad2V2FD27uhdbi96W1s=s1600-w800" alt="מרי פוסה" onerror="this.outerHTML='<div class=card-image-fallback style=background:linear-gradient(135deg,#E63B2E,#FF6B5A)>שף</div>'">
+      <span class="verdict-badge verdict-exists">קיים</span>
+    </div>
+    <div class="card-body">
+      <div class="card-title">מרי פוסה <span class="badge-reviewed">נטעם</span></div>
+      <div class="card-meta">
+        <span>קיסריה</span><span class="dot">&#8226;</span>
+        <span>שף</span><span class="dot">&#8226;</span>
+        <span>יקר</span>
+      </div>
+      <div class="card-date">31.12.2025</div>
+      <div class="card-quote">"זו מסעדה נהדרת והיא אופציה מעולה לכל מי שחי ונמצא שם באזור"</div>
+      <div class="card-actions">
+        <div class="rating"><span class="star">&#9733;</span> 4.5 (2,277)</div>
+        <a class="timestamp-link" href="https://www.youtube.com/watch?v=6jvskRWvQkg&t=412s" target="_blank">&#9654; 06:52</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. משיה - 07:50 -->
+  <div class="card">
+    <div class="card-image-wrapper">
+      <img class="card-image" src="https://lh3.googleusercontent.com/place-photos/AL8-SNEws9-B-voF-nA_cpNUvsFp4DhqLHAaVETX3YChf0W-dPnTiIngCNUclqA9UlbIkY-ko3cTA2pZB9-conCGCB9rPuoGzrLQyvam5roZ3fcCTiy0_nmDPNxWbDS0Enx_xGZVn8P-gLSoBFJvAw=s1600-w800" alt="משיה" onerror="this.outerHTML='<div class=card-image-fallback style=background:linear-gradient(135deg,#1565C0,#42A5F5)>שף</div>'">
+      <span class="verdict-badge verdict-add">NEW</span>
+    </div>
+    <div class="card-body">
+      <div class="card-title">משיה <span class="badge-reviewed">נטעם</span></div>
+      <div class="card-meta">
+        <span>תל אביב</span><span class="dot">&#8226;</span>
+        <span>שף</span><span class="dot">&#8226;</span>
+        <span>יקר</span>
+      </div>
+      <div class="card-date">31.12.2025</div>
+      <div class="card-quote">"פיצוץ של טעמים מהסוג שלא תוכלו למצוא באחריות בשום מקום אחר בעולם"</div>
+      <div class="card-actions">
+        <div class="rating"><span class="star">&#9733;</span> 4.4 (5,329)</div>
+        <a class="timestamp-link" href="https://www.youtube.com/watch?v=6jvskRWvQkg&t=470s" target="_blank">&#9654; 07:50</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. גורמה סבזי - 08:33 -->
+  <div class="card">
+    <div class="card-image-wrapper">
+      <img class="card-image" src="https://lh3.googleusercontent.com/place-photos/AL8-SNHKB8T-4CmM-rTgdlGvwf9SO46k7=s1600-w800" alt="גורמה סבזי" style="width:100%;height:auto;aspect-ratio:16/10;object-fit:cover;">
+      <span class="verdict-badge verdict-add">NEW</span>
+    </div>
+    <div class="card-body">
+      <div class="card-title">גורמה סבזי <span class="badge-reviewed">נטעם</span></div>
+      <div class="card-meta">
+        <span>תל אביב</span><span class="dot">&#8226;</span>
+        <span>פרסי</span><span class="dot">&#8226;</span>
+        <span>זול</span>
+      </div>
+      <div class="card-date">31.12.2025</div>
+      <div class="card-quote">"קופטה נפלאה, ביס מהחלומות לכל שעה ביום"</div>
+      <div class="card-actions">
+        <div class="rating"><span class="star">&#9733;</span> 4.2 (414)</div>
+        <a class="timestamp-link" href="https://www.youtube.com/watch?v=6jvskRWvQkg&t=513s" target="_blank">&#9654; 08:33</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. מיז'נה - 08:55 -->
+  <div class="card">
+    <div class="card-image-wrapper">
+      <img class="card-image" src="https://lh3.googleusercontent.com/places/ANXAkqHwfaqs52J9XR5S2ftes83cBR4zOv0pCrnhHrui5TTaNh4dandXfAm2pVtn794X3V2dPGH5m4AGU33LmahaNKZS1S1G4gcaQIc=s4800-w800" alt="מיז'נה" style="width:100%;height:auto;aspect-ratio:16/10;object-fit:cover;">
+      <span class="verdict-badge verdict-add">NEW</span>
+    </div>
+    <div class="card-body">
+      <div class="card-title">מיז'נה <span class="badge-reviewed">נטעם</span></div>
+      <div class="card-meta">
+        <span>חיפה</span><span class="dot">&#8226;</span>
+        <span>ערבי מודרני</span><span class="dot">&#8226;</span>
+        <span>בינוני</span>
+      </div>
+      <div class="card-date">31.12.2025</div>
+      <div class="card-quote">"זו הקובה המתוגנת הטובה במזרח התיכון"</div>
+      <div class="card-actions">
+        <div class="rating" style="color:#999;font-weight:normal;">Google Places not found</div>
+        <a class="timestamp-link" href="https://www.youtube.com/watch?v=6jvskRWvQkg&t=535s" target="_blank">&#9654; 08:55</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. אלקבר - 09:56 -->
+  <div class="card">
+    <div class="card-image-wrapper">
+      <img class="card-image" src="https://lh3.googleusercontent.com/places/ANXAkqE_Na8H9w6ki9YUccecaqZLGaFkVxkb5kJVUzgVnI6xvsN8wHfa0OlRgCmFboY-GRUB1sLJz_qpCPpipplndpWbjmVvPi4eTWc=s4800-w800" alt="אלקבר" style="width:100%;height:auto;aspect-ratio:16/10;object-fit:cover;">
+      <span class="verdict-badge verdict-exists">קיים</span>
+    </div>
+    <div class="card-body">
+      <div class="card-title">אלקבר <span class="badge-reviewed">נטעם</span></div>
+      <div class="card-meta">
+        <span>עין זיוון</span><span class="dot">&#8226;</span>
+        <span>אוכל רחוב</span><span class="dot">&#8226;</span>
+        <span>זול</span>
+      </div>
+      <div class="card-date">31.12.2025</div>
+      <div class="card-quote">"אחרי ביס אחד באמת זה מהמנות האלה שלא אכפת לכם מי מסתכל עליכם"</div>
+      <div class="card-actions">
+        <div class="rating" style="color:#999;font-weight:normal;">Google Places not found</div>
+        <a class="timestamp-link" href="https://www.youtube.com/watch?v=6jvskRWvQkg&t=596s" target="_blank">&#9654; 09:56</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. הסתקייה - 11:47 -->
+  <div class="card">
+    <div class="card-image-wrapper">
+      <img class="card-image" src="https://lh3.googleusercontent.com/place-photos/AL8-SNF3JB00yiCEbuS8ZcTuY_Q_0GcQdJBf6eMJYI4JHvKqMZeR9Xa-RL4glGOUTIPFRVOgVtkZSzOikgllyWlxx221qIqhKVAFEJP5vUlvu3X6dxZUwNW6Gsc1lOmZvP2XtjhtLyZSWATtVw1b4A=s4800-w800" alt="הסתקייה" style="width:100%;height:auto;aspect-ratio:16/10;object-fit:cover;">
+      <span class="verdict-badge verdict-exists">קיים</span>
+    </div>
+    <div class="card-body">
+      <div class="card-title">הסתקייה <span class="badge-reviewed">נטעם</span></div>
+      <div class="card-meta">
+        <span>ירושלים</span><span class="dot">&#8226;</span>
+        <span>מזרחי</span><span class="dot">&#8226;</span>
+        <span>בינוני</span>
+      </div>
+      <div class="card-date">31.12.2025</div>
+      <div class="card-quote">"חומוס חשויה...קומבינציה אלוהית של בשר טחון מטוגן ממושכות על חומוס נהדר"</div>
+      <div class="card-actions">
+        <div class="rating" style="color:#999;font-weight:normal;">Google Places not found</div>
+        <a class="timestamp-link" href="https://www.youtube.com/watch?v=6jvskRWvQkg&t=707s" target="_blank">&#9654; 11:47</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7. הלנסן - 14:16 -->
+  <div class="card">
+    <div class="card-image-wrapper">
+      <img class="card-image" src="https://lh3.googleusercontent.com/place-photos/AL8-SNHANEFfFQofDfoIogqnc8jfrH_pLPw0C7HqRoYvZdbV2zb7iv8dcZJnEM1CwX8__SQh8hRpPKuw9IUXrkuobvMIGTf_bDjQWYjGSZUdolgqpgSkJTeECnkxW979lryeJZbJvP7B_2wtumR0Ag=s4800-w800" alt="הלנסן" style="width:100%;height:auto;aspect-ratio:16/10;object-fit:cover;">
+      <span class="verdict-badge verdict-add">NEW</span>
+    </div>
+    <div class="card-body">
+      <div class="card-title">הלנסן <span class="badge-reviewed">נטעם</span></div>
+      <div class="card-meta">
+        <span>תל אביב</span><span class="dot">&#8226;</span>
+        <span>קוריאני</span><span class="dot">&#8226;</span>
+        <span>בינוני</span>
+      </div>
+      <div class="card-date">31.12.2025</div>
+      <div class="card-quote">"המנה הזו לא נפלה אם לא הובילה על מנות שהיו באיטליה"</div>
+      <div class="card-actions">
+        <div class="rating" style="color:#999;font-weight:normal;">Google Places not found</div>
+        <a class="timestamp-link" href="https://www.youtube.com/watch?v=6jvskRWvQkg&t=856s" target="_blank">&#9654; 14:16</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 8. צפרירים - 15:01 -->
+  <div class="card">
+    <div class="card-image-wrapper">
+      <img class="card-image" src="https://lh3.googleusercontent.com/places/ANXAkqEd-9K60F9ikUJiPNKXFXdtzYLHPhqnP2z=s1600-w800" alt="צפרירים" style="width:100%;height:auto;aspect-ratio:16/10;object-fit:cover;">
+      <span class="verdict-badge verdict-exists">קיים</span>
+    </div>
+    <div class="card-body">
+      <div class="card-title">צפרירים <span class="badge-reviewed">נטעם</span></div>
+      <div class="card-meta">
+        <span>חיפה</span><span class="dot">&#8226;</span>
+        <span>בשרים</span><span class="dot">&#8226;</span>
+        <span>בינוני</span>
+      </div>
+      <div class="card-date">31.12.2025</div>
+      <div class="card-quote">"זה היום בטופ של השוארמות בחיפה ולהיות בטופ של השוארמות בחיפה זה לא עניין של מה בכך"</div>
+      <div class="card-actions">
+        <div class="rating"><span class="star">&#9733;</span> 4.5 (3,648)</div>
+        <a class="timestamp-link" href="https://www.youtube.com/watch?v=6jvskRWvQkg&t=901s" target="_blank">&#9654; 15:01</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 9. צ'קולי - 17:57 -->
+  <div class="card">
+    <div class="card-image-wrapper">
+      <img class="card-image" src="https://lh3.googleusercontent.com/places/ANXAkqG890AHFpmQsDLv9dTPRZN97q4DEt1dmjO=s1600-w800" alt="צ'קולי" style="width:100%;height:auto;aspect-ratio:16/10;object-fit:cover;">
+      <span class="verdict-badge verdict-add">NEW</span>
+    </div>
+    <div class="card-body">
+      <div class="card-title">צ'קולי <span class="badge-reviewed">נטעם</span></div>
+      <div class="card-meta">
+        <span>תל אביב</span><span class="dot">&#8226;</span>
+        <span>ספרדי</span><span class="dot">&#8226;</span>
+        <span>יקר</span>
+      </div>
+      <div class="card-date">31.12.2025</div>
+      <div class="card-quote">"מסעדה שמציאה את המצרך הכי חשוב לכולנו - תחושה של נורמליות"</div>
+      <div class="card-actions">
+        <div class="rating"><span class="star">&#9733;</span> 4.1 (553)</div>
+        <a class="timestamp-link" href="https://www.youtube.com/watch?v=6jvskRWvQkg&t=1077s" target="_blank">&#9654; 17:57</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 10. סטודיו גורושה - 19:59 -->
+  <div class="card">
+    <div class="card-image-wrapper">
+      <img class="card-image" src="https://lh3.googleusercontent.com/places/ANXAkqFiexEg9A3N_VOqzU0kd9mZUbiJFeLBZIH=s1600-w800" alt="סטודיו גורושה" style="width:100%;height:auto;aspect-ratio:16/10;object-fit:cover;">
+      <span class="verdict-badge verdict-add">NEW</span>
+    </div>
+    <div class="card-body">
+      <div class="card-title">סטודיו גורושה <span class="badge-reviewed">נטעם</span></div>
+      <div class="card-meta">
+        <span>תל אביב</span><span class="dot">&#8226;</span>
+        <span>שף</span><span class="dot">&#8226;</span>
+        <span>יקר</span>
+      </div>
+      <div class="card-date">31.12.2025</div>
+      <div class="card-quote">"כזו כמו סטודיו גורשה אין וגם הרבה שנים לא הייתה"</div>
+      <div class="card-actions">
+        <div class="rating"><span class="star">&#9733;</span> 4.8 (474)</div>
+        <a class="timestamp-link" href="https://www.youtube.com/watch?v=6jvskRWvQkg&t=1199s" target="_blank">&#9654; 19:59</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 11. פרינו - 22:09 -->
+  <div class="card">
+    <div class="card-image-wrapper">
+      <img class="card-image" src="https://lh3.googleusercontent.com/place-photos/AL8-SNEE4sIVC_mpyChM9udS1IljhbQCr=s1600-w800" alt="פרינו" style="width:100%;height:auto;aspect-ratio:16/10;object-fit:cover;">
+      <span class="verdict-badge verdict-exists">קיים</span>
+    </div>
+    <div class="card-body">
+      <div class="card-title">פרינו <span class="badge-reviewed">נטעם</span></div>
+      <div class="card-meta">
+        <span>אשדוד</span><span class="dot">&#8226;</span>
+        <span>פיצה</span><span class="dot">&#8226;</span>
+        <span>בינוני</span>
+      </div>
+      <div class="card-date">31.12.2025</div>
+      <div class="card-quote">"שילוב הטעמים, היכולת שלו לפתח ביסים כל כך עוצמתיים בסך הכל בפיצה - מדהים"</div>
+      <div class="card-actions">
+        <div class="rating"><span class="star">&#9733;</span> 4.5 (577)</div>
+        <a class="timestamp-link" href="https://www.youtube.com/watch?v=6jvskRWvQkg&t=1329s" target="_blank">&#9654; 22:09</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 12. מושיק - 25:21 -->
+  <div class="card">
+    <div class="card-image-wrapper">
+      <img class="card-image" src="https://lh3.googleusercontent.com/places/ANXAkqG8V5JpsdLE4_cjwkf3Yg0OC52zbylR8yJKU1aAiiSQgCTGQx4t5ogpXd9zkwxJlT2FPbEvjuaAE3JCIx6YSuMqLl6H3YmBDmQ=s4800-w800" alt="מושיק" style="width:100%;height:auto;aspect-ratio:16/10;object-fit:cover;">
+      <span class="verdict-badge verdict-add">NEW</span>
+    </div>
+    <div class="card-body">
+      <div class="card-title">מושיק <span class="badge-reviewed">נטעם</span></div>
+      <div class="card-meta">
+        <span>תל אביב</span><span class="dot">&#8226;</span>
+        <span>שף</span><span class="dot">&#8226;</span>
+        <span>יקר מאוד</span>
+      </div>
+      <div class="card-date">31.12.2025</div>
+      <div class="card-quote">"היכולת לחבר חומוס וקביאר זה לא פחות מגאונות"</div>
+      <div class="card-actions">
+        <div class="rating" style="color:#999;font-weight:normal;">Google Places not found</div>
+        <a class="timestamp-link" href="https://www.youtube.com/watch?v=6jvskRWvQkg&t=1521s" target="_blank">&#9654; 25:21</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 13. ריבנו - 54:19 -->
+  <div class="card">
+    <div class="card-image-wrapper">
+      <img class="card-image" src="https://lh3.googleusercontent.com/places/ANXAkqHQaRB48ngbFSDqdKn4wOogh4dxgbgALHaK1XdKx2AzQRx5K44Bv2FsxntDlzVk5ZxQIYgv-mQOqqINc5g6rJVIrf-F6u1bUp4=s4800-w800" alt="ריבנו" style="width:100%;height:auto;aspect-ratio:16/10;object-fit:cover;">
+      <span class="verdict-badge verdict-add">NEW</span>
+    </div>
+    <div class="card-body">
+      <div class="card-title">ריבנו <span class="badge-mentioned">הוזכר</span></div>
+      <div class="card-meta">
+        <span>תל אביב</span><span class="dot">&#8226;</span>
+        <span>גלידה</span><span class="dot">&#8226;</span>
+        <span>בינוני</span>
+      </div>
+      <div class="card-date">31.12.2025</div>
+      <div class="card-quote">"ג'לטו איטלקי ראוי וטוב עם חומרי גלם פצצה"</div>
+      <div class="card-actions">
+        <div class="rating" style="color:#999;font-weight:normal;">Google Places not found</div>
+        <a class="timestamp-link" href="https://www.youtube.com/watch?v=6jvskRWvQkg&t=3259s" target="_blank">&#9654; 54:19</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- REFERENCE ONLY section -->
+  <div class="section-title">Reference Only</div>
+
+  <div class="ref-card">
+    <div class="name">בוץ</div>
+    <div class="reason">הצדעה לשפים אמיצים - מצפה רמון</div>
+    <div class="timestamp"><a href="https://www.youtube.com/watch?v=6jvskRWvQkg&t=1863s" target="_blank">&#9654; 31:03</a></div>
+  </div>
+
+  <div class="ref-card">
+    <div class="name">אמיה</div>
+    <div class="reason">הצדעה לשפים אמיצים - ירושלים</div>
+    <div class="timestamp"><a href="https://www.youtube.com/watch?v=6jvskRWvQkg&t=1866s" target="_blank">&#9654; 31:06</a></div>
+  </div>
+
+  <div class="ref-card">
+    <div class="name">סניור</div>
+    <div class="reason">הצדעה לשפים אמיצים - תל אביב</div>
+    <div class="timestamp"><a href="https://www.youtube.com/watch?v=6jvskRWvQkg&t=1890s" target="_blank">&#9654; 31:30</a></div>
+  </div>
+
+  <div class="ref-card">
+    <div class="name">הגפן</div>
+    <div class="reason">ראיון עם אוהד זלג - מסעדה בפריז, לא ביקורת</div>
+    <div class="timestamp"><a href="https://www.youtube.com/watch?v=6jvskRWvQkg&t=2460s" target="_blank">&#9654; 41:00</a></div>
+  </div>
+
+  <div class="ref-card">
+    <div class="name">הריס</div>
+    <div class="reason">טיפ חולף - מסעדת דגים בשפרעם</div>
+    <div class="timestamp"><a href="https://www.youtube.com/watch?v=6jvskRWvQkg&t=3711s" target="_blank">&#9654; 61:51</a></div>
+  </div>
+
+  <div class="ref-card">
+    <div class="name">מטרלו</div>
+    <div class="reason">פתיחה עתידית בבנימינה - "לא אומרים מילה לפחות שנה"</div>
+    <div class="timestamp"><a href="https://www.youtube.com/watch?v=6jvskRWvQkg&t=3997s" target="_blank">&#9654; 66:37</a></div>
+  </div>
+
+  <div class="ref-card">
+    <div class="name">פרדס</div>
+    <div class="reason">פתיחה עתידית - תומר טל חוזר למקום</div>
+    <div class="timestamp"><a href="https://www.youtube.com/watch?v=6jvskRWvQkg&t=4057s" target="_blank">&#9654; 67:37</a></div>
+  </div>
+
+  <div class="ref-card">
+    <div class="name">ג'ורג' וג'ון</div>
+    <div class="reason">עמית מתכנן לבקר מחר - עדיין לא אכל</div>
+    <div class="timestamp"><a href="https://www.youtube.com/watch?v=6jvskRWvQkg&t=4125s" target="_blank">&#9654; 68:45</a></div>
+  </div>
+
+  <div class="ref-card">
+    <div class="name">שוק</div>
+    <div class="reason">מסעדה לשעבר של אוהד זלג בפריז - הקשר היסטורי</div>
+    <div class="timestamp"><a href="https://www.youtube.com/watch?v=6jvskRWvQkg&t=2455s" target="_blank">&#9654; 40:55</a></div>
+  </div>
+
+</body>
+</html>

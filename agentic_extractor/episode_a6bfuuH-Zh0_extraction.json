@@ -1,0 +1,776 @@
+{
+  "episode": {
+    "video_id": "a6bfuuH-Zh0",
+    "video_url": "https://www.youtube.com/watch?v=a6bfuuH-Zh0",
+    "title": "מגמת שיפוד | מדברים מהבטן, פרק 130",
+    "channel_name": "מדברים מהבטן - הפודיום",
+    "published_at": "2025-10-29",
+    "hosts": [
+      "עמית אהרונסון",
+      "יהונתן כהן",
+      "נטע סלונים"
+    ],
+    "guests": [],
+    "language": "he",
+    "transcript_length": 39506,
+    "segment_count": 1212,
+    "episode_id": null,
+    "summary": "פרק 130 של מדברים מהבטן. נטע ממליצה על עוגיית שוקולד צ'יפ של הביקרי, יונתן מגלה שוארמה חדשה במנגל של צפרירים 1 בחיפה, ועמית מספר על קינוח אורז בחלב עמו במסעדת קציר של מלון קמפינסקי. בחדשות: ברבור ופרדיסו פותחים ברנץ' שבת בנחלת בנימין, אונה פורברבר נסגר, הסטריץ נסגר, רוברטס בורגר נסגר בהרצליה, הסמתה ביי פנדה נפתחה ברמת אביב. דיון מרכזי על מגמת השיפודים - שפים לוקחים שיפודיות לרמה חדשה עם גיטה, סיך בפלורנטין, והסתקיה של מחניהודה. עמית מספר על ביקור מרשים באופה של שירל ברגר, ונטע ממליצה על משלוח רמן מקוקונקו. קטע על סגי כהן ויוסי שטרית (בנדיט)."
+  },
+  "extraction": {
+    "date": "2026-04-03",
+    "agent": "episode-processor",
+    "total_mentions": 21,
+    "add_to_page": 6,
+    "reference_only": 12,
+    "rejected": 3,
+    "already_in_db": 0,
+    "new_to_add": 6
+  },
+  "restaurants": [
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "בייקרי",
+      "name_english": "The Bakery",
+      "name_in_transcript": "הביקרי",
+      "google_name": "בייקרי",
+      "timestamp": {
+        "seconds": 170,
+        "display": "02:50",
+        "youtube_url": "https://www.youtube.com/watch?v=a6bfuuH-Zh0&t=170s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": null,
+        "address": "ויצמן 67, תל אביב-יפו, ישראל",
+        "region": "מרכז",
+        "latitude": 32.0881963,
+        "longitude": 34.7898351
+      },
+      "cuisine_type": "מאפייה",
+      "price_range": "בינוני",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "מאוד רך בפנים ובחוץ יש פסיחות עדינה כזאת",
+        "הם עושים את זה נפלא עוגיה מפנקת להפלי",
+        "ביס ביס מושלם"
+      ],
+      "host_comments": "נטע ממליצה על עוגיית שוקולד צ'יפ חדשה של הביקרי בז'נר השמן הניו יורקי. רכה בפנים עם פסיחות עדינה בחוץ, עוגיה מפנקת להפלי.",
+      "dishes_mentioned": [
+        "עוגיית שוקולד צ'יפ"
+      ],
+      "special_features": [
+        "מאפייה",
+        "עוגיות בז'נר ניו יורקי"
+      ],
+      "mention_context": "ביס השבוע של נטע",
+      "mention_level": "נטעם",
+      "speaker": "נטע סלונים",
+      "google_places": {
+        "place_id": "ChIJTZFzTZNLHRURgoJp6T7eaQk",
+        "google_url": "https://maps.google.com/?cid=678317580681314946",
+        "rating": 4.5,
+        "review_count": 1567,
+        "price_level": null,
+        "phone": "03-620-3363",
+        "website": "https://www.bakerytlv.co.il/",
+        "photo_url": "places/ChIJTZFzTZNLHRURgoJp6T7eaQk/photos/AU_ZVEGVuiefQc1si27PH7E9du31AICGuD8M76igtLRtvnti8rZ44cNuTD-7qnUz8Nmk_4G4q2a6K0DA4LFdaYdQwg6xZ3ELnJPdienOen96DX-h7sz-bR9CZpx8nHXQ6-K09F9-fKkvaAiGTnuRWNL9J64CXsIG3fhTG1Lv-h9jJvk7LKbYqewedQxN8qZL6EABVxqnvzIPKoctO4xUQqAtWyIpkY-SBOgrycLL9SC4jmMZeYm85rnfSIqvq1siYxUaQKhCriQEA4Sa6IK8YJpP44lQ7OhH0DGjvijbU6i-c0ahKA",
+        "instagram_url": "https://www.instagram.com/bakerytlv/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "צפרירים 1",
+      "name_english": "Zafririm 1",
+      "name_in_transcript": "ספרירים",
+      "google_name": "צפרירים 1",
+      "timestamp": {
+        "seconds": 324,
+        "display": "05:24",
+        "youtube_url": "https://www.youtube.com/watch?v=a6bfuuH-Zh0&t=324s"
+      },
+      "location": {
+        "city": "חיפה",
+        "neighborhood": "הכרמל",
+        "address": "צפרירים 1, חיפה, ישראל",
+        "region": "צפון",
+        "latitude": 32.7968544,
+        "longitude": 34.983835
+      },
+      "cuisine_type": "שיפודיה",
+      "price_range": "בינוני",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "אחת הטובות בעיר הזו",
+        "וואלה זה עובד וזו פיטה מעולה ושוארמה נהדרת עסיסי וטעים",
+        "עמוד נאה של עגל וכבש תועפות שמעצבות מבחינת אופי וטעם"
+      ],
+      "host_comments": "יונתן מספר על שוארמה חדשה שנפתחה במנגל של צפרירים 1 בחיפה. עמוד שוארמה של עגל וכבש, חיתוך דקיק, פיטה מעולה. הביסטרו הוותיק הרחיב את ההיצע עם שיפודיה ועכשיו גם שוארמה.",
+      "dishes_mentioned": [
+        "שוארמה בפיטה",
+        "שיפודים"
+      ],
+      "special_features": [
+        "ביסטרו חיפאי",
+        "שיפודיה חדשה",
+        "שוארמה עגל וכבש",
+        "מעל 10 שנים"
+      ],
+      "mention_context": "ביס השבוע של יונתן - שוארמה חדשה בשיפודיה של צפרירים",
+      "mention_level": "נטעם",
+      "speaker": "יהונתן כהן",
+      "google_places": {
+        "place_id": "ChIJX5wxVQ-7HRURJLhDG5qS5V4",
+        "google_url": "https://maps.google.com/?cid=6838032799812007972",
+        "rating": 4.5,
+        "review_count": 3655,
+        "price_level": null,
+        "phone": "04-811-2235",
+        "website": "http://www.zafririm1.co.il/",
+        "photo_url": "places/ChIJX5wxVQ-7HRURJLhDG5qS5V4/photos/AU_ZVEEhJFon3sADUji8Rbgui0j0PNUc8BgRZzaonfeVoRlcSLHO5PX_5R0C1VZZhfbjlBlv57gppWFnYBIfSUzAF9um_8sCotNwJx-GOQYEt12-GckC48hvsOjXOdqri8sdxtAiumsBPjItDfb3z4498UBvWlJi3pF_sPMULwRrAau2SgryDWmWjiDLxhVGIGD6icNsp1J7o_zJg6e-56hueV9KuuJQ8QjRdkRvsLu89VcuRI5osO2M-UuUQaCA9MULIh482RdJ-3V97csJcTX1IqclVlYk65W-Yyg5HC0wsoc4vg",
+        "instagram_url": null,
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "קציר",
+      "name_english": "Katzir",
+      "name_in_transcript": "קציר",
+      "google_name": "קציר - Katzir Restaurant",
+      "timestamp": {
+        "seconds": 521,
+        "display": "08:41",
+        "youtube_url": "https://www.youtube.com/watch?v=a6bfuuH-Zh0&t=521s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": null,
+        "address": "הירקון 51, תל אביב-יפו, 6343203, ישראל",
+        "region": "מרכז",
+        "latitude": 32.0746384,
+        "longitude": 34.7660942
+      },
+      "cuisine_type": "שף",
+      "price_range": "יקר מאוד",
+      "status": "פתוח",
+      "host_opinion": "חיובית",
+      "host_quotes": [
+        "כל מה שטעמתי גרם לי לחשוב שאולי שפטתי את המקום הזה קצת לחומרה בלי לדעת",
+        "קינוח פשוט מעולה",
+        "תפריט מאוד יצירתי לפרקים גם מקורי, אפילו נועז"
+      ],
+      "host_comments": "עמית סיפר על אירוע אמריקן אקספרס בקציר, מסעדת הדגל הכשרה של מלון קמפינסקי. מקום מאוד יקר ויפה אבל התפריט יצירתי. ביס השבוע: קינוח אורז בחלב עמו של השף דניאל רימונד - בין סוטלץ' טורקי לאורז קונלצ'ספרדי, בלי טיפת חלב, עם צנוברים וקרמל.",
+      "dishes_mentioned": [
+        "אורז בחלב עמו",
+        "עוף בגריל",
+        "נקניקיות פירי",
+        "בנגר אנוש בגרסת השף"
+      ],
+      "special_features": [
+        "מסעדת שף כשרה בשרית",
+        "מלון קמפינסקי",
+        "שף דניאל רימונד"
+      ],
+      "mention_context": "ביס השבוע של עמית - קינוח אורז בחלב עמו",
+      "mention_level": "נטעם",
+      "speaker": "עמית אהרונסון",
+      "google_places": {
+        "place_id": "ChIJS-vmoOVNHRURV5c7dkS1w1w",
+        "google_url": "https://maps.google.com/?cid=6684385577593968471",
+        "rating": 4.2,
+        "review_count": 69,
+        "price_level": null,
+        "phone": "074-766-2710",
+        "website": "https://www.kempinski.com/en/the-david-kempinski-tel-aviv/restaurants-bars/katzir",
+        "photo_url": "places/ChIJS-vmoOVNHRURV5c7dkS1w1w/photos/AU_ZVEH6yuKgOyCJQWE5KZRfD08aP4JilXmPZd-5xqsg5EFtRIhkTkH07EfvBGCU_VOWxIn8AL2AIwWmMSKdg2yayt2OjOyKFMD9i3VOlOM0kVIv9A7AYcA3Od9InkGHjhwFV4yNGYmr4RixS_sm5k2J3UxCrv2W_i001Ks1zQSLCYe5UvPruZ5Qk1n0J6jJCh3Q_otrAKeJrhnop78D_gnChLRLy_nj1BfLnxA-98jyn61YyU0LqKqWIRjbWOXhPsbO5AOOXb1RzQZzLq2Rhz1ejUKTUUWULAhadUuxqCSJ_qyDtQ",
+        "instagram_url": "https://www.instagram.com/katzir.telaviv/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "OPA",
+      "name_english": "Opa",
+      "name_in_transcript": "אופה",
+      "google_name": "Opa",
+      "timestamp": {
+        "seconds": 1787,
+        "display": "29:47",
+        "youtube_url": "https://www.youtube.com/watch?v=a6bfuuH-Zh0&t=1787s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": null,
+        "address": "החלוצים 8, תל אביב-יפו, 6652308, ישראל",
+        "region": "מרכז",
+        "latitude": 32.060046199999995,
+        "longitude": 34.7732208
+      },
+      "cuisine_type": "שף",
+      "price_range": "יקר",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "לא יכול להיות שאין פה חמאה, לא יכול להיות שאין פה שמנת בדבר הזה",
+        "שירל ברגר מספקת חוויה מרהיבה באמת",
+        "לא הייתה תחושה שמנסים לייצר חוויה בשרית"
+      ],
+      "host_comments": "עמית ביקר באופה של שירל ברגר, מסעדת שולחן שף טבעונית שחוגגת 7 שנים. ארוחת טעימות 375 שח לאדם סביב חומר גלם אחד בכל מנה. מנות מטירוף - תפוחי אדמה, חצילים, תירס. קינוחים מעולים. יום שני סיט ראשון 73 המקום מפורק.",
+      "dishes_mentioned": [
+        "מנת תפוחי אדמה",
+        "מנת חצילים",
+        "מנת תירס",
+        "קינוח תירס",
+        "קינוח ירושלמי וגרעינים שחורים",
+        "לחם"
+      ],
+      "special_features": [
+        "שולחן שף טבעוני",
+        "ארוחת טעימות",
+        "שירל ברגר",
+        "One to Watch של הפיפטי 2023",
+        "7 שנים"
+      ],
+      "mention_context": "המלצה מרכזית של עמית - ביקור מעמיק באופה",
+      "mention_level": "נטעם",
+      "speaker": "עמית אהרונסון",
+      "google_places": {
+        "place_id": "ChIJ27OhEP5NHRURHvPBVqmshM8",
+        "google_url": "https://maps.google.com/?cid=14929380296543973662",
+        "rating": 4.1,
+        "review_count": 918,
+        "price_level": null,
+        "phone": "052-583-8245",
+        "website": "https://www.opatlv.co.il/",
+        "photo_url": "places/ChIJ27OhEP5NHRURHvPBVqmshM8/photos/AU_ZVEHCByjwu4_mBw0B9EgQKjyYv1xmv2H45SFYMglbILVxVvGXAgww8OBAM3rrgS5hnb_mhmwfvgISxzhkgscb2XqhO5PfWZ5kRmKxbqnqgZGs4HIIazsAEyTwOD0vSIzk6NxSHkDI_bpoZ8svY717a6qYWhwICGK73zxlngHBLngLV9NKZvZ-fYBa2XFi_HD5ABYCbPDs58G50iMBHOKPwYbx0dqZNy4JCSBCmCL2-MNsSeqt6qZ8xC2GgkfaY20k4VOndLZPDalS1a5P8WxmhcMqqa9fAV4ynC5uCDihvQj2jQ",
+        "instagram_url": "https://www.instagram.com/opa_tlv/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "קוקו נקו",
+      "name_english": "Coconko",
+      "name_in_transcript": "קוקונקו",
+      "google_name": "קוקו נקו",
+      "timestamp": {
+        "seconds": 2352,
+        "display": "39:12",
+        "youtube_url": "https://www.youtube.com/watch?v=a6bfuuH-Zh0&t=2352s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "פלורנטין",
+        "address": "פלורנטין 5, תל אביב-יפו, ישראל",
+        "region": "מרכז",
+        "latitude": 32.0562675,
+        "longitude": 34.767604299999995
+      },
+      "cuisine_type": "יפני",
+      "price_range": "בינוני",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "הציר נפלא ועמוק ועשיר וטעים",
+        "10 מ10 כאילו ברור לי שאני אזמין מהם שוב",
+        "הגיוזה שלהם נהדרת ששומרת על קריספיות למרות המשלוח"
+      ],
+      "host_comments": "נטע מספרת על משלוח רמן מקוקונקו בפלורנטין. האריזה מושלמת - ערכה ממותגת יפה, הכל מפורק בול. ציר חזיר ועוף, שניהם מעולים. גם הגיוזה נהדרת ושומרת על קריספיות. אפשר להחליף חלבון.",
+      "dishes_mentioned": [
+        "רמן וון קצו ציר חזיר",
+        "רמן פאייטן עוף",
+        "גיוזה עוף"
+      ],
+      "special_features": [
+        "רמן",
+        "משלוחים מעולים",
+        "אריזה ממותגת"
+      ],
+      "mention_context": "המלצת משלוח של נטע - רמן מקוקונקו",
+      "mention_level": "נטעם",
+      "speaker": "נטע סלונים",
+      "google_places": {
+        "place_id": "ChIJj0zaeQBNHRURy9IhEPLq3go",
+        "google_url": "https://maps.google.com/?cid=783321710582682315",
+        "rating": 4.4,
+        "review_count": 702,
+        "price_level": null,
+        "phone": null,
+        "website": "https://orders.beecommcloud.com/#/init/67553bf13b9f8d5d92c4afc3",
+        "photo_url": "places/ChIJj0zaeQBNHRURy9IhEPLq3go/photos/AU_ZVEGtVX4QueBSlsksKi5CwGqkZmlpKsKdp6NXRjmIZulqEgFCQvR9RT-yb2azjxH0vSa-UQyig3hCMSgoI7T0uUj_C_6CWEjO4qrafbe__AWC50GI-hyF7UGZKK3S4V-ausnMAEVc2PrgDgRlbUs5epBqH8Dq_XJwoMkdWMuCWp7TUBs2tAWeo2LVGW5rmu27Z4kQ-ddtKdutNsnUZm2zDHVwF7Eq47jmp5CmGLkXWc6tsa6-qPwkKlQ_mbN5oAV2MHyxEohaLw1jQYMupVVQonLYikAMXFzavgS3AxGnzi1Caw",
+        "instagram_url": "https://www.instagram.com/koko_neko_tlv/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "גיטה",
+      "name_english": "Gita",
+      "name_in_transcript": "גיטה",
+      "google_name": "מסעדת גיטה",
+      "timestamp": {
+        "seconds": 1570,
+        "display": "26:10",
+        "youtube_url": "https://www.youtube.com/watch?v=a6bfuuH-Zh0&t=1570s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "פלורנטין",
+        "address": "לוינסקי 39, תל אביב-יפו, ישראל",
+        "region": "מרכז",
+        "latitude": 32.059975699999995,
+        "longitude": 34.7716068
+      },
+      "cuisine_type": "שיפודיה",
+      "price_range": "בינוני",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "באתי לגיטה עם ציפיות נמוכות באתי מתוך כוונה",
+        "פשוט ידעו את העבודה בול וצלית הבשר הייתה מדוייקת",
+        "כל האקסות מסביב היו ממוקדות וחכמות"
+      ],
+      "host_comments": "עמית ביקר בגיטה שהיא שיפודיה חדשה שנפתחה בתל אביב. בא עם ציפיות נמוכות ויצא מרוסק. צלית הבשר מדויקת, כל התוספות ממוקדות וחכמות. דוגמה טובה למגמת שיפודיות השף.",
+      "dishes_mentioned": [
+        "שיפודים",
+        "בשר צלוי"
+      ],
+      "special_features": [
+        "שיפודיית שף",
+        "מגמת שיפוד",
+        "צלית בשר מדויקת"
+      ],
+      "mention_context": "חלק מדיון מגמת השיפודים - עמית ביקר בגיטה",
+      "mention_level": "נטעם",
+      "speaker": "עמית אהרונסון",
+      "google_places": {
+        "place_id": "ChIJx3f1LwBNHRUROENEQPcmVaw",
+        "google_url": "https://maps.google.com/?cid=12396003757966450744",
+        "rating": 4.3,
+        "review_count": 123,
+        "price_level": null,
+        "phone": "055-306-2684",
+        "website": null,
+        "photo_url": "places/ChIJx3f1LwBNHRUROENEQPcmVaw/photos/AU_ZVEGujhPXWgVh3ZCiyyx6TwUudt6W8NJ90QX23ViVa5NmDbEXOOEKJhFrF71WGMFTliIpkRg96KJ3v4LQT8DRg9R2mHExUM_T4cm12a78ZljQGsXcUbkiTQPHTcMW4e1maEXPn4Fjj2PVq78A-cd-ryz81zI2nwW6rCLOWyDhb6lh6MpCPEMkXT6v7zzvGHuQPtNKYtvcpX2YCF_-SZL5YRnl3iu_zQmzx2sJUe0E49-eBfeOnT7v1m2epZnLuXsOzPrdDRfUcFCZX75se4sEtsw44EBVJVPI5RGnZ66yPKbiAA",
+        "instagram_url": "https://www.instagram.com/gita_levinsky/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "הסמתה ביי פנדה",
+      "name_english": "Hasimta by Panda",
+      "name_in_transcript": "הסמתה ביי פנדה",
+      "skip_reason": "New opening news - Amit passed by and describes the menu but didn't sit down for a full meal. Industry news about Panda group acquiring the brand.",
+      "timestamp": {
+        "seconds": 1213,
+        "display": "20:13",
+        "youtube_url": "https://www.youtube.com/watch?v=a6bfuuH-Zh0&t=1213s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "רמת אביב",
+        "address": "אבא אחימאיר 17, תל אביב-יפו, ישראל",
+        "region": "מרכז",
+        "latitude": 32.1252192,
+        "longitude": 34.8019009
+      },
+      "cuisine_type": "המבורגר",
+      "host_quotes": [
+        "שלושה פריטים ההמבורגר המיתולוגי של הסמטה"
+      ],
+      "mention_context": "חדשות פתיחה - פנדה רכשו את הסמתה ופתחו סניף בשוסטר רמת אביב",
+      "google_places": {
+        "place_id": "ChIJa9MXyZxJHRURrOfcDGlc2gY",
+        "google_url": "https://maps.google.com/?cid=",
+        "rating": 4.5,
+        "review_count": 74,
+        "phone": "058-437-5060",
+        "website": "https://www.instagram.com/hasimta",
+        "photo_url": "places/ChIJa9MXyZxJHRURrOfcDGlc2gY/photos/AU_ZVEHMwg-_AeHO6WY6VdI-CKULF7Y929ykiswAORoWldhrkyyOibg_L6NzSXGP4sN4blwve0E4Hrg7MlPMNMI-2cVio5f9VOjqwWJj-cv2xap6LnDTkBwDV0qL_R6Tn1mUoERzbn8zQ3jRW0ugZGrwssqopfFEOdOVPGqo__Q6Q0ed1u1EOi4ERdlwAS56SrvxlGUBSpBHwOtckm-r386HEhgrCOSxjxYaVQbwqlCUkObLV-XB5P8xKKYxtVJo-Cd-UbaFy9nNRLXU0fFLbDxQX979BWCe9FT3lejYjbC47Mpkbg",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "סיך",
+      "name_english": "Sikh",
+      "name_in_transcript": "סיך",
+      "skip_reason": "New popup announcement in Florentin - hosts haven't visited yet, only news mention",
+      "timestamp": {
+        "seconds": 1425,
+        "display": "23:45",
+        "youtube_url": "https://www.youtube.com/watch?v=a6bfuuH-Zh0&t=1425s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "פלורנטין",
+        "address": null,
+        "region": "מרכז"
+      },
+      "cuisine_type": "שיפודיה",
+      "host_quotes": [
+        "שיפודיה גלילית בפלורנטין"
+      ],
+      "mention_context": "חדשות פתיחה - פופאפ שיפודיה חדש בפלורנטין, חלק ממגמת השיפודים",
+      "google_places": {
+        "place_id": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "הסתקיה",
+      "name_english": "Hastakiya",
+      "name_in_transcript": "הסתקיה",
+      "skip_reason": "New concept announcement by Machane Yehuda group - replacing Tsemach with a shishpudiya. Industry news, hosts haven't visited.",
+      "timestamp": {
+        "seconds": 1411,
+        "display": "23:31",
+        "youtube_url": "https://www.youtube.com/watch?v=a6bfuuH-Zh0&t=1411s"
+      },
+      "location": {
+        "city": "ירושלים",
+        "neighborhood": "שוק מחנה יהודה",
+        "address": null,
+        "region": "ירושלים"
+      },
+      "cuisine_type": "שיפודיה",
+      "host_quotes": [],
+      "mention_context": "מחניהודה ממירים את צמח לשיפודיה חדשה בשם הסתקיה",
+      "google_places": {
+        "place_id": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "צמח",
+      "name_english": "Tsemach",
+      "name_in_transcript": "צמח",
+      "skip_reason": "Restaurant relocating - industry news about Machane Yehuda group moving the vegan restaurant to a new location",
+      "timestamp": {
+        "seconds": 1384,
+        "display": "23:04",
+        "youtube_url": "https://www.youtube.com/watch?v=a6bfuuH-Zh0&t=1384s"
+      },
+      "location": {
+        "city": "ירושלים",
+        "neighborhood": "שוק מחנה יהודה",
+        "address": null,
+        "region": "ירושלים"
+      },
+      "cuisine_type": "טבעוני",
+      "mention_context": "צמח המסעדה הצמחונית-טבעונית של מחניהודה עוברת ללוקיישן אחר",
+      "google_places": {
+        "place_id": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "ברבור",
+      "name_english": "Barbur",
+      "name_in_transcript": "ברבור",
+      "skip_reason": "Brunch opening news - Barbur opens Saturday brunch in Nachalat Binyamin, no review or tasting",
+      "timestamp": {
+        "seconds": 1033,
+        "display": "17:13",
+        "youtube_url": "https://www.youtube.com/watch?v=a6bfuuH-Zh0&t=1033s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "נחלת בנימין",
+        "address": null,
+        "region": "מרכז"
+      },
+      "cuisine_type": "בשרים",
+      "mention_context": "ברבור פותח ברנץ' שבת בנחלת בנימין סביב הפחמים",
+      "google_places": {
+        "place_id": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "פרדיסו",
+      "name_english": "Paradiso",
+      "name_in_transcript": "פרטיסו",
+      "skip_reason": "Brunch opening news - Paradiso opens Saturday brunch in Nachalat Binyamin, no review or tasting",
+      "timestamp": {
+        "seconds": 1033,
+        "display": "17:13",
+        "youtube_url": "https://www.youtube.com/watch?v=a6bfuuH-Zh0&t=1033s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "נחלת בנימין",
+        "address": null,
+        "region": "מרכז"
+      },
+      "cuisine_type": "איטלקי",
+      "mention_context": "פרדיסו פותח ברנץ' שבת איטלקי בנחלת בנימין עם דנלי ברנשלב",
+      "google_places": {
+        "place_id": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "אונה פורברבר",
+      "name_english": "Ona Forever Bar",
+      "name_in_transcript": "ona forever",
+      "skip_reason": "Closing announcement - hosts sad about the closure, no review",
+      "timestamp": {
+        "seconds": 1082,
+        "display": "18:02",
+        "youtube_url": "https://www.youtube.com/watch?v=a6bfuuH-Zh0&t=1082s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "נחלת בנימין",
+        "address": null,
+        "region": "מרכז"
+      },
+      "cuisine_type": "בר יין",
+      "mention_context": "אונה פורברבר נסגר. דיון על האם זה קשור להתפרסות של ויטר לרוב הא'.",
+      "google_places": {
+        "place_id": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "הסטריץ",
+      "name_english": "Hastritz",
+      "name_in_transcript": "הסטריץ",
+      "skip_reason": "Closing announcement - iconic Tel Aviv cafe closing, no review",
+      "timestamp": {
+        "seconds": 1149,
+        "display": "19:09",
+        "youtube_url": "https://www.youtube.com/watch?v=a6bfuuH-Zh0&t=1149s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "נחלת בנימין",
+        "address": null,
+        "region": "מרכז"
+      },
+      "cuisine_type": "קפה",
+      "mention_context": "בית הקפה המיתולוגי הסטריץ נסגר. פורצי דרך בסביבות עבודה ומחשבים אבל נשארו קצת מאחור.",
+      "google_places": {
+        "place_id": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "רוברטס בורגר",
+      "name_english": "Roberts Burger",
+      "name_in_transcript": "רוברטס בורגר",
+      "skip_reason": "Closing announcement - Ido Feiner's burger place in Herzliya closed, replaced by BurgersBeer",
+      "timestamp": {
+        "seconds": 1171,
+        "display": "19:31",
+        "youtube_url": "https://www.youtube.com/watch?v=a6bfuuH-Zh0&t=1171s"
+      },
+      "location": {
+        "city": "הרצליה",
+        "address": null,
+        "region": "שרון"
+      },
+      "cuisine_type": "המבורגר",
+      "mention_context": "רוברטס בורגר של אידו פיינר נסגר בהרצליה, במקום נפתח סניף של בורגרסבר",
+      "google_places": {
+        "place_id": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "וואטסנג",
+      "name_english": "Wat Sang",
+      "name_in_transcript": "וואטסנג",
+      "skip_reason": "Discussed only in context of Avi Afrati's restaurant review column - hosts didn't eat there in this episode",
+      "timestamp": {
+        "seconds": 2581,
+        "display": "43:01",
+        "youtube_url": "https://www.youtube.com/watch?v=a6bfuuH-Zh0&t=2581s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": null,
+        "address": "הרכבת 12, תל אביב-יפו, ישראל",
+        "region": "מרכז",
+        "latitude": 32.0634552,
+        "longitude": 34.7769812
+      },
+      "cuisine_type": "יפני",
+      "mention_context": "הוזכר בהקשר ביקורת אבי אפרטי - הלך לוואטסנג שנפתח לפני שנתיים, ארוחה ל4 אנשים 613 שח",
+      "google_places": {
+        "place_id": "ChIJ1yyDisNLHRURUttYiwLqWUI",
+        "rating": 4.7,
+        "review_count": 1182,
+        "phone": "077-980-0443",
+        "website": "https://www.watsangsushi.co.il/",
+        "photo_url": "places/ChIJ1yyDisNLHRURUttYiwLqWUI/photos/AU_ZVEFAlhBZUgH3ak-mw-Cpiqvb1IuOcaKZSX14HuQ73VTEI5nPDloQno7xRp8at-Utk83XY4UUMBCFfjpuf_LcIZC0oI6PJbzNtI96ULz0cKfPWQOpets5l26RlFs_Bqkj8HxZTBsEMU3JgTgaQNDfWtlzWgzb1jUixKkXDWUmjEXoBVJliyw6OcMG-XE4FtdYLRkghwY2NzG5wLbGDdxOjzwoEzfe6E0KgP6FXRoVkUoJO60g5vyBNFt5dSMdKWaEmpL6QR7boH8jDLf1ZrOSAcsNyYfTW3i9XfCb8F0l6cAhVQ",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "בנדיט",
+      "name_english": "Bandit",
+      "name_in_transcript": "בנדיט",
+      "skip_reason": "Discussed only in context of Sagi Cohen's reviews of Yossi Shitrit restaurants - hosts did not eat there in this episode, only quoted critic reviews",
+      "timestamp": {
+        "seconds": 2695,
+        "display": "44:55",
+        "youtube_url": "https://www.youtube.com/watch?v=a6bfuuH-Zh0&t=2695s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "address": null,
+        "region": "מרכז"
+      },
+      "cuisine_type": "שף",
+      "mention_context": "סגי כהן כתב ביקורת מעולה על בנדיט של יוסי שטרית. השעשועון של הפרק - מנחים מנחשים על איזה מקום כל ציטוט נכתב.",
+      "google_places": {
+        "place_id": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "לב הבגט",
+      "name_english": "Lev HaBaget",
+      "name_in_transcript": "לב הבגט",
+      "skip_reason": "Mentioned only as Kobi Rubin's review pick - hosts discuss his writing about a baguette with ktzitzot aruk in Or Yehuda but didn't eat there",
+      "timestamp": {
+        "seconds": 3000,
+        "display": "50:00",
+        "youtube_url": "https://www.youtube.com/watch?v=a6bfuuH-Zh0&t=3000s"
+      },
+      "location": {
+        "city": "אור יהודה",
+        "address": null,
+        "region": "מרכז"
+      },
+      "cuisine_type": "סנדוויצ'ים",
+      "mention_context": "קובי רובין כתב טור מפורט על בגט עם קציצות ארוק במקום באור יהודה. המנחים מתלהבים מהתיאור אבל לא אכלו שם.",
+      "google_places": {
+        "place_id": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "rejected",
+      "name_in_transcript": "קסם של סביך",
+      "reject_reason": "Not a restaurant - it's a Chanukah show/performance by Michal Haketana that Kobi Rubin attended",
+      "timestamp": {
+        "seconds": 3010,
+        "display": "50:10"
+      }
+    },
+    {
+      "verdict": "rejected",
+      "name_in_transcript": "rooms one",
+      "reject_reason": "Not a restaurant - coworking space where the podcast studio is located in Ramat Gan",
+      "timestamp": {
+        "seconds": 75,
+        "display": "01:15"
+      }
+    },
+    {
+      "verdict": "rejected",
+      "name_in_transcript": "בלמיז'ן",
+      "reject_reason": "Not a local restaurant - reference to Le Meurice rice pudding in Paris as historical context for the rice dessert trend",
+      "timestamp": {
+        "seconds": 623,
+        "display": "10:23"
+      }
+    }
+  ]
+}

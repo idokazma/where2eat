@@ -1,0 +1,604 @@
+{
+  "episode": {
+    "video_id": "ZK4yPvErXIc",
+    "video_url": "https://www.youtube.com/watch?v=ZK4yPvErXIc",
+    "title": "מדברים מהבטן פרק 145 - סיכום מחזור קולינרי",
+    "channel_name": "מדברים מהבטן - הפודיום",
+    "published_at": "2026-02-11",
+    "hosts": [
+      "עמית אהרונסון",
+      "יהונתן כהן",
+      "נטע סלונים"
+    ],
+    "guests": [
+      "שחף שבתאי"
+    ],
+    "language": "he",
+    "transcript_length": 34543,
+    "segment_count": 1053,
+    "episode_id": "d2b4162c-9562-41d5-a663-5dffcfbebeb1",
+    "summary": "פרק 145 של מדברים מהבטן. הפרק פותח בביסים של השבוע: נטע טעמה גיוזה תופס בשוק הכרמל, יונתן הזמין כנאפה מממתקי אל דמסקי בירושלים, ואמית מציג קריספי בראוני מבית קפה מלא. שחף שבתאי מתארח כשף החדש של ארקיע. יונתן מגלה שוארמה אסולין בנוה אביבים ומספר על בר סושי ויין חדש בירושלים בשם סוד. נטע חוזרת לגוש ודניאל ומרוצה מאוד. נדונה ביקורת של אבי הפרטי על לשוק ומתיחת הפנים של אונמי."
+  },
+  "extraction": {
+    "date": "2026-03-24",
+    "agent": "episode-processor",
+    "total_mentions": 16,
+    "add_to_page": 6,
+    "reference_only": 6,
+    "rejected": 4,
+    "already_in_db": 5,
+    "new_to_add": 1
+  },
+  "restaurants": [
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "גיוזה תופס",
+      "name_english": "Gyoza Tofes",
+      "name_in_transcript": "גיוזה תופס",
+      "google_name": null,
+      "timestamp": {
+        "seconds": 123,
+        "display": "02:03",
+        "youtube_url": "https://www.youtube.com/watch?v=ZK4yPvErXIc&t=123s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "שוק הכרמל",
+        "address": "רחוב יום טוב, שוק הכרמל, תל אביב",
+        "region": "מרכז",
+        "latitude": null,
+        "longitude": null
+      },
+      "cuisine_type": "אסייתי",
+      "price_range": "בינוני",
+      "status": "פתוח",
+      "host_opinion": "חיובית",
+      "host_quotes": [
+        "המילוי היה מאוד מאוד מפתיע לטובה",
+        "הריח שאני נסעתי איתו במשך איזה חצי שעה...היה פנטסטי",
+        "גם את אחרה הייתה נורא טעימה של עצמה"
+      ],
+      "host_comments": "נטע ביקרה במקום הגיוזות בשוק הכרמל. טעמה גיוזה אדובו עוף - עוף על העצמות מבושל בסיר אינטנסיבי עם סויה, חומץ, סוכר ושום. המילוי עסיסי ומעניין. העיסה דקה ויפה אך הקורקום בבצק פחות מוצלח. 6 יחידות ב-59 שקלים.",
+      "dishes_mentioned": [
+        "גיוזה אדובו עוף",
+        "גיוזה עם תחרה קריספית"
+      ],
+      "special_features": [
+        "מתמחים רק בגיוזות",
+        "שוק הכרמל"
+      ],
+      "mention_context": "ביס השבוע של נטע - ביקרה במקום לצהריים בטייק אווי",
+      "speaker": "נטע סלונים",
+      "google_places": {
+        "place_id": "ChIJLSwRBetNHRURFhnLIjITEO8",
+        "google_url": "https://maps.google.com/?cid=17226289680745175318&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+        "rating": null,
+        "review_count": null,
+        "price_level": null,
+        "phone": null,
+        "website": null,
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqEOdhhfjMHVnALwxnTAqj6xrBgLyXwMrXQenXhNrDQKDLGmCgiy7XN4NywBPQkz0bT-9lIKIRp4w4nJToSBbBHA3uIk1hW52J4=s4800-w800",
+        "instagram_url": null,
+        "verified": false,
+        "note": "Google Places match was wrong (matched Onigiro in Kfar Sava). Gyoza Tofes is a new small place in Carmel Market with minimal online presence."
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "ממתקי אל דמסקי",
+      "name_english": "Mamtakey Al Damaski",
+      "name_in_transcript": "ממתקי אל דמסקי",
+      "google_name": null,
+      "timestamp": {
+        "seconds": 463,
+        "display": "07:43",
+        "youtube_url": "https://www.youtube.com/watch?v=ZK4yPvErXIc&t=463s"
+      },
+      "location": {
+        "city": "ירושלים",
+        "neighborhood": "מזרח ירושלים",
+        "address": "רחוב סולטן סולימן, ירושלים",
+        "region": "ירושלים",
+        "latitude": null,
+        "longitude": null
+      },
+      "cuisine_type": "מתוקים ערביים",
+      "price_range": "זול",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "הכי טובים שיש ובמחירים מדהימים",
+        "פשוט משנה חיים לירושלמים מחבר בין מזרח חומערב",
+        "מגיע חם וטרי ואדיר"
+      ],
+      "host_comments": "יונתן הזמין דרך אפליקציית הט מגש כנאפה נבלוסי ענק ב-60 שקלים, חלוות אלג'בן ב-20 שקלים, בקלאווה ב-50-60 שקלים. ממתקייה עם שורשים דמסקיים/סוריים ברחוב סולטן סולימן. נגישות גבוהה דרך אפליקציות משלוחים.",
+      "dishes_mentioned": [
+        "כנאפה נבלוסי",
+        "כנאפה סולט",
+        "חלוות אלג'בן",
+        "בקלאווה"
+      ],
+      "special_features": [
+        "משלוחים דרך הט",
+        "מחירים זולים",
+        "מתוקים ערביים דמסקיים"
+      ],
+      "mention_context": "ביס השבוע של יונתן - הזמין מתוקים למשפחה ביום שישי",
+      "speaker": "יהונתן כהן",
+      "google_places": {
+        "place_id": "ChIJr4MNql7XAhURvFQ7bgcL9WE",
+        "google_url": "https://maps.google.com/?cid=7058560117515179196&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+        "rating": null,
+        "review_count": null,
+        "price_level": null,
+        "phone": null,
+        "website": null,
+        "photo_url": "https://lh3.googleusercontent.com/place-photos/AL8-SNHkRczcDv9xE468q3bfEUPpkEV8vztclQbr2io-wjCh_VzDHqyOIRLDqhIF9By9bFudTc-kN6NK0aFYvd5XEmUsc1ZyWiR5Pu4CJEPZO47l7pOdSsIALqsLv3i3A-EOhz4hibH79wi9iUOTizY=s4800-w800",
+        "instagram_url": null,
+        "verified": false,
+        "note": "Google Places match was wrong (matched Ami Haim Candies on Agripas St). The actual place is on Sultan Suleiman St in East Jerusalem."
+      },
+      "production_db": {
+        "exists": true,
+        "id": "24078854-deac-4d7d-9138-190711b475b3"
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "מלא",
+      "name_english": "Mala",
+      "name_in_transcript": "מלא",
+      "google_name": null,
+      "timestamp": {
+        "seconds": 633,
+        "display": "10:33",
+        "youtube_url": "https://www.youtube.com/watch?v=ZK4yPvErXIc&t=633s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": null,
+        "address": null,
+        "region": "מרכז",
+        "latitude": null,
+        "longitude": null
+      },
+      "cuisine_type": "קפה",
+      "price_range": "בינוני",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "בית הקפה המשובח והחביב עליי עד מאוד מלא",
+        "ממכר בצורה שקשה להסביר",
+        "זה גאוני"
+      ],
+      "host_comments": "אמית מציג קריספי בראוני מבית קפה מלא - חידוש בקולקציית המתוקים שלהם. קרקר של בראוני דק עם שבבי שוקולד וטעם עמוק של קקאו. טבעוני, 32 שקלים לקופסה. מושלם על יוגורט יווני, פאנקייק או ליד קפה.",
+      "dishes_mentioned": [
+        "קריספי בראוני"
+      ],
+      "special_features": [
+        "טבעוני",
+        "מאפייה ובית קפה"
+      ],
+      "mention_context": "ביס השבוע של אמית - קריספי בראוני חדש שהם יצרו",
+      "speaker": "עמית אהרונסון",
+      "google_places": {
+        "place_id": "ChIJGe5tJipNHRURm3Rl50-6ZN0",
+        "google_url": "https://maps.google.com/?cid=15953080632400508059&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+        "rating": null,
+        "review_count": null,
+        "price_level": null,
+        "phone": null,
+        "website": null,
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqEzgR6gDEXQ3gPoWyFJ8zeIoyld_0CmzE2CgI-_7lFHHdAmOXhJV6LUc32_-S6-ueM-QaRwcEun01kZerB_jX8U-edlB7dU4m0=s4800-w800",
+        "instagram_url": null,
+        "verified": false,
+        "note": "Google Places match was wrong (matched עצמל'ה in Jerusalem). Mala is a cafe in Tel Aviv."
+      },
+      "production_db": {
+        "exists": true,
+        "id": "44706274-b7e0-4553-bbe9-099e699c180f"
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "שוארמה אסולין",
+      "name_english": "Shawarma Assoulin",
+      "name_in_transcript": "שוארמה סולין",
+      "google_name": "שווארמה אסולין",
+      "timestamp": {
+        "seconds": 1459,
+        "display": "24:19",
+        "youtube_url": "https://www.youtube.com/watch?v=ZK4yPvErXIc&t=1459s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "נוה אביבים",
+        "address": "רחוב לוויטן 1, תל אביב",
+        "region": "מרכז",
+        "latitude": 32.1190434,
+        "longitude": 34.7958491
+      },
+      "cuisine_type": "שוארמה",
+      "price_range": "בינוני",
+      "status": "חדש",
+      "host_opinion": "חיובית",
+      "host_quotes": [
+        "השוארמה מהעגל שלהם הייתה מעולה ממש כאילו בלי קשר",
+        "אני ממליץ בחום באופן מפתיע",
+        "יופי של פנינה שם"
+      ],
+      "host_comments": "יונתן גילה מקום חדש לגמרי (פתוח 10 ימים) במרכז מסחרי בנוה אביבים. בעל לא מתחום האוכל. שני עמודי שוארמה (עגל והודו), סלטייה, גריל, תוספות. מחירים נורמליים: פיטה 50, לאפה 60, צלחת 65 שקלים. כמעט ללא נוכחות ברשת - 4 ביקורות בגוגל.",
+      "dishes_mentioned": [
+        "שוארמה עגל",
+        "שוארמה הודו",
+        "שיפוד בצלחת",
+        "מקרונים אדומים",
+        "אורז",
+        "מג'דרה"
+      ],
+      "special_features": [
+        "שני עמודי שוארמה",
+        "מקום חדש",
+        "מרכז מסחרי נוה אביבים"
+      ],
+      "mention_context": "תגלית חדשה של יונתן - שוארמייה חדשה במרכז מסחרי שקט",
+      "speaker": "יהונתן כהן",
+      "google_places": {
+        "place_id": "ChIJh_DgNQBJHRURtq4evVns_r0",
+        "google_url": "https://maps.google.com/?cid=13690639787422035638",
+        "rating": 5.0,
+        "review_count": 11,
+        "price_level": null,
+        "phone": null,
+        "website": null,
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqE-RQU8u10mPU-jtPeQp_XB48jT_nlIgiAGLX_kAc4Q3LUGoIaCUWLPqvSmmCM5EX0WqJoLkF54TsL6SFfGbBDghnyH_JNCy1E=s4800-w800",
+        "instagram_url": "https://www.instagram.com/asulin.falafel/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": true,
+        "id": "6eaa9ab2-c3bb-4f6c-a378-cf490855859a"
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "סוד",
+      "name_english": "Sod",
+      "name_in_transcript": "סוד",
+      "google_name": null,
+      "timestamp": {
+        "seconds": 1775,
+        "display": "29:35",
+        "youtube_url": "https://www.youtube.com/watch?v=ZK4yPvErXIc&t=1775s"
+      },
+      "location": {
+        "city": "ירושלים",
+        "neighborhood": "מרכז העיר",
+        "address": "סמטת דרום (בין הלל לשמאי), ירושלים",
+        "region": "ירושלים",
+        "latitude": null,
+        "longitude": null
+      },
+      "cuisine_type": "סושי ויין",
+      "price_range": "בינוני",
+      "status": "חדש",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "מקום נועז קצת אוונגרדי ייחודי מאוד נאמן לעצמו",
+        "האורז סושי שלהם פשוט מעולה והדגים צריעים",
+        "באמת מקום מרגש אין מילה אחרת"
+      ],
+      "host_comments": "בר סושי ויין חדש בסמטת דרום בירושלים, צמוד לבנגר. הבעלים של הבנגר (ניר משה ותומר קרמני) ושותף שלישי יובל. מקום מינימליסטי - סלט חסה אחד, שש מנות סושי עם טוויסט. רול חציל ופלפל עם דג המאצ'י, ספייסי טונה בהנדר, צ'ירשי טונה. רולים ב-65 שקלים, צ'ירשי 60, סלט 30. לא כשר אך ללא מאכלות אסורים. יינות טבעיים. פתוח גם בסופי שבוע.",
+      "dishes_mentioned": [
+        "רול חציל ופלפל עם דג המאצ'י",
+        "ספייסי טונה בהנדר",
+        "צ'ירשי טונה",
+        "סלט חסה ברוטב שומשום",
+        "מקי עם פטריות וטונה"
+      ],
+      "special_features": [
+        "בר סושי ויין",
+        "יינות טבעיים",
+        "סמטת דרום ירושלים",
+        "משלוחים בוולט"
+      ],
+      "mention_context": "יונתן ביקר במקום החדש שנפתח ליד הבנגר בירושלים",
+      "speaker": "יהונתן כהן",
+      "google_places": {
+        "place_id": "ChIJ8WYTYX5MHRURabUyh6PtKl4",
+        "google_url": "https://maps.google.com/?cid=6785497075190773097&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+        "rating": null,
+        "review_count": null,
+        "price_level": null,
+        "phone": null,
+        "website": null,
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqGW81-podcqljjKTzP7IH2MTNHJVUCpPlpnWB2rCBktsSgkSHQuclkNczc6KbDQTxaqe_87Zie7bASDWWuRTI2yrmN7cl-HVtQ=s4800-w800",
+        "instagram_url": null,
+        "verified": false,
+        "note": "Google Places match was wrong (matched Seeach Sod mental health org). The actual restaurant is a new sushi & wine bar in Simtat Drom, Jerusalem."
+      },
+      "production_db": {
+        "exists": true,
+        "id": "5123a227-a3fa-40c7-9558-c25cb58d114d"
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "גוש ודניאל",
+      "name_english": "Gouje and Daniel",
+      "name_in_transcript": "גוש ודניאל",
+      "google_name": "Gouje and Daniel",
+      "timestamp": {
+        "seconds": 2075,
+        "display": "34:35",
+        "youtube_url": "https://www.youtube.com/watch?v=ZK4yPvErXIc&t=2075s"
+      },
+      "location": {
+        "city": "בני ציון",
+        "neighborhood": null,
+        "address": "אנשי בראשית 39, בני ציון",
+        "region": "שרון",
+        "latitude": 32.2228299,
+        "longitude": 34.86672
+      },
+      "cuisine_type": "שף",
+      "price_range": "יקר",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "המקום מהמם המסעדה מהממת נוף היסטרי פנינה ירוקה",
+        "הברד פודינג...מטמטמת אי אפשר להפסיק לאכול את זה",
+        "אכלתי כל כך הרבה מנות והיה לנו טעים באופן מוחלט"
+      ],
+      "host_comments": "נטע חזרה לגוש ודניאל אחרי כמה שנים. מסעדה גדולה, מלאה, נעימה. השף סניר נקסלה. מנות: צ'יפס חציל טיל קריספי (פחות מ-50 שקלים), פירי וכבדי עוף עם צלים, המבורגר נהדר, פסטה עם פילה דג ואפרן, פסטה חונקי קמרים עם קרם דלעת, ברד פודינג, מילפי גזר. מסעדה ותיקה שממשיכה לתפקד ברמה גבוהה.",
+      "dishes_mentioned": [
+        "צ'יפס חציל טיל קריספי",
+        "פירי וכבדי עוף",
+        "המבורגר",
+        "פסטה עם פילה דג ואפרן",
+        "פסטה חונקי קמרים",
+        "ברד פודינג",
+        "מילפי גזר"
+      ],
+      "special_features": [
+        "מסעדה ותיקה",
+        "נוף",
+        "פתוח שישה ימים"
+      ],
+      "mention_context": "נטע חזרה לביקור אחרי כמה שנים ומתרגשת מחדש",
+      "speaker": "נטע סלונים",
+      "google_places": {
+        "place_id": "ChIJtY5Bg5g4HRURTj8wTOvTNUA",
+        "google_url": "https://maps.google.com/?cid=4626837199742058318",
+        "rating": 4.6,
+        "review_count": 5287,
+        "price_level": 3,
+        "phone": "09-771-4122",
+        "website": "http://goujeanddaniel.co.il/",
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqEt2weYQOfASqZ9zh9SJ79ersFOCCpIc7YZc4SRksFdJxJr2DIFM9MZ2dZkzayHElDZpupVWAHOv3ob6OiIo0xrwgHmqWcz7yw=s1600-w800",
+        "instagram_url": "https://www.instagram.com/goujeanddanielle/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": true,
+        "id": "316731f8-e646-4f4c-9e1b-f356931300fa"
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "בנגר",
+      "name_english": "Banger",
+      "name_in_transcript": "בנגר",
+      "skip_reason": "הוזכר כהקשר לפתיחת סוד - הבעלים של בנגר פתחו את סוד. לא נטעם בפרק הזה.",
+      "timestamp": {
+        "seconds": 1760,
+        "display": "29:20",
+        "youtube_url": "https://www.youtube.com/watch?v=ZK4yPvErXIc&t=1760s"
+      },
+      "location": {
+        "city": "ירושלים",
+        "neighborhood": "סמטת דרום"
+      },
+      "host_quotes": [
+        "ההמבורגר המעולה של בנגר"
+      ],
+      "mention_context": "הוזכר כרקע - הבעלים ניר משה ותומר קרמני פתחו את סוד צמוד למקום שלהם",
+      "google_places": {
+        "place_id": "ChIJhbzUUQApAxURkq5iA7x-G5M",
+        "verified": false,
+        "google_url": "https://maps.google.com/?cid=10600205493922344594&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+        "photo_url": "https://imageproxy.wolt.com/assets/68ac575c96fbe9c58f9797ca",
+        "instagram_url": "https://www.instagram.com/bungerburgerr/"
+      },
+      "production_db": {
+        "exists": true,
+        "id": "b2454f6b-4d44-4371-9c21-2ca3d94164bd"
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "אונמי",
+      "name_english": "Onami",
+      "name_in_transcript": "אונמי",
+      "skip_reason": "חדשות תעשייה - מתיחת פנים ושיתוף פעולה עם שפרי סופר. לא נטעם.",
+      "timestamp": {
+        "seconds": 777,
+        "display": "12:57",
+        "youtube_url": "https://www.youtube.com/watch?v=ZK4yPvErXIc&t=777s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "address": "רחוב הארבעה 18, תל אביב"
+      },
+      "host_quotes": [
+        "חלוצות ג'נר הסושי בתל אביב"
+      ],
+      "mention_context": "חדשות על מתיחת פנים משמעותית ושיתוף פעולה עם השף שפרי סופר",
+      "google_places": {
+        "place_id": "ChIJCTczqYJLHRURVE2aNf-Esj8",
+        "google_url": "https://maps.google.com/?cid=4589877201894788436",
+        "rating": 4.2,
+        "review_count": 2981,
+        "verified": true,
+        "photo_url": "https://lh3.googleusercontent.com/place-photos/AL8-SNFShbDr0s_pup2zz7axSrEFmvQGUagiDnNkuBTD0nIoCPMsWt_ikwPAo7VOi517-c4VuD99rMZYktWwHjTbte-Oqf4UnavPNb-hdxWiBK9QzmWAojWySZ-tp3of3_x2fs31TrQ5LvvGp0NtoA=s4800-w800"
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "לשוק",
+      "name_english": "Lashuk",
+      "name_in_transcript": "לשוק",
+      "skip_reason": "נדון בהקשר ביקורת של אבי הפרטי. המנחים עצמם לא אכלו שם בפרק הזה ולא המליצו.",
+      "timestamp": {
+        "seconds": 2500,
+        "display": "41:40",
+        "youtube_url": "https://www.youtube.com/watch?v=ZK4yPvErXIc&t=2500s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "address": "דיזנגוף, תל אביב"
+      },
+      "host_quotes": [
+        "מוסד שכבר מחזיק הרבה מאוד זמן"
+      ],
+      "mention_context": "ביקורת של אבי הפרטי - לא נהנה, אמר שהאוכל לא מספיק טוב. המנחים דנים ברציונל מאחורי הביקורת.",
+      "google_places": {
+        "place_id": null,
+        "verified": false,
+        "note": "Google matched Hashuk Street, not the restaurant"
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "שמעוני",
+      "name_english": "Shim'oni",
+      "name_in_transcript": "שמעוני",
+      "skip_reason": "אזכור חולף - רשת שוארמה שפועלת באזור נוה אביבים, הוזכרה בהקשר של שוארמה אסולין.",
+      "timestamp": {
+        "seconds": 1716,
+        "display": "28:36",
+        "youtube_url": "https://www.youtube.com/watch?v=ZK4yPvErXIc&t=1716s"
+      },
+      "location": {
+        "city": "תל אביב"
+      },
+      "host_quotes": [
+        "שוארמה שמעוני שהיא מצוינת אבל כל זה רשתות"
+      ],
+      "mention_context": "הוזכרה כרשת שוארמה שפועלת באזור, בהשוואה לגילוי החדש של שוארמה אסולין",
+      "google_places": {
+        "place_id": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "לייצ'ה",
+      "name_english": "Laichi",
+      "name_in_transcript": "לייצ'ה",
+      "skip_reason": "מסעדה בפריז שסגי כהן כתב עליה ביקורת. לא בישראל.",
+      "timestamp": {
+        "seconds": 2373,
+        "display": "39:33",
+        "youtube_url": "https://www.youtube.com/watch?v=ZK4yPvErXIc&t=2373s"
+      },
+      "location": {
+        "city": "פריז",
+        "address": "פריז, צרפת"
+      },
+      "host_quotes": [],
+      "mention_context": "ביקורת של סגי כהן על מסעדה סינית מעודנת בפריז - גלגול של ייצ'ה. קיבלה מעט תגובות (29 טוקבקים).",
+      "google_places": {
+        "place_id": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "ארקיע (שחף שבתאי)",
+      "name_english": "Arkia (Shchaf Shabtai)",
+      "name_in_transcript": "ארקיע",
+      "skip_reason": "חדשות תעשייה - שחף שבתאי מונה לשף הראשון של חברת ארקיע. לא מסעדה.",
+      "timestamp": {
+        "seconds": 854,
+        "display": "14:14",
+        "youtube_url": "https://www.youtube.com/watch?v=ZK4yPvErXIc&t=854s"
+      },
+      "location": {},
+      "host_quotes": [
+        "שף חדש אולי יש בעצם לראשונה שף ראשון לחברת ארקיע"
+      ],
+      "mention_context": "שחף שבתאי מתארח בפרק ומספר על מינויו כשף ראשי לארקיע - יכין אוכל לטיסות ארוכות",
+      "google_places": {
+        "place_id": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "rejected",
+      "name_in_transcript": "בוריץ",
+      "reject_reason": "אזכור חולף - 'הסבורגר של בוריץ' בהקשר שוק הכרמל, ללא דיון או המלצה",
+      "timestamp": {
+        "seconds": 351,
+        "display": "05:51"
+      }
+    },
+    {
+      "verdict": "rejected",
+      "name_in_transcript": "גברת קיהו",
+      "reject_reason": "אזכור חולף - 'הכל נגמר בסוף בגברת קיהו', ללא דיון",
+      "timestamp": {
+        "seconds": 340,
+        "display": "05:40"
+      }
+    },
+    {
+      "verdict": "rejected",
+      "name_in_transcript": "ישקה",
+      "reject_reason": "אזכור חולף - 'ישקה פתחו שם לא מזמן' ברחוב תגור, ללא דיון",
+      "timestamp": {
+        "seconds": 1501,
+        "display": "25:01"
+      }
+    },
+    {
+      "verdict": "rejected",
+      "name_in_transcript": "ידע בשרים",
+      "reject_reason": "אזכור חולף - שם חנות בשרים ברחוב תגור, ללא דיון",
+      "timestamp": {
+        "seconds": 1493,
+        "display": "24:53"
+      }
+    }
+  ]
+}

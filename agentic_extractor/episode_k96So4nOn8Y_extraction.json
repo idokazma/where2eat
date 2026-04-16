@@ -1,0 +1,801 @@
+{
+  "episode": {
+    "video_id": "k96So4nOn8Y",
+    "video_url": "https://www.youtube.com/watch?v=k96So4nOn8Y",
+    "title": "עכבר העיר ועובד בכפר | מדברים מהבטן, פרק 129",
+    "channel_name": "מדברים מהבטן - הפודיום",
+    "published_at": "2025-10-22",
+    "hosts": [
+      "עמית אהרונסון",
+      "יהונתן כהן",
+      "נתה סלונים"
+    ],
+    "guests": [
+      "הדי אנגלנדר"
+    ],
+    "language": "he",
+    "transcript_length": 48992,
+    "segment_count": 1537,
+    "episode_id": null,
+    "summary": "פרק 129 של מדברים מהבטן. יהונתן ממליץ על לב הבגט בראשון לציון עם חידוש של שלושת רבעי בגט. עמית מגלה מחדש את מתחת לעץ בנאות אפקה ומתרשם מאוד מהסלטים שלהם. נתה מספרת על חוויה מעורבת בקפה שילה - אוכל טוב אבל בעיות שירות וצפיפות. בחדשות הגדולות: עובד בכפר פותח סניף בתל אביב (אדר יוסף), לה טיגרה מתרחבת לבאזל, הכוסם סוגר בסרונה, וסזנקה - מסעדה תשיעית של קבוצת כיסו - נפתחת באשדוד עם ראיון עם המנכ\"לית הדי אנגלנדר. עמית ונתה מספרים על ביקור באסה - המסעדה היפנית החדשה של גמזו, בודניק וחנגל. יהונתן מבקר בפונדק מוצה - מסעדה חדשה של משפחת צדקיהו בפרוזדור ירושלים. נתה ממליצה על סרה בייקרי בכפר רמה. סיפורי המבקרים: סגי כהן באמיה הרחובותית, אבי אפרטי בביסטרו אופנהיימר, וקובי רובין במטרו רק רגע."
+  },
+  "extraction": {
+    "date": "2026-04-03",
+    "agent": "episode-processor",
+    "total_mentions": 19,
+    "add_to_page": 7,
+    "reference_only": 9,
+    "rejected": 3,
+    "already_in_db": 0,
+    "new_to_add": 7
+  },
+  "restaurants": [
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "לב הבגט",
+      "name_english": "Lev HaBaget",
+      "name_in_transcript": "לב הבגט",
+      "google_name": "לב הבגט ראשון לציון",
+      "timestamp": {
+        "seconds": 282,
+        "display": "04:42",
+        "youtube_url": "https://www.youtube.com/watch?v=k96So4nOn8Y&t=282s"
+      },
+      "location": {
+        "city": "ראשון לציון",
+        "neighborhood": "מרכז העיר",
+        "address": "רוטשילד 28, ראשון לציון, ישראל",
+        "region": "מרכז",
+        "latitude": 31.9641812,
+        "longitude": 34.8040878
+      },
+      "cuisine_type": "בגטים",
+      "price_range": "זול",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "מקום אין פשוט מזה הכי רגיל כמעט מרוב שהוא פשוט",
+        "שלוש רב בגט מהאגדות",
+        "שלושת רבעי בגט סוגר בול את הפינה"
+      ],
+      "host_comments": "יהונתן קיבל המלצה מאיתי שכטר על לב הבגט בראשון לציון. מקום ישן ופשוט ברחוב רוטשילד - נקניקיות, חביתות, שניצלים, סביצ'ה ותוספות רגילות. החידוש: שלושת רבעי בגט - פיצוח מבריק לגרגרנים שחצי בגט לא מספיק להם אבל שלם זה יותר מדי. 50 שקל עם שניצלים. חם, נעים ופשוט.",
+      "dishes_mentioned": [
+        "שלושת רבעי בגט עם שניצלים",
+        "נקניקיות",
+        "חביתות",
+        "סביצ'ה"
+      ],
+      "special_features": [
+        "שלושת רבעי בגט - חידוש ייחודי",
+        "מקום ותיק ופשוט",
+        "מחירים נמוכים"
+      ],
+      "mention_context": "ביס השבוע של יהונתן - המלצה מאיתי שכטר על מקום פשוט עם חידוש של שלושת רבעי בגט",
+      "speaker": "יהונתן כהן",
+      "google_places": {
+        "place_id": "ChIJie4cgji0AhURmaOeVyaXKQ4",
+        "google_url": "https://maps.google.com/?cid=1020512981510693785",
+        "rating": 4.0,
+        "review_count": 45,
+        "price_level": null,
+        "phone": "03-969-1376",
+        "website": "https://levhabaget.co.il/",
+        "photo_url": "places/ChIJie4cgji0AhURmaOeVyaXKQ4/photos/AU_ZVEHBnSm4T8Yjyzr_IBWNZGwVzqeaFziYYBD60X2t_X5quXoqTKYC3yDqjwywxFHAPkl0k6vFN0pzWc7OL3VVHSBdlrHQB67ugtUSEf8oLvGkHJX68_ggUAUsP8aPjnftdArP44cMdw3HarlBOdupEUJjlQb0yy3S3yeMU32_F8Nm8l_CcePdrFU_xaERxu3IIoBfd9qQdcwJdba8393nfuBYyqwiRXf0W9WsR937CVih8QKcDWNIU4nPeUOLdSP7CnwUbrA_INXUof-sgHOH9-WXQ4G_xZH0EW4kVB1jyE4BtuOfkpsBzII2yppKwu6mWwoar0fCRscKbqIOStfmIC2A2tEvFxR7XLltla5zu651tRie7hS5a9NshiiKuMa8gjKx131_I5WYqLctRXcSX8JVlAoIMRLenaFEr1hJ4-RFCsM8",
+        "instagram_url": null,
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "מתחת לעץ",
+      "name_english": "Under The Tree",
+      "name_in_transcript": "מתחת לעץ",
+      "google_name": "מתחת לעץ נאות אפקה",
+      "timestamp": {
+        "seconds": 443,
+        "display": "07:23",
+        "youtube_url": "https://www.youtube.com/watch?v=k96So4nOn8Y&t=443s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "נאות אפקה",
+        "address": "נתן אלתרמן 13, תל אביב-יפו, ישראל",
+        "region": "מרכז",
+        "latitude": 32.1199221,
+        "longitude": 34.820502499999996
+      },
+      "cuisine_type": "סלטים ואוכל בריא",
+      "price_range": "בינוני",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "וואלה אין לי אף תלונה על הביצוע שלהם",
+        "הכל הרגיש טרי מגוון מוקפד אסתטי",
+        "מקום שמוציא אותי מבסוט מסלט"
+      ],
+      "host_comments": "עמית הזמין ממתחת לעץ בסניף נאות אפקה אחרי המלצה קודמת של נתה. קליינט קשה לסלטים שמעדיף להכין לבד, אבל התרשם מאוד. הזמין סלט שוארמה עם צ'טני ותחינה, סלט ניסואז טוניסאי עם פריקה ועדשים, בטטה אפויה, לבבות ירק אפויות עם צזיקי. הכל טרי, מגוון, מוקפד ואסתטי במחירים תל אביביים ממוצעים עם יופי של תמורה.",
+      "dishes_mentioned": [
+        "סלט שוארמה עם צ'טני ותחינה",
+        "סלט ניסואז טוניסאי",
+        "בטטה אפויה",
+        "לבבות ירק אפויות עם צזיקי",
+        "סלט אבוקדו",
+        "רבע קרוב צלוי"
+      ],
+      "special_features": [
+        "סלטים ואוכל בריא",
+        "עמדת הזמנה בשירות עצמי",
+        "סניפים גם בבן יהודה ולבונטין",
+        "משלוחים"
+      ],
+      "mention_context": "ביס השבוע של עמית - גילה מחדש את מתחת לעץ בנאות אפקה, מופתע לטובה מאיכות הסלטים",
+      "speaker": "עמית אהרונסון",
+      "google_places": {
+        "place_id": "ChIJXay7VQBJHRUR74ADt_FQcxo",
+        "google_url": "https://maps.google.com/?cid=1905956066395652335",
+        "rating": 4.7,
+        "review_count": 243,
+        "price_level": null,
+        "phone": "03-635-9033",
+        "website": "https://wolt.com/he/isr/tel-aviv/restaurant/under-the-tree-afeka",
+        "photo_url": "places/ChIJXay7VQBJHRUR74ADt_FQcxo/photos/AU_ZVEFoD67d76v-d38Xy8-kIhuS4h6DwJqeDRtFSgOaSZLRT1PjI478mTC8hw7nytyK9N1ax6QwvOtuaVOmwpwwpNe31GO5nQo0m7WSsZddiWNErFIpkl0k3Rn2hF1mJf32duDiGvx4HNDxqil1TAJfaVaFi6Nh4ma_n_8179GFruA4HmZ02oXG4hMBhqZuBb5tpPf59ED65-104iMq_A9bAi9CBJfuQ_MKeoiqBpSBSh4eQJ4oFANCK7IdZ2EQ_00-8w1LINhYEfOHlNNp3iaDgYUlmo6b0p1TU5_8_yA6bNnMrg",
+        "instagram_url": "https://www.instagram.com/underthetreetlv/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "קפה שילה",
+      "name_english": "Cafe Shila",
+      "name_in_transcript": "קפה שילה",
+      "google_name": "שילה",
+      "timestamp": {
+        "seconds": 866,
+        "display": "14:26",
+        "youtube_url": "https://www.youtube.com/watch?v=k96So4nOn8Y&t=866s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "מונטיפיורי",
+        "address": "מונטיפיורי 9, תל אביב-יפו, ישראל",
+        "region": "מרכז",
+        "latitude": 32.064816199999996,
+        "longitude": 34.7701584
+      },
+      "cuisine_type": "שף",
+      "price_range": "בינוני",
+      "status": "פתוח",
+      "host_opinion": "מעורבת",
+      "host_quotes": [
+        "הייתי בקפה שילה וואלה התבעסתי",
+        "יש מנות שיש להן פיור מהמם למשל טטר בורגר",
+        "פיסטוק נפלאה",
+        "צריך לעשות יום ציפיות שבאים לקפה שילה"
+      ],
+      "host_comments": "נתה ביקרה בקפה שילה עם רביעייה. חוויה מעורבת - השירות לקה בחסר, השולחנות צפופים מדי לרביעייה, הסכום זרוק על השולחן. מנגד, יש מנות מצוינות כמו טטר בורגר (50 שקל), פיסטוק נפלאה. אבל מנת ארטישוק ופטריות ב-30 שקל הרגישו כמו מנה של 15. פיצטה שהגיעה כפוקצ'ה קרה במקום חמה. בשורת מחירים טובה אבל צריך לעמוד בכל הפרמטרים. מקום לזוג או שלישיה, לא לרביעייה.",
+      "dishes_mentioned": [
+        "טטר בורגר בבריוש",
+        "פיסטוק",
+        "ארטישוק",
+        "פטריות",
+        "פיצטה"
+      ],
+      "special_features": [
+        "בשורת מחירים",
+        "ויטרינה מהממת",
+        "גם בוקר",
+        "מאפים וקרואסונים"
+      ],
+      "mention_context": "ביס השבוע של נתה - חוויה מעורבת בקפה שילה, אוכל טוב אבל בעיות שירות וצפיפות",
+      "speaker": "נתה סלונים",
+      "google_places": {
+        "place_id": "ChIJ-0LvBXZMHRURYXaYjlzxXnw",
+        "google_url": "https://maps.google.com/?cid=8961865688345507425",
+        "rating": 4.3,
+        "review_count": 4174,
+        "price_level": null,
+        "phone": "03-522-1224",
+        "website": "https://www.shila-rest.co.il/",
+        "photo_url": "places/ChIJ-0LvBXZMHRURYXaYjlzxXnw/photos/AU_ZVEGOkEOs4AMt8dRPD1fyQ-sEI4BO2Rsb8N8Ce478dygpz2AK83dL33eZgzko9sHXXAroTErnIlsTHnTJgUyVUr-r2h-NsFueG30cRd3jRK8CylnAjR-ltYEJFp6coB9eTAhNSt0jKj1FzSKCIN4WTx3e3a22d5PzWSle106E-2Gr1ryzFapvqE4sjaWbBy7lDKLp9dRrYlYpG_Mw1Eh1YyIJkPNDa_A_W3W3uYkVg9z5vBgFqrbVCczrXscMKW3Z_2bARarkBm7jNFmLlcO-GxbYnoG_8Tq-SnPRwlzwkNbdcA8kXL0g32GjkcFY3FxWHCJY7IvqHVCysQHE2T5Gw_G9jMca7tIJLni4TuIfkoI31m_8K9mduMBRI-05_LsiQXExuCwU2CRq3OBHQi35kZgdiYYTW1JBx3ajUuHwkzmEkmBh",
+        "instagram_url": "https://www.instagram.com/shila.cafe/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "אסה",
+      "name_english": "ASA Izakaya",
+      "name_in_transcript": "אסה",
+      "google_name": "ASA Izakaya",
+      "timestamp": {
+        "seconds": 2392,
+        "display": "39:52",
+        "youtube_url": "https://www.youtube.com/watch?v=k96So4nOn8Y&t=2392s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "מרכז העיר",
+        "address": "אחד העם 54, תל אביב-יפו, 6520216, ישראל",
+        "region": "מרכז",
+        "latitude": 32.0628,
+        "longitude": 34.7718
+      },
+      "cuisine_type": "יפני",
+      "price_range": "יקר",
+      "status": "חדש",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "סך החוויה הכללית הוא משהו שאנחנו לא מכירים עדיין לדעתי כאן בישראל",
+        "אתה לא רוצה לקום",
+        "מתי שוב"
+      ],
+      "host_comments": "עמית ונתה ביקרו באסה - המסעדה היפנית החדשה של גאי גמזו, מוש בודניק ואיציק חנגל (הקבוצה של צ'קולי והלנה). חוויה יפנית מלאה - ברמן שחוצב קרח ביד, גריל חול מטורף באמצע המסעדה. תפריט גדול, מחירים מפתיעים. מנות מומלצות: טנטן אודון (איטריות בתבשיל בשר חריף עם ביצת אונסן), קריפון בקר (בצק מטוגן עם קרי בקר טבילה בציר זנב שור), ניגירי מעולה. קוקטייל מאצ'ה קולדה - מסוכן בטעימותו. מקום שלא רוצים לקום ממנו.",
+      "dishes_mentioned": [
+        "טנטן אודון",
+        "קריפון בקר",
+        "ניגירי",
+        "טמפורה קלמרי",
+        "גיוזה",
+        "שיפודונים",
+        "מאצ'ה קולדה"
+      ],
+      "special_features": [
+        "איזקאיה יפנית",
+        "גריל חול",
+        "חציבת קרח ביד",
+        "מטבח פתוח",
+        "של קבוצת גמזו-בודניק-חנגל"
+      ],
+      "mention_context": "עמית ונתה ביקרו ביום אחרי יום באותו כיסא - חוויה יפנית מלאה ויוצאת דופן",
+      "speaker": "hosts",
+      "google_places": {
+        "place_id": "ChIJJVr-czVLHRUR8Fkls6uMdV4",
+        "google_url": "https://maps.google.com/?cid=6769685855547259120",
+        "rating": 4.1,
+        "review_count": 154,
+        "price_level": null,
+        "phone": "03-375-2977",
+        "website": null,
+        "photo_url": "places/ChIJJVr-czVLHRUR8Fkls6uMdV4/photos/AU_ZVEGZRUboowvdxBYgr7zZeZbfhWkt6XWWGYQgQx6jbSsG1Va68oEac0EU1dg0bIRWh9pDui2y_0AIrQk0HNG2nJlsCNrRhcoMogeTIL4z9ZO_94Q1lJQO0D2wn_XpORiMGzCYkLy-prubi7TFB_z-mKaed6qvuR8ZDFKc0KbKxLK5i0KjfY7K2S1DjbD4uOoe04RXJ4_x48l9GUBJLrh5V0Ss6AUFuOX5r9rN9WxJkEuwTxXYcw1vYXWNPCrpd24P_jQhM6rv90m_lKArPm0_-gFIiByLeEns8kbrbXSXnZzKGg",
+        "instagram_url": null,
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "מוצה",
+      "name_english": "Motza",
+      "name_in_transcript": "מוצה",
+      "google_name": "מוצא מסעדה Motza restaurant",
+      "timestamp": {
+        "seconds": 2909,
+        "display": "48:29",
+        "youtube_url": "https://www.youtube.com/watch?v=k96So4nOn8Y&t=2909s"
+      },
+      "location": {
+        "city": "מוצה",
+        "neighborhood": "פרוזדור ירושלים",
+        "address": "שמואל ברוזה 1, ירושלים, 9677101, ישראל",
+        "region": "ירושלים",
+        "latitude": 31.7897,
+        "longitude": 35.1595
+      },
+      "cuisine_type": "ביסטרו ים תיכוני",
+      "price_range": "בינוני",
+      "status": "חדש",
+      "host_opinion": "חיובית",
+      "host_quotes": [
+        "אחד הלוקיישנים הכי יפים שיש שם למסעדה",
+        "מה שיוצא מהג'וספר הוא מעולה",
+        "אוסטר בג'וספר תענוג ממש טעים"
+      ],
+      "host_comments": "יהונתן ביקר בפונדק מוצה - מסעדה חדשה של משפחת צדקיהו (של פתיחת השולחן בתלפיות) בפרוזדור ירושלים. מבנה משופץ מרשים עם מטבח פתוח וחלונות רצפה-תקרה עם נוף להרים. ביסטרו ים תיכוני בשרי כשר. שף ברק אביטל (שעבד בוויקי קריסטינה). ג'וספר מעולה, אוסטר בג'וספר תענוג. פיצות על בצק של בן משפחת צדקיהו שהיה אגדה בפלורה. מחירים נמוכים ביחס לז'אנר: ראשונות 40-60, עיקריות 80-120. עדיין צריך ליטוש אבל הפוטנציאל עצום.",
+      "dishes_mentioned": [
+        "אוסטר בג'וספר",
+        "פטריות צלויות",
+        "פיצות בשר",
+        "פוקצ'ות",
+        "סטייק",
+        "דונר"
+      ],
+      "special_features": [
+        "מסעדה חדשה של צדקיהו",
+        "לוקיישן מרהיב בהרי ירושלים",
+        "מטבח פתוח",
+        "ג'וספר",
+        "מחירים נמוכים",
+        "כשר"
+      ],
+      "mention_context": "יהונתן ביקר בפונדק מוצה - מסעדה חדשה של צדקיהו בפרוזדור ירושלים, פוטנציאל עצום",
+      "speaker": "יהונתן כהן",
+      "google_places": {
+        "place_id": "ChIJ02iaR-PXAhUR7J-M3N9SWNQ",
+        "google_url": "https://maps.google.com/?cid=15299782102076932332",
+        "rating": 4.6,
+        "review_count": 239,
+        "price_level": null,
+        "phone": "02-999-2211",
+        "website": null,
+        "photo_url": "places/ChIJ02iaR-PXAhUR7J-M3N9SWNQ/photos/AU_ZVEH0b8sC1BEDqZe2k28UvWyaLWLzf4yqKhoPFu8Y3LzPVC4eOpFx_z5PUhikHPFfiEBbGJid4UQK1uYF2o20hrVmuadsZwxxUa8ISP_D45auzDs2RJ1-zoy9uLOfNQwrvgid1ReMwhDT57BDDqlf1VXMJAJPane5kVA2PNlDhbEccSsLsSiSSHOjO1jyF-UBFINsDa53ih8CDKe7J8zFjMO_WKsX0lpmfgk9J3E6KCosPAQmLXZR8Z99Srws1Jwtr0y9pdHNT2ORy7LHs0QkfCytucExRw-lX2Es1LF-5shTow",
+        "instagram_url": "https://www.instagram.com/motza.restaurant/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "סרה",
+      "name_english": "Serra Cafe",
+      "name_in_transcript": "סרה",
+      "google_name": "Serra Cafe",
+      "timestamp": {
+        "seconds": 3317,
+        "display": "55:17",
+        "youtube_url": "https://www.youtube.com/watch?v=k96So4nOn8Y&t=3317s"
+      },
+      "location": {
+        "city": "כפר רמה",
+        "neighborhood": null,
+        "address": "85, Rameh, ישראל",
+        "region": "צפון",
+        "latitude": 32.9344238,
+        "longitude": 35.3660249
+      },
+      "cuisine_type": "בייקרי-קפה",
+      "price_range": "בינוני",
+      "status": "חדש",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "מהמקומות שבא לי כזה ליד הבית שלי",
+        "קשה מאוד ליפול שם אכלתי כל כך הרבה ומאוד נהניתי",
+        "מוצר ברמה מאוד מאוד גבוהה"
+      ],
+      "host_comments": "נתה ממליצה בחום על סרה - בית קפה בייקרי חדש בכניסה לכפר רמה ליד כרמיאל. הקונדיטורית מירי סרפים (בת 25, עבדה בקוקו קפה בחיפה). בצק צרפתי מדויק ואיכותי. מאפים עגולים ייחודיים - עוגת גזר, מאפה תירמיסו, טעמים גליליים עם לבנה. פוקצ'ות פגז. עיצוב מקום יפהפה עם חממה שקופה לחלל האפייה וטבון בחצר. קפה של סיביס מירושלים.",
+      "dishes_mentioned": [
+        "מאפה עוגת גזר",
+        "מאפה תירמיסו",
+        "פוקצ'ות עם מוצרלה וזעתר",
+        "סלט קצוץ עם פריקה",
+        "גרנולה ומוזלי",
+        "מאפה גבינות פסטה ולבנה"
+      ],
+      "special_features": [
+        "בייקרי חדש בגליל",
+        "קונדיטורית מוכשרת בת 25",
+        "עיצוב חממה",
+        "טבון בחצר",
+        "קפה סיביס מירושלים"
+      ],
+      "mention_context": "נתה ממליצה על בייקרי חדש ומרשים בכפר רמה עם מאפים ברמה גבוהה מאוד",
+      "speaker": "נתה סלונים",
+      "google_places": {
+        "place_id": "ChIJGZozCAAxHBURp6j4vuR-fFc",
+        "google_url": "https://maps.google.com/?cid=6304053099333462183",
+        "rating": 5.0,
+        "review_count": 116,
+        "price_level": null,
+        "phone": null,
+        "website": null,
+        "photo_url": null,
+        "instagram_url": "https://www.instagram.com/serra.caffe/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "הוזכר",
+      "name_hebrew": "סזנקה",
+      "name_english": "Sazanca",
+      "name_in_transcript": "סזנקה",
+      "google_name": "סזאנקה",
+      "timestamp": {
+        "seconds": 1797,
+        "display": "29:57",
+        "youtube_url": "https://www.youtube.com/watch?v=k96So4nOn8Y&t=1797s"
+      },
+      "location": {
+        "city": "אשדוד",
+        "neighborhood": null,
+        "address": "דרך הרכבת 1, אשדוד, ישראל",
+        "region": "דרום",
+        "latitude": 31.802,
+        "longitude": 34.654
+      },
+      "cuisine_type": "אסייתי",
+      "price_range": "בינוני",
+      "status": "חדש",
+      "host_opinion": "חיובית",
+      "host_quotes": [
+        "1200 מטרים רבועים וכמה סועדים יכולים לשבת שם בערך 250",
+        "תפריט גדול מחירים קטנים זה ה-DNA של הקבוצה"
+      ],
+      "host_comments": "סזנקה היא המסעדה התשיעית של קבוצת כיסו, נפתחה באשדוד. 1200 מטר, 250 מקומות ישיבה, 40 מקומות סביב בר מרכזי. שיחה עם המנכ\"לית הדי אנגלנדר על הפריסה האסטרטגית של כיסו למקומות ללא חוויית בילוי דומה. גיוזה ב-38 שקל (מול 52 בכיסו), שיפודונים מ-10 שקל. הקבוצה מעסיקה 2000 עובדים ומתכננת הנפקה בבורסה.",
+      "dishes_mentioned": [
+        "גיוזה",
+        "שיפודונים"
+      ],
+      "special_features": [
+        "קבוצת כיסו",
+        "1200 מ\"ר",
+        "250 מקומות",
+        "בר מרכזי",
+        "אשדוד"
+      ],
+      "mention_context": "ראיון עם הדי אנגלנדר מנכ\"לית כיסו לרגל פתיחת סזנקה באשדוד - המסעדה התשיעית של הקבוצה",
+      "speaker": "hosts",
+      "google_places": {
+        "place_id": "ChIJR2A98jejAhURYi-ub8qUz9I",
+        "google_url": "https://maps.google.com/?cid=15186316932741869666",
+        "rating": 4.5,
+        "review_count": 245,
+        "price_level": null,
+        "phone": "08-656-6520",
+        "website": "https://www.sazanca.co.il/",
+        "photo_url": "places/ChIJR2A98jejAhURYi-ub8qUz9I/photos/AU_ZVEFCY474q6st6pw64MuMtU7A8cv5_ulBV2AUVhPhhjcKrPay8NrjZwU0F0mlmXZ-jdE4ltn98U4gpP5gwfGE3SEBheC69QjDrGwqVT9j3mgUPONgW8RiP0oDb2Y-ayodDgX-Z7tZgc5tPMwPkp2IAlIpDrCltgWaWJHWAAuHmXUPDQr_2K_bCYPRBWWja4D6IkfHRpBaW0t6lJpQYrgi0gIzLJonvDqkL-gfaDdv2PtbdYfVRPC5dTdooCxbIjnAdRXbwx_IAds9Rym6zf1SQtRMDizMkjnCp609_NH2f808Bw",
+        "instagram_url": null,
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "עובד בכפר",
+      "name_english": "Oved BaKfar",
+      "name_in_transcript": "עובד בכפר",
+      "skip_reason": "Opening announcement for new TLV branch - industry news, hosts did not eat there in this episode",
+      "timestamp": {
+        "seconds": 1192,
+        "display": "19:52",
+        "youtube_url": "https://www.youtube.com/watch?v=k96So4nOn8Y&t=1192s"
+      },
+      "location": {
+        "city": "אור יהודה",
+        "neighborhood": null,
+        "address": "חטיבת אלכסנדרוני 2, אור יהודה, ישראל",
+        "region": "מרכז"
+      },
+      "host_quotes": [
+        "עובד בכפר מסעדת העל מאור יהודה המקום המבוקשים בישראל",
+        "פותחים בתל אביב"
+      ],
+      "mention_context": "חדשות - עובד בכפר פותחים סניף בתל אביב באדר יוסף. מסקרן לראות אם מה שעובד בכפר יעבוד גם בעיר.",
+      "google_places": {
+        "place_id": "ChIJh6SH2phKHRURozkWbOBJo6U",
+        "rating": 4.5,
+        "review_count": 8349,
+        "phone": "03-634-6005",
+        "website": "http://www.ovedbakfar.co.il/",
+        "photo_url": "places/ChIJh6SH2phKHRURozkWbOBJo6U/photos/AU_ZVEFyG4qLz6vaRDg7SokJtNmKhonc_oyLzhBmbm_mrq4UYQxvY2PIC47sGRYzdV2XpLHjZ-2Cw6_9Dd-QTVArRRTDV26Vf9gwp6BDS6mHgxHLJVrfY4CNg6MZygAOekqnaiL8bMXkqlISU1BT2pVPXtik-Zpy4OjDpYK0AvcMoM8vjqfi6Ar889_76Z2BftFLSMg6MGtDn1Ee9uAIdXTyF3w6e4QYKnWAIOaw0bwndmhQkE59uR-i4S-NoIAGzixdHbps6OmT5QlwC-edmRXelUGKeieuZxCfWyVX2NARJtjmIPRWKGyUXu9UnM9cHzCKkz2xZL5IfJA5oqBZjGMn2hkQsgwLRYtB2A0H1TCxRuyT_oeQavx9DfV5Bf4cOt2gG-94hYKjvOPpYZjv_lIuBroQSQ5QxQrIE8iwJKPkaUBmi_4X",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "לה טיגרה",
+      "name_english": "La Tigre",
+      "name_in_transcript": "טיגרי",
+      "skip_reason": "Expansion news - La Tigre opening new branch on Basel street, not a review or recommendation",
+      "timestamp": {
+        "seconds": 1335,
+        "display": "22:15",
+        "youtube_url": "https://www.youtube.com/watch?v=k96So4nOn8Y&t=1335s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "פלורנטין",
+        "address": "הרב יצחק ידידיה פרנקל 9, תל אביב-יפו, ישראל",
+        "region": "מרכז"
+      },
+      "host_quotes": [
+        "הפיצות שלהם באמת מעולות",
+        "עגלת תירמיסו עם חמישה סוגים"
+      ],
+      "mention_context": "חדשות - לה טיגרה מתרחבת מפלורנטין לבאזל, מוסיפים עגלת תירמיסו וראשונות",
+      "google_places": {
+        "place_id": "ChIJS4WRyaPNAhUROTu5oqkTinM",
+        "rating": 4.6,
+        "review_count": 1360,
+        "photo_url": "places/ChIJS4WRyaPNAhUROTu5oqkTinM/photos/AU_ZVEFkDKZdEP07sK5oh3EX7zUHRykUWtS4m72RRv4YsSjJvb_oQHPqCwVfmCiuqaZPrkqxGn3P62fXv_rqOrc0Am5M1b98WgzIDdiItJXzhJxorikB9jh7a-pDUvWniV1lcSF6diJh-hq_8vHsVEVrW9D31dscgZGyyLYE6G6wMw5OZ14cP-aETDJqW7DA0aXwsNFaMrs3_qMoakt0dWG0GvI8EFxXIyKREZZdhRXUjQDWUifZdqyeH1h4O080vB8hIZQ-kfSPbVJcH315J7qfl2qLeczf1QqvRJgplrSaXTGXkGTyZupUyZpY2bm6bV7vgO9osMtupMVobdBEenVcHC2x3_umt_j00N0XACqXybfiakbgy6WHQQBJTAr8fCnBhykRqTqgGOtJKfzteFFOkDdCblEx9Cev7R7PZJZLTadQPg",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "הקוסם",
+      "name_english": "HaKosem",
+      "name_in_transcript": "הכוסם",
+      "skip_reason": "Closing announcement - HaKosem closed its Sarona Market location, industry news",
+      "timestamp": {
+        "seconds": 1562,
+        "display": "26:02",
+        "youtube_url": "https://www.youtube.com/watch?v=k96So4nOn8Y&t=1562s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "סרונה מרקט",
+        "address": "אלוף קלמן מגן, תל אביב-יפו, ישראל",
+        "region": "מרכז"
+      },
+      "host_quotes": [
+        "הכוסם נכון סגר"
+      ],
+      "mention_context": "חדשות - הכוסם סגר את סניף סרונה מרקט, לא מפתיע בהתחשב בשעות הפיק",
+      "google_places": {
+        "place_id": "ChIJL1Wol_ZLHRURdAYImKSNpZA",
+        "rating": 3.0,
+        "review_count": 116,
+        "photo_url": "places/ChIJL1Wol_ZLHRURdAYImKSNpZA/photos/AU_ZVEEDkMh8PGzkVI73A3q6nLYfH-4gUDmfCYhqCZIe2uDD8g3j6SEpZUy0FD1EJCBaOs01C45PeSTW7Y8m5htRMhVkSAc4zHSQnDdH7pc2iewkGSXm0et0T97-axebY5pnMvMG-iIjvlxEweKNoluABIEduVNj4lo_pnT9PnsBExvSqJLOc--LB8Dn3qBE1jVx752HXjlNClm9UAVR4lLL7MGRFqzNFhLHEliMYrb21mGk17DHcPRrWjz1L3v5EEQ15yT1wp_InFL09E318kOTFB1sQUi5bZD4mPemyoLjXqm6TItRjqtN2jujvTKEpfa255Rr7MeqV0uylKjanIgg-ttnTkjozi-5Q95bbahiIJ4P-ERGtrnezwzNTkxFtpKLtaHaJBGNOh6AF1U1inVYtrI6nc2c1vzx04ee39NXy9s",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "האימפריאל",
+      "name_english": "The Imperial",
+      "name_in_transcript": "האימפריאל",
+      "skip_reason": "Closing announcement - Imperial and entire hotel/bar complex closing for demolition/renovation",
+      "timestamp": {
+        "seconds": 1447,
+        "display": "24:07",
+        "youtube_url": "https://www.youtube.com/watch?v=k96So4nOn8Y&t=1447s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": null,
+        "address": null,
+        "region": "מרכז"
+      },
+      "host_quotes": [
+        "כל המתחם שהתחיל כבר האימפריאל נסגר יסגר"
+      ],
+      "mention_context": "חדשות - האימפריאל והמתחם כולו (כולל האוטרה) נסגרים בגלל פינוי בינוי של בניין המלון",
+      "google_places": {
+        "place_id": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "פר דרייר",
+      "name_english": "Par Derriere",
+      "name_in_transcript": "פר",
+      "skip_reason": "Referenced as the restaurant Kushner and Witkoff visited twice - hosts did not eat there in this episode, news/discussion only",
+      "timestamp": {
+        "seconds": 3510,
+        "display": "58:30",
+        "youtube_url": "https://www.youtube.com/watch?v=k96So4nOn8Y&t=3510s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": null,
+        "address": "בת עמי 7, תל אביב-יפו, ישראל",
+        "region": "מרכז"
+      },
+      "host_quotes": [
+        "הבחירה בפר היא מאוד מאוד משמחת",
+        "המקום הזה הוא על המסלול הקבוע שאני עושה לתיירים"
+      ],
+      "mention_context": "חדשות - קושנר וויטקוף אכלו בפר דרייר פעמיים תוך שבוע, בחירה משמחת שמייצגת מטבח ישראלי",
+      "google_places": {
+        "place_id": "ChIJvZO9doFMHRUR7zKCmxiFSOQ",
+        "rating": 4.3,
+        "review_count": 2920,
+        "photo_url": "places/ChIJvZO9doFMHRUR7zKCmxiFSOQ/photos/AU_ZVEFwJJMizBOqf6h0-pLH9ProisXu3mXL6IqDvxPOIB5dEfha_9eEewSR5uHdOOYj8MVIPbKJNcaTy_DwaH2MHY-1OMyu3P5g8F2PAKFHuBLUokm9rNAdGaUyPYxu61Tn9wP1Li0Qp04VuybLbE399vJlbKvDQ5Jy3ZSB_AO7ZEPK5UHv84h5mINcWTmTMWUqP-2qY2POwLGpvfpVnk80iZdjRlLuO4haOY-upBf7AlT_MIzBOjEq35pfmymyFj3v0Z0v-2g6Asy2zzHFxyT5NQtyubnpDNRqaCXGeutpaSTukw",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "אמיה",
+      "name_english": "Amaya",
+      "name_in_transcript": "אמיה",
+      "skip_reason": "Referenced as reviewed by Sagi Cohen (Haaretz critic) - hosts did not eat there, critic review discussion only",
+      "timestamp": {
+        "seconds": 3640,
+        "display": "60:40",
+        "youtube_url": "https://www.youtube.com/watch?v=k96So4nOn8Y&t=3640s"
+      },
+      "location": {
+        "city": "רחובות",
+        "neighborhood": null,
+        "address": "המדע 1, רחובות, ישראל",
+        "region": "מרכז"
+      },
+      "host_quotes": [
+        "סגי כהן היה באמיה הרחובותית"
+      ],
+      "mention_context": "מדור מבקרים - סגי כהן כתב ביקורת על אמיה ברחובות, מצא פיצול אישיות: מנות ירק מצוינות, דג פחות",
+      "google_places": {
+        "place_id": "ChIJ68RKTgC3AhURPchjZDDqK3g",
+        "rating": 4.2,
+        "review_count": 196,
+        "photo_url": "places/ChIJ68RKTgC3AhURPchjZDDqK3g/photos/AU_ZVEF0ttNRaVgz7Hnb9HZjqnoV_N8b7VLGfS2ENmSH7NwPpooRJCo-h-4nirDtRfPxPbSm3zuy820M4QFKVtnhWTXhxYfNtDD8rlYkZpQduBrr3ag6obMZ3sj8GDv9pAv0m1GuHV4829YSxQT3BW9Yf7dpC-Pp94RX2X1aO4Jlc76I4IPsi_0z3fSVnJCL0VLghQhORjgw4W1o_xw7HaUWf-u3q8S9B9HKad0P1FHAOufV3Dn_wDRpdy89P0LQtEs107sTe23NTy3X_nI7uA-sRoIhxGAPKaUgZxElvFZeZRbqig",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "ביסטרו אופנהיימר",
+      "name_english": "Bistro Oppenheimer",
+      "name_in_transcript": "ביסטרו אופנהיימר",
+      "skip_reason": "Referenced as reviewed by Avi Afrati (critic) - hosts did not eat there, critic review discussion only",
+      "timestamp": {
+        "seconds": 3696,
+        "display": "61:36",
+        "youtube_url": "https://www.youtube.com/watch?v=k96So4nOn8Y&t=3696s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "רמת אביב / מעוז אביב",
+        "address": "אופנהיימר 11, תל אביב-יפו, 6250621, ישראל",
+        "region": "מרכז"
+      },
+      "host_quotes": [
+        "מצא מקום שכונתי וסימפטי עם מנה אחת שמאוד מסקרנת שניצל לשון"
+      ],
+      "mention_context": "מדור מבקרים - אבי אפרטי ביקר בביסטרו אופנהיימר החדש בצפון תל אביב, מקום שכונתי עם שניצל לשון",
+      "google_places": {
+        "place_id": "ChIJacGlaABJHRURn0osMYxjwug",
+        "rating": 4.0,
+        "review_count": 61,
+        "photo_url": "places/ChIJacGlaABJHRURn0osMYxjwug/photos/AU_ZVEFWY0Uo0pMZ3hcjrZ6xZ3pToKgt24ojb5nJAlsSWeJ_bupaN4TENuxLXKk-HwiJqhlADwDq9Ipg8xf0Lmi44bM6X78if9dLMNOxUjLR8YMF4H7IGfxxufVbt2RuZDT9ScA8EGqFFRVZKxDagim-f1hN0i1AhXvJLdKvcEiAyz4HUfn5VMXX31kKXCCn_rWFCFZp_ONN403XDY9n9Nbe8tY1ajIFPMXiMfHmm_wivAwqoSYXLlSJjhlM4ZCxJk1An4idojksWjPo5qvDm4O53FI9X1HoLrl8cgEkUxc3cCunlQ",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "מטרו",
+      "name_english": "Metro",
+      "name_in_transcript": "מטרו רק רגע",
+      "skip_reason": "Referenced as visited by Kobi Rubin (critic) who ordered baguette with salmon - hosts did not eat there",
+      "timestamp": {
+        "seconds": 3803,
+        "display": "63:23",
+        "youtube_url": "https://www.youtube.com/watch?v=k96So4nOn8Y&t=3803s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": null,
+        "address": "דרך מנחם בגין 72, תל אביב-יפו, ישראל",
+        "region": "מרכז"
+      },
+      "host_quotes": [
+        "אחת היציעות הכי מופרחות שאי פעם שמעתי",
+        "בגט עם סלמון מוקפץ"
+      ],
+      "mention_context": "מדור מבקרים - קובי רובין אכל במטרו רק רגע בגט עם סלמון מוקפץ, המנחים התפעלו מהעזה",
+      "google_places": {
+        "place_id": "ChIJwWhN6HlLHRURUHCzv17NO5o",
+        "rating": 4.4,
+        "review_count": 201,
+        "photo_url": "places/ChIJwWhN6HlLHRURUHCzv17NO5o/photos/AU_ZVEG8Z3MOkUmXN3t2amrcXk2NvFSypJNpEoSf2h7gLfqyRgMIA3Ay4HLYnhcci7aPj5EXBcleeWMFJDNF2VNg-bFKyHS2OxHjCR5okNpdETMuj4UAiAtEk2_2Oy7IWoNlB2ORq3hBXr4ceRde7JJUdA87iYVj_znlcps5ap1AMZ3p0321sq8u_dBDgOu7tHY5yGq8jeIRuY2Ck6DFpS5wmsXcmAa7ixH6EXhV4VTcSBmHltFATj360VOfExRt4QcvC3Nr-4-goQM14PmCrEVUvsNaI7lN-5d9IAbK0ZAwKEmMXKE4d2idlY7qPruwyNw-3Lm90YlmC3nREdS1SQaK6uH3Xu1PVzvCBbrNc--fQevj-Hh_-6-th_TsGhYzqQ1ORhxMkYg718oGSVSkqTPdZoIIXw1GOiTnninOC7lyxRs",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "הופה",
+      "name_english": "Opa",
+      "name_in_transcript": "הופה",
+      "skip_reason": "Mentioned as Amit's planned visit for next week - hasn't been yet, teaser for next episode",
+      "timestamp": {
+        "seconds": 3992,
+        "display": "66:32",
+        "youtube_url": "https://www.youtube.com/watch?v=k96So4nOn8Y&t=3992s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": null,
+        "address": "החלוצים 8, תל אביב-יפו, 6652308, ישראל",
+        "region": "מרכז"
+      },
+      "host_quotes": [
+        "הופה שבע שנים",
+        "מטבח ניטי"
+      ],
+      "mention_context": "סוף הפרק - עמית מגלה שהוא הולך להופה השבוע, מסעדה טבעונית ותיקה בת 7 שנים שעדיין לא ביקר בה",
+      "google_places": {
+        "place_id": "ChIJ27OhEP5NHRURHvPBVqmshM8",
+        "rating": 4.1,
+        "review_count": 918,
+        "photo_url": "places/ChIJ27OhEP5NHRURHvPBVqmshM8/photos/AU_ZVEE6T4HanhXsBoxISDuNthWgC7aVtBWYDP7HI-A9Tm-0nkCFm7TjNX_k32xWxxRvxeqzterw_oiMbJvjkUZcVRfvA77mO429Xw2-voVU2vVf7RGjZhpoLDZEi_qwnn-BTj6Ax7yI5kwfLNB9Nl9hB9YOv66S0UfhH-Fnyn0IImgHUgOI1Ryb-zH_xCzEa_4Frf5zx5HsWrAYiFAWA9mys47KybChebtTs4pgRr1VzROb7YgpzVA2LmwfeD3tmZsWNWTsmFlucrGL5s7ZbjH1yD9-Y0pxWEtkSi4nFuxnTkdNFQ",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "rejected",
+      "name_in_transcript": "פופן פופ",
+      "reject_reason": "Pop-up restaurant event name, not a permanent restaurant",
+      "timestamp": {
+        "seconds": 3513,
+        "display": "58:33"
+      }
+    },
+    {
+      "verdict": "rejected",
+      "name_in_transcript": "בושויק",
+      "reject_reason": "Bar mentioned in passing as another business of the Imperial group - not discussed as dining destination",
+      "timestamp": {
+        "seconds": 1528,
+        "display": "25:28"
+      }
+    },
+    {
+      "verdict": "rejected",
+      "name_in_transcript": "בלאקסטיר",
+      "reject_reason": "Historical reference - defunct restaurant that used to be in the Motza location in the 1990s/2000s",
+      "timestamp": {
+        "seconds": 2944,
+        "display": "49:04"
+      }
+    }
+  ]
+}

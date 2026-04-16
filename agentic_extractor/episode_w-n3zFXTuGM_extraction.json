@@ -1,0 +1,770 @@
+{
+  "episode": {
+    "video_id": "w-n3zFXTuGM",
+    "video_url": "https://www.youtube.com/watch?v=w-n3zFXTuGM",
+    "title": "מדברים מהבטן 148 - מהדורת ממ\"ד",
+    "channel_name": "מדברים מהבטן - הפודיום",
+    "published_at": "2026-03-11",
+    "hosts": [
+      "עמית אהרונסון",
+      "נטע סלונים"
+    ],
+    "guests": [
+      "חיים כהן",
+      "ליאור משיח (ליאורוש)"
+    ],
+    "language": "he",
+    "transcript_length": 45533,
+    "segment_count": 1312,
+    "episode_id": "2f1a4568-8f7b-4387-b596-9f7dbea73287",
+    "summary": "פרק 148, מהדורת ממ\"ד - מוקלט מרחוק בזמן מלחמה (יונתן כהן במילואים). הפרק פותח בביסים שהמארחים אכלו בזמן המלחמה (טנא דלי, ג'אנגו, דנבר, ימה, המחמצת של חגאי). ראיון עם השף חיים כהן על מצב המסעדנות בזמן מלחמה. דיון על גמר משחקי השף - זכייתו של בר צנגר מג'רדינו. סגמנט ארוך על פרשת ההתעללויות במסעדת נומה בקופנהגן עם עדות מליאור משיח שעשתה סטאז' שם. סיכום חדשות קולינריות: סגירת מרלוזה ושינויים במאשיה."
+  },
+  "extraction": {
+    "date": "2026-03-24",
+    "agent": "episode-processor",
+    "total_mentions": 18,
+    "add_to_page": 7,
+    "reference_only": 9,
+    "rejected": 0,
+    "already_in_db": 7,
+    "new_to_add": 0
+  },
+  "restaurants": [
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "טנא דלי",
+      "name_english": "Tenne Deli",
+      "name_in_transcript": "טנדלי",
+      "google_name": "טנא | מעדניה מבית טעם וצבע",
+      "timestamp": {
+        "seconds": 227,
+        "display": "03:47",
+        "youtube_url": "https://www.youtube.com/watch?v=w-n3zFXTuGM&t=227s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "רמת אביב",
+        "address": "Aba Akhime'ir St 1, Tel Aviv-Yafo, 6912601, Israel",
+        "region": "מרכז",
+        "latitude": 32.1253287,
+        "longitude": 34.7984047
+      },
+      "cuisine_type": "מעדנייה",
+      "price_range": "בינוני",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "הדברים ברובם פשוט נהדרים",
+        "מחירים שפויים באופן מפתיע",
+        "פשוט כיף של משלוח",
+        "סיר של מקלובה כזה לארבעה אנשים...פשוט מעולה"
+      ],
+      "host_comments": "אמית הזמין משלוח מטנא דלי ביום שישי לפני המלחמה, והוא הפך למנת הקרב של הימים הראשונים. מתאר בהתפעלות את המקלובה, כרובית ממולאת בבשר טחון ברוטב חמוסט, וערקה מעולה. מציין שמדובר בזרוע של טעם וצבע.",
+      "dishes_mentioned": [
+        "מקלובה",
+        "כרובית ממולאת בשר טחון ברוטב חמוסט",
+        "ערקה של בנים ובשר מפורק ומיונז צ'יפוטלה"
+      ],
+      "special_features": [
+        "מעדנייה",
+        "מבית טעם וצבע",
+        "משלוחים",
+        "אוכל מוכן"
+      ],
+      "mention_context": "אמית מתאר משלוח שהזמין מטנדלי לפני המלחמה שהפך למנת הקרב שלו בימים הראשונים",
+      "speaker": "עמית אהרונסון",
+      "google_places": {
+        "place_id": "ChIJ17ynXLlJHRURzu1X-d39aAI",
+        "google_url": "https://maps.google.com/?cid=173667715466653134",
+        "rating": 4.1,
+        "review_count": 29,
+        "price_level": null,
+        "phone": "073-363-3533",
+        "website": "https://tenne-deli.co.il/",
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqFa71b21-IBB1WitOzhFHQIjWB4YWSU8J20U_iVDMY2fAjNyQT13yPeSFcgfOsM4WC8VHIscYkCxGQywTSd8bPDNz_w1frTvpg=s1600-w800",
+        "instagram_url": "https://www.instagram.com/tenne_the_deli/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": true,
+        "id": "93a864f4-bac0-4fc2-b3c0-bb6d48357c3b"
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "ג'אנגו",
+      "name_english": "Jango Burger",
+      "name_in_transcript": "ג'אנגו",
+      "google_name": "Jango Burger",
+      "timestamp": {
+        "seconds": 333,
+        "display": "05:33",
+        "youtube_url": "https://www.youtube.com/watch?v=w-n3zFXTuGM&t=333s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": null,
+        "address": "Hillel ha-Zaken St 12, Tel Aviv-Yafo, Israel",
+        "region": "מרכז",
+        "latitude": 32.0658,
+        "longitude": 34.7724
+      },
+      "cuisine_type": "המבורגר",
+      "price_range": "בינוני",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "התל אביבי המוכר ואהוב שיודע לספק את הסחורה מדהים הוא הג'אנגו",
+        "המבורגר מצוין עובר משלוח בול",
+        "אי אפשר לקחת מהם המבורגר מהטובים שאכלתי"
+      ],
+      "host_comments": "נטע הזמינה המבורגר מג'אנגו בזמן המלחמה. מתארת המבורגר מצוין שעובר משלוח טוב, קציצה יפה מבשר איכותי עם מעט תוספות.",
+      "dishes_mentioned": [
+        "המבורגר"
+      ],
+      "special_features": [
+        "משלוחים",
+        "המבורגר"
+      ],
+      "mention_context": "נטע מספרת שהתחשק לה המבורגר בזמן המלחמה והזמינה מג'אנגו",
+      "speaker": "נטע סלונים",
+      "google_places": {
+        "place_id": "ChIJd6FfvPxNHRURKikrdUB3UhQ",
+        "google_url": "https://maps.google.com/?cid=1464363947576207658&g_mp=CiVnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLkdldFBsYWNlEAIYBCAA",
+        "rating": 4.1,
+        "review_count": null,
+        "price_level": null,
+        "phone": "03-631-7773",
+        "website": null,
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqGMRm89Mt_IQVLDbdR7rVs0bXPtyuk4Ti23BdWZzFMwrjcsb0GDlXMpsuB4jtQXS2rfPDdIYAGi5fJBPog1etSQY5lHoPPnmRQ=s4800-w800",
+        "instagram_url": "https://www.instagram.com/jango.telaviv/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": true,
+        "id": "7ef1fede-9dc4-448f-bd64-bd3e0100b7c2"
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "דנבר",
+      "name_english": "Denver",
+      "name_in_transcript": "הדבר",
+      "google_name": "דנוור DENVER",
+      "timestamp": {
+        "seconds": 384,
+        "display": "06:24",
+        "youtube_url": "https://www.youtube.com/watch?v=w-n3zFXTuGM&t=384s"
+      },
+      "location": {
+        "city": "כפר סבא",
+        "neighborhood": null,
+        "address": "Tchernichovsky St 14, Kefar Sava, 4427107, Israel",
+        "region": "שרון",
+        "latitude": 32.178,
+        "longitude": 34.907
+      },
+      "cuisine_type": "המבורגר",
+      "price_range": "בינוני",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "ההמבורגר של הדבר בכפר סבא. אני הנדסטי כל ביס יגמר לי",
+        "הוא היה מדהים, מופתי, מושלם. תענוג של המבורגר",
+        "באמת שפו להם"
+      ],
+      "host_comments": "נטע מספרת על ההמבורגר של דנבר בכפר סבא כחוויה מדהימה - מופתי, מושלם. אמית מאשר שההמבורגר שלהם מצוין, הוא אכל שם במקום אחרי שפתחו. גם עובר משלוח טוב.",
+      "dishes_mentioned": [
+        "המבורגר"
+      ],
+      "special_features": [
+        "המבורגר",
+        "משלוחים"
+      ],
+      "mention_context": "נטע מספרת שהזמינה המבורגר מדנבר כפר סבא בזמן המלחמה והוא היה מדהים",
+      "speaker": "נטע סלונים",
+      "google_places": {
+        "place_id": "ChIJeR6vCQA5HRURcmz42BvApCc",
+        "google_url": "https://maps.google.com/?cid=2856619289496546418&g_mp=CiVnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLkdldFBsYWNlEAIYBCAA",
+        "rating": 4.3,
+        "review_count": null,
+        "price_level": null,
+        "phone": "077-303-4072",
+        "website": null,
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqGbXAVULDOypJ_FLvACmtNORWgqBT4CFsBN4E9efcnr0IfV-Du00zt3DGy6RcL_D6PlYXnQmhd8Npfym18bWITXGZypWYYlD8o=s4800-w800",
+        "instagram_url": "https://www.instagram.com/denver_il/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": true,
+        "id": "601b4968-6a72-4e37-bace-65b5b2f21e87"
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "ימה",
+      "name_english": "Yama",
+      "name_in_transcript": "יאמה",
+      "google_name": "Yama",
+      "timestamp": {
+        "seconds": 418,
+        "display": "06:58",
+        "youtube_url": "https://www.youtube.com/watch?v=w-n3zFXTuGM&t=418s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "גלילות",
+        "address": "ביג גלילות, תל אביב",
+        "region": "מרכז",
+        "latitude": 32.055246,
+        "longitude": 34.7660067
+      },
+      "cuisine_type": "דגים",
+      "price_range": "בינוני",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "כבד קצוץ חמים עסיסי על בסיס של שומן עוף כזה וואו וואו וואו תענוג",
+        "בדיוק בכמות שצריך, שזה בעיניי הגאונות של הדבר הזה שנקרא יאמה"
+      ],
+      "host_comments": "אמית מתאר שבדק את ימה של יובל בן נריה גם בגרסת המשלוח. מתלהב במיוחד מערכת הכנת כבד קצוץ - כל המרכיבים מגיעים מדודים ומאורגנים, תוך 10 דקות יש כבד קצוץ חמים מושלם.",
+      "dishes_mentioned": [
+        "כבד קצוץ",
+        "ערכת המבורגרים"
+      ],
+      "special_features": [
+        "ערכות הכנה",
+        "משלוחים",
+        "של יובל בן נריה"
+      ],
+      "mention_context": "אמית בדק את ימה גם בגרסת המשלוח, מתלהב מערכת הכנת כבד קצוץ",
+      "speaker": "עמית אהרונסון",
+      "google_places": {
+        "place_id": "ChIJX6MLTGVNHRUR5OioxdOiR5k",
+        "google_url": "https://maps.google.com/?cid=11044975641587411172&g_mp=CiVnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLkdldFBsYWNlEAIYBCAA",
+        "rating": 4.3,
+        "review_count": null,
+        "price_level": null,
+        "phone": "03-609-4445",
+        "website": "https://yamaonline.co.il/",
+        "photo_url": "https://lh3.googleusercontent.com/place-photos/AL8-SNHRglU2wYqAeKr6D250Faeh-xlqs-WB5u7AfnFQcdokCOS9YAbUrUMmYHe11jpDR5PvGfyaCJJ07TBfoF3ltaLQ3GzYiIwIv4XhmXJg0wSSTQ4eUESPZGLL-OaYTisKFXqRfyxabtmurnmWouQ=s4800-w800",
+        "instagram_url": "https://www.instagram.com/yama.fish.shop/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": true,
+        "id": "d2d0a7f0-c399-4511-b1d6-09888ff2b340"
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "המחמצת של חגאי",
+      "name_english": "Hagay Bread",
+      "name_in_transcript": "המחמצת של חגאי",
+      "google_name": "Hagay Bread",
+      "timestamp": {
+        "seconds": 677,
+        "display": "11:17",
+        "youtube_url": "https://www.youtube.com/watch?v=w-n3zFXTuGM&t=677s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": null,
+        "address": "Chayim Vital St 25, Tel Aviv-Yafo, Israel",
+        "region": "מרכז",
+        "latitude": 32.0550396,
+        "longitude": 34.7677815
+      },
+      "cuisine_type": "מאפייה",
+      "price_range": "בינוני",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "הלחם הכי טוב שיש הכי טעים שיש",
+        "משדרג לא משנה מה תשימו על הדבר הזה זה יצא פשוט הכי טעים שיש"
+      ],
+      "host_comments": "נטע מכתירה את המחמצת של חגאי כביסי השנה. המחמצת והלחם נאכלים על בסיס יומי, משדרגים כל דבר. הלחם הכי טוב והכי טעים שיש.",
+      "dishes_mentioned": [
+        "לחם מחמצת",
+        "לחם"
+      ],
+      "special_features": [
+        "מאפייה",
+        "לחם מחמצת"
+      ],
+      "mention_context": "נטע מכתירה את המחמצת של חגאי כביסי השנה שלה, נאכל על בסיס יומי",
+      "speaker": "נטע סלונים",
+      "google_places": {
+        "place_id": "ChIJzwbbuFs3HRURts5Mf9eW07I",
+        "google_url": "https://maps.google.com/?cid=12885808811134996150",
+        "rating": 4.8,
+        "review_count": 305,
+        "price_level": null,
+        "phone": "03-670-5520",
+        "website": "https://www.hagaybread.com/",
+        "photo_url": "https://lh3.googleusercontent.com/place-photos/AL8-SNFA0Bx-e7A0tX_jTSJOxgWRu35Um6v_fSy7SxhCX4TFnlQkATIerwQk5nNd6SAjGG4lQQSr1KTpS4qjlUlFGwEsRYq5CE2Yb5nDk4uzyeG2Iw2GEdstmz7GFZwWa6ANeib_5AWesgX8PUtnyw=s1600-w800",
+        "instagram_url": "https://www.instagram.com/hagaybread/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "דוכן של אילנה דן בשוק לווינסקי",
+      "name_english": "Ilana Dan at Levinsky Market",
+      "name_in_transcript": "אילנה דן",
+      "google_name": null,
+      "timestamp": {
+        "seconds": 696,
+        "display": "11:36",
+        "youtube_url": "https://www.youtube.com/watch?v=w-n3zFXTuGM&t=696s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "שוק לווינסקי",
+        "address": "שוק לווינסקי, תל אביב",
+        "region": "מרכז",
+        "latitude": null,
+        "longitude": null
+      },
+      "cuisine_type": "מאפייה",
+      "price_range": "בינוני",
+      "status": "חדש",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "וואו מה זה היה",
+        "שמדנו את זה תוך פחות מ-24 שעות"
+      ],
+      "host_comments": "נטע מפרגנת לאילנה דן, אופה מוערכת שמספקת לחמים למסעדות רבות בתל אביב. פתחה דוכן בשוק לווינסקי ביום שישי, נטע הגיעה מיד לקנות פוקצ'ה שנגמרה תוך פחות מ-24 שעות.",
+      "dishes_mentioned": [
+        "פוקצ'ה",
+        "לחם ארטישוק ירושלמי"
+      ],
+      "special_features": [
+        "דוכן בשוק לווינסקי",
+        "ימי שישי",
+        "אופה למסעדות"
+      ],
+      "mention_context": "נטע מפרגנת לאילנה דן שפתחה דוכן בשוק לווינסקי, קנתה פוקצ'ה מדהימה",
+      "speaker": "נטע סלונים",
+      "google_places": {
+        "place_id": "ChIJcdNA6J1MHRUR0mtN6aZ6w4k",
+        "google_url": "https://maps.google.com/?cid=9926912860952030162&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+        "rating": null,
+        "review_count": null,
+        "price_level": null,
+        "phone": null,
+        "website": null,
+        "photo_url": "https://lh3.googleusercontent.com/place-photos/AL8-SNH4EglJ5A5dJOniO7wS_g9k36b3Ykgs8CoeJkH1xJbT753NwxSHLP26ln6dmaufIvbq2A3M9KHeqh0y5VWwZGVAwx_J28jgHmG5fgYVyQsnlH7coAyhApjCzV3TpNwemb2W5i5Qd5gnJefGow=s4800-w800",
+        "instagram_url": "https://www.instagram.com/ilanadan_/",
+        "verified": false
+      },
+      "production_db": {
+        "exists": true,
+        "id": "ba0f9e54-a49a-4656-b4da-21c5d2a0d6b3"
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "רביולון",
+      "name_english": "Raviolon",
+      "name_in_transcript": "רב יולו",
+      "google_name": "רביולון",
+      "timestamp": {
+        "seconds": 511,
+        "display": "08:31",
+        "youtube_url": "https://www.youtube.com/watch?v=w-n3zFXTuGM&t=511s"
+      },
+      "location": {
+        "city": "אשקלון",
+        "neighborhood": null,
+        "address": "הנגר 8, אשקלון",
+        "region": "דרום",
+        "latitude": 31.6659,
+        "longitude": 34.5712
+      },
+      "cuisine_type": "פסטה",
+      "price_range": "בינוני",
+      "status": "פתוח",
+      "host_opinion": "חיובית",
+      "host_quotes": [
+        "כיף מאוד, טעים מאוד",
+        "בצק נורא נורא דק ונורא נורא אסתטי ויפה",
+        "עסק ככה בקצה המפה בדרום הפעם ששווה שווה לפרגן לו"
+      ],
+      "host_comments": "נטע מספרת על מפעל פסטות מאשקלון שלא הכירה קודם. מייצרים פסטות מכל הסוגים, כולל טבעוני ורביולים ממולאים. עשו ערב פסטות, כיף מאוד וטעים מאוד.",
+      "dishes_mentioned": [
+        "פסטות קפואות",
+        "רביולים ממולאים"
+      ],
+      "special_features": [
+        "מפעל פסטות",
+        "משלוחים",
+        "טבעוני"
+      ],
+      "mention_context": "נטע מספרת על מפעל פסטות מאשקלון ששווה לפרגן לו",
+      "speaker": "נטע סלונים",
+      "google_places": {
+        "place_id": "ChIJA2WQcXucAhURZHGLkjSddl0",
+        "google_url": "https://maps.google.com/?cid=6725697267375096932",
+        "rating": 4.9,
+        "review_count": 188,
+        "price_level": null,
+        "phone": "050-214-2082",
+        "website": "https://www.valuecard.co.il/orders/raviolon#/Start/selectType",
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqFiyt7wS12lI_rUhTw99begXgQ0LvwUC18DwlXo9Eg2B1yJuGYSfRihhgLRgYXVtH7IziVPua_6QBHDYbiG_tKMeVST0H3Nzw=s4800-w800",
+        "instagram_url": "https://www.instagram.com/raviolonashkelon/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "גרציאני",
+      "name_english": "Graziani",
+      "name_in_transcript": "גרציאני",
+      "google_name": "Gratziani",
+      "skip_reason": "נפגע בהפצצה - חדשות תעשייה בלבד, המארחים לא סקרו או המליצו",
+      "timestamp": {
+        "seconds": 1107,
+        "display": "18:27",
+        "youtube_url": "https://www.youtube.com/watch?v=w-n3zFXTuGM&t=1107s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "address": "רחוב יהודה הלוי, תל אביב"
+      },
+      "host_quotes": [
+        "גרציאני ברחוב יהודה הלוי שנפגעו קשה מאוד"
+      ],
+      "mention_context": "הוזכר כמסעדה שנפגעה קשה מהפצצות באזור התחתית בתל אביב",
+      "google_places": {
+        "place_id": null,
+        "rating": 4.3,
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "הפלור",
+      "name_english": "Flor",
+      "name_in_transcript": "הפלור",
+      "google_name": "FLOR - Cave à Manger",
+      "skip_reason": "נפגע בהפצצה, עשו הדסטארט - חדשות תעשייה בלבד",
+      "timestamp": {
+        "seconds": 1110,
+        "display": "18:30",
+        "youtube_url": "https://www.youtube.com/watch?v=w-n3zFXTuGM&t=1110s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "address": "תל אביב"
+      },
+      "host_quotes": [
+        "מקסים בעיניי לראות שהחבר'ה של הפלור...פתחו הדסטארט"
+      ],
+      "mention_context": "הוזכר כמסעדה שנפגעה מהפצצות ועשתה הדסטארט מוצלח לגיוס כספים לשיקום",
+      "google_places": {
+        "place_id": null,
+        "rating": 4.8,
+        "verified": true,
+        "instagram_url": "https://www.instagram.com/flor.telaviv/"
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "יפו תל אביב",
+      "name_english": "Yaffo Tel Aviv",
+      "name_in_transcript": "פו תל אביב",
+      "google_name": "Yaffo Tel Aviv",
+      "skip_reason": "המסעדה של חיים כהן הוזכרה רק בהקשר של מספר סועדים נמוך בזמן המלחמה",
+      "timestamp": {
+        "seconds": 1510,
+        "display": "25:10",
+        "youtube_url": "https://www.youtube.com/watch?v=w-n3zFXTuGM&t=1510s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "address": "יגאל אלון 98, תל אביב"
+      },
+      "host_quotes": [
+        "הפעם האחרונה שהסתכלתי בערך 16 17 איש"
+      ],
+      "mention_context": "חיים כהן נשאל כמה סועדים אכלו אתמול ביפו תל אביב - 16-17 איש",
+      "google_places": {
+        "place_id": "ChIJjWNkBJ9LHRURiO82rTq2iHE",
+        "rating": 4.3,
+        "verified": true,
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqGMfgKlK-YsHk05-jK6f24nIPLR-_qO6t07K5zHp7Ny02YmJAY1zRWTvEhjD4RkjGpJNEL4XzybWAhUzNIYdli6MLCMRokJzNQ=s4800-w800"
+      },
+      "production_db": {
+        "exists": true,
+        "id": "6abafbca-fb07-4e66-93d9-69d4a912ce57"
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "מירים",
+      "name_english": "Mirim",
+      "name_in_transcript": "מירים",
+      "google_name": "מירים פלורנטין - TAZUZU",
+      "skip_reason": "בעל המסעדה (חיים כהן) מדבר על העסק שלו - חדשות תעשייה, לא סקירה",
+      "timestamp": {
+        "seconds": 1906,
+        "display": "31:46",
+        "youtube_url": "https://www.youtube.com/watch?v=w-n3zFXTuGM&t=1906s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "פלורנטין"
+      },
+      "host_quotes": [
+        "פתחתי את מסעדת מירים ממש בתחילת השנה...לא מסעדה שמצליחה להרוויח"
+      ],
+      "mention_context": "חיים כהן מספר שפתח את מירים בתחילת השנה ושהיא מתקשה להרוויח בתקופת המלחמה",
+      "google_places": {
+        "place_id": null,
+        "rating": null,
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "ג'רדינו",
+      "name_english": "Giardino",
+      "name_in_transcript": "ג'רדינו",
+      "google_name": "Giardino Bello",
+      "skip_reason": "נדון בהקשר של משחקי השף וזכייתו של בר צנגר - חדשות תעשייה ותוכנית ריאליטי, לא סקירת אוכל. אמית מזכיר ארוחה מאכזבת מלפני שנתיים אבל לא כסקירה נוכחית.",
+      "timestamp": {
+        "seconds": 2161,
+        "display": "36:01",
+        "youtube_url": "https://www.youtube.com/watch?v=w-n3zFXTuGM&t=2161s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "יפו",
+        "address": "מלון דה ז'אפה, יפו"
+      },
+      "host_quotes": [
+        "הארוחה שאני למשל אכלתי בג'רדינו לפני בערך שנתיים הייתה ארוחה מאוד מאוד מאכזבת"
+      ],
+      "mention_context": "נדון בהרחבה בהקשר של זכיית בר צנגר, השף הראשי של ג'רדינו, בגמר משחקי השף",
+      "google_places": {
+        "place_id": null,
+        "rating": 4.1,
+        "verified": true,
+        "instagram_url": "https://www.instagram.com/giardinobello2/"
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "נומה",
+      "name_english": "Noma",
+      "name_in_transcript": "נומה",
+      "google_name": "Noma",
+      "skip_reason": "שיחה ארוכה על פרשת התעללויות במסעדה - חדשות תעשייה ושערורייה, לא סקירת אוכל",
+      "timestamp": {
+        "seconds": 2704,
+        "display": "45:04",
+        "youtube_url": "https://www.youtube.com/watch?v=w-n3zFXTuGM&t=2704s"
+      },
+      "location": {
+        "city": "קופנהגן",
+        "address": "קופנהגן, דנמרק"
+      },
+      "host_quotes": [
+        "תחקיר...על מסעדת נומה בקופנהגגן שבמשך שנים נחשבת למסעדה מהטובות בעולם",
+        "מסכת התעללויות אין דרך אחרת לתאר את זה"
+      ],
+      "mention_context": "דיון ארוך על תחקיר ניו יורק טיימס שחשף התעללויות במסעדת נומה של רנה רדזפי. כולל ראיון עם ליאור משיח שעשתה סטאז' שם.",
+      "google_places": {
+        "place_id": null,
+        "rating": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": true,
+        "id": "1481de0b-df9e-4f60-bd64-8bece4306708"
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "מטרלו",
+      "name_english": "Matrelo",
+      "name_in_transcript": "מטרלו",
+      "google_name": "מטרלו",
+      "skip_reason": "המארחים אומרים במפורש שלא מדברים על מטרלו עד שלא עוברת חצי שנה מהפתיחה",
+      "timestamp": {
+        "seconds": 3734,
+        "display": "62:14",
+        "youtube_url": "https://www.youtube.com/watch?v=w-n3zFXTuGM&t=3734s"
+      },
+      "location": {
+        "city": null
+      },
+      "host_quotes": [
+        "השביע אותנו שאנחנו לא מדברים על מטרלו עד שלא עוברת חצי שנה מהפתיחה"
+      ],
+      "mention_context": "הוזכר כמקום מעניין שעומד להיפתח אבל המארחים מציינים שלא ידברו עליו עד חצי שנה",
+      "google_places": {
+        "place_id": null,
+        "rating": 5,
+        "verified": true
+      },
+      "production_db": {
+        "exists": true,
+        "id": "41d47b6b-e26a-4520-ae08-851b07b65bff"
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "מרלוזה",
+      "name_english": "Merluza",
+      "name_in_transcript": "מרלוזה",
+      "google_name": "מרלוזה | merloza",
+      "skip_reason": "הכרזת סגירה - חדשות תעשייה בלבד, המארחים לא סקרו",
+      "timestamp": {
+        "seconds": 3760,
+        "display": "62:40",
+        "youtube_url": "https://www.youtube.com/watch?v=w-n3zFXTuGM&t=3760s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "address": "לילנבלום, תל אביב"
+      },
+      "host_quotes": [
+        "הראשון זה מרלוזה",
+        "זה מבאס מאוד"
+      ],
+      "mention_context": "דור אבן הודיע על סגירת מרלוזה ברחוב לילנבלום. יש דיבורים שאלכסנדר סחנובסקי (גייג'ין) יקח את החלל ויפתח מסעדה עם השפים גדי ויונתן.",
+      "google_places": {
+        "place_id": null,
+        "rating": 4.6,
+        "verified": true,
+        "instagram_url": "https://www.instagram.com/merloza.lilienblum/"
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "מאשיה",
+      "name_english": "Mashya",
+      "name_in_transcript": "מאשיה",
+      "google_name": "Mashya",
+      "skip_reason": "חדשות תעשייה - שינויי שפים ובעלות, אין סקירת אוכל",
+      "timestamp": {
+        "seconds": 3836,
+        "display": "63:56",
+        "youtube_url": "https://www.youtube.com/watch?v=w-n3zFXTuGM&t=3836s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "address": "רחוב מנדליס, תל אביב"
+      },
+      "host_quotes": [
+        "גיל דהן ומשיה כבר לא"
+      ],
+      "mention_context": "שמועות על עזיבת גיל דהן ממאשיה, ואפשרות שרפי כהן ייכנס כיועץ קולינרי - סגירת מעגל סימבולית כי מאשיה הייתה אמורה להיות מסעדת חמש של רפי כהן ב-2013.",
+      "google_places": {
+        "place_id": null,
+        "rating": 4.4,
+        "verified": true,
+        "instagram_url": "https://www.instagram.com/mashya_restaurant/"
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "אלטר פיצה",
+      "name_english": "Alter Pizza",
+      "name_in_transcript": "אלטר פיצה",
+      "google_name": "Alter Pizza",
+      "skip_reason": "אזכור חולף - הוזכרה כפיצרייה טובה בשכונה, בלי סקירה או חוות דעת",
+      "timestamp": {
+        "seconds": 998,
+        "display": "16:38",
+        "youtube_url": "https://www.youtube.com/watch?v=w-n3zFXTuGM&t=998s"
+      },
+      "location": {
+        "city": "תל אביב"
+      },
+      "host_quotes": [
+        "יש לנו אחת טובה לא רחוק מפה. האלטר פיצה."
+      ],
+      "mention_context": "נטע מזכירה בחטף את אלטר פיצה כפיצרייה טובה ליד הבית",
+      "google_places": {
+        "place_id": null,
+        "rating": 4.1,
+        "verified": true
+      },
+      "production_db": {
+        "exists": true,
+        "id": "7e04110b-bb11-4e39-8604-b7f8e3e911b1"
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "רפאל",
+      "name_english": "Rafael",
+      "name_in_transcript": "רפאל",
+      "google_name": null,
+      "skip_reason": "הפניה היסטורית למסעדה שכבר נסגרה - הקשר של רפי כהן",
+      "timestamp": {
+        "seconds": 3889,
+        "display": "64:49",
+        "youtube_url": "https://www.youtube.com/watch?v=w-n3zFXTuGM&t=3889s"
+      },
+      "location": {
+        "city": "תל אביב"
+      },
+      "host_quotes": [
+        "רפי כהן היה אמור לפתוח את המסעדה הבאה שלו אחרי רפאל"
+      ],
+      "mention_context": "הפניה היסטורית: רפאל הייתה המסעדה של רפי כהן, ומאשיה הייתה אמורה להיות המסעדה הבאה שלו",
+      "google_places": {
+        "place_id": null,
+        "rating": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": true,
+        "id": "d0c1bb80-bf2c-4127-90b1-7d1a62a1cfae"
+      }
+    }
+  ]
+}

@@ -1,0 +1,787 @@
+{
+  "episode": {
+    "video_id": "LXC39QRwVlc",
+    "video_url": "https://www.youtube.com/watch?v=LXC39QRwVlc",
+    "title": "מדברים מהבטן - פרק 147",
+    "channel_name": "מדברים מהבטן - הפודיום",
+    "published_at": "2026-02-25",
+    "hosts": [
+      "עמית אהרונסון",
+      "יהונתן כהן",
+      "נתה סלונים"
+    ],
+    "guests": [
+      "אורל קימחי"
+    ],
+    "language": "he",
+    "transcript_length": 47114,
+    "segment_count": 1378,
+    "episode_id": "2c4327b3-5c46-40ec-a951-cf954595a307",
+    "summary": "פרק 147 של מדברים מהבטן מאולפן חדש בפתח תקווה. עמית חוזר מפריז עם מדריך קולינרי מפורט, יהונתן מבקר בצ'קולי ומתלהב מדיל הצהריים, נתה מספרת על סופ\"ש בסיקסנס עם השף דודו ביטון וחוויה פושרת בגסטרומכניקו. ראיון עם אורל קימחי לרגל 13 שנה לפופינה. דיון על מגמת כתבות אוכל בטלוויזיה, מכרז מנטריי וסגירת איבי."
+  },
+  "extraction": {
+    "date": "2026-03-24",
+    "agent": "episode-processor",
+    "total_mentions": 22,
+    "add_to_page": 7,
+    "reference_only": 12,
+    "rejected": 3,
+    "already_in_db": 11,
+    "new_to_add": 1
+  },
+  "restaurants": [
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "קרנבר",
+      "name_english": "Carne Bar",
+      "name_in_transcript": "קרנבר",
+      "google_name": "Carne Bar",
+      "timestamp": {
+        "seconds": 516,
+        "display": "08:36",
+        "youtube_url": "https://www.youtube.com/watch?v=LXC39QRwVlc&t=516s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "מונטיפיורי",
+        "address": "Yehudit Blvd 27, Tel Aviv-Yafo, Israel",
+        "region": "מרכז",
+        "latitude": 32.0700132,
+        "longitude": 34.7916863
+      },
+      "cuisine_type": "ארגנטינאי",
+      "price_range": "בינוני",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "פשוט יופי של ביס",
+        "קולים את הלחם נפלא שתי נקניקיות שוריסו שמנמנות בול טובות",
+        "צ'ימצ'ורי שנעשה במקום פגז"
+      ],
+      "host_comments": "יהונתן ביקר במסעדה ארגנטינאית בשכונת מונטיפיורי בתל אביב. התלהב במיוחד מהצ'וריפן - צ'וריסו בלחם עם צ'ימצ'ורי ביתי ושום קונפי",
+      "dishes_mentioned": [
+        "צ'וריפן",
+        "אסאדו",
+        "מילנסה"
+      ],
+      "special_features": [
+        "מסעדה ארגנטינאית",
+        "אוכל רחוב ארגנטינאי",
+        "צ'ימצ'ורי ביתי"
+      ],
+      "mention_context": "ביס השבוע של יהונתן - ביקר במסעדה ארגנטינאית בשכונת מונטיפיורי והתלהב מהצ'וריפן",
+      "speaker": "יהונתן כהן",
+      "google_places": {
+        "place_id": "ChIJk3oSbwlLHRUR9cnjwHqifyw",
+        "google_url": "https://maps.google.com/?cid=3206460107816946165",
+        "rating": 4.6,
+        "review_count": 96,
+        "price_level": null,
+        "phone": "050-936-8492",
+        "website": "http://carnebar.co.il/",
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqF8_96p0Ri0q7RYMETosYMW0pPAABhSUG_XOflWkNVrtSxaHa0qKWiRIYWWD_PKVYm8Pmc7uwRuWSOimqucBEHZq7DJt2k4rgg=s1600-w800",
+        "instagram_url": null,
+        "verified": true
+      },
+      "production_db": {
+        "exists": true,
+        "id": "f012c2f0-1728-4a8b-9b0c-ba26cdeb03a6"
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "גסטרו מכניקו",
+      "name_english": "Gastro Mechanico",
+      "name_in_transcript": "גסטרומכניקו",
+      "google_name": "גסטרו מכניקו Gastro Mechanico",
+      "timestamp": {
+        "seconds": 1017,
+        "display": "16:56",
+        "youtube_url": "https://www.youtube.com/watch?v=LXC39QRwVlc&t=1017s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": null,
+        "address": "Chlenov St 22, Tel Aviv-Yafo, Israel",
+        "region": "מרכז",
+        "latitude": 32.0575362,
+        "longitude": 34.7747852
+      },
+      "cuisine_type": "שף",
+      "price_range": "יקר",
+      "status": "פתוח",
+      "host_opinion": "מעורבת",
+      "host_quotes": [
+        "חזרתי עם איזה חוויה כזאת של מדהים, לא עושה גרוע, לא ידעתי אם באלי לבוא לפה",
+        "המסעדה הכי צפופה שישבתי בה בחיים שלי",
+        "הפירה שלהם לדעתי מהטופ בעיר פירה פגז",
+        "האוכל היה סבבה"
+      ],
+      "host_comments": "נתה ביקרה בגסטרומכניקו. צפיפות קשה מאוד, מפות לא מגוהצות, לחם לא מוצלח. מצד שני הפירה מהטובות בעיר, שיפודים טובים, זכוג פצצה. חוויה כוללת בינונית-פושרת",
+      "dishes_mentioned": [
+        "שיפודים",
+        "פירה",
+        "זכוג",
+        "סלט עלים",
+        "שיפוד פרגית בסגנון קיסר",
+        "לחם"
+      ],
+      "special_features": [
+        "מטבח פתוח",
+        "בר"
+      ],
+      "mention_context": "נתה עשתה אבי הפרטי וביקרה בגסטרומכניקו - חוויה מעורבת עם אוכל סביר אבל צפיפות קשה ופרטים שלא עבדו",
+      "speaker": "נתה סלונים",
+      "google_places": {
+        "place_id": "ChIJ3wqvM6hLHRUR5zkKQgkBdP4",
+        "google_url": "https://maps.google.com/?cid=18335281122206431719",
+        "rating": 4.0,
+        "review_count": 41,
+        "price_level": null,
+        "phone": "050-439-1292",
+        "website": "https://gastro-mechanico.com/",
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqEo3bqtGT62on5E_zEEhZrABlvfZWDBx7xWXcH8o2qvpQBD41yetpZytLTNB8tMgUrVE26fkjh-U4Pw33wmMvCDqKK2eWL5cvY=s1600-w800",
+        "instagram_url": null,
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "צ'קולי",
+      "name_english": "Chacoli",
+      "name_in_transcript": "צ'קולי",
+      "google_name": "Chacoli",
+      "timestamp": {
+        "seconds": 2620,
+        "display": "43:40",
+        "youtube_url": "https://www.youtube.com/watch?v=LXC39QRwVlc&t=2620s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": null,
+        "address": "Retsif Herbert Samuel St 3, Tel Aviv-Yafo, Israel",
+        "region": "מרכז",
+        "latitude": 32.0678001,
+        "longitude": 34.7622449
+      },
+      "cuisine_type": "ספרדי",
+      "price_range": "בינוני",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "המגש כבש אותי",
+        "ביס וואו מה שהיה טרי היה טרי",
+        "יצאתי מסופר מהפתי ברמות שלא יומנו",
+        "זה מגש מומלץ בחום זה פתיח אדיר נדיב"
+      ],
+      "host_comments": "יהונתן ביקר בדיל הצהריים החדש של צ'קולי - המגש האנדלוסי ב-39 שקל לשש צלוחיות. התלהב מהאיכות, הטריות והמחיר",
+      "dishes_mentioned": [
+        "מגש אנדלוסי",
+        "פסתיה זנב שור",
+        "זיתים במטבוחה",
+        "שעועית לבנה בקצ'ו פפה מנצ'גו",
+        "ביצה רכה אנשובי בטמפורה",
+        "קלמרים מטוגנים",
+        "טונה אורטיז",
+        "פטטס ברבס"
+      ],
+      "special_features": [
+        "דיל צהריים 39 שקל",
+        "מגש אנדלוסי",
+        "מסעדת השנה של עמית"
+      ],
+      "mention_context": "יהונתן ביקר בדיל הצהריים החדש של צ'קולי - מגש אנדלוסי ב-39 שקל עם שש צלוחיות מתוך תשע אפשרויות",
+      "speaker": "יהונתן כהן",
+      "google_places": {
+        "place_id": "ChIJzR-iXgBNHRUR92oIpgbfTek",
+        "google_url": "https://maps.google.com/?cid=16811338203692296951",
+        "rating": 4.1,
+        "review_count": 553,
+        "price_level": null,
+        "phone": "03-656-4740",
+        "website": null,
+        "photo_url": "AU_ZVEGSuvGVYfsaDsTOG2jTkQZ2z6ORtUWLyG4hvr5GZRQtsImbTFt8rtcbGvY0adxD-dl04ABzyqKmpIReTkp3GxC7O5nLxGusSdBCzzzuCMucEa3DvfDN8uPjOcwoHx9NkPG472cv5qVbEvFJ1nEvdo3hQD7yrZnJbEwXKCqAs7CVfMQWllK_noBVeE3EaiS__qHnbwyWVzPIWqDPYeTFsNy2dE9qha9l3mq2ynyQ_OzU6mvhvk0iEzQTovPW9i5FRxAp6qaq92e7Slp21ZDX-Q77uLqgI7ROnrHJsklIi4ceeQ",
+        "instagram_url": null,
+        "verified": true
+      },
+      "production_db": {
+        "exists": true,
+        "id": "f8bf4d4d-287e-4706-9662-98ad892bc040"
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "פופינה",
+      "name_english": "Popina",
+      "name_in_transcript": "פופינה",
+      "google_name": "Popina",
+      "timestamp": {
+        "seconds": 2168,
+        "display": "36:08",
+        "youtube_url": "https://www.youtube.com/watch?v=LXC39QRwVlc&t=2168s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": null,
+        "address": "Ahad Ha'Am St 3, Tel Aviv-Yafo, Israel",
+        "region": "מרכז",
+        "latitude": 32.0633936,
+        "longitude": 34.7684645
+      },
+      "cuisine_type": "שף",
+      "price_range": "יקר",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "ונהנת ונהניתי ברמות",
+        "כל עוד אני רוצה זה הזה בשמחה"
+      ],
+      "host_comments": "ראיון עם אורל קימחי לרגל 13 שנה לפופינה. נתה ביקרה לאחרונה ונהנתה ברמות. קימחי מספר על חידוש התפריט - 9 מנות דגל קבועות ו-9 מנות עונתיות, אירוע שיפודיה מיוחד, ומסיבת יום הולדת 13",
+      "dishes_mentioned": [
+        "המבורגר",
+        "ג'ין טוניק",
+        "לחי עגל",
+        "בריוש בשומן בקר",
+        "שיפוד שקד עגל",
+        "סקאלופ בבייקון"
+      ],
+      "special_features": [
+        "13 שנה",
+        "תפריט מתחדש",
+        "מסיבה מיוחדת",
+        "ערב שיפודיה"
+      ],
+      "mention_context": "ראיון טלפוני עם אורל קימחי לרגל 13 שנה לפופינה. שיחה על חידוש, יציבות, ואירוע שיפודיה מיוחד",
+      "speaker": "hosts",
+      "google_places": {
+        "place_id": "ChIJW_PEYptMHRURb-4h9AYDN_w",
+        "google_url": "https://maps.google.com/?cid=18173998149677477487",
+        "rating": 4.3,
+        "review_count": 2312,
+        "price_level": 4,
+        "phone": "03-575-7477",
+        "website": "http://popina.co.il/",
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqEdcMntL5qlEU3CkNHTi-kYKb_iK3kDU2Iepx5m3JZWxz1asK18iFHzpBoiQHcD7_Bm7M1-fGmC73vUxGdrCKRY9ySg7qyn5M0=s1600-w800",
+        "instagram_url": "https://www.instagram.com/popina_chef_restaurant/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": true,
+        "id": "7b3511d2-d896-4a62-91fe-a5c5c078611c"
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "סיקסנס שחרות",
+      "name_english": "Six Senses Shaharut",
+      "name_in_transcript": "סיקסנס",
+      "google_name": "Six Senses Shaharut",
+      "timestamp": {
+        "seconds": 2877,
+        "display": "47:56",
+        "youtube_url": "https://www.youtube.com/watch?v=LXC39QRwVlc&t=2877s"
+      },
+      "location": {
+        "city": "שחרות",
+        "neighborhood": null,
+        "address": "Hevel-Eilot, Negev Desert, Israel",
+        "region": "דרום",
+        "latitude": 29.91601559999999,
+        "longitude": 35.0059852
+      },
+      "cuisine_type": "שף",
+      "price_range": "יקר מאוד",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "באמת מדהים מדהים בכל הרזולוציות והמובנים",
+        "על הכל מנצח דוד ביטון דודו ביטון",
+        "מאוד טעים גם את הפסטות",
+        "הרבה זמן לא נהניתי ככה מאוכל כ-24/7"
+      ],
+      "host_comments": "נתה ביקרה בסופ\"ש קולינרי בסיקסנס שחרות עם השף דודו ביטון. אוכל ברמה גבוהה מאוד - פסטות מדויקות, אורזו, המבורגר, חומוס סמבוסק, מאפים מעולים. גם כלל ארוחה עם שף גי אריש",
+      "dishes_mentioned": [
+        "פסטה ניולטי שורש פטרוזיליה",
+        "אורזו",
+        "המבורגר",
+        "חומוס סמבוסק",
+        "קרואסון",
+        "לחם מחמצת",
+        "לוקוס עם אייה"
+      ],
+      "special_features": [
+        "מלון יוקרה",
+        "שף דודו ביטון",
+        "סופ\"ש קולינרי עם שף גי אריש",
+        "גינת ירק",
+        "בריכה ונוף"
+      ],
+      "mention_context": "נתה סיפרה על סופ\"ש קולינרי מושלם בסיקסנס עם השף דודו ביטון ואירוע מיוחד עם שף גי אריש",
+      "speaker": "נתה סלונים",
+      "google_places": {
+        "place_id": "ChIJJyREoahPABURJyob_wC_NNU",
+        "google_url": "https://maps.google.com/?cid=15363114239868480039",
+        "rating": 4.4,
+        "review_count": 337,
+        "price_level": null,
+        "phone": "08-615-0055",
+        "website": "https://www.sixsenses.com/en/hotels-resorts/middle-east-africa/israel/shaharut/",
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqGsRz-H98zu0T3urCs8tgw1oF6MH4MkD7Nc9zAqwnqeJnVcoJ8wA_FHQ5CnO_b_wC8wtz0mc2ITmca0EC9uL3QvEaVUOyVJv4k=s1600-w800",
+        "instagram_url": "https://www.instagram.com/sixsenses.shaharut/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": true,
+        "id": "aef71ca0-b1c4-462c-a782-b69038e59d4f"
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "הוזכר",
+      "name_hebrew": "בצ'וטה",
+      "name_english": "Chota",
+      "name_in_transcript": "בצ'וטה",
+      "google_name": "Chota",
+      "timestamp": {
+        "seconds": 3557,
+        "display": "59:17",
+        "youtube_url": "https://www.youtube.com/watch?v=LXC39QRwVlc&t=3557s"
+      },
+      "location": {
+        "city": "ירושלים",
+        "neighborhood": null,
+        "address": "Ben Sira St 18, Jerusalem, Israel",
+        "region": "ירושלים",
+        "latitude": 31.7787289,
+        "longitude": 35.2220011
+      },
+      "cuisine_type": "שף",
+      "price_range": "יקר",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "אולי היום המקום הכי מעניין שיש לעיר הבירה להציע",
+        "האירוח והנדיבות והשירות והרגישות"
+      ],
+      "host_comments": "סגי כהן מרים במלוא הכבוד לבצ'וטה של אילן גרוסי בירושלים. המנחים מסכימים שזה המקום הכי מעניין בירושלים כרגע. ציון מיוחד לאירוח ונדיבות",
+      "dishes_mentioned": [],
+      "special_features": [
+        "מקום חדש של אילן גרוסי",
+        "אירוח יוצא דופן"
+      ],
+      "mention_context": "נזכר בפינת המבקרים - סגי כהן כותב חיובי מאוד על בצ'וטה של אילן גרוסי בירושלים",
+      "speaker": "hosts",
+      "google_places": {
+        "place_id": "ChIJbd2Z9VopAxURhtMxQvXr0n4",
+        "google_url": "https://maps.google.com/?cid=9138626032498234246",
+        "rating": 4.9,
+        "review_count": 82,
+        "price_level": null,
+        "phone": "02-500-2250",
+        "website": null,
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqFuavwoSnWnYvGjgMLdFm-glwJm24kRinsTFBslwrdSotPOu592etPYXEHKP0cDupvUn8JbYs_SxeCWdHdEd4tMprR237gUOKs=s4800-w800",
+        "instagram_url": "https://www.instagram.com/chota_rest",
+        "verified": true
+      },
+      "production_db": {
+        "exists": true,
+        "id": "5e10dcd0-2275-4396-b420-2e6d72e5f422"
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "טומו קנדי",
+      "name_english": "Tomo Candy",
+      "name_in_transcript": "טומו קנדי",
+      "google_name": "Tomo Candy – טומו קנדי",
+      "timestamp": {
+        "seconds": 870,
+        "display": "14:30",
+        "youtube_url": "https://www.youtube.com/watch?v=LXC39QRwVlc&t=870s"
+      },
+      "location": {
+        "city": "אבן יהודה",
+        "neighborhood": null,
+        "address": "HaRimon Street 1, Even Yehuda, Israel",
+        "region": "שרון",
+        "latitude": 32.2809148,
+        "longitude": 34.8915703
+      },
+      "cuisine_type": "סדנת ממתקים",
+      "price_range": "בינוני",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "זו חוויה מגניבה זו חוויה מגניבה לרמות",
+        "איש חמוד וכיף לפרגן לו אהבתי ברמות"
+      ],
+      "host_comments": "נתה ביקרה בסדנת ממתקים של טומו קנדי - סוכריות מתיחה בעבודת יד. חוויה מגניבה למבוגרים ולילדים, הבעלים טוני מאוסטרליה, כשר למהדרין",
+      "dishes_mentioned": [
+        "סוכריות מתיחה"
+      ],
+      "special_features": [
+        "סדנת ממתקים",
+        "כשר למהדרין",
+        "חוויה לילדים ומבוגרים"
+      ],
+      "mention_context": "ביסון של נתה - סדנת ממתקים מיוחדת עם ייצור סוכריות מתיחה מאפס",
+      "speaker": "נתה סלונים",
+      "google_places": {
+        "place_id": "ChIJ_78kgjNKHRURrVa2o62-C-0",
+        "google_url": "https://maps.google.com/?cid=17080955664717993645",
+        "rating": 4.9,
+        "review_count": 323,
+        "price_level": null,
+        "phone": "053-301-9761",
+        "website": "http://www.tomocandy.com/",
+        "photo_url": "https://lh3.googleusercontent.com/place-photos/AL8-SNEadO_9h--GwYgS6akfehl_GgTHtGqOUhn4hYPn5hEcBLIkoOTfB6S-UstMYBPWrOE9dEMITwDfvtI390Dn1ubZbsT-iefW8GdWpUzV-3VtfEya1XEge51QIl3swotV4LQkTWSch-7PBiuvFpI=s1600-w800",
+        "instagram_url": "https://www.instagram.com/tomocandyshop/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": true,
+        "id": "fae423db-177e-4533-adab-3bb069827f84"
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "פונטושו קפה",
+      "name_english": "Fontocho Cafe",
+      "name_in_transcript": "פונטושו קפה",
+      "skip_reason": "מסעדה בפריז - מדריך טיולים, לא מסעדה ישראלית",
+      "timestamp": {
+        "seconds": 406,
+        "display": "06:45",
+        "youtube_url": "https://www.youtube.com/watch?v=LXC39QRwVlc&t=406s"
+      },
+      "location": {
+        "city": "פריז",
+        "address": "Paris, France"
+      },
+      "host_quotes": [
+        "זה פשוט פשוט מטורף מטורף"
+      ],
+      "mention_context": "עמית ממליץ על בית קפה יפני בפריז עם קינוחים מטורפים שמורכבים ברגע ההזמנה",
+      "production_db": {
+        "exists": true,
+        "id": "6d1e17df-a92e-4939-81eb-739efc67e04b"
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "טן בלס",
+      "name_english": "Ten Belles",
+      "name_in_transcript": "טן בלס",
+      "skip_reason": "מאפייה בפריז - מדריך טיולים, לא מסעדה ישראלית",
+      "timestamp": {
+        "seconds": 3203,
+        "display": "53:23",
+        "youtube_url": "https://www.youtube.com/watch?v=LXC39QRwVlc&t=3203s"
+      },
+      "location": {
+        "city": "פריז",
+        "address": "Paris, France"
+      },
+      "host_quotes": [
+        "סלט אמיתי, לא כזה סלט צרפתי, מלא עלים ובצל כבוש וירקות"
+      ],
+      "mention_context": "עמית ממליץ על מאפייה פריזאית לארוחת בוקר - לחמי מחמצת, מנות בוקר ותפריט שמפתיע בסלט אמיתי",
+      "production_db": {
+        "exists": true,
+        "id": "10c495d9-2094-4547-bafb-64600f87ba5d"
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "בריגד דיגר",
+      "name_english": "Brigade du Tigre",
+      "name_in_transcript": "בריגד דיגר",
+      "skip_reason": "מסעדה בפריז - מדריך טיולים, לא מסעדה ישראלית",
+      "timestamp": {
+        "seconds": 3286,
+        "display": "54:46",
+        "youtube_url": "https://www.youtube.com/watch?v=LXC39QRwVlc&t=3286s"
+      },
+      "location": {
+        "city": "פריז",
+        "address": "Paris, France"
+      },
+      "host_quotes": [
+        "הארוחה הכי כיפית של הטיול"
+      ],
+      "mention_context": "עמית ממליץ על ביסטרו אסיאתי מודרני בפריז - סושי עם בטן חזיר, אוניגירי בסגנון ארנצ'יני, קנר על אורנז' מפורק",
+      "production_db": {
+        "exists": true,
+        "id": "dba3d5f7-3c64-4f15-863a-e7015bc4c197"
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "סנרוש 19",
+      "name_english": "Cendrouse 19",
+      "name_in_transcript": "סנרוש",
+      "skip_reason": "מסעדה בפריז - מדריך טיולים, לא מסעדה ישראלית",
+      "timestamp": {
+        "seconds": 3428,
+        "display": "57:08",
+        "youtube_url": "https://www.youtube.com/watch?v=LXC39QRwVlc&t=3428s"
+      },
+      "location": {
+        "city": "פריז",
+        "address": "Paris, France"
+      },
+      "host_quotes": [
+        "אוכל באמת מרתק מעורר מחשבה"
+      ],
+      "mention_context": "עמית ממליץ על ארוחת ערב אצל השף היהודי פיר טוויטו בפריז - מטבח צרפתי עם קריצות לאסיה וצפון אפריקה",
+      "production_db": {
+        "exists": true,
+        "id": "b447d072-9422-4f64-8cec-9dcff1070e02"
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "טל שפיגל",
+      "name_english": "Tal Spiegel Patisserie",
+      "name_in_transcript": "טל שפיגל",
+      "skip_reason": "פטיסרי בפריז - מדריך טיולים, לא מסעדה ישראלית",
+      "timestamp": {
+        "seconds": 3351,
+        "display": "55:50",
+        "youtube_url": "https://www.youtube.com/watch?v=LXC39QRwVlc&t=3351s"
+      },
+      "location": {
+        "city": "פריז",
+        "address": "Rue de Rivoli, Paris, France"
+      },
+      "host_quotes": [
+        "מקום מדהים"
+      ],
+      "mention_context": "עמית ממליץ על פטיסרי של טל שפיגל ברחוב ריבולי בפריז - מאפים אסתטיים ברמה גבוהה",
+      "production_db": {
+        "exists": true,
+        "id": "616a5c02-8625-444a-9f81-c1ee67305d59"
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "ובניל",
+      "name_english": "Vanille",
+      "name_in_transcript": "ובניל",
+      "skip_reason": "מסעדה בפריז - חוויה שלילית בחו\"ל, לא מסעדה ישראלית",
+      "timestamp": {
+        "seconds": 1277,
+        "display": "21:16",
+        "youtube_url": "https://www.youtube.com/watch?v=LXC39QRwVlc&t=1277s"
+      },
+      "location": {
+        "city": "פריז",
+        "address": "Paris, France"
+      },
+      "host_quotes": [
+        "באסה מאוד מאוד מבסת"
+      ],
+      "mention_context": "עמית מספר על חוויה מאכזבת במסעדה בפריז שנקראת ובניל - שום דולר לא קטסטרופלי אבל מבאס. השף שיתף את הביקורת השלילית בסטורי הרשמי של המסעדה",
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "מנטריי",
+      "name_english": "Mantra'y",
+      "name_in_transcript": "מנטרי",
+      "skip_reason": "חדשות תעשייה - מכרז להפעלה, לא ביקורת",
+      "timestamp": {
+        "seconds": 1936,
+        "display": "32:15",
+        "youtube_url": "https://www.youtube.com/watch?v=LXC39QRwVlc&t=1936s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "address": "Tel Aviv, Israel"
+      },
+      "host_quotes": [],
+      "mention_context": "חדשות תעשייה - קבוצת אגנזו (יציק חנגל) זכתה במכרז להפעלת מנטריי",
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "איבי",
+      "name_english": "Ivy",
+      "name_in_transcript": "איבי",
+      "skip_reason": "חדשות סגירה - הבניין נהרס, לא ביקורת",
+      "timestamp": {
+        "seconds": 2014,
+        "display": "33:33",
+        "youtube_url": "https://www.youtube.com/watch?v=LXC39QRwVlc&t=2014s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "address": "Tel Aviv, Israel"
+      },
+      "host_quotes": [],
+      "mention_context": "איבי של קבוצת האחים נסגרת כי הבניין מיועד להריסה - היה ידוע מראש שזה על זמן שאול",
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "עוגיה TLV",
+      "name_english": "Night Cookie (Ugiya TLV)",
+      "name_in_transcript": "עוגיה TLV",
+      "skip_reason": "שלחו אוזני המן לאולפן - לא ביקור או ביקורת",
+      "timestamp": {
+        "seconds": 1364,
+        "display": "22:43",
+        "youtube_url": "https://www.youtube.com/watch?v=LXC39QRwVlc&t=1364s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "address": "Carlebach St 23, Tel Aviv-Yafo, Israel"
+      },
+      "host_quotes": [
+        "בצק מעולה",
+        "הכי אהבתי דווקא את הפלורנטין"
+      ],
+      "mention_context": "קונדיטור בשם מאוז הנדלר שלח אוזני המן לאולפן - טעימות חיוביות אבל לא ביקור במקום",
+      "google_places": {
+        "place_id": "ChIJ00TZji1LHRURN9EPNkwsm-8",
+        "google_url": "https://maps.google.com/?cid=17265442302291071287",
+        "rating": 4.2,
+        "review_count": 509,
+        "verified": true,
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqFf00z3AZLx8SUXY6IbKzgJ9vyc7OuQ5weO8IkMlXS2yMKy1H1N7i6juuhHomoXbfwbNoofB_VD-VrftMybeCahN6mDIjgJyO4=s4800-w800"
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "פורטר אנד סאנס",
+      "name_english": "Porter & Sons",
+      "name_in_transcript": "פורטר",
+      "skip_reason": "הוזכר בהקשר ביקורת של אבי הפרטי - המנחים מזלזלים בבחירה",
+      "timestamp": {
+        "seconds": 3653,
+        "display": "60:52",
+        "youtube_url": "https://www.youtube.com/watch?v=LXC39QRwVlc&t=3653s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "address": "HaArba'a St 14, Tel Aviv-Yafo, Israel"
+      },
+      "host_quotes": [
+        "מקום כל כך זניח סליחה מחילה"
+      ],
+      "mention_context": "נזכר בפינת המבקרים - אבי הפרטי כתב טור חיובי על פורטר אנד סאנס, המנחים חושבים שזו בחירה לא רלוונטית",
+      "production_db": {
+        "exists": true,
+        "id": "d48f7be2-aaf0-410b-96f4-496fc4194860"
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "פלאפל גבי",
+      "name_english": "Falafel Gabay",
+      "name_in_transcript": "פלאפל גבי",
+      "skip_reason": "הוזכר בהקשר ביקורת קוריין - אזכור מהיר, לא ביקורת של המנחים",
+      "timestamp": {
+        "seconds": 3689,
+        "display": "61:28",
+        "youtube_url": "https://www.youtube.com/watch?v=LXC39QRwVlc&t=3689s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "address": "Bograshov St 25, Tel Aviv-Yafo, Israel"
+      },
+      "host_quotes": [
+        "המרק שהוא סולטן",
+        "טעים מאוד טעים מאוד"
+      ],
+      "mention_context": "קוריין כתב על המרק של פלאפל גבי. המנחים מתלהבים מהמרק עם כוסברה אבל לא ביקרו",
+      "google_places": {
+        "place_id": "ChIJE89csn9MHRURzRj6q_ODBHI",
+        "google_url": "https://maps.google.com/?cid=8215836702816213197",
+        "rating": 4.5,
+        "review_count": 1797,
+        "verified": true,
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqElZD4cZyBI-XndBpdh1JxiTIUo0d7cZrQ-ETuNTYZsIsnSg6ft_tpDPViCA9nSUYoMVSw3kV57Vf1XjVdQzBbqOIpUlSktOow=s4800-w800"
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "אורי בורי",
+      "name_english": "Uri Buri",
+      "name_in_transcript": "אורי בורי",
+      "skip_reason": "אזכור בהקשר צפיפות - השוואה לגסטרומכניקו, לא ביקורת",
+      "timestamp": {
+        "seconds": 1101,
+        "display": "18:20",
+        "youtube_url": "https://www.youtube.com/watch?v=LXC39QRwVlc&t=1101s"
+      },
+      "location": {
+        "city": "עכו",
+        "address": "Ha-Hagana St 2, Acre, Israel"
+      },
+      "host_quotes": [],
+      "mention_context": "עמית מזכיר את אורי בורי כדוגמה למקום צפוף שבו הצפיפות מרגישה נעימה - בהשוואה לגסטרומכניקו",
+      "production_db": {
+        "exists": true,
+        "id": "c713ff2d-eceb-4e49-9d63-cc036ed082b9"
+      },
+      "google_places": {
+        "instagram_url": "https://www.instagram.com/uri_buri_akko/"
+      }
+    },
+    {
+      "verdict": "rejected",
+      "name_in_transcript": "הלנה",
+      "reject_reason": "אזכור כחלק מקבוצת אגנזו, לא ביקורת - הלנה צ'קולי אסה",
+      "timestamp": {
+        "seconds": 1976,
+        "display": "32:55"
+      }
+    },
+    {
+      "verdict": "rejected",
+      "name_in_transcript": "מנשלה",
+      "reject_reason": "שם של פרויקט קולינרי בסרון מרקט, לא מסעדה - אירוע מוגבל בזמן",
+      "timestamp": {
+        "seconds": 674,
+        "display": "11:14"
+      }
+    },
+    {
+      "verdict": "rejected",
+      "name_in_transcript": "הסושיה",
+      "reject_reason": "אזכור חולף כדוגמה למקום שעושה מגש צהריים, שם לא מלא",
+      "timestamp": {
+        "seconds": 2841,
+        "display": "47:21"
+      }
+    }
+  ]
+}

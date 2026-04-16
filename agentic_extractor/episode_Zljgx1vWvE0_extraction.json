@@ -1,0 +1,623 @@
+{
+  "episode": {
+    "video_id": "Zljgx1vWvE0",
+    "video_url": "https://www.youtube.com/watch?v=Zljgx1vWvE0",
+    "title": "סי בס עם סלסולים | מדברים מהבטן, פרק 134",
+    "channel_name": "מדברים מהבטן - הפודיום",
+    "published_at": "2025-11-26",
+    "hosts": [
+      "עמית אהרונסון",
+      "יונתן כהן",
+      "נטע סלונים"
+    ],
+    "guests": [
+      "אבירם קץ"
+    ],
+    "language": "he",
+    "transcript_length": 47812,
+    "segment_count": 1441,
+    "episode_id": null,
+    "summary": "פרק 134 של מדברים מהבטן. יונתן חוזר מחופשה בפריז עם המלצה על רשת המבורגרים Junk. נטע ממליצה על קפה פוסלסקי בחיפה עם מנת הצ'ילביר. עמית ממליץ על הנונו בהרצליה. הפרק כולל ראיון עם אבירם קץ מהבסטה על מסעדת סוף החדשה, דיון על לוצ'נה של עדן בן זקן, פתיחת טופין בייקרי, המלצה על ספייס האוס המחודש, ודיון על ביקורות מסעדות."
+  },
+  "extraction": {
+    "date": "2026-04-03",
+    "agent": "episode-processor",
+    "total_mentions": 18,
+    "add_to_page": 5,
+    "reference_only": 8,
+    "rejected": 5,
+    "already_in_db": 0,
+    "new_to_add": 5
+  },
+  "restaurants": [
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "ג'אנק",
+      "name_english": "JUNK",
+      "name_in_transcript": "ג'אנק",
+      "google_name": "JUNK MONTMARTRE",
+      "timestamp": {
+        "seconds": 283,
+        "display": "04:43",
+        "youtube_url": "https://www.youtube.com/watch?v=Zljgx1vWvE0&t=283s"
+      },
+      "location": {
+        "city": "פריז",
+        "neighborhood": "מונמרטר",
+        "address": "114 Rue Montmartre, 75002 Paris, France",
+        "region": "חו\"ל",
+        "latitude": 48.8677042,
+        "longitude": 2.3440285
+      },
+      "cuisine_type": "המבורגר",
+      "price_range": "זול",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "הסמאש פנומנלי, מעטפת פריחה, תוכן בשרני ועסיסי, לחמניה מעולה",
+        "פשוט עונג של ביס",
+        "איזה עוגיה אתה פתאום מגלה כמה חוכמה יכולה לבוא לידי ביטוי באפייה של עוגיה"
+      ],
+      "host_comments": "ביס השבוע של יונתן מפריז. רשת סמאש בורגר צרפתית עם סניפים גם בלונדון, מדריד ודובאי. מגישה שלושה דברים: סמאש, צ'יפס ועוגיות שוקולד צ'יפס. אפשר להזמין את כל התפריט עם שתייה ולקבל עודף מ-20 אירו.",
+      "dishes_mentioned": [
+        "סמאש בורגר",
+        "צ'יפס",
+        "עוגיות שוקולד צ'יפס"
+      ],
+      "special_features": [
+        "רשת צרפתית",
+        "תפריט זול במיוחד",
+        "סניפים בכמה ערים באירופה"
+      ],
+      "mention_context": "ביס השבוע של יונתן כהן מחופשה בפריז",
+      "mention_level": "נטעם",
+      "speaker": "יונתן כהן",
+      "google_places": {
+        "place_id": "ChIJJUdTV_hv5kcR9f4kZSrf1_M",
+        "google_url": "https://maps.google.com/?cid=17570757844387823349",
+        "rating": 4.6,
+        "review_count": 1257,
+        "price_level": null,
+        "phone": null,
+        "website": "https://www.junkburgers.com/",
+        "photo_url": "places/ChIJJUdTV_hv5kcR9f4kZSrf1_M/photos/AU_ZVEHJ5kEVNM7HBsL-8HXn6y7SJdg9MyGnYe10bHFMLTURn7fyqE2ix1hoA5UKldO_3VcBa0xkfsBdG0XayQosIrpcRJYhskPgx9wpqiVERNfPCMkgqcoZkMq1a05HoULTWn7Xhli33RPfVzeVMbr5tnkL4a8ciX_QsEoF2mJboiYX_u_a-Yok84e6aqlnJ3kI5-7V0v3yDxPnU2Wc121ci5p-lJIbKJZa9w0-ToLHvpL21odG6epnsen_Tp6m42sIuxn-5oFR2FEnpISFnBY9NUWn_OH8a9Qc4syB7o6liifI7VJ3o5JRCjJGpeaIFp25yIWR35bd2Ks9gL9TBR7GyCKsG0rA5saG_EwYUIJPbWMDwIAbmZd8_5783ge5kyWtno-rSPHMoUg9Zq3bS5yoyd0m-tC9DSz-8Oih33Z9-w",
+        "instagram_url": null,
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "קפה פוסלסקי",
+      "name_english": "Poselsky Coffee",
+      "name_in_transcript": "פוסלסקי",
+      "google_name": "Poselsky coffee",
+      "timestamp": {
+        "seconds": 572,
+        "display": "09:32",
+        "youtube_url": "https://www.youtube.com/watch?v=Zljgx1vWvE0&t=572s"
+      },
+      "location": {
+        "city": "חיפה",
+        "neighborhood": null,
+        "address": "פיקדון 7, חיפה",
+        "region": "צפון",
+        "latitude": 32.820047,
+        "longitude": 34.9960096
+      },
+      "cuisine_type": "קפה וברנצ'",
+      "price_range": "בינוני",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "ביס מהמם לא הרבה עושים את המנה הזו וחבל",
+        "מנת הניגוב המושלמת",
+        "אומנת בוקר כל כך כיפית"
+      ],
+      "host_comments": "ביס השבוע של נטע. בית קפה רוסי בחיפה עם מנות בראנצ' בינלאומיות. הביס הוא מנת הצ'ילביר (טורקיש אגס) - שלוש ביצים עלומות ביוגורט מטובל עם שום ועשבים, חמאה חריפה ומחמיצת של בריוש לניגוב. מהבודדים שמגישים את המנה בארץ.",
+      "dishes_mentioned": [
+        "צ'ילביר (ביצים טורקיות)",
+        "פרנצ'טוסט דובאי",
+        "אבוקדו טוסט",
+        "ביצים מקושקשות"
+      ],
+      "special_features": [
+        "בית קפה רוסי",
+        "מנות בראנצ' בינלאומיות",
+        "צ'ילביר - מהבודדים בארץ"
+      ],
+      "mention_context": "ביס השבוע של נטע סלונים",
+      "mention_level": "נטעם",
+      "speaker": "נטע סלונים",
+      "google_places": {
+        "place_id": "ChIJQ0ZRqYS7HRURjyHUMwr-lkw",
+        "google_url": "https://maps.google.com/?cid=5518877713161789839",
+        "rating": 4.4,
+        "review_count": 258,
+        "price_level": null,
+        "phone": null,
+        "website": null,
+        "photo_url": "places/ChIJQ0ZRqYS7HRURjyHUMwr-lkw/photos/AU_ZVEGNtP0XW6NVv6Zp52YBDtCeagkT0uPPHZiDPqZLkmNVTdvnekfVBU7xtUpABUHhdc11wacBtSYk2us7FkI0TuIp3aWyApzhaKYqqUsBEaaEZup4Ivg3-dk5izHUco5A5GOLPQSGJz_hSP_FPshW1KhYhdSDE98HHhxHDjB_4RP_7sIX9uZ_BU5oNcPSffhRjCb6ct1XJYfC0IDMzIQ0AJBohbUeKjAzdfHJVLkO9gKKTnKAZZCZZMeTF5Oiuma_PlqQWFeKTYsNzIzPh4E2vYNN02S3jjj97LXlZblAYlA_aA",
+        "instagram_url": "https://www.instagram.com/poselsky.coffee/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "הוזכר",
+      "name_hebrew": "סוף",
+      "name_english": "Sof",
+      "name_in_transcript": "סוף",
+      "google_name": "Suf",
+      "timestamp": {
+        "seconds": 1962,
+        "display": "32:42",
+        "youtube_url": "https://www.youtube.com/watch?v=Zljgx1vWvE0&t=1962s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "יפו",
+        "address": "הר סיני 2-6, תל אביב-יפו",
+        "region": "מרכז",
+        "latitude": 32.064296,
+        "longitude": 34.7719048
+      },
+      "cuisine_type": "בלקני-ים תיכוני",
+      "price_range": "יקר",
+      "status": "חדש",
+      "host_opinion": "חיובית",
+      "host_quotes": [
+        "זה ממש לא מקום שיורד לעם, זה עדיין אנחנו אבל מאוד שונה באופי שלו",
+        "הרבה יותר מקום בילוי",
+        "פתאום מן מוזיקה רועשת, אווירת אלכוהול"
+      ],
+      "host_comments": "מסעדה חדשה מבית הבסטה והתדר/פור צעיד. נפתחת במקום של סנטה קטרינה לשעבר. ראיון עם אבירם קץ מהבסטה. תפריט בלקני-יווני-טורקי עם גריל פחם, שיפודים, מנות כמו חורטה וסופלאקי. פתוח עד מאוחר בלילה עם בר קוקטיילים ודיג'ייז בסופי שבוע.",
+      "dishes_mentioned": [
+        "חורטה",
+        "סופלאקי פרגית",
+        "שיפודי שרינט פסטניות",
+        "פיט"
+      ],
+      "special_features": [
+        "מבית הבסטה והתדר",
+        "פתוח עד שעות הלילה המאוחרות",
+        "בר קוקטיילים",
+        "דיג'יי בסופי שבוע",
+        "במקום סנטה קטרינה לשעבר"
+      ],
+      "mention_context": "ראיון עם אבירם קץ מהבסטה על הפתיחה החדשה",
+      "mention_level": "הוזכר",
+      "speaker": "אבירם קץ",
+      "google_places": {
+        "place_id": "ChIJ-wofeABNHRURw2aiw02-4CQ",
+        "google_url": "https://maps.google.com/?cid=2657333021352552131",
+        "rating": 4.1,
+        "review_count": 24,
+        "price_level": null,
+        "phone": null,
+        "website": null,
+        "photo_url": null,
+        "instagram_url": "https://www.instagram.com/suftlv/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "ספייס האוס",
+      "name_english": "SpiceHaus",
+      "name_in_transcript": "ספייס האוס",
+      "google_name": "SPICEHAUS | ספייסהאוס",
+      "timestamp": {
+        "seconds": 2880,
+        "display": "48:00",
+        "youtube_url": "https://www.youtube.com/watch?v=Zljgx1vWvE0&t=2880s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "דיזנגוף",
+        "address": "דיזנגוף 116, תל אביב-יפו",
+        "region": "מרכז",
+        "latitude": 32.0902337,
+        "longitude": 34.7803372
+      },
+      "cuisine_type": "בר קוקטיילים",
+      "price_range": "יקר",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "זה 3.0, זה עלה בעוד איזשהיא רמה מעבר למצופה",
+        "סמאש בורגר אחד הטובים שיצא לי לאכול בעיר",
+        "ברוסקטות, מנה מהיותר וליו פורמלי שכזה פגשתי בעיר, 19 שקל"
+      ],
+      "host_comments": "נטע מדווחת על ספייס האוס המחודש שנפתח ממול המקום הקודם. קוקטיילים מרשימים כולל פורנסטר מרטיני ותקילת לימונצ'לו עם שמפניה. השף גי פורטל (בוגר קורדון בלו) מגיש אוכל עם שורשים צרפתיים-מרוקאים. סמאש בורגר מעולה וברוסקטות עם ריבת בצל ובריה ב-19 שקל בלבד.",
+      "dishes_mentioned": [
+        "סמאש בורגר",
+        "ברוסקטות עם ריבת בצל ובריה",
+        "פורנסטר מרטיני",
+        "תקילת לימונצ'לו עם שמפניה"
+      ],
+      "special_features": [
+        "בר קוקטיילים מחודש",
+        "שף גי פורטל בוגר קורדון בלו",
+        "מנות במחירים נגישים",
+        "אזור דיזנגוף אוף"
+      ],
+      "mention_context": "המלצה של נטע על המקום המחודש באזור דיזנגוף",
+      "mention_level": "נטעם",
+      "speaker": "נטע סלונים",
+      "google_places": {
+        "place_id": "ChIJJ07hgHhMHRURZDcWi6RnGj4",
+        "google_url": "https://maps.google.com/?cid=4475003136151795556",
+        "rating": 4.3,
+        "review_count": 2276,
+        "price_level": null,
+        "phone": null,
+        "website": "https://www.spicehaus.shop/",
+        "photo_url": "places/ChIJJ07hgHhMHRURZDcWi6RnGj4/photos/AU_ZVEH1nCTxRUbnVf85pQbig6UtFTtm4jmRYq9Ikkng5m2OadATMN-yFqoRyfGwvEv8dWnfBRIalNZjnwyb5pYZJ19RRje-1fzvW_sNHieSQfUSeTPS_aI_3Ze2xSNV6O6q54G1SjSy-cyWTz0DXYQ6cnVgUeYX7obRZXWAY5IYnC0g7pLqKpJRO87E3g18EP5x6FVgFhN6pSb3eiNL5qkVsTpmUqcxugJzZ_ErslPIvR8BhgeofnIXqpeJOOfixXeJlIx3fjLk27Ldpk8xu7OXLPKQ4LGEZJnnQdBi3HaO3RIAUg",
+        "instagram_url": "https://www.instagram.com/spicehaus_bar/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "נונו",
+      "name_english": "Nono",
+      "name_in_transcript": "הנונו",
+      "google_name": "נונו",
+      "timestamp": {
+        "seconds": 3150,
+        "display": "52:29",
+        "youtube_url": "https://www.youtube.com/watch?v=Zljgx1vWvE0&t=3150s"
+      },
+      "location": {
+        "city": "הרצליה",
+        "neighborhood": "הרצליה הילז",
+        "address": "אריק איינשטיין 3, הרצליה",
+        "region": "שרון",
+        "latitude": 32.1625337,
+        "longitude": 34.8144775
+      },
+      "cuisine_type": "איטלקי",
+      "price_range": "בינוני",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "אם אני מוצא את עצמי תוך שנה חוזר ארבע פעמים לאותו מקום זה אומר שהוא עושה משהו מאוד מאוד טוב",
+        "מאוד מקצועי, מאוד מתוקתק",
+        "פיצה נורא נורא כיפית, הבצק דק אבל הורירי, לא נפוליטני אבל מאוד מוצלח"
+      ],
+      "host_comments": "המלצה של עמית שחוזר למקום כבר ארבע פעמים בשנה. מסעדה איטלקית-ישראלית עם שני טבונים (אחד לפיצה ואחד לירקות/עוף). שיתוף פעולה עם הלל תבקולי שהביא מנות מאנימר. פיצות מעולות, רבע עוף מדורה, סלטים נדיבים, פסטות שנעשות במקום, רוסטביף מצוין.",
+      "dishes_mentioned": [
+        "פיצת פפרוני ופלפל חריף",
+        "פיצת מרגריטה",
+        "רבע עוף מדורה",
+        "ירוקים על קרם לבנה",
+        "תונה אדומה ברוסקטה",
+        "רוסטביף עם היולי חצילים שרופים",
+        "פפרדלה רגו",
+        "פטוצ'יני ירוק ברוטב עגבניות שרי",
+        "טירמיסו"
+      ],
+      "special_features": [
+        "שני טבונים - לפיצה ולמנות נפרדות",
+        "שיתוף פעולה עם הלל תבקולי",
+        "מסעדה משפחתית",
+        "11 שנה"
+      ],
+      "mention_context": "המלצה של עמית אהרונסון על מסעדה שהוא חוזר אליה שוב ושוב",
+      "mention_level": "נטעם",
+      "speaker": "עמית אהרונסון",
+      "google_places": {
+        "place_id": "ChIJhVoTOI9JHRURJG4hQK34r04",
+        "google_url": "https://maps.google.com/?cid=5670023878871707172",
+        "rating": 4.4,
+        "review_count": 1732,
+        "price_level": null,
+        "phone": null,
+        "website": "https://nonomimi.com/",
+        "photo_url": "places/ChIJhVoTOI9JHRURJG4hQK34r04/photos/AU_ZVEHcG0xwAxAoCW9LA0UCBrmTtAOq67HDafh0vEvl0TKUs302QL5vDKnNFGYwnC2ZGDz6oRy2a_dvgrLToKjbIY7-odQUQLBJSU6y_brdOu7q1XM3qD3PYpNJs7Gm7n3X1ovepRgpV7sdclbfmDHMkGvJbAzfNekm3nHbSbMD9qlJfILUM7-wkv_dRHkheo7x63qtAOPlUJIjEAz1KjSHbm6-znojLETgdPm8ekOTMwLHVvsDVRjBUE_7oEszrDxljtRX6_Whr7nSKqj60Kqn1DRfDTzlFRNrdvZBeMM5eVOd1E0C9Z64aUzG1cnsuP-eTsTobHHWg7Hb0vJeLruroP5juP81jyn-Zj42rhRZlN77rDc5GIvMc6tTwe_ZgjMf46UFvei9W8XfHWJG9ipRGjg6fhODqrhu3sEaMCXrpTuNNUkW",
+        "instagram_url": "https://www.instagram.com/nonorestaurant/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "לוצ'נה",
+      "name_english": "Luchana",
+      "name_in_transcript": "לוצ'נה",
+      "google_name": "לוצ׳נה ראשון לציון",
+      "skip_reason": "Opening announcement of Eden Ben Zaken's restaurant - industry news, hosts did not eat there and explicitly said they wouldn't visit",
+      "timestamp": {
+        "seconds": 1456,
+        "display": "24:16",
+        "youtube_url": "https://www.youtube.com/watch?v=Zljgx1vWvE0&t=1456s"
+      },
+      "location": {
+        "city": "ראשון לציון",
+        "address": "הלח\"י 2, ראשון לציון"
+      },
+      "cuisine_type": "איטלקי",
+      "host_quotes": [
+        "הסיכוי שאני אציב שם את כף רגלי הוא כמעט לא קיים",
+        "לא משנה האוכל לא משנה התפריט, אין אף אחד לא יודע מי השף"
+      ],
+      "mention_context": "פתיחת סניף חדש של רשת לוצ'נה בריש\"ל בהשקעה של 10 מיליון שקל על ידי עדן בן זקן ובעלה שוקי",
+      "google_places": {
+        "place_id": "ChIJweIAaS-zAhUR9rzjeGFWvqA",
+        "rating": 4.2,
+        "review_count": 213,
+        "phone": null,
+        "website": "https://www.lucianarishon.co.il/",
+        "photo_url": "places/ChIJweIAaS-zAhUR9rzjeGFWvqA/photos/AU_ZVEEPyCms_yDPEoXFkkKKMUwzal1E3XZ4_Ggtbtpb7TxaSFrfA6XyMsC6dY703dEuPRM_UMNC3BaZ-151C9vv3oSoeOVUU5AErjnudeBYfaJuMwiKupWCWDGxHD5t_JUaio8k-nZWjcEf8R2aWFAEXlpqTdRlZW4aHLIpNXuMSGTqkB5B-ku3K25WGHUMqDLFDt8drJdzl0nTNCJFKJQ75PiSbLz3tM2DCiItb_gV2nby4CuG75JQ3Dv30XqG27tjgeFYoziKqN7MSNWPTU38X8CfWx3xk0UcKPb2GPL_B2dk4g",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "טופין בייקרי",
+      "name_english": "Tufin Bakery",
+      "name_in_transcript": "טופין",
+      "google_name": "Tufin - תופין",
+      "skip_reason": "New opening announcement only - hosts have not visited yet, bakery not yet open at time of recording",
+      "timestamp": {
+        "seconds": 1789,
+        "display": "29:49",
+        "youtube_url": "https://www.youtube.com/watch?v=Zljgx1vWvE0&t=1789s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "address": "אחד העם 29, תל אביב-יפו"
+      },
+      "cuisine_type": "מאפייה",
+      "host_quotes": [
+        "סופר מסקרן ומעניין ונחמד טופין"
+      ],
+      "mention_context": "הכרזה על פתיחת מאפייה חדשה של טלי ניב (שעבדה לצד יוסי שטרית במשיה, קיצן מרקט, מלבר ובחו\"ל)",
+      "google_places": {
+        "place_id": "ChIJsyBqYABNHRURJ4dfY5lJOOs",
+        "rating": 4.6,
+        "review_count": 65,
+        "photo_url": "places/ChIJsyBqYABNHRURJ4dfY5lJOOs/photos/AU_ZVEFfXgBsqZR0IOsi9iAiwehXz4muWsa98CRHydfKy9D4l91J23wN4awfHtzZY-yMYrJMvl-r2_HMZX8QbKD6LSEmFrGuG806lI_nqGGSP8mpUYtmMo0pATgY4gfsMVm-KSNGucR9Pqu4uJlaQEP1w3NHV7Jv3dIEf6cjIb2ALFVSVPMLsLTzbObdxi9xUzcviVs4zmelK6DfP9UDHCiQo7-49tL2Ea1l9FDVz5jdlnPC0IWa8_luCM8aH1oaHgXzn4Q1GPAoQo4jA0-yplJI2Oq3vqp_NIgltoBKZwaIrO05Mg",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "בציר",
+      "name_english": "Batzir",
+      "name_in_transcript": "בציר",
+      "google_name": "בציר",
+      "skip_reason": "Passing mention as example of Hebrew restaurant names trend, no visit or recommendation",
+      "timestamp": {
+        "seconds": 1821,
+        "display": "30:20",
+        "youtube_url": "https://www.youtube.com/watch?v=Zljgx1vWvE0&t=1821s"
+      },
+      "location": {
+        "city": "בני ברק",
+        "address": "מצדה 9, בני ברק"
+      },
+      "host_quotes": [],
+      "mention_context": "מוזכר כדוגמה לשמות עבריים של מסעדות חדשות",
+      "google_places": {
+        "place_id": "ChIJnRrzHfVLHRURnkmpWHfPDe8",
+        "rating": 4.5,
+        "review_count": 109,
+        "photo_url": "places/ChIJnRrzHfVLHRURnkmpWHfPDe8/photos/AU_ZVEFtI07leZHGm4mNVuggMUylTme7BZ7dtC5V6UxZC1tzJFB1gdlzmQtg3NgfWxKAJmlgoCLuZ0DrkfEKmIGewJ2UdjMuePxlSn_cUpehoU7w71qmUaB5X6Hr-eNsXfH-xUkH073phqDhfp5367OACDlUgrZ1CnXnLVIlGXikUefEvAfcGqCrtjZhB3-V4GgByA-HuoaZTXpDzXaiL9RPrQ0B4jOPPz61MYjONpoA_HQmbJPJovYWShU8rZtpjElL0OejiXebRl3fs_kUlV_kkz1IstyRYWWDjJFtfNKQ_r6TyQ",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "ג'ורג' וג'ון",
+      "name_english": "George & John",
+      "name_in_transcript": "ג'ורג' וג'ון",
+      "google_name": "George & John - Relais & Chateaux",
+      "skip_reason": "Discussion of Sagi Cohen's restaurant review - hosts did not eat there themselves in this episode",
+      "timestamp": {
+        "seconds": 3358,
+        "display": "55:58",
+        "youtube_url": "https://www.youtube.com/watch?v=Zljgx1vWvE0&t=3358s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "address": "אוארבך 6, תל אביב-יפו"
+      },
+      "cuisine_type": "שף",
+      "host_quotes": [
+        "מסעדה שמחליפה שף פעמיים בשנה זה לא מעיד על יציבות",
+        "בסוף בן אדם הולך להוריד שם 1000 שקל"
+      ],
+      "mention_context": "דיון על ביקורת חיובית של סגי כהן, כולל ביקורת על תזמון הביקורת וחוסר יציבות במסעדה. השוואת מחירים מול OBI.",
+      "google_places": {
+        "place_id": "ChIJl5CMejNNHRURXa-pmIKHL9c",
+        "rating": 4.5,
+        "review_count": 1597,
+        "phone": null,
+        "website": "http://gandj.co.il/",
+        "photo_url": "places/ChIJl5CMejNNHRURXa-pmIKHL9c/photos/AU_ZVEF0tEratTfN9vHxyZiv2-iHEihrq0-Qhz90uYxIyoEvuRSQKEkSRnyGDf-CdvUvHjug0ThhbXe2zUOsAFP04d_deemX15mHfh3jTucS2NmPKJmVG0fuU_UVnLu9GWvD7MDSR1zrHHAT3mEMM2NyWRBr7yyRjWon39kBat-F9A4DX-i9l6oIl77DEVMxigyvETsxrrmwvVpJtX3k5XVRDRX41YmDtmhyAm6jWzrM7JwaISycTID3ORybV8GaYrVCckcknMPcnL8h9kzLXT8wZKXOYSVLQkQHYtCqucKIeYpyvw",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "גרציה",
+      "name_english": "Gracia",
+      "name_in_transcript": "גרציה",
+      "google_name": "מסעדת גרציא",
+      "skip_reason": "Discussion of Avi Efrati's review - hosts did not eat there in this episode",
+      "timestamp": {
+        "seconds": 3652,
+        "display": "60:52",
+        "youtube_url": "https://www.youtube.com/watch?v=Zljgx1vWvE0&t=3652s"
+      },
+      "location": {
+        "city": "קיבוץ העוגן",
+        "address": "קיבוץ העוגן"
+      },
+      "cuisine_type": "ביסטרו",
+      "host_quotes": [
+        "יפה מאוד. יציאה יפה. אני מפרגן לו ממש על זה"
+      ],
+      "mention_context": "דיון על ביקורת חיובית של אבי אפרטי שביקר בגרציה בקיבוץ העוגן",
+      "google_places": {
+        "place_id": "ChIJbeXoVkEUHRURMcRmo0UpVSM",
+        "rating": 4.4,
+        "review_count": 1947,
+        "phone": null,
+        "website": "https://www.gratzia.co.il/",
+        "photo_url": "places/ChIJbeXoVkEUHRURMcRmo0UpVSM/photos/AU_ZVEH3s6tqbmAV2HQsVY3abIoUgQb8KthDSa9TooLRKuS6kMnBxzBKxsBmyrb3udeqMaazZJqhyVjmn5YLCL3Aso9iyTEKbrCDMHYMKXMy6yVI4RSZMJysrVMVFVr4iEH8cCqm6ahpcPwI9OOATOTa_DhjQCbJ3gplaPhGauL7kNNQrhZ9WbZyfyleppO_IPfxgZQ2qHt9oqAvnpI6uty6zl5QzLAuKmC53Ow6-q1WMmJw37GqDV6qRK-tl8hSo2Ss3U8TtRjWtRXI2k7i3U4JUrrvo6hmydavmHM8Jpi5Scg1bQ",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "מסעדה תאילנדית בחוף של מוש",
+      "name_english": null,
+      "name_in_transcript": "מסעדה תאילנדית באחזיב",
+      "skip_reason": "New opening announcement at Mush Ben Ari's beach in Achziv - no name given, not yet open, hosts haven't visited",
+      "timestamp": {
+        "seconds": 1412,
+        "display": "23:31",
+        "youtube_url": "https://www.youtube.com/watch?v=Zljgx1vWvE0&t=1412s"
+      },
+      "location": {
+        "city": "אחזיב",
+        "address": "חוף של מוש, אחזיב"
+      },
+      "host_quotes": [
+        "פותחים מסעדה תאילנדית שנשמעת ממש מגניב וממש מתבקש"
+      ],
+      "mention_context": "הכרזה על מסעדה תאילנדית חדשה שנפתחת בחוף של מוש בן ארי באחזיב",
+      "google_places": {
+        "place_id": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "בל עמי",
+      "name_english": "Bel Ami",
+      "name_in_transcript": "בלמי",
+      "google_name": "Bel Ami - בל עמי",
+      "skip_reason": "Neta mentions hoping to visit - no actual dining experience",
+      "timestamp": {
+        "seconds": 3821,
+        "display": "63:41",
+        "youtube_url": "https://www.youtube.com/watch?v=Zljgx1vWvE0&t=3821s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "address": "בן עמי 14, תל אביב-יפו"
+      },
+      "host_quotes": [
+        "מאוד מקווה להגיע לבלמי"
+      ],
+      "mention_context": "נטע מזכירה שהיא מקווה להגיע למסעדה בערב הקרוב",
+      "google_places": {
+        "place_id": "ChIJByAlCABNHRURJ6_-cs-xqAs",
+        "rating": 4.1,
+        "review_count": 147,
+        "website": "https://www.belamitlv.com/",
+        "photo_url": "places/ChIJByAlCABNHRURJ6_-cs-xqAs/photos/AU_ZVEGaUioGcuHoZk2i5DtVi2GFvAFZuf6koKpqNOW_LuTm8OBTB6rjnWaJdY_P49V4QxzDl59qPGnfKkkr8WieO2klxySz5kuX8jLkw9UwJWPVEwIBSJvRKKMAwaIdn4L0fAX7xOouwdzu9kauoN2vCF_PKaxxviBbZajpL-FUZMfFihyRqO5KD6D6HszIUZioljsSqHoWIotNzMwVq23UPmztOZ56r8DxDbIKO_r2OndZ3UYQCs7xHj1Iwxb2sh0cqZ6DlNQaB_FnhAn5vRfn5xuH5XXvQvN5lbQOt_K0mOxXsg",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "rejected",
+      "name_in_transcript": "מושיק רות",
+      "reject_reason": "Pop-up chef event at Kilon mall for Black Friday, not a permanent restaurant",
+      "timestamp": {
+        "seconds": 453,
+        "display": "07:32"
+      }
+    },
+    {
+      "verdict": "rejected",
+      "name_in_transcript": "משק מלמד",
+      "reject_reason": "Farm/food producer selling fish products, not a restaurant",
+      "timestamp": {
+        "seconds": 795,
+        "display": "13:14"
+      }
+    },
+    {
+      "verdict": "rejected",
+      "name_in_transcript": "נדב בסן",
+      "reject_reason": "Culinary tour guide in Paris, not a restaurant",
+      "timestamp": {
+        "seconds": 2647,
+        "display": "44:06"
+      }
+    },
+    {
+      "verdict": "rejected",
+      "name_in_transcript": "שייק שק / פיצה הצרפתית",
+      "reject_reason": "Mentioned in context of chains launching Hanukkah gimmick products (sufganiya pizza, sufganiya dessert), not a restaurant recommendation",
+      "timestamp": {
+        "seconds": 1075,
+        "display": "17:55"
+      }
+    },
+    {
+      "verdict": "rejected",
+      "name_in_transcript": "לליסט / La Liste",
+      "reject_reason": "Restaurant ranking list discussion (OCD, Popina, Claro, Chakra, Alena, Norman, Mashya, Pastel, Montray) - passing name-drops in the context of an international restaurant list, no dining experience or recommendation",
+      "timestamp": {
+        "seconds": 2497,
+        "display": "41:37"
+      }
+    }
+  ]
+}

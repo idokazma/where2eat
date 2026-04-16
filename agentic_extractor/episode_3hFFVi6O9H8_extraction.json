@@ -1,0 +1,652 @@
+{
+  "episode": {
+    "video_id": "3hFFVi6O9H8",
+    "video_url": "https://www.youtube.com/watch?v=3hFFVi6O9H8",
+    "title": "לעילא ולפקיילה | מדברים מהבטן, פרק 131",
+    "channel_name": "מדברים מהבטן - הפודיום",
+    "published_at": "2025-11-05",
+    "hosts": [
+      "עמית אהרונסון",
+      "יהונתן כהן",
+      "נתה סלונים"
+    ],
+    "guests": [
+      "מאיר דנון"
+    ],
+    "language": "he",
+    "transcript_length": 45437,
+    "segment_count": 1345,
+    "episode_id": null,
+    "summary": "פרק 131 של מדברים מהבטן, חוגגים שלוש שנים לפודקאסט. נתה מתלהבת מעילא המעדנייה של אפרת אנזל בשנקין, עמית מגלה את סולת - מקום קוסקוס יוצא דופן בעיר העתיקה בבאר שבע, ויהונתן כותב שיר לשוארמה של מאיר ג'מיל בהרצליה. בחדשות: פרשת ברודו-גרנית, מוצר הקאופרי של שטראוס, פתיחת קולינה בקיסריה (שעוררה ביקורת על העתקת מנות), סגירת המוצי של אבי לוי וקמל השלמון באבו גוש. ראיון עם מאיר דנון לרגל עשור לבית הספר לבישול דנון. עמית מספר על בוץ - מסעדת טעימות נועזת במצפה רמון, ועל בוטה - בר יין איטלקי חדש בגבעתיים. נתה מסכמת עם ביקור בלאקי צ'יקן שהגיעו לתל אביב."
+  },
+  "extraction": {
+    "date": "2026-04-03",
+    "agent": "episode-processor",
+    "total_mentions": 16,
+    "add_to_page": 6,
+    "reference_only": 7,
+    "rejected": 3,
+    "already_in_db": 0,
+    "new_to_add": 6
+  },
+  "restaurants": [
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "עילא",
+      "name_english": "Eila",
+      "name_in_transcript": "אילה",
+      "google_name": "עילא",
+      "timestamp": {
+        "seconds": 161,
+        "display": "02:41",
+        "youtube_url": "https://www.youtube.com/watch?v=3hFFVi6O9H8&t=161s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "שנקין",
+        "address": "שינקין 28, תל אביב-יפו, ישראל",
+        "region": "מרכז",
+        "latitude": 32.0528318,
+        "longitude": 34.7904453
+      },
+      "cuisine_type": "מעדנייה",
+      "price_range": "בינוני",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "באמת לונה פארק לפוודיז המקום הזה",
+        "כל דבר שם עד הפרט האחרון",
+        "ממרח פורל מהמם ואפילו עגבניות הלכות שלהם שזה ביתה של טעם לתוך הפה",
+        "מקום מהמם"
+      ],
+      "host_comments": "נתה ביקרה באילה, המעדנייה של אפרת אנזל ברחוב שנקין בתל אביב. המקום מלא בכל יום ובכל שעה. מגבינות של מחלבת פלורה, תבלינים, שמני זית, אלכוהול ישראלי, תערובות צמחים, סלטים ועוד מעל 1000 מוצרים מ-150 ספקים. גם יין משותף עם יעקב אוריה ושוקולדים של דוד זרביב",
+      "dishes_mentioned": [
+        "ממרח פורל",
+        "עגבניות הלכות",
+        "סלטי מעדנייה",
+        "יין בלנד אדום-לבן",
+        "שוקולד פריך של דוד זרביב"
+      ],
+      "special_features": [
+        "מעדנייה",
+        "מעל 1000 מוצרים",
+        "150 ספקים",
+        "ליקוט מוצרים ייחודי"
+      ],
+      "mention_context": "ביס השבוע של נתה - מעדנייה ברחוב שנקין עם מוצרים ייחודיים ואוצרות קולינריים",
+      "speaker": "נתה סלונים",
+      "google_places": {
+        "place_id": "ChIJ1cPBMABNHRURWhuSfvmkswY",
+        "google_url": "https://maps.google.com/?cid=490851183277399130",
+        "rating": 4.5,
+        "review_count": 44,
+        "price_level": null,
+        "phone": "052-515-3313",
+        "website": null,
+        "photo_url": "places/ChIJ1cPBMABNHRURWhuSfvmkswY/photos/AU_ZVEH-Ne5rR03qRjVU0jOJEYm8_FxyQRliFvd36yjz1yKNxlpbqnRsPaV1lrJQOvDGPOGOfL0gM0Af-xXy4ypFlWLGvnzXDpJKu5YustIsfulT-r61SNlVMCf-P1pokT_6XKlOqn-oljV6airD8BujTm1yr0X-rG2lzd5a-UbZGIQtRnOUQ8M7pNmqwEr0KiX1j5VuCPc7Zs8cpEmjo0G5Bio35ZaSglUR-k2wHASdgDiGnWs90nnfDrmNtrtgqZttR51BSxbD9JDAHOPktUJO_qw5VEJ1zsloFpgvVEBBQaTcnA",
+        "instagram_url": "https://www.instagram.com/eyla_by_enzel/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "סולת",
+      "name_english": "Solet",
+      "name_in_transcript": "סולט",
+      "google_name": "סולת קוסקוס בעתיקה",
+      "timestamp": {
+        "seconds": 459,
+        "display": "07:39",
+        "youtube_url": "https://www.youtube.com/watch?v=3hFFVi6O9H8&t=459s"
+      },
+      "location": {
+        "city": "באר שבע",
+        "neighborhood": "העיר העתיקה",
+        "address": "העצמאות, באר שבע, 8420217, ישראל",
+        "region": "דרום",
+        "latitude": 31.237862,
+        "longitude": 34.7933239
+      },
+      "cuisine_type": "מזרחי",
+      "price_range": "זול",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "אנחנו מדרגה ראשונה",
+        "תענוג מנה של קוסקוס עם קציצות ועוף עולה 65 שקל",
+        "ארוחת צהריים שאפילו יהונתן כהן היה חותם עליה"
+      ],
+      "host_comments": "עמית ביקר בסולת - מקום קוסקוס פשוט ומוצלח בכניסה לעיר העתיקה בבאר שבע. קוסקוס בעבודת יד עם מרק ירקות, קציצות בשר, שוקי עוף ותבשיל שעועית. תוספת מיוחדת של פקילה (מנגולד ובשר) ב-75 שקל. סלטים ביתיים כולל מטבוחה, צ'ירשי וזיתים. מנות נדיבות שאף אחד לא מסיים",
+      "dishes_mentioned": [
+        "קוסקוס בעבודת יד",
+        "פקילה עם מנגולד ובשר",
+        "קציצות בשר",
+        "שוקיים של עוף",
+        "תבשיל שעועית אדום",
+        "סלטים ביתיים",
+        "מטבוחה",
+        "צ'ירשי"
+      ],
+      "special_features": [
+        "קוסקוס בעבודת יד",
+        "מקום פשוט ואותנטי",
+        "מנות נדיבות",
+        "כניסה לעיר העתיקה"
+      ],
+      "mention_context": "ביס השבוע של עמית - מקום קוסקוס אותנטי ופשוט בבאר שבע שמשדר מדרגה ראשונה",
+      "speaker": "עמית אהרונסון",
+      "google_places": {
+        "place_id": "ChIJEZMPS9tnAhURrvtBGdlEUfw",
+        "google_url": "https://maps.google.com/?cid=18181388869893749678",
+        "rating": 4.6,
+        "review_count": 146,
+        "price_level": null,
+        "phone": "08-662-0066",
+        "website": "https://www.soletatika.co.il/",
+        "photo_url": "places/ChIJEZMPS9tnAhURrvtBGdlEUfw/photos/AU_ZVEGiWEstm26qlo0DknD_m-LXAZLyJOZRmOP2bhFR7aQLzV3DTnzVEjWeRWoo8SpBfGmrPZCBPPQgsy6N8dJMamH8gBHrd41LgrHQ0Dyob7bp0zk2nUXFznykIS5JXSi1IhmHEV9fxzOnaaK32h289hd8f1LUcFJq5CFaOW_IZinJbDKf6sNK1WkmtkLdYtwHfY0rDtaVdzYqvuReLn_I2tF2Twxgwoy-4ykPkbj_DDRRj1nK-6IVSl0OtnNaDRkBprAZGAzGeWfOuFfeBpi5xJoCHqFhRyAo5db8MTKW1BQuRGg89EErhNL9cR5SYc_WKUWbCk6pc0nLMsLeuXXGEGucENO85Vt47XIngXzEkDXzFlHgKw_EqVLImY8ZxRj-RL_wAdmuXzlMD_QHgPCkDwzOMqznf-cyzWUeOlV_XMHQPNY-",
+        "instagram_url": "https://www.instagram.com/solet_batika/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "מאיר ג'מיל",
+      "name_english": "Maier Jamil",
+      "name_in_transcript": "מאיר ג'מיל",
+      "google_name": "מאיר ג'מיל",
+      "timestamp": {
+        "seconds": 814,
+        "display": "13:34",
+        "youtube_url": "https://www.youtube.com/watch?v=3hFFVi6O9H8&t=814s"
+      },
+      "location": {
+        "city": "הרצליה",
+        "neighborhood": "הרצליה פיתוח",
+        "address": "משכית 15, הרצליה, 4673315, ישראל",
+        "region": "שרון",
+        "latitude": 32.1646766,
+        "longitude": 34.8114013
+      },
+      "cuisine_type": "שוארמה",
+      "price_range": "בינוני",
+      "status": "פתוח",
+      "host_opinion": "חיובית",
+      "host_quotes": [
+        "שוארמה של יום יום",
+        "עמוד קלאסי של אודו מטובל מספיק טוב עסיסי נורא",
+        "לאפה ב-64 שקל צלחת 85 אבל מקבלים הרבה מאוד"
+      ],
+      "host_comments": "יהונתן כתב שיר לשוארמה של מאיר ג'מיל ברחוב מסקית בהרצליה פיתוח. סניף של משפחת ג'מיל ההרצלנית. שוארמה יומיומית טובה - לא מדהימה אבל בדיוק מה שצריך. עסיסית, טרייה, תור מתמיד. לאפה ב-64 שקל, צלחת ב-85. מנות נדיבות וסלטים טריים",
+      "dishes_mentioned": [
+        "שוארמה בלאפה",
+        "שוארמה בצלחת",
+        "סלטים טריים"
+      ],
+      "special_features": [
+        "סניף של משפחת ג'מיל",
+        "אזור הרצליה פיתוח",
+        "תור מתמיד",
+        "מנות נדיבות"
+      ],
+      "mention_context": "ביס השבוע של יהונתן - שיר שכתב לשוארמה היומיומית של מאיר ג'מיל בהרצליה",
+      "speaker": "יהונתן כהן",
+      "google_places": {
+        "place_id": "ChIJax0jkzNJHRURlLx40MUw5-U",
+        "google_url": "https://maps.google.com/?cid=16566263380469922964",
+        "rating": 3.3,
+        "review_count": 67,
+        "price_level": null,
+        "phone": "09-743-3337",
+        "website": null,
+        "photo_url": "places/ChIJax0jkzNJHRURlLx40MUw5-U/photos/AU_ZVEG4i7ZnP9yiAuYbeiZ8lKUZVGwmbE5pqxhQdrb7CLCOdZFxDIt4G0dlCLz53jwBlOyNFCq20SZnYT4vfg75HRryKnrXqp613JXXNRiQbpYjm-8TGWzeJA8egfBLqBNez7Q22qoD8ZHamOmnxJntC8jm8nJq_VWhvKNeeBzJhCxYbfh16oE36WJ-5ROv0whUCMfQkhnEGMzPLm3EZT9Gi0vBRSjvipA8S_gC0bl_WNu84CXX5lc1xb-7A-72gpfkLT9BKN49hcBAmzRiJ2gEBXDge817ynaXxkQ6eJ6v4WtaCQ",
+        "instagram_url": null,
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "בוץ",
+      "name_english": "Botz Dining",
+      "name_in_transcript": "בוץ",
+      "google_name": "בוץ מסעדה BOTZ Dining",
+      "timestamp": {
+        "seconds": 2515,
+        "display": "41:55",
+        "youtube_url": "https://www.youtube.com/watch?v=3hFFVi6O9H8&t=2515s"
+      },
+      "location": {
+        "city": "מצפה רמון",
+        "neighborhood": null,
+        "address": "הר עודד 5, מצפה רמון, ישראל",
+        "region": "דרום",
+        "latitude": 30.6106,
+        "longitude": 34.8012
+      },
+      "cuisine_type": "שף",
+      "price_range": "יקר",
+      "status": "חדש",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "מנת לחם מושלמת מושלמת מושלמת מושלמת מושלמת",
+        "הקינוח אורז בבוץ היה בקלות יכול להיות ביס השבוע",
+        "חתיכת בשורה נועזת",
+        "מי היה מאמין מצפה רמון"
+      ],
+      "host_comments": "עמית ביקר בבוץ, מסעדת טעימות נועזת במצפה רמון. שני שפים - תל אשכנזי (3 שנים כסו-שף ב-OCD של רז רהב) ועומר סלצר (השף היחף, 13 שנה במצפה). ארוחת טעימות של כ-14 מנות ב-450 שקל. דגש על חומרי גלם מקומיים - ירוקים מליד שדה בוקר, עבודה עם מדורה וגחלים. לחם בדואי (ליבה) על הפחמים, עוף במדורה עם שוט ציר-קומבוצ'ה-טקילה, טרטלט תפוח עם טרטר גדי, קינוח אורז מדהים עם תמרים ואגוזים",
+      "dishes_mentioned": [
+        "לחם ליבה בדואי על גחלים",
+        "עוף במדורה עם שוט ציר-קומבוצ'ה-טקילה",
+        "טרטלט תפוח עם טרטר גדי",
+        "קינוח קציפת אורז עם תמרים ואגוזים",
+        "גלידת גבינות כבסים עם ריבת פלפלון ורוד",
+        "מנת גבינות כבסים"
+      ],
+      "special_features": [
+        "ארוחת טעימות 14 מנות",
+        "חומרי גלם מקומיים",
+        "בישול על מדורה וגחלים",
+        "יינות טבעיים",
+        "קרמיקה בעבודת יד"
+      ],
+      "mention_context": "עמית מספר על מסעדת קונספט נועזת במצפה רמון - ארוחת טעימות מקומית עם בישול על אש",
+      "speaker": "עמית אהרונסון",
+      "google_places": {
+        "place_id": "ChIJOXSSfGPzARUR0UKvL_aPCY0",
+        "google_url": "https://maps.google.com/?cid=10166590413483196625",
+        "rating": 4.7,
+        "review_count": 93,
+        "price_level": null,
+        "phone": null,
+        "website": null,
+        "photo_url": "places/ChIJOXSSfGPzARUR0UKvL_aPCY0/photos/AU_ZVEEVeuSK6BZRtwdTJbkoh0Q6ZZEZr8jdP_FMV5wrMBQ5nKVZXWz_Z1ygJIHjjE4wBKlKaSX_3INkjnWz5IXpoc1MkbXV8h_it1ZKnYd-G-6V_XBaIjD9_sn4HOTwyOP3GOYPj6WU9TQzI4d5d2i84cxXZGx9dPmr82BQTqZabxgeT_6rKUZy7Lr8d09rqMUJYn-AH61-OOHjZ91CWqWX5iWigndL-d_1Cr-fPSQj7jiiG0VHVhA6oWS1EAwRewv9h1F-45ac7dy4qHvGOay199QSKC0TFi962YpWX8-iVwerpg",
+        "instagram_url": "https://www.instagram.com/botz.dining/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "בוטה",
+      "name_english": "Botte",
+      "name_in_transcript": "בוטה",
+      "google_name": "Botte",
+      "timestamp": {
+        "seconds": 3037,
+        "display": "50:37",
+        "youtube_url": "https://www.youtube.com/watch?v=3hFFVi6O9H8&t=3037s"
+      },
+      "location": {
+        "city": "גבעתיים",
+        "neighborhood": null,
+        "address": "כצנלסון 57, גבעתיים, ישראל",
+        "region": "מרכז",
+        "latitude": 32.0713,
+        "longitude": 34.8098
+      },
+      "cuisine_type": "איטלקי",
+      "price_range": "בינוני",
+      "status": "חדש",
+      "host_opinion": "חיובית",
+      "host_quotes": [
+        "האוכל היה ממש טוב לפחות כל מה שדגמנו",
+        "ניוקי ענניים כאלה אהבתי נורא",
+        "ריגטוני בקרם טירס מתוק פסטה שעשויה בול רוטב הדין וחכם",
+        "יופי של דבר"
+      ],
+      "host_comments": "עמית ביקר בבוטה, בר יין איטלקי חדש ברחוב קצנלסון בגבעתיים. מקום יפה ומושקע עם תפריט יין שפוי (עומרי יצחק - איש יין מרקע של מלון פרימה). מנות ראשונות, פסטות ופיצות. הפי אוור 25% הנחה בין 5-7. הפסטות מעולות - ניוקי ענניים בעבודת יד ברוטב עגבניות חריף, ריגטוני בקרם טירס. סלט פנצנלה קלאסי. נקודת תורפה: הפיצות חלשות, בצק לא אפוי מספיק",
+      "dishes_mentioned": [
+        "ניוקי בעבודת יד ברוטב עגבניות חריף",
+        "ריגטוני בקרם טירס מתוק",
+        "סלט פנצנלה",
+        "ברוסקטה ארטישוק",
+        "פיצות"
+      ],
+      "special_features": [
+        "בר יין איטלקי",
+        "הפי אוור 25% הנחה",
+        "רחוב קצנלסון גבעתיים",
+        "עומרי יצחק - סומלייה"
+      ],
+      "mention_context": "עמית מספר על בר יין איטלקי חדש ומגניב בגבעתיים עם אוכל טוב ויין שפוי",
+      "speaker": "עמית אהרונסון",
+      "google_places": {
+        "place_id": "ChIJGzV7CABLHRURKDKviuNGfSc",
+        "google_url": "https://maps.google.com/?cid=2838485697236140840",
+        "rating": 4.2,
+        "review_count": 114,
+        "price_level": null,
+        "phone": null,
+        "website": null,
+        "photo_url": "places/ChIJGzV7CABLHRURKDKviuNGfSc/photos/AU_ZVEFo0LlB7EDFOx4xrStEy2s5pl4tynwDCdk5CehYTWCailTx5RyO4sh0nzLYwfxGsWJI0-WhvBm2yL8k_aVo3xwlxSTM6xIFyrc_1JdvL4c0WlgOXaIIVUQCWZem9NV0kG_2qW9cnmSAgY9-2n_G8yni2HKBc-i-tNFsmeQPVqAIa2rXvOHfTlUVYVidFAs12chwtiQ7tUEfGSQXMFkQIP2jjR9xK8B_GuGlYWJpIspED2UNUHOupfrHbpSo3yrip247sjhmGYcoCZgEQ5BIgi6Lr-NfPT3vhJ9xp9Ig5xzDZg",
+        "instagram_url": "https://www.instagram.com/bottewinebar/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "לאקי צ'יקן",
+      "name_english": "Lucky Chicken",
+      "name_in_transcript": "לאקצ'יקן",
+      "google_name": "לאקי ציקן מגדלי תל אביב Lucky Chicken",
+      "timestamp": {
+        "seconds": 3258,
+        "display": "54:18",
+        "youtube_url": "https://www.youtube.com/watch?v=3hFFVi6O9H8&t=3258s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "נחלת יצחק",
+        "address": "נחלת יצחק 18, תל אביב-יפו, ישראל",
+        "region": "מרכז",
+        "latitude": 32.0671,
+        "longitude": 34.7876
+      },
+      "cuisine_type": "קריספי צ'יקן",
+      "price_range": "בינוני",
+      "status": "חדש",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "10 מ10 וגם כשהגיעו לתל אביב שומרים על הרמה",
+        "אף פעם לא מאכזבים אותי",
+        "הפרגית שלהם נורא עסיסית נורא פריחה",
+        "שחקן אדיר ובשורה גדולה לתל אביב"
+      ],
+      "host_comments": "נתה ביקרה בלאקי צ'יקן שפתחו סניף בתל אביב (מגדלי תל אביב). קריספי צ'יקן מעולה - 10 מ-10 שומרים על הרמה. מרחיבים את התפריט עם ספישלים - סלט קיסר, וופל בלגי עם קריספי צ'יקן ורוטב מייפל. פרגית עסיסית ופריכה. גם במשלוחים. במיה מטוגנת מדהימה",
+      "dishes_mentioned": [
+        "קריספי צ'יקן",
+        "קריספי צ'יקן על וופל בלגי עם רוטב מייפל",
+        "סלט קיסר עם קריספי צ'יקן",
+        "במיה מטוגנת",
+        "מקלות סלרי וגזר"
+      ],
+      "special_features": [
+        "סניף חדש בתל אביב",
+        "מקור בביתן אהרון",
+        "גם במשלוחים",
+        "כפפות לאכילה"
+      ],
+      "mention_context": "נתה מספרת על לאקי צ'יקן שהרחיבו לתל אביב - קריספי צ'יקן מעולה שהיא חיכתה שנתיים לטעום",
+      "speaker": "נתה סלונים",
+      "google_places": {
+        "place_id": "ChIJVTcH_iRLHRURYYZjWeh3at8",
+        "google_url": "https://maps.google.com/?cid=16088741862285387105",
+        "rating": 4.7,
+        "review_count": 297,
+        "price_level": null,
+        "phone": null,
+        "website": null,
+        "photo_url": "places/ChIJVTcH_iRLHRURYYZjWeh3at8/photos/AU_ZVEG3lc4SYLHnGXlvXtUWHJmg0EqBf8G4psBrSolVTTdNGljDH-gWUsamsMkA5ta7sJhogvCRDxJr25pjt67u34sxtIuLhuqGafWiBq729ZcB7nsj8nV-O0KwcXcdKzE0fL48EH5UlZp5BeovMcnMB4AfDWXwlYxk1iNkzhSmaJk0dBQHYmDWZD0QGCFAYMKxHgGac8DbDRx_fVULFXR4RHg3ZV4HZ6JvpdMXcUFaOXRAj_qQlC931OokUOFWLc_A1qP_lQ-JO-yqiT3Oe6t4kgTOB0dVnlOOezo-GWeNFeDf4Q",
+        "instagram_url": "https://www.instagram.com/eatluckychicken/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "קולינה",
+      "name_english": "Culina",
+      "name_in_transcript": "קולינה",
+      "skip_reason": "New restaurant opening discussed as industry news with criticism of copying dishes from other restaurants. Hosts did not visit or eat there.",
+      "timestamp": {
+        "seconds": 1421,
+        "display": "23:41",
+        "youtube_url": "https://www.youtube.com/watch?v=3hFFVi6O9H8&t=1421s"
+      },
+      "location": {
+        "city": "קיסריה",
+        "address": "דולב, קיסריה, ישראל"
+      },
+      "cuisine_type": "שף",
+      "host_quotes": [
+        "כל מנה מסעדה אחרת בתל אביב",
+        "הפיצ'י נראית אחת לאחת סנטי",
+        "אתה לא רוצה להיות גנריק שאתה פותח מקום חדש בקיסריה"
+      ],
+      "mention_context": "פתיחת מסעדת שף חדשה בקיסריה שעוררה ביקורת כי המנות מזכירות אחד-לאחד מנות של סנטי, פרלינס ומושיקו גמליאלי",
+      "google_places": {
+        "place_id": "ChIJJ6zaMAANHRURdWi0TKMJYV8",
+        "rating": 4.5,
+        "review_count": 23,
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "המוצי",
+      "name_english": "HaMotzi",
+      "name_in_transcript": "המוצי",
+      "skip_reason": "Closing announcement - Avi Levi's flagship restaurant in Jerusalem closed. Industry news, not a recommendation.",
+      "timestamp": {
+        "seconds": 1609,
+        "display": "26:49",
+        "youtube_url": "https://www.youtube.com/watch?v=3hFFVi6O9H8&t=1609s"
+      },
+      "location": {
+        "city": "ירושלים",
+        "address": "יפו 113, ירושלים, 9434227, ישראל"
+      },
+      "cuisine_type": "שף",
+      "host_quotes": [
+        "דרמטית במושגים ירושלמים",
+        "היה הראשון לעשות, הוא היה ההשראה עבור כולם"
+      ],
+      "mention_context": "סגירת מסעדת המוצי של אבי לוי - מאסטרשף ראשון שהפך למסעדן. המסעדה נסגרה וכיום אבי ללא מסעדות",
+      "google_places": {
+        "place_id": "ChIJHd9awtcpAxURVOOI3eI7lj4",
+        "rating": 3.7,
+        "review_count": 5357,
+        "photo_url": "places/ChIJHd9awtcpAxURVOOI3eI7lj4/photos/AU_ZVEG1__7KQLn7X_Ui8SDWKlvBSfTkfijeY1g8o1hP7s-Q5dE1LULl-vBMKVNh_K_bw4ohpHtV4Bhoeicdo-Pq8evEhtzGiWnQA00HwUpki76qaSIB4TgpJ_GjfKBwo60nMUaFNRfaNDnLlOOAbHsJTz_J4tTWWDsNTKtMADh2dElnA2TwYV3IRSkRY4X5nrYO0emq9I-MbLaKj5ABPKLAntlWU6IgXlqM6F3e9tUB-CT_ePx1mLAXZUhsg263--esC6Hxr5sOP5jVGrGMTIwUyks27_halte1whovGI6k0Q6t1A",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "קמל השלמון",
+      "name_english": "Kamel HaSalmon",
+      "name_in_transcript": "קמל השלמון",
+      "skip_reason": "Closing announcement - shawarma restaurant in Abu Ghosh closed. Hosts expressed sadness but this is industry news.",
+      "timestamp": {
+        "seconds": 1754,
+        "display": "29:14",
+        "youtube_url": "https://www.youtube.com/watch?v=3hFFVi6O9H8&t=1754s"
+      },
+      "location": {
+        "city": "אבו גוש",
+        "address": null
+      },
+      "cuisine_type": "שוארמה",
+      "host_quotes": [
+        "וואו איזה שוארמה טעימה זאת הייתה כל כך מיוחדת ואיזה איש מיוחד",
+        "יד נדירה נדירה נדירה"
+      ],
+      "mention_context": "סגירת השוארמה של קמל השלמון באבו גוש. אדם עם יד נדירה שפתח במיקום קשה ולא הצליח להתמיד",
+      "google_places": {
+        "place_id": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "אומניה",
+      "name_english": "Omnia",
+      "name_in_transcript": "אומניה",
+      "skip_reason": "Briefly mentioned in the context of restaurant reviewer Sagi's review, not hosts' own dining experience in this episode.",
+      "timestamp": {
+        "seconds": 3448,
+        "display": "57:28",
+        "youtube_url": "https://www.youtube.com/watch?v=3hFFVi6O9H8&t=3448s"
+      },
+      "location": {
+        "city": "דיר אל-אסד",
+        "address": "דבאח mall, דיר אל-אסד, ישראל"
+      },
+      "cuisine_type": "שף",
+      "host_quotes": [
+        "לאומניה יש מקום ברשימה המצומצמת של המסעדות היותר טובות בישראל"
+      ],
+      "mention_context": "הוזכרה בהקשר של ביקורת מסעדות של סגי - המנחים מדברים על הביקורות שלו ומזכירים שאומניה ברשימת המסעדות הטובות בישראל",
+      "google_places": {
+        "place_id": "ChIJpXrTh38zHBUR0sp8wNF1Dow",
+        "rating": 4.7,
+        "review_count": 644,
+        "phone": "077-938-6217",
+        "website": "https://ontopo.co.il/26413940/",
+        "photo_url": "places/ChIJpXrTh38zHBUR0sp8wNF1Dow/photos/AU_ZVEFrTp189c3mbBDW5iyiyWI7UhWQQkl0_Sc8t80z864TzJcsFNRr9-RkFtclqlPJYEPW0Rn5XWcEXGWVjy6gEhrIwv4h0UqMp4ofRlGlPcDvqHCb_YahkupMs1LS3MMUL7TBrlf80y5jRTYCjd09S9y5rN375ApwOTT0GB6czqiaE6xO3LoKKo5zMre0SS1r5UEqkq9sTCBLsmU4e4jer9DufQqxDJ2bSmZs0d6Cb1MAy7Wei0twflsS6L2GJoWcY188eXLhZnac_5h_wxcq7weQpFBBRtdKyK-ecAxNptipgw",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "בית הספר לבישול דנון",
+      "name_english": "Danon Culinary School",
+      "name_in_transcript": "דנון",
+      "skip_reason": "Culinary school, not a restaurant. Interview with founder Meir Danon about 10-year anniversary.",
+      "timestamp": {
+        "seconds": 1856,
+        "display": "30:56",
+        "youtube_url": "https://www.youtube.com/watch?v=3hFFVi6O9H8&t=1856s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "address": "נמל תל אביב"
+      },
+      "mention_context": "ראיון עם מאיר דנון לרגל 10 שנות פעילות של בית הספר לבישול דנון בנמל תל אביב",
+      "google_places": {
+        "place_id": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "אווזי",
+      "name_english": "Avazi",
+      "name_in_transcript": "אבזי",
+      "skip_reason": "Brief passing mention in the context of recommending other places in Shchunat HaTikva over kebab. Not reviewed or recommended.",
+      "timestamp": {
+        "seconds": 3535,
+        "display": "58:55",
+        "youtube_url": "https://www.youtube.com/watch?v=3hFFVi6O9H8&t=3535s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "שכונת התקווה",
+        "address": "אצ\"ל 54, תל אביב-יפו, ישראל"
+      },
+      "cuisine_type": "בשרים",
+      "host_quotes": [
+        "אבזי מחלוצי ונוסע הבשורה שם בשכונת התקווה נותר הרחק מאחור"
+      ],
+      "mention_context": "הוזכר בהקשר של קובי רובין שאכל קבב באווזי - המנחים מעירים שהמקום נשאר מאחור",
+      "google_places": {
+        "place_id": "ChIJW6tZPnxLHRURHQzVXXo51eg",
+        "rating": 3.7,
+        "review_count": 1258,
+        "photo_url": "places/ChIJW6tZPnxLHRURHQzVXXo51eg/photos/AU_ZVEEXP1Us_79H4Z_A2MQ6oVwQ7yABcxDJEzHSAh5_iv9QXFsEr_Jmb7Q_-xKtkx0ZFY3UH0cHcOtaWm37S1UpjRWZk0CRv3R2vweudYNDpB1Wedo3slxjhTPjc6HFcKTKdQY_Vfb3QJ8e8UQ_aG4ueMY2_fhq_uoOE-kNdFd5SpmFoWRYps5OnqWsP_LSSvS4G9YJ02HDsrHF2jO1AZ5YlHHWtKkTFHNoq8nkHeAEzMCO9H0VZ03PX5Php5Kp84cDTlABdZ7ADfzBp48OHqGNL5dfL5Whq8BntOYKL4AsodzNQkVBh-OEyMmikZzTtpGIBQmlpFocG5DkJpIlDEeMSsZdv0pkKDmD4sEnUivE4b8ECf21mf3RkM69MS4OAalfFHrN_WYhQSs2TlHitnZVc1SaxQGiOHVoGE1_PWsol6kzgrPP",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "ברודו",
+      "name_english": "Brudo",
+      "name_in_transcript": "ברודו",
+      "skip_reason": "Industry gossip - discussed Ruti Brudo and chef Granit's controversy about employee recruitment. Not a restaurant review.",
+      "timestamp": {
+        "seconds": 972,
+        "display": "16:12",
+        "youtube_url": "https://www.youtube.com/watch?v=3hFFVi6O9H8&t=972s"
+      },
+      "location": {
+        "city": "תל אביב"
+      },
+      "mention_context": "פרשת ברודו-גרנית: רותי ברודו סיפרה על סף גרנית שמגייס עובדים ממסעדות שלה. דיון על יחסי עובד-מעסיק בתחום המסעדנות",
+      "google_places": {
+        "place_id": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "rejected",
+      "name_in_transcript": "קאופרי שטראוס",
+      "reject_reason": "Consumer product (oat-based milk alternative by Strauss), not a restaurant.",
+      "timestamp": {
+        "seconds": 1164,
+        "display": "19:24"
+      }
+    },
+    {
+      "verdict": "rejected",
+      "name_in_transcript": "שוק יקרים ביפו",
+      "reject_reason": "Upcoming farmers market, not a restaurant. Mentioned as homework assignment.",
+      "timestamp": {
+        "seconds": 3581,
+        "display": "59:41"
+      }
+    },
+    {
+      "verdict": "rejected",
+      "name_in_transcript": "פיצה עגבניה",
+      "reject_reason": "Passing mention as an example of a business that survived on that street corner. Not reviewed.",
+      "timestamp": {
+        "seconds": 198,
+        "display": "03:18"
+      }
+    }
+  ]
+}

@@ -1,0 +1,573 @@
+{
+  "episode": {
+    "video_id": "f9L1k9RctpM",
+    "video_url": "https://www.youtube.com/watch?v=f9L1k9RctpM",
+    "title": "ביס השבוע | מדברים מהבטן פרק 136",
+    "channel_name": "מדברים מהבטן - הפודיום",
+    "published_at": "2025-12-10",
+    "hosts": [
+      "עמית אהרונסון",
+      "נטע סלונים"
+    ],
+    "guests": [
+      "יהונתן כהן",
+      "ארז קומרובסקי"
+    ],
+    "language": "he",
+    "transcript_length": 42376,
+    "segment_count": 1303,
+    "episode_id": null,
+    "summary": "פרק 136 של מדברים מהבטן, בו עמית ונטע מנחים ללא יהונתן (שנמצא בטיול בר מצווה באנגליה). נטע מביאה ביס מאלנה בנורמן (פיצ'י קאצ'ו פפה), עמית מביא ביס מטייצ'ו בפתח תקווה (תאילנדי). ארז קומרובסקי מתארח ומספר על פופאפ וינטרפסט בבת אביגדור. נטע ממליצה על הדרינקריה בפרדס חנה ועמית על בלעמי בתל אביב. הם גם מדברים יחד על באו, המקום החדש של תומר אגאי עם אחים אבידן."
+  },
+  "extraction": {
+    "date": "2026-04-03",
+    "agent": "episode-processor",
+    "total_mentions": 14,
+    "add_to_page": 6,
+    "reference_only": 5,
+    "rejected": 3,
+    "already_in_db": 1,
+    "new_to_add": 5
+  },
+  "restaurants": [
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "אלנה",
+      "name_english": "Alena",
+      "name_in_transcript": "אלנה",
+      "google_name": "ALENA - מסעדת אלנה",
+      "timestamp": {
+        "seconds": 266,
+        "display": "04:26",
+        "youtube_url": "https://www.youtube.com/watch?v=f9L1k9RctpM&t=266s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": null,
+        "address": "נחמני 23-25, תל אביב-יפו",
+        "region": "מרכז",
+        "latitude": 32.0659206,
+        "longitude": 34.7754373
+      },
+      "cuisine_type": "איטלקי",
+      "price_range": "יקר",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "כל כך טוב שאמרתי בא לי להשאיר אותו לי",
+        "הרבה זמן לא נהניתי ככה ממסעדה ממפה לבנה משירות טוב",
+        "מקצועי בצורה יוצא דופן שנמצא במלון מקצועי בצורה יוצא דופן"
+      ],
+      "host_comments": "ביס השבוע של נטע - פיצ'י קאצ'ו פפה באלנה שבמלון הנורמן. פסטה בעבודת יד עם פיקורינו ופלפל שחור. מסעדה שעובדת גם כמסעדה משפחתית עם ראשונות טובות וחומרי גלם מעולים.",
+      "dishes_mentioned": [
+        "פיצ'י קאצ'ו פפה"
+      ],
+      "special_features": [
+        "מלון הנורמן",
+        "פסטה בעבודת יד",
+        "מסעדה משפחתית"
+      ],
+      "mention_context": "ביס השבוע של נטע סלונים",
+      "mention_level": "נטעם",
+      "speaker": "נטע סלונים",
+      "google_places": {
+        "place_id": "ChIJOxaZmH1LHRURboLnTyBU6M8",
+        "google_url": "https://maps.google.com/?cid=14981316658204213870",
+        "rating": 4.1,
+        "review_count": 1096,
+        "price_level": null,
+        "phone": "03-543-5400",
+        "website": "https://www.thenorman.com/restaurants-and-bar/alena/",
+        "photo_url": "places/ChIJOxaZmH1LHRURboLnTyBU6M8/photos/AU_ZVEEm6VJEElAW-8ZY8V9btVtDxl5IsI6Achb5ozEb0Z12Oc29mHAHQo71S8xLbVCaPXB1BYUiSqsGK31ocBa548c7s6J86bmsFWL0lm6GtaQZRqSOr2ZryV-0mlb3DZSol8w3AsmTjILVdDOiF7XH3TGLYqCLUxU7NA3iKU_z-i1pyisfNDBELtAgyQy-ncWxV9e9rBTnzNTXt7Op6d1oOJPpI-V2vj6ph8LQdjGKKMYKH2lz6h_Jmqi_VFXdCfDa9Tcj0VR_rSm0CId1g9l7eqShQVNnVTM9TzFkH-P9RnA",
+        "instagram_url": "https://www.instagram.com/alena.restaurant/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": true,
+        "id": "2433c5c7-a476-422f-aaf5-c592a2cb530d"
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "תאי צ'ו",
+      "name_english": "Thai Chu",
+      "name_in_transcript": "טייצ'ו",
+      "google_name": "תאי צ'ו - מטבח תאילנדי",
+      "timestamp": {
+        "seconds": 421,
+        "display": "07:01",
+        "youtube_url": "https://www.youtube.com/watch?v=f9L1k9RctpM&t=421s"
+      },
+      "location": {
+        "city": "פתח תקווה",
+        "neighborhood": "אזור התעשייה",
+        "address": "ברקת 9, פתח תקווה",
+        "region": "מרכז",
+        "latitude": 32.0894304,
+        "longitude": 34.858679
+      },
+      "cuisine_type": "תאילנדי",
+      "price_range": "בינוני",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "טעמים מאוד מאוד מדויקים אותנטיים",
+        "לגמרי עשה לי חשק לחזור למקום",
+        "אם אמית ממליץ על משהו תאילנדי, תדעו שאתם בידיים מה זה טובות"
+      ],
+      "host_comments": "ביס השבוע של עמית. מסעדה תאילנדית לא כשרה פתוחה בשבת באזור התעשייה של פתח תקווה. דרור דודקביץ' וצ'ו אשתו. נמטוק פרוסות בשר חריף ואורז מוקפץ עם קרי ירוק בחלב קוקוס.",
+      "dishes_mentioned": [
+        "נמטוק",
+        "אורז מוקפץ עם קרי ירוק",
+        "סטיקי רייס"
+      ],
+      "special_features": [
+        "לא כשר",
+        "פתוח בשבת",
+        "מסעדונת",
+        "משלוחים בוולט"
+      ],
+      "mention_context": "ביס השבוע של עמית אהרונסון",
+      "mention_level": "נטעם",
+      "speaker": "עמית אהרונסון",
+      "google_places": {
+        "place_id": "ChIJDfXxFXU1HRURsTUso3YOrsA",
+        "google_url": "https://maps.google.com/?cid=13884050603936331185",
+        "rating": 4.6,
+        "review_count": 270,
+        "price_level": null,
+        "phone": "077-731-6400",
+        "website": "https://www.thai-chu.com/",
+        "photo_url": "places/ChIJDfXxFXU1HRURsTUso3YOrsA/photos/AU_ZVEHT-CYAiNKSQjCj_THu9MIOHJ1id8rDTSWxaNuRj1rhfHZGtO4kAZTnSK5tIu5FgY5twkVGU0qpn_CrXfq2NVdKkywuFU5a2r_Ox3fIoQoKGArBq5VFEBNIGv0b_G42Hxp5Nxmb6XXp-73DB9bR7pW72LUF4rnLosDPAiXlRv9pI5TyQGRuK4Zqlr3AKnq0-RLFUBaqefac6Gn57p7KKJCj11kTMlVcTJqSumm34YEf4UznGGdZzdfIGl2Wv14RnERYo9_9IwSz_ZvIkosStJrHfop4KRB5Q00Ksvi_jPesAA",
+        "instagram_url": "https://www.instagram.com/thaichu_il/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "דרינקריה",
+      "name_english": "Drinkeria",
+      "name_in_transcript": "הדרינקריה",
+      "google_name": "דרינקריה",
+      "timestamp": {
+        "seconds": 1888,
+        "display": "31:28",
+        "youtube_url": "https://www.youtube.com/watch?v=f9L1k9RctpM&t=1888s"
+      },
+      "location": {
+        "city": "פרדס חנה-כרכור",
+        "neighborhood": "השוק הישן",
+        "address": "האורנים 14, פרדס חנה כרכור",
+        "region": "שרון",
+        "latitude": 32.4739969,
+        "longitude": 34.9721517
+      },
+      "cuisine_type": "בר קוקטיילים",
+      "price_range": "בינוני",
+      "status": "חדש",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "מגניב להקום טוב כזה מכל הבחינות יודעים מה הם עושים שם",
+        "מאוד מעריכה אותו את נועם עושה עבודה מהממת. המלצה חמה",
+        "נראה לי המקום שבו אנשים יסגרו את היום הקולינרי שלהם בפרדסחנה"
+      ],
+      "host_comments": "בר קוקטיילים חדש בפרדס חנה של נועם הס, מיקסולוג מעולה עם עגלת קוקטיילים מצליחה. מייצר את רוב האלכוהול בעצמו. סגנון בית סבתא ויינטג' עם קוקטיילים שהם הומז' למשקאות ישראלים. גם מגישים אוכל בסגנון אשכנזי-ישראלי.",
+      "dishes_mentioned": [
+        "קוקטייל לימונדה עם ג'ין",
+        "בריזר פטל עם תקילה",
+        "קוקטייל ארוחת בוקר עם חלב צ'יריוס",
+        "דרינק שוקולד עם ליקר עשבים",
+        "סלט שורשים",
+        "תפוח אדמה מדורה",
+        "דגים מאושנים"
+      ],
+      "special_features": [
+        "מייצרים אלכוהול עצמאי",
+        "סגנון ויינטג' בית סבתא",
+        "נפתח לפני שבוע",
+        "מיקסולוג מוכר"
+      ],
+      "mention_context": "המלצה חדשה של נטע, בר קוקטיילים חדש בפרדס חנה",
+      "mention_level": "נטעם",
+      "speaker": "נטע סלונים",
+      "google_places": {
+        "place_id": "ChIJD8N9GwAPHRUR6hEKSMBlb0I",
+        "google_url": "https://maps.google.com/?cid=4787156805434872298",
+        "rating": 4.5,
+        "review_count": 51,
+        "price_level": null,
+        "phone": "053-352-6682",
+        "website": null,
+        "photo_url": "places/ChIJD8N9GwAPHRUR6hEKSMBlb0I/photos/AU_ZVEHJQmV1UdW2XYetro6bl1iev-06QSukLVMztJlEfKpavseukukg7YAgc9UuRJIkxCSQoqNUFIZgJZDmC6Zke37ZqkQQ9n7bl3rG-6GKCi6nB5r4et4lXxExmiB7oDVaBSvjPpMX5jDMtdqdXjfGIs5nKmUgpebPzFInsqyuO4mWNM9aV4Xh9OHYVoZXHKdaPHmSNrlp4mzdoWqvA9bJT9Z0oL8i0pKK1peEHqTQLSlADdN9XJwywQ1tjARVwy-z1OBdDNHA9puHTt1rHmYxfx9_1GsWI21OJwQ2tD-9q2ydLw",
+        "instagram_url": null,
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "בל עמי",
+      "name_english": "Bel Ami",
+      "name_in_transcript": "בלמי",
+      "google_name": "Bel Ami - בל עמי",
+      "timestamp": {
+        "seconds": 2324,
+        "display": "38:44",
+        "youtube_url": "https://www.youtube.com/watch?v=f9L1k9RctpM&t=2324s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "כיכר דיזנגוף",
+        "address": "בן עמי 14, תל אביב-יפו",
+        "region": "מרכז",
+        "latitude": 32.078286,
+        "longitude": 34.773292
+      },
+      "cuisine_type": "צרפתי",
+      "price_range": "יקר",
+      "status": "חדש",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "יותר נהניתי ממה שציפיתי אני לא מתבייש להגיד",
+        "פשוט פשוט וטעים",
+        "מקצוענות וניסיון שאין אין שני להם",
+        "הנובריינר הזה המקום שאתה יכול ללכת ולקבל אוכל ואין התחקמויות אבל הכל עשוי מעולה"
+      ],
+      "host_comments": "ברסרי קלאסי חדש מקבוצת ירזין (אחים אבידן) עם השף עידו אדרי. ארוחת ערב קלאסית צרפתית - מרק בצל, ברוסקטת כבדים, סטייק שמנת פלפל, צ'יפס מושלם. מטבח ענק והשקעה חריגה. 700 שקל לזוג עם יין.",
+      "dishes_mentioned": [
+        "מרק בצל",
+        "ברוסקטת כבדים",
+        "סשימי אינטיאס",
+        "סטייק שמנת פלפל",
+        "צ'יפס",
+        "פירה",
+        "טרט וניל פטל"
+      ],
+      "special_features": [
+        "ברסרי צרפתי קלאסי",
+        "קבוצת ירזין",
+        "שף עידו אדרי",
+        "מטבח ענק",
+        "פתחו לאחרונה גם לערב"
+      ],
+      "mention_context": "עמית ונטע סקרו את ארוחת הערב החדשה של בל עמי",
+      "mention_level": "נטעם",
+      "speaker": "עמית אהרונסון",
+      "google_places": {
+        "place_id": "ChIJByAlCABNHRURJ6_-cs-xqAs",
+        "google_url": "https://maps.google.com/?cid=840116835050237735",
+        "rating": 4.1,
+        "review_count": 147,
+        "price_level": null,
+        "phone": "03-310-4989",
+        "website": "https://www.belamitlv.com/",
+        "photo_url": "places/ChIJByAlCABNHRURJ6_-cs-xqAs/photos/AU_ZVEFsLBETY6m6uK9ZCrdXzlt1d3yw-F_4p04OtoYdnxynl5PoewFgZS3kiQfBQcNEaXkfbIwT990M5b3XF1PeEt6j9mqHA1n-hzWLp_gszZeKvJ8NqybF9Ncpc7Gt3JoJtYZ2TMsnaMG04cRllasGLAigcOSyDr2Kdy2agMWIfYzY9ma8UNzVZiSyxXJvMuugUb3o8vT-ydn4rIrqvgsw2KXBwDNQaqBmiPhAvyFow5naweXSqwaRk2dBfHiOe0ZHbsmckkNZF1haJSvBvSYfbrDiHv9Hy1pSfHBn0dd8-MYgKA",
+        "instagram_url": null,
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "באו",
+      "name_english": "Bao",
+      "name_in_transcript": "באו",
+      "google_name": null,
+      "timestamp": {
+        "seconds": 2682,
+        "display": "44:42",
+        "youtube_url": "https://www.youtube.com/watch?v=f9L1k9RctpM&t=2682s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "כיכר דיזנגוף",
+        "address": "תל אביב-יפו",
+        "region": "מרכז",
+        "latitude": null,
+        "longitude": null
+      },
+      "cuisine_type": "שף",
+      "price_range": "יקר",
+      "status": "חדש",
+      "host_opinion": "חיובית",
+      "host_quotes": [
+        "אהבתי שאבידנים הביאו כאן משהו כזה בוגר תל אביבי בסטייל",
+        "אהבתי את הפסטה עם הדג",
+        "התחושה שתומר אגי יחזור. הוא כבר חזר באיזשהו מקום אבל הוא גם עוד יחזור"
+      ],
+      "host_comments": "מקום חדש של אחים אבידן ותומר אגאי. סגנון בילוי תל אביבי עם קוקטיילים מצוינים, פסטה עם דג, ספשל ביז. עיצוב מושקע עם עגלת משקאות. אהבו את הקוקטיילים, הפסטה, הישיבה הנוחה. פחות אהבו את הקינוח ואת העונתיות.",
+      "dishes_mentioned": [
+        "פסטה עם דג",
+        "ביז (עטינים)",
+        "גלידת מי ורדים",
+        "קוקטיילים"
+      ],
+      "special_features": [
+        "אחים אבידן",
+        "תומר אגאי שף",
+        "עגלת משקאות",
+        "בר מרווח ונוח"
+      ],
+      "mention_context": "עמית ונטע היו ביחד ועשו אהבתי/לא אהבתי",
+      "mention_level": "נטעם",
+      "speaker": "hosts",
+      "google_places": {
+        "place_id": null,
+        "google_url": null,
+        "rating": null,
+        "review_count": null,
+        "price_level": null,
+        "phone": null,
+        "website": null,
+        "photo_url": null,
+        "instagram_url": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "הוזכר",
+      "name_hebrew": "מולם",
+      "name_english": "Molam",
+      "name_in_transcript": "מולם",
+      "google_name": "Molam",
+      "timestamp": {
+        "seconds": 3168,
+        "display": "52:48",
+        "youtube_url": "https://www.youtube.com/watch?v=f9L1k9RctpM&t=3168s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": null,
+        "address": "הר סיני 2, תל אביב-יפו",
+        "region": "מרכז",
+        "latitude": null,
+        "longitude": null
+      },
+      "cuisine_type": "תאילנדי",
+      "price_range": "בינוני",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "מקום מעולה",
+        "תוספת מצוינת למפת המקומות התאילנדים בישראל",
+        "אם לא הייתם עדיין במקרה"
+      ],
+      "host_comments": "עמית ואבי אפרטי שניהם היו ואהבו. מקום תאילנדי מעולה, קוקטיילים מצוינים, מצליח לפצח את הרעיון של בר בילוי עם אוכל טוב. ארוטי עם משקה וגלצ'ים קצוצים.",
+      "dishes_mentioned": [
+        "ארוטי עם גלצ'ים קצוצים"
+      ],
+      "special_features": [
+        "בר בילוי",
+        "קוקטיילים מצוינים"
+      ],
+      "mention_context": "עמית ואבי אפרטי היו ושניהם אהבו",
+      "mention_level": "הוזכר",
+      "speaker": "עמית אהרונסון",
+      "google_places": {
+        "place_id": "ChIJlSHiS4JNHRURsQ8UOQ6ob64",
+        "google_url": null,
+        "rating": 4.6,
+        "review_count": 112,
+        "price_level": null,
+        "phone": null,
+        "website": null,
+        "photo_url": "places/ChIJlSHiS4JNHRURsQ8UOQ6ob64/photos/AU_ZVEEDc8kUNaxvo4gQaEiXATsI90SewG3FJmtglC7vfdUIOoxd0ln863Fj1CCaHH7Od-LHZcXnTkMcVeJ-QXyHSlpv7sHmNdWcC__rAiBXFsB8cjmKwDs0Q1d4FSCYEynrKtzZ_5pXSIgda5hV-bFUQL5mgLOalaQVuRUy7ZCMDpjisSEbtCHTKswYqLETCxqRTpGMjK4NkqNl0HbbFmeOlJSj8uMv7SRSPTEODh3gSa2gLAnyeSaNsr53NO_PBGTdFYKWUTD69XZ6u3r18hx4Ca8COyprBBXtXyeSotoCP_MH4g",
+        "instagram_url": "https://www.instagram.com/molam.bar/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "ארז קומרובסקי - וינטרפסט בבת אביגדור",
+      "name_english": "Erez Komarovsky Winterfest at Bat Avigdor",
+      "name_in_transcript": "ארז קומרובסקי",
+      "skip_reason": "Pop-up event by chef Erez Komarovsky, not a permanent restaurant. Seasonal dining experience at Bat Avigdor event space, open 2 days a week during winter only.",
+      "timestamp": {
+        "seconds": 1439,
+        "display": "23:59",
+        "youtube_url": "https://www.youtube.com/watch?v=f9L1k9RctpM&t=1439s"
+      },
+      "location": {
+        "city": "בנימינה",
+        "address": "בת אביגדור"
+      },
+      "host_quotes": [
+        "350 לבן אדם",
+        "לאכול מהידיים שלך ארז זה לגמרי"
+      ],
+      "mention_context": "ארז קומרובסקי התארח ודיבר על פופאפ וינטרפסט חדש בבת אביגדור. ארוחה עם רמן טלה, ניקי רומאי, מולים עם חובזה, עוגת שוקולד עם גלידת יוגורט עיזים.",
+      "google_places": {
+        "place_id": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "הסתקיה",
+      "name_english": "HaStakia",
+      "name_in_transcript": "הסתקיה",
+      "skip_reason": "Discussed via Sagi Cohen's food critic review, not personal experience of the hosts. Referenced as part of the Machane Yehuda group restaurants and Sagi Cohen's column.",
+      "timestamp": {
+        "seconds": 3063,
+        "display": "51:03",
+        "youtube_url": "https://www.youtube.com/watch?v=f9L1k9RctpM&t=3063s"
+      },
+      "location": {
+        "city": "ירושלים",
+        "address": "שוק מחנה יהודה, ירושלים"
+      },
+      "host_quotes": [
+        "אחד המקומות הכי טובים אולי שהקבוצה של מחניודה עשתה",
+        "זה לא עוד מקום זה אירוע"
+      ],
+      "mention_context": "דיברו על ביקורת חיובית של סגי כהן על הסתקיה של מחנה יהודה. ציינו שהביקורת הקודמת שלו על הקבוצה הייתה שלילית מאוד.",
+      "google_places": {
+        "place_id": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "המקום של תמרה",
+      "name_english": "HaMakom Shel Tamara",
+      "name_in_transcript": "השניצל של תמרה",
+      "skip_reason": "Mentioned via Kobi Rubin's visit, not personal experience of the hosts. Brief mention of schnitzel in baguette for 35 NIS in Bat Yam.",
+      "timestamp": {
+        "seconds": 3234,
+        "display": "53:54",
+        "youtube_url": "https://www.youtube.com/watch?v=f9L1k9RctpM&t=3234s"
+      },
+      "location": {
+        "city": "בת ים",
+        "address": "בת ים"
+      },
+      "host_quotes": [
+        "ב-35 שק בלבד שזה מחיר סבבה היום לשניצל בגט"
+      ],
+      "mention_context": "קובי רובין ביקר במקום קטן בבת ים בשם השניצל של תמרה. שניצל בבגט ב-35 שקל שמטגנים על המקום.",
+      "google_places": {
+        "place_id": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "המטבח של רמה",
+      "name_english": "HaMatbakh Shel Rama",
+      "name_in_transcript": "המטבח של רמה",
+      "skip_reason": "Industry news - mentioned as hosting a pop-up event with Castel winery. Not a regular restaurant visit.",
+      "timestamp": {
+        "seconds": 1362,
+        "display": "22:42",
+        "youtube_url": "https://www.youtube.com/watch?v=f9L1k9RctpM&t=1362s"
+      },
+      "location": {
+        "city": "הרי יהודה",
+        "address": "הרי יהודה"
+      },
+      "host_quotes": [
+        "באמת מקום חשוב בעיניי בטח בתולדות כזה המטבח של הרי יהודה"
+      ],
+      "mention_context": "מוזכר כמקום שנחרב בשריפה וחוזר לפעילות עם אירועים ופופאפים, כולל אירוע עם יקב כסטל.",
+      "google_places": {
+        "place_id": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "ליברי בר",
+      "name_english": "Library Bar",
+      "name_in_transcript": "ליברי בר",
+      "skip_reason": "Passing mention - Neta mentioned she previously had pici cacio e pepe there too. No current review or recommendation.",
+      "timestamp": {
+        "seconds": 332,
+        "display": "05:32",
+        "youtube_url": "https://www.youtube.com/watch?v=f9L1k9RctpM&t=332s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "address": "תל אביב"
+      },
+      "host_quotes": [
+        "פעם הראשונה הייתה בליברי בר שאני מאוד מאוד אוהבת"
+      ],
+      "mention_context": "נטע מזכירה שפעם ראשונה אכלה את הביס הזה (פיצ'י) בליברי בר",
+      "google_places": {
+        "place_id": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "rejected",
+      "name_in_transcript": "דלל",
+      "reject_reason": "Bakery/patisserie mentioned in context of baked donuts discussion. Not a restaurant visit - just a passing reference to a baked donut being good.",
+      "timestamp": {
+        "seconds": 712,
+        "display": "11:52"
+      }
+    },
+    {
+      "verdict": "rejected",
+      "name_in_transcript": "פסטלינה",
+      "reject_reason": "Historical reference to Yarzin group's old restaurant in south Tel Aviv. Not a current restaurant.",
+      "timestamp": {
+        "seconds": 2339,
+        "display": "38:59"
+      }
+    },
+    {
+      "verdict": "rejected",
+      "name_in_transcript": "סנטה קטרינה",
+      "reject_reason": "Reference to Tomer Agai's previous restaurant for comparison purposes only. Not a current recommendation.",
+      "timestamp": {
+        "seconds": 2969,
+        "display": "49:29"
+      }
+    }
+  ]
+}

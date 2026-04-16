@@ -1,0 +1,719 @@
+{
+  "episode": {
+    "video_id": "3N2oC0N6ciQ",
+    "video_url": "https://www.youtube.com/watch?v=3N2oC0N6ciQ",
+    "title": "מדברים מהבטן פרק 146 - תומר טל ובואו",
+    "channel_name": "מדברים מהבטן - הפודיום",
+    "published_at": "2026-02-18",
+    "hosts": [
+      "עמית אהרנסון",
+      "יהונתן כהן",
+      "נטע סלונים"
+    ],
+    "guests": [
+      "תומר טל"
+    ],
+    "language": "he",
+    "transcript_length": 61462,
+    "segment_count": 1837,
+    "episode_id": "c6d8c1b7-c46d-4236-af77-5a58f039f63b",
+    "summary": "פרק 146 של מדברים מהבטן עם אורח מיוחד - השף תומר טל, שפותח את מסעדת בואו בתל אביב. הפרק כולל טעימה חיה מהאוכל של בואו באולפן, ביסים של השבוע (זוזו חנה, יאמה גלילות, קפה בוליווד), סיפור הפתיחה של המסעדה, דיון על מחירים בענף המסעדנות, וטיולים של המגישים לאורי בורי, זהרה בירושלים ופלור בתל אביב."
+  },
+  "extraction": {
+    "date": "2026-03-24",
+    "agent": "episode-processor",
+    "total_mentions": 18,
+    "add_to_page": 8,
+    "reference_only": 7,
+    "rejected": 3,
+    "already_in_db": 7,
+    "new_to_add": 1
+  },
+  "restaurants": [
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "בואו",
+      "name_english": "Bou",
+      "name_in_transcript": "בואו",
+      "google_name": null,
+      "timestamp": {
+        "seconds": 1364,
+        "display": "22:44",
+        "youtube_url": "https://www.youtube.com/watch?v=3N2oC0N6ciQ&t=1364s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "נווה צדק",
+        "address": "ישראל תל חמש, תל אביב",
+        "region": "מרכז",
+        "latitude": null,
+        "longitude": null
+      },
+      "cuisine_type": "שף ים-תיכוני",
+      "price_range": "יקר",
+      "status": "חדש",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "I should kill you so fucking good - כל ביס שלוקחים פה אתה מרגיש דברים",
+        "קוס אומו אני חייב להגיע למסעדה הזאת כבר",
+        "146 פרקים זה לא צחוק, לא היה כדבר הזה",
+        "תומר הוא אלכימאי של רטבים"
+      ],
+      "host_comments": "תומר טל הביא אוכל מבואו לאולפן - פלמידה כבושה/מעושנת עם סלט בצל, לחם תפוחי אדמה ושום ירוק, מטבל זיתים ופיגם, וצנון בוכרי מוחמץ. המגישים התלהבו מאוד מכל ביס. דיון מעמיק על הקונספט, המחירים (350 שקל ממוצע לסועד), פתוחה 5 ימים בשבוע רק בערב.",
+      "dishes_mentioned": [
+        "פלמידה כבושה/מעושנת",
+        "סלט בצל בחלב חומץ",
+        "לחם תפוחי אדמה ושום ירוק",
+        "לחם בצל חמה וצנוברים",
+        "מטבל זיתים ופיגם",
+        "צנון בוכרי מוחמץ בקושו יוזו",
+        "שומן בקר כבוש במלח חילבה",
+        "פלפלים קלויים על גריל",
+        "גרון הודו עם בורגול"
+      ],
+      "special_features": [
+        "מסעדת שף חדשה",
+        "שותפות עם יאיר (ראונד טייבלס/הרברט סמואל/קלארו) וסטיבן לובל",
+        "גריל 2.5 מטר",
+        "חדר פרטי ל-30 איש",
+        "גינה עם 100 מקומות",
+        "מטבח פתוח"
+      ],
+      "mention_context": "אורח מרכזי בפרק - תומר טל מביא אוכל מבואו לאולפן וטועמים חי. הפרק בעצם מוקדש לבואו עם דיון מעמיק על הקונספט, השותפים, והאוכל.",
+      "speaker": "hosts",
+      "google_places": {
+        "place_id": "ChIJge2KTQBLHRURduScfxEaoJ0",
+        "google_url": "https://maps.google.com/?cid=11358106922686145654&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+        "rating": null,
+        "review_count": null,
+        "price_level": null,
+        "phone": null,
+        "website": null,
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqGL-7fN3B1lUZAOh1yuWcHhlEtkbPflGPqZX3nuYl7iNHe9aQd0oNBnPXp4Ec5iYDUmvyiyj47m0UZm7azdU9dn3FLucaxzwdw=s4800-w800",
+        "instagram_url": null,
+        "verified": false,
+        "note": "Enricher matched BoBo fashion store - wrong match. Bou is a new restaurant not yet fully on Google Places."
+      },
+      "production_db": {
+        "exists": true,
+        "id": "5a550622-9a32-49f4-87f5-520f62a45e69"
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "זוזו חנה",
+      "name_english": "Zuzu Hana",
+      "name_in_transcript": "זוזו חנה",
+      "google_name": null,
+      "timestamp": {
+        "seconds": 188,
+        "display": "3:08",
+        "youtube_url": "https://www.youtube.com/watch?v=3N2oC0N6ciQ&t=188s"
+      },
+      "location": {
+        "city": "צומת מגדל",
+        "neighborhood": null,
+        "address": "צומת מגדל, תנורין",
+        "region": "צפון",
+        "latitude": null,
+        "longitude": null
+      },
+      "cuisine_type": "ביתי ערבי",
+      "price_range": "בינוני",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "מסעדה שתמיד כיף לשבת בה כל המשפחה",
+        "עוף ממולה אורז הכי רך נמס בפה",
+        "זוזו חנה הוא חבר יקר ואהוב"
+      ],
+      "host_comments": "תומר טל ממליץ כביס השבוע - מקום שהוא מקפיד לחזור אליו עם המשפחה בנסיעות לצפון. הדגיש את העוף הממולא באורז שהילדים ביקשו עוד.",
+      "dishes_mentioned": [
+        "עוף ממולא אורז"
+      ],
+      "special_features": [
+        "מסעדה משפחתית",
+        "צומת מגדל בצפון"
+      ],
+      "mention_context": "ביס השבוע של תומר טל - מסעדה משפחתית בצפון שהוא חוזר אליה.",
+      "speaker": "תומר טל",
+      "google_places": {
+        "place_id": "ChIJyTRLkII-HBUR4PPpqzoQmgs",
+        "google_url": "https://maps.google.com/?cid=835998525009032160&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+        "rating": null,
+        "review_count": null,
+        "price_level": null,
+        "phone": null,
+        "website": null,
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqEPSpLmaYH9zBxmP2xYmu3HVN65rBbt2yJFyWFqpddqHiupyn4qJqkvgQOUVDUb1AyvIBIZhqFIAWBDcxiZK9vnCTh43aFhStc=s4800-w800",
+        "instagram_url": null,
+        "verified": false,
+        "note": "Enricher matched Magdalena in Tel Aviv - WRONG match. Real Zuzu Hana is near Tzomet Migdal in the north."
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "יאמה גלילות",
+      "name_english": "Yama Galilot",
+      "name_in_transcript": "יאמה",
+      "google_name": "Yama Hertzliya - יאמה הרצליה",
+      "timestamp": {
+        "seconds": 252,
+        "display": "4:12",
+        "youtube_url": "https://www.youtube.com/watch?v=3N2oC0N6ciQ&t=252s"
+      },
+      "location": {
+        "city": "הרצליה",
+        "neighborhood": "בי גלילות",
+        "address": "Ramat Yam St 4, Herzliya, 4685104, Israel",
+        "region": "שרון",
+        "latitude": 32.1788959,
+        "longitude": 34.8030319
+      },
+      "cuisine_type": "קצביית דגים / בשר",
+      "price_range": "בינוני",
+      "status": "חדש",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "עוף מהרוטיסרי מטורף, יש שם ענענה של ריח מחוץ למקום",
+        "מקום יפה יפה באמת, כלומר הדניה הכל מושקע",
+        "חתיכת בשורה לתושבי הרצליה והסביבה",
+        "זה כמו איזה חללית, יובל לא יודע לעשות חצי מקצוע"
+      ],
+      "host_comments": "סניף חדש של יאמה בבי גלילות - שותפות עם אנשי הבוצ'ר שופ. נתחים מקוצבים, ארוחות שף, רוטיסרי. עוף בגריל ב-78 שקל, ברוסקטות ב-18 שקל. מקום מושקע עם עוצרות יין של היידו.",
+      "dishes_mentioned": [
+        "עוף מרוטיסרי",
+        "ספרבס טלה",
+        "פסטרמה בקר על ברוסקטה",
+        "מנות דגים מקולקציית יאמה"
+      ],
+      "special_features": [
+        "סניף חדש",
+        "שותפות עם הבוצ'ר שופ",
+        "רוטיסרי",
+        "משלוחים",
+        "יין בכוסות"
+      ],
+      "mention_context": "ביס השבוע של יהונתן כהן - הסניף החדש של יאמה בבי גלילות, עם שותפות חדשה לעולם הבשר.",
+      "speaker": "יהונתן כהן",
+      "google_places": {
+        "place_id": "ChIJT-vjZ4JJHRUR8gT1hvHgJa0",
+        "google_url": "https://maps.google.com/?cid=12476625670655771890",
+        "rating": null,
+        "review_count": null,
+        "price_level": null,
+        "phone": "072-334-1772",
+        "website": "https://www.yama-hertzliya.co.il/",
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqGP5tw75RcqlS51OKGRrE847hErRpYDxZWmPsGONNNJCzpg5_d9cY0mSlOCXpsYiO5KGtKrhUajfb8MSDGaxoL3OaxDqOEwN3k=s1600-w800",
+        "instagram_url": null,
+        "verified": true
+      },
+      "production_db": {
+        "exists": true,
+        "id": "531c8ad3-ba9d-44a1-a4ae-e587ad52c151"
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "קפה בוליווד",
+      "name_english": "Cafe Bollywood",
+      "name_in_transcript": "בוליווד",
+      "google_name": "Cafe Bollywood",
+      "timestamp": {
+        "seconds": 478,
+        "display": "7:58",
+        "youtube_url": "https://www.youtube.com/watch?v=3N2oC0N6ciQ&t=478s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "פלורנטין",
+        "address": "Ma'on St 5א, Tel Aviv-Yafo, Israel",
+        "region": "מרכז",
+        "latitude": 32.0553435,
+        "longitude": 34.7660419
+      },
+      "cuisine_type": "הודי",
+      "price_range": "זול",
+      "status": "חדש",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "לא דברים שאנחנו רגילים לראות כאן",
+        "מגניב להה, המון טעמים המון עולמות",
+        "ברגע שזה נכנס לפי הטפיוקה מתפוצצת לכל עבר",
+        "אני מקווה שיעלו המחירים כי אם לא יעלו המקום הזה יסגר"
+      ],
+      "host_comments": "מקום הודי חדש בפלורנטין מבית אנשים שהגיעו מהודו, פוג'ה ממומבאי מבשלת. צמחוני, שירות עצמי, מחירים נמוכים - סמוסה ב-15 שקל, המבורגר (ודה פאו) ב-18 שקל. מנות ייחודיות כמו סב פורי ואדה סבודנה.",
+      "dishes_mentioned": [
+        "סמוסה",
+        "סב פורי",
+        "ודה פאו",
+        "אדה סבודנה",
+        "פני פורי"
+      ],
+      "special_features": [
+        "צמחוני",
+        "שירות עצמי",
+        "מחירים נמוכים",
+        "אוכל הודי אותנטי מרחוב"
+      ],
+      "mention_context": "ביס השבוע של נטע סלונים - מקום הודי חדש בפלורנטין במקום שהיה הסיך.",
+      "speaker": "נטע סלונים",
+      "google_places": {
+        "place_id": "ChIJwaQ8dQBNHRURfFo-eDR_Qv8",
+        "google_url": "https://maps.google.com/?cid=18393403691466906236",
+        "rating": 4.7,
+        "review_count": 30,
+        "price_level": null,
+        "phone": null,
+        "website": null,
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqGVgn2sYi8If5n4F-iIFFg5e1wCmhEnNKPTZoiGnxLQjnsnpTBVjYrK1nmumy3cCfTuEDHz5FgfMEJBwHwyPwvEBWf9insiBYE=s1600-w800",
+        "instagram_url": null,
+        "verified": true
+      },
+      "production_db": {
+        "exists": true,
+        "id": "d497e91d-eeae-4c87-af88-acccaa76803f"
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "נורה",
+      "name_english": "Nura",
+      "name_in_transcript": "נורה",
+      "google_name": "Nura",
+      "timestamp": {
+        "seconds": 843,
+        "display": "14:03",
+        "youtube_url": "https://www.youtube.com/watch?v=3N2oC0N6ciQ&t=843s"
+      },
+      "location": {
+        "city": "קריית ענבים",
+        "neighborhood": "מתחם הרפת הישנה",
+        "address": "מתחם הרפת הישנה, קרית ענבים, 9083300, Israel",
+        "region": "ירושלים",
+        "latitude": 31.8109794,
+        "longitude": 35.1209117
+      },
+      "cuisine_type": "ים-תיכוני / דגים",
+      "price_range": "יקר",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "קישום ממולה שאלוהים נגע בו",
+        "רוטב אגריסטדה פנומנלי",
+        "פיטה נפוכה כזאת נורא גדולה בטבון שמאוד מאוד מתחברת",
+        "פלמידה פסיכית על הגריל",
+        "הם נוכחים בעדינות ברמיזה בקריצה"
+      ],
+      "host_comments": "יהונתן כהן ביקר בנורה ומצא שם את רפי כהן (של מסעדת רפאל) שמלווה את המקום. ממנת הקישוא הממולא עם אגריסטדה של רפי כהן התלהב במיוחד. גם פלמידה על הגריל ופיטה בטבון.",
+      "dishes_mentioned": [
+        "קישוא ממולא בשר טלה ואורז עם רוטב אגריסטדה",
+        "פלמידה על הגריל",
+        "פיטה נפוחה בטבון"
+      ],
+      "special_features": [
+        "רפי כהן מלווה את המקום",
+        "קבוצת הרים",
+        "מתחם הרפת הישנה"
+      ],
+      "mention_context": "ביס השבוע של יהונתן כהן - ביקור בנורה עם ליווי של רפי כהן, שמייצר רגע מרגש בתולדות הקולינריה הישראלית.",
+      "speaker": "יהונתן כהן",
+      "google_places": {
+        "place_id": "ChIJyQW7c_bRAhURu_Tpfj2-kLg",
+        "google_url": "https://maps.google.com/?cid=13299338870956618939",
+        "rating": 4.3,
+        "review_count": 233,
+        "price_level": null,
+        "phone": "02-500-6969",
+        "website": "https://www.nura-rest.com/",
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqHD2U6Rbq1TSyUsBMwxuvDON-zzxtE6pMjjoFRnjYr9HFwz2AFpQs-3uXix0F3mQ7tuWSGfGjGPxqle7Fd5FiMzQZHr_78GtlA=s1600-w800",
+        "instagram_url": "https://www.instagram.com/nura_restaurant_/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": true,
+        "id": "522167f9-76ce-4b11-9e04-90ce09a16e5d"
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "אורי בורי",
+      "name_english": "Uri Buri",
+      "name_in_transcript": "אורי בורי",
+      "google_name": "Uri Buri",
+      "timestamp": {
+        "seconds": 3697,
+        "display": "61:37",
+        "youtube_url": "https://www.youtube.com/watch?v=3N2oC0N6ciQ&t=3697s"
+      },
+      "location": {
+        "city": "עכו",
+        "neighborhood": null,
+        "address": "Ha-Hagana St 2, Acre, Israel",
+        "region": "צפון",
+        "latitude": 32.9201,
+        "longitude": 35.0668238
+      },
+      "cuisine_type": "דגים",
+      "price_range": "יקר",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "החשש לא היה במקום, יכולת אדירה של מלאכת שימור עדינה",
+        "הדג שלך יהיה עשוי בול כמו שצריך",
+        "באמת שירות מעולה",
+        "בייבי מושט מקורמל עם סלק, סוג של רפרנס לגפילטה"
+      ],
+      "host_comments": "יהונתן כהן ביקר באורי בורי אחרי 22 שנה ומצא מסעדה מלאה ביום ראשון בערב (לא מובן מאליו). מרוצה מיכולת השימור - קלאסיקות מבוצעות היטב, שירות מעולה ממלצרים צעירים, וגם התחדשות.",
+      "dishes_mentioned": [
+        "בייבי מושט מקורמל עם סלק",
+        "פורל עם רוטב שמנת ארבעה פלפלים",
+        "סקלופס"
+      ],
+      "special_features": [
+        "מסעדה של 40 שנה",
+        "על חוף הים של עכו",
+        "מלאה גם ביום ראשון"
+      ],
+      "mention_context": "טיול של יהונתן כהן - חזרה לאורי בורי אחרי 22 שנה, מופתע מהפופולריות ומהרמה שנשמרת.",
+      "speaker": "יהונתן כהן",
+      "google_places": {
+        "place_id": "ChIJ3ThUh1nIHRURNbS2W7Y1B4o",
+        "google_url": "https://maps.google.com/?cid=9945977359410050101",
+        "rating": 4.7,
+        "review_count": 5204,
+        "price_level": 3,
+        "phone": "04-955-2212",
+        "website": "https://www.uriburi.co.il/",
+        "photo_url": "https://lh3.googleusercontent.com/place-photos/AL8-SNHe6aJxPk2IgfxYMwX4M_KxNrscOSXoCvg9LkpQdkSkiWi1wwlhN3aKwrsCZQppnnFXYdpMd9I9qCFgCrwVthiqpNj-O5caCuhRjE99uBEbT7RSsuBe2X_p3ce3BUk7VW8mHOycrU4kGVETpg=s1600-w800",
+        "instagram_url": "https://www.instagram.com/uri_buri_akko/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": true,
+        "id": "c713ff2d-eceb-4e49-9d63-cc036ed082b9"
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "זהרה",
+      "name_english": "Zahara",
+      "name_in_transcript": "זהרה",
+      "google_name": null,
+      "timestamp": {
+        "seconds": 3945,
+        "display": "65:45",
+        "youtube_url": "https://www.youtube.com/watch?v=3N2oC0N6ciQ&t=3945s"
+      },
+      "location": {
+        "city": "ירושלים",
+        "neighborhood": "מלון נוצ'ה",
+        "address": "ירושלים, מלון נוצ'ה",
+        "region": "ירושלים",
+        "latitude": null,
+        "longitude": null
+      },
+      "cuisine_type": "בר אוכל בשרי",
+      "price_range": "בינוני",
+      "status": "חדש",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "זה היה כל כך טוב, כל כך לא מה שציפיתי",
+        "אז אחלה זהרה הייתה לי חוויה פצצה מאוד מאוד טעים",
+        "מקום מגניב, לא היה מתפקד בתל אביב לא פחות"
+      ],
+      "host_comments": "נטע סלונים ביקרה בזהרה של אנשי אנג'ליקה במלון נוצ'ה בירושלים. בר אוכל בשרי בקומה מינוס 1. תפריט גדול, מטבח פתוח, מקום מרווח. פטריית אויסטר בקרמל סויה על קרם קשיו, טורטלוני שורט ריבס על קרם אפונה - הכל מבוצע היטב.",
+      "dishes_mentioned": [
+        "פטריית אויסטר בקרמל סויה על קרם קשיו",
+        "טורטלוני שורט ריבס על קרם אפונת גינה"
+      ],
+      "special_features": [
+        "אנשי אנג'ליקה",
+        "מלון נוצ'ה ירושלים",
+        "בשרי/כשר",
+        "מטבח פתוח",
+        "מרווח בין שולחנות"
+      ],
+      "mention_context": "טיול של נטע סלונים לירושלים - ביקור בזהרה של אנשי אנג'ליקה.",
+      "speaker": "נטע סלונים",
+      "google_places": {
+        "place_id": "ChIJJ0WGfuwpAxURdsrM-sxY9dQ",
+        "google_url": "https://maps.google.com/?cid=15345268942739130998&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+        "rating": null,
+        "review_count": null,
+        "price_level": null,
+        "phone": null,
+        "website": null,
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqHntPyCSNNKmuUcieckNF4n7R7aa5qxOR5uwFFa00eRNXKAx_wMneiyP7mm9AZGTOa0yzcB8vmMeL62MpvyD2vRsSjWriJ3M_s=s4800-w800",
+        "instagram_url": "https://www.instagram.com/zahara.restaurant/",
+        "verified": false,
+        "note": "Enricher matched Zahra Street in Jerusalem - wrong match. The restaurant is at Noche hotel."
+      },
+      "production_db": {
+        "exists": true,
+        "id": "401e86fd-da5e-436f-8303-57ce4ae13ef6"
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "פלור",
+      "name_english": "Flor - Cave a Manger",
+      "name_in_transcript": "פלור",
+      "google_name": "FLOR - Cave à Manger",
+      "timestamp": {
+        "seconds": 4281,
+        "display": "71:21",
+        "youtube_url": "https://www.youtube.com/watch?v=3N2oC0N6ciQ&t=4281s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": null,
+        "address": "Wilson St 10, Tel Aviv-Yafo, 6522020, Israel",
+        "region": "מרכז",
+        "latitude": 32.0672736,
+        "longitude": 34.7814233
+      },
+      "cuisine_type": "בר יין ואוכל",
+      "price_range": "בינוני",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "מקום נורא נורא משוחרר",
+        "הכל היה עשוי טוב וכל דבר טיפה אחר",
+        "פשוט מקום כזה של יין בדגש יין טבעי ובעיקר אנשי מטבח",
+        "ממש עשה לי ספתח כזה שפותח את התיאבון"
+      ],
+      "host_comments": "עמית אהרנסון ביקר בפלור ברחוב וילסון בתל אביב - קונספט פריזאי מודרני של מרתף יין ואוכל. תפריט מתחלף כתוב על מראה, אוכל היפסטרי/שובב - שניצלונים קטנים עם פטיטים בחמאת דאשי, אוניגירי עם מילוי חשויה, זיבה, סטייק טרטר. מקום משוחרר עם יינות מקוריים.",
+      "dishes_mentioned": [
+        "שניצלונים עם פטיטים בציר דאשי וחמאה",
+        "אוניגירי עם מילוי חשויה",
+        "סטייק טרטר",
+        "זיבה"
+      ],
+      "special_features": [
+        "בר יין טבעי",
+        "תפריט מתחלף",
+        "קונספט פריזאי",
+        "הוריקורץ - הבעלים בוגר אוניברסיטה באיטליה"
+      ],
+      "mention_context": "טיול של עמית אהרנסון - ביקור בפלור, בר יין ואוכל ברחוב וילסון. אהב מאוד את האווירה ואת האוכל.",
+      "speaker": "עמית אהרנסון",
+      "google_places": {
+        "place_id": "ChIJadLzWq9LHRURDYPBOG_ZtlE",
+        "google_url": "https://maps.google.com/?cid=5888132634550305549",
+        "rating": 4.8,
+        "review_count": 86,
+        "price_level": null,
+        "phone": "050-872-5210",
+        "website": "https://www.instagram.com/flor.telaviv/",
+        "photo_url": "https://lh3.googleusercontent.com/place-photos/AL8-SNEQgZmZvMlgC7RfSy-m_LfZfMFbHVKJf2-DFubIWK-qrf-x1v7dz72iv0oEnL9QAUUX9hXgbJ11gxsKE5cSa4fou-inxfmgESLCGlmgmNbWlaHN3nUn1-vweYlsm-amJuXXGYRAwgUgvjke0Q=s1600-w800",
+        "instagram_url": "https://www.instagram.com/flor.telaviv/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": true,
+        "id": "ce80747c-3bca-469a-964a-056eab3a44a0"
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "ברדברי",
+      "name_english": "Breadberry",
+      "name_in_transcript": "ברדברי",
+      "google_name": "Breadberry - ברדברי",
+      "skip_reason": "Tomer Tal recommends this gluten-free bakery for his daughter, but it's a takeaway bakery, not a sit-down restaurant. He explicitly says it's not a place to eat at but rather to pick things up from.",
+      "timestamp": {
+        "seconds": 3536,
+        "display": "58:56",
+        "youtube_url": "https://www.youtube.com/watch?v=3N2oC0N6ciQ&t=3536s"
+      },
+      "location": {
+        "city": "אור יהודה",
+        "address": "Ha-Kharoshet St 1, Or Yehuda, Israel"
+      },
+      "host_quotes": [
+        "מקום שעושה רק ללא גלוטן, הילדים מתים על המאפים"
+      ],
+      "mention_context": "תומר טל ממליץ על ברדברי באור יהודה כמקום ללא גלוטן לבתו.",
+      "google_places": {
+        "place_id": "ChIJy6H5M6dKHRURWuYkA6If9rs",
+        "rating": 4.3,
+        "review_count": 464,
+        "verified": true,
+        "photo_url": "https://lh3.googleusercontent.com/place-photos/AL8-SNE_dhELOXO1F2u7kqHherVUZVMk3voFpp-1Z3snRzdwHM3zbkhr0R1wUP_DXGAD1uBWQD4HEYVAmmQnkqPoVRczppJXimLGAHtsSgIjh2Ahw2kHyRYV_zB2sZqxs2vobHTIfBeyAtRzpMt56bI=s4800-w800"
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "ג'ורג' וג'ון",
+      "name_english": "George & John",
+      "name_in_transcript": "ג'ורג' וג'ון",
+      "skip_reason": "Tomer Tal's former workplace - extensively referenced throughout as context for his career path and the opening of Bou, but no food review.",
+      "timestamp": {
+        "seconds": 489,
+        "display": "8:09",
+        "youtube_url": "https://www.youtube.com/watch?v=3N2oC0N6ciQ&t=489s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "address": "מלון דריסקו"
+      },
+      "mention_context": "מוזכרת עשרות פעמים כמקום העבודה הקודם של תומר טל, כהקשר לפתיחת בואו.",
+      "production_db": {
+        "exists": true,
+        "id": "fc3a7eb3-f12c-437e-93fb-2d3f495a795d"
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "רפאל",
+      "name_english": "Rafael",
+      "name_in_transcript": "רפאל",
+      "skip_reason": "Historical reference - Yehonatan describes his first experience at Rafael as a formative culinary moment, but this is a historical memory, not a current recommendation.",
+      "timestamp": {
+        "seconds": 759,
+        "display": "12:39",
+        "youtube_url": "https://www.youtube.com/watch?v=3N2oC0N6ciQ&t=759s"
+      },
+      "location": {
+        "city": "תל אביב"
+      },
+      "mention_context": "יהונתן כהן מתאר את הביקור הראשון שלו כילד במסעדת רפאל של רפי כהן - זיכרון היסטורי.",
+      "production_db": {
+        "exists": true,
+        "id": "d0c1bb80-bf2c-4127-90b1-7d1a62a1cfae"
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "מושיק",
+      "name_english": "Moshik",
+      "name_in_transcript": "מושיק",
+      "skip_reason": "Referenced in context of pricing discussion — Moshik adding an a la carte menu alongside his tasting menu. Industry news discussion, not a food review.",
+      "timestamp": {
+        "seconds": 3188,
+        "display": "53:08",
+        "youtube_url": "https://www.youtube.com/watch?v=3N2oC0N6ciQ&t=3188s"
+      },
+      "location": {
+        "city": "תל אביב"
+      },
+      "mention_context": "דיון על תפריט חדש על הקרט שמושיק רות משיק - 3 מנות ב-1000 שקל, 4 מנות ב-1300, 5 מנות ב-1600.",
+      "production_db": {
+        "exists": false,
+        "id": null
+      },
+      "google_places": {
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqG8V5JpsdLE4_cjwkf3Yg0OC52zbylR8yJKU1aAiiSQgCTGQx4t5ogpXd9zkwxJlT2FPbEvjuaAE3JCIx6YSuMqLl6H3YmBDmQ=s4800-w800",
+        "place_id": "ChIJ-RF64u9LHRURsB8OYTRRl_U",
+        "google_url": "https://maps.google.com/?cid=17696702546184118192&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA"
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "סנטי",
+      "name_english": "Santi",
+      "name_in_transcript": "סנטי",
+      "skip_reason": "Referenced as example of a new restaurant format that is not a full restaurant — comparison point in discussion about Bou's concept.",
+      "timestamp": {
+        "seconds": 1713,
+        "display": "28:33",
+        "youtube_url": "https://www.youtube.com/watch?v=3N2oC0N6ciQ&t=1713s"
+      },
+      "location": {
+        "city": "תל אביב"
+      },
+      "mention_context": "מוזכר כדוגמה לפורמט חדש של מסעדנות - 'חצי מסעדה' שמייצרת אוכל מעולה.",
+      "production_db": {
+        "exists": true,
+        "id": "264d8872-dea3-426d-91ab-478397cebf7f"
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "נו",
+      "name_english": "Nono",
+      "name_in_transcript": "נו",
+      "skip_reason": "Referenced in context of Sagi Cohen's review column — industry discussion, not a personal food recommendation.",
+      "timestamp": {
+        "seconds": 4613,
+        "display": "76:53",
+        "youtube_url": "https://www.youtube.com/watch?v=3N2oC0N6ciQ&t=4613s"
+      },
+      "location": {
+        "city": "תל אביב"
+      },
+      "mention_context": "דיון על ביקורת של סגי כהן על נו, שיתוף פעולה עם השף הילל תבוקולי, ועל האקזיטים של הבעלים.",
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "סילו",
+      "name_english": "Silo",
+      "name_in_transcript": "סילו",
+      "skip_reason": "Referenced in context of Sagi Cohen's private dining review — he didn't enjoy it, but this is a secondhand report from a newspaper column.",
+      "timestamp": {
+        "seconds": 4748,
+        "display": "79:08",
+        "youtube_url": "https://www.youtube.com/watch?v=3N2oC0N6ciQ&t=4748s"
+      },
+      "location": {
+        "city": "חולון"
+      },
+      "mention_context": "דיון על ביקורת שלילית של סגי כהן בסילו בחולון.",
+      "production_db": {
+        "exists": true,
+        "id": "a9f1ce40-f0e8-4a66-925e-ff9dc81771d9"
+      }
+    },
+    {
+      "verdict": "rejected",
+      "name_in_transcript": "הרברט סמואל",
+      "reject_reason": "Referenced as part of Yair's restaurant portfolio in listing Tomer's partner's background — not a restaurant mention in context.",
+      "timestamp": {
+        "seconds": 3482,
+        "display": "58:02",
+        "youtube_url": "https://www.youtube.com/watch?v=3N2oC0N6ciQ&t=3482s"
+      }
+    },
+    {
+      "verdict": "rejected",
+      "name_in_transcript": "קלארו",
+      "reject_reason": "Referenced as part of Yair's restaurant portfolio in listing Tomer's partner's background — not a restaurant mention in context.",
+      "timestamp": {
+        "seconds": 3487,
+        "display": "58:07",
+        "youtube_url": "https://www.youtube.com/watch?v=3N2oC0N6ciQ&t=3487s"
+      }
+    },
+    {
+      "verdict": "rejected",
+      "name_in_transcript": "פת הגליל",
+      "reject_reason": "Referenced from Kobi Rubin's newspaper column — secondhand mention of a bakery in Kiryat Shmona, not a personal recommendation.",
+      "timestamp": {
+        "seconds": 4793,
+        "display": "79:53",
+        "youtube_url": "https://www.youtube.com/watch?v=3N2oC0N6ciQ&t=4793s"
+      }
+    }
+  ]
+}
