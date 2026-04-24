@@ -106,3 +106,29 @@ jobs:
 
       - name: Check syntax
         run: node --check index.js
+
+  check-extraction-integrity:
+    # Every committed episode extraction must ship with its raw transcript so
+    # the repo stays self-contained. Fails the PR otherwise.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify extraction ↔ transcript pairs
+        run: |
+          set -u
+          missing=()
+          shopt -s nullglob
+          for f in agentic_extractor/episode_*_extraction.json; do
+            vid=$(basename "$f" | sed 's/^episode_//; s/_extraction.json$//')
+            if [ ! -f "agentic_extractor/$vid/transcript.json" ]; then
+              missing+=("$vid")
+            fi
+          done
+          if [ ${#missing[@]} -gt 0 ]; then
+            echo "::error::Extraction JSONs missing matching transcript.json:"
+            for v in "${missing[@]}"; do echo "  - $v"; done
+            exit 1
+          fi
+          count=$(ls agentic_extractor/episode_*_extraction.json 2>/dev/null | wc -l | tr -d ' ')
+          echo "$count extractions, all paired."

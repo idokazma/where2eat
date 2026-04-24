@@ -82,11 +82,20 @@ config/secrets.json
 *.pem
 
 # Generated data directories (keep structure, ignore content)
-# Note: data/restaurants/*.json is NOT ignored — clean restaurant data is committed
 data/transcripts/*.json
 data/transcripts/*.txt
 data/analyses/*.md
 data/analyses/*.txt
+
+# Legacy output dirs (archived into archive/legacy-data-2026-04.tar.gz).
+# episode-processor still writes to analyses/ as a scratch space — not committed.
+analyses/
+data/restaurants/
+data/restaurants_backup/
+
+# Production data snapshots are the git record — make sure they're tracked.
+!data/snapshots/
+!data/snapshots/**
 
 # Generated search requests (temporary files)
 restaurant_images/search_requests/*.txt

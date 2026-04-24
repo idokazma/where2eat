@@ -209,13 +209,24 @@ Separate Next.js app for content management:
 
 ### Data Storage
 
-| Path | Contents |
-|------|----------|
-| `data/where2eat.db` | SQLite database (primary storage). Tables: episodes, restaurants, jobs, subscriptions, video_queue, pipeline_logs, admin_users, admin_sessions, restaurant_edits, settings, articles |
-| `data/restaurants/` | Individual restaurant JSON files |
-| `data/restaurants_backup/` | Restaurant backup files (20+ Hebrew-named JSONs) |
-| `transcripts/` | YouTube transcript cache |
-| `analyses/` | Claude analysis outputs (JSON + markdown) |
+Git is the durable record. Railway Postgres serves the live site but is not authoritative — if it's lost, the repo is enough to rebuild.
+
+| Path | Tracked? | Contents |
+|------|----------|----------|
+| `agentic_extractor/<video_id>/transcript.json` | yes | Raw YouTube transcript (canonical) |
+| `agentic_extractor/<video_id>/enrichment.json` | yes | Intermediate enrichment data |
+| `agentic_extractor/episode_<video_id>_extraction.json` | yes | Extraction output (canonical) |
+| `agentic_extractor/episode_<video_id>_extraction.md` | yes | Human-readable extraction report |
+| `data/snapshots/restaurants.json` | yes | Snapshot of `GET /api/restaurants` |
+| `data/snapshots/episodes.json` | yes | Snapshot of `GET /api/episodes/search` |
+| `data/snapshots/schema.sql` | yes | Postgres schema (pg_dump) |
+| `data/snapshots/manifest.json` | yes | Counts + timestamp for the snapshot |
+| `data/where2eat.db` | no (gitignored) | Local dev SQLite. Not authoritative. |
+| `analyses/` | no (gitignored) | Scratch output dir for episode-processor. Archived snapshot at `archive/legacy-data-2026-04.tar.gz`. |
+
+**Snapshot refresh.** `.github/workflows/snapshot.yml` runs after `Deploy` completes (or on `workflow_dispatch`) and opens a PR if `data/snapshots/` changed. Regenerate locally with `python scripts/export_production_snapshot.py` (schema dump requires `DATABASE_URL` + `pg_dump`).
+
+**CI invariant.** The `check-extraction-integrity` job fails any PR where an `episode_*_extraction.json` lacks a matching `<video_id>/transcript.json`.
 
 ## CI/CD
 

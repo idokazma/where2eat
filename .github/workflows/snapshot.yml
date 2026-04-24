@@ -1,0 +1,100 @@
+name: Data Snapshot
+
+# Captures a point-in-time snapshot of the production API (restaurants, episodes,
+# and optionally the Postgres schema) into data/snapshots/, then opens a PR if
+# anything changed. Per the project's deploy policy, this never pushes directly
+# to main — the snapshot lands via a reviewable PR.
+
+on:
+  workflow_run:
+    workflows: ["Deploy"]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      api_url:
+        description: "Override API base URL (optional)"
+        required: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  snapshot:
+    # Skip if the triggering Deploy run failed. Manual runs always execute.
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install postgresql-client (for pg_dump)
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends postgresql-client
+
+      - name: Wait for Railway to settle
+        # Railway/Vercel deploy asynchronously via native integrations; give
+        # them a minute to finish so the snapshot reflects the new deploy.
+        if: github.event_name == 'workflow_run'
+        run: sleep 90
+
+      - name: Verify API health
+        env:
+          API_URL: ${{ github.event.inputs.api_url || 'https://where2eat-production.up.railway.app' }}
+        run: |
+          for i in 1 2 3 4 5; do
+            if curl -fsS "$API_URL/health" > /dev/null; then
+              echo "API healthy"
+              exit 0
+            fi
+            echo "Attempt $i: API not ready yet, sleeping 20s..."
+            sleep 20
+          done
+          echo "API did not become healthy in time"
+          exit 1
+
+      - name: Export snapshot
+        env:
+          API_URL: ${{ github.event.inputs.api_url || 'https://where2eat-production.up.railway.app' }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: python scripts/export_production_snapshot.py
+
+      - name: Check for changes
+        id: diff
+        run: |
+          if git diff --quiet --exit-code data/snapshots/; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "No snapshot changes"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            git diff --stat data/snapshots/
+          fi
+
+      - name: Create pull request
+        if: steps.diff.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: "chore: production data snapshot"
+          title: "chore: production data snapshot ${{ github.run_number }}"
+          body: |
+            Automated snapshot of production data under `data/snapshots/`.
+
+            Triggered by: `${{ github.event_name }}`
+            Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+            Review the diff to confirm the changes are expected.
+          branch: chore/data-snapshot
+          base: main
+          delete-branch: true
+          labels: |
+            snapshot
+            automated
+          add-paths: data/snapshots/**
