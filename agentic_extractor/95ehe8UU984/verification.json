@@ -1,0 +1,48 @@
+{
+  "video_id": "95ehe8UU984",
+  "verified_at": "2026-04-24T17:15:42Z",
+  "attempt": 1,
+  "summary": {
+    "total": 7,
+    "passed": 5,
+    "warnings": 2,
+    "failures": 0
+  },
+  "passed": [
+    "נאי",
+    "קראפט פיצה ביסטרו",
+    "רדלר",
+    "ריבוירה",
+    "בואו"
+  ],
+  "failures": [],
+  "warnings": [
+    {
+      "restaurant": "ימה",
+      "file": "data/restaurants/95ehe8UU984_yama_galilot.json",
+      "check": "image",
+      "issue": "image_url uses https://img.mako.co.il/ prefix, which is outside the schema-allowed domains (lh3.googleusercontent.com, imageproxy.wolt.com). URL is HTTP 200 and serves image/jpeg. This is a documented exception: Google Places has no photo for this new venue (11 reviews).",
+      "fix_hint": "No action needed — this is a pre-disclosed known quirk. The URL returns 200/image/jpeg and is a legitimate Mako news article image. If schema is updated to allow Mako URLs, this warning will clear."
+    },
+    {
+      "restaurant": "נאי",
+      "file": "data/restaurants/95ehe8UU984_nai_bar.json",
+      "check": "image",
+      "issue": "image_url uses https://img.mako.co.il/ prefix, outside schema-allowed domains. URL is HTTP 200 and serves image/jpeg. This is a documented exception: Nai is a speakeasy inside Kab Kem with no standalone Google Places entry.",
+      "fix_hint": "No action needed — this is a pre-disclosed known quirk documented in extraction.json google_places.note. URL is valid and accessible."
+    }
+  ],
+  "notes": [
+    "ימה timestamp at 107s: confirmed real content — transcript segment 107.7s says \"יובל בן אריה פתח את ימה\". Intro classification not applicable here (ביס של השבוע segment starts directly).",
+    "נאי uses Kab Kem Place ID (ChIJqcmrdnlLHRURHXXOkDgXTPM) — documented in extraction.json as Nai being a speakeasy inside Kab Kem. Google Places API confirms: name=Kab Kem, Lincoln St 11, Tel Aviv. Coordinates match exactly.",
+    "ריבוירה: null place_id, null lat/lng, null image_url — all correct per documented quirk (opens June 2026). status=עומד להיפתח is the appropriate enum value.",
+    "בואו: correctly marked production_db.exists=true with id=c134feb4-3917-422e-985c-56d45b9fef97. Confirmed in production DB.",
+    "Yama duplicate concern resolved: extraction Yama Galilot PID (ChIJEwjYaABJHRURmOpjCd0oxeg) is distinct from production \"ימה\" (Shalma Rd 40, TLV) and \"יאמה גלילות\" (Herzliya) — three separate branches.",
+    "All 6 Place IDs verified OK via Google Places API. Names and addresses match extraction data.",
+    "All 6 image URLs return HTTP 200 with Content-Type image/jpeg.",
+    "All 7 timestamps are consistent (mention_timestamp_seconds matches t= in youtube_timestamped_url). All within episode duration (3681s).",
+    "Extraction JSON counts all correct: 7 add_to_page, 3 reference_only, 3 rejected, total 13.",
+    "No forbidden fields (id, created_at, updated_at, is_hidden) present in any JSON.",
+    "All enum values valid. All is_closing values are integer 0. All photos arrays contain proper objects."
+  ]
+}

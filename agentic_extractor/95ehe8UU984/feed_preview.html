@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Episode Preview: 95ehe8UU984 — מדברים מהבטן פרק 152</title>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Heebo', sans-serif; background: #FAFAF8; padding: 1rem; max-width: 480px; margin: 0 auto; }
+    .header { text-align: center; padding: 1.5rem 0; border-bottom: 1px solid #eee; margin-bottom: 1rem; }
+    .header h1 { font-size: 1.1rem; color: #333; line-height: 1.4; }
+    .header .meta { font-size: 0.85rem; color: #888; margin-top: 0.25rem; }
+    .header .stats { display: flex; gap: 0.5rem; justify-content: center; margin-top: 0.75rem; font-size: 0.75rem; flex-wrap: wrap; }
+    .header .stat { background: #f0f0f0; padding: 0.25rem 0.75rem; border-radius: 999px; }
+    .header .stat.add { background: #E8F5E9; color: #2E7D32; }
+    .header .stat.exists { background: #E3F2FD; color: #1565C0; }
+    .header .stat.skip { background: #FFF3E0; color: #E65100; }
+    .card { background: white; border-radius: 12px; overflow: hidden; margin-bottom: 1rem; box-shadow: 0 1px 3px rgba(0,0,0,0.08); transition: all 0.2s; }
+    .card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
+    .card-image { width: 100%; aspect-ratio: 16/10; object-fit: cover; display: block; background: #eee; }
+    .card-image-fallback { width: 100%; aspect-ratio: 16/10; background: linear-gradient(135deg, #E63B2E, #FF6B5A); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem; font-weight: 700; }
+    .card-body { padding: 1rem; }
+    .card-title { font-size: 1.5rem; font-weight: 900; color: #1a1a1a; margin-bottom: 0.25rem; }
+    .card-meta { display: flex; gap: 0.5rem; align-items: center; color: #888; font-size: 0.85rem; margin-bottom: 0.5rem; flex-wrap: wrap; }
+    .card-meta .dot { color: #ccc; }
+    .card-date { font-size: 0.8rem; color: #999; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.4rem; }
+    .badge-new { background: #E63B2E; color: white; font-size: 0.7rem; padding: 0.1rem 0.4rem; border-radius: 4px; font-weight: 700; }
+    .badge-level { font-size: 0.7rem; padding: 0.1rem 0.45rem; border-radius: 4px; font-weight: 700; }
+    .badge-tasted { background: #FFA726; color: white; }
+    .badge-mentioned { background: #9E9E9E; color: white; }
+    .card-quote { font-style: italic; background: #f5f5f5; padding: 0.75rem; border-radius: 8px; color: #555; font-size: 0.9rem; margin: 0.5rem 0; line-height: 1.6; }
+    .card-actions { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #f0f0f0; padding-top: 0.75rem; margin-top: 0.5rem; }
+    .rating { display: flex; align-items: center; gap: 0.25rem; font-weight: 700; color: #333; }
+    .rating .star { color: #FFB400; }
+    .timestamp-link { font-size: 0.8rem; color: #E63B2E; text-decoration: none; }
+    .timestamp-link:hover { text-decoration: underline; }
+    .verdict-badge { position: absolute; top: 0.5rem; right: 0.5rem; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.7rem; font-weight: 700; z-index: 1; }
+    .verdict-new { background: #E8F5E9; color: #2E7D32; }
+    .verdict-exists { background: #E3F2FD; color: #1565C0; }
+    .verdict-upcoming { background: #FFF3E0; color: #E65100; }
+    .card-image-wrapper { position: relative; }
+    .section-title { font-size: 1rem; color: #888; margin: 1.5rem 0 0.75rem; padding-bottom: 0.25rem; border-bottom: 1px solid #eee; }
+    .ref-card { background: white; border-radius: 8px; padding: 0.75rem; margin-bottom: 0.5rem; border-right: 3px solid #FFB300; }
+    .ref-card .name { font-weight: 700; font-size: 0.95rem; }
+    .ref-card .reason { font-size: 0.8rem; color: #888; margin-top: 0.25rem; }
+    .ref-card .timestamp { font-size: 0.75rem; color: #E63B2E; margin-top: 0.25rem; }
+    .ref-card .timestamp a { color: #E63B2E; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>מדברים מהביטון, עם אבי ביטון<br><span style="font-size: 0.9rem; color: #888;">פרק 152 • מדברים מהבטן</span></h1>
+    <div class="meta">בית הפודיום • 22 באפריל 2026</div>
+    <div class="stats">
+      <span class="stat add">✅ 6 חדשים</span>
+      <span class="stat exists">📋 1 קיים</span>
+      <span class="stat skip">⏭️ 3 הזכרות</span>
+    </div>
+  </div>
+
+  <!-- 1. Yama -->
+  <div class="card">
+    <div class="card-image-wrapper">
+      <img class="card-image" src="https://img.mako.co.il/2026/02/10/YAMA4_autoOrient_w.jpg" alt="ימה" onerror="this.outerHTML='<div class=card-image-fallback>דגים</div>'">
+      <span class="verdict-badge verdict-new">חדש</span>
+    </div>
+    <div class="card-body">
+      <div class="card-title">ימה</div>
+      <div class="card-meta">
+        <span>רמת השרון · ביג פאשן גלילות</span><span class="dot">•</span>
+        <span>דגים</span><span class="dot">•</span>
+        <span>יקר</span>
+      </div>
+      <div class="card-date">📅 22 באפריל 2026 <span class="badge-new">חדש</span> <span class="badge-level badge-tasted">נטעם</span></div>
+      <div class="card-quote">"ואכלתי שם סלט דג תאילנדי מטורף"</div>
+      <div class="card-actions">
+        <div class="rating"><span class="star">★</span> 4.5 (11)</div>
+        <a class="timestamp-link" href="https://www.youtube.com/watch?v=95ehe8UU984&t=107s" target="_blank">▶ 01:47</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Nai -->
+  <div class="card">
+    <div class="card-image-wrapper">
+      <img class="card-image" src="https://img.mako.co.il/2026/04/18/NAI7_autoOrient_w.jpg" alt="נאי" onerror="this.outerHTML='<div class=card-image-fallback>תאילנדי</div>'">
+      <span class="verdict-badge verdict-new">חדש</span>
+    </div>
+    <div class="card-body">
+      <div class="card-title">נאי</div>
+      <div class="card-meta">
+        <span>תל אביב · לינקולן 11</span><span class="dot">•</span>
+        <span>תאילנדי</span><span class="dot">•</span>
+        <span>יקר</span>
+      </div>
+      <div class="card-date">📅 22 באפריל 2026 <span class="badge-new">חדש</span> <span class="badge-level badge-tasted">נטעם</span></div>
+      <div class="card-quote">"מקום שאתה נכנס ואתה פשוט לא רוצה לצאת ממנו"</div>
+      <div class="card-actions">
+        <div class="rating"><span class="star">★</span> 4.3 (3,840)</div>
+        <a class="timestamp-link" href="https://www.youtube.com/watch?v=95ehe8UU984&t=195s" target="_blank">▶ 03:15</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Craft -->
+  <div class="card">
+    <div class="card-image-wrapper">
+      <img class="card-image" src="https://lh3.googleusercontent.com/places/ANXAkqEDak3nCoKsJlYZEeu_ZRuWLu6FcpQ7JeI6Ork_Tj_sX-S3YmDAPYRql8AyTDc60SdgwrsOJmsfRtClqrdtD67kEN44WzLTB1A=s4800-w800" alt="קראפט פיצה" onerror="this.outerHTML='<div class=card-image-fallback>פיצה</div>'">
+      <span class="verdict-badge verdict-new">חדש</span>
+    </div>
+    <div class="card-body">
+      <div class="card-title">קראפט פיצה ביסטרו</div>
+      <div class="card-meta">
+        <span>תל אביב · כיכר אתרים</span><span class="dot">•</span>
+        <span>פיצה</span><span class="dot">•</span>
+        <span>בינוני</span>
+      </div>
+      <div class="card-date">📅 22 באפריל 2026 <span class="badge-new">חדש</span> <span class="badge-level badge-tasted">נטעם</span></div>
+      <div class="card-quote">"מגש פיצה גדול ב-55 ש״ח — ואנשים נורא חמים ונחמדים"</div>
+      <div class="card-actions">
+        <div class="rating"><span class="star">★</span> 4.6 (227)</div>
+        <a class="timestamp-link" href="https://www.youtube.com/watch?v=95ehe8UU984&t=481s" target="_blank">▶ 08:01</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Radler -->
+  <div class="card">
+    <div class="card-image-wrapper">
+      <img class="card-image" src="https://lh3.googleusercontent.com/place-photos/AJRVUZMTJC3jX7l_ptIAZpdi77cCo4UC6MF9BIe3bsGv-qv0EuNAIqag3UZq2zctrryYtdeH0CUUWGW7owdHMwkuHbbLfc_53N9ylZc5BREgqejGMfdtWttomWYT3UYhqADKv577tc4ajAZJuTtep6E=s4800-w800" alt="רדלר" onerror="this.outerHTML='<div class=card-image-fallback>יווני</div>'">
+      <span class="verdict-badge verdict-new">חדש</span>
+    </div>
+    <div class="card-body">
+      <div class="card-title">רדלר</div>
+      <div class="card-meta">
+        <span>תל אביב · נחלת בנימין</span><span class="dot">•</span>
+        <span>יווני</span><span class="dot">•</span>
+        <span>יקר</span>
+      </div>
+      <div class="card-date">📅 22 באפריל 2026 <span class="badge-new">חדש</span> <span class="badge-level badge-mentioned">הוזכר</span></div>
+      <div class="card-quote">"הגעתי לשם ובאמת הרגשתי בבית" — אבי ביטון על הצטרפותו כשותף</div>
+      <div class="card-actions">
+        <div class="rating"><span class="star">★</span> 4.2 (419)</div>
+        <a class="timestamp-link" href="https://www.youtube.com/watch?v=95ehe8UU984&t=1085s" target="_blank">▶ 18:05</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. Riviera -->
+  <div class="card">
+    <div class="card-image-wrapper">
+      <div class="card-image-fallback">ריבוירה 🛥️ מרינה הרצליה</div>
+      <span class="verdict-badge verdict-upcoming">עומד להיפתח</span>
+    </div>
+    <div class="card-body">
+      <div class="card-title">ריבוירה</div>
+      <div class="card-meta">
+        <span>הרצליה · מרינה</span><span class="dot">•</span>
+        <span>ים תיכוני</span><span class="dot">•</span>
+        <span>יקר</span>
+      </div>
+      <div class="card-date">📅 22 באפריל 2026 <span class="badge-new">חדש</span> <span class="badge-level badge-mentioned">הוזכר</span></div>
+      <div class="card-quote">"אני המצאתי מונח — מסעדת ריבוירה" — אבי ביטון על הפרויקט החדש, צפוי ליוני 2026</div>
+      <div class="card-actions">
+        <div class="rating" style="color:#999;">🔜 עומד להיפתח</div>
+        <a class="timestamp-link" href="https://www.youtube.com/watch?v=95ehe8UU984&t=2944s" target="_blank">▶ 49:04</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. Bou -->
+  <div class="card">
+    <div class="card-image-wrapper">
+      <img class="card-image" src="https://lh3.googleusercontent.com/places/ANXAkqGL-7fN3B1lUZAOh1yuWcHhlEtkbPflGPqZX3nuYl7iNHe9aQd0oNBnPXp4Ec5iYDUmvyiyj47m0UZm7azdU9dn3FLucaxzwdw=s4800-w800" alt="בואו" onerror="this.outerHTML='<div class=card-image-fallback>שף</div>'">
+      <span class="verdict-badge verdict-exists">קיים</span>
+    </div>
+    <div class="card-body">
+      <div class="card-title">בואו</div>
+      <div class="card-meta">
+        <span>תל אביב · נווה צדק</span><span class="dot">•</span>
+        <span>שף</span><span class="dot">•</span>
+        <span>יקר מאוד</span>
+      </div>
+      <div class="card-date">📅 22 באפריל 2026 <span class="badge-level badge-mentioned">הוזכר</span></div>
+      <div class="card-quote">"אני מתכנן להגיע לבואו סוף סוף" — שיעורי בית של השבוע</div>
+      <div class="card-actions">
+        <div class="rating"><span class="star">★</span> 4.8 (51)</div>
+        <a class="timestamp-link" href="https://www.youtube.com/watch?v=95ehe8UU984&t=3546s" target="_blank">▶ 59:06</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7. Mifgash Bat Galim -->
+  <div class="card">
+    <div class="card-image-wrapper">
+      <img class="card-image" src="https://lh3.googleusercontent.com/places/ANXAkqHKl9p-QNAPRujE93fZbEUEuYbjKlr2j9aYL_VuMdOAWxSO7pYj6pCGvC05Dp4rmos7LL0SnE7ZUWzeN0x-L3d334DQEGulv7w=s4800-w800" alt="מפגש בת גלים" onerror="this.outerHTML='<div class=card-image-fallback>בשרים</div>'">
+      <span class="verdict-badge verdict-new">חדש</span>
+    </div>
+    <div class="card-body">
+      <div class="card-title">מפגש בת גלים</div>
+      <div class="card-meta">
+        <span>חיפה · בת גלים</span><span class="dot">•</span>
+        <span>בשרים</span><span class="dot">•</span>
+        <span>בינוני</span>
+      </div>
+      <div class="card-date">📅 22 באפריל 2026 <span class="badge-new">חדש</span> <span class="badge-level badge-mentioned">הוזכר</span></div>
+      <div class="card-quote">"יש עניין שם יש עניין בור — לא נורמלי"</div>
+      <div class="card-actions">
+        <div class="rating"><span class="star">★</span> 5.0 (12)</div>
+        <a class="timestamp-link" href="https://www.youtube.com/watch?v=95ehe8UU984&t=3595s" target="_blank">▶ 59:55</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reference only -->
+  <div class="section-title">⏭️ הוזכר בלבד (טקס משואות קולינרי)</div>
+
+  <div class="ref-card">
+    <div class="name">מעיין הבירה · חיפה</div>
+    <div class="reason">משואה קולינרית — "המסעדה היהודית הטובה בישראל". רובן מאיר שימור המטבח האשכנזי-רומני-פולני.</div>
+    <div class="timestamp"><a href="https://www.youtube.com/watch?v=95ehe8UU984&t=2646s" target="_blank">▶ 44:06</a></div>
+  </div>
+
+  <div class="ref-card">
+    <div class="name">אל באבור · אום אל-פחם</div>
+    <div class="reason">משואה קולינרית — האחים חוסם ונשאט עבאס (1996) שהביאו את המטבח הערבי-גלילי-פלסטיני למיינסטרים.</div>
+    <div class="timestamp"><a href="https://www.youtube.com/watch?v=95ehe8UU984&t=2106s" target="_blank">▶ 35:06</a></div>
+  </div>
+
+  <div class="ref-card">
+    <div class="name">בית תאילנדי · תל אביב</div>
+    <div class="reason">מסעדת האם של קאב קם/נאי — חוגגת 30 שנה השבוע. הוזכר בהקשר של נאי.</div>
+    <div class="timestamp"><a href="https://www.youtube.com/watch?v=95ehe8UU984&t=294s" target="_blank">▶ 04:54</a></div>
+  </div>
+
+</body>
+</html>
