@@ -1,0 +1,540 @@
+{
+  "episode": {
+    "video_id": "95ehe8UU984",
+    "video_url": "https://www.youtube.com/watch?v=95ehe8UU984",
+    "title": "מדברים מהביטון, עם אבי ביטון — מדברים מהבטן, פרק 152",
+    "channel_name": "מדברים מהבטן - הפודיום",
+    "published_at": "2026-04-22",
+    "hosts": ["עמית אהרונסון", "יהונתן כהן", "נטע סלונים"],
+    "guests": ["אבי ביטון"],
+    "language": "he",
+    "transcript_length": 47792,
+    "segment_count": 1471,
+    "episode_id": null,
+    "summary": "פרק מיוחד ליום העצמאות, עם השף אבי ביטון כאורח. הצוות מדליק 'משואות קולינריות אלטרנטיביות' לדמויות משמעותיות בקולינריה הישראלית (רותי ברודו, חיים כהן, האחים חוסם וניסח עבאס, אילן גרוסי, עומר מילר, רובן מאיר, גל קלוגמן, לקט ישראל). בביסים של השבוע: יהונתן בבר החדש 'נאי' של בית תאילנדי/קאב קם, אמית בפיצריית קראפט בחוף תל אביב, וגם חדשות: אבי ביטון מצטרף כשותף לרדלר בנחלת בנימין ופותח מסעדת 'ריבוירה' חדשה במרינה הרצליה. נטע מדברת על ג'חנון מבטטה סגולה של עוז תלם, וסיום עם טיפים למנגל יום העצמאות."
+  },
+  "extraction": {
+    "date": "2026-04-24",
+    "agent": "episode-processor",
+    "total_mentions": 13,
+    "add_to_page": 7,
+    "reference_only": 3,
+    "rejected": 3,
+    "already_in_db": 1,
+    "new_to_add": 6
+  },
+  "restaurants": [
+    {
+      "verdict": "add_to_page",
+      "name_hebrew": "ימה",
+      "name_english": "Yama",
+      "name_in_transcript": "ימה",
+      "google_name": "Yama",
+      "timestamp": {
+        "seconds": 107,
+        "display": "01:47",
+        "youtube_url": "https://www.youtube.com/watch?v=95ehe8UU984&t=107s"
+      },
+      "location": {
+        "city": "רמת השרון",
+        "neighborhood": "ביג פאשן גלילות",
+        "address": "האלוף יצחק חופי 10, רמת השרון",
+        "region": "שרון",
+        "latitude": 32.148626,
+        "longitude": 34.8055004
+      },
+      "cuisine_type": "דגים",
+      "price_range": "יקר",
+      "status": "חדש",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "יובל בן אריה פתח את ימה וזה מגרש משחקים לאוהבי הקולינריה באמת בביג גלילות",
+        "ואכלתי שם סלט דג תאילנדי מטורף כי אני מת עליו",
+        "הוא צולה דגים ואז הוא לוקח ומפרק אותם לפלייקים כאלה וסלט תאילנדי כזה טוב",
+        "זה באמת מקום מקסים וצריך פשוט להגיע לשם"
+      ],
+      "host_comments": "סניף חדש של ימה של השף יובל בן נריה, בקומת הקרקע של ביג פאשן גלילות. אמית אכל סלט דג תאילנדי 'מטורף' — הוא צולה דגים ומפרק אותם לפלייקים עם סלט תאילנדי חמוץ-מתוק-חריף. 'מגרש משחקים לאוהבי הקולינריה'.",
+      "dishes_mentioned": ["סלט דג תאילנדי", "דגים צלויים"],
+      "special_features": ["מעדניית שף", "קצבית דגים", "ביג פאשן גלילות", "משלוחים"],
+      "mention_context": "ביס של השבוע של אמית — יובל בן נריה פתח את ימה החדש בביג פאשן גלילות והוא שדרוג משמעותי לקצבית הדגים בדרום תל אביב.",
+      "mention_level": "נטעם",
+      "speaker": "עמית אהרונסון",
+      "google_places": {
+        "place_id": "ChIJEwjYaABJHRURmOpjCd0oxeg",
+        "google_url": "https://maps.google.com/?cid=16772857317021706904",
+        "rating": 4.5,
+        "review_count": 11,
+        "price_level": null,
+        "phone": null,
+        "website": "https://yamaonline.co.il/",
+        "photo_url": "https://img.mako.co.il/2026/02/10/YAMA4_autoOrient_w.jpg",
+        "instagram_url": null,
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "name_hebrew": "נאי",
+      "name_english": "Nai",
+      "name_in_transcript": "בני הבר החדש של הקבקם",
+      "google_name": "Kab Kem (parent venue)",
+      "timestamp": {
+        "seconds": 195,
+        "display": "03:15",
+        "youtube_url": "https://www.youtube.com/watch?v=95ehe8UU984&t=195s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "לב העיר",
+        "address": "לינקולן 11, תל אביב-יפו (בתוך קאב קם)",
+        "region": "מרכז",
+        "latitude": 32.066919999999996,
+        "longitude": 34.7820438
+      },
+      "cuisine_type": "תאילנדי",
+      "price_range": "יקר",
+      "status": "חדש",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "השבוע הייתי בבר החדש של הקאב קם שהוא הבר של בית תאילנדי",
+        "חלל מהמם עם כל האקססוריז המתבקשים פאטיפונים מערכת סאונד מטורפת בר אלכוהול מזובד ומצויד להפליא",
+        "סלוני הי — נתחים של בקר כבוש ואז מטוגן בתיגון עמוק עם שיני שום וצ'ילי... אני מת על זה",
+        "מקום שאתה נכנס ואתה פשוט לא רוצה לצאת ממנו. ישבנו שם לדעתי איזה ארבע שעות על הבר",
+        "מי שכבר 30 שנה... עושים את התאילנדית הכי טובה בישראל, אז גם כשהם עושים בר תאילנדי זה יוצא כמובן הכי מהמם וטעים שיש"
+      ],
+      "host_comments": "בר חדש שנפתח בתוך קאב קם, בר-מסעדה של בית תאילנדי. 35 מקומות ישיבה בלבד, כניסה דרך דלת הזזה מתוך קאב קם. תפריט ייחודי של 18 מנות קטנות-בינוניות ב-48-88 ש\"ח. קוקטיילים של נגרוני וצ'והי (שוטצ'ו עם גזוז). מנה אחת בולטת: סלוני הי — בקר כבוש מטוגן בתיגון עמוק עם צ'ילי ושיני שום.",
+      "dishes_mentioned": ["סלוני הי (בקר כבוש מטוגן)", "סטיקי ריס", "נגרוני תאילנדי", "צ'והי"],
+      "special_features": ["בר תאילנדי", "איזקאיה תל אביבית", "35 מקומות בלבד", "הבר של בית תאילנדי", "קוקטיילים תאילנדים"],
+      "mention_context": "ביס של השבוע של יהונתן — הבר החדש שנפתח באפריל 2026 במקום שבו פעל עשרות שנים סנדוויץ' בר יהודה הלוי. הבר של בעלי בית תאילנדי (שחוגגים 30 שנה השבוע).",
+      "mention_level": "נטעם",
+      "speaker": "יהונתן כהן",
+      "google_places": {
+        "place_id": "ChIJqcmrdnlLHRURHXXOkDgXTPM",
+        "google_url": "https://maps.google.com/?cid=17531412981161555229",
+        "rating": 4.3,
+        "review_count": 3840,
+        "price_level": null,
+        "phone": "03-688-9960",
+        "website": "http://www.kabkem.com/",
+        "photo_url": "https://img.mako.co.il/2026/04/18/NAI7_autoOrient_w.jpg",
+        "instagram_url": null,
+        "verified": true,
+        "note": "Nai is a speakeasy inside Kab Kem at the same address; Google Places ID represents the parent venue"
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "name_hebrew": "קראפט פיצה ביסטרו",
+      "name_english": "Craft Pizza Bistro",
+      "name_in_transcript": "קרפט / קראפט",
+      "google_name": "Craft Pizza Bistro",
+      "timestamp": {
+        "seconds": 481,
+        "display": "08:01",
+        "youtube_url": "https://www.youtube.com/watch?v=95ehe8UU984&t=481s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "כיכר אתרים",
+        "address": "הירקון 169, כיכר אתרים, תל אביב-יפו",
+        "region": "מרכז",
+        "latitude": 32.085146,
+        "longitude": 34.7691844
+      },
+      "cuisine_type": "פיצה",
+      "price_range": "בינוני",
+      "status": "פתוח",
+      "host_opinion": "חיובית",
+      "host_quotes": [
+        "יש שם פיצריה בשם קרפט... היא ממש טעימה ופתאום יש אופציה ממש נחמדה אחרי הים בטח עם ילדים ומשפחות",
+        "רציתי להרים להם על יציאה יפה בטריטוריה מורכבת שירות מעולה ואנשים נורא חמים ונחמדים",
+        "מחירים מאוד מאוד מאוד מאוד נוחים — מגש פיצה גדול ב-55 ש\"ח",
+        "היא טובה ומגוונת ולא יקרה מדי ובאזור אטרקטיבי — יציאה יפה. אחלה ביס הם סיפקו לי השבוע"
+      ],
+      "host_comments": "פיצריית הזוג שהתחיל בשוק מחנה יהודה בירושלים בתור פיצריה אמריקאית, פתחו סניף בפתח תקווה ועכשיו הגיעו לתל אביב — על מדרגות האימה בין חוף גורדון לכיכר אתרים. אזור לוקיישן קשה ומקולל, אבל המקום הצליח להוציא שם יציאה יפה. מחירים נוחים: מגש פיצה גדול (זוגי פלוס) ב-55 ש\"ח, פסטה 50-60 ש\"ח, סלטים 50 ש\"ח.",
+      "dishes_mentioned": ["פיצה", "פסטה", "סלטים"],
+      "special_features": ["פיצה נאפוליטנית", "ידידותי למשפחות", "מחירים נוחים", "חוף גורדון", "מקור במחנה יהודה ירושלים"],
+      "mention_context": "ביס של השבוע של אמית — הסניף החדש בתל אביב, נפתח לפני כחצי שנה. אוכל גם עם המשפחה, ציון חיובי.",
+      "mention_level": "נטעם",
+      "speaker": "עמית אהרונסון",
+      "google_places": {
+        "place_id": "ChIJu28PFLNNHRUR02yZcMfRePY",
+        "google_url": "https://maps.google.com/?cid=17760175785053351123",
+        "rating": 4.6,
+        "review_count": 227,
+        "price_level": null,
+        "phone": "03-310-4775",
+        "website": "https://www.craft.org.il/",
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqEDak3nCoKsJlYZEeu_ZRuWLu6FcpQ7JeI6Ork_Tj_sX-S3YmDAPYRql8AyTDc60SdgwrsOJmsfRtClqrdtD67kEN44WzLTB1A=s4800-w800",
+        "instagram_url": "https://www.instagram.com/craft.italian.bistro/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "name_hebrew": "רדלר",
+      "name_english": "Radler",
+      "name_in_transcript": "רדלר",
+      "google_name": "רדלר",
+      "timestamp": {
+        "seconds": 1085,
+        "display": "18:05",
+        "youtube_url": "https://www.youtube.com/watch?v=95ehe8UU984&t=1085s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "נחלת בנימין",
+        "address": "נחלת בנימין 48, תל אביב-יפו",
+        "region": "מרכז",
+        "latitude": 32.0640561,
+        "longitude": 34.771306599999996
+      },
+      "cuisine_type": "יווני",
+      "price_range": "יקר",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "אבי ביטון מגיע לנחלה — מסעדה חדשה שאני פותח בקרוב בעוד חודשיים... רדלר",
+        "הגעתי לשם ובאמת הרגשתי בבית. הרגשתי בבית. הרגשתי מקום מאוד נוח, מאוד נינוח",
+        "שרדלר זה אחלה בית ואחלה מטבח",
+        "הביקורת של סגי כהן השבוע הייתה על רדלר טובה בסך הכל — בסטנדרטים שלו זה ביקורת מזהירה"
+      ],
+      "host_comments": "מסעדה יוונית שנפתחה על ידי אנשי קבוצת מונה לפני כשנה. השף אבי ביטון מצטרף כשותף ומשיק תפריט חדש עכשיו. הצוות מתכנן להעביר חלק מהמנות המזוהות של אבי ביטון לרדלר: קוקטייל דרדר מהפופולר, סלט ברוקולי (במקום קרובית עם מוסבקי צימוקים), סביץ' על החלה, גספצ'ו. סגי כהן כתב ביקורת חיובית מזהירה בסטנדרטים שלו השבוע.",
+      "dishes_mentioned": ["סלט ברוקולי עם מוסבקי צימוקים", "סביץ' על חלה", "גספצ'ו", "קוקטייל דרדר", "טרטר עם ציר בקר"],
+      "special_features": ["מטבח יווני", "אבי ביטון שותף חדש", "קבוצת מונה מקור", "ביקורת חיובית של סגי כהן"],
+      "mention_context": "אבי ביטון הכריז בפרק שהוא מצטרף כשותף חדש לרדלר. שיתף על המנות החדשות שהוא מכניס לתפריט ועל הסגנון המתעדן שלו בשנים האחרונות.",
+      "mention_level": "הוזכר",
+      "speaker": "אבי ביטון",
+      "google_places": {
+        "place_id": "ChIJfVoyfjJNHRUR3djBShXfqPg",
+        "google_url": "https://maps.google.com/?cid=17917816400035043549",
+        "rating": 4.2,
+        "review_count": 419,
+        "price_level": null,
+        "phone": "03-728-3830",
+        "website": "https://radlertlv.com/",
+        "photo_url": "https://lh3.googleusercontent.com/place-photos/AJRVUZMTJC3jX7l_ptIAZpdi77cCo4UC6MF9BIe3bsGv-qv0EuNAIqag3UZq2zctrryYtdeH0CUUWGW7owdHMwkuHbbLfc_53N9ylZc5BREgqejGMfdtWttomWYT3UYhqADKv577tc4ajAZJuTtep6E=s4800-w800",
+        "instagram_url": null,
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "name_hebrew": "ריבוירה (אבי ביטון, הרצליה מרינה)",
+      "name_english": "Riviera (Avi Biton, Herzliya Marina)",
+      "name_in_transcript": "מסעדת ריבוירה",
+      "google_name": null,
+      "timestamp": {
+        "seconds": 2944,
+        "display": "49:04",
+        "youtube_url": "https://www.youtube.com/watch?v=95ehe8UU984&t=2944s"
+      },
+      "location": {
+        "city": "הרצליה",
+        "neighborhood": "מרינה הרצליה",
+        "address": "מרינה הרצליה (מלון חדש שפטל/אילן פיבקו)",
+        "region": "שרון",
+        "latitude": null,
+        "longitude": null
+      },
+      "cuisine_type": "ים תיכוני",
+      "price_range": "יקר",
+      "status": "עומד להיפתח",
+      "host_opinion": "חיובית",
+      "host_quotes": [
+        "הרצליה בהרצליה על המרינה במלון חדש שפטל פותחים ואילן פיבקו מעצב לון שנראה כמו ספינה",
+        "אני המצאתי מונח — מסעדת ריבוירה",
+        "מדמיין ריח של מריניר, שום חמה פטרוזיליה, מוזיקה של חולי אגלסיאס של פעם, סנרמו או טוטו קטוני, ריח של ים, נוזלים בכוסות, מנות קטן-בינוני",
+        "למעלה יהיה רופטופ מטורף עם בריכה ו-1000 מטר של משהו מדליק שאנחנו הולכים לעשות",
+        "בתוך חודשיים זה כבר ממש שתבי סיום"
+      ],
+      "host_comments": "מסעדה חדשה של אבי ביטון — בהרצליה מרינה, במלון חדש של שפטל עם אילן פיבקו כמעצב (שנראה כמו ספינה). בקומה התחתונה: 'מסעדת ריבוירה' — מונח שאבי המציא, בהשראת הריביירה הצרפתית/איטלקית. למעלה: רופטופ עם בריכה על 1000 מ\"ר. פתיחה צפויה בעוד חודשיים (יוני 2026).",
+      "dishes_mentioned": ["מריניר", "שום חמאה ופטרוזליה", "מנות קטנות-בינוניות", "נוזלים/קוקטיילים"],
+      "special_features": ["מסעדת ריבוירה (concept חדש)", "מלון חדש של שפטל", "עיצוב אילן פיבקו", "רופטופ עם בריכה", "מרינה הרצליה"],
+      "mention_context": "אבי ביטון משיק קונספט חדש — 'מסעדת ריבוירה' — במלון שפטל בהרצליה מרינה. צפויה להיפתח ביוני 2026.",
+      "mention_level": "הוזכר",
+      "speaker": "אבי ביטון",
+      "google_places": {
+        "place_id": null,
+        "verified": false,
+        "note": "Opens in ~2 months; not yet in Google Places."
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "name_hebrew": "בואו",
+      "name_english": "Bou",
+      "name_in_transcript": "בואו",
+      "google_name": "Bo'u",
+      "timestamp": {
+        "seconds": 3546,
+        "display": "59:06",
+        "youtube_url": "https://www.youtube.com/watch?v=95ehe8UU984&t=3546s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "נווה צדק",
+        "address": "טל ישראל 5, תל אביב-יפו (מלון דה ג'ורג')",
+        "region": "מרכז",
+        "latitude": 32.063772199999995,
+        "longitude": 34.7841471
+      },
+      "cuisine_type": "שף",
+      "price_range": "יקר מאוד",
+      "status": "חדש",
+      "host_opinion": "חיובית",
+      "host_quotes": [
+        "אני מתכנן להגיע לבואו סוף סוף",
+        "אני הולך ל... של תומר טל"
+      ],
+      "host_comments": "המסעדה החדשה של השף תומר טל (לשעבר ג'ורג' וג'ון), נפתחה בפברואר 2026 במלון דה ג'ורג' במקום שפעלה מסעדת פרדס. אמית מכריז שהוא מתכנן להגיע סוף סוף.",
+      "dishes_mentioned": [],
+      "special_features": ["שף תומר טל", "מלון דה ג'ורג'", "מסעדת שף", "במקום מסעדת פרדס לשעבר"],
+      "mention_context": "בשיעורי בית לשבוע הקרוב — אמית מתכנן להגיע לבואו סוף סוף, אחרי שחיכה הרבה זמן.",
+      "mention_level": "הוזכר",
+      "speaker": "עמית אהרונסון",
+      "google_places": {
+        "place_id": "ChIJge2KTQBLHRURduScfxEaoJ0",
+        "google_url": "https://maps.google.com/?cid=11358106922686145654",
+        "rating": 4.8,
+        "review_count": 51,
+        "price_level": null,
+        "phone": "03-644-6454",
+        "website": "https://bou.rest/",
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqGL-7fN3B1lUZAOh1yuWcHhlEtkbPflGPqZX3nuYl7iNHe9aQd0oNBnPXp4Ec5iYDUmvyiyj47m0UZm7azdU9dn3FLucaxzwdw=s4800-w800",
+        "instagram_url": null,
+        "verified": true
+      },
+      "production_db": {
+        "exists": true,
+        "id": "c134feb4-3917-422e-985c-56d45b9fef97"
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "name_hebrew": "מפגש בת גלים",
+      "name_english": "Mifgash Bat Galim",
+      "name_in_transcript": "מפגש בגלים",
+      "google_name": "Mifgash Bat Galim",
+      "timestamp": {
+        "seconds": 3595,
+        "display": "59:55",
+        "youtube_url": "https://www.youtube.com/watch?v=95ehe8UU984&t=3595s"
+      },
+      "location": {
+        "city": "חיפה",
+        "neighborhood": "בת גלים",
+        "address": "שדרות בת גלים 11, חיפה",
+        "region": "צפון",
+        "latitude": 32.8327155,
+        "longitude": 34.9778181
+      },
+      "cuisine_type": "בשרים",
+      "price_range": "בינוני",
+      "status": "חדש",
+      "host_opinion": "חיובית",
+      "host_quotes": [
+        "אני צריך להגיע לבת גלים בחיפה",
+        "גם אני זה מקום חדש מפגש בגלים... שלושה-ארבעה מקומות אני אשף להגיע לכולם",
+        "יש עניין שם יש עניין בור — לא נורמלי, רוצה לבת ברכב"
+      ],
+      "host_comments": "מקום חדש בבת גלים חיפה — יונתן ואבי ביטון מדברים על רצון לנסוע לשם. יש 'עניין' באזור עם כמה מקומות חדשים מעניינים שהם רוצים להגיע אליהם.",
+      "dishes_mentioned": [],
+      "special_features": ["מקום חדש", "בת גלים חיפה", "אזור מתפתח קולינרית"],
+      "mention_context": "בשיעורי בית לשבוע הקרוב — יונתן מחויב להגיע לבת גלים, כולל מפגש בת גלים שהוא מקום חדש.",
+      "mention_level": "הוזכר",
+      "speaker": "יהונתן כהן",
+      "google_places": {
+        "place_id": "ChIJ7Q73cq27HRURYFRz2L3edaY",
+        "google_url": "https://maps.google.com/?cid=11994738089532806240",
+        "rating": 5.0,
+        "review_count": 12,
+        "price_level": null,
+        "phone": null,
+        "website": "https://www.instagram.com/mifgash_bat_galim",
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqHKl9p-QNAPRujE93fZbEUEuYbjKlr2j9aYL_VuMdOAWxSO7pYj6pCGvC05Dp4rmos7LL0SnE7ZUWzeN0x-L3d334DQEGulv7w=s4800-w800",
+        "instagram_url": "https://www.instagram.com/mifgash_bat_galim",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "מעיין הבירה",
+      "name_english": "Maayan Habira",
+      "name_in_transcript": "מעיין הבירה",
+      "skip_reason": "Torch-lighting ceremony homage — recognized as the best Jewish/Romanian-Polish restaurant in Israel but not a fresh review or visit in this episode. Recognition of heritage chef Ruben Meir (son of founders Nahum and Sarah Meir, est. 1962).",
+      "timestamp": {
+        "seconds": 2646,
+        "display": "44:06",
+        "youtube_url": "https://www.youtube.com/watch?v=95ehe8UU984&t=2646s"
+      },
+      "location": {
+        "city": "חיפה",
+        "neighborhood": null,
+        "address": "נתנזון 4, חיפה",
+        "region": "צפון",
+        "latitude": 32.8184032,
+        "longitude": 34.998687700000005
+      },
+      "cuisine_type": "יהודי",
+      "price_range": "בינוני",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "זה המסעדה היהודית הטובה בישראל נקודה. בעיניי אין קרפלחים, אין כיסונים, אין כבד קצוץ יותר טובים מ[מעיין] הבירה",
+        "אני די חותם על זה. קשה לחלוק על זה",
+        "מקום באמת שאפשר עדיין להיזכר בטעמים של אוכל רומני פולני — באחת הגרסאות הכי פחות יהודיות של האוכל הזה — קוסטיצה מחזיר, קרפלח מטוגנים או מבושלים, כבד קצוץ, רגל קרושה, עיקרה, מטיס, גפילטה פיש, קישקה של החלומות ותבשיל שעועית ובשר"
+      ],
+      "host_comments": "מסעדה יהודית שנפתחה ב-1962 על ידי נחום ושרה מאיר בחיפה. כיום מנוהלת על ידי הבן רובן מאיר. יונתן מציין כ'מסעדה היהודית הטובה בישראל'. נסגרת בחמש אחר הצהריים.",
+      "dishes_mentioned": ["קוסטיצה חזיר", "קרפלח מטוגנים/מבושלים", "כבד קצוץ", "רגל קרושה", "עיקרה", "מטיס", "גפילטע פיש", "קישקע", "תבשיל שעועית ובשר"],
+      "mention_context": "רובן מאיר (בן נחום ושרה מאיר, מייסדי מעיין הבירה ב-1962) הודלקה לו משואה קולינרית על שימור מסורת האוכל האשכנזי-רומני-פולני שהולך ונעלם.",
+      "google_places": {
+        "place_id": "ChIJuzERvzW6HRURku5sg5gkeqg",
+        "google_url": "https://maps.google.com/?cid=12140055982989176466",
+        "rating": 4.6,
+        "review_count": 4274,
+        "phone": "04-862-3193",
+        "website": "https://www.facebook.com/MaayaNHabira/",
+        "photo_url": "https://lh3.googleusercontent.com/place-photos/AJRVUZMCafd8lGYQ8ZYTtIObpcK_fVoLxYymsRQYGlavumtkrIY2Ml_sPEGHKId8pnbypdR1-nnDCLwtz-xf3CUHu0YQexTB1IhcIQENq8dPXTjz1gkuINJWXAnKF64OGqPr3Pmz0M7CnEbqcoadCg=s4800-w800",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "אל באבור",
+      "name_english": "El Babor",
+      "name_in_transcript": "אל בבור",
+      "skip_reason": "Torch-lighting ceremony — recognition of heritage chefs (Abbas family, Houssam & Nashat) who founded El Babor in 1996 and brought Palestinian Galilean cuisine to Israeli mainstream. Not a fresh review.",
+      "timestamp": {
+        "seconds": 2106,
+        "display": "35:06",
+        "youtube_url": "https://www.youtube.com/watch?v=95ehe8UU984&t=2106s"
+      },
+      "location": {
+        "city": "אום אל-פחם",
+        "address": "אום אל-פחם, ישראל",
+        "region": "צפון",
+        "latitude": 32.5349424,
+        "longitude": 35.1482732
+      },
+      "cuisine_type": "פלסטיני גלילי",
+      "price_range": "בינוני",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "קשה לדמיין מטבח ערבי בישראל בלי לחשוב על משפחת עבאס מכפר כנא",
+        "חוסם ונשאט עבאס מי שהקימו יחד בשנת 96 את מסעדת אל בבור בכניסה לאום אל פחם ופתחו לכולנו את הראש והעיניים והלב למטבח הערבי הגלילי הפלסטיני הביתי השורשי",
+        "אנשים שבעדיהם לא היינו מכירים עולש ועקוב ושיש ברק וקבב חלבי ואולי גם כרובית בטחינה"
+      ],
+      "host_comments": "האחים חוסם ונשאט עבאס הדליקו את המשואה על פריצת הדרך שלהם בהבאת המטבח הערבי-גלילי-פלסטיני למיינסטרים הישראלי. חוסם נשאר באל בבור עם הבן שמנהל את המטבח; נשאט פתח את 'ארמון סהרה'.",
+      "dishes_mentioned": ["עולש", "עקוב", "שישברק", "קבב חלבי", "כרובית בטחינה"],
+      "mention_context": "המשואה השנייה בטקס הקולינרי — לאחים חוסם ונשאט עבאס, מייסדי אל בבור.",
+      "google_places": {
+        "place_id": "ChIJYXLowb8AHRURxaqAXEWVxZg",
+        "google_url": "https://maps.google.com/?cid=5315569649552617157",
+        "rating": 3.7,
+        "review_count": 953,
+        "phone": "04-611-0691",
+        "website": "https://m.facebook.com/Elbabor.Rest/",
+        "photo_url": "https://lh3.googleusercontent.com/place-photos/AJRVUZOjbtf-X8PPadjNNNgiToszD2IrykUeSvIy25BNyjbYz9TGC6K75rp6myyL5HO5qFPnR2ECBK_8xZXkDXrIGAzEYmydTu2WqwNjZ1pAsLhZCFxq0O7ucTkDNSIMICJZbe7S7HcRK3KMQfEu1p4=s4800-w800",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "בית תאילנדי",
+      "name_english": "Thai House",
+      "name_in_transcript": "בית תאילנדי",
+      "skip_reason": "Referenced as the parent restaurant of Kab Kem and Nai (30-year anniversary). Not a fresh review — mentioned as context for the new Nai bar.",
+      "timestamp": {
+        "seconds": 294,
+        "display": "04:54",
+        "youtube_url": "https://www.youtube.com/watch?v=95ehe8UU984&t=294s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "address": "בוגרשוב 8, תל אביב-יפו",
+        "region": "מרכז",
+        "latitude": 32.0818,
+        "longitude": 34.7746
+      },
+      "cuisine_type": "תאילנדי",
+      "price_range": "יקר",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "מי שכבר 30 שנה והם בדיוק השבוע אגב חוגגים 30 שנה לבית תאילנדי, עושים את התאילנדית הכי טובה בישראל"
+      ],
+      "host_comments": "המסעדה המייסדת — בית תאילנדי חוגג 30 שנה. הבעלים הקימו גם את קאב קם ועכשיו את נאי.",
+      "mention_context": "הוזכר בהקשר של הבר החדש נאי שנפתח בתוך קאב קם שהוא הבר של בית תאילנדי.",
+      "google_places": {
+        "place_id": "ChIJP841K3xMHRURebdaloB-MZA",
+        "rating": 4.4,
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "rejected",
+      "name_in_transcript": "המיטרוס",
+      "reject_reason": "Not a restaurant name — Hebrew slang for 'maître d'' (the maître d'hôtel). Yonatan says 'I know the maître d' in real life' when talking about getting VIP treatment.",
+      "timestamp": {
+        "seconds": 3571,
+        "display": "59:31"
+      }
+    },
+    {
+      "verdict": "rejected",
+      "name_in_transcript": "מקום חדש דנדש באזור הנחלה",
+      "reject_reason": "Unnamed mystery restaurant — Amit says 'I've had my eye on it for a while' but does not say the name.",
+      "timestamp": {
+        "seconds": 3577,
+        "display": "59:37"
+      }
+    },
+    {
+      "verdict": "rejected",
+      "name_in_transcript": "מסנטי",
+      "reject_reason": "Mangled reference to a young chef's restaurant from years ago in Avi Biton's anecdote about calling to congratulate him. Not enough identifying information to verify, and it's a historical reference not relevant to current discovery.",
+      "timestamp": {
+        "seconds": 1730,
+        "display": "28:50"
+      }
+    }
+  ]
+}
