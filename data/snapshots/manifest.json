@@ -1,0 +1,8 @@
+{
+  "api_url": "https://where2eat-production.up.railway.app",
+  "episode_count": 25,
+  "exported_at": "2026-04-24T18:01:19+00:00",
+  "restaurant_count": 141,
+  "schema_sql_included": false,
+  "total_restaurants_in_episodes": 358
+}
