@@ -1,0 +1,750 @@
+{
+  "episode": {
+    "video_id": "x6dASq4vL4w",
+    "video_url": "https://www.youtube.com/watch?v=x6dASq4vL4w",
+    "title": "הנאה הטונה בעיניך | מדברים מהבטן, פרק 153",
+    "channel_name": "מדברים מהבטן - הפודיום",
+    "published_at": "2026-04-29",
+    "hosts": ["עמית אהרונסון", "נטע סלונים", "יהונתן כהן"],
+    "guests": ["יריב מלילי (טלפוני)"],
+    "language": "he",
+    "transcript_length": 45002,
+    "segment_count": 1380,
+    "episode_id": null,
+    "summary": "פרק 153 של מדברים מהבטן (29.4.2026) - פרק פוסט יום העצמאות. עמית מספר על קרטולה (ברזילאי חדש בשוק הכרמל) ועל פלאפל דגניה בהרצליה (שכפר בעצמו על שנים של אי-אהבת פלאפל). יונתן ביקר במקום החדש והמדובר של תומר טל, בואו (Bo'u) במלון דה ג'ורג', ויצא נפעם. נטע גילתה את פיפטי אנד וואן (Fifty and One) - מסעדת פסטות איטלקיות בנחלת בנימין שעברה לכשרה. שני יוזרים (יונתן ועמית בנפרד) המליצו על Sea You - מסעדת דגים-בריוש חדשה באזור התעשייה בנתניה של עולים מצרפת. ראיון טלפוני עם יריב מלילי לציון 30 שנה לבית תאילנדי. חדשות: סגירת המקדש (לירן בלו), ג'רדינו במלון ג'אפה הופך לכשר, מאור בוזגלו נכנס כשותף בג'ומה תל אביב. נכנס אורח אורן יוסיפוביץ. אזכור גם של גריל 65 שעוד פעם זוכה לסיקור חיובי (סגי כהן)."
+  },
+  "extraction": {
+    "date": "2026-05-01",
+    "agent": "episode-processor",
+    "total_mentions": 16,
+    "add_to_page": 5,
+    "reference_only": 9,
+    "rejected": 2,
+    "already_in_db": 1,
+    "new_to_add": 4
+  },
+  "restaurants": [
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "קרטולה",
+      "name_english": "Cartola",
+      "name_in_transcript": "קרטולה",
+      "google_name": "Cartola",
+      "timestamp": {
+        "seconds": 162,
+        "display": "02:42",
+        "youtube_url": "https://www.youtube.com/watch?v=x6dASq4vL4w&t=162s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "שוק הכרמל",
+        "address": "רבן גמליאל 28, תל אביב-יפו",
+        "region": "מרכז",
+        "latitude": 32.0690874,
+        "longitude": 34.7693235
+      },
+      "cuisine_type": "ברזילאי",
+      "price_range": "זול",
+      "status": "חדש",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "פשוט לא משהו ש משהו שיעלה זכרונות ויסגור פינה עם אחלה דרינקים ואחלה עשאי יופי של יציעה שיצליח",
+        "הקייפריניות ממש סבבה כאילו זה כבר עולה מדרגה כאילו הדרינקים שם הם ממש מגניבים וזה פשוט הופך להיות כיף של מקום",
+        "ישר כתבו לי לפחות ארבעה אנשים וואו זה החזיר אותי לסאו פאולו לטיול"
+      ],
+      "host_comments": "מקום ברזילאי חדש בשוק הכרמל ברחוב רבן גמליאל. מאחורי המקום שמואל הולך, עולה חדש ברזילאי. תפריט מצומצם של טיגונים וקוקטיילים. המנות המשמעותיות הן קושיניה (כדורי בצק במילוי עוף וגבינה), פשטיר (כמו צ'יבורק/אמפנדה), פיז'ואדה פעם בחודש, ונקניקיות ברזילאיות. הדרינקים והקייפריניות מצוינים. אווירה כיפית.",
+      "dishes_mentioned": [
+        "קושיניה",
+        "פשטיר (אמפנדה ברזילאית)",
+        "פיז'ואדה",
+        "נקניקיות ברזילאיות (Hot Dog ברזילאי)",
+        "קייפריניה"
+      ],
+      "special_features": [
+        "מקום ברזילאי אותנטי",
+        "פתוח שעות מצומצמות בשוק הכרמל",
+        "בעלים עולה חדש מברזיל",
+        "כשר",
+        "פיז'ואדה פעם בחודש"
+      ],
+      "mention_context": "ביס השבוע של עמית. עמית גילה את המקום החדש בשוק הכרמל ושיתף שאחרי שהעלה תמונה משם, כמה אנשים הגיבו שזה החזיר אותם לטיול בסאו פאולו. הם פתוחים שנה ולא קיבלו עדיין הייפ ראוי - לדבריו 'אין לו כנראה יחץ'.",
+      "mention_level": "נטעם",
+      "speaker": "עמית אהרונסון",
+      "google_places": {
+        "place_id": "ChIJ5bYWXABNHRURfDlDMRYwmw8",
+        "google_url": "https://maps.google.com/?cid=1124545403832973692",
+        "rating": 4.9,
+        "review_count": 47,
+        "price_level": null,
+        "phone": null,
+        "website": "https://www.instagram.com/cartola_il/",
+        "photo_url": "https://imageproxy.wolt.com/assets/67335e3f42b21b5c7ee598d0",
+        "instagram_url": "https://www.instagram.com/cartola_il/",
+        "verified": true,
+        "note": "Photo sourced from Wolt; Google Places returned 0 photos for this place"
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "פלאפל דגניה",
+      "name_english": "Falafel Daganya",
+      "name_in_transcript": "פלאפל דגניה",
+      "google_name": "Dgania's Falafel",
+      "timestamp": {
+        "seconds": 549,
+        "display": "09:09",
+        "youtube_url": "https://www.youtube.com/watch?v=x6dASq4vL4w&t=549s"
+      },
+      "location": {
+        "city": "הרצליה",
+        "neighborhood": null,
+        "address": "שדרות בן גוריון 15, הרצליה",
+        "region": "שרון",
+        "latitude": 32.1653308,
+        "longitude": 34.842882599999996
+      },
+      "cuisine_type": "פלאפל",
+      "price_range": "זול",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "היה לי ממש ממש טעים",
+        "פלאפל צהבהבב, פיטה כיפית עסיסית מאוזנת",
+        "פריחים מאוד בלי הטעם האבקתי תעשייתי הזה שהיה זכור לי מהילדות בפלפליות פשוטות",
+        "זה לא איזה דוכן פלאפל מתחכם, זה לא הכוסם, זה סתם פלאפל שכונתי ותיק בהרצליה חמש דקות מהבית"
+      ],
+      "host_comments": "עמית, שכל חייו טען שהוא לא אוהב פלאפל, גילה את פלאפל דגניה בהרצליה כשבנו ביקש. תיאר 'ביס של התפקחות' - פלאפל צהוב טעים, פיטה כיפית עסיסית מאוזנת, חריף, דחינה, אמבה, סלט ירקות קרוב, בצל, פטרוזיליה. בערב יום העצמאות הייתה תחלופה מסחררת של כדורים טריים.",
+      "dishes_mentioned": [
+        "פלאפל בפיטה",
+        "כדורי פלאפל צהובים",
+        "אמבה",
+        "טחינה",
+        "צ'יפס מתנפח",
+        "סלט ירקות"
+      ],
+      "special_features": [
+        "פלאפל שכונתי ותיק",
+        "כדורי פלאפל צהובים סגנון ירושלמי",
+        "תחלופה מהירה",
+        "דרגת פריכות גבוהה"
+      ],
+      "mention_context": "ביס השבוע של עמית. סיפר על 'ביס של התפקחות' - אחרי שלושה עשורים של 'אני לא אוהב פלאפל', בנו מטי ביקש פלאפל בערב יום העצמאות, והפלאפל שאכל בדגניה גרם לו להתחבר סוף סוף לפלאפל ישראלי קלאסי.",
+      "mention_level": "נטעם",
+      "speaker": "עמית אהרונסון",
+      "google_places": {
+        "place_id": "ChIJ8ceV8wxIHRURvDXyVJrOH38",
+        "google_url": "https://maps.google.com/?cid=9160267329340323260",
+        "rating": 4.4,
+        "review_count": 204,
+        "price_level": null,
+        "phone": "077-344-6416",
+        "website": "https://israelbusinessguide.com/catalog/gercliya/dganias_falafel/",
+        "photo_url": "https://lh3.googleusercontent.com/place-photos/AJRVUZOtFPUFV3OygkZsQE6g7k9Nwlb1N-NSnAna1u_1yI1AHQo_6wUEIkdvEexhXwoaMmMl7v8rxdNySfEFkblYYEIduEo4faIMsptNy_cNxzkmoWOdKa4cfnhnui3yooJZGCQxmAmGQS1QUH9z=s4800-w800",
+        "instagram_url": null,
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "בואו",
+      "name_english": "Bo'u",
+      "name_in_transcript": "בואו / בו",
+      "google_name": "Bo'u",
+      "timestamp": {
+        "seconds": 1997,
+        "display": "33:17",
+        "youtube_url": "https://www.youtube.com/watch?v=x6dASq4vL4w&t=1997s",
+        "note": "Discussion starts here - intro/agenda mention at 1:24 was earlier"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "נווה צדק",
+        "address": "טל ישראל 5, תל אביב-יפו (מלון דה ג'ורג')",
+        "region": "מרכז",
+        "latitude": 32.063772199999995,
+        "longitude": 34.7841471
+      },
+      "cuisine_type": "שף",
+      "price_range": "יקר",
+      "status": "חדש",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "אם הייתי סגי קודם כל זה היה סגי כהן מושג באמת אחרי הארוחה שלי שם",
+        "הקינוחים היו וואו וואו וואו וואו שלושה קינוחים שכל אחד מהם יותר מרהיב ומקורי ומיוחד",
+        "התטקי טלה - מנה שווא, פרוסות שלטלה שצרוב בשומן עם קציפה של חלב כבשים והכל יושב על אורז",
+        "השקדי עגל וואו, הגלייז של שומר, שום שחור, סלרי, מנה באמת מבריקה ומנת הלחם",
+        "מסעדה שאומרת לך בואו ותתנסו, בואו ותחוו את זה בארוחה משפחתית, בואו ותחוו את זה באירוע חברה, בואו תחוו את זה בזוג על הבר",
+        "תומר טל 2.0"
+      ],
+      "host_comments": "יונתן בא עם המשפחה (6 סועדים, שולחן עגול) למסעדת תומר טל החדשה במלון דה ג'ורג'. החליף את מסעדת פרדס ועבר שיפוץ של 360 מעלות. ורסטיילי - גם לארוחה חגיגית, גם זוגית על הבר, גם ארוחת 4 שעות וגם 2 מנות וכוס יין. סטיבן לובל ויעיר בעקיר על השירות. הקינוחים היו פנומנליים: בריוש עם גלידת טגטס + טוויל כוסמת + קרמל ג'ינג'ר; סורבה תפוחים+קלוודוס; ניוקי בצקניות עם פירות צלויים. שקדי עגל מבריקים. טורטליני שרימס מושלם. תטקי טלה. מחיר ~400 ש'ח לסועד עם שני בקבוקי יין.",
+      "dishes_mentioned": [
+        "שקדי עגל בגלייז שומר ושום שחור",
+        "טורטלין שרימס",
+        "תטקי טלה עם קציפת חלב כבשים על אורז",
+        "סלט קייצ עם מלפון, מלון, סטרצ'טלה ופלפל שחור",
+        "בריוש עם גלידת טגטס וטוויל כוסמת",
+        "סורבה תפוחים-קלוודוס",
+        "ניוקי בצקניות עם פירות צלויים וגלידת יוגורט",
+        "מנת לחם",
+        "יין קינוח ריזלינג 2005"
+      ],
+      "special_features": [
+        "תפריט: גלם, עישון, גריל, התיישנות",
+        "חדר פרטי לעד 30 איש",
+        "חדר יין אינטימי",
+        "בר גבוה ובר נמוך",
+        "רשימת יינות עם הרבה כוסות וחצאי כוסות",
+        "שירות מצוין (סטיבן לובל ויעיר בעקיר)",
+        "קוקטיילים של תומר טל וסנטי אורטיז"
+      ],
+      "mention_context": "מקום הראש (Bite Of The Week) של יונתן. אחרי שתומר טל התראיין בפרק קודם, יונתן היה הראשון להגיע. אכל עם 6 בני משפחה. סיכם שזה 'תומר טל 2.0' ושהמקום מסקרן וממשיך לעניין גם אחרי הארוחה. בכוונתו לחזור.",
+      "mention_level": "נטעם",
+      "speaker": "יהונתן כהן",
+      "google_places": {
+        "place_id": "ChIJge2KTQBLHRURduScfxEaoJ0",
+        "google_url": "https://maps.google.com/?cid=11358106922686145654",
+        "rating": 4.8,
+        "review_count": 57,
+        "price_level": null,
+        "phone": "03-644-6454",
+        "website": "https://bou.rest/",
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqGL-7fN3B1lUZAOh1yuWcHhlEtkbPflGPqZX3nuYl7iNHe9aQd0oNBnPXp4Ec5iYDUmvyiyj47m0UZm7azdU9dn3FLucaxzwdw=s4800-w800",
+        "instagram_url": null,
+        "verified": true
+      },
+      "production_db": {
+        "exists": true,
+        "id": "d88a1ad9-2775-4f1f-9d95-7f0c31a193cc"
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "Fifty and One",
+      "name_english": "Fifty and One",
+      "name_in_transcript": "פט אנון / פסטות / ה1",
+      "google_name": "Fifty and one",
+      "timestamp": {
+        "seconds": 2566,
+        "display": "42:46",
+        "youtube_url": "https://www.youtube.com/watch?v=x6dASq4vL4w&t=2566s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "נחלת בנימין",
+        "address": "נחלת בנימין 51, תל אביב-יפו",
+        "region": "מרכז",
+        "latitude": 32.0644985,
+        "longitude": 34.771277999999995
+      },
+      "cuisine_type": "איטלקי",
+      "price_range": "בינוני",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "זה ממש סוג האוכל שאני אוהבת שהוא שומר הרבה על פשטות ויש את ההתחכמויות שהן נותנות את האקסטרה ואת הקיקים",
+        "פסטת זנב שור רוטב עשיר מעלה עדים ומלא בשר... מנת פסטה מושלמת. אין לי בעיה גם להזיע מעליה ביום קיץ חם",
+        "אל תזלזלו בפירורי לחם על הפסטה",
+        "מקום מהמם, אתה נכנס אתה כבר באווירה אתה יודע שמשהו טוב הולך לקרות",
+        "המקום כשר, שום דרך להרגיש את זה, לדעת את זה, לחשוד בזה במרכאות במובן הרע. אני שכחתי מזה לחלוטין"
+      ],
+      "host_comments": "נטע ביקרה בחצר האחורית החדשה של פיפטי אנד וואן בנחלת בנימין (המקום שעבר לכשרה). מתארת לוקיישן 'הכי מאוס והכי מבוקש' שכשנכנסים לחצר האחורית 'אין את נחלת בנימין' - אווירת טרסה איטלקית עם מפות לבנות וגרילנדות. השף אופק גילד. סקשן פסטות מצוין: פסטה למונית פשוטה עם פן גריטטה ופלייקים של דג לבן; חצי ריגטוני חצי קונכייה עם פפרוני חריף; ופסטת זנב שור עם רוטב עשיר. סלט לליק עם דבש אורגנו ממכר. שיפוד לוקוס עם אחו בלנקו קרמי. אווירה טובה, יין כוסות ובקבוקים. שכחה לחלוטין שהמקום כשר.",
+      "dishes_mentioned": [
+        "פסטה למונית עם פן גריטטה ודג לבן",
+        "פסטת זנב שור",
+        "ריגטוני/קונכייה עם פפרוני חריף",
+        "סלט לליק עם דבש אורגנו",
+        "שיפוד לוקוס עם אחו בלנקו",
+        "לחם עם מלח גס ושמן זית",
+        "אפונת שלג"
+      ],
+      "special_features": [
+        "פסטה טרייה עבודת יד",
+        "חצר אחורית עם אווירת טרסה איטלקית",
+        "מפות לבנות וגרילנדות",
+        "כשרי",
+        "סטיוארדים מצוינים",
+        "השף אופק גילד"
+      ],
+      "mention_context": "ביס השבוע של נטע. הקדישה למקום שיצא מהרדאר וקיבלה מבט חדש בחצר האחורית. מתעקשת על איכות הפסטה ופנקו על פסטה. ענתה ליונתן ולעמית שזה גם כשר באופן בלתי מורגש.",
+      "mention_level": "נטעם",
+      "speaker": "נטע סלונים",
+      "google_places": {
+        "place_id": "ChIJvSiapNhNHRUR9hFs0Daf8Rk",
+        "google_url": "https://maps.google.com/?cid=1869450378109260278",
+        "rating": 4.2,
+        "review_count": 684,
+        "price_level": null,
+        "phone": "054-897-5918",
+        "website": "https://instagram.com/fifty.and.one",
+        "photo_url": "https://lh3.googleusercontent.com/place-photos/AJRVUZPL7nOqUr1SzMWJQF8W5l0tNgdLiLFYlAAYgvxthb3kZ1EZKwX_lH_1RWQWd4HI09bHw1xl8jx1M0SgQoT5vvgmQaaEGYLM-I3LlhcUDuJSFnMk--LIo7wW30Moyf5ASxwob6VlPx6XVeqh2YA=s4800-w800",
+        "instagram_url": "https://www.instagram.com/fifty.and.one/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "add_to_page",
+      "sub_tag": "נטעם",
+      "name_hebrew": "Sea You",
+      "name_english": "Sea You",
+      "name_in_transcript": "מקום באזור התעשייה בנתניה (משחק מילים עם דגים)",
+      "google_name": "Sea You",
+      "timestamp": {
+        "seconds": 2826,
+        "display": "47:06",
+        "youtube_url": "https://www.youtube.com/watch?v=x6dASq4vL4w&t=2826s"
+      },
+      "location": {
+        "city": "נתניה",
+        "neighborhood": "אזור התעשייה (קריית הספורט)",
+        "address": "המלאכה 12, נתניה",
+        "region": "שרון",
+        "latitude": 32.2785905,
+        "longitude": 34.858367099999995
+      },
+      "cuisine_type": "דגים",
+      "price_range": "בינוני",
+      "status": "חדש",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "המנה הכי הכי מוצלחת הייתה מה שאמורה להיות ההצלחה הכי גדולה שלהם בעצם קוד מטוגן בורגר קוד מטוגן יפה עלטר מצוין",
+        "ההמבורגר קוד הזה הוא פשוט מעולה מעולה באמת",
+        "החבר'ה הצרפתים האלה יודעים את העבודה",
+        "מתבאס שלא התבאסת - באתי למקום ונורא רציתי להתבאס ובסוף נהניתי",
+        "יופי של דבר אחלה יציאה, מאוד לא צפוי",
+        "בריוש טוניזי עם תונה אדומה נאה מעורבבת עם פלפל צ'ומה ותפוחי אדמה"
+      ],
+      "host_comments": "מסעדה חדשה באזור התעשייה בנתניה (וגם סניף נוסף בכיכר העצמאות) של עולים חדשים מצרפת. שם המסעדה משחק מילים: 'Sea You' (קוד = Cod). דיינר שלם על בסיס דגים בלחמניות בריוש או על צלחת. בריוש טוניזי (תונה אדומה עם פלפל צ'ומה) ובמיוחד 'קוד מטוגן בורגר' מצוינים. קינוח מופרע: בריוש שוקולד נמס פרילינה עם אגסים מבושלים ביין, בוטנים וקצפת. שני המנחים (יונתן ואז עמית בנפרד באותו שבוע) בלי לתאם אכלו שם - שניהם המליצו בחום. עמית סיפר על תופעת 'מתבאס שלא התבאסת'. השם המוזר זוכה לציון לרעה. גם קובי מלמד היה עם עמית.",
+      "dishes_mentioned": [
+        "בריוש טוניזי (תונה אדומה, פלפל צ'ומה, תפוחי אדמה)",
+        "קוד מטוגן בורגר (Cod fish burger)",
+        "בריוש דג לבן",
+        "צ'יפס",
+        "סלמון",
+        "קינוח בריוש שוקולד נמס פרילינה עם אגסים ביין, בוטנים וקצפת"
+      ],
+      "special_features": [
+        "מסעדת דגים בלבד בקונספט סטריט פוד",
+        "בעלים עולים חדשים מצרפת",
+        "שני סניפים בנתניה (אזור התעשייה + כיכר העצמאות)",
+        "מנות בריוש פתוחות / 'שיטת נונונו'",
+        "מתאים לארוחת צהריים מתחת למשרד או ארוחה מושחתת",
+        "תפריט יצירתי - לפעמים יצירתי מדי"
+      ],
+      "mention_context": "ביס השבוע של יונתן (דבר ראשון) ושל עמית (שעקב אחריו בלי לדעת). מקום שגרם לציפיות נמוכות (אזור תעשייה, שם מטופש) ולסיום במחמאה כפולה. עמית הזכיר את 'חווית ממפיס' - מקום שמצליח להפתיע למרות שלא בוטח בו.",
+      "mention_level": "נטעם",
+      "speaker": "יהונתן כהן ועמית אהרונסון",
+      "google_places": {
+        "place_id": "ChIJPc_zQEtBHRURPn8L1dg2obc",
+        "google_url": "https://maps.google.com/?cid=13231917485106364222",
+        "rating": 4.7,
+        "review_count": 120,
+        "price_level": null,
+        "phone": "050-818-7754",
+        "website": "https://seayoufood.com/he/",
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqEzybUpTNp2WP-0ANP-LvXI0wulJiKxKEMGVqj83sMs00Mi8JOlmjCiZ56zM-Nlwcjt9SPfO3FNqAK9U5GfceblIz-bCafnGsw=s4800-w800",
+        "instagram_url": "https://www.instagram.com/seayou.il/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "בית תאילנדי",
+      "name_english": "Thai House",
+      "name_in_transcript": "בית תאילנדי / בית הילנדי",
+      "google_name": "Thai House",
+      "skip_reason": "30 שנה אנניברסרי - ראיון טלפוני עם בעל המסעדה יריב מלילי. דיברו על ההיסטוריה, חומרי הגלם והתפתחות האוכל התאי בישראל. הפרק עוסק במסעדה כמוסד קולינרי, לא ביקורת מוצר טרי.",
+      "timestamp": {
+        "seconds": 1306,
+        "display": "21:46",
+        "youtube_url": "https://www.youtube.com/watch?v=x6dASq4vL4w&t=1306s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "address": "בוגרשוב 8, תל אביב-יפו",
+        "region": "מרכז",
+        "latitude": 32.0775921,
+        "longitude": 34.7682231
+      },
+      "cuisine_type": "תאילנדי",
+      "price_range": "יקר",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "המקום הזה נפתח ב-1996 וזה די מטורף לחשוב",
+        "אם אתם רוצים לחוות את האוכל התי האותנטי הזה, אז יריב הוא הצינור"
+      ],
+      "host_comments": "ראיון טלפוני עם יריב מלילי לרגל 30 שנה למסעדה. מספר על מנות פעם בתפריט (עוף חמוץ מתוק), על ההיסטוריה של החדרת חומרי גלם תאיים לישראל (פיגר רונן, מזרח-מערב), ועל הפתיחה הקרובה של קפקם בהרצליה.",
+      "google_places": {
+        "place_id": "ChIJP841K3xMHRURebdaloB-MZA",
+        "google_url": "https://maps.google.com/?cid=10390224906063886201",
+        "rating": 4.4,
+        "review_count": 9123,
+        "phone": "03-517-8568",
+        "website": "http://www.thai-house.co.il/",
+        "photo_url": "https://lh3.googleusercontent.com/place-photos/AJRVUZPzDRg8YPz4bVvv7etYseSlEeMrZqVMk6J_Gx7VdblmGTA4qrJQb6r62Xul0AvbBi7FzCTHP_fZTmxxnOpJywnhMB7Y-tbaV2BVWP7LIkjWAHAAiaBLLRtoDtl9Tv7MFSCvGDa2k_3C3EjuxA=s4800-w800",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "קאב קם",
+      "name_english": "Kab Kem",
+      "name_in_transcript": "קפקם",
+      "google_name": "Kab Kem",
+      "skip_reason": "אזכור הקשר עם בית תאילנדי - יריב מלילי הזכיר שהקפקם החדש (האחות הקטנה) ייפתח בקרוב גם בהרצליה. אזכור עתיד עסקי ולא ביקורת.",
+      "timestamp": {
+        "seconds": 1830,
+        "display": "30:30",
+        "youtube_url": "https://www.youtube.com/watch?v=x6dASq4vL4w&t=1830s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "address": "לינקולן 11, תל אביב-יפו",
+        "region": "מרכז",
+        "latitude": 32.066919999999996,
+        "longitude": 34.7820438
+      },
+      "cuisine_type": "תאילנדי",
+      "price_range": "יקר",
+      "status": "פתוח",
+      "host_opinion": "ניטרלית",
+      "host_quotes": [
+        "יריב להזדרז בבקשה העם צמא, הטרצליאינים רעבים אנחנו צריכים את הדבר הזה"
+      ],
+      "host_comments": "יריב מספר שבכוונה לפתוח קפקם נוסף בהרצליה. גם נכנסים על שהמקום מפחיד אותו (250 מ\"ר מטבח).",
+      "google_places": {
+        "place_id": "ChIJqcmrdnlLHRURHXXOkDgXTPM",
+        "google_url": "https://maps.google.com/?cid=17531412981161555229",
+        "rating": 4.3,
+        "review_count": 3844,
+        "phone": "03-688-9960",
+        "website": "http://www.kabkem.com/",
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqFQfQg49wQ30qqZgsvuOa0snk2XjqimsUDIniFeLrPnq8xcleU9cwh28AXzerAubrpOagB1pw2Eo-D4wV5Ve8Lg8Xhkn7qCNY4=s4800-w800",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "המקדש",
+      "name_english": "Hamikdash",
+      "name_in_transcript": "המקדש",
+      "google_name": "המקדש - מסעדת בשרים",
+      "skip_reason": "הודעת סגירה - אחרי כמעט עשור הודיע השף לירן בלו על סגירת המסעדה. חדשות תעשייה. עמית מציין שהוא מוכשר וצופה שעוד נשמע ממנו.",
+      "timestamp": {
+        "seconds": 875,
+        "display": "14:35",
+        "youtube_url": "https://www.youtube.com/watch?v=x6dASq4vL4w&t=875s"
+      },
+      "location": {
+        "city": "פתח תקווה",
+        "address": "הפסגות 9, פתח תקווה",
+        "region": "מרכז",
+        "latitude": 32.099926499999995,
+        "longitude": 34.854126
+      },
+      "cuisine_type": "שף",
+      "price_range": "יקר מאוד",
+      "status": "נסגר",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "פשוט נגמר נגמר לנו נגמר לנו הכוח נגמר לנו הכסף נגמרה לנו האנרגיה",
+        "מי שמצליח לקחת את הDNA או הרציונל של ארוחת טעימות... ועושה את זה כשר ברמה שמחזיקה לאורך שנים יכול לעשות עוד הרבה דברים מעניינים"
+      ],
+      "host_comments": "סגירה מסקרנת אחרי כמעט עשור (נפתח ב-2018 בכפר סבא, עבר ל-2022 לפתח תקווה). אחד הראשונים בארץ לקחת רעיון של ארוחת טעימות מודרנית לספרה הכשרה.",
+      "google_places": {
+        "place_id": "ChIJoUIuRzs5HRURpJXg8Rnm00I",
+        "google_url": "https://maps.google.com/?cid=4815445425695790500",
+        "rating": 4.6,
+        "review_count": 2601,
+        "phone": "077-231-1881",
+        "website": "https://hamikdash-restaurant.co.il/",
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqEKt7wJ7XJEUaKvlOxFpDVrrRUb31wWNnDfA3Fiu3oa4W4s_94AmZb4bhVPNS2AstTdAj28fg9TW7xNhxxWyLNsN_B9If1mk4M=s4800-w800",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "נעה",
+      "name_english": "Noa",
+      "name_in_transcript": "נוע",
+      "google_name": "נעה - אפייה מקומית, מסעדה ומאפייה",
+      "skip_reason": "השף אלדד שמואלי עוזב את נעה - חדשות תעשייה. עמית מספר שהוא 'מוכשר בעליל' ושיהיה מעניין לראות לאן ילך הלאה. המקום עצמו ממשיך לפעול.",
+      "timestamp": {
+        "seconds": 769,
+        "display": "12:49",
+        "youtube_url": "https://www.youtube.com/watch?v=x6dASq4vL4w&t=769s"
+      },
+      "location": {
+        "city": "קריית ענבים",
+        "address": "פארק כרמי, קריית ענבים",
+        "region": "ירושלים",
+        "latitude": 31.806256700000002,
+        "longitude": 35.1217098
+      },
+      "cuisine_type": "שף",
+      "price_range": "יקר",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "אלדד הוא מוכשר בעליל",
+        "הוא הצליח לשים שם מקום על המפה כאילו ממש מקום שווה עצירה שווה עיכוף"
+      ],
+      "host_comments": "השף אלדד שמואלי עוזב את נעה אחרי שנתיים. סגירה כאילו - הוא עוזב, המקום ממשיך לפעול. מסעדה-מאפייה בקריית ענבים, פארק כרמי. תהיה השווה לשמור עליו.",
+      "google_places": {
+        "place_id": "ChIJ6zS-MIrRAhUR_c8hRRJNEbs",
+        "google_url": "https://maps.google.com/?cid=13479639900561199101",
+        "rating": 4.1,
+        "review_count": 428,
+        "phone": "02-565-5390",
+        "website": "https://www.noa-rest.co.il/",
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqHvqcD6Q4BkMCzocGPfiw7X0S62OWqeD6Fh-eHsVmF8LDqsQRC1QEsrNbPyTuSlsv3vza0rYuvcEKl2NmxezIJpxaBowDjjbP8=s4800-w800",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "ג'יארדינו",
+      "name_english": "Giardino",
+      "name_in_transcript": "ג'רדינו",
+      "google_name": "GIARDINO - ג׳יארדינו",
+      "skip_reason": "מסעדת מלון ג'אפה הופכת לכשרה - חדשות תעשייה. דיברו על השף בר צנגר ועל ההשלכות. לא ביקורת על המסעדה עצמה.",
+      "timestamp": {
+        "seconds": 949,
+        "display": "15:49",
+        "youtube_url": "https://www.youtube.com/watch?v=x6dASq4vL4w&t=949s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "address": "לואי פסטר 2, תל אביב-יפו (מלון ג'אפה)",
+        "region": "מרכז",
+        "latitude": 32.0525099,
+        "longitude": 34.753022699999995
+      },
+      "cuisine_type": "שף",
+      "price_range": "יקר מאוד",
+      "status": "פתוח",
+      "host_opinion": "ניטרלית",
+      "host_quotes": [
+        "מלון ג'אפה הופך לקשר ואיתו גם ג'רדינו הופכת לקשרה",
+        "מעניין לראות אם בר צנגר ישאר שם ויבשל כשר"
+      ],
+      "host_comments": "מלון ג'אפה (חלק מקולקציית מלונות פטל) הופך לכשר. ג'יארדינו תהפוך לכשרה. בר צנגר עושה דגים מצוין - מקום ברמה זאת חייב להיות בשרי לא יכול להיות דגים-חלבי. גם הדלי - המסעדה השנייה במלון - לא קיים יותר.",
+      "google_places": {
+        "place_id": "ChIJZ3wGVDlNHRUR3O59o86ASaE",
+        "google_url": "https://maps.google.com/?cid=11621961938400833244",
+        "rating": 4,
+        "review_count": 23,
+        "phone": "050-297-6904",
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqEoobFCrnB9AokFN8JtQIUyl7skdVkWxszjWfzdQ2VSXSKUIZ3QFmLxaH6muI4yvEEAydk2Zlqv3_6Eli4Z--BnAa75wzB7jSQ=s4800-w800",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "ג'ומה",
+      "name_english": "Jome TLV",
+      "name_in_transcript": "ג'ומה / ג'ום",
+      "google_name": "ג'ומה תל אביב jome tlv",
+      "skip_reason": "מאור בוזגלו (כדורגלן לשעבר) נכנס כשותף - חדשות תעשייה. אזכור שזה מתחם כשר בהשראת מועדוני ניו יורק יוקרתיים. לא ביקורת אוכל.",
+      "timestamp": {
+        "seconds": 1054,
+        "display": "17:34",
+        "youtube_url": "https://www.youtube.com/watch?v=x6dASq4vL4w&t=1054s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "address": "שדרות רוטשילד 32, תל אביב-יפו (פינת אלנבי)",
+        "region": "מרכז",
+        "latitude": 32.0630935,
+        "longitude": 34.7730763
+      },
+      "cuisine_type": "מועדון/בר",
+      "price_range": "יקר מאוד",
+      "status": "פתוח",
+      "host_opinion": "ניטרלית",
+      "host_quotes": [
+        "מתחם כשר בהשראת המועדונים האיקונים של ניו יורק",
+        "מאור בוזגלו ינסו לרכוב על השם שלו כדי להביא קצת טראפיק",
+        "מקום שהאוכל הוא שחקן משמעותי אבל לא בטוח השחקן המרכזי, יותר הבילוי"
+      ],
+      "host_comments": "מאור בוזגלו (כדורגלן וDJ מוצלח) נכנס כשותף. המסעדה עברה כמה גלגולים. מתחם כשר בהשראת מועדוני ניו יורק. אוכל יקר מאוד.",
+      "google_places": {
+        "place_id": "ChIJbZwSNQBNHRURBBU-CDAUS-I",
+        "google_url": "https://maps.google.com/?cid=16306149072354284804",
+        "rating": 3.8,
+        "review_count": 200,
+        "phone": "054-919-1199",
+        "website": "https://www.instagram.com/jome_bar_tlv/",
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqFw7xFZjG6m3aDVOw-nbLYXuVWssnUUQLqEnDvjLgOXH152OAlGD_SA7iyO4KD6g24uAJjm505qsUhhab05ot-KQggQQW3DzFI=s4800-w800",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "פלאפל הלל",
+      "name_english": "Falafel Hilel",
+      "name_in_transcript": "פלאפל הלל",
+      "google_name": "Falafel Hilel",
+      "skip_reason": "אזכור מטור של קובי רובין - מנת הפלאפל הזולה בישראל ב-3 שקלים (עלתה ל-6). עמית/יונתן לא היו שם. מידע מסקרן אבל לא ביקורת אישית.",
+      "timestamp": {
+        "seconds": 3265,
+        "display": "54:25",
+        "youtube_url": "https://www.youtube.com/watch?v=x6dASq4vL4w&t=3265s"
+      },
+      "location": {
+        "city": "בני ברק",
+        "address": "ז'בוטינסקי 180, בני ברק",
+        "region": "מרכז",
+        "latitude": 32.0924847,
+        "longitude": 34.8408899
+      },
+      "cuisine_type": "פלאפל",
+      "price_range": "זול",
+      "status": "פתוח",
+      "host_opinion": "ניטרלית",
+      "host_quotes": [
+        "קובי רובין בטור טרי טרי מהבוקר אמר שהוא מצא את מנת הפלאפל הזולה בישראל",
+        "המחיר הוא שישה שקלים, לא החסירו שום חלק ממנת הפלאפל הקלאסית כולל צ'יפס"
+      ],
+      "host_comments": "ב-ז'בוטינסקי 180 בבני ברק. עלה לאחרונה מ-3 שקלים ל-6 שקלים למנת פלאפל מלאה (כולל צ'יפס).",
+      "google_places": {
+        "place_id": "ChIJC4AXV_VJHRUR6NVtGvqplBE",
+        "google_url": "https://maps.google.com/?cid=1266824286848275944",
+        "rating": 3.5,
+        "review_count": 202,
+        "phone": "03-618-5723",
+        "photo_url": "https://lh3.googleusercontent.com/place-photos/AJRVUZN2py05Kqgvr4cbUkmRLhrOaerHVMY4AKMfabnvb_Ydo9BsaMsH-YhEJjb6Smr8_wdxmdhOVi5Uoqq3Xs9yffBdZ0jzK9n34e5ZhlQVFM5CYYrqyI8R5vgL68oNK4ZWwNEb30ylYcvo-2Q95A=s4800-w800",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "גריל 65",
+      "name_english": "Grill 65",
+      "name_in_transcript": "גריל 65",
+      "google_name": "גריל 65",
+      "skip_reason": "אזכור שניוני - סגי כהן עף עליו בטור שלו, ועמית מתייחס לזה (כבר היה שם בעבר). אינו ביס השבוע. כבר מסעדה קיימת ב-DB.",
+      "timestamp": {
+        "seconds": 3183,
+        "display": "53:03",
+        "youtube_url": "https://www.youtube.com/watch?v=x6dASq4vL4w&t=3183s"
+      },
+      "location": {
+        "city": "פרדס חנה-כרכור",
+        "address": "צומת מחנה 80, פרדס חנה-כרכור (ואדי ערה)",
+        "region": "שרון",
+        "latitude": 32.4591894,
+        "longitude": 34.988227
+      },
+      "cuisine_type": "בשרים",
+      "price_range": "בינוני",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "המקום הזה, גריל 65, עושה במובן הזה של המיקום שלה, הבעלים שלה, החיבור של יהודים ערבים. זה מקום מעולה. מעולה",
+        "לא רק שהיינו במסעדה טובה יותר, אלא אפילו בזמנים טובים יותר",
+        "חמודי אוקלהו אחד משני הישראלים היחידים שאני מכיר שהיו יכולים לפתוח דוכן קובניה על יד המגרש של בשיקטש ולהתפרנס מזה"
+      ],
+      "host_comments": "סגי כהן עף עליו בטור שלו. עמית כבר היה שם בעבר ושמח לסגי. חיבור של יהודים-ערבים, מקום מעולה לקובניה. גם נדבר עליו בעבר אצלם.",
+      "google_places": {
+        "place_id": "ChIJpUbmPwAPHRURbpSDoj4b4nQ",
+        "google_url": "https://maps.google.com/?cid=8422324208964703342",
+        "rating": 4.1,
+        "review_count": 188,
+        "phone": "077-905-8000",
+        "photo_url": "https://img.mako.co.il/2026/02/11/grill65_autoOrient_i.jpg",
+        "verified": true,
+        "note": "Google Places returned 0 photos; reusing image from prior episode J6Akd1bXiWM (same restaurant)."
+      },
+      "production_db": {
+        "exists": true,
+        "id": "007a06f8-8a78-475e-a914-ffad52acc49f"
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "קובה התרנגול",
+      "name_english": "Kuba Hatarnegol",
+      "name_in_transcript": "קובה התרנגול",
+      "skip_reason": "אזכור עתיד-בקנה: נטע אומרת שהמסעדה מגיעה למרכז תל אביב 'בסירה' - אזכור עתידי, לא ביקורת. כעת בשכונת התקווה.",
+      "timestamp": {
+        "seconds": 3497,
+        "display": "58:17",
+        "youtube_url": "https://www.youtube.com/watch?v=x6dASq4vL4w&t=3497s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "שכונת התקווה",
+        "address": "אצ\"ל 64, תל אביב-יפו"
+      },
+      "cuisine_type": "עיראקי / קובה",
+      "host_quotes": [
+        "קובה התרנגול מגיע למרכז תל אביב בסירה מאוד",
+        "כל מה שנתן אמר במהלך הפרקים מגיע"
+      ],
+      "host_comments": "מסעדת הקובה האיקונית של יהודה גוהר משכונת התקווה מתעתדת לפתוח סניף במרכז תל אביב.",
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "rejected",
+      "name_in_transcript": "פלאפל הכוסם",
+      "reject_reason": "אזכור משווה כללי - 'זה לא הכוסם זה סתם פלאפל שכונתי'. לא מסעדה ספציפית שמדברים עליה כאן."
+    },
+    {
+      "verdict": "rejected",
+      "name_in_transcript": "ה1",
+      "reject_reason": "ייתכן שמדובר במסעדת Tipico בנחלת בנימין 1, אבל ההתייחסות בלתי ברורה ('איפה שה1 מאחורה') ולא הייתה ביקורת או אפילו אזכור משמעותי."
+    }
+  ]
+}
