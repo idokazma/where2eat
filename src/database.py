@@ -134,6 +134,7 @@ class Database:
                     name_english TEXT,
                     verdict TEXT NOT NULL,
                     mention_level TEXT,
+                    status TEXT,
                     timestamp_seconds REAL,
                     timestamp_display TEXT,
                     speaker TEXT,
@@ -513,6 +514,12 @@ class Database:
             cursor.execute('CREATE INDEX IF NOT EXISTS idx_episode_mentions_video_id ON episode_mentions(video_id)')
             cursor.execute('CREATE INDEX IF NOT EXISTS idx_episode_mentions_restaurant_id ON episode_mentions(restaurant_id)')
             cursor.execute('CREATE INDEX IF NOT EXISTS idx_episode_mentions_verdict ON episode_mentions(verdict)')
+
+            # Migrate existing episode_mentions tables that lack the status column
+            try:
+                cursor.execute('ALTER TABLE episode_mentions ADD COLUMN status TEXT')
+            except Exception:
+                pass  # Column already exists
 
     # ==================== Episode Operations ====================
 
@@ -2094,15 +2101,16 @@ class Database:
             cursor.execute('''
                 INSERT INTO episode_mentions (
                     id, episode_id, restaurant_id, video_id, name_hebrew, name_english,
-                    verdict, mention_level, timestamp_seconds, timestamp_display,
+                    verdict, mention_level, status, timestamp_seconds, timestamp_display,
                     speaker, host_quotes, host_comments, dishes_mentioned,
                     mention_context, skip_reason, city, cuisine_type, host_opinion,
                     google_place_id, latitude, longitude
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 ON CONFLICT(id) DO UPDATE SET
                     restaurant_id = COALESCE(excluded.restaurant_id, episode_mentions.restaurant_id),
                     verdict = excluded.verdict,
                     mention_level = excluded.mention_level,
+                    status = COALESCE(excluded.status, episode_mentions.status),
                     host_quotes = COALESCE(excluded.host_quotes, episode_mentions.host_quotes),
                     host_comments = COALESCE(excluded.host_comments, episode_mentions.host_comments),
                     dishes_mentioned = COALESCE(excluded.dishes_mentioned, episode_mentions.dishes_mentioned)
@@ -2115,6 +2123,7 @@ class Database:
                 data.get('name_english'),
                 data['verdict'],
                 data.get('mention_level'),
+                data.get('status'),
                 data.get('timestamp_seconds'),
                 data.get('timestamp_display'),
                 data.get('speaker'),

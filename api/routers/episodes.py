@@ -299,6 +299,7 @@ async def seed_extraction(extraction: Dict[str, Any] = Body(...)):
                 'name_english': r.get('name_english'),
                 'verdict': verdict,
                 'mention_level': r.get('sub_tag') or r.get('mention_level'),
+                'status': r.get('status'),
                 'timestamp_seconds': timestamp.get('seconds'),
                 'timestamp_display': timestamp.get('display'),
                 'speaker': r.get('speaker'),
