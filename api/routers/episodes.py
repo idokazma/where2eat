@@ -149,6 +149,24 @@ async def get_episode_detail(video_id: str):
 
 
 @router.delete(
+    "/{video_id}/mentions",
+    summary="Delete all mentions for a specific episode",
+    description="Clears episode_mentions rows for the given video_id. Use before re-seeding to eliminate duplicates.",
+)
+async def delete_episode_mentions(video_id: str):
+    """Delete all episode_mentions for a specific video_id."""
+    db = _get_sqlite_db()
+    if not db:
+        raise HTTPException(status_code=503, detail="Database unavailable")
+    with db.get_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM episode_mentions WHERE video_id = ?", (video_id,))
+        deleted = cursor.rowcount
+        conn.commit()
+    return {"status": "ok", "video_id": video_id, "deleted": deleted}
+
+
+@router.delete(
     "/reset",
     summary="Reset all episode data",
     description="Deletes all episodes, mentions, and restaurants. Use with caution.",

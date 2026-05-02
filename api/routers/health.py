@@ -31,6 +31,7 @@ async def health_check():
     response = {
         "status": "OK",
         "timestamp": datetime.now().isoformat(),
+        "version": "2026-05-02-b",
     }
 
     try:
