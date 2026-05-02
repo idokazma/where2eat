@@ -206,9 +206,10 @@ async def seed_extraction(extraction: Dict[str, Any] = Body(...)):
 
     episode_id = ep.get('episode_id') or str(uuid.uuid4())
 
-    # Create episode
+    # Create episode — use the RETURNED id (create_episode handles ON CONFLICT and
+    # returns the existing id when video_id already exists, so we must not ignore it)
     try:
-        db.create_episode(
+        episode_id = db.create_episode(
             video_id=video_id,
             video_url=ep.get('video_url', f'https://www.youtube.com/watch?v={video_id}'),
             title=ep.get('title', ''),
@@ -218,7 +219,7 @@ async def seed_extraction(extraction: Dict[str, Any] = Body(...)):
             id=episode_id,
         )
     except Exception:
-        # Episode exists — look up its ID
+        # Fallback: look up existing episode if create raised unexpectedly
         with db.get_connection() as conn:
             cursor = conn.cursor()
             cursor.execute("SELECT id FROM episodes WHERE video_id = ?", (video_id,))
