@@ -2094,7 +2094,11 @@ class Database:
         Returns:
             Mention ID
         """
-        mention_id = data.get('id', str(uuid.uuid4()))
+        # Use deterministic UUID so re-seeding updates existing records instead of inserting duplicates
+        mention_id = data.get('id') or str(uuid.uuid5(
+            uuid.NAMESPACE_DNS,
+            f"{data['video_id']}:{data['name_hebrew']}"
+        ))
 
         with self.get_connection() as conn:
             cursor = conn.cursor()
