@@ -210,6 +210,13 @@ async def seed_extraction(extraction: Dict[str, Any] = Body(...)):
             else:
                 raise HTTPException(status_code=500, detail="Could not create or find episode")
 
+    # Clear existing mentions for this episode before inserting fresh ones
+    # This ensures re-seeding is idempotent and removes any old duplicate records
+    with db.get_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM episode_mentions WHERE video_id = ?", (video_id,))
+        conn.commit()
+
     # Save mentions
     mentions_added = 0
     restaurants = extraction.get('restaurants', [])
