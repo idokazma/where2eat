@@ -71,6 +71,11 @@ function ExpandableRestaurantItem({
             <span className="font-bold text-sm text-[var(--color-ink)] truncate">
               {mention.name_hebrew}
             </span>
+            {mention.status === 'נסגר' && (
+              <span className="shrink-0 text-xs font-semibold bg-red-100 text-red-600 px-1.5 py-0.5 rounded-full">
+                נסגר
+              </span>
+            )}
             {mention.mention_level && (
               <MentionLevelBadge mentionLevel={mention.mention_level} />
             )}
