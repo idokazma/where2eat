@@ -3,6 +3,7 @@
 Serves episode data with mention-level grouping (נטעם/הוזכר/reference_only).
 """
 
+import logging
 import os
 import json
 import uuid
@@ -10,6 +11,8 @@ from pathlib import Path
 from typing import Optional, Dict, Any, List
 
 from fastapi import APIRouter, HTTPException, Query, Body
+
+logger = logging.getLogger(__name__)
 
 from models.episode import (
     EpisodeMention,
@@ -238,6 +241,7 @@ async def seed_extraction(extraction: Dict[str, Any] = Body(...)):
 
     # Save mentions
     mentions_added = 0
+    failed_mentions: List[Dict[str, str]] = []
     restaurants = extraction.get('restaurants', [])
     for r in restaurants:
         verdict = r.get('verdict', '')
@@ -252,14 +256,23 @@ async def seed_extraction(extraction: Dict[str, Any] = Body(...)):
         # Ignore production_db.id — always look up fresh to avoid stale references
         restaurant_id = None
 
-        # Find or create the restaurant (for both add_to_page and reference_only)
+        # Find or create the restaurant (for both add_to_page and reference_only).
+        # Lookup excludes is_hidden rows: when duplicates exist (same place_id, one
+        # visible + one hidden orphan), the hidden one would otherwise win at random.
         with db.get_connection() as conn:
             cursor = conn.cursor()
             if gp.get('place_id'):
-                cursor.execute("SELECT id FROM restaurants WHERE google_place_id = ?", (gp['place_id'],))
+                cursor.execute(
+                    "SELECT id FROM restaurants WHERE google_place_id = ? "
+                    "AND (is_hidden = 0 OR is_hidden IS NULL)",
+                    (gp['place_id'],),
+                )
             else:
-                cursor.execute("SELECT id FROM restaurants WHERE name_hebrew = ? AND video_id = ?",
-                               (r.get('name_hebrew', ''), video_id))
+                cursor.execute(
+                    "SELECT id FROM restaurants WHERE name_hebrew = ? AND video_id = ? "
+                    "AND (is_hidden = 0 OR is_hidden IS NULL)",
+                    (r.get('name_hebrew', ''), video_id),
+                )
             row = cursor.fetchone()
             if row:
                 restaurant_id = row['id']
@@ -314,7 +327,16 @@ async def seed_extraction(extraction: Dict[str, Any] = Body(...)):
                     is_hidden=is_hidden,
                 )
             except Exception as e:
-                print(f"[SEED] Failed to create restaurant {r.get('name_hebrew', '?')}: {e}")
+                logger.exception(
+                    "[SEED] Failed to create restaurant %s for video %s",
+                    r.get('name_hebrew', '?'),
+                    video_id,
+                )
+                failed_mentions.append({
+                    'name_hebrew': r.get('name_hebrew', '?'),
+                    'stage': 'create_restaurant',
+                    'error': f'{type(e).__name__}: {e}',
+                })
 
         try:
             db.save_episode_mention({
@@ -343,7 +365,20 @@ async def seed_extraction(extraction: Dict[str, Any] = Body(...)):
             })
             mentions_added += 1
         except Exception as e:
-            print(f"[SEED] Failed to save mention {r.get('name_hebrew', '?')}: {e}")
+            logger.exception(
+                "[SEED] Failed to save mention %s for video %s (restaurant_id=%s, place_id=%s)",
+                r.get('name_hebrew', '?'),
+                video_id,
+                restaurant_id,
+                gp.get('place_id'),
+            )
+            failed_mentions.append({
+                'name_hebrew': r.get('name_hebrew', '?'),
+                'stage': 'save_episode_mention',
+                'restaurant_id': restaurant_id,
+                'google_place_id': gp.get('place_id'),
+                'error': f'{type(e).__name__}: {e}',
+            })
             continue
 
     # Backfill mention_level on restaurants
@@ -363,4 +398,12 @@ async def seed_extraction(extraction: Dict[str, Any] = Body(...)):
         ''')
         conn.commit()
 
-    return {"status": "ok", "episode_id": episode_id, "mentions_added": mentions_added}
+    response: Dict[str, Any] = {
+        "status": "ok",
+        "episode_id": episode_id,
+        "mentions_added": mentions_added,
+    }
+    if failed_mentions:
+        response["status"] = "partial"
+        response["failed_mentions"] = failed_mentions
+    return response
