@@ -149,6 +149,24 @@ async def get_episode_detail(video_id: str):
 
 
 @router.delete(
+    "/{video_id}/mentions",
+    summary="Delete all mentions for a specific episode",
+    description="Clears episode_mentions rows for the given video_id. Use before re-seeding to eliminate duplicates.",
+)
+async def delete_episode_mentions(video_id: str):
+    """Delete all episode_mentions for a specific video_id."""
+    db = _get_sqlite_db()
+    if not db:
+        raise HTTPException(status_code=503, detail="Database unavailable")
+    with db.get_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM episode_mentions WHERE video_id = ?", (video_id,))
+        deleted = cursor.rowcount
+        conn.commit()
+    return {"status": "ok", "video_id": video_id, "deleted": deleted}
+
+
+@router.delete(
     "/reset",
     summary="Reset all episode data",
     description="Deletes all episodes, mentions, and restaurants. Use with caution.",
@@ -188,9 +206,10 @@ async def seed_extraction(extraction: Dict[str, Any] = Body(...)):
 
     episode_id = ep.get('episode_id') or str(uuid.uuid4())
 
-    # Create episode
+    # Create episode — use the RETURNED id (create_episode handles ON CONFLICT and
+    # returns the existing id when video_id already exists, so we must not ignore it)
     try:
-        db.create_episode(
+        episode_id = db.create_episode(
             video_id=video_id,
             video_url=ep.get('video_url', f'https://www.youtube.com/watch?v={video_id}'),
             title=ep.get('title', ''),
@@ -200,7 +219,7 @@ async def seed_extraction(extraction: Dict[str, Any] = Body(...)):
             id=episode_id,
         )
     except Exception:
-        # Episode exists — look up its ID
+        # Fallback: look up existing episode if create raised unexpectedly
         with db.get_connection() as conn:
             cursor = conn.cursor()
             cursor.execute("SELECT id FROM episodes WHERE video_id = ?", (video_id,))
@@ -209,6 +228,13 @@ async def seed_extraction(extraction: Dict[str, Any] = Body(...)):
                 episode_id = row['id']
             else:
                 raise HTTPException(status_code=500, detail="Could not create or find episode")
+
+    # Clear existing mentions for this episode before inserting fresh ones
+    # This ensures re-seeding is idempotent and removes any old duplicate records
+    with db.get_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM episode_mentions WHERE video_id = ?", (video_id,))
+        conn.commit()
 
     # Save mentions
     mentions_added = 0
@@ -299,6 +325,7 @@ async def seed_extraction(extraction: Dict[str, Any] = Body(...)):
                 'name_english': r.get('name_english'),
                 'verdict': verdict,
                 'mention_level': r.get('sub_tag') or r.get('mention_level'),
+                'status': r.get('status'),
                 'timestamp_seconds': timestamp.get('seconds'),
                 'timestamp_display': timestamp.get('display'),
                 'speaker': r.get('speaker'),

@@ -1,0 +1,679 @@
+{
+  "episode": {
+    "video_id": "wQn_iVnJMgE",
+    "video_url": "https://www.youtube.com/watch?v=wQn_iVnJMgE",
+    "title": "מורטדלה זורחת | מדברים מהבטן, פרק 154",
+    "channel_name": "מדברים מהבטן - הפודיום",
+    "published_at": "2026-05-06",
+    "hosts": [
+      "עמית אהרונסון",
+      "יהונתן כהן",
+      "נטע סלונים"
+    ],
+    "guests": [
+      "דור יעקב"
+    ],
+    "language": "he",
+    "transcript_length": 42927,
+    "segment_count": 1358,
+    "episode_id": null,
+    "summary": "פרק 154 של מדברים מהבטן פותח עם ברכות אישיות למגישים — הריון של נטע, שידור גמר מונדיאל של יונתן, ובית חדש לעמית. ביס השבוע של נטע הוא כריך צ'יקן מלט ב-Fe בפלורנטין; יונתן ממליץ על לה סטורי בירושלים; ועמית ונטע מציגים שתי המלצות חזקות — לופה (מסעדניה איטלקית בלבונטין) ומפגש בת גלים (מסעדה ים-תיכונית-יוונית בחיפה). הפרק כולל ראיון עם דור יעקב מהסמתה שחוזר למתולה, וחדשות תעשייה על בר צנגר שעובר למשיה, ג'רדינו שהופכת לכשרות, סגירה מנהלית של מסדת מון, וסגירת ברבוניה בקריית אונו."
+  },
+  "extraction": {
+    "date": "2026-05-07",
+    "agent": "episode-processor",
+    "total_mentions": 14,
+    "add_to_page": 5,
+    "reference_only": 9,
+    "rejected": 0,
+    "already_in_db": 1,
+    "new_to_add": 4
+  },
+  "restaurants": [
+    {
+      "verdict": "add_to_page",
+      "name_hebrew": "פם",
+      "name_english": "Fem",
+      "name_in_transcript": "feם",
+      "google_name": "Fem",
+      "timestamp": {
+        "seconds": 191,
+        "display": "03:11",
+        "youtube_url": "https://www.youtube.com/watch?v=wQn_iVnJMgE&t=191s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "פלורנטין",
+        "address": "שדרות וושינגטון 26, תל אביב",
+        "region": "תל אביב",
+        "latitude": null,
+        "longitude": null
+      },
+      "cuisine_type": "בר אוכל",
+      "price_range": "זול",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "כך נכתב בתפריט של feם של המקום א בר האוכל החצנוע של אביו כהן בשכונת פלורנטין",
+        "חמש מילים זה הכל אבל כל אחת מהמילים האלה היא הבטחה",
+        "הכל צלוי ביחד נמס פריך נפלא",
+        "ממש ממש חמוד טעים כיפי אבל הצ'יקן מלט",
+        "מקום חמוד מאוד ואחלה ביס השבוע"
+      ],
+      "host_comments": "ביס השבוע של נטע. בר אוכל קטן וחצנוע של השף אביב כהן בשדרות וושינגטון בפלורנטין. נטע תיארה בהתלהבות את כריך הצ'יקן מלט עם סחוג, צ'דר ולחם מחמצת — כל המילים בתפריט הן הבטחה שמתגשמת. המקום עובד עם ציוד מינימלי (טוסטר לחץ ותנור נינג'ה) ומוציא תפריט מרשים. ארוחת ערב על הבר עם בירה בפחות מ-100 שקלים.",
+      "dishes_mentioned": [
+        "כריך צ'יקן מלט סחוג צ'דר מחמצת",
+        "שקד עגל",
+        "כנפיים שום לימון",
+        "טפוצ'יפס"
+      ],
+      "special_features": [
+        "בר אוכל קטן",
+        "מיקסום משאבים",
+        "תפריט מתחלף",
+        "מחירים נגישים"
+      ],
+      "mention_context": "ביס השבוע של נטע — כריך צ'יקן מלט ב-Fe בפלורנטין",
+      "mention_level": "נטעם",
+      "speaker": "נטע סלונים",
+      "google_places": {
+        "place_id": null,
+        "google_url": null,
+        "rating": null,
+        "review_count": null,
+        "price_level": null,
+        "phone": null,
+        "website": null,
+        "photo_url": null,
+        "instagram_url": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      },
+      "image_url": "https://pic1.calcalist.co.il/picserver3/wcm_upload_dev/2026/04/26/rkcXtFspbg/asshkara_x_fe_299.jpg"
+    },
+    {
+      "verdict": "add_to_page",
+      "name_hebrew": "רוטשילד 48 ברסרי",
+      "name_english": "Rothschild 48 Brasserie",
+      "name_in_transcript": "רוד שילד 48 ברסרי",
+      "google_name": "R48",
+      "timestamp": {
+        "seconds": 372,
+        "display": "06:11",
+        "youtube_url": "https://www.youtube.com/watch?v=wQn_iVnJMgE&t=372s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "נווה צדק",
+        "address": "שדרות רוטשילד 48, תל אביב",
+        "region": "תל אביב",
+        "latitude": 32.0631,
+        "longitude": 34.7724
+      },
+      "cuisine_type": "ברסרי",
+      "price_range": "יקר",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "באמת היה לי ערב פנומנלי יוצא דופן מושלם מכל בחינה",
+        "איכות חומרי הגלם מורגשת באופן כל כך בולט",
+        "מוסר קונפי כזה עם המון ירוקים טריים",
+        "הטליוליני זוקיני שזו פסטה שהיא גם א כזה סוג של ספגטיני",
+        "המלצה מה זה חמה הרבה זמן לא נהניתי ככה"
+      ],
+      "host_comments": "ארוחה פנומנלית של נטע ומשפחתה ברוטשילד 48 ברסרי. תיארה ערב מושלם — שולחן עגול, שירות נהדר, ואיכות חומרי גלם שמורגשת בכל מנה. לחם נפלא עם קרסט וחמאה, מוסר קונפי, סלט עלים מיוחד, פסטה חמת לימון, ובמיוחד טליוליני זוקיני שהיה ביס השבוע מועמד. קינוח פרופיטרול שביצוע טוב הוא פגז.",
+      "dishes_mentioned": [
+        "לחם עם חמאה",
+        "מוסר קונפי",
+        "סלט עלים",
+        "פסטה חמת לימון",
+        "טליוליני זוקיני",
+        "פרופיטרול"
+      ],
+      "special_features": [
+        "שולחנות עגולים",
+        "מתאים למשפחות וקבוצות",
+        "ברסרי קלאסית"
+      ],
+      "mention_context": "ביס השבוע של נטע (שני) — ארוחת ערב מושלמת ברוטשילד 48 ברסרי",
+      "mention_level": "נטעם",
+      "speaker": "נטע סלונים",
+      "google_places": {
+        "place_id": null,
+        "google_url": null,
+        "rating": null,
+        "review_count": null,
+        "price_level": null,
+        "phone": "03-556-0011",
+        "website": "https://r48.co.il/",
+        "photo_url": null,
+        "instagram_url": "https://www.instagram.com/r48_telaviv/",
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      },
+      "image_url": "https://r48.co.il/wp-content/uploads/2023/10/Artboard-9.jpg"
+    },
+    {
+      "verdict": "add_to_page",
+      "name_hebrew": "מפגש בת גלים",
+      "name_english": "Mifgash Bat Galim",
+      "name_in_transcript": "מפגש בת גלים",
+      "google_name": "מפגש בת גלים",
+      "timestamp": {
+        "seconds": 2197,
+        "display": "36:37",
+        "youtube_url": "https://www.youtube.com/watch?v=wQn_iVnJMgE&t=2197s"
+      },
+      "location": {
+        "city": "חיפה",
+        "neighborhood": "בת גלים",
+        "address": "שדרות בת גלים 11, חיפה",
+        "region": "צפון",
+        "latitude": 32.8244,
+        "longitude": 34.9598
+      },
+      "cuisine_type": "ים תיכוני",
+      "price_range": "בינוני",
+      "status": "חדש",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "מסתמנת המועמדת חזקה מאוד למסעדת השנה",
+        "המסעדה הישראלית הכי יוונית שזכורה לי מזה הרבה זמן",
+        "ערך השפיות ערך הנורמליות אולי זה ערך החופש",
+        "בלינצ'ס שערות של שפונדרה מפורקת בתוכו...פשוט מעיף את הראש",
+        "המנה הכיקרה בתפריט א 82 והיא אחת חריגה היתר זה 60 וקצת ומטה",
+        "אתה לא רוצה לקום"
+      ],
+      "host_comments": "המלצת הפרק העיקרית. יונתן ועמית פקדו את מפגש בת גלים בשכונת בת גלים בחיפה — מועמדת חזקה למסעדת השנה לדעת יונתן. המסעדה משלבת אלמנטים יווניים, ים-תיכוניים, ערביים ורוסיים, והיא 'חיפאית' במהותה. בלטו מנת הבלינצ'ס (קרפ עם שפונדרה מפורקת בציר בקר עמוק, קרם פרש וסחוג חזרת), חורטה ממנגולד וטרד, פטע טופה בפיטה דרוזית, ואורזו עם שועית ענקית. המחירים שפויים במיוחד — יין בית ב-60 שקלים לקנקן, והמנה הכי יקרה 82 שקלים. חיסרון: אי אפשר להזמין מקום.",
+      "dishes_mentioned": [
+        "בלינצ'ס שפונדרה בציר בקר",
+        "חורטה ממנגולד וטרד",
+        "פטע בפיטה דרוזית",
+        "אורזו עם שועית ענקית (ג'יגנטס)",
+        "קובניה",
+        "פאבה וסקורדליה",
+        "שנקניקיות מרגז"
+      ],
+      "special_features": [
+        "מועמדת למסעדת השנה",
+        "מחירים שפויים",
+        "אין הזמנות",
+        "השראה יוונית-ישראלית",
+        "יין הבית 60 שקלים לקנקן"
+      ],
+      "mention_context": "המלצה עיקרית של יונתן ועמית — מועמדת למסעדת השנה",
+      "mention_level": "נטעם",
+      "speaker": "יהונתן כהן",
+      "google_places": {
+        "place_id": null,
+        "google_url": null,
+        "rating": null,
+        "review_count": null,
+        "price_level": null,
+        "phone": null,
+        "website": null,
+        "photo_url": null,
+        "instagram_url": "https://www.instagram.com/mifgash_bat_galim/",
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      },
+      "image_url": "https://ynet-pic1.yit.co.il/picserver6/wcm_upload/2026/04/30/BJbomCDg0Wg/TGM_elad_20260429__35_046038.jpg"
+    },
+    {
+      "verdict": "add_to_page",
+      "name_hebrew": "לופה",
+      "name_english": "Lupa",
+      "name_in_transcript": "לופה",
+      "google_name": "לופה",
+      "timestamp": {
+        "seconds": 2799,
+        "display": "46:38",
+        "youtube_url": "https://www.youtube.com/watch?v=wQn_iVnJMgE&t=2799s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "לבונטין",
+        "address": "לבונטין 13, תל אביב",
+        "region": "תל אביב",
+        "latitude": null,
+        "longitude": null
+      },
+      "cuisine_type": "איטלקי",
+      "price_range": "בינוני",
+      "status": "חדש",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "הקריך של הסטרצ'טל המורטדל פסטופיסטוקים קצת חריפות",
+        "זו הייתה אחת הדודו שלי בהריון מורטדלה זורחת",
+        "ביס מהמם זה היה ביס מדהים וואו כל הכבוד להם",
+        "הלזניה הייתה מעולה הקריך היה מעולה",
+        "שני ביסים כאילו אנחנו נזכור את הפרק הזה בזכות הבלינצס ובזכות הלזניה"
+      ],
+      "host_comments": "עמית ונטע פקדו את לופה — מסעדניה איטלקית חדשה ברחוב לבונטין, מול גן גלגל החשמל. מקום של צהריים בלבד של איתן (מהחלוצים 3) ודייה רז (מהנוי בדיזנגוף). שני מועמדים לביס השבוע: קריך מורטדלה-סטרצ'טלה שגרם לנטע כמעט לבכות מרוב טעים ('מורטדלה זורחת' — שם הפרק), ולזניה בולונז' עם עדפים ירוקים שנטע תיארה כ'רפי כהנית'. גם מלנזנה מעודנת, ספגטי מיטבולס לשולחנות סמוכים. מנה ב-88 שקלים ענקית ומצדיקה.",
+      "dishes_mentioned": [
+        "קריך מורטדלה סטרצ'טלה פסטו פיסטוקים",
+        "לזניה בולונז'",
+        "מלנזנה",
+        "ספגטי מיטבולס",
+        "אפוקצ'ה"
+      ],
+      "special_features": [
+        "מסעדניה איטלקית",
+        "צהריים בלבד",
+        "שני מועמדים לביס השבוע באותו פרק"
+      ],
+      "mention_context": "המלצה עיקרית של עמית ונטע — מקור שם הפרק 'מורטדלה זורחת'",
+      "mention_level": "נטעם",
+      "speaker": "עמית אהרונסון",
+      "google_places": {
+        "place_id": null,
+        "google_url": null,
+        "rating": null,
+        "review_count": null,
+        "price_level": null,
+        "phone": null,
+        "website": null,
+        "photo_url": null,
+        "instagram_url": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      },
+      "image_url": "https://img.mako.co.il/2026/04/20/LUPA4565467_autoOrient_w.jpg"
+    },
+    {
+      "verdict": "add_to_page",
+      "name_hebrew": "לה סטורי",
+      "name_english": "La Story",
+      "name_in_transcript": "לסטורי",
+      "google_name": "La Story",
+      "timestamp": {
+        "seconds": 681,
+        "display": "11:21",
+        "youtube_url": "https://www.youtube.com/watch?v=wQn_iVnJMgE&t=681s"
+      },
+      "location": {
+        "city": "ירושלים",
+        "neighborhood": "מלחה",
+        "address": "האייל 16, ירושלים",
+        "region": "ירושלים",
+        "latitude": null,
+        "longitude": null
+      },
+      "cuisine_type": "בית קפה",
+      "price_range": "בינוני",
+      "status": "פתוח",
+      "host_opinion": "חיובית",
+      "host_quotes": [
+        "ביס השבוע שלי פחות מעניין הוא יותר נקרא לזה פונקציונלי כטיפ לאנשים",
+        "הייתה אפוקצ'ה טרפי כהן כזאת רפאל מעולה",
+        "שום דבר שמפוצץ את המוח, שום דבר שלא אכלתם כמותו",
+        "קלאסי עובד פשוט",
+        "פתרון טוב לאנשים שרוצים לאכול קליל לפני משחק"
+      ],
+      "host_comments": "ביס השבוע של יונתן. בית קפה חלבי קלאסי של משפחת שמואלי (אביבה שמואלי, עופיר שמואלי) ברחוב הכפיר ליד טדי/ארנה בירושלים. פועל כבר למעלה מעשור. יונתן הגדיר את ההמלצה כ'פונקציונלית' — טיפ לפני משחק. פוקצ'ה בסגנון רפאל, מזטים טובים, נטייה איטלקית עם סלטים. שם נוראי אבל אוכל פשוט שעובד.",
+      "dishes_mentioned": [
+        "אפוקצ'ה בסגנון רפאל",
+        "מזטים",
+        "סלטים",
+        "לחם"
+      ],
+      "special_features": [
+        "בית קפה חלבי",
+        "ליד טדי/ארנה",
+        "משפחת שמואלי",
+        "פועל למעלה מעשור"
+      ],
+      "mention_context": "ביס השבוע של יונתן — פתרון אוכל ליד טדי/ארנה ירושלים",
+      "mention_level": "נטעם",
+      "speaker": "יהונתן כהן",
+      "google_places": {
+        "place_id": null,
+        "google_url": null,
+        "rating": null,
+        "review_count": null,
+        "price_level": null,
+        "phone": null,
+        "website": "https://la-story.co.il/",
+        "photo_url": null,
+        "instagram_url": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      },
+      "image_url": "https://la-story.co.il/wp-content/uploads/elementor/thumbs/DSC6379-oicgg6w2lnhgo2rwkhuqh4pzhow2xedowbesw272ug.jpg"
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "דיוון",
+      "name_english": "Diwan",
+      "name_in_transcript": "דיוון",
+      "skip_reason": "מסעדה חדשה שרק נפתחה בפרדס חנה — הוזכרה כחדשות פתיחה בלבד, המגישים לא אכלו שם",
+      "timestamp": {
+        "seconds": 1472,
+        "display": "24:32",
+        "youtube_url": "https://www.youtube.com/watch?v=wQn_iVnJMgE&t=1472s"
+      },
+      "location": {
+        "city": "פרדס חנה",
+        "neighborhood": null,
+        "address": null,
+        "region": "שרון"
+      },
+      "cuisine_type": "תימני",
+      "host_quotes": [
+        "רועי דורי שאולי מוכר לאנשים כמי שהיה שף בפרא",
+        "א מתמקם בפרדסחנה ופותח את דיוון",
+        "אני חושב שזה פעם ראשונה שהוא אולי יכול להביא את עצמו בצורה מזוקקת"
+      ],
+      "host_comments": "מסעדה חדשה של השף רועי דורי (לשעבר שף בפרא, מלון ברמת הגולן) בפרדס חנה. מטבח תימני. הרק נפתחה, המגישים לא ביקרו עדיין אבל מביעים התרגשות.",
+      "mention_context": "חדשות פתיחה — שף רועי דורי פותח מסעדה תימנית בפרדס חנה",
+      "speaker": "hosts",
+      "google_places": {
+        "place_id": null,
+        "rating": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      },
+      "status": "חדש"
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "משיה",
+      "name_english": "Mashya",
+      "name_in_transcript": "משיה",
+      "skip_reason": "חדשות תעשייה — בר צנגר מצטרף כשף רביעי בשנתיים. אין ביקורת אוכל, רק דיון על כיסאות מוזיקליים של שפים",
+      "timestamp": {
+        "seconds": 1106,
+        "display": "18:26",
+        "youtube_url": "https://www.youtube.com/watch?v=wQn_iVnJMgE&t=1106s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": null,
+        "address": null,
+        "region": "תל אביב"
+      },
+      "host_quotes": [
+        "הוא במשיה אוקיי במשיה",
+        "משיה לא הביאו לו מזמן את אביב אטינגר",
+        "אין שום קשר בין מאשיה הזאת לבין מאשיה המקורית"
+      ],
+      "host_comments": "חדשות תעשייה — בר צנגר (שעזב את ג'רדינו) מצטרף למשיה כשף רביעי בתוך כשנתיים. לפניו היו גי אריש, גילדהן, ואביב אטינגר. המגישים מביעים ספקנות לגבי העתיד.",
+      "mention_context": "חדשות כיסאות מוזיקליים — בר צנגר עובר למשיה",
+      "speaker": "hosts",
+      "google_places": {
+        "place_id": null,
+        "rating": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": true,
+        "id": "f36d65db-9656-4ab0-a610-8549d2d0feff"
+      },
+      "status": "פתוח"
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "ג'רדינו",
+      "name_english": "Jardino",
+      "name_in_transcript": "ג'רדינו",
+      "skip_reason": "חדשות תעשייה — עוברת לכשרות, בר צנגר עזב. אין ביקורת אוכל",
+      "timestamp": {
+        "seconds": 1103,
+        "display": "18:23",
+        "youtube_url": "https://www.youtube.com/watch?v=wQn_iVnJMgE&t=1103s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": null,
+        "address": null,
+        "region": "תל אביב"
+      },
+      "host_quotes": [
+        "בר צנגר השף שרק שבוע שעבר הזכרנו כאן בגלל המעבר של ג'רדינו לכשרות",
+        "עכשיו זה מסעדה של מלון כשר"
+      ],
+      "host_comments": "חדשות תעשייה — ג'רדינו עוברת לכשרות, בר צנגר עזב. המגישים מפקפקים אם המסעדה תמצא את עצמה.",
+      "mention_context": "חדשות תעשייה — מעבר לכשרות ועזיבת שף",
+      "speaker": "hosts",
+      "google_places": {
+        "place_id": null,
+        "rating": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      },
+      "status": "פתוח"
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "מסדת מון",
+      "name_english": "Masadat Mon",
+      "name_in_transcript": "מסדת מון",
+      "skip_reason": "חדשות תעשייה — סגירה מנהלית 30 יום על העסקת שוהים בלתי חוקיים. אין ביקורת אוכל",
+      "timestamp": {
+        "seconds": 1226,
+        "display": "20:26",
+        "youtube_url": "https://www.youtube.com/watch?v=wQn_iVnJMgE&t=1226s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": null,
+        "address": null,
+        "region": "תל אביב"
+      },
+      "host_quotes": [
+        "מסדת מון בתל אביב הסושי האחרונה לחתוך",
+        "30 יום סגירה מנהלית על העסקת שועים בלתי חוקיים"
+      ],
+      "host_comments": "חדשות תעשייה — סגירה מנהלית 30 יום בגלל העסקת שוהים בלתי חוקיים, חלק מגל אכיפה של משטרת ישראל.",
+      "mention_context": "חדשות סגירה מנהלית",
+      "speaker": "hosts",
+      "google_places": {
+        "place_id": null,
+        "rating": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      },
+      "status": "נסגר"
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "ברבוניה",
+      "name_english": "Barbounia",
+      "name_in_transcript": "ברבוניה",
+      "skip_reason": "חדשות סגירה — נסגרה לאחר כשנה בקריית אונו. אין ביקורת אוכל",
+      "timestamp": {
+        "seconds": 1345,
+        "display": "22:25",
+        "youtube_url": "https://www.youtube.com/watch?v=wQn_iVnJMgE&t=1345s"
+      },
+      "location": {
+        "city": "קריית אונו",
+        "neighborhood": null,
+        "address": null,
+        "region": "מרכז"
+      },
+      "host_quotes": [
+        "ברבוניה בקריית טונו",
+        "ניסו להביא מעבר למינימליזם הכובש"
+      ],
+      "host_comments": "חדשות סגירה — מסעדה שפתחו ילדי/נכדי מזולה בקריית אונו במתחם הסדרה האקדמית. נסגרה לאחר כשנה. שיפודי התקווה אמורים לתפוס את החלל.",
+      "mention_context": "חדשות סגירה",
+      "speaker": "hosts",
+      "google_places": {
+        "place_id": null,
+        "rating": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      },
+      "status": "נסגר"
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "הסמתה",
+      "name_english": "HaSmata",
+      "name_in_transcript": "הסמתה",
+      "skip_reason": "ראיון עם דור יעקב על חזרה למתולה — הודעת פתיחה מחדש של בעל העסק, לא ביקורת אוכל",
+      "timestamp": {
+        "seconds": 1734,
+        "display": "28:54",
+        "youtube_url": "https://www.youtube.com/watch?v=wQn_iVnJMgE&t=1734s"
+      },
+      "location": {
+        "city": "מתולה",
+        "neighborhood": null,
+        "address": null,
+        "region": "צפון"
+      },
+      "host_quotes": [
+        "השמטה חוזרת למטולה",
+        "שבוע הבא סופה שבה לפתוח מחדש",
+        "המבורגרים צ'יפס קריספי צ'יקן"
+      ],
+      "host_comments": "ראיון עם דור יעקב. הסמתה חוזרת למתולה לאחר שנסגרה בעקבות המלחמה. דור מספר על הקשיים — נשאר בלי הבסיס במתולה ובלי הבית במנרה, פתח בתל אביב ביהודה לוי, השותפות עם פנדה לא הסתדרה. חוזר לאותו מיקום במתולה. התפריט יישאר המבורגרים, צ'יפס, קריספי צ'יקן.",
+      "mention_context": "ראיון עם בעל העסק על חזרה למתולה",
+      "speaker": "דור יעקב",
+      "google_places": {
+        "place_id": null,
+        "rating": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      },
+      "status": "חדש"
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "קוצ'ינה",
+      "name_english": "Cucina",
+      "name_in_transcript": "קוצ'ינה",
+      "skip_reason": "הוזכרה כהשוואה — 'האיטלקית הכי טובה בישראל' לדעת שגי כהן. המגישים לא אכלו שם בפרק הזה",
+      "timestamp": {
+        "seconds": 3178,
+        "display": "52:57",
+        "youtube_url": "https://www.youtube.com/watch?v=wQn_iVnJMgE&t=3178s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": null,
+        "address": null,
+        "region": "תל אביב"
+      },
+      "host_quotes": [
+        "קוצ'ינה ה ארב או קוצינה ה",
+        "פעמיים הייתי שם בפריסה די ארוכה של זמן ובעיניי זה באמת הטופ של הטופ",
+        "שלושה ימים בשבוע"
+      ],
+      "host_comments": "הוזכרה על ידי עמית כמקום שחובה להיות בו — 'הטופ של הטופ' של האיטלקי בישראל. של תמר כהן צדק, פתוחה כמה ימים בשבוע בלבד. שגי כהן אכל שם ארבע מנות פסטה.",
+      "mention_context": "הוזכרה כ'טופ של הטופ' בהקשר של לופה ואוכל איטלקי",
+      "speaker": "עמית אהרונסון",
+      "google_places": {
+        "place_id": null,
+        "rating": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      },
+      "status": "פתוח"
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "עידו בשרים",
+      "name_english": "Ido Besarim",
+      "name_in_transcript": "עידו בשרים",
+      "skip_reason": "הוזכר כגילוי של קובי רובין — פיטה קבב ב-45 שקלים. המגישים לא אכלו שם",
+      "timestamp": {
+        "seconds": 3311,
+        "display": "55:11",
+        "youtube_url": "https://www.youtube.com/watch?v=wQn_iVnJMgE&t=3311s"
+      },
+      "location": {
+        "city": null,
+        "neighborhood": null,
+        "address": null,
+        "region": null
+      },
+      "host_quotes": [
+        "קובי רובין ממש עכשיו טרי טרי מהדפוס א נסע בננה",
+        "פיטה קבב עם צ'יפס בצד וזה ב-45 שק"
+      ],
+      "host_comments": "הוזכר כגילוי של קובי רובין — מקום פיטה קבב ב-45 שקלים. המגישים הזכירו אך לא ביקרו.",
+      "mention_context": "גילוי של קובי רובין שמוזכר בקצרה",
+      "speaker": "hosts",
+      "google_places": {
+        "place_id": null,
+        "rating": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      },
+      "status": "פתוח"
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "קופיל 51",
+      "name_english": "Kupil 51",
+      "name_in_transcript": "קופיל 51",
+      "skip_reason": "הוזכר כמקום שעומד להיפתח ליד לופה — אין ביקורת ואין חוויה אישית",
+      "timestamp": {
+        "seconds": 3142,
+        "display": "52:21",
+        "youtube_url": "https://www.youtube.com/watch?v=wQn_iVnJMgE&t=3142s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "לבונטין",
+        "address": null,
+        "region": "תל אביב"
+      },
+      "host_quotes": [
+        "הולך להיפתח עכשיו קופיל 51 צמוד"
+      ],
+      "host_comments": "הוזכר כמקום שעומד להיפתח ברחוב לבונטין, ליד לופה.",
+      "mention_context": "חדשות פתיחה — ליד לופה בלבונטין",
+      "speaker": "hosts",
+      "google_places": {
+        "place_id": null,
+        "rating": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      },
+      "status": "חדש"
+    }
+  ]
+}
