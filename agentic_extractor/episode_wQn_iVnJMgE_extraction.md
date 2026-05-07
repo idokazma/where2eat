@@ -24,8 +24,8 @@
 ### 1. Fe (03:11)
 | Field | Value |
 |-------|-------|
-| Hebrew Name | Fe |
-| English Name | Fe |
+| Hebrew Name | פם |
+| English Name | Fem |
 | Name in Transcript | feם |
 | Timestamp | 03:11 ([YouTube](https://www.youtube.com/watch?v=wQn_iVnJMgE&t=191s)) |
 | City | תל אביב |
@@ -36,8 +36,14 @@
 | Host Opinion | חיובית מאוד |
 | Mention Level | נטעם |
 | Speaker | נטע סלונים |
-| Google Place ID | Not verified (no API key) |
-| In Production DB | No |
+| Google Name | Fē |
+| Google Place ID | ChIJPxILHABNHRURYfNkATI3OCw |
+| Google URL | https://maps.google.com/?cid=3186357424275911521 |
+| Google Rating | 4.5 (10 reviews) |
+| Coordinates | 32.0553234, 34.7693924 |
+| Website / Instagram | https://www.instagram.com/fe.tlv |
+| Photo Source | Calcalist review CDN (Google Places returned 0 photos) |
+| In Production DB | Yes (ed786441-e725-481b-b6e9-8d42db24b570) |
 
 **Host Quotes:**
 > "כך נכתב בתפריט של feם של המקום א בר האוכל החצנוע של אביו כהן בשכונת פלורנטין"
@@ -63,12 +69,17 @@
 | Cuisine | ברסרי |
 | Price Range | יקר |
 | Phone | 03-556-0011 |
-| Website | https://r48.co.il/ |
+| Website | https://r48.co.il/brasserie/ |
 | Host Opinion | חיובית מאוד |
 | Mention Level | נטעם |
 | Speaker | נטע סלונים |
-| Google Place ID | Not verified (no API key) |
-| In Production DB | No |
+| Google Name | רוטשילד 48 בראסרי |
+| Google Place ID | ChIJ9Z_EX1VLHRURzOL152hIpOs |
+| Google URL | https://maps.google.com/?cid=16979776110499062476 |
+| Google Rating | 4.3 (380 reviews) |
+| Coordinates | 32.0639141, 34.774975 |
+| Photo Source | Google Places (lh3) |
+| In Production DB | Yes (ad2c6588-7d47-451b-b864-5b734020700f) |
 
 **Host Quotes:**
 > "באמת היה לי ערב פנומנלי יוצא דופן מושלם מכל בחינה"
@@ -92,12 +103,18 @@
 | Address | האייל 16, ירושלים |
 | Cuisine | בית קפה |
 | Price Range | בינוני |
+| Phone | 02-941-4616 |
 | Website | https://la-story.co.il/ |
 | Host Opinion | חיובית |
 | Mention Level | נטעם |
 | Speaker | יהונתן כהן |
-| Google Place ID | Not verified (no API key) |
-| In Production DB | No |
+| Google Name | La story |
+| Google Place ID | ChIJ-_9GNo7XAhURfegCk9N8gN8 |
+| Google URL | https://maps.google.com/?cid=16105009515623278717 |
+| Google Rating | 4.0 (1116 reviews) |
+| Coordinates | 31.753718, 35.1850922 |
+| Photo Source | Google Places (lh3) |
+| In Production DB | Yes (684fc88b-fc87-4976-8243-205fdff36eb0) |
 
 **Host Quotes:**
 > "ביס השבוע שלי פחות מעניין הוא יותר נקרא לזה פונקציונלי כטיפ לאנשים"
@@ -124,8 +141,13 @@
 | Host Opinion | חיובית מאוד |
 | Mention Level | נטעם |
 | Speaker | יהונתן כהן, עמית אהרונסון |
-| Google Place ID | Not verified (no API key) |
-| In Production DB | No |
+| Google Name | מפגש בת גלים / Mifgash Bat Galim |
+| Google Place ID | ChIJ7Q73cq27HRURYFRz2L3edaY |
+| Google URL | https://maps.google.com/?cid=11994738089532806240 |
+| Google Rating | 4.5 (26 reviews) |
+| Coordinates | 32.8327155, 34.9778181 |
+| Photo Source | Google Places (lh3) |
+| In Production DB | Yes (b220230b-d3ee-42be-aa7d-3a4b7541f93b — duplicate of 5df46f33-… "מפגש בבת גלים") |
 
 **Host Quotes:**
 > "מסתמנת המועמדת חזקה מאוד למסעדת השנה"
@@ -149,11 +171,18 @@
 | Address | לבונטין 13, תל אביב |
 | Cuisine | איטלקי |
 | Price Range | בינוני |
+| Phone | 03-633-6631 |
 | Host Opinion | חיובית מאוד |
 | Mention Level | נטעם |
 | Speaker | עמית אהרונסון, נטע סלונים |
-| Google Place ID | Not verified (no API key) |
-| In Production DB | No |
+| Google Name | Lupa - לופה |
+| Google Place ID | ChIJD8ag0TdLHRURgUVKhkwv5yM |
+| Google URL | https://maps.google.com/?cid=2587088516664673665 |
+| Google Rating | 4.8 (24 reviews) |
+| Coordinates | 32.0620635, 34.7753524 |
+| Website / Instagram | https://www.instagram.com/lupa_tlv |
+| Photo Source | Google Places (lh3) |
+| In Production DB | Yes (dccff60f-8593-4db2-b714-76bbf608b431) |
 
 **Host Quotes:**
 > "הקריך של הסטרצ'טל המורטדל פסטופיסטוקים קצת חריפות"
@@ -300,12 +329,15 @@ No rejected mentions in this episode.
 | ADD TO PAGE | 5 |
 | REFERENCE ONLY | 9 |
 | REJECTED | 0 |
-| Already in DB | 1 (משיה) |
-| New to add | 4 |
+| Already in DB | 6 (משיה + all 5 add_to_page entries already uploaded for ep 154) |
+| New to add | 0 |
+| Production episode_id | bdcd0141-20d8-48f3-96b3-abe165be112e |
 
 ## Notes
 
-- **No Google Places API key available** — all Google Places data (place_id, rating, photo_url, coordinates) is missing. These need to be filled in with a subsequent verification pass when the API key is available.
+- **Google Places enrichment completed (fix-mode pass)** — all 5 add_to_page restaurants now have verified `place_id`, cid `google_url`, rating, review count, coordinates, and photo. Photos: 4/5 from Google Places (`lh3.googleusercontent.com`); Fe falls back to Calcalist review CDN because Google Places returned 0 photos for it (per project's photo-recovery memory).
+- **Episode already partially uploaded** — discovered during cross-check: all 5 add_to_page restaurants and the משיה reference already exist in production with `episode_id=bdcd0141-20d8-48f3-96b3-abe165be112e`. They were created without enrichment data (`google_place_id=NULL`, no rating, no photo). Production rows need a follow-up update pass to receive the enrichment.
+- **Mifgash Bat Galim duplicate detected** — production has two rows: `b220230b` ("מפגש בת גלים", from this episode, no place_id) and `5df46f33` ("מפגש בבת גלים", from earlier episode `qKCaJb-ZsNc`, has place_id `ChIJ7Q73cq27HRURYFRz2L3edaY`). Both refer to the same restaurant — recommend dedupe after enrichment.
 - **Bite of the week contenders:** This episode had an unusual number of "bite of the week" candidates — Fe (Neta), Rothschild 48 tagliolini (Neta), La Story (Yonatan), Mifgash Bat Galim blinchikes (Yonatan/Amit), and Lupa mortadella + lasagna (Amit/Neta).
 - **Episode title origin:** "מורטדלה זורחת" (Glowing Mortadella) comes from Neta's emotional reaction to the mortadella-stracciatella sandwich at Lupa, which she described as pregnancy-glow-inducing.
 - **Key themes:** Affordability and normalcy — most recommended restaurants were praised for reasonable prices and unpretentious atmospheres.

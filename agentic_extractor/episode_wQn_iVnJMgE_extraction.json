@@ -16,7 +16,7 @@
     "language": "he",
     "transcript_length": 42927,
     "segment_count": 1358,
-    "episode_id": null,
+    "episode_id": "bdcd0141-20d8-48f3-96b3-abe165be112e",
     "summary": "פרק 154 של מדברים מהבטן פותח עם ברכות אישיות למגישים — הריון של נטע, שידור גמר מונדיאל של יונתן, ובית חדש לעמית. ביס השבוע של נטע הוא כריך צ'יקן מלט ב-Fe בפלורנטין; יונתן ממליץ על לה סטורי בירושלים; ועמית ונטע מציגים שתי המלצות חזקות — לופה (מסעדניה איטלקית בלבונטין) ומפגש בת גלים (מסעדה ים-תיכונית-יוונית בחיפה). הפרק כולל ראיון עם דור יעקב מהסמתה שחוזר למתולה, וחדשות תעשייה על בר צנגר שעובר למשיה, ג'רדינו שהופכת לכשרות, סגירה מנהלית של מסדת מון, וסגירת ברבוניה בקריית אונו."
   },
   "extraction": {
@@ -26,8 +26,8 @@
     "add_to_page": 5,
     "reference_only": 9,
     "rejected": 0,
-    "already_in_db": 1,
-    "new_to_add": 4
+    "already_in_db": 6,
+    "new_to_add": 0
   },
   "restaurants": [
     {
@@ -46,8 +46,8 @@
         "neighborhood": "פלורנטין",
         "address": "שדרות וושינגטון 26, תל אביב",
         "region": "תל אביב",
-        "latitude": null,
-        "longitude": null
+        "latitude": 32.0553234,
+        "longitude": 34.7693924
       },
       "cuisine_type": "בר אוכל",
       "price_range": "זול",
@@ -77,20 +77,21 @@
       "mention_level": "נטעם",
       "speaker": "נטע סלונים",
       "google_places": {
-        "place_id": null,
-        "google_url": null,
-        "rating": null,
-        "review_count": null,
+        "place_id": "ChIJPxILHABNHRURYfNkATI3OCw",
+        "google_url": "https://maps.google.com/?cid=3186357424275911521",
+        "rating": 4.5,
+        "review_count": 10,
         "price_level": null,
         "phone": null,
-        "website": null,
-        "photo_url": null,
-        "instagram_url": null,
-        "verified": false
+        "website": "https://www.instagram.com/fe.tlv",
+        "photo_url": "https://pic1.calcalist.co.il/picserver3/wcm_upload_dev/2026/04/26/rkcXtFspbg/asshkara_x_fe_299.jpg",
+        "instagram_url": "https://www.instagram.com/fe.tlv",
+        "verified": true,
+        "note": "Google Places returned 0 photos for Fē; using permanent Calcalist review-photo CDN as fallback per project photo-recovery memory."
       },
       "production_db": {
-        "exists": false,
-        "id": null
+        "exists": true,
+        "id": "ed786441-e725-481b-b6e9-8d42db24b570"
       },
       "image_url": "https://pic1.calcalist.co.il/picserver3/wcm_upload_dev/2026/04/26/rkcXtFspbg/asshkara_x_fe_299.jpg"
     },
@@ -110,8 +111,8 @@
         "neighborhood": "נווה צדק",
         "address": "שדרות רוטשילד 48, תל אביב",
         "region": "תל אביב",
-        "latitude": 32.0631,
-        "longitude": 34.7724
+        "latitude": 32.0639141,
+        "longitude": 34.774975
       },
       "cuisine_type": "ברסרי",
       "price_range": "יקר",
@@ -142,22 +143,22 @@
       "mention_level": "נטעם",
       "speaker": "נטע סלונים",
       "google_places": {
-        "place_id": null,
-        "google_url": null,
-        "rating": null,
-        "review_count": null,
+        "place_id": "ChIJ9Z_EX1VLHRURzOL152hIpOs",
+        "google_url": "https://maps.google.com/?cid=16979776110499062476",
+        "rating": 4.3,
+        "review_count": 380,
         "price_level": null,
         "phone": "03-556-0011",
-        "website": "https://r48.co.il/",
-        "photo_url": null,
+        "website": "https://r48.co.il/brasserie/",
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqFKACOUiPcrqrNNhMhQcaKsnvYKFF1dBtKBxPhUpDnDmuRDzwvThKC_3rRp7vYU74rYnilrI73puRbv5MMc3-Fu81RhZP4sSHM=s4800-w800",
         "instagram_url": "https://www.instagram.com/r48_telaviv/",
-        "verified": false
+        "verified": true
       },
       "production_db": {
-        "exists": false,
-        "id": null
+        "exists": true,
+        "id": "ad2c6588-7d47-451b-b864-5b734020700f"
       },
-      "image_url": "https://r48.co.il/wp-content/uploads/2023/10/Artboard-9.jpg"
+      "image_url": "https://lh3.googleusercontent.com/places/ANXAkqFKACOUiPcrqrNNhMhQcaKsnvYKFF1dBtKBxPhUpDnDmuRDzwvThKC_3rRp7vYU74rYnilrI73puRbv5MMc3-Fu81RhZP4sSHM=s4800-w800"
     },
     {
       "verdict": "add_to_page",
@@ -175,8 +176,8 @@
         "neighborhood": "בת גלים",
         "address": "שדרות בת גלים 11, חיפה",
         "region": "צפון",
-        "latitude": 32.8244,
-        "longitude": 34.9598
+        "latitude": 32.8327155,
+        "longitude": 34.9778181
       },
       "cuisine_type": "ים תיכוני",
       "price_range": "בינוני",
@@ -211,22 +212,24 @@
       "mention_level": "נטעם",
       "speaker": "יהונתן כהן",
       "google_places": {
-        "place_id": null,
-        "google_url": null,
-        "rating": null,
-        "review_count": null,
+        "place_id": "ChIJ7Q73cq27HRURYFRz2L3edaY",
+        "google_url": "https://maps.google.com/?cid=11994738089532806240",
+        "rating": 4.5,
+        "review_count": 26,
         "price_level": null,
         "phone": null,
-        "website": null,
-        "photo_url": null,
+        "website": "https://www.instagram.com/mifgash_bat_galim",
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqGgyx6lkKChLNYRJ3SsE24ADagne_qs2yECPiRoo9Hev3Jv59Pui3ggF8Xw_e8sJP6TdrWarXcwITTYWZGkOyTFcfxl4-taJUQ=s4800-w800",
         "instagram_url": "https://www.instagram.com/mifgash_bat_galim/",
-        "verified": false
+        "verified": true
       },
       "production_db": {
-        "exists": false,
-        "id": null
+        "exists": true,
+        "id": "b220230b-d3ee-42be-aa7d-3a4b7541f93b",
+        "duplicate_of": "5df46f33-b438-4656-bddc-c9a5a12dac00",
+        "note": "Production has two records for this restaurant — b220230b (this episode's upload, no place_id) and 5df46f33 (older entry with place_id from episode qKCaJb-ZsNc, name 'מפגש בבת גלים'). Recommend deduping post-fix."
       },
-      "image_url": "https://ynet-pic1.yit.co.il/picserver6/wcm_upload/2026/04/30/BJbomCDg0Wg/TGM_elad_20260429__35_046038.jpg"
+      "image_url": "https://lh3.googleusercontent.com/places/ANXAkqGgyx6lkKChLNYRJ3SsE24ADagne_qs2yECPiRoo9Hev3Jv59Pui3ggF8Xw_e8sJP6TdrWarXcwITTYWZGkOyTFcfxl4-taJUQ=s4800-w800"
     },
     {
       "verdict": "add_to_page",
@@ -244,8 +247,8 @@
         "neighborhood": "לבונטין",
         "address": "לבונטין 13, תל אביב",
         "region": "תל אביב",
-        "latitude": null,
-        "longitude": null
+        "latitude": 32.0620635,
+        "longitude": 34.7753524
       },
       "cuisine_type": "איטלקי",
       "price_range": "בינוני",
@@ -275,22 +278,22 @@
       "mention_level": "נטעם",
       "speaker": "עמית אהרונסון",
       "google_places": {
-        "place_id": null,
-        "google_url": null,
-        "rating": null,
-        "review_count": null,
+        "place_id": "ChIJD8ag0TdLHRURgUVKhkwv5yM",
+        "google_url": "https://maps.google.com/?cid=2587088516664673665",
+        "rating": 4.8,
+        "review_count": 24,
         "price_level": null,
-        "phone": null,
-        "website": null,
-        "photo_url": null,
-        "instagram_url": null,
-        "verified": false
+        "phone": "03-633-6631",
+        "website": "https://www.instagram.com/lupa_tlv",
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqGsBHDDDkgJM3E9Rl2R1nftWNzTAo2cTQXVUn1eu0eB-o5RhuSyUz69WuMqAk88APxrZSXxb13d6gfhVAmqO4_pkM2B9MYm9gI=s4800-w800",
+        "instagram_url": "https://www.instagram.com/lupa_tlv",
+        "verified": true
       },
       "production_db": {
-        "exists": false,
-        "id": null
+        "exists": true,
+        "id": "dccff60f-8593-4db2-b714-76bbf608b431"
       },
-      "image_url": "https://img.mako.co.il/2026/04/20/LUPA4565467_autoOrient_w.jpg"
+      "image_url": "https://lh3.googleusercontent.com/places/ANXAkqGsBHDDDkgJM3E9Rl2R1nftWNzTAo2cTQXVUn1eu0eB-o5RhuSyUz69WuMqAk88APxrZSXxb13d6gfhVAmqO4_pkM2B9MYm9gI=s4800-w800"
     },
     {
       "verdict": "add_to_page",
@@ -308,8 +311,8 @@
         "neighborhood": "מלחה",
         "address": "האייל 16, ירושלים",
         "region": "ירושלים",
-        "latitude": null,
-        "longitude": null
+        "latitude": 31.753718,
+        "longitude": 35.1850922
       },
       "cuisine_type": "בית קפה",
       "price_range": "בינוני",
@@ -339,22 +342,22 @@
       "mention_level": "נטעם",
       "speaker": "יהונתן כהן",
       "google_places": {
-        "place_id": null,
-        "google_url": null,
-        "rating": null,
-        "review_count": null,
+        "place_id": "ChIJ-_9GNo7XAhURfegCk9N8gN8",
+        "google_url": "https://maps.google.com/?cid=16105009515623278717",
+        "rating": 4.0,
+        "review_count": 1116,
         "price_level": null,
-        "phone": null,
+        "phone": "02-941-4616",
         "website": "https://la-story.co.il/",
-        "photo_url": null,
+        "photo_url": "https://lh3.googleusercontent.com/place-photos/AJRVUZOzp6SViL4ss1c-v2dr8-hzFAKiWp84BQkh3tNtveXvpC2Svsr4bXLA_50FLICinrqH82IEj4aEFemgpiG7M95Ncnhxz3exKz4p5GhFfLhFD05y2w8SnuekPxRdqwmQGTCzE6wvhq-hYsH8tQ=s4800-w800",
         "instagram_url": null,
-        "verified": false
+        "verified": true
       },
       "production_db": {
-        "exists": false,
-        "id": null
+        "exists": true,
+        "id": "684fc88b-fc87-4976-8243-205fdff36eb0"
       },
-      "image_url": "https://la-story.co.il/wp-content/uploads/elementor/thumbs/DSC6379-oicgg6w2lnhgo2rwkhuqh4pzhow2xedowbesw272ug.jpg"
+      "image_url": "https://lh3.googleusercontent.com/place-photos/AJRVUZOzp6SViL4ss1c-v2dr8-hzFAKiWp84BQkh3tNtveXvpC2Svsr4bXLA_50FLICinrqH82IEj4aEFemgpiG7M95Ncnhxz3exKz4p5GhFfLhFD05y2w8SnuekPxRdqwmQGTCzE6wvhq-hYsH8tQ=s4800-w800"
     },
     {
       "verdict": "reference_only",
