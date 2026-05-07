@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Episode Preview: 1s36GW9o6AQ — פרק 126</title>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Heebo', sans-serif; background: #FAFAF8; padding: 1rem; max-width: 480px; margin: 0 auto; }
+
+    .header { text-align: center; padding: 1.5rem 0; border-bottom: 1px solid #eee; margin-bottom: 1rem; }
+    .header h1 { font-size: 1.15rem; color: #333; font-weight: 700; }
+    .header .meta { font-size: 0.85rem; color: #888; margin-top: 0.25rem; }
+    .header .stats { display: flex; gap: 0.6rem; justify-content: center; margin-top: 0.75rem; font-size: 0.78rem; flex-wrap: wrap; }
+    .header .stat { background: #f0f0f0; padding: 0.25rem 0.75rem; border-radius: 999px; }
+    .header .stat.add { background: #E8F5E9; color: #2E7D32; }
+    .header .stat.skip { background: #FFF3E0; color: #E65100; }
+    .header .stat.exists { background: #E3F2FD; color: #1565C0; }
+
+    .card { background: white; border-radius: 12px; overflow: hidden; margin-bottom: 1rem; box-shadow: 0 1px 3px rgba(0,0,0,0.08); transition: all 0.2s; }
+    .card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
+
+    .card-image { width: 100%; aspect-ratio: 16/10; object-fit: cover; display: block; }
+    .card-image-fallback { width: 100%; aspect-ratio: 16/10; background: linear-gradient(135deg, #E63B2E, #FF6B5A); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem; font-weight: 700; }
+
+    .card-body { padding: 1rem; }
+    .card-title { font-size: 1.4rem; font-weight: 900; color: #1a1a1a; margin-bottom: 0.25rem; }
+    .card-meta { display: flex; gap: 0.5rem; align-items: center; color: #888; font-size: 0.85rem; margin-bottom: 0.5rem; flex-wrap: wrap; }
+    .card-meta .dot { color: #ccc; }
+    .card-date { font-size: 0.8rem; color: #999; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.25rem; }
+    .badge-new { background: #E63B2E; color: white; font-size: 0.7rem; padding: 0.1rem 0.4rem; border-radius: 4px; font-weight: 700; }
+    .badge-mention { background: #FFB300; color: white; font-size: 0.7rem; padding: 0.1rem 0.4rem; border-radius: 4px; font-weight: 700; margin-right: 4px; }
+    .badge-tasted { background: #FF6600; color: white; font-size: 0.7rem; padding: 0.1rem 0.4rem; border-radius: 4px; font-weight: 700; margin-right: 4px; }
+
+    .card-quote { font-style: italic; background: #f5f5f5; padding: 0.75rem; border-radius: 8px; color: #555; font-size: 0.9rem; margin: 0.5rem 0; line-height: 1.6; }
+
+    .card-actions { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #f0f0f0; padding-top: 0.75rem; margin-top: 0.5rem; }
+    .rating { display: flex; align-items: center; gap: 0.25rem; font-weight: 700; color: #333; }
+    .rating .star { color: #FFB400; }
+    .timestamp-link { font-size: 0.8rem; color: #E63B2E; text-decoration: none; }
+    .timestamp-link:hover { text-decoration: underline; }
+
+    .verdict-badge { position: absolute; top: 0.5rem; left: 0.5rem; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.7rem; font-weight: 700; }
+    .verdict-add { background: #E8F5E9; color: #2E7D32; }
+    .verdict-exists { background: #E3F2FD; color: #1565C0; }
+    .card-image-wrapper { position: relative; }
+
+    .section-title { font-size: 1rem; color: #888; margin: 1.5rem 0 0.75rem; padding-bottom: 0.25rem; border-bottom: 1px solid #eee; }
+
+    .ref-card { background: white; border-radius: 8px; padding: 0.75rem; margin-bottom: 0.5rem; border-right: 3px solid #FFB300; }
+    .ref-card .name { font-weight: 700; font-size: 0.95rem; }
+    .ref-card .reason { font-size: 0.8rem; color: #888; margin-top: 0.25rem; }
+    .ref-card .timestamp { font-size: 0.75rem; color: #E63B2E; margin-top: 0.25rem; }
+
+    .note-box { background: #FFF8E1; border: 1px solid #FFE082; border-radius: 8px; padding: 0.75rem; margin-bottom: 1rem; font-size: 0.8rem; color: #795548; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>מתחת לשולחן החג | מדברים מהבטן, פרק 126</h1>
+    <div class="meta">מדברים מהבטן - הפודיום • 17 בספטמבר 2025</div>
+    <div class="stats">
+      <span class="stat add">✅ 4 חדשים</span>
+      <span class="stat exists">📋 1 קיים</span>
+      <span class="stat skip">⏭️ 2 reference</span>
+    </div>
+  </div>
+
+  <div class="note-box">
+    ⚠️ Transcript לא זמין — YouTube חסמה גישה (הגנת בוט). חילוץ בוצע על בסיס תיאור הפרק מ-RSS. טיימסטמפים לא זמינים.
+  </div>
+
+  <!-- ADD TO PAGE cards -->
+
+  <!-- 1. קיו (נטעם) -->
+  <div class="card">
+    <div class="card-image-wrapper">
+      <img class="card-image"
+        src="https://lh3.googleusercontent.com/places/ANXAkqFLo7dWNec54TgPouwzv6ZG8uCyQpanmvfFS6PET2vB9oogaxgoC8N-JZrcW3k8bzj1HcZyB156baqsD_B7S-sH-xygHHPp5eY=s4800-w800"
+        alt="קיו"
+        onerror="this.outerHTML='<div class=card-image-fallback>בר-מסעדה</div>'">
+      <span class="verdict-badge verdict-add">NEW</span>
+    </div>
+    <div class="card-body">
+      <div class="card-title">קיו</div>
+      <div class="card-meta">
+        <span>תל אביב, לבונטין</span><span class="dot">•</span>
+        <span>בר-מסעדה</span><span class="dot">•</span>
+        <span>יקר</span>
+      </div>
+      <div class="card-date">📅 17 בספטמבר 2025</div>
+      <div class="card-date">
+        <span class="badge-tasted">נטעם</span>
+        שף בן כהן · הרכבת 12
+      </div>
+      <div class="card-quote">"יהונתן ביצע בקרת איכות ב'קיו'"</div>
+      <div class="card-actions">
+        <div class="rating"><span class="star">★</span> 4.4 (201 ביקורות)</div>
+        <a class="timestamp-link" href="https://www.youtube.com/watch?v=1s36GW9o6AQ" target="_blank">▶ צפה בפרק</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. צ'וטה (כבר קיים) -->
+  <div class="card">
+    <div class="card-image-wrapper">
+      <img class="card-image"
+        src="https://lh3.googleusercontent.com/places/ANXAkqE2MD7J0vQxyD4vEJd3WOVs-4Is8Z2smSvju3j59dgjDlAOxHxUm46JMMGX8CPY25a3_-Msj9KfgVvuBiItTZtoZ3bhsT-exiA=s4800-w800"
+        alt="צ'וטה"
+        onerror="this.outerHTML='<div class=card-image-fallback>שף</div>'">
+      <span class="verdict-badge verdict-exists">קיים</span>
+    </div>
+    <div class="card-body">
+      <div class="card-title">צ'וטה</div>
+      <div class="card-meta">
+        <span>ירושלים</span><span class="dot">•</span>
+        <span>שף</span><span class="dot">•</span>
+        <span>יקר</span>
+      </div>
+      <div class="card-date">📅 17 בספטמבר 2025 <span class="badge-new">חדש</span></div>
+      <div class="card-date">
+        <span class="badge-mention">הוזכר</span>
+        אילן גרוסי · בן סירא 18
+      </div>
+      <div class="card-quote">"שיחה עם האגדה הירושלמית אילן גרוסי על 'צ'וטה' החדשה שלו"</div>
+      <div class="card-actions">
+        <div class="rating"><span class="star">★</span> 4.9 (87 ביקורות)</div>
+        <a class="timestamp-link" href="https://www.youtube.com/watch?v=1s36GW9o6AQ" target="_blank">▶ צפה בפרק</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. ליבי פטיסרי -->
+  <div class="card">
+    <div class="card-image-wrapper">
+      <img class="card-image"
+        src="https://lh3.googleusercontent.com/places/ANXAkqH9Eg3FABNWK7_5sCwZAxP2XnDTq2dpLTnt8Ps0wgKHVtmORPIy6rgOfpS7Ul6F7f2G2et8PySSr_XJgO7L4yul5AYUFo5S6Zc=s4800-w800"
+        alt="קונדיטוריה ליבי"
+        onerror="this.outerHTML='<div class=card-image-fallback>פטיסרי</div>'">
+      <span class="verdict-badge verdict-add">NEW</span>
+    </div>
+    <div class="card-body">
+      <div class="card-title">קונדיטוריה ליבי</div>
+      <div class="card-meta">
+        <span>יקנעם המושבה</span><span class="dot">•</span>
+        <span>פטיסרי</span><span class="dot">•</span>
+        <span>בינוני</span>
+      </div>
+      <div class="card-date">📅 17 בספטמבר 2025</div>
+      <div class="card-date">
+        <span class="badge-mention">הוזכר</span>
+        כשר · אגרא יוקנעם
+      </div>
+      <div class="card-quote">"פטיסרי נהדר ביקנעם"</div>
+      <div class="card-actions">
+        <div class="rating"><span class="star">★</span> 4.5 (510 ביקורות)</div>
+        <a class="timestamp-link" href="https://www.youtube.com/watch?v=1s36GW9o6AQ" target="_blank">▶ צפה בפרק</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. BBANG BANG -->
+  <div class="card">
+    <div class="card-image-wrapper">
+      <img class="card-image"
+        src="https://lh3.googleusercontent.com/places/ANXAkqGrN8IbKgLPXK16DVGHD52e9P6P5ZunI6ruw73fVofQ1HtchMQvP1Z0-GgW7tVVKwtzApNtY9EB67GTI7aTyP-E9T2kdLb213A=s4800-w800"
+        alt="BBANG BANG בבנג בנג"
+        onerror="this.outerHTML='<div class=card-image-fallback>אסייתי</div>'">
+      <span class="verdict-badge verdict-add">NEW</span>
+    </div>
+    <div class="card-body">
+      <div class="card-title">BBANG BANG</div>
+      <div class="card-meta">
+        <span>תל אביב</span><span class="dot">•</span>
+        <span>אסייתי</span><span class="dot">•</span>
+        <span>בינוני</span>
+      </div>
+      <div class="card-date">📅 17 בספטמבר 2025</div>
+      <div class="card-date">
+        <span class="badge-mention">הוזכר</span>
+        קוריאני · אבן גבירול 138
+      </div>
+      <div class="card-quote">"אסייתית זריזה אך מוקפדת באבן גבירול"</div>
+      <div class="card-actions">
+        <div class="rating"><span class="star">★</span> 4.3 (206 ביקורות)</div>
+        <a class="timestamp-link" href="https://www.youtube.com/watch?v=1s36GW9o6AQ" target="_blank">▶ צפה בפרק</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. זלמנס עזריאלי -->
+  <div class="card">
+    <div class="card-image-wrapper">
+      <img class="card-image"
+        src="https://lh3.googleusercontent.com/place-photos/AL8-SNGS0FcY5JrXognfSw7TatTqJ-xBWkKz9031E0rW2bgXe5W01Q26cgtv80OW1vSDATSaJWhoVmkjB4829X0u-zMuLBEQtEpyPHsIUIpSPjdWpLHJfN-cD66YFXAHAsNqssdBaMsmrsagNfEV=s4800-w800"
+        alt="זלמנס עזריאלי"
+        onerror="this.outerHTML='<div class=card-image-fallback>נקניקיות</div>'">
+      <span class="verdict-badge verdict-add">NEW</span>
+    </div>
+    <div class="card-body">
+      <div class="card-title">זלמנס עזריאלי</div>
+      <div class="card-meta">
+        <span>תל אביב, עזריאלי</span><span class="dot">•</span>
+        <span>נקניקיות</span><span class="dot">•</span>
+        <span>זול</span>
+      </div>
+      <div class="card-date">📅 17 בספטמבר 2025</div>
+      <div class="card-date">
+        <span class="badge-mention">הוזכר</span>
+        כשר · קניון עזריאלי
+      </div>
+      <div class="card-quote">"נקניקיה מפתיעה בעזריאלי"</div>
+      <div class="card-actions">
+        <div class="rating"><span class="star">★</span> 4.0 (42 ביקורות)</div>
+        <a class="timestamp-link" href="https://www.youtube.com/watch?v=1s36GW9o6AQ" target="_blank">▶ צפה בפרק</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- REFERENCE ONLY section -->
+  <div class="section-title">⏭️ Reference Only</div>
+
+  <div class="ref-card">
+    <div class="name">קפיצה קולינרית של קריית אונו (topic)</div>
+    <div class="reason">דיון כללי על תחייה קולינרית באזור – לא מסעדה ספציפית</div>
+    <div class="timestamp"><a href="https://www.youtube.com/watch?v=1s36GW9o6AQ" target="_blank">▶ צפה בפרק</a></div>
+  </div>
+
+  <div class="ref-card">
+    <div class="name">צ'לו (Chelo) — ירושלים</div>
+    <div class="reason">הפניה היסטורית — מסעדה שפעלה 1991-2021 לפני צ'וטה. סגורה.</div>
+    <div class="timestamp"><a href="https://www.youtube.com/watch?v=1s36GW9o6AQ" target="_blank">▶ צפה בפרק</a></div>
+  </div>
+
+</body>
+</html>

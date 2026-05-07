@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Episode Preview: פרק 127 — בסוכה עם שף תומר אגאי</title>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Heebo', sans-serif; background: #FAFAF8; padding: 1rem; max-width: 480px; margin: 0 auto; }
+
+    .header { text-align: center; padding: 1.5rem 0; border-bottom: 1px solid #eee; margin-bottom: 1rem; }
+    .header h1 { font-size: 1.15rem; color: #1a1a1a; font-weight: 900; line-height: 1.4; }
+    .header .meta { font-size: 0.82rem; color: #888; margin-top: 0.35rem; }
+    .header .stats { display: flex; gap: 0.6rem; justify-content: center; margin-top: 0.85rem; font-size: 0.78rem; flex-wrap: wrap; }
+    .header .stat { background: #f0f0f0; padding: 0.25rem 0.75rem; border-radius: 999px; }
+    .header .stat.add { background: #E8F5E9; color: #2E7D32; }
+    .header .stat.skip { background: #FFF3E0; color: #E65100; }
+    .header .stat.warn { background: #FFF9C4; color: #F57F17; font-size: 0.72rem; padding: 0.2rem 0.6rem; }
+
+    .section-title { font-size: 0.9rem; color: #888; margin: 1.5rem 0 0.75rem; padding-bottom: 0.25rem; border-bottom: 1px solid #eee; font-weight: 700; }
+
+    .card { background: white; border-radius: 12px; overflow: hidden; margin-bottom: 1rem; box-shadow: 0 1px 3px rgba(0,0,0,0.08); transition: all 0.2s; }
+    .card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
+
+    .card-image { width: 100%; aspect-ratio: 16/10; object-fit: cover; display: block; }
+    .card-image-fallback { width: 100%; aspect-ratio: 16/10; background: linear-gradient(135deg, #E63B2E, #FF6B5A); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.4rem; font-weight: 700; text-align: center; padding: 1rem; }
+
+    .card-image-wrapper { position: relative; }
+
+    .verdict-badge { position: absolute; top: 0.5rem; left: 0.5rem; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.68rem; font-weight: 700; }
+    .verdict-new { background: #E63B2E; color: white; }
+    .verdict-exists { background: #1565C0; color: white; }
+
+    .mention-badge { position: absolute; top: 0.5rem; right: 0.5rem; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.68rem; font-weight: 700; }
+    .badge-natam { background: #FF8C00; color: white; }
+    .badge-huzkar { background: #666; color: white; }
+
+    .card-body { padding: 1rem; }
+    .card-title { font-size: 1.45rem; font-weight: 900; color: #1a1a1a; margin-bottom: 0.2rem; }
+    .card-meta { display: flex; gap: 0.4rem; align-items: center; color: #888; font-size: 0.82rem; margin-bottom: 0.4rem; flex-wrap: wrap; }
+    .card-meta .dot { color: #ccc; }
+    .card-date { font-size: 0.76rem; color: #999; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.3rem; }
+
+    .card-quote { font-style: italic; background: #f5f5f5; padding: 0.65rem 0.75rem; border-radius: 8px; color: #555; font-size: 0.88rem; margin: 0.5rem 0; line-height: 1.55; border-right: 3px solid #E63B2E; }
+
+    .card-actions { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #f0f0f0; padding-top: 0.65rem; margin-top: 0.5rem; }
+    .rating { display: flex; align-items: center; gap: 0.25rem; font-weight: 700; color: #333; font-size: 0.9rem; }
+    .rating .star { color: #FFB400; }
+    .timestamp-link { font-size: 0.78rem; color: #E63B2E; text-decoration: none; display: flex; align-items: center; gap: 0.2rem; }
+    .timestamp-link:hover { text-decoration: underline; }
+
+    .ref-card { background: white; border-radius: 8px; padding: 0.75rem 1rem; margin-bottom: 0.5rem; border-right: 3px solid #FFB300; }
+    .ref-card .ref-header { display: flex; justify-content: space-between; align-items: flex-start; }
+    .ref-card .name { font-weight: 700; font-size: 0.95rem; color: #1a1a1a; }
+    .ref-card .city-tag { font-size: 0.75rem; color: #888; margin-top: 0.1rem; }
+    .ref-card .reason { font-size: 0.8rem; color: #999; margin-top: 0.35rem; font-style: italic; }
+    .ref-card .timestamp { font-size: 0.72rem; color: #E63B2E; margin-top: 0.2rem; }
+    .ref-card .rating-small { font-size: 0.78rem; color: #555; font-weight: 700; }
+    .ref-card .star-small { color: #FFB400; font-size: 0.75rem; }
+
+    .warning-box { background: #FFF9C4; border: 1px solid #F9A825; border-radius: 8px; padding: 0.75rem 1rem; margin: 1rem 0; font-size: 0.8rem; color: #5D4037; line-height: 1.5; }
+    .warning-box strong { color: #E65100; }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h1>בסוכה עם שף תומר אגאי</h1>
+    <div class="meta">מדברים מהבטן — פרק 127 &nbsp;•&nbsp; 25 ספטמבר 2025</div>
+    <div class="stats">
+      <span class="stat add">✅ 3 להוסיף</span>
+      <span class="stat">📋 2 כבר קיימות</span>
+      <span class="stat skip">⏭️ 3 רפרנס בלבד</span>
+      <span class="stat warn">⚠️ טיימסטמפים משוערים</span>
+    </div>
+  </div>
+
+  <div class="warning-box">
+    <strong>שים לב:</strong> הטרנסקריפט המלא לא היה זמין (IP block של YouTube). הנתונים עוברו ממקורות משניים (כתבות, RSS). טיימסטמפים הם <strong>הערכות</strong> בלבד ולא ניתן לאמת אותם ללא הטרנסקריפט.
+  </div>
+
+  <!-- ADD TO PAGE section -->
+  <div class="section-title">✅ להוסיף לדף (3 מסעדות)</div>
+
+  <!-- Card 1: Alena — already in DB -->
+  <div class="card">
+    <div class="card-image-wrapper">
+      <img class="card-image"
+        src="https://lh3.googleusercontent.com/places/ANXAkqE_AHDzRC888A3M1snxnJEejOyKUnkqnBWwEVtIdThj_nsrrv-70n0JyxxmFd2kqylP2F45EOv8pzv6Yu1fyIjmiQeEo8VPmQ=s4800-w675"
+        alt="אלנה"
+        onerror="this.outerHTML='<div class=card-image-fallback>ים תיכוני</div>'">
+      <span class="verdict-badge verdict-exists">קיימת ב-DB</span>
+      <span class="mention-badge badge-natam">נטעם</span>
+    </div>
+    <div class="card-body">
+      <div class="card-title">אלנה</div>
+      <div class="card-meta">
+        <span>תל אביב</span>
+        <span class="dot">•</span>
+        <span>ים תיכוני</span>
+        <span class="dot">•</span>
+        <span>יקר</span>
+      </div>
+      <div class="card-date">📅 25.09.2025 &nbsp;•&nbsp; <span>נטע סלונים</span></div>
+      <div class="card-quote">ארוחה רומנטית מלאה במסעדת אלנה שבמלון הנורמן</div>
+      <div class="card-actions">
+        <div class="rating"><span class="star">★</span> 4.1 <span style="color:#aaa;font-size:0.78rem">(1,095 ביקורות)</span></div>
+        <a class="timestamp-link" href="https://www.youtube.com/watch?v=8fKi1aA24-w&t=600s" target="_blank">▶ ~10:00 ⚠️</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 2: Thai Chu — already in DB -->
+  <div class="card">
+    <div class="card-image-wrapper">
+      <img class="card-image"
+        src="https://lh3.googleusercontent.com/places/ANXAkqF_0iKd0RW60_NQYsDvKpjzMfBbj0oCV1pKt9zar25dSnY6-RdhfXxDZPeG7o16Tb9sWkViRGqwMwUxWRqQShSweKGv_MmPYtU=s4800-w800"
+        alt="תאי צ'ו"
+        onerror="this.outerHTML='<div class=card-image-fallback>תאילנדי</div>'">
+      <span class="verdict-badge verdict-exists">קיימת ב-DB</span>
+      <span class="mention-badge badge-natam">נטעם</span>
+    </div>
+    <div class="card-body">
+      <div class="card-title">תאי צ'ו</div>
+      <div class="card-meta">
+        <span>פתח תקווה</span>
+        <span class="dot">•</span>
+        <span>תאילנדי</span>
+        <span class="dot">•</span>
+        <span>בינוני</span>
+      </div>
+      <div class="card-date">📅 25.09.2025 &nbsp;•&nbsp; <span>עמית אהרונסון</span></div>
+      <div class="card-quote">עמית הופתע לטובה — מסעדה תאילנדית אותנטית ומקורית בפתח תקווה</div>
+      <div class="card-actions">
+        <div class="rating"><span class="star">★</span> 4.6 <span style="color:#aaa;font-size:0.78rem">(271 ביקורות)</span></div>
+        <a class="timestamp-link" href="https://www.youtube.com/watch?v=8fKi1aA24-w&t=1200s" target="_blank">▶ ~20:00 ⚠️</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 3: Bel Ami — NEW -->
+  <div class="card">
+    <div class="card-image-wrapper">
+      <img class="card-image"
+        src="https://lh3.googleusercontent.com/places/ANXAkqE2iSXVMdvNQUrt24lqsvlqjfkloQ3ddl_oZb2X90JqWbifS6xaOxUoxFkJSQROfzyZpuFDqSi1HDUhbTC8jB6Yp3huv8yGNug=s4800-w800"
+        alt="בל עמי"
+        onerror="this.outerHTML='<div class=card-image-fallback>צרפתי</div>'">
+      <span class="verdict-badge verdict-new">חדש!</span>
+      <span class="mention-badge badge-natam">נטעם</span>
+    </div>
+    <div class="card-body">
+      <div class="card-title">בל עמי</div>
+      <div class="card-meta">
+        <span>תל אביב</span>
+        <span class="dot">•</span>
+        <span>צרפתי</span>
+        <span class="dot">•</span>
+        <span>יקר</span>
+      </div>
+      <div class="card-date">📅 25.09.2025 &nbsp;•&nbsp; <span>עמית אהרונסון</span></div>
+      <div class="card-quote">ברסרי צרפתי חדש שכבר הוכיח שהבאזז מוצדק — עמית ממליץ בחום</div>
+      <div class="card-actions">
+        <div class="rating"><span class="star">★</span> 4.1 <span style="color:#aaa;font-size:0.78rem">(155 ביקורות)</span></div>
+        <a class="timestamp-link" href="https://www.youtube.com/watch?v=8fKi1aA24-w&t=1800s" target="_blank">▶ ~30:00 ⚠️</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- REFERENCE ONLY section -->
+  <div class="section-title">⏭️ רפרנס בלבד (3 מסעדות)</div>
+
+  <div class="ref-card">
+    <div class="ref-header">
+      <div>
+        <div class="name">סנטה קתרינה</div>
+        <div class="city-tag">הר סיני 2, תל אביב</div>
+      </div>
+      <div class="rating-small"><span class="star-small">★</span> 4.2</div>
+    </div>
+    <div class="reason">בעל המסעדה מנתח את כישלונה — ניתוח עסקי, לא המלצת ביקור. המסעדה נסגרה.</div>
+    <div class="timestamp"><a href="https://www.youtube.com/watch?v=8fKi1aA24-w&t=2400s" target="_blank" style="color:#E63B2E;text-decoration:none">▶ ~40:00 ⚠️</a></div>
+  </div>
+
+  <div class="ref-card">
+    <div class="ref-header">
+      <div>
+        <div class="name">מאזה</div>
+        <div class="city-tag">נחלת בנימין 45, תל אביב</div>
+      </div>
+      <div class="rating-small"><span class="star-small">★</span> 4.1</div>
+    </div>
+    <div class="reason">תומר אגאי חושף שמו מופיע על המקום אבל הוא לא מבשל שם ביומיום — חשיפה עסקית.</div>
+    <div class="timestamp"><a href="https://www.youtube.com/watch?v=8fKi1aA24-w&t=3000s" target="_blank" style="color:#E63B2E;text-decoration:none">▶ ~50:00 ⚠️</a></div>
+  </div>
+
+  <div class="ref-card">
+    <div class="ref-header">
+      <div>
+        <div class="name">O</div>
+        <div class="city-tag">שדרות רוטשילד 45, תל אביב</div>
+      </div>
+      <div class="rating-small"><span class="star-small">★</span> 4.1</div>
+    </div>
+    <div class="reason">הוכרז בפרק כ"מקום החדש שבדרך" — נפתח רק בדצמבר 2025. בעת ההקלטה לא היה קיים.</div>
+    <div class="timestamp"><a href="https://www.youtube.com/watch?v=8fKi1aA24-w&t=3300s" target="_blank" style="color:#E63B2E;text-decoration:none">▶ ~55:00 ⚠️</a></div>
+  </div>
+
+  <div style="text-align:center; font-size:0.72rem; color:#aaa; margin-top:2rem; padding-top:1rem; border-top:1px solid #eee;">
+    Generated by episode-processor · 2026-04-08<br>
+    ⚠️ Timestamps are estimated (transcript unavailable)
+  </div>
+
+</body>
+</html>
