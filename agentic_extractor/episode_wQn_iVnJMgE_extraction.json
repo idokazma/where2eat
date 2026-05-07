@@ -142,7 +142,7 @@
       "mention_level": "נטעם",
       "speaker": "נטע סלונים",
       "google_places": {
-        "place_id": null,
+        "place_id": "ChIJ9Z_EX1VLHRURzOL152hIpOs",
         "google_url": null,
         "rating": null,
         "review_count": null,
@@ -151,7 +151,7 @@
         "website": "https://r48.co.il/",
         "photo_url": null,
         "instagram_url": "https://www.instagram.com/r48_telaviv/",
-        "verified": false
+        "verified": true
       },
       "production_db": {
         "exists": false,
