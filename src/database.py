@@ -483,6 +483,19 @@ class Database:
             cursor.execute('CREATE INDEX IF NOT EXISTS idx_restaurants_cuisine ON restaurants(cuisine_type)')
             cursor.execute('CREATE INDEX IF NOT EXISTS idx_restaurants_episode ON restaurants(episode_id)')
             cursor.execute('CREATE INDEX IF NOT EXISTS idx_restaurants_published_at ON restaurants(published_at)')
+            cursor.execute('CREATE INDEX IF NOT EXISTS idx_restaurants_google_place_id ON restaurants(google_place_id)')
+
+            # Prevent visible duplicates with the same place_id. Wrapped because the
+            # index creation fails if duplicates already exist; that's the data-cleanup
+            # signal — fix the duplicates first, then this guard kicks in.
+            try:
+                cursor.execute(
+                    'CREATE UNIQUE INDEX IF NOT EXISTS idx_restaurants_visible_place_id '
+                    'ON restaurants(google_place_id) '
+                    'WHERE google_place_id IS NOT NULL AND (is_hidden = 0 OR is_hidden IS NULL)'
+                )
+            except sqlite3.IntegrityError:
+                pass  # Duplicates exist — keep the index off until they're cleaned up
             cursor.execute('CREATE INDEX IF NOT EXISTS idx_episodes_video_id ON episodes(video_id)')
             cursor.execute('CREATE INDEX IF NOT EXISTS idx_jobs_status ON jobs(status)')
             cursor.execute('CREATE INDEX IF NOT EXISTS idx_admin_users_email ON admin_users(email)')
