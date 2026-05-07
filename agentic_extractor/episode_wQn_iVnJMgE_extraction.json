@@ -91,7 +91,8 @@
       "production_db": {
         "exists": false,
         "id": null
-      }
+      },
+      "image_url": "https://pic1.calcalist.co.il/picserver3/wcm_upload_dev/2026/04/26/rkcXtFspbg/asshkara_x_fe_299.jpg"
     },
     {
       "verdict": "add_to_page",
@@ -155,7 +156,8 @@
       "production_db": {
         "exists": false,
         "id": null
-      }
+      },
+      "image_url": "https://r48.co.il/wp-content/uploads/2023/10/Artboard-9.jpg"
     },
     {
       "verdict": "add_to_page",
@@ -223,7 +225,8 @@
       "production_db": {
         "exists": false,
         "id": null
-      }
+      },
+      "image_url": "https://ynet-pic1.yit.co.il/picserver6/wcm_upload/2026/04/30/BJbomCDg0Wg/TGM_elad_20260429__35_046038.jpg"
     },
     {
       "verdict": "add_to_page",
@@ -286,7 +289,8 @@
       "production_db": {
         "exists": false,
         "id": null
-      }
+      },
+      "image_url": "https://img.mako.co.il/2026/04/20/LUPA4565467_autoOrient_w.jpg"
     },
     {
       "verdict": "add_to_page",
@@ -349,7 +353,8 @@
       "production_db": {
         "exists": false,
         "id": null
-      }
+      },
+      "image_url": "https://la-story.co.il/wp-content/uploads/elementor/thumbs/DSC6379-oicgg6w2lnhgo2rwkhuqh4pzhow2xedowbesw272ug.jpg"
     },
     {
       "verdict": "reference_only",
