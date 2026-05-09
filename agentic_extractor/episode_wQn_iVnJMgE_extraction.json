@@ -617,13 +617,15 @@
         "youtube_url": "https://www.youtube.com/watch?v=wQn_iVnJMgE&t=3311s"
       },
       "location": {
-        "city": null,
+        "city": "רעננה",
         "neighborhood": null,
-        "address": null,
-        "region": null
+        "address": "ירושלים 13, רעננה",
+        "region": "שרון",
+        "latitude": 32.18961041,
+        "longitude": 34.85475977
       },
       "host_quotes": [
-        "קובי רובין ממש עכשיו טרי טרי מהדפוס א נסע בננה",
+        "קובי רובין גילה מקום שקוראים לו עידו בשרים",
         "פיטה קבב עם צ'יפס בצד וזה ב-45 שק"
       ],
       "host_comments": "הוזכר כגילוי של קובי רובין — מקום פיטה קבב ב-45 שקלים. המגישים הזכירו אך לא ביקרו.",
@@ -632,7 +634,9 @@
       "google_places": {
         "place_id": null,
         "rating": null,
-        "verified": false
+        "verified": false,
+        "phone": "+97297728118",
+        "website": "https://idobesarim.co.il/"
       },
       "production_db": {
         "exists": false,
