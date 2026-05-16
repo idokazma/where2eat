@@ -1,0 +1,1448 @@
+{
+  "episode": {
+    "video_id": "Y9Uf2x8vQ8M",
+    "video_url": "https://www.youtube.com/watch?v=Y9Uf2x8vQ8M",
+    "title": "להשוות בין תפוזים לתפוזים | מדברים מהבטן, פרק 155",
+    "channel_name": "מדברים מהבטן - הפודיום",
+    "published_at": "2026-05-14",
+    "hosts": [
+      "Amit Aronsohn",
+      "Yehonatan Cohen",
+      "Neta Slonim"
+    ],
+    "guests": [
+      "Moli Ekstein (פרדסן רמת הכובש)"
+    ],
+    "language": "he",
+    "transcript_length": 43888,
+    "segment_count": 1365,
+    "episode_id": null,
+    "summary": "פרק 155 של מדברים מהבטן הוקלט מהשטח — מפרדס של מולי אקשטיין ברמת הכובש, חלק משיתוף פעולה עם לקט ישראל לציון חג שבועות. הפרק מתחיל בביסי השבוע: יונתן בקזה פוד (פודקורט חדש בנוף הגליל), עמית בארוחה ביתית של בייגלים ודגים מאושנים, נטע בארוחת שישי יוונית ביתית. אחר כך חדשות התעשייה (סגירת אריא ואניסו, פתיחת לולש בחיפה, גוז' בתל יצחק, פומפי באשדוד, רושפלד בזו), שיחה ארוכה עם מולי על הפרדסנות וקשרי לקט ישראל לחקלאים, מצעד הביסים לשבועות (קרדינל שניטה של שטפן כביס המנצח, רולדין, ויצינו, האחים), שלוש המלצות מסעדה (התאילנדית בני ראם, בר בלווינסקי, נחלת בנימין הרצליה ונפוליטן 26), פינת המבקרים על השמדה של סגי כהן לטאו 77 וקובי רובין על בורקס מרציאנו במודיעין."
+  },
+  "extraction": {
+    "date": "2026-05-15",
+    "agent": "episode-processor",
+    "total_mentions": 39,
+    "add_to_page": 9,
+    "reference_only": 11,
+    "rejected": 19,
+    "already_in_db": 2,
+    "new_to_add": 7
+  },
+  "restaurants": [
+    {
+      "verdict": "add_to_page",
+      "timestamp": {
+        "seconds": 178,
+        "display": "2:58",
+        "youtube_url": "https://www.youtube.com/watch?v=Y9Uf2x8vQ8M&t=178s"
+      },
+      "mention_level": "נטעם",
+      "name_hebrew": "קזה פוד",
+      "name_english": "Kaza Food",
+      "name_in_transcript": "קזה פוד",
+      "google_name": "Kaza Food-נוף הגליל",
+      "location": {
+        "city": "נוף הגליל",
+        "neighborhood": "קניון מרכזה",
+        "address": "העבודה 1, נוף הגליל, ישראל",
+        "region": "צפון",
+        "latitude": 32.713381999999996,
+        "longitude": 35.3362821
+      },
+      "cuisine_type": "פודקורט",
+      "price_range": "זול",
+      "status": "חדש",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "זה מהמם, זה לא יקר מדי. אה טעמתי הכל",
+        "גן משחקים פנטסטי לחובבי אוכל מושחט זמין מהיר ומאוד מאוד מאוד מאוד מגוון",
+        "יותר יפה, יותר צבעוני ובמידה שקסום לומר גם לא נופל ממש בטעם"
+      ],
+      "host_comments": "יונתן הגיע לקזה פוד - הפודקורט החדש בקניון מרכזה בנוף הגליל. שטח עצום שכולל שבע מסעדות שונות, כל אחת מופעלת אחרת, אבל מאחד אותם קו עיצובי ומטבח משותף. אופציות: שוארמה, פיצה, איטלקי, פסטות, דגים, אסיאטי (סושי), רוטיסרי, המבורגר ומתוקים. מזמינים מקופה ראשית או דרך קיוסקים, אוספים בעצמך מהדלפקים. הביקור: יונתן טעם הכל - \"שבע משבע מהשדה\". הסטנדרט הוא לא הכי טוב בכל קטגוריה, אבל הכל סבבה, מודרני, נקי ולא יקר.",
+      "dishes_mentioned": [
+        "שוארמה",
+        "פיצה איטלקית",
+        "פסטה",
+        "דגים",
+        "סושי",
+        "רוטיסרי",
+        "המבורגר",
+        "מתוקים",
+        "קרואסון דובאי",
+        "חצי עוף על פיטה"
+      ],
+      "special_features": [
+        "פודקורט מודרני",
+        "7 מסעדות שונות",
+        "מטבח משותף",
+        "פתוח גם בשבת",
+        "הזמנה דרך קיוסקים"
+      ],
+      "mention_context": "ביס השבוע של יונתן - הפודקורט החדש הכי מגניב בישראל",
+      "speaker": "Yehonatan Cohen",
+      "google_places": {
+        "place_id": "ChIJf6Bs2lFPHBUR1qE9xKFm5N8",
+        "google_url": "https://maps.google.com/?cid=16133132610116100566",
+        "rating": 4.8,
+        "review_count": 537,
+        "price_level": null,
+        "phone": "04-906-9700",
+        "website": "https://kazafood.com/סניף-נוף-הגליל/",
+        "photo_url": "https://lh3.googleusercontent.com/place-photos/AJRVUZPDd6KUBKEFi-GGSllFsTyoDRrQ0-LZUGRqzZHzR5ZiaUzUXb5CqXMX0Z3mH0HaFDrw1ddv79BpNHGt0dDzP3eph1hakFxflAqmgxfHspSwq93NztBgefBJNntfrC9EaXOJHAb9I26BHUkE=s4800-w800",
+        "instagram_url": null,
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      },
+      "engaging_quote": "גן משחקים פנטסטי לחובבי אוכל מושחט זמין מהיר ומאוד מאוד מגוון"
+    },
+    {
+      "verdict": "add_to_page",
+      "timestamp": {
+        "seconds": 2592,
+        "display": "43:12",
+        "youtube_url": "https://www.youtube.com/watch?v=Y9Uf2x8vQ8M&t=2592s"
+      },
+      "mention_level": "נטעם",
+      "name_hebrew": "התאילנדית",
+      "name_english": "HaThailandit",
+      "name_in_transcript": "תאילנדית בני רם",
+      "google_name": "התאילנדית",
+      "location": {
+        "city": "בני ראם",
+        "neighborhood": null,
+        "address": "הקורנית 181, בני רא\"ם, ישראל",
+        "region": "דרום",
+        "latitude": 31.771289699999993,
+        "longitude": 34.796366299999995
+      },
+      "cuisine_type": "תאילנדי",
+      "price_range": "בינוני",
+      "status": "פתוח",
+      "host_opinion": "חיובית",
+      "host_quotes": [
+        "מסעדה בית אותנטית בחצר של בית שב אדם",
+        "יש שם אחלה אחלה יציאה באמת עם ביצועים אותנטיים ויפים",
+        "כאוסוי טוב, כאוסוי משובח נהדר עם היתריות ביצים מלמעלה",
+        "עצם זה שבבני ראם יש מסעדה תאילנדית אותנטית אומר הכל. זה מדהים"
+      ],
+      "host_comments": "יונתן הגיע לתאילנדית של בני ראם — מסעדת בית אותנטית בחצר של בן אדם רגיל, כשרה. הסיפור: בן יישוב שפגש בנערה תאילנדית, התחתנו, התגיירה ופתחו מסעדה. תאי כשר עובד טוב — חלב קוקוס במקום חלב, החזיר מוחלף, פירות ים מותאמים. נכון, חריפות וחמיצות ממותנות, אבל יונתן מעיד שזה עדיין סלט פפאיה. הנקניקיה התאילנדית בייצור עצמי \"גז\" — מופת. קאוסוי משובח עם יתריות מטוגנות, ערקים של עוף, מלפונים חמוצים במקום החרדל הכבוש המסורתי. מקום שדורש שלושה-ארבעה שאלות עד שמוצאים אותו.",
+      "dishes_mentioned": [
+        "סלט פפאיה",
+        "סאי קוקה (נקניקיה תאילנדית)",
+        "קאוסוי",
+        "קרי אדום עם בקר וגלנגל",
+        "פאד פציו",
+        "פאד תי"
+      ],
+      "special_features": [
+        "כשר למהדרין",
+        "מסעדת בית",
+        "בחצר של בית פרטי",
+        "מינון חריפות וחמיצות מתואם"
+      ],
+      "mention_context": "יציאה אותנטית של יונתן לקירת מלאכי - מסעדה תאילנדית כשרה ייחודית",
+      "speaker": "Yehonatan Cohen",
+      "google_places": {
+        "place_id": "ChIJWSq2RdS_AhURdiCI341I8GM",
+        "google_url": "https://maps.google.com/?cid=7201335578343252086",
+        "rating": 4.7,
+        "review_count": 679,
+        "price_level": null,
+        "phone": "052-257-4660",
+        "website": "http://www.hathailandit.com/",
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqEYV55TO_MRYFnfL9Qt6eYatm84VxLP-soMzCXaHdsCpwcUQhhsMjF-bqj906VfeZgUaBn3brTdp8Sfo2RXqMCL7mkRrUwZAjQ=s4800-w800",
+        "instagram_url": null,
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      },
+      "engaging_quote": "עצם זה שבבני ראם יש מסעדה תאילנדית אותנטית אומר הכל. זה מדהים"
+    },
+    {
+      "verdict": "add_to_page",
+      "timestamp": {
+        "seconds": 2897,
+        "display": "48:17",
+        "youtube_url": "https://www.youtube.com/watch?v=Y9Uf2x8vQ8M&t=2897s"
+      },
+      "mention_level": "נטעם",
+      "name_hebrew": "בר",
+      "name_english": "Bar",
+      "name_in_transcript": "בר",
+      "google_name": "בּר",
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "שוק העלייה / פלורנטין",
+        "address": "וולפסון 42, תל אביב-יפו, ישראל",
+        "region": "מרכז",
+        "latitude": 32.0577442,
+        "longitude": 34.7736491
+      },
+      "cuisine_type": "בית קפה",
+      "price_range": "בינוני",
+      "status": "חדש",
+      "host_opinion": "חיובית",
+      "host_quotes": [
+        "מקום מתוק להעלה שצובר שם מאוד יפה בזכות המצ'ה שלהם שהיא באמת מאוד טובה",
+        "תצוגה מרהיבה של פרוסקטות כאלו של אבוקדו טוסטים מחמצת של חגאי",
+        "אחלה מקום ואחלה קפה ומקום כזה לא צפוי באזור הזה"
+      ],
+      "host_comments": "נטע גילתה את \"בר\" — בודק קפה (יותר מאשר בית קפה) ליד קאנטרי העלייה בתל אביב. מקום קטן עם מספר מקומות ישיבה בפנים והרבה מקומות במרחב העירוני. נפתח בבוקר שבת — דבר נדיר ומעריך מאוד. נטע אכלה אבוקדו טוסט מעל לחם חמצת של חגאי בשמן זית רוזמרין — אבוקדו שלם פרוס לשתי חתיכות גדולות, לימון, זרעי שומשום. 36 ש\"ח. גם המצ'ה שלהם מאוד טובה. נטע התרשמה במיוחד מהאווירה ומהעובדה שזה מקום פתוח בבוקרי שבת.",
+      "dishes_mentioned": [
+        "אבוקדו טוסט",
+        "מצ'ה לאטה",
+        "קפה ספיישלטי",
+        "קריחים פתוחים",
+        "מאפים",
+        "מצ'ה כחול"
+      ],
+      "special_features": [
+        "פתוח בבוקר שבת",
+        "מצ'ה ספיישל",
+        "לחם חמצת של חגאי",
+        "מקומות ישיבה ברחבה העירונית"
+      ],
+      "mention_context": "הביס של נטע — בודק קפה חדש בלווינסקי",
+      "speaker": "Neta Slonim",
+      "google_places": {
+        "place_id": "ChIJi9PpwrVNHRUREXlZRwLNO3w",
+        "google_url": "https://maps.google.com/?cid=8951974093999667473",
+        "rating": 4.5,
+        "review_count": 55,
+        "price_level": null,
+        "phone": null,
+        "website": "https://www.instagram.com/baaaar_cafeeee",
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqG_FwFA6AG78XJ03pSlFyGJqiNsW1uZSnyOAX3MKWsj3R-kfPLDSC6SIMLZ5roy6AOBh-km1ULEZUhXGfK3QGFHNrOxAyKxLPw=s4800-w800",
+        "instagram_url": "https://www.instagram.com/baaaar_cafeeee",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      },
+      "engaging_quote": "אחלה מקום ואחלה קפה ומקום כזה לא צפוי באזור הזה"
+    },
+    {
+      "verdict": "add_to_page",
+      "timestamp": {
+        "seconds": 3093,
+        "display": "51:33",
+        "youtube_url": "https://www.youtube.com/watch?v=Y9Uf2x8vQ8M&t=3093s"
+      },
+      "mention_level": "נטעם",
+      "name_hebrew": "נחלת בנימין",
+      "name_english": "Nachlat Binyamin",
+      "name_in_transcript": "נחלת בנימין",
+      "google_name": "נחלת בנימין",
+      "location": {
+        "city": "הרצליה",
+        "neighborhood": "מרכז העיר",
+        "address": "בני בנימין 4, הרצליה, ישראל",
+        "region": "שרון",
+        "latitude": 32.1699954,
+        "longitude": 34.839283
+      },
+      "cuisine_type": "ביסטרו",
+      "price_range": "בינוני",
+      "status": "חדש",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "צ'יזבורגר עם בייקון אמיתי מעולה",
+        "שניצל בקר פירה כמו שצריך, חרדל חריף",
+        "מעל הכל מנה של נקניקיות מבשר לבן ליצד שפצלה בעבודת יד",
+        "בדיוק מה שחסר לא רק בהרצליה אגב אלא בכלל לדעתי לאחרונה הדרג ביניים הזה",
+        "אחלה של הפתעה באמת ממש לא מקום כזה של פתיחת קופסאות"
+      ],
+      "host_comments": "סגי כהן (Saggi) מצא הפתעה אמיתית בהרצליה — נחלת בנימין, בית קפה מיתולוגי שעבר דירה ועכשיו הופך לביסטרו בערב. סגי גר באותו בניין ממש בכניסה. צ'יזבורגר עם בייקון אמיתי מעולה, שניצל בקר עם פירה, חרדל חריף, ומנת מופת — נקניקיות מבשר לבן ליצד עם שפצלה בעבודת יד מוקפצת בחמאה. גם מנת צד של שעועית ירוקה חלוטה עם פרמזן וגרידת לימון. מוס שוקולד עם שמן זית ומלח לקינוח. רוזה של יקב סנילביץ'. ארוחה לילדים ביום חמישי שלא העמיסה. ברוח אירוויזיון - \"אני בתמה אוסטרית היום בלי להתכוון\" עם המנה האוסטרית.",
+      "dishes_mentioned": [
+        "צ'יזבורגר עם בייקון",
+        "שניצל בקר עם פירה",
+        "נקניקיות בשר לבן עם שפצלה",
+        "שעועית ירוקה עם פרמזן וגרידת לימון",
+        "מוס שוקולד עם שמן זית ומלח"
+      ],
+      "special_features": [
+        "ביסטרו בר יין בערב",
+        "תפריט יין מורכב",
+        "אחד הוותיקים בעיר",
+        "מחירים שפויים"
+      ],
+      "mention_context": "הביס של סגי - הפתעה מרעננת בלב הרצליה",
+      "speaker": "Saggi Cohen",
+      "google_places": {
+        "place_id": "ChIJL-2oMXVIHRURbtDT14iAwD0",
+        "google_url": "https://maps.google.com/?cid=4449697757066940526",
+        "rating": 4.4,
+        "review_count": 1088,
+        "price_level": null,
+        "phone": "09-954-4927",
+        "website": "http://www.nbinyamin.co.il/",
+        "photo_url": "https://lh3.googleusercontent.com/place-photos/AJRVUZMpQjEzF_sS8SYyL80d9twE48sZ4t9i15nUTNXvsiMqg6nOCFk6YXkmC4rotb3zNJ_K9mlrBaOYjOUO0ZOrrbvjpaJ2eZUHj0uAmcavtH0P8_OwnIN1OywSRuv_avqvfX0EREcabJqK_OCo-Qc=s4800-w800",
+        "instagram_url": null,
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      },
+      "engaging_quote": "בדיוק מה שחסר לא רק בהרצליה אגב אלא בכלל לדעתי לאחרונה הדרג ביניים הזה"
+    },
+    {
+      "verdict": "add_to_page",
+      "timestamp": {
+        "seconds": 2407,
+        "display": "40:07",
+        "youtube_url": "https://www.youtube.com/watch?v=Y9Uf2x8vQ8M&t=2407s"
+      },
+      "mention_level": "נטעם",
+      "name_hebrew": "נפוליטן 26",
+      "name_english": "Neapolitan 26",
+      "name_in_transcript": "נפוליטן 26",
+      "google_name": "26 נפוליטן הרצליה | 26 NEAPOLITAN STYLE",
+      "location": {
+        "city": "הרצליה",
+        "neighborhood": "הרצליה פיתוח",
+        "address": "שדרות אבא אבן 5, הרצליה, 46746, ישראל",
+        "region": "שרון",
+        "latitude": 32.161904199999995,
+        "longitude": 34.8092567
+      },
+      "cuisine_type": "פיצה איטלקית",
+      "price_range": "בינוני",
+      "status": "פתוח",
+      "host_opinion": "חיובית",
+      "host_quotes": [
+        "הדבר המקסים הוא שהדברים הפשוטים כלומר הבייסיקס המרגריטה והפסטה העגבניות שלהן מעולות",
+        "עגבניות עם סטרצ'טלה מעל ואז מורכים את זה נהיה קרמי",
+        "נפוליטן 26 בהרצליה אקבר יציאה עם דיל בכלל מעניין"
+      ],
+      "host_comments": "יונתן הגיע לנפוליטן 26 בהרצליה — מקום של חבר'ה צעירים דתיים בני 22-23 שהתנסו בבית עם טבון ופיצות. נפתח על חורבות מסעדת \"עד העצם\" המיתולוגית. ארבע-חמש פיצות עם טבום גדול, ארבע-חמש פסטות. הקלאסיקות — המרגריטה והפסטה עגבניות — מעולות. עגבניות עם סטרצ'טלה לערבוב כקרמי. ככל שמנסים יצירתיות פחות עובד. דיל מעניין: על כל הזמנת פסטה (~65 ש\"ח) מקבלים יין מבחר חמישה בקבוקים. פיצה 60 ש\"ח — סביר למגש נפוליטני.",
+      "dishes_mentioned": [
+        "פיצה מרגריטה נפוליטנית",
+        "פסטה עם רוטב עגבניות וסטרצ'טלה",
+        "פיצות עם טבום"
+      ],
+      "special_features": [
+        "חבר'ה צעירים",
+        "יין כלול בהזמנת פסטה",
+        "אזור הרצליה פיתוח",
+        "פצח על חורבות עד העצם"
+      ],
+      "mention_context": "מסעדה איטלקית חדשה ומסקרנת ליד תחנת הדלק בהרצליה פיתוח",
+      "speaker": "Yehonatan Cohen",
+      "google_places": {
+        "place_id": "ChIJafO8Rn9JHRURSVhFjYbLsC0",
+        "google_url": "https://maps.google.com/?cid=3292355106364020809",
+        "rating": 4.8,
+        "review_count": 95,
+        "price_level": null,
+        "phone": "055-995-1949",
+        "website": null,
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqHNOGokKvq21b0p6-JyCBje_gfpascxeE89EGignZeyiizw6wNN45rzdLXa8RdycZJxFcyrZTdfLNrQEp-7s8qB4E_Udk5WscM=s4800-w800",
+        "instagram_url": "https://www.instagram.com/26_neapolitan_style/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": true,
+        "id": "25386c4d-6a4b-419f-b1f5-10c50dd0535c"
+      },
+      "engaging_quote": "הדבר המקסים הוא שהדברים הפשוטים - המרגריטה והפסטה עגבניות שלהן מעולות"
+    },
+    {
+      "verdict": "add_to_page",
+      "timestamp": {
+        "seconds": 2120,
+        "display": "35:20",
+        "youtube_url": "https://www.youtube.com/watch?v=Y9Uf2x8vQ8M&t=2120s"
+      },
+      "mention_level": "נטעם",
+      "name_hebrew": "שטפן",
+      "name_english": "Stefan Bakery",
+      "name_in_transcript": "שטפן / סטפן",
+      "google_name": "שטפן - בייקרי אוסטרי & גלידת שף",
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "צ'רניחובסקי",
+        "address": "טשרניחובסקי 21, תל אביב-יפו, ישראל",
+        "region": "מרכז",
+        "latitude": 32.072509499999995,
+        "longitude": 34.7713702
+      },
+      "cuisine_type": "קונדיטוריה אוסטרית",
+      "price_range": "יקר",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "הקרדינל שניטה של סטפן עוד משהו לשים אליו לב זה כבר נהיה מסורת",
+        "אני חושב שקולקציות החג שלה הם טובות",
+        "תשמע, טוב. זה קריספי מהמרנג וזה וניל ופטל ועוגה זה באמת",
+        "הגיע אליי הביתה חתכתי פרוסה לילדים לקחתי טעימה עם הכף ואמרתי אוי ואבוי",
+        "מעשה באמת מפואר כמו שרואים בכאלה בקונדיטוריות טובות בצרפת"
+      ],
+      "host_comments": "יונתן בחר את הקרדינל שניטה של שטפן כביס המצטיין למצעד הביסים לשבועות — עוגה אוסטרית מגולגלת חצי-מרנג חצי-עוגה עם מילוי שנטילי וניל ורבת פטל. מחיר 180 ש\"ח. גם פיטיביה מלוח של שטפן (מאפה בצק עלים ממולה בסלמון, תפוחי אדמה, חרדל ושמנת של דלל) — 286 ש\"ח אבל מאפה לשישה אנשים. שטפן הצטיין במחירים יחסית שפויים בעוגות גבינה מבסקיט (180 ש\"ח לעוגה 18 ס\"מ — סטנדרט השוק). הביס המצטיין של יונתן לשבועות 2026.",
+      "dishes_mentioned": [
+        "קרדינל שניטה",
+        "פיטיביה (פיטוויה) - מאפה סלמון",
+        "עוגת גבינה בסקיט"
+      ],
+      "special_features": [
+        "בייקרי אוסטרי",
+        "גלידת שף",
+        "קולקציה לכל חג",
+        "מחירים יחסית שפויים"
+      ],
+      "mention_context": "ביס המצטיין של יונתן לשבועות — הקרדינל שניטה",
+      "speaker": "Yehonatan Cohen",
+      "google_places": {
+        "place_id": "ChIJ8122yUJNHRURbaK7GkfFel8",
+        "google_url": "https://maps.google.com/?cid=6880028289943708269",
+        "rating": 4.6,
+        "review_count": 1446,
+        "price_level": null,
+        "phone": "03-679-9788",
+        "website": "https://www.stefanbakery.com/",
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqGsJ_rfWTIib2CHlbQddarseAb-ONxLAzBHEX24XS3MGAGl-pQKqY3iAz_9Lan7DW9DfjhcBJGt3bUVcAFA3pv4Bog4vlWrIk4=s4800-w800",
+        "instagram_url": null,
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      },
+      "engaging_quote": "הגיע אליי הביתה חתכתי פרוסה לילדים לקחתי טעימה עם הכף ואמרתי אוי ואבוי"
+    },
+    {
+      "verdict": "add_to_page",
+      "timestamp": {
+        "seconds": 2310,
+        "display": "38:30",
+        "youtube_url": "https://www.youtube.com/watch?v=Y9Uf2x8vQ8M&t=2310s"
+      },
+      "mention_level": "נטעם",
+      "name_hebrew": "רולדין",
+      "name_english": "Roladin",
+      "name_in_transcript": "רולדין",
+      "google_name": "רולדין",
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "רמת אביב",
+        "address": "ברודצקי 43, תל אביב-יפו, ישראל",
+        "region": "מרכז",
+        "latitude": 32.1118678,
+        "longitude": 34.7974995
+      },
+      "cuisine_type": "קונדיטוריה",
+      "price_range": "בינוני",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "הבסקיט שוקולד החדשה שלהם לחג",
+        "אני חושבת ששוקולד וגבינה זה שילוב מד מדהים שאין ממנו מספיק והיא הייתה מטורפת",
+        "מטורפת מטורפת באמת ממש טובה והיא גם 179 ש₪",
+        "אחלה מחיר"
+      ],
+      "host_comments": "נטע אכלה את בסקיט שוקולד החדשה של רולדין לחג שבועות. שילוב שוקולד וגבינה — שהוא לדעתה משחק מנצח שאין ממנו מספיק. \"מטורפת מטורפת באמת ממש טובה\". מחיר 179 ש\"ח, נחשב לאחלה מחיר במצעד הקישומטר (מדד הצ'יזומטר) של עמית — מבין הרשתות, רולדין הצטיינה במחיר שפוי יחסית. אמית גם המליץ על רולדין כאחת מהמקומות עם תמחור הוגן יותר השנה.",
+      "dishes_mentioned": [
+        "בסקיט שוקולד",
+        "עוגת גבינה לשבועות",
+        "קולקציית חג"
+      ],
+      "special_features": [
+        "רשת ארצית",
+        "קולקציות חג קבועות",
+        "מחירים יחסית שפויים"
+      ],
+      "mention_context": "הביס של נטע — בסקיט שוקולד החדשה של רולדין",
+      "speaker": "Neta Slonim",
+      "google_places": {
+        "place_id": "ChIJ49eeP2dJHRURrhc5QPEH5QA",
+        "google_url": "https://maps.google.com/?cid=64466502412736430",
+        "rating": 4.0,
+        "review_count": 857,
+        "price_level": null,
+        "phone": "03-677-7581",
+        "website": "http://www.roladin.co.il/",
+        "photo_url": "https://lh3.googleusercontent.com/place-photos/AJRVUZPSSxipFeTRqJia5PXcYTK0pUB9XcK8SyDtKK3KiNTLdHpuFSDCYRbyZvGqHMh-I_FEec5M_8Uv0IT2KgYOwV2OqsNSmLfCZORPfmYkNo3IZsnyjWsaMjYudjjRbrz5_ln0qxWfHHr4XS5Lkw=s4800-w800",
+        "instagram_url": null,
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      },
+      "engaging_quote": "מטורפת מטורפת באמת ממש טובה והיא גם 179 ש\"ח"
+    },
+    {
+      "verdict": "add_to_page",
+      "timestamp": {
+        "seconds": 2263,
+        "display": "37:43",
+        "youtube_url": "https://www.youtube.com/watch?v=Y9Uf2x8vQ8M&t=2263s"
+      },
+      "mention_level": "נטעם",
+      "name_hebrew": "ויצינו",
+      "name_english": "Vicino",
+      "name_in_transcript": "ויצ'ינו פראטלי ויצ'ינו",
+      "google_name": "ויצינו - Vicino",
+      "location": {
+        "city": "נתניה",
+        "neighborhood": "רמת פולג",
+        "address": "שדרות גיבורי ישראל 17, נתניה, ישראל",
+        "region": "שרון",
+        "latitude": 32.281253,
+        "longitude": 34.862075499999996
+      },
+      "cuisine_type": "קונדיטוריה איטלקית",
+      "price_range": "יקר",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "שוקולד מסקרפונה של ברק כהן מוויצ'ינו פרטלי ויצ'ינו",
+        "בצק פריך כזה שוקולדי מילוי של מסקרפונה ושוקולד שקדים ציפוי שוקולד מריר",
+        "עוגת גבינה שמחופסת למשהו אחר לגמרי",
+        "220 ש₪ לעוגה בקוטר 20"
+      ],
+      "host_comments": "יונתן הזכיר את עוגת השוקולד-מסקרפונה של ברק כהן בוויצ'ינו (Vicino) — הקונדיטוריה לצד מסעדת פראטלי ברמת פולג, נתניה. בצק פריך שוקולדי, מילוי מסקרפונה ושוקולד שקדים, ציפוי שוקולד מריר. עוגת גבינה ש\"מחופסת למשהו אחר לגמרי\" — לא קלאסי. 220 ש\"ח לעוגה בקוטר 20 ס\"מ. ברק כהן, שהיה אחראי על עוגות מגזינו המפורסמות, פתח את הקונדיטוריה הזו לצד פראטלי ברמת פולג כדי להמשיך את הקלאסיקות וחידושים.",
+      "dishes_mentioned": [
+        "עוגת שוקולד-מסקרפונה",
+        "עוגות בוטיק",
+        "פטיסרי איטלקי"
+      ],
+      "special_features": [
+        "קונדיטוריה של ברק כהן",
+        "צמוד למסעדת פראטלי",
+        "עוגות בוטיק"
+      ],
+      "mention_context": "אחד מהביסים המומלצים של יונתן לשבועות — שוקולד מסקרפונה",
+      "speaker": "Yehonatan Cohen",
+      "google_places": {
+        "place_id": "ChIJjWv94JdBHRURfs5G7ztwqvM",
+        "google_url": "https://maps.google.com/?cid=17557969499977076350",
+        "rating": 4.5,
+        "review_count": 70,
+        "price_level": null,
+        "phone": "055-992-2927",
+        "website": "https://vicino.co.il/",
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqHwy1vjIXKWeCIikQ0E9lSYNlMezaPKa5Wf1KB4MarBj7SKVoP5yMfgdUr88SZWS0d1I30n35EQjZ6M9IEsQof4NLcNz9qNAC0=s4800-w800",
+        "instagram_url": null,
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      },
+      "engaging_quote": "עוגת גבינה שמחופסת למשהו אחר לגמרי"
+    },
+    {
+      "verdict": "add_to_page",
+      "timestamp": {
+        "seconds": 2280,
+        "display": "38:00",
+        "youtube_url": "https://www.youtube.com/watch?v=Y9Uf2x8vQ8M&t=2280s"
+      },
+      "mention_level": "נטעם",
+      "name_hebrew": "האחים",
+      "name_english": "HaAchim",
+      "name_in_transcript": "טולי מהאחים",
+      "google_name": "האחים",
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "מרכז העיר",
+        "address": "שלמה אבן גבירול 26, תל אביב-יפו, ישראל",
+        "region": "מרכז",
+        "latitude": 32.0745789,
+        "longitude": 34.7821292
+      },
+      "cuisine_type": "ביסטרו ישראלי",
+      "price_range": "בינוני",
+      "status": "פתוח",
+      "host_opinion": "מעורבת",
+      "host_quotes": [
+        "התירמיסו קומקוטים של טולי א מהאחים",
+        "הפורמט הפורמט הפורמט שגע אותי",
+        "אתה אתה מתאר נפלא ואתה מגרב הכל הכל אחלה"
+      ],
+      "host_comments": "יונתן הזכיר את התירמיסו \"קומקוטים\" של טולי (Tuli Nava — קונדיטור בולט) במסעדת האחים — שיתוף פעולה חדש בארוחת בוקר/ביסטרו. המקום הוא מסעדת האחים של אסף דוקטור באבן גבירול 26. התרמיסו הוא חלק מקולקציית השבועות 2026. יונתן התלהב מהתיאור אבל הסתייג מ\"הפורמט\" — לא מצוי באהבה, אבל ההזמנה הספציפית מומלצת.",
+      "dishes_mentioned": [
+        "תירמיסו קומקוטים",
+        "בראנץ' של טולי",
+        "מאפים אפויים בקמח כוסמת"
+      ],
+      "special_features": [
+        "שיתוף פעולה עם טולי נווה",
+        "מאפים אפויים מקמח טחון ברחיים",
+        "בראנץ' ראשון-שישי 8-12"
+      ],
+      "mention_context": "אחד מהביסים המומלצים של יונתן — תירמיסו של הקונדיטור טולי",
+      "speaker": "Yehonatan Cohen",
+      "google_places": {
+        "place_id": "ChIJeSeRS8m7HRURcdcryO5CFbI",
+        "google_url": "https://maps.google.com/?cid=12832236306590062449",
+        "rating": 4.5,
+        "review_count": 6085,
+        "price_level": null,
+        "phone": "03-691-7171",
+        "website": "http://www.haachim.co.il/",
+        "photo_url": "https://lh3.googleusercontent.com/place-photos/AJRVUZNgzMBaho7MnEftXH-X61CBLEH4SXB4V1fASkc0We2Uc1rSDaMkxuBkyjWc0PZnIxb2Z9JBFY56-fi_uJvysnxP6zYpn2Lbi_m1V9lm1FRS-v_QZ5eeYf5eSh7hMqQUr4uwk3GJ1F5jZS7-Hw33HFR-=s4800-w800",
+        "instagram_url": null,
+        "verified": true
+      },
+      "production_db": {
+        "exists": true,
+        "id": "ef39263d-52ab-4b82-a36f-68c8fdbc0ee4"
+      },
+      "engaging_quote": "התירמיסו קומקוטים של טולי מהאחים"
+    },
+    {
+      "verdict": "reference_only",
+      "timestamp": {
+        "seconds": 823,
+        "display": "13:43",
+        "youtube_url": "https://www.youtube.com/watch?v=Y9Uf2x8vQ8M&t=823s"
+      },
+      "mention_level": "הוזכר",
+      "name_hebrew": "אריא",
+      "name_english": "Aria",
+      "name_in_transcript": "אריה",
+      "google_name": "אריא",
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "נחלת בנימין",
+        "address": "נחלת בנימין 66, תל אביב-יפו, ישראל",
+        "region": "מרכז",
+        "latitude": 32.061625899999996,
+        "longitude": 34.772309299999996
+      },
+      "cuisine_type": "מסעדה",
+      "price_range": "יקר",
+      "status": "נסגר",
+      "host_opinion": "ניטרלית",
+      "host_quotes": [
+        "נראה לי שנתחיל עם לתת את הכבוד לציין את הסגירה של אריה",
+        "13 שנה עכשיו",
+        "שזה מסוג המסעדות שכששמעתי שהם נסגרות הבנתי שהן עדיין קיימות",
+        "אכלתי שם לפחות שתי ארוחות ממש טובות"
+      ],
+      "host_comments": "הודעה על סגירת אריא (Aria) בנחלת בנימין אחרי 13 שנה — מסעדה מיתולוגית של משיכו אברהם שעזב לפני שנים. עמית מודה ש\"כששמעתי שהם נסגרות הבנתי שהן עדיין קיימות\". יותר מקום בילוי בקומה התחתונה בסוף. הנכס בלוקיישן מרהיב. עזר את ההשתפות של משיכו אברהם — אחד הדמויות החשובות בסצנה התל אביבית. צפי לפתיחת משהו חדש על אותו נכס. סקירה של חדשות התעשייה.",
+      "dishes_mentioned": [],
+      "special_features": [
+        "פעלה 13 שנה",
+        "משיכו אברהם",
+        "מקום בילוי"
+      ],
+      "mention_context": "הודעה על סגירה לאחר 13 שנה",
+      "speaker": "hosts",
+      "google_places": {
+        "place_id": "ChIJTRULCZ1MHRURZVpq5CkqPRM",
+        "google_url": "https://maps.google.com/?cid=1386310619714181733",
+        "rating": 4.2,
+        "review_count": 1487,
+        "price_level": null,
+        "phone": "03-529-6054",
+        "website": "http://www.ariatlv.co.il/",
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqFkwD-ULiNZjnnlJ1QMggd6_Sv0AdL_X6EtGPatQrC-uUBZGQEEo8vd7XL_O1W9PXOObO4WDPPOg-H9jLn8R9cHdBEvEqFCkvk=s4800-w800",
+        "instagram_url": null,
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      },
+      "skip_reason": "הודעת סגירה (חדשות תעשייה) - לא ביקור או המלצה"
+    },
+    {
+      "verdict": "reference_only",
+      "timestamp": {
+        "seconds": 1144,
+        "display": "19:04",
+        "youtube_url": "https://www.youtube.com/watch?v=Y9Uf2x8vQ8M&t=1144s"
+      },
+      "mention_level": "הוזכר",
+      "name_hebrew": "ניסו",
+      "name_english": "Nisso",
+      "name_in_transcript": "אניסו",
+      "google_name": "ניסו - NISSO",
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "יפו - שוק הפשפשים",
+        "address": "נועם 5, תל אביב-יפו, ישראל",
+        "region": "מרכז",
+        "latitude": 32.0516983,
+        "longitude": 34.7574896
+      },
+      "cuisine_type": "בית קפה",
+      "price_range": "בינוני",
+      "status": "נסגר",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "אניסו ביפו",
+        "אני מליצר מלא צער על הסגירה",
+        "הצליח אני חושב לבנות מקום שהיה אחר בנוף היפואי",
+        "יוני הוא טיפוס והוא התעקש להיות פתוח בסגרים בקורונה והוא אסף אוכל במלחמה",
+        "זה מקום שאני באופן אישי מודה חיבבתי מאוד",
+        "יפה משתנה ולא בהכרח לטובה"
+      ],
+      "host_comments": "הודעה על סגירת ניסו (Nisso) ביפו — בית הקפה-מעדנייה של יוני סלומון הירושלמי שפעל בכניסה לסטודיו ניסן נתיב. עמית מצער על הסגירה. יוני סלומון היה דמות מיוחדת — נשאר פתוח בסגרי קורונה, אסף אוכל במלחמה, ועושה פעילויות מאבק עם עיריית תל אביב. עמית גר שנים ביפו וחיבב את המקום. מסמן שינוי לא טוב ביפו.",
+      "dishes_mentioned": [],
+      "special_features": [
+        "בית קפה-מעדנייה",
+        "יוני סלומון",
+        "בכניסה לסטודיו ניסן נתיב"
+      ],
+      "mention_context": "הודעת סגירה - בית קפה מיתולוגי ביפו",
+      "speaker": "hosts",
+      "google_places": {
+        "place_id": "ChIJxbSKfrlMHRURyNgsmg7FhVg",
+        "google_url": "https://maps.google.com/?cid=6378721113747019976",
+        "rating": 4.1,
+        "review_count": 1031,
+        "price_level": null,
+        "phone": "03-654-8823",
+        "website": "http://nisso-deli.co.il/",
+        "photo_url": "https://lh3.googleusercontent.com/place-photos/AJRVUZNRZiB89Wtqi-F0k4URiQh8DMw5j68v20uga5PO-LIhXsfJ5N5PuhDmHl2dRV1S3f7i552mu3cvaJgTTlib8OR328x3X-apqBvJ4-kFz6Yelmqpb4wv9yIOy5LxrIiE_2qki9KniFxD351gPUU=s4800-w800",
+        "instagram_url": null,
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      },
+      "skip_reason": "הודעת סגירה (חדשות תעשייה) - לא ביקור או המלצה"
+    },
+    {
+      "verdict": "reference_only",
+      "timestamp": {
+        "seconds": 1217,
+        "display": "20:17",
+        "youtube_url": "https://www.youtube.com/watch?v=Y9Uf2x8vQ8M&t=1217s"
+      },
+      "mention_level": "הוזכר",
+      "name_hebrew": "מסעדת זו ZO TLV",
+      "name_english": "Zo TLV",
+      "name_in_transcript": "זו ברוטשילד",
+      "google_name": "מסעדת זו ZO TLV",
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "נחלת בנימין/רוטשילד",
+        "address": "שדרות רוטשילד 11, תל אביב-יפו, ישראל",
+        "region": "מרכז",
+        "latitude": 32.0632283,
+        "longitude": 34.770430399999995
+      },
+      "cuisine_type": "אסיאתי",
+      "price_range": "יקר",
+      "status": "פתוח",
+      "host_opinion": "ניטרלית",
+      "host_quotes": [
+        "הזו ברוטשילד מתחילים בימי שלישי באופן קבוע להרח את רושפלד",
+        "האם זה יהיה רושפלד יפני או רושפלד עושה רושפלד",
+        "זה המקום של יאקי קביר",
+        "זה עם סרפינה זה המקום שהיה בו סרפינה"
+      ],
+      "host_comments": "חדשות תעשייה: זו (ZO TLV) — מסעדה אסיאתית של יאקי קביר ושף דון טראן — מתחילה לארח את הקונדיטור הצרפתי-יפני אלעד רושפלד בימי שלישי באופן קבוע. במקום שהיה בעבר סרפינה ואיינשטיין. השאלה הפתוחה: האם רושפלד יביא צרפתי-יפני או יביא רושפלד טהור. נמצאת בתקופה של שינויים — אביב משה גם הצטרף כשותף ומשנה את שתי המסעדות האיטלקיות שהיו שם.",
+      "dishes_mentioned": [],
+      "special_features": [
+        "רושפלד אורח בימי שלישי",
+        "יאקי קביר",
+        "דון טראן"
+      ],
+      "mention_context": "חדשות תעשייה - אירוח קבוע של רושפלד",
+      "speaker": "hosts",
+      "google_places": {
+        "place_id": "ChIJ72fiWGpNHRURS_TElhPc_uA",
+        "google_url": "https://maps.google.com/?cid=16212637685272343627",
+        "rating": 4.2,
+        "review_count": 145,
+        "price_level": null,
+        "phone": "03-621-8593",
+        "website": "http://www.zotlv.com/",
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqHfN1_Tv-GsRRXmiIcrDoTwvv5V6jto_ve6k8zcrCnKx91ceBoFTGe7XdW4xWJ5uODlcX34MVwakkz5otJQ_yYp3RB8wbE45h8=s4800-w800",
+        "instagram_url": null,
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      },
+      "skip_reason": "חדשות תעשייה (פופ-אפ חדש) - לא ביקור או המלצה ספציפית"
+    },
+    {
+      "verdict": "reference_only",
+      "timestamp": {
+        "seconds": 1259,
+        "display": "20:59",
+        "youtube_url": "https://www.youtube.com/watch?v=Y9Uf2x8vQ8M&t=1259s"
+      },
+      "mention_level": "הוזכר",
+      "name_hebrew": "גלידה בלה מיה",
+      "name_english": "Bella Mia",
+      "name_in_transcript": "בלה ומיה",
+      "google_name": "גלידה בלה מיה Bellamia",
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": null,
+        "address": "תל אביב-יפו, ישראל",
+        "region": "מרכז",
+        "latitude": 32.0991153,
+        "longitude": 34.773779399999995
+      },
+      "cuisine_type": "איטלקי",
+      "price_range": "בינוני",
+      "status": "פתוח",
+      "host_opinion": "ניטרלית",
+      "host_quotes": [
+        "ממש עכשיו אביב משה נכנס לשם",
+        "נכנס נכנס שותף משנה לחלוטין את שני המקומות האיטלקיים שהמנתי שם בלה ומיה",
+        "מעניין אביב משה אני חושב שאנחנו מחבבים"
+      ],
+      "host_comments": "חדשות תעשייה: אביב משה נכנס כשותף בבלה מיה (Bella Mia) ואיינשטיין — שני מקומות איטלקיים. ישנה לחלוטין את שני המקומות. תכנון לראיון איתו בקרוב.",
+      "dishes_mentioned": [],
+      "special_features": [
+        "אביב משה נכנס כשותף",
+        "משנה את שני המקומות"
+      ],
+      "mention_context": "חדשות - אביב משה הופך לשותף",
+      "speaker": "hosts",
+      "google_places": {
+        "place_id": "ChIJJ_Jv4wlMHRURiaD-pae2PVU",
+        "google_url": "https://maps.google.com/?cid=6142266297963946121",
+        "rating": 3.0,
+        "review_count": 79,
+        "price_level": null,
+        "phone": null,
+        "website": null,
+        "photo_url": null,
+        "instagram_url": null,
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      },
+      "skip_reason": "חדשות תעשייה (שינוי בעלות) - לא ביקור או המלצה"
+    },
+    {
+      "verdict": "reference_only",
+      "timestamp": {
+        "seconds": 3333,
+        "display": "55:33",
+        "youtube_url": "https://www.youtube.com/watch?v=Y9Uf2x8vQ8M&t=3333s"
+      },
+      "mention_level": "הוזכר",
+      "name_hebrew": "טאו 77 TAU סושי בר",
+      "name_english": "TAU 77 Sushi Bar",
+      "name_in_transcript": "הסיאתי",
+      "google_name": "טאו 77 TAU סושי בר",
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "רוטשילד",
+        "address": "שדרות רוטשילד 15, תל אביב-יפו, 6334209, ישראל",
+        "region": "מרכז",
+        "latitude": 32.063196399999995,
+        "longitude": 34.77080110000001
+      },
+      "cuisine_type": "סושי",
+      "price_range": "יקר",
+      "status": "פתוח",
+      "host_opinion": "שלילית",
+      "host_quotes": [
+        "הסיאתי התקשרה על רוטשילד נראה מקום שהוא כזה גם פאן",
+        "סושי סושי ועוד סושי ועוד כמה דברים מסביב",
+        "מסעדה שאני גיליתי על קיומה מהתור הזה של סגי",
+        "חובה להגיע לשם",
+        "ביקורת באמת פנטסטית ברמת הכתיבה כמובן מאוד מאוד אכזרית",
+        "אגב זה איפה שהיה אדמתי"
+      ],
+      "host_comments": "פינת המבקרים — סגי כהן פרסם השמדה מפוערת על מסעדת סושי חדשה ברוטשילד 15 (במיקום שהיה בעבר אדמתי). המסעדה מכוונת לקהל צעיר — סושי וקצת דברים מסביב. הביקורת אכזרית. הצוות חלוקים: יונתן חושב שזה לא מקום שסגי \"היה אמור ללכת\" אליו, אבל עמית טוען שזה מקום קלאסי לביקורת בגלל המיקום היקר והעמוס. כתיבה פנטסטית.",
+      "dishes_mentioned": [
+        "סושי"
+      ],
+      "special_features": [
+        "מיקום פרימיום ברוטשילד",
+        "קהל צעיר"
+      ],
+      "mention_context": "ביקורת מנפצת של סגי כהן - פינת המבקרים",
+      "speaker": "hosts",
+      "google_places": {
+        "place_id": "ChIJHTY8jkVNHRURczhj9FKoPuY",
+        "google_url": "https://maps.google.com/?cid=16590883151520413811",
+        "rating": 4.9,
+        "review_count": 142,
+        "price_level": null,
+        "phone": "03-778-8997",
+        "website": null,
+        "photo_url": "https://lh3.googleusercontent.com/place-photos/AJRVUZOW5pmVOxp0kswBo9Z9gkovuMHZvZ76tvPvQRjEkYgOQzyilkCE5ATQOOZwli5a7YKjr4pbij6ZB1nuqFF7Y3tdzobNFyFPrnzB85Z_qGKs2ZFXqtmanPHdXj8rTqaPSnnxIRNS4SYO3zl65C-tJUvu=s4800-w800",
+        "instagram_url": null,
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      },
+      "skip_reason": "הוזכר רק כנושא ביקורת של סגי כהן - הצוות עצמם לא ביקרו"
+    },
+    {
+      "verdict": "reference_only",
+      "timestamp": {
+        "seconds": 3422,
+        "display": "57:02",
+        "youtube_url": "https://www.youtube.com/watch?v=Y9Uf2x8vQ8M&t=3422s"
+      },
+      "mention_level": "הוזכר",
+      "name_hebrew": "בורקס מרציאנו",
+      "name_english": "Burekas Marciano",
+      "name_in_transcript": "בורקס מרציאנו לוד / מודיעין",
+      "google_name": "בורקס מרציאנו",
+      "location": {
+        "city": "מודיעין",
+        "neighborhood": null,
+        "address": "עמק זבולון 24, מודיעין מכבים רעות, ישראל",
+        "region": "שפלה",
+        "latitude": 31.907397,
+        "longitude": 34.9979187
+      },
+      "cuisine_type": "בורקס",
+      "price_range": "זול",
+      "status": "חדש",
+      "host_opinion": "ניטרלית",
+      "host_quotes": [
+        "בורקס מרציאנו בלוד? זה לא כשזה נראה מה זה טוב?",
+        "הוא פתח סנייף במודיעין זאת הבשורה",
+        "מסתבר שיש בורקס מרציאנו בלוד שהוא מיתולוגלי דקובי רובין",
+        "מקום שקיים מעז 1973 נראה טוב מאוד מצוין",
+        "אם אני מגיע ללוד אני לא מבזבז את הזמן שלי על בורקס"
+      ],
+      "host_comments": "קובי רובין פרסם הבוקר על בורקס מרציאנו — בורקס מיתולוגי שפועל מ-1973 בלוד — שפותח סניף במודיעין. הצילום מראה בורקס שעל גבול הבורקס של ססון. יונתן מסתייג (\"אם אני מגיע ללוד אני לא מבזבז את הזמן שלי על בורקס - יש את הזה את הזה קוסקוס של שלטי...\"). אבל מצב שיבדקו את הסניף החדש במודיעין.",
+      "dishes_mentioned": [
+        "בורקסים"
+      ],
+      "special_features": [
+        "פועל מ-1973",
+        "בורקס מיתולוגי",
+        "סניף חדש במודיעין"
+      ],
+      "mention_context": "חדשות תעשייה - פתיחת סניף חדש במודיעין",
+      "speaker": "hosts",
+      "google_places": {
+        "place_id": "ChIJ6yqAIiHNAhURXQzpJubWQZ4",
+        "google_url": "https://maps.google.com/?cid=11403632015462435933",
+        "rating": 5.0,
+        "review_count": 8,
+        "price_level": null,
+        "phone": "052-855-7878",
+        "website": null,
+        "photo_url": "https://lh3.googleusercontent.com/place-photos/AJRVUZOQcuKM1VAnL4WG84wGL6hQVOgucIau3iPE1BwHQfYwlK6c1V4IE-9wFtcX3LSOsJTb8CX-M4XN4AN3JOqHr5SwFYR4pJxRD6gb5-Ilha0SrMIZlgT_yUewQw4nx1CeIQskU_wiZkm6_ov6_Ap0lAr4VQ=s4800-w800",
+        "instagram_url": null,
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      },
+      "skip_reason": "חדשות תעשייה (פתיחת סניף) - הצוות עצמם לא ביקרו"
+    },
+    {
+      "verdict": "reference_only",
+      "timestamp": {
+        "seconds": 3509,
+        "display": "58:29",
+        "youtube_url": "https://www.youtube.com/watch?v=Y9Uf2x8vQ8M&t=3509s"
+      },
+      "mention_level": "הוזכר",
+      "name_hebrew": "חומוס לול",
+      "name_english": "Hummus Lol",
+      "name_in_transcript": "חומוס לול בטירה",
+      "google_name": "חומוס לול טירה",
+      "location": {
+        "city": "טירה",
+        "neighborhood": null,
+        "address": "טירה, ישראל",
+        "region": "שרון",
+        "latitude": 32.2329065,
+        "longitude": 34.9473811
+      },
+      "cuisine_type": "חומוסיה",
+      "price_range": "זול",
+      "status": "פתוח",
+      "host_opinion": "ניטרלית",
+      "host_quotes": [
+        "חומוס לול בטירה",
+        "איפה שאנחנו נמצאים פה דוך למקום ששלמה שרפי המליץ עליו",
+        "אתה יכול לתת קרדיטים כבר שנלך לנגב"
+      ],
+      "host_comments": "יונתן הזכיר בחטף בסוף הפרק שהוא בדרך לחומוס לול בטירה — מקום ששלמה שרפי המליץ עליו. עוד לא ביקר. הזכרה קצרה כתכנון מיידי.",
+      "dishes_mentioned": [
+        "חומוס"
+      ],
+      "special_features": [
+        "המלצה של שלמה שרפי"
+      ],
+      "mention_context": "תכנון לבקר אחרי הפרק - המלצה של שלמה שרפי",
+      "speaker": "Yehonatan Cohen",
+      "google_places": {
+        "place_id": "ChIJkSy406Y-HRUREaHxQWY_ZT4",
+        "google_url": "https://maps.google.com/?cid=4496069511424876817",
+        "rating": 4.5,
+        "review_count": 737,
+        "price_level": null,
+        "phone": "054-575-9198",
+        "website": null,
+        "photo_url": "https://lh3.googleusercontent.com/place-photos/AJRVUZMVu_jUgzPeUv2yQK4x1QBxguhL9dG3zERydJsdFaJvdATkWelmzFUnXJKEt4AGNF2p2ibzPPUHVhHCOlt-2SCJFO22ck0XstSsnKuHISV4-vQCNMBLggWp5BCl5n1kQj93LtHBV-rYfAPevA=s4800-w800",
+        "instagram_url": null,
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      },
+      "skip_reason": "אזכור עתידי בלבד - הצוות עוד לא ביקרו"
+    },
+    {
+      "verdict": "reference_only",
+      "timestamp": {
+        "seconds": 3539,
+        "display": "58:59",
+        "youtube_url": "https://www.youtube.com/watch?v=Y9Uf2x8vQ8M&t=3539s"
+      },
+      "mention_level": "הוזכר",
+      "name_hebrew": "הסמטה",
+      "name_english": "HaSimta",
+      "name_in_transcript": "השמטה",
+      "google_name": "הסמטה עזריאלי",
+      "location": {
+        "city": "מטולה",
+        "neighborhood": null,
+        "address": "הראשונים 17, מטולה, ישראל",
+        "region": "צפון",
+        "latitude": 32.093088099999996,
+        "longitude": 34.8322718
+      },
+      "cuisine_type": "המבורגר",
+      "price_range": "בינוני",
+      "status": "עומד להיפתח",
+      "host_opinion": "חיובית",
+      "host_quotes": [
+        "ראיתי שהשמטה פותח בשישי",
+        "אולי אני אתרך לעלות למתולה לתת את ההמבורגר הראשון",
+        "נראה לי ההמבורגר הזה הקריספי צ'יקן שלו שווה את זה"
+      ],
+      "host_comments": "יונתן הזכיר שהמבורגרייה הסמטה (HaSimta) — שעברה לתל אביב במהלך המלחמה — פותחת מחדש את הסניף במטולה ביום שישי. תכנון לבקר ולתת את ההמבורגר הראשון. גם הקריספי צ'יקן נשמע שווה. הסניף המקורי במטולה ברחוב הראשונים 17 נסגר כשמטולה התפנתה.",
+      "dishes_mentioned": [
+        "המבורגר דאבל סמאש עם צ'דר",
+        "קריספי צ'יקן"
+      ],
+      "special_features": [
+        "חוזרת למטולה",
+        "סמאש בורגר",
+        "אחרי הפסקה במלחמה"
+      ],
+      "mention_context": "פתיחה מחודשת של הסניף במטולה",
+      "speaker": "Yehonatan Cohen",
+      "google_places": {
+        "place_id": "ChIJa9MXyZxJHRURrOfcDGlc2gY",
+        "google_url": "https://maps.google.com/?cid=493808715407615916",
+        "rating": 4.5,
+        "review_count": 76,
+        "price_level": null,
+        "phone": "058-437-5060",
+        "website": "https://www.instagram.com/hasimta",
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqGlmPZqfmrKaE8proO_Wad4zzRmYDmgnEQB5UWiq3cxNBfb6GlW9YbvICM7aDRyjFX6VQnYeLvxP-iqFXNrXh0iiH77J7Ngd6c=s4800-w800",
+        "instagram_url": "https://www.instagram.com/hasimta",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      },
+      "skip_reason": "תכנון לבקר - עדיין לא פתח / לא ביקרו"
+    },
+    {
+      "verdict": "reference_only",
+      "timestamp": {
+        "seconds": 949,
+        "display": "15:49",
+        "youtube_url": "https://www.youtube.com/watch?v=Y9Uf2x8vQ8M&t=949s"
+      },
+      "mention_level": "הוזכר",
+      "name_hebrew": "גוז' ודניאל",
+      "name_english": "Goz & Daniel",
+      "name_in_transcript": "גוז (גוש ודניאל)",
+      "google_name": "גוז' ודניאל",
+      "location": {
+        "city": "תל יצחק",
+        "neighborhood": "תחנת דלק דור אלון",
+        "address": "תחנת דלק דור אלון, כביש 553, תל יצחק, ישראל",
+        "region": "שרון",
+        "latitude": 32.2228299,
+        "longitude": 34.86672
+      },
+      "cuisine_type": "המבורגר",
+      "price_range": "בינוני",
+      "status": "חדש",
+      "host_opinion": "ניטרלית",
+      "host_quotes": [
+        "גוש ודניאל פתחו מקום להמבורגר",
+        "במכניסה כן, יש שם תחנה דלק",
+        "המקום נקרא אם הצלחתי להבין פשוט גוז'",
+        "אין קשר קולינרי אבל אותם בעלים",
+        "המבורגר ועוד קצת ראיתי שיש כזה תקוס וכל מיני סלטים",
+        "נשמע לי כאילו שאני בדרך לצפון מחר עוצר שם"
+      ],
+      "host_comments": "חדשות תעשייה: גוש ודניאל — שמפעילים את המסעדה המוערכת בבני ציון — פתחו מקום המבורגר חדש בתחנת דלק דור אלון בכביש 553 ליד הכניסה לתל יצחק. השם \"גוז'\" (לא קשור לאנגלסלה השף, רק אותם בעלים). תפריט: המבורגר ועוד טאקוס וסלטים. עדיין בהרצה — שני-חמישי 13:30-22:00, שישי 12:00-16:00, שבת 12:00-18:00. עמית מתכנן לסור.",
+      "dishes_mentioned": [
+        "המבורגר",
+        "טאקו",
+        "סלטים"
+      ],
+      "special_features": [
+        "בתחנת דלק",
+        "אותם בעלים של גוש ודניאל",
+        "בהרצה"
+      ],
+      "mention_context": "פתיחה חדשה - הסניף המהיר של גוש ודניאל",
+      "speaker": "hosts",
+      "google_places": {
+        "place_id": "ChIJtY5Bg5g4HRURTj8wTOvTNUA",
+        "google_url": "https://maps.google.com/?cid=4626837199742058318",
+        "rating": 4.6,
+        "review_count": 5322,
+        "price_level": null,
+        "phone": "09-771-4122",
+        "website": "http://goujeanddaniel.co.il/",
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqFGQxNclHIbVJ6xbVQ7R3s_ayvxkcW6X-IAnBopr4XH_5pPODNDdcQLt7JvB5QHS7lzEVIvX9Fer4OLW_C7-WLxfW979kuw27M=s4800-w800",
+        "instagram_url": null,
+        "verified": true,
+        "note": "Place ID points to the main Goz & Daniel restaurant in Bnei Tzion. The new burger pop-up at Tel Yitzhak gas station is not yet on Google Places."
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      },
+      "skip_reason": "חדשות תעשייה (פתיחה חדשה) - הצוות עוד לא ביקרו"
+    },
+    {
+      "verdict": "reference_only",
+      "timestamp": {
+        "seconds": 877,
+        "display": "14:37",
+        "youtube_url": "https://www.youtube.com/watch?v=Y9Uf2x8vQ8M&t=877s"
+      },
+      "mention_level": "הוזכר",
+      "name_hebrew": "לולש (לא ידוע)",
+      "name_english": "Lulush (unconfirmed)",
+      "name_in_transcript": "לולש / לוליש",
+      "google_name": null,
+      "location": {
+        "city": "חיפה",
+        "neighborhood": "רחוב הנמל",
+        "address": "רחוב הנמל, חיפה (לא אומת)",
+        "region": "צפון",
+        "latitude": 32.82,
+        "longitude": 35.0
+      },
+      "cuisine_type": "שיפודיה",
+      "price_range": "בינוני",
+      "status": "חדש",
+      "host_opinion": "חיובית",
+      "host_quotes": [
+        "איך קוראים למקום החדש בחיפה",
+        "לולש איך",
+        "זה לא לוליש",
+        "לולולש לא יודע אני מנחש בדיוק כמוכם",
+        "זה המקום החדש של חמודי אוקלה",
+        "הוא פותח מקום חדש ומהיר שם בחיפה",
+        "עכשיו הוא שם פותח גרסה של שיפודיה מהירה",
+        "מדובר במקום שווה אני מה שנקרא בכוונתי לסור ובהקדם"
+      ],
+      "host_comments": "חדשות תעשייה: השף חמודי אוקלה (שגריל 65 שלו בפרדס חנה הוערכה רבות) פותח מקום חדש ומהיר בחיפה ברחוב הנמל — גרסה של שיפודיה. בינתיים בהרצה (12-15). יוני - מתכונת מלאה כולל ערב. השם לא ברור — \"לולש\", \"לוליש\" או \"לולולש\" — הצוות עצמם לא יודעים. שמועות חיוביות מחיפאים מקומיים. עמית בדרך לבקר.",
+      "dishes_mentioned": [
+        "שיפודים",
+        "תוספות"
+      ],
+      "special_features": [
+        "שיפודיה מהירה",
+        "חמודי אוקלה",
+        "בהרצה"
+      ],
+      "mention_context": "פתיחה חדשה - השם בלתי ברור",
+      "speaker": "hosts",
+      "google_places": {
+        "place_id": null,
+        "google_url": null,
+        "rating": null,
+        "review_count": null,
+        "price_level": null,
+        "phone": null,
+        "website": null,
+        "photo_url": null,
+        "instagram_url": null,
+        "verified": false,
+        "note": "Restaurant name unverified — hosts themselves admit they could not catch it. Brand new opening at Haifa Port area, not yet on Google Places."
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      },
+      "skip_reason": "שם לא מאומת + הצוות עוד לא ביקרו - חדשות תעשייה"
+    },
+    {
+      "verdict": "reference_only",
+      "timestamp": {
+        "seconds": 1052,
+        "display": "17:32",
+        "youtube_url": "https://www.youtube.com/watch?v=Y9Uf2x8vQ8M&t=1052s"
+      },
+      "mention_level": "הוזכר",
+      "name_hebrew": "פומפי באשדוד",
+      "name_english": "Pompi Ashdod (forthcoming)",
+      "name_in_transcript": "פומפי / עידן בושרי",
+      "google_name": null,
+      "location": {
+        "city": "אשדוד",
+        "neighborhood": "הטיילת",
+        "address": "הטיילת, אשדוד (לא נפתח עדיין)",
+        "region": "דרום",
+        "latitude": 31.78,
+        "longitude": 34.63
+      },
+      "cuisine_type": "דגים",
+      "price_range": "בינוני",
+      "status": "עומד להיפתח",
+      "host_opinion": "חיובית",
+      "host_quotes": [
+        "אחד השפים החביבים עלינו א זוכה ראליטי בשעתו המסעדה הבאה אקס קילומטראז' בוגר מחנה יודה עידן בושרי המכונה פומפי",
+        "נכנס בקרוב במקום חדש א באשדוד על רצועת הטיילת המטורפת היפייפיה והמתפתחת שם",
+        "עכשיו עומד להיפתח שם רוף טופ מקום שטח עצום",
+        "אמור להיות מבוסס דגה וטולו",
+        "פומפי הוא איש מקסים ונהדר ואהוב"
+      ],
+      "host_comments": "פרסום ראשון: השף עידן בושרי המכונה פומפי (זוכה ראליטי \"המסעדה הבאה\", בוגר אקס קילומטראז' ומחנה יהודה) פותח מקום חדש בטיילת אשדוד. רוף טופ עצום עם נוף, על ציר בין בילוי לאוכל מאוד פשוט, מבוסס דגה טרייה וטולו. בקצה הדרומי של הטיילת המתפתחת (איפה שיש את יחי, פסקדו, רונג'ן). תכנון לסיור קולינרי באשדוד בעוד חודש-וחצי, מקווים שיפתח עד אז.",
+      "dishes_mentioned": [
+        "דגה טרייה",
+        "טולו"
+      ],
+      "special_features": [
+        "רוף טופ",
+        "נוף לטיילת",
+        "פתיחה קרובה",
+        "שף עידן בושרי"
+      ],
+      "mention_context": "פרסום ראשון - פתיחה קרובה של פומפי באשדוד",
+      "speaker": "hosts",
+      "google_places": {
+        "place_id": null,
+        "google_url": null,
+        "rating": null,
+        "review_count": null,
+        "price_level": null,
+        "phone": null,
+        "website": null,
+        "photo_url": null,
+        "instagram_url": null,
+        "verified": false,
+        "note": "Restaurant is not yet open - announced for forthcoming opening. Chef is Idan Bushri (Pompi). Location: Ashdod promenade."
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      },
+      "skip_reason": "פתיחה עתידית - המסעדה עוד לא פתחה"
+    },
+    {
+      "verdict": "rejected",
+      "timestamp": {
+        "seconds": 100,
+        "display": "1:40",
+        "youtube_url": "https://www.youtube.com/watch?v=Y9Uf2x8vQ8M&t=100s"
+      },
+      "name_in_transcript": "מולי אקשטיין / לקת ישראל",
+      "reject_reason": "מולי אקשטיין הוא פרדסן (חקלאי), לא מסעדה. לקת ישראל היא עמותה ליהיצול מזון - לא מסעדה."
+    },
+    {
+      "verdict": "rejected",
+      "timestamp": {
+        "seconds": 423,
+        "display": "7:03",
+        "youtube_url": "https://www.youtube.com/watch?v=Y9Uf2x8vQ8M&t=423s"
+      },
+      "name_in_transcript": "עזר ססון בורקס מוסה",
+      "reject_reason": "הוזכר רק בהתייחסות לבורקס מוסה כקונספט קודם של ארוחת יום הולדת ביתית - לא ביקור או המלצה. עזר ססון הוא בורקסן ידוע אבל הכוונה כאן רק לסגנון."
+    },
+    {
+      "verdict": "rejected",
+      "timestamp": {
+        "seconds": 448,
+        "display": "7:28",
+        "youtube_url": "https://www.youtube.com/watch?v=Y9Uf2x8vQ8M&t=448s"
+      },
+      "name_in_transcript": "נתנאל ממושב אליחין",
+      "reject_reason": "מקור לג'חנון בארוחה ביתית של יונתן - לא מסעדה. ספק חקלאי/ביתי."
+    },
+    {
+      "verdict": "rejected",
+      "timestamp": {
+        "seconds": 472,
+        "display": "7:52",
+        "youtube_url": "https://www.youtube.com/watch?v=Y9Uf2x8vQ8M&t=472s"
+      },
+      "name_in_transcript": "אושן סטאר",
+      "reject_reason": "חנות דגים/אזור תעשייה - מקום קניות לא מסעדה. הוזכר רק כספק שמשמיש לארוחה ביתית."
+    },
+    {
+      "verdict": "rejected",
+      "timestamp": {
+        "seconds": 466,
+        "display": "7:46",
+        "youtube_url": "https://www.youtube.com/watch?v=Y9Uf2x8vQ8M&t=466s"
+      },
+      "name_in_transcript": "המחלבה הקטנה בגבעת חיים",
+      "reject_reason": "מחלבה - חנות גבינות, לא מסעדה. הוזכר רק כספק לארוחה ביתית."
+    },
+    {
+      "verdict": "rejected",
+      "timestamp": {
+        "seconds": 505,
+        "display": "8:25",
+        "youtube_url": "https://www.youtube.com/watch?v=Y9Uf2x8vQ8M&t=505s"
+      },
+      "name_in_transcript": "שמירז של מיכאל אפשטיין",
+      "reject_reason": "חנות בייגלים (Schmir's) - יותר ספק/מאפייה מקומית, לא מסעדה לסעודה. הוזכר רק כמרכיב לסנדוויץ' ביתי."
+    },
+    {
+      "verdict": "rejected",
+      "timestamp": {
+        "seconds": 1003,
+        "display": "16:43",
+        "youtube_url": "https://www.youtube.com/watch?v=Y9Uf2x8vQ8M&t=1003s"
+      },
+      "name_in_transcript": "יצחק שרלי / יצחק ויהודה / שרלי ויהודה",
+      "reject_reason": "בלבול בשמות - הזכרות עתיקות של מסעדות שכבר נסגרו (גבעת שאול, ירושלים). לא רלוונטי לפרק."
+    },
+    {
+      "verdict": "rejected",
+      "timestamp": {
+        "seconds": 0,
+        "display": "0:00",
+        "youtube_url": null
+      },
+      "name_in_transcript": "חצי שנה הפכה למסעדת",
+      "reject_reason": "אין כזה אזכור בפרק הזה - בדיקה."
+    },
+    {
+      "verdict": "rejected",
+      "timestamp": {
+        "seconds": 949,
+        "display": "15:49",
+        "youtube_url": "https://www.youtube.com/watch?v=Y9Uf2x8vQ8M&t=949s"
+      },
+      "name_in_transcript": "גוש ודניאל בבני ציון",
+      "reject_reason": "המסעדה המקורית של גוש ודניאל בבני ציון לא הוזכרה כביקור - רק כרקע (אותם בעלים של המקום החדש בתל יצחק)."
+    },
+    {
+      "verdict": "rejected",
+      "timestamp": {
+        "seconds": 1067,
+        "display": "17:47",
+        "youtube_url": "https://www.youtube.com/watch?v=Y9Uf2x8vQ8M&t=1067s"
+      },
+      "name_in_transcript": "יחי עם פסקדו ורונג'ן",
+      "reject_reason": "הוזכרו רק כסימני מיקום באשדוד (\"איפה שיש את יחי, פסקדו, רונג'ן\") - לא ביקור או המלצה."
+    },
+    {
+      "verdict": "rejected",
+      "timestamp": {
+        "seconds": 1253,
+        "display": "20:53",
+        "youtube_url": "https://www.youtube.com/watch?v=Y9Uf2x8vQ8M&t=1253s"
+      },
+      "name_in_transcript": "איינשטיין",
+      "reject_reason": "הוזכר כחלק מאותו קומפלקס שאביב משה נכנס אליו כשותף. הוזכר רק כצריך לעבור שינוי (יחד עם בלה מיה) - אבל המסעדה הזו עוד לא מוגדרת מחדש."
+    },
+    {
+      "verdict": "rejected",
+      "timestamp": {
+        "seconds": 1244,
+        "display": "20:44",
+        "youtube_url": "https://www.youtube.com/watch?v=Y9Uf2x8vQ8M&t=1244s"
+      },
+      "name_in_transcript": "סרפינה",
+      "reject_reason": "הוזכרה רק כהיסטוריה - מסעדה שכבר לא קיימת באותו מיקום (כעת זו)."
+    },
+    {
+      "verdict": "rejected",
+      "timestamp": {
+        "seconds": 1232,
+        "display": "20:32",
+        "youtube_url": "https://www.youtube.com/watch?v=Y9Uf2x8vQ8M&t=1232s"
+      },
+      "name_in_transcript": "יואקי קביר",
+      "reject_reason": "יאקי קביר הוא מסעדן (בעלים של מסעדת זו) - לא שם של מסעדה."
+    },
+    {
+      "verdict": "rejected",
+      "timestamp": {
+        "seconds": 3072,
+        "display": "51:12",
+        "youtube_url": "https://www.youtube.com/watch?v=Y9Uf2x8vQ8M&t=3072s"
+      },
+      "name_in_transcript": "אבי ביטון",
+      "reject_reason": "הוזכר ככוונה לפתוח מקום בהרצליה - אין שם מסעדה ולא תאריך. שף בלבד."
+    },
+    {
+      "verdict": "rejected",
+      "timestamp": {
+        "seconds": 3079,
+        "display": "51:19",
+        "youtube_url": "https://www.youtube.com/watch?v=Y9Uf2x8vQ8M&t=3079s"
+      },
+      "name_in_transcript": "גייג'ין",
+      "reject_reason": "הוזכר כמקום חדש שעוד לא נפתח בהרצליה - לא ביקור, לא תאריך פתיחה ברור."
+    },
+    {
+      "verdict": "rejected",
+      "timestamp": {
+        "seconds": 3270,
+        "display": "54:30",
+        "youtube_url": "https://www.youtube.com/watch?v=Y9Uf2x8vQ8M&t=3270s"
+      },
+      "name_in_transcript": "יקב סנילביץ'",
+      "reject_reason": "יקב - לא מסעדה. הוזכר רק כיוצר הרוזה שסגי כהן שתה בנחלת בנימין."
+    },
+    {
+      "verdict": "rejected",
+      "timestamp": {
+        "seconds": 2214,
+        "display": "36:54",
+        "youtube_url": "https://www.youtube.com/watch?v=Y9Uf2x8vQ8M&t=2214s"
+      },
+      "name_in_transcript": "דלל",
+      "reject_reason": "מותג שמנת/חמאה - לא מסעדה. רכיב במאפה של שטפן."
+    },
+    {
+      "verdict": "rejected",
+      "timestamp": {
+        "seconds": 2375,
+        "display": "39:35",
+        "youtube_url": "https://www.youtube.com/watch?v=Y9Uf2x8vQ8M&t=2375s"
+      },
+      "name_in_transcript": "עד העצם",
+      "reject_reason": "מסעדה מיתולוגית שנסגרה לפני שנים. הוזכרה רק כמקום שעל חורבותיו נפתח נפוליטן 26."
+    },
+    {
+      "verdict": "rejected",
+      "timestamp": {
+        "seconds": 0,
+        "display": "0:00",
+        "youtube_url": null
+      },
+      "name_in_transcript": "קוק / קופיין",
+      "reject_reason": "לא הוזכר בפרק הזה."
+    }
+  ]
+}
