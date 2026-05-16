@@ -346,7 +346,7 @@
         "phone": null,
         "website": "https://la-story.co.il/",
         "photo_url": null,
-        "instagram_url": null,
+        "instagram_url": "https://www.instagram.com/la_story_il/",
         "verified": false
       },
       "production_db": {
