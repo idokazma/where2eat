@@ -1,0 +1,1024 @@
+{
+  "episode": {
+    "video_id": "gRpspS9UEO8",
+    "video_url": "https://www.youtube.com/watch?v=gRpspS9UEO8",
+    "title": "היאמי הלאומי | מדברים מהבטן, פרק 156",
+    "channel_name": "מדברים מהבטן - הפודיום",
+    "published_at": "2026-05-20",
+    "hosts": [
+      "עמית אהרונסון",
+      "יהונתן כהן",
+      "נטע סלונים"
+    ],
+    "guests": [
+      "אור נדבח",
+      "איתמר שרבי"
+    ],
+    "language": "he",
+    "transcript_length": 49389,
+    "segment_count": 1505,
+    "episode_id": null,
+    "summary": "פרק 156 משודר ממרכז המבקרים של יקב טבור בכפר תבור, רגע לפני חג שבועות. הביסים: יונתן ממליץ על בובה קפה באפולה (בית קפה־קונדיטוריה של טבחים מקריית שמונה), נטע על מארז המזווה של קפה צין במצפה רמון, ויונתן השני על המג'דרה של חומוס חמודות ביצחק שדה. ראיון יין עם אור נדבח, היינן הראשי של יקב טבור, על אזורי גידול והכרזת הנגב כאזור יין. ראיון עם המסעדן הצפוני איתמר שרבי (טמרלין נהלל, מישקה יפעת) שממליץ על מאפיית העמקים במנשייה זבדה (חומוס), פיצה נונה ברמת ישי ושפים מקומיים. ההמלצה המרכזית: יונתן ממליץ בלהט על ארמון סהרה של נשאת עבאס בכפר נין כאחת מחמש המסעדות הטובות בישראל. נטע על ארוחות הבית של יוסי אלעד (לשעבר מחניודה) בראש פינה, ועל הכניסה של אבי ביטון לרדלר. חדשות תעשייה: יוסי שיטריט עוזב את משחקי השף למסטרשף, יונתן רושפלד נכנס למרי ופופה, תלי רשבסקי פותח מסעדת שניצל בפארק המסילה, הכרה רשמית בנגב כאזור יין. ביקורות: אבי פדפי על בו, סגי כהן על טאורוס מילה."
+  },
+  "extraction": {
+    "date": "2026-05-21",
+    "agent": "episode-processor",
+    "total_mentions": 22,
+    "add_to_page": 10,
+    "reference_only": 9,
+    "rejected": 3,
+    "already_in_db": 3,
+    "new_to_add": 7
+  },
+  "restaurants": [
+    {
+      "verdict": "add_to_page",
+      "name_hebrew": "בובה קפה",
+      "name_english": "Buba Cafe",
+      "name_in_transcript": "בובה קפה",
+      "google_name": "בובה קפה",
+      "timestamp": {
+        "seconds": 316,
+        "display": "05:16",
+        "youtube_url": "https://www.youtube.com/watch?v=gRpspS9UEO8&t=316s"
+      },
+      "location": {
+        "city": "עפולה",
+        "neighborhood": null,
+        "address": "מנחם אוסישקין 23, עפולה",
+        "region": "צפון",
+        "latitude": 32.6078954,
+        "longitude": 35.2887759
+      },
+      "cuisine_type": "בית קפה",
+      "price_range": "בינוני",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "מקום שמהשנייה שנכנסתי אליהם עברו לי בראש שני דברים הדבר הראשון מתי אני בא שוב והדבר השני איזה באסה שזה לא ליד הבית שלי",
+        "זה בית קפה של טבח וזה קונדיטוריה של טבח וזה מורגש בכל אספקט",
+        "ביס מושלם מושלם מושלם מושלם קפה מעולה המאפים המתוקים",
+        "מקום שאם היה נפתח היום בתל אביב היה מתברג בקלות לרשימת בתי הקפה המומלצים של נתסלונים"
+      ],
+      "host_comments": "ביס השבוע של יונתן. בית קפה־קונדיטוריה בעפולה של בני הזוג לי זגורי ומיכל, מפונים מקריית שמונה. הוא טבח לשעבר בצ'נה ובדנון. הכל בעבודת יד — בצקים, מאפים, פחזניות. יונתן ממליץ בלהט לכל מי שנמצא בדרך לצפון בכביש 65 לעצור.",
+      "dishes_mentioned": [
+        "פחזניות (קרם קפה, קרמבל קקאו)",
+        "מאפה בצק בייגלה עם גבינה מלוחה וזעתר",
+        "מאפה מנגולד עם פטה ומוצרלה ופרמזן",
+        "ברוסקטה אבוקדו מקושקשת שמן הריסה",
+        "גבינית לימונית"
+      ],
+      "special_features": [
+        "בית קפה־קונדיטוריה",
+        "עבודת יד",
+        "בעלים מקריית שמונה",
+        "פתוח רק בבוקר (8:00-14:00)"
+      ],
+      "mention_context": "ביס השבוע של יונתן — בית קפה־קונדיטוריה חדש בעפולה",
+      "mention_level": "נטעם",
+      "sub_tag": "נטעם",
+      "speaker": "יהונתן כהן",
+      "google_places": {
+        "place_id": "ChIJR7LpLUBTHBURr9bDojKcGE4",
+        "google_url": "https://maps.google.com/?cid=5627419475692476079",
+        "rating": 4.8,
+        "review_count": 116,
+        "price_level": null,
+        "phone": "052-749-4793",
+        "website": null,
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqFlyPJtnwMgIRC5P5w4R9sY_L7OalbtwnP59HBJhn7QD5AnHphPP-qsJdPKvpOyJvu36wn9ikQOoLQwMz-Z9g-JAWOUsTZIB5E=s4800-w800",
+        "instagram_url": "https://www.instagram.com/buba.cafeee/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      },
+      "image_url": "https://lh3.googleusercontent.com/places/ANXAkqFlyPJtnwMgIRC5P5w4R9sY_L7OalbtwnP59HBJhn7QD5AnHphPP-qsJdPKvpOyJvu36wn9ikQOoLQwMz-Z9g-JAWOUsTZIB5E=s4800-w800"
+    },
+    {
+      "verdict": "add_to_page",
+      "name_hebrew": "חומוס חמודות",
+      "name_english": "Hummus Hamudot",
+      "name_in_transcript": "חומוס חמודות",
+      "google_name": "חומוס חמודות",
+      "timestamp": {
+        "seconds": 654,
+        "display": "10:54",
+        "youtube_url": "https://www.youtube.com/watch?v=gRpspS9UEO8&t=654s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": null,
+        "address": "יצחק שדה 28, תל אביב-יפו",
+        "region": "תל אביב",
+        "latitude": 32.0649526,
+        "longitude": 34.7872252
+      },
+      "cuisine_type": "חומוסיה",
+      "price_range": "זול",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "מקום שפועל מתחת לרדר",
+        "סיא הפשטות חומוס שתוחנים במקום",
+        "המגדרה הייתה באמת מופת של איזון ועדינות",
+        "קערת הצהריים הזאת של מג'דרה מעולה",
+        "ארוחת צהריים מושלמת"
+      ],
+      "host_comments": "ביס השבוע של יונתן השני. חומוסיה לא־מוכרת בדרך יצחק שדה (תל אביב) שטוחנת חומוס במקום. ההמלצה: קערת מג'דרה (32 ש\"ח) עם סלט ירקות, גרגירי חומוס ותחינה — מופת של איזון ועדינות, ארוחת צהריים מלאה ועובדת פגז. ההנהלה הנוכחית מנהלת את המקום כשנתיים-שלוש, אך מתקיים שם 10+ שנים.",
+      "dishes_mentioned": [
+        "מג'דרה (אורז, עדשים, בצל מטוגן, כמון)",
+        "חומוס",
+        "סלט ירקות",
+        "גרגירי חומוס",
+        "ביצה קשה אקסטרה"
+      ],
+      "special_features": [
+        "טוחנים חומוס במקום",
+        "מתחת לרדר",
+        "מחירים נגישים",
+        "ארוחת צהריים מלאה ב-32 ש\"ח"
+      ],
+      "mention_context": "ביס השבוע של יונתן — חומוסיה צנועה ביצחק שדה עם מג'דרה מצוינת",
+      "mention_level": "נטעם",
+      "sub_tag": "נטעם",
+      "speaker": "יהונתן כהן",
+      "google_places": {
+        "place_id": "ChIJO1yPOXdLHRURHW929w3HjUk",
+        "google_url": "https://maps.google.com/?cid=5300111199285178141",
+        "rating": 4.7,
+        "review_count": 555,
+        "price_level": "PRICE_LEVEL_INEXPENSIVE",
+        "phone": "055-933-1696",
+        "website": null,
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqGaLHP3XF0ax8-ehSDHPq6Mpmdn84XbNkRRDectyBfjCTRSVnyib7bQm3uihjj_C8YCvmCDqM_FqW8lzPOK1O107HjSDVgC3Tk=s4800-w800",
+        "instagram_url": "https://www.instagram.com/hummus_hamudot/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      },
+      "image_url": "https://lh3.googleusercontent.com/places/ANXAkqGaLHP3XF0ax8-ehSDHPq6Mpmdn84XbNkRRDectyBfjCTRSVnyib7bQm3uihjj_C8YCvmCDqM_FqW8lzPOK1O107HjSDVgC3Tk=s4800-w800"
+    },
+    {
+      "verdict": "add_to_page",
+      "name_hebrew": "תמרלין",
+      "name_english": "Tamerlin",
+      "name_in_transcript": "טמרלין",
+      "google_name": "תמרלין",
+      "timestamp": {
+        "seconds": 2224,
+        "display": "37:04",
+        "youtube_url": "https://www.youtube.com/watch?v=gRpspS9UEO8&t=2224s"
+      },
+      "location": {
+        "city": "נהלל",
+        "neighborhood": null,
+        "address": "נהלל",
+        "region": "צפון",
+        "latitude": 32.6821269,
+        "longitude": 35.2013936
+      },
+      "cuisine_type": "בשרים",
+      "price_range": "יקר",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "האמת שהיה סבבה באמת הרגשנו כאחד האדם",
+        "ואחד האדם נהנה שם מאוד",
+        "בעיקר מקום שמאוד מאוד נעים לשבת בטח עם הנוף השקוף שמה הכל צו ופה על המישור המהמם הזה",
+        "אנטריקות סיפרת עליה לא נכון פה",
+        "פינקנו אותכם"
+      ],
+      "host_comments": "מסעדת הבשר של איתמר שרבי בנהלל, יחד עם משפחת אמיר ממושב נעלל (מגדלי בקר במשך 100 שנים). חגגה 4 שנים. תפריט סובב סביב חלקי בקר עם ירון קסטנבאום כיועץ. הנוף השקוף על מישור עמק יזרעאל הוא הסיפור — מקום שכיף מאוד לשבת בו. הפודקסטרים אכלו שם לאחרונה ונהנו מאוד.",
+      "dishes_mentioned": [
+        "אנטריקות",
+        "פריימריב",
+        "המבורגר קב",
+        "פרגית",
+        "פוקצ'ה עם בשר מפורק"
+      ],
+      "special_features": [
+        "מסעדת בשר",
+        "ירון קסטנבאום כיועץ",
+        "שותפות עם משפחת אמיר (מגדלי בקר)",
+        "נוף על עמק יזרעאל",
+        "ארבע שנים פעילה"
+      ],
+      "mention_context": "ראיון עם איתמר שרבי בעלי טמרלין במהלך הפרק (פרק שמשודר מהצפון)",
+      "mention_level": "נטעם",
+      "sub_tag": "נטעם",
+      "speaker": "יהונתן כהן",
+      "google_places": {
+        "place_id": "ChIJbaXI5jutHRURvGVlWj90ZMY",
+        "google_url": "https://maps.google.com/?cid=14295678932629153212",
+        "rating": 4.4,
+        "review_count": 1119,
+        "price_level": null,
+        "phone": "077-724-2042",
+        "website": "https://ontopo.co.il/temerlindeli?source=google",
+        "photo_url": "https://lh3.googleusercontent.com/place-photos/AJRVUZPOGWCcPR3MVdIKPlco1HFvrkUcMySf1nJxeJjuv4_vOvDt54gCTiyBU53s71RlCPxmUiATHtxSMSs1Kr8hovmmmJ_szWiAOC-ESGa0Db-lTHuLdmDKmNr4DueP8wiNHoNcnImqL5_frqw2Vtg=s4800-w800",
+        "instagram_url": null,
+        "verified": true
+      },
+      "production_db": {
+        "exists": true,
+        "id": "8df8c8d6-b641-4a11-9167-8d825511bc7a"
+      },
+      "image_url": "https://lh3.googleusercontent.com/place-photos/AJRVUZPOGWCcPR3MVdIKPlco1HFvrkUcMySf1nJxeJjuv4_vOvDt54gCTiyBU53s71RlCPxmUiATHtxSMSs1Kr8hovmmmJ_szWiAOC-ESGa0Db-lTHuLdmDKmNr4DueP8wiNHoNcnImqL5_frqw2Vtg=s4800-w800"
+    },
+    {
+      "verdict": "add_to_page",
+      "name_hebrew": "מאפיית העמקים",
+      "name_english": "Manshiyat Zabda Bakery",
+      "name_in_transcript": "מאפיית העמקים במנשי הזבדה",
+      "google_name": "מאפיית העמקים",
+      "timestamp": {
+        "seconds": 2723,
+        "display": "45:23",
+        "youtube_url": "https://www.youtube.com/watch?v=gRpspS9UEO8&t=2723s"
+      },
+      "location": {
+        "city": "מנשייה זבדה",
+        "neighborhood": null,
+        "address": "השלום, מנשיית א זבדה",
+        "region": "צפון",
+        "latitude": 32.7034779,
+        "longitude": 35.1922934
+      },
+      "cuisine_type": "מאפייה",
+      "price_range": "זול",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "כפר בדוי בלב עמק יזרעאל",
+        "מנשי הזבדה יש מאפייה שקוראים לה מאפיית העמקים שמנועלת על ידי משפחה מקומית",
+        "שהם עושים עבודה נהדרת לדעתי",
+        "יש להם את החומוס הכי טעים בישראל",
+        "מילים עם משמעות"
+      ],
+      "host_comments": "המלצה של איתמר שרבי. מאפייה במנשייה זבדה (כפר בדואי בלב עמק יזרעאל) שמנוהלת על ידי משפחה מקומית. איתמר אומר שיש להם את החומוס הכי טעים בישראל — הצהרה חזקה במיוחד מפי מסעדן. יונתן ועמית מבטיחים לעצור שם.",
+      "dishes_mentioned": [
+        "חומוס",
+        "מאפים"
+      ],
+      "special_features": [
+        "מאפייה בכפר בדואי",
+        "ניהול משפחתי",
+        "חומוס איכותי",
+        "המלצה של איתמר שרבי"
+      ],
+      "mention_context": "המלצת המסעדן איתמר שרבי על המאפייה המקומית בכפר ביום שישי",
+      "mention_level": "נטעם",
+      "sub_tag": "נטעם",
+      "speaker": "איתמר שרבי",
+      "google_places": {
+        "place_id": "ChIJE2k0-5eyHRUROUGRhOWQZOo",
+        "google_url": "https://maps.google.com/?cid=16889783817992225081",
+        "rating": 4.7,
+        "review_count": 423,
+        "price_level": "PRICE_LEVEL_INEXPENSIVE",
+        "phone": "054-336-3211",
+        "website": "https://www.instagram.com/hamakem_bakery",
+        "photo_url": "https://lh3.googleusercontent.com/place-photos/AJRVUZMuqxhsjD6W-OJzwfQ1wicAliURUKTynZvhhA6s6hvBolAmKUC1AH8NQbL4Gr0Y55553cib7D5DUeEPWVDStQb6ULObef1s0d-b6IOqcIM1zC0IYObLsgXQ6zyNVEJatyFHtGxNuszRw2ntqA=s4800-w800",
+        "instagram_url": "https://www.instagram.com/hamakem_bakery/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      },
+      "image_url": "https://lh3.googleusercontent.com/place-photos/AJRVUZMuqxhsjD6W-OJzwfQ1wicAliURUKTynZvhhA6s6hvBolAmKUC1AH8NQbL4Gr0Y55553cib7D5DUeEPWVDStQb6ULObef1s0d-b6IOqcIM1zC0IYObLsgXQ6zyNVEJatyFHtGxNuszRw2ntqA=s4800-w800"
+    },
+    {
+      "verdict": "add_to_page",
+      "name_hebrew": "נונע בית הפיצה",
+      "name_english": "Nonna Pizza House",
+      "name_in_transcript": "פיצה נונה",
+      "google_name": "נונע בית הפיצה",
+      "timestamp": {
+        "seconds": 2771,
+        "display": "46:11",
+        "youtube_url": "https://www.youtube.com/watch?v=gRpspS9UEO8&t=2771s"
+      },
+      "location": {
+        "city": "רמת ישי",
+        "neighborhood": null,
+        "address": "אקליפטוס 3, רמת ישי",
+        "region": "צפון",
+        "latitude": 32.7077343,
+        "longitude": 35.1753355
+      },
+      "cuisine_type": "פיצה",
+      "price_range": "בינוני",
+      "status": "פתוח",
+      "host_opinion": "חיובית",
+      "host_quotes": [
+        "יש פיצה טובה ברמת ישי שקוראים לה פיצה נונה",
+        "מומלצת",
+        "אני אוהב ללכת אחר הצהריים עם הילדים. הם מאוד אוהבים את הפיצה הזאת"
+      ],
+      "host_comments": "המלצה של איתמר שרבי. פיצה איטלקית ברמת ישי שאיתמר אוהב לקחת אליה את הילדים אחר הצהריים. המקום מפעיל פיצריה ומשלוחים.",
+      "dishes_mentioned": [
+        "פיצה"
+      ],
+      "special_features": [
+        "פיצה איטלקית",
+        "מתאים לילדים",
+        "משלוחים"
+      ],
+      "mention_context": "המלצת איתמר שרבי לפיצה משפחתית באזור",
+      "mention_level": "נטעם",
+      "sub_tag": "נטעם",
+      "speaker": "איתמר שרבי",
+      "google_places": {
+        "place_id": "ChIJyXvxjYayHRURfXYcUFYboPM",
+        "google_url": "https://maps.google.com/?cid=17555061405015373437",
+        "rating": 4.2,
+        "review_count": 593,
+        "price_level": null,
+        "phone": "04-888-1551",
+        "website": "http://nonna.co.il/",
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqEeXC9_xoieph3lfWDrD8CJJsKUFglvVkvqTBbnQjPYUjdhxaJ8LGrcGdxUYh5QTAhtbQ00p-755eecauiYuTBllK7uBeFH0kA=s4800-w800",
+        "instagram_url": "https://www.instagram.com/nonna_pizzahouse/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      },
+      "image_url": "https://lh3.googleusercontent.com/places/ANXAkqEeXC9_xoieph3lfWDrD8CJJsKUFglvVkvqTBbnQjPYUjdhxaJ8LGrcGdxUYh5QTAhtbQ00p-755eecauiYuTBllK7uBeFH0kA=s4800-w800"
+    },
+    {
+      "verdict": "add_to_page",
+      "name_hebrew": "קפה 38",
+      "name_english": "Café 38",
+      "name_in_transcript": "קפה 38",
+      "google_name": "Café 38",
+      "timestamp": {
+        "seconds": 2664,
+        "display": "44:24",
+        "youtube_url": "https://www.youtube.com/watch?v=gRpspS9UEO8&t=2664s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": null,
+        "address": "שלמה המלך 38, תל אביב-יפו",
+        "region": "תל אביב",
+        "latitude": 32.0795423,
+        "longitude": 34.7771177
+      },
+      "cuisine_type": "בית קפה",
+      "price_range": "יקר",
+      "status": "פתוח",
+      "host_opinion": "חיובית",
+      "host_quotes": [
+        "בתל אביב קפה 38 הייתי ממש לפני שבועיים שלושה",
+        "מקום ממש חמוד אגב אני מאוד ממליץ על המקום",
+        "שמעתי שיש שם בעלי מאוד נחמד"
+      ],
+      "host_comments": "המלצה צדדית של איתמר שרבי. ביקר לפני שבועיים-שלושה ואכל סטייק (200 גרם בסביבות 212 ש\"ח). למרות שעלה הקשר במהלך השוואת מחירים, איתמר אומר במפורש שזה מקום חמוד ומומלץ.",
+      "dishes_mentioned": [
+        "סטייק 200 גרם"
+      ],
+      "special_features": [
+        "בית קפה תל אביבי",
+        "אווירה חמודה"
+      ],
+      "mention_context": "המלצה של איתמר שרבי לבית קפה בתל אביב במהלך שיחה על מחירים",
+      "mention_level": "נטעם",
+      "sub_tag": "נטעם",
+      "speaker": "איתמר שרבי",
+      "google_places": {
+        "place_id": "ChIJkdELDolLHRURxqgATpOoV8k",
+        "google_url": "https://maps.google.com/?cid=14508250075219667142",
+        "rating": 4.4,
+        "review_count": 505,
+        "price_level": null,
+        "phone": "077-980-0297",
+        "website": null,
+        "photo_url": "https://lh3.googleusercontent.com/place-photos/AJRVUZPEjgGk8lmt7DgtDt_tDHAZkwnwVwHEmPjZzAtDy524kWTUrbWOn35xnya4K1yi-xRWHBEpY9R9k9gj0ThOAqy5Ibc1N9TE4oo7mwqSEimed57qWYZ47Gy7kXOqCDIaazEuKEweTEMRHD3Es2A=s4800-w800",
+        "instagram_url": null,
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      },
+      "image_url": "https://lh3.googleusercontent.com/place-photos/AJRVUZPEjgGk8lmt7DgtDt_tDHAZkwnwVwHEmPjZzAtDy524kWTUrbWOn35xnya4K1yi-xRWHBEpY9R9k9gj0ThOAqy5Ibc1N9TE4oo7mwqSEimed57qWYZ47Gy7kXOqCDIaazEuKEweTEMRHD3Es2A=s4800-w800"
+    },
+    {
+      "verdict": "add_to_page",
+      "name_hebrew": "ארמון סהרה",
+      "name_english": "Sahara Palace",
+      "name_in_transcript": "ארמון של נשתבס",
+      "google_name": "Sahara Palace | ארמון סהרה",
+      "timestamp": {
+        "seconds": 2972,
+        "display": "49:32",
+        "youtube_url": "https://www.youtube.com/watch?v=gRpspS9UEO8&t=2972s"
+      },
+      "location": {
+        "city": "נין",
+        "neighborhood": "כפר נין",
+        "address": "נין",
+        "region": "צפון",
+        "latitude": 32.6396255,
+        "longitude": 35.3447265
+      },
+      "cuisine_type": "ערבי גלילי",
+      "price_range": "יקר",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "אחת מחמש שבע אחת המסעדות הטובות בישראל נקודה טופ טופ טופ מסעדות בישראל",
+        "המקום הזה שממש בצורה הכי מובהקת את החיבור אל האדמה ואל הטבע",
+        "במסעדה שהיא בעיניי שהיא בעיניי כרגע הטובה ביותר שיש",
+        "מנה של ביטחון עצמי מנה של אדם אדם שיודע מה הוא עושה",
+        "אחד המקומות הגדולים והמפוארים שיש לנו במדינת ישראל נכון ל-2026",
+        "האוכל רק האוכל אין כזה זה פשוט עונג שאין שני לו"
+      ],
+      "host_comments": "ההמלצה המרכזית של יונתן בפרק. מסעדת השף נשאת עבאס בכפר נין (בין עפולה לכפר תבור) — אחת מחמש-שבע המסעדות הטובות בישראל. יונתן ביקר שם בפעם השלישית לפני שבוע. מטבח עונתי, חיבור מובהק לאדמה ולטבע. גם גן עדן לצמחונים/טבעוניים. שתי מנות עונתיות פרקו לו את הצורה: סלט עלי גפן ופריקה, ופרוסות עגבנייה ענקיות ובשרניות עם בצל, שום וצנובר. מקום גדול ומפואר, מאות מקומות ישיבה. בלי ספק 'יאמי לאומי' של הפרק.",
+      "dishes_mentioned": [
+        "סלט עלי גפן ופריקה",
+        "פרוסות עגבנייה עם שמן זית, בצל, שום, צנובר",
+        "כבסים ובשר על הגריל ומתחת לאדמה",
+        "ארבעה צלעות"
+      ],
+      "special_features": [
+        "מטבח ערבי גלילי",
+        "מנות עונתיות",
+        "חיבור לאדמה ולטבע",
+        "מתאים גם לצמחונים וטבעונים",
+        "אחת המסעדות הטובות בישראל",
+        "מאות מקומות ישיבה",
+        "השף נשאת עבאס"
+      ],
+      "mention_context": "ההמלצה המרכזית של יונתן — 'היאמי הלאומי' של הפרק",
+      "mention_level": "נטעם",
+      "sub_tag": "נטעם",
+      "speaker": "יהונתן כהן",
+      "google_places": {
+        "place_id": "ChIJS678kt5RHBURkT1Wnch4kbg",
+        "google_url": "https://maps.google.com/?cid=13299543977630252433",
+        "rating": 4.3,
+        "review_count": 1440,
+        "price_level": "PRICE_LEVEL_MODERATE",
+        "phone": "04-693-5101",
+        "website": "https://www.facebook.com/saharapalac",
+        "photo_url": "https://lh3.googleusercontent.com/place-photos/AJRVUZNqGXWuYK0EvYe-aTlYRZScOc4haSZtj5YljfXeeZGjDfBGNrLJDyx4cVBxOUwehBOks5BmHViYHsMHrSYCXgwuQTV_5eEqKV4Rih7aL6--YGizvRqyhRrCQQ2i_UjfMoRagIXlO5Nu0oG3Dw=s4800-w800",
+        "instagram_url": null,
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      },
+      "image_url": "https://lh3.googleusercontent.com/place-photos/AJRVUZNqGXWuYK0EvYe-aTlYRZScOc4haSZtj5YljfXeeZGjDfBGNrLJDyx4cVBxOUwehBOks5BmHViYHsMHrSYCXgwuQTV_5eEqKV4Rih7aL6--YGizvRqyhRrCQQ2i_UjfMoRagIXlO5Nu0oG3Dw=s4800-w800"
+    },
+    {
+      "verdict": "add_to_page",
+      "name_hebrew": "ארוחות בית של יוסי אלעד",
+      "name_english": "Yossi Elad Home Dining",
+      "name_in_transcript": "הנזיר שמכר את הפררי שלו / יוסי אלעד",
+      "google_name": "אורלי אליאס",
+      "timestamp": {
+        "seconds": 3214,
+        "display": "53:34",
+        "youtube_url": "https://www.youtube.com/watch?v=gRpspS9UEO8&t=3214s"
+      },
+      "location": {
+        "city": "ראש פינה",
+        "neighborhood": null,
+        "address": "דוד שו\"ב 1, ראש פינה",
+        "region": "צפון",
+        "latitude": 32.9669376,
+        "longitude": 35.5391196
+      },
+      "cuisine_type": "שף בבית",
+      "price_range": "יקר",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "ארוכה ל-16 איש במחיר לא מטורף מדי במרחק לא גדול מדי מראש פינה",
+        "ארוחה משפחתית אבל של שף ועם תחושה של בית",
+        "באמת חוששת אצל הבן אדם בבית ובקטע הכי טוב",
+        "בז'נר הזה של ארוחות ביתיות מאוד שפויים",
+        "ממש ממש ממש כיף לראות את יוסי ולפגוש אותו"
+      ],
+      "host_comments": "המלצה של נטע. יוסי אלעד, ממייסדי מחניודה (שפרש ב-2016), עורך כיום ארוחות שף סגורות בבית האבן העתיק שלו ושל בת זוגו אורלי בראש פינה. אין תפריט קבוע — הוא בונה ארוחה לפי הקבוצה והגילאים. נטע אכלה שם בערב שישי עם משפחה של 16 איש. מנות: ארנצ'יני, מטריות סובע עם בשר וגבניות, פלמידה עם תותי עץ, חזה אווז מאושן, פיקן שלם, בריסקט, גלידות וקינוחים. מחיר מתחיל ב-350 ש\"ח לאדם — שפוי לז'אנר.",
+      "dishes_mentioned": [
+        "ארנצ'יני",
+        "מטריות סובע עם בשר מאושן ורוטב גבניות חריף",
+        "פלמידה עם תותי עץ",
+        "חזה אווז מאושן על רגוט ארטישוקים, פטריות ולימון כבוש",
+        "פיקן שלם מאושן",
+        "תבשיל בריסקט עם ירקות ויין",
+        "עוגת הגסים ושקדים",
+        "לימונצ'לו"
+      ],
+      "special_features": [
+        "ארוחות שף סגורות",
+        "בבית פרטי",
+        "תפריט מותאם אישית",
+        "ראש פינה",
+        "ממייסדי מחניודה",
+        "מתחיל ב-350 ש\"ח לאדם"
+      ],
+      "mention_context": "המלצה של נטע — חוויית שף בבית בראש פינה",
+      "mention_level": "נטעם",
+      "sub_tag": "נטעם",
+      "speaker": "נטע סלונים",
+      "google_places": {
+        "place_id": "ChIJexHv3DwiHBUR9xew5IuPNJ0",
+        "google_url": "https://maps.google.com/?cid=11327836793743611895",
+        "rating": 4.5,
+        "review_count": 35,
+        "price_level": null,
+        "phone": "053-934-5310",
+        "website": "http://www.rrr.co.il/showCabin.asp?site=1080",
+        "photo_url": "https://lh3.googleusercontent.com/place-photos/AJRVUZMGQCw1GBDoA_lva35DD960g3o9cmpXCMXQ66A8j-vd4GihHD93LmqWxev08BXcKdsyWjTECCHe8eZXgfYrsaXqELCQAEJp2gVTSUYY1-oBpMs608SGcdDMsQ1drYcggGEEpf5Ajpe78dc_4g=s4800-w800",
+        "instagram_url": null,
+        "verified": true,
+        "note": "Google Places listing is for the lodging 'Orly Alias' (the chef's home). Chef-at-home experience itself has no separate Google listing."
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      },
+      "image_url": "https://lh3.googleusercontent.com/place-photos/AJRVUZMGQCw1GBDoA_lva35DD960g3o9cmpXCMXQ66A8j-vd4GihHD93LmqWxev08BXcKdsyWjTECCHe8eZXgfYrsaXqELCQAEJp2gVTSUYY1-oBpMs608SGcdDMsQ1drYcggGEEpf5Ajpe78dc_4g=s4800-w800"
+    },
+    {
+      "verdict": "add_to_page",
+      "name_hebrew": "רדלר",
+      "name_english": "Radler",
+      "name_in_transcript": "רדלר",
+      "google_name": "רדלר",
+      "timestamp": {
+        "seconds": 3443,
+        "display": "57:23",
+        "youtube_url": "https://www.youtube.com/watch?v=gRpspS9UEO8&t=3443s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": null,
+        "address": "נחלת בנימין 48, תל אביב-יפו",
+        "region": "תל אביב",
+        "latitude": 32.0640561,
+        "longitude": 34.7713066
+      },
+      "cuisine_type": "ים תיכוני",
+      "price_range": "יקר",
+      "status": "פתוח",
+      "host_opinion": "חיובית מאוד",
+      "host_quotes": [
+        "אבי ביטון היה אצלנו דיבר על הכניסה שלו לרדלר",
+        "היה לי טעים טעים טעים",
+        "אני מאוד מאוד מתחברת לאוכל שהבי עושה לי שפיני לנו",
+        "אוכל שמתאים לכולם הוא גם ידע לטבל נכון",
+        "הוא עושה את זה נורא נורא מדויק",
+        "הסלט ברוקולי שזה הורסיה שלו על הקרובית שהיא תהיה שם ממש נותנת פייט",
+        "סלט עגבניות... פוקצ'ה ושלא יגמר לעולם הרוטב הזה",
+        "פסטה כזה בצירוצ'ניון עם נתח קצבים"
+      ],
+      "host_comments": "המלצה של נטע. אבי ביטון נכנס לרדלר ועושה שפיני את התפריט. נטע אכלה שם ואוהבת את האוכל שלו — מדויק, מתאים לכולם, מטובל נכון. מנות בולטות: סלט ברוקולי (גירסה של הסלט קרובית), סלט עגבניות שרי צהובות, פוקצ'ה עם רוטב, פסטה עם נתח קצבים, סביצ'ה חלה. נטע מעריכה שרדלר יהיה מלא.",
+      "dishes_mentioned": [
+        "סלט ברוקולי",
+        "סלט עגבניות שרי צהובות",
+        "פוקצ'ה",
+        "פסטה עם נתח קצבים",
+        "סביצ'ה חלה",
+        "מנות דגים"
+      ],
+      "special_features": [
+        "תפריט חדש של אבי ביטון",
+        "אוכל מדויק",
+        "מתאים לכולם",
+        "טיבול מצוין"
+      ],
+      "mention_context": "המלצה של נטע על התפריט החדש של אבי ביטון ברדלר",
+      "mention_level": "נטעם",
+      "sub_tag": "נטעם",
+      "speaker": "נטע סלונים",
+      "google_places": {
+        "place_id": "ChIJfVoyfjJNHRUR3djBShXfqPg",
+        "google_url": "https://maps.google.com/?cid=17917816400035043549",
+        "rating": 4.2,
+        "review_count": 435,
+        "price_level": null,
+        "phone": "03-728-3830",
+        "website": "https://radlertlv.com/",
+        "photo_url": "https://lh3.googleusercontent.com/place-photos/AJRVUZM8W7e-jmjaJsUy72byWcMRMQ6JwQ8Lxy9r-nLui4gs6WG9N2O95gW3ta6Vtw9yKzz71FEChUBBNTkSbUG0ALMoS5DYbpIly7yDTw4aGpWelrQD7DzMMWLdlopfnWkSU-6RLVfSvPC3-YJ9S_M=s4800-w800",
+        "instagram_url": "https://www.facebook.com/Radlertlv/",
+        "verified": true
+      },
+      "production_db": {
+        "exists": true,
+        "id": "9f6bed33-d990-47da-aeb5-5f4e5aa2976f"
+      },
+      "image_url": "https://lh3.googleusercontent.com/place-photos/AJRVUZM8W7e-jmjaJsUy72byWcMRMQ6JwQ8Lxy9r-nLui4gs6WG9N2O95gW3ta6Vtw9yKzz71FEChUBBNTkSbUG0ALMoS5DYbpIly7yDTw4aGpWelrQD7DzMMWLdlopfnWkSU-6RLVfSvPC3-YJ9S_M=s4800-w800"
+    },
+    {
+      "verdict": "add_to_page",
+      "name_hebrew": "קוקו חביתה",
+      "name_english": "Koko Chavita",
+      "name_in_transcript": "קוקו חביתה",
+      "google_name": null,
+      "timestamp": {
+        "seconds": 3794,
+        "display": "63:14",
+        "youtube_url": "https://www.youtube.com/watch?v=gRpspS9UEO8&t=3794s"
+      },
+      "location": {
+        "city": "אור יהודה",
+        "neighborhood": null,
+        "address": "רחוב יחזקל קזז (פינת הכיכר הראשונה), אור יהודה",
+        "region": "מרכז",
+        "latitude": null,
+        "longitude": null
+      },
+      "cuisine_type": "חביתות וכריכים",
+      "price_range": "זול",
+      "status": "פתוח",
+      "host_opinion": "חיובית",
+      "host_quotes": [
+        "אכל חביתה עם בגט עם חביתה עם מרגז ב-35 ש\"ח זה נראה פגז של בגט ופגז של מקום",
+        "המקום הזה שוכן ברחוב יחזקל קזז באור יהודה",
+        "ברחוב יחזקל קזז לבד יש לך בין שישה לשמונה מקומות שאתה רוצה לאכול בהם מהר צהריים"
+      ],
+      "host_comments": "ביס של קובי (איש הצוות). דוכן חביתות זעיר על פינת הכיכר הראשונה באור יהודה ברחוב יחזקל קזז. חביתה בבגט עם מרגז ב-35 ש\"ח. עמית מסייג שזה רחוב עם 6-8 מקומות מצוינים אחרים — קוקו חביתה הוא אופציה אבל לא ראשונה. בכל זאת ראויה להמלצה.",
+      "dishes_mentioned": [
+        "בגט עם חביתה ומרגז (35 ש\"ח)"
+      ],
+      "special_features": [
+        "דוכן זעיר",
+        "פינת הכיכר הראשונה",
+        "אוכל רחוב"
+      ],
+      "mention_context": "ביס של קובי מצוות ההפקה — דוכן חביתות באור יהודה",
+      "mention_level": "הוזכר",
+      "sub_tag": "הוזכר",
+      "speaker": "יהונתן כהן",
+      "google_places": {
+        "place_id": null,
+        "rating": null,
+        "verified": false,
+        "note": "דוכן זעיר שאינו רשום בנפרד ב-Google Places. ביקרתי חיפושים מרובים אך לא נמצא."
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      },
+      "image_url": null
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "יקב טבור",
+      "name_english": "Tabor Winery",
+      "name_in_transcript": "יקב טבור / עקב טבור",
+      "skip_reason": "מרכז מבקרים של יקב, לא מסעדה. שימש כמיקום הצילום של הפרק והוזכר בריאיון עם היינן אור נדבח על אזורי גידול ויינות.",
+      "timestamp": {
+        "seconds": 66,
+        "display": "01:06",
+        "youtube_url": "https://www.youtube.com/watch?v=gRpspS9UEO8&t=66s"
+      },
+      "location": {
+        "city": "כפר תבור",
+        "neighborhood": null,
+        "address": "שדרות קק\"ל, כפר תבור",
+        "region": "צפון",
+        "latitude": null,
+        "longitude": null
+      },
+      "cuisine_type": "יקב",
+      "host_quotes": [
+        "אנחנו מגיעים אליכם מהצפון הירקרק היפה יפה מכפר טבור מבקרים את החברים שלנו בעקב טבור עם המותג ארטיזנל",
+        "סוביניון בלן זה מעולה זה לא מעולה זה מושלם"
+      ],
+      "host_comments": "מקום הצילום של הפרק. מרכז המבקרים של יקב טבור עם המותג ארטיזנל. ראיון עם אור נדבח, היינן הראשי, על אזורי יין בישראל, סוביניון בלן, תנט, מרסלן, ברברה. ההכרזה החדשה על אזור הנגב כאזור יין רשמי.",
+      "status": "פתוח",
+      "google_places": {
+        "place_id": "ChIJDTpDHcdFHBUR6ONtiITIQIM",
+        "google_url": "https://maps.google.com/?cid=9498196700430148327",
+        "rating": 4.4,
+        "review_count": 239,
+        "phone": null,
+        "website": null,
+        "photo_url": "https://lh3.googleusercontent.com/place-photos/AJRVUZMqbef-BeK4Wclm0nrk0QNsm23hCwtFZOalhMKOh4btvwU5NDNCCKljSsVwjrCeLLkwX22KlMNMOG0gfyA0PbLjMxBDlF6jZvQ7WP9Ulkmlb8y5sfSH2-ky1iC0-p_eKZKhKckKG8QAxHN7=s4800-w800",
+        "instagram_url": null,
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      },
+      "image_url": "https://lh3.googleusercontent.com/place-photos/AJRVUZMqbef-BeK4Wclm0nrk0QNsm23hCwtFZOalhMKOh4btvwU5NDNCCKljSsVwjrCeLLkwX22KlMNMOG0gfyA0PbLjMxBDlF6jZvQ7WP9Ulkmlb8y5sfSH2-ky1iC0-p_eKZKhKckKG8QAxHN7=s4800-w800"
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "קפה צין",
+      "name_english": "Cafe Tzin",
+      "name_in_transcript": "צין",
+      "skip_reason": "המגישים לא אכלו בקפה. נטע מציגה רק את מארז המזווה המקומי שהשפים של בוץ הוציאו מהבית קפה צין במצפה רמון.",
+      "timestamp": {
+        "seconds": 528,
+        "display": "08:48",
+        "youtube_url": "https://www.youtube.com/watch?v=gRpspS9UEO8&t=528s"
+      },
+      "location": {
+        "city": "מצפה רמון",
+        "neighborhood": null,
+        "address": "הר עודד 5, מצפה רמון",
+        "region": "דרום",
+        "latitude": 30.6215611,
+        "longitude": 34.8013297
+      },
+      "cuisine_type": "בית קפה",
+      "host_quotes": [
+        "בית קפה שנקרא צין שהוא כזה הבייבי היותר חדש מבין השניים",
+        "מארז שפתאום מראה כמה דברים טובים קורים באזור הזה",
+        "כל הכבוד לדרום שלנו באמת כיף לראות את כל מה שקורה שם"
+      ],
+      "host_comments": "בית קפה חדש של השפים את אשכנזי ועומר סלצר במצפה רמון (האחים הצעירים יותר של 'בוץ'). מציעים מארז מזווה מקומי עם ממרחים, אבן יוגורט מהפרויקט של ודי תיר, יינות, שמני זית מהמדבר. נטע קיבלה את המארז וממליצה עליו אבל לא אכלה בבית הקפה עצמו.",
+      "status": "פתוח",
+      "google_places": {
+        "place_id": "ChIJfbHaAjbzARURv6fzyyrmImM",
+        "google_url": "https://maps.google.com/?cid=7143525030447785919",
+        "rating": 4.2,
+        "review_count": 535,
+        "phone": "058-706-8811",
+        "website": "https://www.instagram.com/cafe_tzin",
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqHwiOmjgbUASt3hyxyydii8PGXrKL8xOPrzkS6JjR9oI5K8wBSqeY8TNKG8ZeSub-NYqPFnGhjpVlBCNeBoCnW5Vputy1HEeog=s4800-w800",
+        "instagram_url": "https://www.instagram.com/cafe_tzin",
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      },
+      "image_url": "https://lh3.googleusercontent.com/places/ANXAkqHwiOmjgbUASt3hyxyydii8PGXrKL8xOPrzkS6JjR9oI5K8wBSqeY8TNKG8ZeSub-NYqPFnGhjpVlBCNeBoCnW5Vputy1HEeog=s4800-w800"
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "מישקה",
+      "name_english": "Mishke",
+      "name_in_transcript": "משקה / מישקה",
+      "skip_reason": "מסעדה שנייה של איתמר שרבי שמוזכרת כהקשר בראיון איתו. המגישים לא ביקרו בפרק זה.",
+      "timestamp": {
+        "seconds": 2228,
+        "display": "37:08",
+        "youtube_url": "https://www.youtube.com/watch?v=gRpspS9UEO8&t=2228s"
+      },
+      "location": {
+        "city": "יפעת",
+        "neighborhood": null,
+        "address": "יפעת",
+        "region": "צפון",
+        "latitude": 32.6747312,
+        "longitude": 35.2214472
+      },
+      "cuisine_type": "דיינר",
+      "host_quotes": [
+        "ושל משקה מישקה דיינר ישראלי בקיבוץ יפעת",
+        "משקה הוא עוד יותר מקומי אני מסכים איתך הוא יותר נגיש גם מבחינת מחירים",
+        "אד כן די זה יכול להתחיל בקפה וזה יכול להמשיך למנה עיקרית"
+      ],
+      "host_comments": "המסעדה השנייה של איתמר שרבי. דיינר ישראלי נגיש יותר ביפעת — קפה, מנות עיקריות, מחירים נגישים. הוזכרה בהקשר של איתמר כמסעדן צפוני.",
+      "status": "פתוח",
+      "google_places": {
+        "place_id": "ChIJ1Zb82K9SHBURoDg0EjPCt0I",
+        "google_url": "https://maps.google.com/?cid=4807524651845826720",
+        "rating": 4.2,
+        "review_count": 1589,
+        "phone": "04-654-8831",
+        "website": "https://mishkacafe.co.il/",
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqGxdnOsUc61fddct71EttftLJ5F3z9EEfFUYnYrxuz62khobRBodyGorbKx-le5jsWMZApA_bKGDj41uFxzEhMPxvG9ajuhngA=s4800-w800",
+        "instagram_url": null,
+        "verified": true
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      },
+      "image_url": "https://lh3.googleusercontent.com/places/ANXAkqGxdnOsUc61fddct71EttftLJ5F3z9EEfFUYnYrxuz62khobRBodyGorbKx-le5jsWMZApA_bKGDj41uFxzEhMPxvG9ajuhngA=s4800-w800"
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "טאורוס",
+      "name_english": "Taurus Smokehouse",
+      "name_in_transcript": "טאורוס",
+      "skip_reason": "הוזכר רק בהקשר של דיון על ביקורת של סגי כהן — הקרם קוקוס במנה ועיתוי הביקורת. הפודקסטרים לא ביקרו ולא המליצו.",
+      "timestamp": {
+        "seconds": 3695,
+        "display": "61:35",
+        "youtube_url": "https://www.youtube.com/watch?v=gRpspS9UEO8&t=3695s"
+      },
+      "location": {
+        "city": "סביון",
+        "neighborhood": null,
+        "address": "השיקמה 1, סביון",
+        "region": "מרכז",
+        "latitude": 32.0491961,
+        "longitude": 34.8758578
+      },
+      "cuisine_type": "שיפודים",
+      "host_quotes": [
+        "סגי כהן כן השבוע עם טקסט על טאורוס השלוחה הבשרית של מילה",
+        "אני לא כל כך מבין את זה מה הערך בלכתוב על מסעדה חודש בערך אחרי שהיא נפרדת ממי שהוביל אותה קולינרי",
+        "למה לא להזכיר במילה בטקסט שמדובר במקום כשר"
+      ],
+      "host_comments": "דיון על הביקורת של סגי כהן על טאורוס — השלוחה הבשרית של מילה בסביון. הפודקסטרים מתחים ביקורת על העיתוי (יונתן שרבי עזב לאחרונה) ועל שסגי לא ציין שזו מסעדה כשרה כשתקף את הקינוח עם קרם קוקוס.",
+      "status": "פתוח",
+      "google_places": {
+        "place_id": "ChIJwQDQQQA1HRURzaS-Lvl4yBU",
+        "google_url": "https://maps.google.com/?cid=1569637481765053645",
+        "rating": 4.3,
+        "review_count": 91,
+        "phone": null,
+        "website": "https://www.milas.co.il/taurus-smokehouse",
+        "photo_url": "https://lh3.googleusercontent.com/places/ANXAkqHdWK6ep3SacSgATXVJQXn4PKAp0Bmz4EDFZULeINJ9NqBUxdzpKbBC9KWNOyhe-eUgNOlT8sOGajYPYPM4Hcy2EwxviV0wxI4=s4800-w800",
+        "instagram_url": null,
+        "verified": true
+      },
+      "production_db": {
+        "exists": true,
+        "id": "331930a7-32c9-4348-b3d2-65b7c9c19c4f"
+      },
+      "image_url": "https://lh3.googleusercontent.com/places/ANXAkqHdWK6ep3SacSgATXVJQXn4PKAp0Bmz4EDFZULeINJ9NqBUxdzpKbBC9KWNOyhe-eUgNOlT8sOGajYPYPM4Hcy2EwxviV0wxI4=s4800-w800"
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "מרי",
+      "name_english": "Mary",
+      "name_in_transcript": "מרי",
+      "skip_reason": "חדשות תעשייה — יונתן רושפלד נכנס לנהל את מסעדת מרי הכשרה בנתניה אחרי שאביב משה עוזב. אין ביקורת או המלצה מהפודקסטרים.",
+      "timestamp": {
+        "seconds": 1095,
+        "display": "18:15",
+        "youtube_url": "https://www.youtube.com/watch?v=gRpspS9UEO8&t=1095s"
+      },
+      "location": {
+        "city": "נתניה",
+        "region": "שרון"
+      },
+      "cuisine_type": "כשר",
+      "host_quotes": [
+        "כלומר מרי הנתניאטית ופופה שבדרום תל אביב יתפוס לא אחר מאשר יונתן רושפלד"
+      ],
+      "host_comments": "חדשות תעשייה — אביב משה עוזב את מרי ופופה, יונתן רושפלד מצטרף.",
+      "google_places": {
+        "place_id": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "פופה",
+      "name_english": "Popa",
+      "name_in_transcript": "פופה",
+      "skip_reason": "חדשות תעשייה — יונתן רושפלד נכנס לנהל את מסעדת פופה הכשרה בדרום תל אביב אחרי שאביב משה עוזב. אין ביקורת או המלצה.",
+      "timestamp": {
+        "seconds": 1113,
+        "display": "18:33",
+        "youtube_url": "https://www.youtube.com/watch?v=gRpspS9UEO8&t=1113s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "neighborhood": "דרום תל אביב",
+        "region": "תל אביב"
+      },
+      "cuisine_type": "כשר",
+      "host_quotes": [
+        "מרי הנתניאטית ופופה שבדרום תל אביב יתפוס לא אחר מאשר יונתן רושפלד",
+        "האם ההופעה של הרקדניות באמצע הארוחה הייתה"
+      ],
+      "host_comments": "חדשות תעשייה — מסעדה כשרה בדרום תל אביב עם הופעות סופי שבוע. רושפלד מצטרף.",
+      "google_places": {
+        "place_id": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "יבה",
+      "name_english": "Yeba",
+      "name_in_transcript": "היבה",
+      "skip_reason": "הוזכר רק כדוגמה לרזומה של יוסי שיטריט בחדשות התעשייה על מעברו ממשחקי השף למסטרשף.",
+      "timestamp": {
+        "seconds": 970,
+        "display": "16:10",
+        "youtube_url": "https://www.youtube.com/watch?v=gRpspS9UEO8&t=970s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "region": "תל אביב"
+      },
+      "host_quotes": [
+        "הוא היום עם היבה ועם בנדיט ועם טור ועם הפרית"
+      ],
+      "host_comments": "מסעדה של יוסי שיטריט. הוזכרה בהקשר חדשות התעשייה.",
+      "google_places": {
+        "place_id": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "בנדיט",
+      "name_english": "Bandit",
+      "name_in_transcript": "בנדיט",
+      "skip_reason": "הוזכר רק כדוגמה לרזומה של יוסי שיטריט בחדשות התעשייה.",
+      "timestamp": {
+        "seconds": 970,
+        "display": "16:10",
+        "youtube_url": "https://www.youtube.com/watch?v=gRpspS9UEO8&t=970s"
+      },
+      "location": {
+        "city": "תל אביב",
+        "region": "תל אביב"
+      },
+      "host_quotes": [
+        "הוא היום עם היבה ועם בנדיט ועם טור ועם הפרית"
+      ],
+      "host_comments": "מסעדה של יוסי שיטריט. הוזכרה בהקשר חדשות התעשייה.",
+      "google_places": {
+        "place_id": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "reference_only",
+      "name_hebrew": "מחניודה",
+      "name_english": "Machneyuda",
+      "name_in_transcript": "מחני יהודה",
+      "skip_reason": "הוזכר כהקשר היסטורי — יוסי אלעד היה ממייסדי הקבוצה (יחד עם אסף גרנית ואורי נבון) לפני שפרש ב-2016. לא נדון כהמלצה.",
+      "timestamp": {
+        "seconds": 3228,
+        "display": "53:48",
+        "youtube_url": "https://www.youtube.com/watch?v=gRpspS9UEO8&t=3228s"
+      },
+      "location": {
+        "city": "ירושלים",
+        "region": "ירושלים"
+      },
+      "host_quotes": [
+        "פעם מזמן מזמן מזמן את קבוצת מחני יהודה הובילו לא הסף גרנית ואורי נבון אלא שלושה אנשים אסף גרנית אורי נבון ויוסי אלעד",
+        "יוסי אלעד פרש מהשותפות במחני יהודה ב-2016 לפני 10 שנים"
+      ],
+      "host_comments": "הקשר היסטורי לסיפור של יוסי אלעד.",
+      "google_places": {
+        "place_id": null,
+        "verified": false
+      },
+      "production_db": {
+        "exists": false,
+        "id": null
+      }
+    },
+    {
+      "verdict": "rejected",
+      "name_in_transcript": "משחקי השף",
+      "reject_reason": "תוכנית טלוויזיה, לא מסעדה. הוזכרה רק בחדשות התעשייה על מעברו של יוסי שיטריט למסטרשף.",
+      "timestamp": {
+        "seconds": 797,
+        "display": "13:17"
+      }
+    },
+    {
+      "verdict": "rejected",
+      "name_in_transcript": "מסטרשף",
+      "reject_reason": "תוכנית טלוויזיה, לא מסעדה.",
+      "timestamp": {
+        "seconds": 825,
+        "display": "13:45"
+      }
+    },
+    {
+      "verdict": "rejected",
+      "name_in_transcript": "פלומר",
+      "reject_reason": "מסעדה בלונדון שיוסי אלעד הקים, הוזכרה כהקשר היסטורי לקריירה שלו. מחוץ לישראל.",
+      "timestamp": {
+        "seconds": 3246,
+        "display": "54:06"
+      }
+    }
+  ]
+}
