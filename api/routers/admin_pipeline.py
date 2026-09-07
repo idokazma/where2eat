@@ -561,6 +561,7 @@ async def upload_transcript(
     """Upload a transcript fetched locally for server-side analysis."""
     video_id = request.get("video_id")
     transcript = request.get("transcript")
+    segments = request.get("segments")
     language = request.get("language", "he")
 
     if not video_id or not transcript:
@@ -576,6 +577,7 @@ async def upload_transcript(
             video_url=f"https://www.youtube.com/watch?v={video_id}",
             language=language,
             transcript=transcript,
+            segments=segments,
             analysis_date=None,
         )
 
@@ -613,6 +615,7 @@ async def upload_transcripts_batch(
     for item in transcripts:
         video_id = item.get("video_id")
         transcript = item.get("transcript")
+        segments = item.get("segments")
         language = item.get("language", "he")
 
         if not video_id or not transcript:
@@ -626,6 +629,7 @@ async def upload_transcripts_batch(
                 video_url=f"https://www.youtube.com/watch?v={video_id}",
                 language=language,
                 transcript=transcript,
+                segments=segments,
                 analysis_date=None,
             )
             results["uploaded"] += 1
