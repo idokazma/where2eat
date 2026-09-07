@@ -141,7 +141,7 @@ class YouTubeTranscriptCollector:
                     'video_id': video_id,
                     'video_url': f'https://www.youtube.com/watch?v={video_id}',
                     'transcript': cached_episode['transcript'],
-                    'segments': [],
+                    'segments': cached_episode.get('segments') or [],
                     'language': cached_episode.get('language', 'unknown'),
                     'segment_count': len(cached_episode['transcript'].split()),
                     'cached': True
@@ -199,6 +199,7 @@ class YouTubeTranscriptCollector:
                             video_id=video_id,
                             video_url=result['video_url'],
                             transcript=full_text,
+                            segments=result['segments'],
                             language=result['language'],
                             analysis_date=datetime.now().isoformat()
                         )
@@ -221,6 +222,7 @@ class YouTubeTranscriptCollector:
                     video_id=video_id,
                     video_url=result['video_url'],
                     transcript=result['transcript'],
+                    segments=result.get('segments'),
                     language=result['language'],
                     analysis_date=datetime.now().isoformat()
                 )
@@ -455,7 +457,7 @@ class YouTubeTranscriptCollector:
                     'video_id': video_id,
                     'video_url': f'https://www.youtube.com/watch?v={video_id}',
                     'transcript': cached_episode['transcript'],
-                    'segments': [],
+                    'segments': cached_episode.get('segments') or [],
                     'language': cached_episode.get('language', 'unknown'),
                     'segment_count': len(cached_episode['transcript'].split()),
                     'cached': True
@@ -583,6 +585,7 @@ class YouTubeTranscriptCollector:
                     video_id=video_id,
                     video_url=result['video_url'],
                     transcript=result['transcript'],
+                    segments=result.get('segments'),
                     language=result['language'],
                     analysis_date=datetime.now().isoformat()
                 )
