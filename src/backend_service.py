@@ -144,11 +144,13 @@ class BackendService:
             try:
                 from unified_restaurant_analyzer import UnifiedRestaurantAnalyzer
                 self._analyzer = UnifiedRestaurantAnalyzer()
-            except ImportError:
+            except (ImportError, ValueError):
+                # ValueError: unified analyzer raises when GEMINI_API_KEY is unset;
+                # fall back to the Claude analyzer instead of failing the check.
                 try:
                     from claude_restaurant_analyzer import ClaudeRestaurantAnalyzer
                     self._analyzer = ClaudeRestaurantAnalyzer()
-                except ImportError:
+                except (ImportError, ValueError):
                     raise ImportError("No restaurant analyzer available")
         return self._analyzer
 

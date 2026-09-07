@@ -72,6 +72,7 @@ class Database:
                     analysis_date TEXT,
                     published_at TEXT,
                     transcript TEXT,
+                    segments TEXT,
                     food_trends TEXT,
                     episode_summary TEXT,
                     created_at TEXT DEFAULT CURRENT_TIMESTAMP,
@@ -449,6 +450,11 @@ class Database:
             except sqlite3.OperationalError:
                 pass  # Column already exists
 
+            try:
+                cursor.execute('ALTER TABLE episodes ADD COLUMN segments TEXT')
+            except sqlite3.OperationalError:
+                pass  # Column already exists
+
             # Backfill published_at from video_queue where available
             try:
                 cursor.execute('''
@@ -553,8 +559,8 @@ class Database:
             cursor = conn.cursor()
             cursor.execute('''
                 INSERT INTO episodes (id, video_id, video_url, channel_id, channel_name,
-                    title, language, analysis_date, published_at, transcript, food_trends, episode_summary)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    title, language, analysis_date, published_at, transcript, segments, food_trends, episode_summary)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 ON CONFLICT(video_id) DO UPDATE SET
                     video_url = excluded.video_url,
                     channel_id = COALESCE(excluded.channel_id, episodes.channel_id),
@@ -564,6 +570,7 @@ class Database:
                     analysis_date = COALESCE(excluded.analysis_date, episodes.analysis_date),
                     published_at = COALESCE(excluded.published_at, episodes.published_at),
                     transcript = COALESCE(excluded.transcript, episodes.transcript),
+                    segments = COALESCE(excluded.segments, episodes.segments),
                     food_trends = COALESCE(excluded.food_trends, episodes.food_trends),
                     episode_summary = COALESCE(excluded.episode_summary, episodes.episode_summary),
                     updated_at = CURRENT_TIMESTAMP
@@ -578,6 +585,7 @@ class Database:
                 kwargs.get('analysis_date', datetime.now().isoformat()),
                 kwargs.get('published_at'),
                 kwargs.get('transcript'),
+                json.dumps(kwargs['segments'], ensure_ascii=False) if kwargs.get('segments') else None,
                 json.dumps(kwargs.get('food_trends', [])),
                 kwargs.get('episode_summary')
             ))
@@ -602,6 +610,7 @@ class Database:
             if row:
                 episode = dict(row)
                 episode['food_trends'] = json.loads(episode.get('food_trends') or '[]')
+                episode['segments'] = json.loads(episode.get('segments') or '[]')
                 return episode
             return None
 
