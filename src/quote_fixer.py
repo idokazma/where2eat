@@ -36,7 +36,7 @@ def fix_quote_typos(text: str) -> str:
         import google.generativeai as genai
 
         genai.configure(api_key=api_key)
-        model = genai.GenerativeModel("gemini-2.0-flash")
+        model = genai.GenerativeModel("gemini-2.5-flash")
 
         response = model.generate_content(
             f"תקן שגיאות כתיב בלבד בציטוט הבא. אל תשנה את התוכן, הסגנון או המשמעות. החזר רק את הטקסט המתוקן, בלי הסברים.\n\n{text}",
