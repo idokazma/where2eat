@@ -17,6 +17,7 @@ from datetime import datetime
 from typing import Dict, List, Optional, Any, Callable
 import json
 import re
+import sqlite3
 
 # Add project paths
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -666,11 +667,25 @@ class BackendService:
                     # channel_name comes from transcript result
                     if not data_copy.get('channel_name'):
                         data_copy['channel_name'] = transcript_result.get('channel_name')
-                    restaurant_id = self.db.create_restaurant(
-                        name_hebrew=name_hebrew,
-                        episode_id=episode_id,
-                        **data_copy
-                    )
+                    try:
+                        restaurant_id = self.db.create_restaurant(
+                            name_hebrew=name_hebrew,
+                            episode_id=episode_id,
+                            **data_copy
+                        )
+                    except sqlite3.IntegrityError as exc:
+                        if 'google_place_id' not in str(exc):
+                            raise
+                        # A visible row already carries this Google place (same
+                        # place matched in two chunks or a prior episode). Keep
+                        # the restaurant but drop the duplicate place link.
+                        data_copy['google_place_id'] = None
+                        data_copy.pop('google_places', None)
+                        restaurant_id = self.db.create_restaurant(
+                            name_hebrew=name_hebrew,
+                            episode_id=episode_id,
+                            **data_copy
+                        )
                     restaurant_ids.append(restaurant_id)
 
                 result['steps']['database'] = {
