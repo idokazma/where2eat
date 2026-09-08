@@ -658,6 +658,37 @@ async def create_restaurant(restaurant: RestaurantCreate):
     return data
 
 
+@router.post(
+    "/merge-duplicates",
+    summary="Merge a duplicate restaurant into the canonical row",
+    description="Repoints all episode_mentions from drop_id to keep_id and hides the duplicate row. Reversible (unhide + repoint back).",
+)
+async def merge_duplicates(body: dict):
+    keep_id = body.get('keep_id')
+    drop_id = body.get('drop_id')
+    if not keep_id or not drop_id or keep_id == drop_id:
+        raise HTTPException(status_code=400, detail="keep_id and drop_id required and must differ")
+    db = _get_sqlite_db()
+    if not db:
+        raise HTTPException(status_code=500, detail="SQLite database unavailable")
+    with db.get_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute('SELECT id FROM restaurants WHERE id = ?', (keep_id,))
+        if not cursor.fetchone():
+            raise HTTPException(status_code=404, detail=f"keep_id {keep_id} not found")
+        cursor.execute('SELECT id FROM restaurants WHERE id = ?', (drop_id,))
+        if not cursor.fetchone():
+            raise HTTPException(status_code=404, detail=f"drop_id {drop_id} not found")
+        cursor.execute(
+            'UPDATE episode_mentions SET restaurant_id = ? WHERE restaurant_id = ?',
+            (keep_id, drop_id),
+        )
+        moved = cursor.rowcount
+        cursor.execute('UPDATE restaurants SET is_hidden = 1 WHERE id = ?', (drop_id,))
+        conn.commit()
+    return {"success": True, "keep_id": keep_id, "drop_id": drop_id, "mentions_moved": moved}
+
+
 @router.put(
     "/{restaurant_id}",
     response_model=RestaurantSchema,
