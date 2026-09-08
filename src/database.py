@@ -860,6 +860,38 @@ class Database:
 
                 restaurants.append(restaurant)
 
+            # Attach all episode mentions per restaurant (multi-mention support).
+            # Additive: restaurants without mentions get an empty list.
+            try:
+                cursor.execute('''\
+                    SELECT em.restaurant_id, em.video_id, em.timestamp_seconds,
+                           em.timestamp_display, em.mention_level,
+                           e.title AS episode_title, e.video_url AS ep_video_url
+                    FROM episode_mentions em
+                    LEFT JOIN episodes e ON em.episode_id = e.id
+                    WHERE em.restaurant_id IS NOT NULL
+                    ORDER BY em.created_at ASC
+                ''')
+                mentions_by_id = {}
+                for m in cursor.fetchall():
+                    md = dict(m)
+                    rid = md.pop('restaurant_id')
+                    video_url = md.pop('ep_video_url', None)
+                    if not video_url and md.get('video_id'):
+                        video_url = f"https://www.youtube.com/watch?v={md['video_id']}"
+                    ts = md.get('timestamp_seconds')
+                    md['youtube_url'] = (
+                        f"{video_url}&t={int(ts)}s"
+                        if video_url and ts is not None else video_url
+                    )
+                    mentions_by_id.setdefault(rid, []).append(md)
+                for restaurant in restaurants:
+                    restaurant['mentions'] = mentions_by_id.get(restaurant.get('id'), [])
+            except Exception as mention_err:
+                print(f"Warning: failed to attach mentions: {mention_err}")
+                for restaurant in restaurants:
+                    restaurant.setdefault('mentions', [])
+
             return restaurants
 
     def search_restaurants(
