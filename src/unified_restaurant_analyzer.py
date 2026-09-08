@@ -755,8 +755,8 @@ Be precise over thorough. Only extract restaurants that are genuinely reviewed o
 
     def _ensure_english_name(self, restaurant: Dict) -> Dict:
         """Ensure restaurant has a proper English name"""
-        hebrew_name = restaurant.get('name_hebrew', '').strip()
-        english_name = restaurant.get('name_english', '').strip()
+        hebrew_name = (restaurant.get('name_hebrew') or '').strip()
+        english_name = (restaurant.get('name_english') or '').strip()
         
         # If no English name provided, create transliteration
         if not english_name and hebrew_name:
@@ -811,8 +811,8 @@ Be precise over thorough. Only extract restaurants that are genuinely reviewed o
             restaurant = self._ensure_english_name(restaurant)
 
             # Create identifier from Hebrew name (primary) with fallback to English
-            name_hebrew = restaurant.get('name_hebrew', '').strip().lower()
-            name_english = restaurant.get('name_english', '').strip().lower()
+            name_hebrew = (restaurant.get('name_hebrew') or '').strip().lower()
+            name_english = (restaurant.get('name_english') or '').strip().lower()
 
             # Skip empty entries
             if not name_hebrew and not name_english:
