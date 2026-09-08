@@ -209,6 +209,14 @@ class UnifiedRestaurantAnalyzer:
             validated_restaurants = []
             for restaurant in restaurants:
                 validated_restaurant = self._ensure_english_name(restaurant)
+                # Guarantee name_hebrew is never null: DB column is NOT NULL.
+                # Fall back to the English name, or skip entries with no name at all.
+                if not (validated_restaurant.get('name_hebrew') or '').strip():
+                    fallback = (validated_restaurant.get('name_english') or '').strip()
+                    if not fallback:
+                        self.logger.warning("Skipping restaurant with no name at all")
+                        continue
+                    validated_restaurant['name_hebrew'] = fallback
                 # Convert LLM's MM:SS timestamp estimate to seconds
                 mmss = validated_restaurant.pop('mention_timestamp', None)
                 if mmss is not None:
