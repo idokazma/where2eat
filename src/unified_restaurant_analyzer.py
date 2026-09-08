@@ -491,10 +491,25 @@ Always respond with valid JSON only. No markdown formatting or additional text."
                     temperature=self.config.get_active_temperature(),
                     max_output_tokens=self.config.get_active_max_tokens(),
                     response_mime_type="application/json",
+                    # Cap thinking so it cannot eat the whole output budget
+                    # (gemini-2.5 thinking tokens count toward max_output_tokens;
+                    # long restaurant-dense transcripts were returning empty/truncated)
+                    thinking_config=types.ThinkingConfig(thinking_budget=1024),
                 ),
             )
 
             content = response.text
+            if not content or not content.strip():
+                # Loud diagnostics for the empty-response failure mode
+                try:
+                    cand = response.candidates[0] if response.candidates else None
+                    finish = getattr(cand, "finish_reason", None) if cand else None
+                    usage = getattr(response, "usage_metadata", None)
+                    self.logger.error(
+                        f"Gemini returned empty content: finish_reason={finish}, usage={usage}"
+                    )
+                except Exception:
+                    self.logger.error("Gemini returned empty content (no candidate info)")
 
             # Use safe JSON parsing to handle truncated responses
             return self._safe_parse_json(content)

@@ -36,7 +36,7 @@ class LLMConfig:
     gemini_api_key: Optional[str] = None
     gemini_model: str = "gemini-2.5-flash"
     gemini_temperature: float = 0.1
-    gemini_max_tokens: int = 8192
+    gemini_max_tokens: int = 32768
 
     # Analysis configuration
     chunk_size: int = 30000
@@ -71,7 +71,7 @@ class LLMConfig:
             gemini_api_key=os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY"),
             gemini_model=os.getenv("GEMINI_MODEL", "gemini-2.5-flash"),
             gemini_temperature=float(os.getenv("GEMINI_TEMPERATURE", "0.1")),
-            gemini_max_tokens=int(os.getenv("GEMINI_MAX_TOKENS", "8192")),
+            gemini_max_tokens=int(os.getenv("GEMINI_MAX_TOKENS", "32768")),
 
             # Analysis settings
             chunk_size=int(os.getenv("TRANSCRIPT_CHUNK_SIZE", "30000")),
