@@ -113,7 +113,7 @@ function getImageUrl(r: FeedRestaurant): string | null {
   if (r.photos?.length && r.photos[0].photo_reference) {
     const ref = r.photos[0].photo_reference;
     if (ref.startsWith('http')) return ref;
-    return `/api/photos/${ref}?maxwidth=400`;
+    return `${API_URL}/api/photos/${ref}?maxwidth=400`;
   }
   return null;
 }
