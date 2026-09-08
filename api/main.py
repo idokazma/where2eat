@@ -1392,14 +1392,13 @@ async def reprocess_episode(video_id: str):
             cursor.execute('''
                 UPDATE video_queue
                 SET status = 'queued', error_message = NULL,
-                    attempt_count = attempt_count + 1,
-                    updated_at = datetime('now')
+                    attempt_count = attempt_count + 1
                 WHERE video_id = ?
             ''', (video_id,))
         else:
             # Insert new queue entry
             cursor.execute('''
-                INSERT INTO video_queue (video_id, video_url, title, channel_name, status, priority, attempt_count, created_at, updated_at)
+                INSERT INTO video_queue (video_id, video_url, title, channel_name, status, priority, attempt_count, discovered_at, scheduled_for)
                 VALUES (?, ?, ?, ?, 'queued', 0, 1, datetime('now'), datetime('now'))
             ''', (video_id, episode.get('video_url', ''), episode.get('title', ''), episode.get('channel_name', '')))
         conn.commit()

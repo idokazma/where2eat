@@ -79,6 +79,9 @@ export function RestaurantCardNew({
 
   const videoUrl = restaurant.episode_info?.video_url;
   const embedUrl = videoUrl ? getYouTubeEmbedUrl(videoUrl, restaurant.mention_timestamp_seconds) : null;
+  const extraMentions = (restaurant.mentions ?? []).filter(
+    (m) => m.youtube_url && !(m.video_id === restaurant.episode_info?.video_id && (m.timestamp_seconds ?? null) === (restaurant.mention_timestamp_seconds ?? null))
+  );
 
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: false,
@@ -406,6 +409,24 @@ export function RestaurantCardNew({
               </div>
             )}
           </div>
+          {/* Additional episode mentions */}
+          {extraMentions.length > 0 && (
+            <div className="w-full px-3 py-2 flex flex-col gap-1">
+              <span className="text-white/60 text-[11px] font-medium">אזכורים נוספים:</span>
+              {extraMentions.map((m, i) => (
+                <button
+                  key={`${m.video_id}-${i}`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (m.youtube_url) window.open(m.youtube_url, '_blank');
+                  }}
+                  className="text-white/80 text-xs font-medium hover:text-white text-right transition-colors"
+                >
+                  צפה · {m.episode_title || 'פרק'}{m.timestamp_display ? ` · ${m.timestamp_display}` : ''}
+                </button>
+              ))}
+            </div>
+          )}
           {/* Back to card button */}
           <button
             onClick={() => emblaApi?.scrollTo(0)}
