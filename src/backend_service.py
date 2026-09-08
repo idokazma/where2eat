@@ -58,7 +58,7 @@ class BackendService:
         if self._transcript_collector is None:
             try:
                 from youtube_transcript_collector import YouTubeTranscriptCollector
-                self._transcript_collector = YouTubeTranscriptCollector()
+                self._transcript_collector = YouTubeTranscriptCollector(database=self.db)
             except ImportError:
                 raise ImportError("YouTubeTranscriptCollector not available")
         return self._transcript_collector
