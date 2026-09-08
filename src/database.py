@@ -642,20 +642,20 @@ class Database:
         restaurant_id = kwargs.get('id', str(uuid.uuid4()))
 
         # Handle nested location dict
-        location = kwargs.get('location', {})
+        location = kwargs.get('location') or {}
         city = kwargs.get('city') or location.get('city')
         neighborhood = kwargs.get('neighborhood') or location.get('neighborhood')
         address = kwargs.get('address') or location.get('address')
         region = kwargs.get('region') or location.get('region', 'Center')
 
         # Handle nested contact_info dict
-        contact_info = kwargs.get('contact_info', {})
+        contact_info = kwargs.get('contact_info') or {}
         contact_hours = kwargs.get('contact_hours') or contact_info.get('hours')
         contact_phone = kwargs.get('contact_phone') or contact_info.get('phone')
         contact_website = kwargs.get('contact_website') or contact_info.get('website')
 
         # Handle nested rating dict
-        rating = kwargs.get('rating', {})
+        rating = kwargs.get('rating') or {}
         google_rating = kwargs.get('google_rating') or rating.get('google_rating')
         google_user_ratings_total = kwargs.get('google_user_ratings_total') or rating.get('user_ratings_total')
 
