@@ -1420,16 +1420,37 @@ async def fix_data():
     with db.get_connection() as conn:
         cursor = conn.cursor()
 
-        # Fix 1: Resolve raw photo references in image_url
-        cursor.execute("SELECT id, image_url, name_hebrew FROM restaurants WHERE image_url LIKE 'places/%'")
+        # Fix 1: Resolve photos for restaurants with raw refs or no image.
+        # Stored 'places/.../photos/<ref>' values go stale (media endpoint 400s),
+        # so fetch a fresh photo name from Place Details and resolve that instead.
+        cursor.execute("""
+            SELECT id, image_url, name_hebrew, google_place_id FROM restaurants
+            WHERE image_url LIKE 'places/%'
+               OR ((image_url IS NULL OR image_url = '')
+                   AND google_place_id IS NOT NULL AND google_place_id != '')
+        """)
         raw_photo_rows = cursor.fetchall()
 
         for row in raw_photo_rows:
             rid = row['id']
-            ref = row['image_url']
             name = row['name_hebrew']
+            place_id = row['google_place_id']
+            if not place_id and row['image_url']:
+                parts = row['image_url'].split('/')
+                place_id = parts[1] if len(parts) > 1 else None
+            if not place_id:
+                fixes['errors'].append(f"No place_id for {name} ({rid})")
+                continue
             try:
-                url = f"https://places.googleapis.com/v1/{ref}/media"
+                det = http_requests.get(
+                    f"https://places.googleapis.com/v1/places/{place_id}",
+                    headers={'X-Goog-Api-Key': api_key, 'X-Goog-FieldMask': 'photos'})
+                det.raise_for_status()
+                photos = det.json().get('photos') or []
+                if not photos:
+                    fixes['errors'].append(f"No photos for {name} ({rid})")
+                    continue
+                url = f"https://places.googleapis.com/v1/{photos[0]['name']}/media"
                 params = {'maxWidthPx': '800', 'skipHttpRedirect': 'true', 'key': api_key}
                 resp = http_requests.get(url, params=params)
                 resp.raise_for_status()
