@@ -2,21 +2,43 @@ import { Restaurant } from '@/types/restaurant';
 import { config } from '@/lib/config';
 
 /**
+ * A new-API Google photo reference embeds its place id: "places/<place_id>/photos/<ref>".
+ * When the restaurant's google_place_id is known and the photo belongs to a
+ * different place, it comes from a stale place match - skip it.
+ */
+function photoBelongsToRestaurant(photoReference: string, restaurant: Restaurant): boolean {
+  const m = photoReference.match(/^places\/([^/]+)\//);
+  if (!m) return true; // legacy reference carries no place id - cannot verify
+  const pid = restaurant.google_place_id || restaurant.google_places?.place_id;
+  if (!pid) return true;
+  return m[1] === pid;
+}
+
+/** Photos that belong to the restaurant's current place match. */
+function validPhotos(restaurant: Restaurant) {
+  return (restaurant.photos || []).filter(
+    (p) => !p.photo_reference || photoBelongsToRestaurant(p.photo_reference, restaurant)
+  );
+}
+
+/**
  * Get the best available photo URL for a restaurant.
  * Priority: owner photo > og:image > first Google photo > image_url fallback.
  */
 export function getRestaurantImage(restaurant: Restaurant): string | null {
+  const photos = validPhotos(restaurant);
+
   // Priority 1: Owner-attributed Google Places photo (highest quality)
-  if (restaurant.photos && restaurant.photos.length > 0) {
-    const ownerPhoto = restaurant.photos.find((p) => p.is_owner_photo);
+  if (photos.length > 0) {
+    const ownerPhoto = photos.find((p) => p.is_owner_photo);
     if (ownerPhoto?.photo_reference) {
       return getPhotoProxyUrl(ownerPhoto.photo_reference);
     }
   }
 
   // Priority 2: First Google Places photo (any)
-  if (restaurant.photos && restaurant.photos.length > 0) {
-    const photo = restaurant.photos[0];
+  if (photos.length > 0) {
+    const photo = photos[0];
     if (photo.photo_reference) {
       return getPhotoProxyUrl(photo.photo_reference);
     }
@@ -49,8 +71,9 @@ export function getRestaurantImages(restaurant: Restaurant): string[] {
   const images: string[] = [];
 
   // Add Google Places photos
-  if (restaurant.photos && restaurant.photos.length > 0) {
-    for (const photo of restaurant.photos) {
+  const photos = validPhotos(restaurant);
+  if (photos.length > 0) {
+    for (const photo of photos) {
       if (photo.photo_reference) {
         images.push(getPhotoProxyUrl(photo.photo_reference));
       } else if (photo.photo_url) {
