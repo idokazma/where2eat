@@ -706,9 +706,9 @@ class BackendService:
                                     existing_r = session.query(RestaurantModel).filter_by(id=rid).first()
                                     if existing_r:
                                         continue
-                                location = restaurant_data.get('location', {})
-                                contact = restaurant_data.get('contact_info', {})
-                                rating = restaurant_data.get('rating', {})
+                                location = restaurant_data.get('location') or {}
+                                contact = restaurant_data.get('contact_info') or {}
+                                rating = restaurant_data.get('rating') or {}
                                 gp = restaurant_data.get('google_places', {}) or {}
                                 r_model = RestaurantModel(
                                     id=rid,
@@ -757,6 +757,12 @@ class BackendService:
                     'success': False,
                     'error': str(e)
                 }
+
+        db_step = result['steps'].get('database')
+        if save_to_db and restaurants and db_step is not None and not db_step.get('success'):
+            result['success'] = False
+            result['error'] = f"Failed to save results to database: {db_step.get('error')}"
+            return result
 
         if progress_callback:
             progress_callback('completed', 1.0)
