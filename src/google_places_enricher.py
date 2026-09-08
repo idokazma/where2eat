@@ -469,7 +469,12 @@ class GooglePlacesEnricher:
             Merged restaurant data
         """
         enhanced_data = original_data.copy()
-        
+        # Normalize nested dicts that may be explicit None from the analyzer
+        if enhanced_data.get('location') is None:
+            enhanced_data['location'] = {}
+        if enhanced_data.get('contact_info') is None:
+            enhanced_data['contact_info'] = {}
+
         # Add Google Places specific data
         google_name = google_data.get('name', '')
         original_hebrew = original_data.get('name_hebrew', '')
