@@ -62,7 +62,7 @@ class VideoQueueManager:
 
         # Check if video was already processed (exists in episodes table)
         episode = self.db.get_episode(video_id=video_id)
-        if episode is not None:
+        if episode is not None and episode.get('analysis_date'):
             with self.db.get_connection() as conn:
                 cursor = conn.cursor()
                 cursor.execute(
@@ -357,7 +357,7 @@ class VideoQueueManager:
 
         # Also skip silently if already in episodes
         episode = self.db.get_episode(video_id=video_id)
-        if episode is not None:
+        if episode is not None and episode.get('analysis_date'):
             return None
 
         queue_id = str(uuid.uuid4())
