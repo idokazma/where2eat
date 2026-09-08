@@ -34,7 +34,7 @@ class LLMConfig:
 
     # Gemini configuration
     gemini_api_key: Optional[str] = None
-    gemini_model: str = "gemini-2.0-flash"
+    gemini_model: str = "gemini-2.5-flash"
     gemini_temperature: float = 0.1
     gemini_max_tokens: int = 8192
 
@@ -69,7 +69,7 @@ class LLMConfig:
 
             # Gemini settings
             gemini_api_key=os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY"),
-            gemini_model=os.getenv("GEMINI_MODEL", "gemini-2.0-flash"),
+            gemini_model=os.getenv("GEMINI_MODEL", "gemini-2.5-flash"),
             gemini_temperature=float(os.getenv("GEMINI_TEMPERATURE", "0.1")),
             gemini_max_tokens=int(os.getenv("GEMINI_MAX_TOKENS", "8192")),
 

@@ -192,6 +192,15 @@ class BackendService:
                 'segments': transcript_data.get('segments', [])
             })
 
+            episode_info = analysis_result.get('episode_info', {})
+            if str(episode_info.get('processing_method', '')).endswith('_error'):
+                return {
+                    'success': False,
+                    'error': analysis_result.get('episode_summary', 'Analysis failed'),
+                    'video_id': transcript_data.get('video_id'),
+                    'restaurants': []
+                }
+
             return {
                 'success': True,
                 'video_id': transcript_data.get('video_id'),
