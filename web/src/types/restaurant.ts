@@ -80,6 +80,16 @@ export interface Restaurant {
   instagram_url?: string | null;
   mention_level?: 'נטעם' | 'הוזכר' | null;
   host_quotes?: string[];
+  mentions?: RestaurantMention[];
+}
+
+export interface RestaurantMention {
+  video_id: string;
+  timestamp_seconds?: number | null;
+  timestamp_display?: string | null;
+  mention_level?: string | null;
+  episode_title?: string | null;
+  youtube_url?: string | null;
 }
 
 export interface EpisodeInfo {
