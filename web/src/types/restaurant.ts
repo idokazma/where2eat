@@ -172,6 +172,7 @@ export interface EpisodeMention {
   website?: string;
   phone?: string;
   special_features?: string[];
+  status?: string | null;
   restaurant?: Restaurant;
 }
 
