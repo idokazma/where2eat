@@ -232,7 +232,7 @@ export function RestaurantCardNew({
 
         {/* Status badges — top right on image (closed/closing only) */}
         {(!!restaurant.is_closing || restaurant.status === 'closed' || restaurant.status === 'סגור' || restaurant.status === 'closing_soon') && (
-          <div className="absolute top-3 right-3 z-10">
+          <div className="absolute top-3 left-3 z-10">
             {(!!restaurant.is_closing || restaurant.status === 'closed' || restaurant.status === 'סגור') && (
               <span className="px-2 py-1 bg-red-600 backdrop-blur-sm rounded text-white text-[10px] font-bold">
                 נסגר לצמיתות
@@ -243,6 +243,13 @@ export function RestaurantCardNew({
                 נסגר בקרוב
               </span>
             )}
+          </div>
+        )}
+
+        {/* Rating sticker pinned on the photo */}
+        {restaurant.rating?.google_rating != null && restaurant.rating.google_rating > 0 && (
+          <div className="absolute top-3 right-3 z-10 sticker-badge sticker-badge-sm">
+            {restaurant.rating.google_rating.toFixed(1)}
           </div>
         )}
 

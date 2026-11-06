@@ -127,7 +127,7 @@ export default function TrendingPage() {
             {/* Rank indicator */}
             {index === 0 && (
               <div className="flex items-center gap-2 mb-3">
-                <div className="w-10 h-10 rounded-lg bg-[var(--color-accent)] text-white flex items-center justify-center font-bold">
+                <div className="w-10 h-10 rounded-lg bg-[var(--color-accent)] text-[var(--color-on-accent)] flex items-center justify-center font-bold">
                   #1
                 </div>
                 <Flame className="w-5 h-5 text-[var(--color-accent)]" />

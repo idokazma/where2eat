@@ -277,7 +277,7 @@ export default function RestaurantDetailPage() {
               </span>
             )}
             {typeof restaurant.rating?.google_rating === 'number' && restaurant.rating.google_rating > 0 && (
-              <span className="flex items-center gap-1 px-2.5 py-1 bg-[var(--color-gold)]/90 rounded-md text-white text-xs font-bold font-accent">
+              <span className="flex items-center gap-1 px-2.5 py-1 bg-[var(--color-gold)] rounded-md text-[var(--color-ink)] border-2 border-[var(--color-ink)] text-xs font-bold font-accent">
                 <Star className="w-3 h-3 fill-current" />
                 {restaurant.rating.google_rating.toFixed(1)}
               </span>
@@ -299,7 +299,7 @@ export default function RestaurantDetailPage() {
         <div className="flex items-center gap-3">
           <button
             onClick={handleNavigate}
-            className="flex-1 flex items-center justify-center gap-2 bg-[var(--color-accent)] text-white py-3 rounded-xl font-semibold text-sm"
+            className="flex-1 flex items-center justify-center gap-2 bg-[var(--color-accent)] text-[var(--color-on-accent)] py-3 rounded-xl font-extrabold text-sm border-2 border-[var(--color-ink)] shadow-[3px_3px_0_var(--color-ink)] active:shadow-none active:translate-x-[3px] active:translate-y-[3px] transition-all"
           >
             <Navigation className="w-4 h-4" />
             <span>נווט למסעדה</span>
@@ -307,7 +307,7 @@ export default function RestaurantDetailPage() {
           {restaurant.contact_info?.phone && (
             <a
               href={`tel:${restaurant.contact_info.phone}`}
-              className="w-12 h-12 flex items-center justify-center rounded-xl bg-[var(--color-surface)] border border-[var(--color-border)]"
+              className="w-12 h-12 flex items-center justify-center rounded-xl bg-[var(--color-surface-elevated)] border-2 border-[var(--color-ink)] shadow-[2.5px_2.5px_0_var(--color-ink)]"
             >
               <Phone className="w-5 h-5 text-[var(--color-ink)]" />
             </a>
@@ -317,7 +317,7 @@ export default function RestaurantDetailPage() {
               href={restaurant.contact_info.website}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-12 h-12 flex items-center justify-center rounded-xl bg-[var(--color-surface)] border border-[var(--color-border)]"
+              className="w-12 h-12 flex items-center justify-center rounded-xl bg-[var(--color-surface-elevated)] border-2 border-[var(--color-ink)] shadow-[2.5px_2.5px_0_var(--color-ink)]"
             >
               <Globe className="w-5 h-5 text-[var(--color-ink)]" />
             </a>
@@ -326,7 +326,7 @@ export default function RestaurantDetailPage() {
 
         {/* Rating detail */}
         {typeof restaurant.rating?.google_rating === 'number' && restaurant.rating.google_rating > 0 && (
-          <div className="flex items-center gap-3 p-3 rounded-xl bg-[var(--color-surface)]">
+          <div className="flex items-center gap-3 p-3 rounded-xl bg-[var(--color-surface-elevated)] border-2 border-[var(--color-ink)] shadow-[2.5px_2.5px_0_var(--color-ink)]">
             <div className="flex items-center gap-1 text-[var(--color-gold)]">
               <Star className="w-5 h-5 fill-current" />
               <span className="text-lg font-bold">{restaurant.rating.google_rating.toFixed(1)}</span>
@@ -368,7 +368,7 @@ export default function RestaurantDetailPage() {
 
         {/* Host Opinion / Engaging Quote */}
         {(restaurant.engaging_quote || restaurant.host_quotes?.[0] || restaurant.host_comments) && (
-          <div className="p-4 rounded-xl bg-[var(--color-surface)] border-r-4 border-r-[var(--color-gold)]">
+          <div className="p-4 rounded-xl bg-[var(--color-gold-subtle)] border-2 border-dashed border-[var(--color-ink)]">
             <h2 className="text-sm font-medium text-[var(--color-ink-muted)] mb-2">
               מה המארח אמר
             </h2>
@@ -389,7 +389,7 @@ export default function RestaurantDetailPage() {
             <h2 className="text-lg font-bold text-[var(--color-ink)]">מיקום</h2>
             <button
               onClick={handleNavigate}
-              className="flex items-start gap-3 p-3 w-full text-right rounded-xl bg-[var(--color-surface)] hover:bg-[var(--color-border)] transition-colors"
+              className="flex items-start gap-3 p-3 w-full text-right rounded-xl bg-[var(--color-surface-elevated)] border-2 border-[var(--color-ink)] shadow-[2.5px_2.5px_0_var(--color-ink)] hover:bg-[var(--color-border)] transition-colors"
             >
               <MapPin className="w-5 h-5 text-[var(--color-accent)] flex-shrink-0 mt-0.5" />
               <div>
@@ -409,7 +409,7 @@ export default function RestaurantDetailPage() {
 
         {/* Contact Info */}
         {restaurant.contact_info?.hours && (
-          <div className="flex items-start gap-3 p-3 rounded-xl bg-[var(--color-surface)]">
+          <div className="flex items-start gap-3 p-3 rounded-xl bg-[var(--color-surface-elevated)] border-2 border-[var(--color-ink)] shadow-[2.5px_2.5px_0_var(--color-ink)]">
             <Clock className="w-5 h-5 text-[var(--color-accent)] flex-shrink-0 mt-0.5" />
             <span className="text-[var(--color-ink)] text-sm">{restaurant.contact_info.hours}</span>
           </div>
@@ -425,7 +425,7 @@ export default function RestaurantDetailPage() {
                 {normalizedItems.map((item, index) => (
                   <div
                     key={index}
-                    className="p-3 rounded-xl bg-[var(--color-surface)]"
+                    className="p-3 rounded-xl bg-[var(--color-surface-elevated)] border-2 border-[var(--color-ink)] shadow-[2.5px_2.5px_0_var(--color-ink)]"
                   >
                     <div className="flex items-start justify-between">
                       <div className="flex items-start gap-2">
@@ -467,7 +467,7 @@ export default function RestaurantDetailPage() {
               {restaurant.special_features.map((feature, index) => (
                 <span
                   key={index}
-                  className="px-3 py-1.5 bg-[var(--color-surface)] text-[var(--color-ink)] text-sm rounded-full border border-[var(--color-border)]"
+                  className="px-3 py-1.5 bg-[var(--color-surface-elevated)] text-[var(--color-ink)] text-sm rounded-full border-2 border-[var(--color-ink)] font-bold shadow-[2px_2px_0_var(--color-ink)]"
                 >
                   {feature}
                 </span>
@@ -484,7 +484,7 @@ export default function RestaurantDetailPage() {
                 href={restaurant.google_places.google_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2 p-3 rounded-xl bg-[var(--color-surface)] text-[var(--color-ink)] hover:bg-[var(--color-border)] transition-colors"
+                className="flex items-center justify-center gap-2 p-3 rounded-xl bg-[var(--color-surface-elevated)] border-2 border-[var(--color-ink)] shadow-[2.5px_2.5px_0_var(--color-ink)] text-[var(--color-ink)] hover:bg-[var(--color-border)] transition-colors"
               >
                 <span>צפה ב-Google Maps</span>
                 <ExternalLink className="w-4 h-4" />

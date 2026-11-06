@@ -28,7 +28,7 @@ export default function GlobalError({
         </p>
         <button
           onClick={reset}
-          className="px-5 py-2.5 bg-[var(--color-accent)] text-white rounded-xl font-medium text-sm"
+          className="px-5 py-2.5 bg-[var(--color-accent)] text-[var(--color-on-accent)] rounded-xl font-medium text-sm"
         >
           נסה שוב
         </button>

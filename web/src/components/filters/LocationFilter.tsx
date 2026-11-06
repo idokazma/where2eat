@@ -81,7 +81,7 @@ export function LocationFilter({ className = '' }: LocationFilterProps) {
                 handleClearCity();
               }
             }}
-            className="flex-shrink-0 -mr-1 p-0.5 rounded-full hover:bg-[var(--color-accent)] hover:text-white transition-colors cursor-pointer"
+            className="flex-shrink-0 -mr-1 p-0.5 rounded-full hover:bg-[var(--color-accent)] hover:text-[var(--color-on-accent)] transition-colors cursor-pointer"
             aria-label="Clear location"
           >
             <X className="w-3.5 h-3.5" />

@@ -71,7 +71,7 @@ export function BottomNav() {
           <span className="relative">
             {item.icon}
             {item.badge && (
-              <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] flex items-center justify-center bg-[var(--color-accent)] text-white text-[10px] font-bold rounded-full px-1">
+              <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] flex items-center justify-center bg-[var(--color-accent)] text-[var(--color-on-accent)] text-[10px] font-bold rounded-full px-1">
                 {item.badge > 99 ? '99+' : item.badge}
               </span>
             )}
