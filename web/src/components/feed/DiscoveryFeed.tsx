@@ -118,7 +118,7 @@ export function DiscoveryFeed({
         />
         <button
           onClick={toggleCompact}
-          className="flex items-center gap-1.5 px-3 py-1.5 ml-4 rounded-lg text-xs font-medium transition-colors bg-[var(--color-surface)] border border-[var(--color-border)] text-[var(--color-ink-muted)] hover:text-[var(--color-ink)] hover:border-[var(--color-ink-subtle)]"
+          className="flex items-center gap-1.5 px-3 py-1.5 ml-4 rounded-full text-xs font-bold transition-all bg-[var(--color-surface-elevated)] border-2 border-[var(--color-ink)] text-[var(--color-ink)] shadow-[2.5px_2.5px_0_var(--color-ink)] active:shadow-none active:translate-x-[2px] active:translate-y-[2px]"
           aria-label={isCompact ? 'תצוגת כרטיסים' : 'תצוגה קומפקטית'}
         >
           {isCompact ? (

@@ -63,3 +63,10 @@ describe('accent contrast', () => {
     expect(offenders).toEqual([]);
   });
 });
+
+describe('motion', () => {
+  it('stops the infinite home marquee for users who prefer reduced motion', () => {
+    const blocks = [...css.matchAll(/@media \(prefers-reduced-motion: reduce\)\s*\{([\s\S]*?)\n\}/g)].map((m) => m[1]);
+    expect(blocks.some((b) => /\.marquee-inner\s*\{[^}]*animation:\s*none/.test(b))).toBe(true);
+  });
+});

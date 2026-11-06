@@ -229,8 +229,7 @@ export function HomePageNew() {
       {/* Hero */}
       <div className="home-hero animate-fade-up">
         <h1>
-          {allRestaurants.length} מסעדות.
-          <br />
+          {allRestaurants.length} מסעדות.{' '}
           <span className="hl-marker">אפס פספוסים.</span>
         </h1>
         <p>כל המסעדות שמדברים מהבטן בדקו, דירגו ואכלו</p>
