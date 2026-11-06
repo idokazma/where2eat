@@ -1027,3 +1027,304 @@
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-ink-muted);
 }
+
+/* ============================================
+   STREET POP REDESIGN (C3 · Mediterranean Pop)
+   Palette: teal #0E8388 · sun #F2B90C · coral #FF5A3C
+   ink #13201F on cream #FAF3DE
+   ============================================ */
+
+:root {
+  --color-ink: #13201F;
+  --color-ink-muted: #5F695C;
+  --color-ink-subtle: #8B937F;
+  --color-ink-faint: #A8AE9C;
+
+  --color-paper: #FAF3DE;
+  --color-surface: #F1E9CF;
+  --color-surface-elevated: #FFFDF6;
+  --color-surface-alt: rgba(19, 32, 31, 0.05);
+
+  --color-accent: #0E8388;
+  --color-accent-hover: #0A6E72;
+  --color-accent-subtle: #DFF0EC;
+  --color-coral: #FF5A3C;
+
+  --color-gold: #F2B90C;
+  --color-gold-subtle: #FCF3D0;
+
+  --color-positive: #2F9E62;
+  --color-positive-subtle: #E4F4EA;
+  --color-negative: #D64545;
+  --color-negative-subtle: #FBE7E4;
+
+  --color-border: #E3D8B8;
+  --color-border-strong: #13201F;
+
+  /* Street-pop primitives */
+  --pop-line: 2.5px solid var(--color-ink);
+  --pop-line-sm: 1.5px solid var(--color-ink);
+  --pop-shadow: 5px 5px 0 var(--color-ink);
+  --pop-shadow-sm: 2.5px 2.5px 0 var(--color-ink);
+}
+
+[data-theme="dark"], .dark {
+  --color-ink: #F4EFDD;
+  --color-ink-muted: #9AA79B;
+  --color-ink-subtle: #6E7B6E;
+  --color-ink-faint: #55635A;
+
+  --color-paper: #101B1A;
+  --color-surface: #182625;
+  --color-surface-elevated: #1F2E2D;
+  --color-surface-alt: rgba(244, 239, 221, 0.06);
+
+  --color-accent: #2BB7BC;
+  --color-accent-hover: #4ACACF;
+  --color-accent-subtle: #17393B;
+  --color-coral: #FF6B4E;
+
+  --color-gold: #F2B90C;
+  --color-gold-subtle: #3A3317;
+
+  --color-positive: #3CC380;
+  --color-positive-subtle: #15331F;
+  --color-negative: #E65555;
+  --color-negative-subtle: #382020;
+
+  --color-border: #2C3D3B;
+  --color-border-strong: #F4EFDD;
+
+  --pop-shadow: 5px 5px 0 #000000;
+  --pop-shadow-sm: 2.5px 2.5px 0 #000000;
+}
+
+/* ---------- Header: sticker logo ---------- */
+.header {
+  background: var(--color-paper);
+}
+.header::after {
+  display: none;
+}
+.header-title {
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 900;
+  color: var(--color-surface-elevated);
+  background: var(--color-accent);
+  padding: 8px 14px;
+  border-radius: 12px;
+  transform: rotate(-2deg);
+  box-shadow: 3px 3px 0 var(--color-ink);
+  text-decoration: none;
+}
+[data-theme="dark"] .header-title, .dark .header-title {
+  color: #101B1A;
+}
+
+/* ---------- Bottom nav: thick ink top border ---------- */
+.bottom-nav {
+  border-top: var(--pop-line);
+  background: var(--color-surface-elevated);
+}
+.bottom-nav-item.active {
+  color: var(--color-accent);
+  font-weight: 800;
+}
+
+/* ---------- Filter chips: sticker chips ---------- */
+.filter-chip {
+  background: var(--color-surface-elevated);
+  border: 2px solid var(--color-ink);
+  box-shadow: var(--pop-shadow-sm);
+  font-weight: 700;
+}
+.filter-chip:hover {
+  border-color: var(--color-ink);
+  transform: translate(-0.5px, -0.5px);
+  box-shadow: 3px 3px 0 var(--color-ink);
+}
+.filter-chip.active {
+  background: var(--color-accent);
+  border-color: var(--color-ink);
+  color: #FFFDF6;
+}
+[data-theme="dark"] .filter-chip.active, .dark .filter-chip.active {
+  color: #101B1A;
+}
+.filter-chip.selected {
+  background: var(--color-gold);
+  border-color: var(--color-ink);
+  color: var(--color-ink);
+}
+
+/* ---------- Restaurant card: poster card ---------- */
+.restaurant-card {
+  border: var(--pop-line);
+  border-radius: 20px;
+  box-shadow: var(--pop-shadow);
+  background: var(--color-surface-elevated);
+}
+.restaurant-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 7px 7px 0 var(--color-ink);
+}
+.restaurant-card:active {
+  transform: scale(0.98);
+  box-shadow: var(--pop-shadow-sm);
+}
+.restaurant-card-title {
+  font-weight: 900;
+}
+.restaurant-card-quote {
+  background: var(--color-gold-subtle);
+  border: 1.5px dashed var(--color-ink);
+  border-radius: 12px;
+  font-style: normal;
+  font-weight: 600;
+  color: var(--color-ink);
+}
+.restaurant-card-actions {
+  border-top: 1.5px dashed var(--color-border);
+}
+.restaurant-card-actions > button,
+.restaurant-card-actions > a {
+  border: var(--pop-line-sm);
+  border-radius: 10px;
+  box-shadow: var(--pop-shadow-sm);
+  background: var(--color-surface-elevated);
+}
+.restaurant-card-actions > button:active,
+.restaurant-card-actions > a:active {
+  box-shadow: none;
+  transform: translate(2px, 2px);
+}
+
+/* ---------- Section headers ---------- */
+.section-title {
+  font-weight: 900;
+}
+.section-action {
+  font-weight: 700;
+}
+
+/* ---------- Trending cards ---------- */
+.trending-card-image {
+  border: 2px solid var(--color-ink);
+  border-radius: 14px;
+  box-shadow: var(--pop-shadow-sm);
+}
+.trending-card-rank {
+  background: var(--color-gold);
+  color: var(--color-ink);
+  border: 2px solid var(--color-ink);
+  border-radius: 50%;
+  transform: rotate(-8deg);
+}
+
+/* ---------- Episode badge ---------- */
+.episode-badge {
+  background: var(--color-gold);
+  color: var(--color-ink);
+  border: var(--pop-line-sm);
+  border-radius: 8px;
+  font-weight: 800;
+}
+
+/* ---------- Street-pop utility classes ---------- */
+.pop-card {
+  background: var(--color-surface-elevated);
+  border: var(--pop-line);
+  border-radius: 20px;
+  box-shadow: var(--pop-shadow);
+}
+.pop-card-sm {
+  background: var(--color-surface-elevated);
+  border: 2px solid var(--color-ink);
+  border-radius: 14px;
+  box-shadow: var(--pop-shadow-sm);
+}
+.sticker-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--color-gold);
+  color: var(--color-ink);
+  border: var(--pop-line);
+  box-shadow: var(--pop-shadow-sm);
+  font-weight: 900;
+  font-size: 15px;
+  transform: rotate(8deg);
+}
+.sticker-badge-sm {
+  width: 46px;
+  height: 46px;
+  font-size: 13.5px;
+}
+.sticker-badge-coral {
+  background: var(--color-coral);
+  color: #FFFDF6;
+  transform: rotate(-9deg);
+}
+.sticker-badge-teal {
+  background: var(--color-accent);
+  color: #FFFDF6;
+  transform: rotate(6deg);
+}
+[data-theme="dark"] .sticker-badge-coral,
+[data-theme="dark"] .sticker-badge-teal,
+.dark .sticker-badge-coral,
+.dark .sticker-badge-teal {
+  color: #101B1A;
+}
+.hl-marker {
+  background: var(--color-gold);
+  color: var(--color-ink);
+  padding: 0 8px;
+  box-shadow: var(--pop-shadow-sm);
+  display: inline-block;
+  transform: rotate(-1deg);
+}
+.marquee-strip {
+  background: var(--color-ink);
+  color: var(--color-paper);
+  overflow: hidden;
+  font-weight: 800;
+  font-size: 12px;
+  padding: 8px 0;
+  white-space: nowrap;
+  letter-spacing: 0.04em;
+}
+.marquee-inner {
+  display: inline-flex;
+  animation: marquee-scroll 24s linear infinite;
+}
+.marquee-chunk {
+  padding: 0 14px;
+}
+.marquee-chunk b {
+  color: var(--color-gold);
+}
+@keyframes marquee-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(50%); }
+}
+.home-hero {
+  padding: 18px 20px 4px;
+}
+.home-hero h1 {
+  font-weight: 900;
+  font-size: 34px;
+  line-height: 1.05;
+  color: var(--color-ink);
+  letter-spacing: -0.01em;
+}
+.home-hero p {
+  color: var(--color-ink-muted);
+  font-size: 13px;
+  margin-top: 12px;
+  font-weight: 600;
+}

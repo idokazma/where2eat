@@ -42,7 +42,7 @@ function ExpandableRestaurantItem({
     : null;
 
   return (
-    <div className="rounded-xl border border-[var(--color-border)] overflow-hidden bg-[var(--color-surface)]">
+    <div className="rounded-xl border-2 border-[var(--color-ink)] overflow-hidden bg-[var(--color-surface-elevated)] shadow-[2.5px_2.5px_0_var(--color-ink)]">
       {/* Compact row — always visible */}
       <button
         onClick={() => setExpanded(!expanded)}
@@ -267,15 +267,15 @@ export default function EpisodeDetailPage() {
           rel="noopener noreferrer"
           className="absolute inset-0 flex items-center justify-center bg-black/30 hover:bg-black/40 transition-colors"
         >
-          <div className="w-16 h-16 rounded-full bg-white/90 flex items-center justify-center">
-            <Play className="w-8 h-8 text-[var(--color-accent)] ml-1" />
+          <div className="w-16 h-16 rounded-full bg-[var(--color-gold)] border-[2.5px] border-[var(--color-ink)] shadow-[3px_3px_0_var(--color-ink)] flex items-center justify-center">
+            <Play className="w-8 h-8 text-[var(--color-ink)] ml-1" />
           </div>
         </a>
       </div>
 
       <div className="px-4 py-4">
         {/* Episode info */}
-        <h1 className="text-xl font-bold text-[var(--color-ink)] mb-1">
+        <h1 className="text-xl font-black text-[var(--color-ink)] mb-1">
           {episode.title || 'פרק ללא כותרת'}
         </h1>
         <div className="flex items-center gap-2 text-sm text-[var(--color-ink-muted)] mb-3">

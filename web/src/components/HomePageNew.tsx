@@ -215,6 +215,27 @@ export function HomePageNew() {
 
   return (
     <PageLayout showHeader showBottomNav showSearch={false}>
+      {/* Street-pop marquee */}
+      <div className="marquee-strip" aria-hidden="true">
+        <div className="marquee-inner">
+          {[0, 1].map((n) => (
+            <span key={n} className="marquee-chunk">
+              אוכלים ✦ מדברים ✦ דורגים ✦ <b>{allRestaurants.length} מסעדות</b> ✦ אפס פספוסים ✦
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* Hero */}
+      <div className="home-hero animate-fade-up">
+        <h1>
+          {allRestaurants.length} מסעדות.
+          <br />
+          <span className="hl-marker">אפס פספוסים.</span>
+        </h1>
+        <p>כל המסעדות שמדברים מהבטן בדקו, דירגו ואכלו</p>
+      </div>
+
       {/* Search + Filters */}
       <div className="animate-fade-up stagger-section-1">
         <div className="px-4 pt-3 pb-1">
@@ -225,7 +246,7 @@ export function HomePageNew() {
               placeholder="חיפוש מסעדה..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pr-9 pl-4 py-2.5 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg text-sm text-[var(--color-ink)] placeholder:text-[var(--color-ink-subtle)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]"
+              className="w-full pr-9 pl-4 py-2.5 bg-[var(--color-surface-elevated)] border-2 border-[var(--color-ink)] rounded-xl shadow-[2.5px_2.5px_0_var(--color-ink)] text-sm text-[var(--color-ink)] placeholder:text-[var(--color-ink-subtle)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]"
             />
           </div>
         </div>
@@ -236,8 +257,8 @@ export function HomePageNew() {
               onClick={handleShuffle}
               className={`flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium transition-colors ${
                 shuffleSeed !== null
-                  ? 'bg-[var(--color-accent)] text-white rounded-r-none rounded-l-full border-r border-white/20'
-                  : 'bg-[var(--color-surface)] text-[var(--color-ink-subtle)] border border-[var(--color-border)] rounded-full'
+                  ? 'bg-[var(--color-accent)] text-white rounded-r-none rounded-l-full border-2 border-[var(--color-ink)] shadow-[2.5px_2.5px_0_var(--color-ink)]'
+                  : 'bg-[var(--color-surface-elevated)] text-[var(--color-ink)] border-2 border-[var(--color-ink)] rounded-full shadow-[2.5px_2.5px_0_var(--color-ink)] font-bold'
               }`}
             >
               <Shuffle className="w-3.5 h-3.5" />
@@ -246,7 +267,7 @@ export function HomePageNew() {
             {shuffleSeed !== null && (
               <button
                 onClick={() => setShuffleSeed(null)}
-                className="flex items-center px-2 py-1.5 bg-[var(--color-accent)] text-white rounded-l-none rounded-r-full"
+                className="flex items-center px-2 py-1.5 bg-[var(--color-accent)] text-white rounded-l-none rounded-r-full border-2 border-r-0 border-[var(--color-ink)] shadow-[2.5px_2.5px_0_var(--color-ink)]"
               >
                 <X className="w-3.5 h-3.5" />
               </button>

@@ -19,7 +19,7 @@ function EpisodeCard({ episode }: { episode: EpisodeSummary }) {
 
   return (
     <Link href={`/episode/${episode.video_id}`}>
-      <div className="bg-[var(--color-surface)] rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow border border-[var(--color-border)]">
+      <div className="pop-card relative overflow-hidden hover:-translate-y-0.5 transition-transform">
         {/* Thumbnail */}
         <div className="relative aspect-video bg-[var(--color-ink-faint)]">
           {episode.thumbnail_url && (
@@ -34,13 +34,13 @@ function EpisodeCard({ episode }: { episode: EpisodeSummary }) {
           {/* Mention count overlay */}
           <div className="absolute bottom-2 right-2 flex gap-1.5">
             {episode.tasted_count > 0 && (
-              <span className="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-1 rounded-full bg-emerald-600/90 text-white backdrop-blur-sm">
+              <span className="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-1 rounded-full bg-[var(--color-gold)] text-[var(--color-ink)] border-2 border-[var(--color-ink)]">
                 <UtensilsCrossed className="w-3 h-3" />
                 {episode.tasted_count}
               </span>
             )}
             {episode.mentioned_count > 0 && (
-              <span className="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-1 rounded-full bg-sky-600/90 text-white backdrop-blur-sm">
+              <span className="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-1 rounded-full bg-[var(--color-accent)] text-white border-2 border-[var(--color-ink)]">
                 <MessageCircle className="w-3 h-3" />
                 {episode.mentioned_count}
               </span>
@@ -50,7 +50,7 @@ function EpisodeCard({ episode }: { episode: EpisodeSummary }) {
 
         {/* Info */}
         <div className="p-3">
-          <h3 className="font-bold text-[var(--color-ink)] line-clamp-2 text-sm leading-snug mb-1">
+          <h3 className="font-black text-[var(--color-ink)] line-clamp-2 text-sm leading-snug mb-1">
             {episode.title || 'פרק ללא כותרת'}
           </h3>
           <div className="flex items-center justify-between">

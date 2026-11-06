@@ -23,7 +23,7 @@ export function MentionLevelBadge({
   if (mentionLevel === 'נטעם') {
     return (
       <span
-        className={`inline-flex items-center font-semibold rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300 ${sizeClasses[size]} ${className}`}
+        className={`inline-flex items-center font-semibold rounded-full bg-emerald-100 text-emerald-700 border border-[var(--color-ink)] dark:bg-emerald-900/40 dark:text-emerald-300 ${sizeClasses[size]} ${className}`}
       >
         <UtensilsCrossed className={iconSize} />
         <span>נטעם</span>
@@ -33,7 +33,7 @@ export function MentionLevelBadge({
 
   return (
     <span
-      className={`inline-flex items-center font-semibold rounded-full bg-sky-100 text-sky-700 dark:bg-sky-900/40 dark:text-sky-300 border border-sky-200 dark:border-sky-800 ${sizeClasses[size]} ${className}`}
+      className={`inline-flex items-center font-semibold rounded-full bg-sky-100 text-sky-700 dark:bg-sky-900/40 dark:text-sky-300 border border-[var(--color-ink)] ${sizeClasses[size]} ${className}`}
     >
       <MessageCircle className={iconSize} />
       <span>הוזכר</span>

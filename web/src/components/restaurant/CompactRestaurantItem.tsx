@@ -39,7 +39,7 @@ export function CompactRestaurantItem({
   const restaurantId = restaurant.id || restaurant.google_places?.place_id || restaurant.name_hebrew;
 
   return (
-    <div className="rounded-xl border border-[var(--color-border)] overflow-hidden bg-[var(--color-surface-elevated)]">
+    <div className="rounded-xl border-2 border-[var(--color-ink)] overflow-hidden bg-[var(--color-surface-elevated)] shadow-[2.5px_2.5px_0_var(--color-ink)]">
       {/* Compact row */}
       <button
         onClick={() => setExpanded(!expanded)}
