@@ -203,7 +203,7 @@ export function HomePageNew() {
             <p className="text-lg font-medium text-[var(--color-negative)]">{error}</p>
             <button
               onClick={loadAll}
-              className="mt-4 px-6 py-3 bg-[var(--color-accent)] text-white rounded-lg font-medium"
+              className="mt-4 px-6 py-3 bg-[var(--color-accent)] text-[var(--color-on-accent)] rounded-lg font-medium"
             >
               נסה שוב
             </button>
@@ -220,7 +220,7 @@ export function HomePageNew() {
         <div className="marquee-inner">
           {[0, 1].map((n) => (
             <span key={n} className="marquee-chunk">
-              אוכלים ✦ מדברים ✦ דורגים ✦ <b>{allRestaurants.length} מסעדות</b> ✦ אפס פספוסים ✦
+              אוכלים ✦ מדברים ✦ מדרגים ✦ <b>{allRestaurants.length} מסעדות</b> ✦ אפס פספוסים ✦
             </span>
           ))}
         </div>
@@ -257,7 +257,7 @@ export function HomePageNew() {
               onClick={handleShuffle}
               className={`flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium transition-colors ${
                 shuffleSeed !== null
-                  ? 'bg-[var(--color-accent)] text-white rounded-r-none rounded-l-full border-2 border-[var(--color-ink)] shadow-[2.5px_2.5px_0_var(--color-ink)]'
+                  ? 'bg-[var(--color-accent)] text-[var(--color-on-accent)] rounded-r-none rounded-l-full border-2 border-[var(--color-ink)] shadow-[2.5px_2.5px_0_var(--color-ink)]'
                   : 'bg-[var(--color-surface-elevated)] text-[var(--color-ink)] border-2 border-[var(--color-ink)] rounded-full shadow-[2.5px_2.5px_0_var(--color-ink)] font-bold'
               }`}
             >
@@ -267,7 +267,7 @@ export function HomePageNew() {
             {shuffleSeed !== null && (
               <button
                 onClick={() => setShuffleSeed(null)}
-                className="flex items-center px-2 py-1.5 bg-[var(--color-accent)] text-white rounded-l-none rounded-r-full border-2 border-r-0 border-[var(--color-ink)] shadow-[2.5px_2.5px_0_var(--color-ink)]"
+                className="flex items-center px-2 py-1.5 bg-[var(--color-accent)] text-[var(--color-on-accent)] rounded-l-none rounded-r-full border-2 border-r-0 border-[var(--color-ink)] shadow-[2.5px_2.5px_0_var(--color-ink)]"
               >
                 <X className="w-3.5 h-3.5" />
               </button>

@@ -299,7 +299,7 @@ export default function RestaurantDetailPage() {
         <div className="flex items-center gap-3">
           <button
             onClick={handleNavigate}
-            className="flex-1 flex items-center justify-center gap-2 bg-[var(--color-accent)] text-white py-3 rounded-xl font-extrabold text-sm border-2 border-[var(--color-ink)] shadow-[3px_3px_0_var(--color-ink)] active:shadow-none active:translate-x-[3px] active:translate-y-[3px] transition-all"
+            className="flex-1 flex items-center justify-center gap-2 bg-[var(--color-accent)] text-[var(--color-on-accent)] py-3 rounded-xl font-extrabold text-sm border-2 border-[var(--color-ink)] shadow-[3px_3px_0_var(--color-ink)] active:shadow-none active:translate-x-[3px] active:translate-y-[3px] transition-all"
           >
             <Navigation className="w-4 h-4" />
             <span>נווט למסעדה</span>

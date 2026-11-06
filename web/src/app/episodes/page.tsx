@@ -40,7 +40,7 @@ function EpisodeCard({ episode }: { episode: EpisodeSummary }) {
               </span>
             )}
             {episode.mentioned_count > 0 && (
-              <span className="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-1 rounded-full bg-[var(--color-accent)] text-white border-2 border-[var(--color-ink)]">
+              <span className="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-1 rounded-full bg-[var(--color-accent)] text-[var(--color-on-accent)] border-2 border-[var(--color-ink)]">
                 <MessageCircle className="w-3 h-3" />
                 {episode.mentioned_count}
               </span>

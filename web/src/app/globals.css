@@ -680,7 +680,7 @@
     align-items: center;
     justify-content: center;
     background: var(--color-accent);
-    color: white;
+    color: var(--color-on-accent);
     border-radius: var(--radius-sm);
     font-family: var(--font-accent);
     font-size: var(--text-body-sm);
@@ -1046,6 +1046,7 @@
   --color-surface-alt: rgba(19, 32, 31, 0.05);
 
   --color-accent: #0E8388;
+  --color-on-accent: #FFFFFF; /* text on accent surfaces (AA in this theme) */
   --color-accent-hover: #0A6E72;
   --color-accent-subtle: #DFF0EC;
   --color-coral: #FF5A3C;
@@ -1080,6 +1081,7 @@
   --color-surface-alt: rgba(244, 239, 221, 0.06);
 
   --color-accent: #2BB7BC;
+  --color-on-accent: #101B1A; /* text on accent surfaces (AA in this theme) */
   --color-accent-hover: #4ACACF;
   --color-accent-subtle: #17393B;
   --color-coral: #FF6B4E;
