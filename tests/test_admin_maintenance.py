@@ -131,3 +131,10 @@ def test_legacy_active_job_blocks_delete(setup):
     db,s=setup
     with db.get_connection() as c:c.execute('INSERT INTO jobs(id,job_type,status,current_video_id) VALUES("j","video","running","e1")')
     with pytest.raises(Conflict):s.preview_delete('e1')
+
+def test_deleted_place_id_new_reference_blocks_undo(setup):
+    db,s=setup
+    with db.get_connection() as c:c.execute('UPDATE restaurants SET google_place_id="gone-place" WHERE id="drop"')
+    p=s.preview_delete('e1');o=s.delete_episode('e1',p['revision'],'a')
+    with db.get_connection() as c:c.execute('INSERT INTO episode_mentions(id,episode_id,video_id,name_hebrew,verdict,google_place_id) VALUES("new","e2","e2","x","add_to_page","gone-place")')
+    with pytest.raises(Conflict):s.undo(o['operation_id'],'a')

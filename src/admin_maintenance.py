@@ -158,7 +158,13 @@ class Maintenance:
                 rids=[r['id'] for r in before.get('restaurants',[])]
                 if rids:
                     marks=','.join('?' for _ in rids)
-                    current=self._rows(c,'episode_mentions',f'restaurant_id IN ({marks}) OR google_place_id IN (SELECT google_place_id FROM restaurants WHERE id IN ({marks}) AND google_place_id IS NOT NULL)',tuple(rids+rids))
+                    place_ids=[r['google_place_id'] for r in before.get('restaurants',[]) if r.get('google_place_id')]
+                    clause=f'restaurant_id IN ({marks})'
+                    args=list(rids)
+                    if place_ids:
+                        clause+=' OR google_place_id IN ('+','.join('?' for _ in place_ids)+')'
+                        args+=place_ids
+                    current=self._rows(c,'episode_mentions',clause,tuple(args))
                     known={m['id'] for m in after.get('episode_mentions',[])}
                     if any(m['id'] not in known for m in current):raise Conflict('New linked mentions prevent undo')
                 for ep in before.get('episodes',[]):
@@ -166,6 +172,8 @@ class Maintenance:
                     known={q['id'] for q in after.get('video_queue',[])}
                     queue=self._rows(c,'video_queue','video_id=?',(ep['video_id'],))
                     if any(q['id'] not in known for q in queue):raise Conflict('New queue activity prevents undo')
+                    jobs=self._rows(c,'jobs','current_video_id=? OR video_url=? OR video_url=?',(ep['video_id'],'https://www.youtube.com/watch?v='+ep['video_id'],'https://youtu.be/'+ep['video_id']))
+                    if any(j['id'] not in {old['id'] for old in after.get('jobs',[])} for j in jobs):raise Conflict('New processing job prevents undo')
             for table in ['episodes','restaurants','episode_mentions','video_queue','restaurant_edits']:
                 for row in before.get(table,[]):
                     cols=list(row);values=list(row.values());marks=','.join('?' for _ in cols)
