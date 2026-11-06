@@ -107,7 +107,7 @@ class Maintenance:
             for rid in p['impact']['restaurants_preserved']:
                 r=next(r for r in before['restaurants'] if r['id']==rid)
                 replacement=next(m for m in before['episode_mentions'] if m['episode_id']!=eid and (m['restaurant_id']==rid or (r.get('google_place_id') and m.get('google_place_id')==r['google_place_id'])))
-                c.execute('UPDATE restaurants SET episode_id=?,video_id=?,video_url=? WHERE id=?',(replacement['episode_id'],replacement['video_id'],'https://www.youtube.com/watch?v='+replacement['video_id'],rid))
+                c.execute('UPDATE restaurants SET episode_id=?,video_id=?,video_url=?,mention_timestamp=? WHERE id=?',(replacement['episode_id'],replacement['video_id'],'https://www.youtube.com/watch?v='+replacement['video_id'],replacement['timestamp_seconds'],rid))
             c.execute('DELETE FROM episode_mentions WHERE episode_id=?',(eid,))
             c.execute('UPDATE video_queue SET episode_id=NULL WHERE episode_id=?',(eid,))
             # Keep audit history, detaching only rows whose restaurant is deleted.

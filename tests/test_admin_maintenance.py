@@ -40,6 +40,7 @@ def test_delete_keeps_shared_restaurant_and_reparents(setup):
     db,s=setup;p=s.preview_delete('e1');o=s.delete_episode('e1',p['revision'],'admin')
     with db.get_connection() as c:
         assert c.execute('SELECT episode_id FROM restaurants WHERE id="keep"').fetchone()[0]=='e2'
+        assert c.execute('SELECT mention_timestamp FROM restaurants WHERE id="keep"').fetchone()[0]==30
         assert c.execute('SELECT COUNT(*) FROM restaurants WHERE id="drop"').fetchone()[0]==0
         assert c.execute('SELECT COUNT(*) FROM episode_mentions').fetchone()[0]==1
         assert c.execute('SELECT COUNT(*) FROM maintenance_operations WHERE id=?',(o['operation_id'],)).fetchone()[0]==1
