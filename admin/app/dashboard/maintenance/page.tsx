@@ -4,7 +4,7 @@ import { apiFetch } from '@/lib/api';
 
 type Preview = { revision: string; warnings?: string[]; impact?: Record<string, unknown>; rows?: unknown; changes?: unknown };
 type Operation = { id: string; kind: string; created_at: string; undone_at?: string };
-type Costs = { label: string; month: string; estimated_usd: number; budget_usd: number; opening_spend_verified: boolean; alert: boolean; stopped: boolean; runs: unknown; coverage: string };
+type Costs = { label: string; month: string; estimated_usd: number; budget_usd: number; opening_spend_verified: boolean; price_review_overdue?: boolean; alert: boolean; stopped: boolean; runs: unknown; coverage: string };
 const base='/api/admin/maintenance';
 function message(e:unknown){const x=e as {message?:string;detail?:unknown;error?:string};return x.message||x.error||(typeof x.detail==='string'?x.detail:JSON.stringify(x.detail))||'Request failed';}
 
@@ -79,9 +79,10 @@ export default function MaintenancePage() {
     </section>}
     <section className="border rounded-lg p-5 space-y-3"><h2 className="font-semibold text-lg">Estimated costs</h2>
       {costs?<><p>{costs.label} · {costs.month} (UTC)</p><p className="text-xl">${costs.estimated_usd.toFixed(4)} / ${costs.budget_usd.toFixed(2)}</p>
-        {!costs.opening_spend_verified&&<p role="alert">Opening spend is unverified. Paid requests are blocked until the current month's opening amount is configured.</p>}
+        {!costs.opening_spend_verified&&<p role="alert">Opening spend is unverified. This month's estimate assumes $0 spent before tracking began; configure the opening amount from the billing console.</p>}
+        {costs.price_review_overdue&&<p role="alert">Price constants are older than 90 days; review src/cost_ledger.py.</p>}
         {costs.alert&&<p role="alert">{costs.stopped?'Budget stop active':'Estimated spending reached the 80% alert threshold'}</p>}
-        <p className="text-sm text-slate-600">{costs.coverage}</p><pre className="text-sm overflow-auto">{JSON.stringify(costs.runs,null,2)}</pre></>:<p>Loading estimates...</p>}
+        <p className="text-sm text-slate-600">{costs.coverage}</p><p className="text-sm text-slate-600">The public photo proxy is recorded but never blocked, so site images keep loading after a budget stop.</p><pre className="text-sm overflow-auto">{JSON.stringify(costs.runs,null,2)}</pre></>:<p>Loading estimates...</p>}
     </section>
     <section className="border rounded-lg p-5 space-y-3"><h2 className="font-semibold text-lg">Snapshots and undo</h2>
       {!operations.length&&<p className="text-slate-600">No maintenance operations yet.</p>}

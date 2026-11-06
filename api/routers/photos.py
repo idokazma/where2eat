@@ -86,7 +86,7 @@ async def get_photo(
     # Fetch photo from Google with redirect following
     async with httpx.AsyncClient(follow_redirects=True, timeout=30.0) as client:
         try:
-            resp = await async_places_request(client, photo_url)
+            resp = await async_places_request(client, photo_url, enforce=False)
         except httpx.TimeoutException:
             raise HTTPException(
                 status_code=504,

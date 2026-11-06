@@ -120,7 +120,7 @@ async def get_photo(
     )
 
     async with httpx.AsyncClient(follow_redirects=True) as client:
-        resp = await async_places_request(client, photo_url)
+        resp = await async_places_request(client, photo_url, enforce=False)
 
     if resp.status_code != 200:
         raise HTTPException(status_code=resp.status_code, detail="Failed to fetch photo")

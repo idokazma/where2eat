@@ -13,18 +13,21 @@ production frontend/backend. No workflow changes are required.
 3. Set `COST_MONTHLY_BUDGET_USD` (default 10). From the provider billing consoles,
    verify current UTC-month spend up to the start of tracking, including pending
    charges. Set `COST_OPENING_MONTH=YYYY-MM` and `COST_OPENING_SPEND_USD` to that
-   amount. Do not set zero merely to unblock a request. The opening value is
-   inserted once per month; changing environment values does not erase history.
-   Missing current-month opening spend blocks instrumented paid calls. Arrange
-   a fresh verification at each UTC month boundary. Do not delete the ledger.
+   amount. The opening value is inserted once per month; changing environment
+   values does not erase history. If the current month's opening spend is not
+   configured, spend is assumed to start at $0 and the dashboard shows an
+   "unverified" alert; nothing is blocked for that reason. Set
+   `COST_REQUIRE_VERIFIED_OPENING=true` to refuse paid calls until it is
+   configured. Do not delete the ledger.
 4. Review the dated price constants in `src/cost_ledger.py`. Prices older than
-   90 days block reservations. Only Gemini 2.5 Flash is priced; another configured
+   90 days raise a dashboard alert and a log warning; they do not block calls. Only Gemini 2.5 Flash is priced; another configured
    model fails closed. This is an estimate, not Google's balance or a guarantee
    against spend by other clients, keys, replicas or external activity. Set
    provider-side billing alerts too. No free allowances or credits are deducted.
 5. Existing `/api/episodes/seed` and mention deletion now require admin bearer
    authentication; `/api/episodes/reset` requires super_admin. Update manual
-   scripts that used these endpoints. The old restaurant merge endpoint returns
+   scripts that used these endpoints (`.claude/agents/episode-deployer.md` now
+   logs in and sends `Authorization: Bearer`). The old restaurant merge endpoint returns
    410 after authentication: use the preview-bound maintenance API instead.
 6. Smoke-test authentication and preview flows in staging using a copy of the
    database, without invoking paid providers. Do not run a destructive smoke
@@ -64,7 +67,10 @@ partial metadata retains the ceiling. Places count attempts, including fallback
 and retry calls. The ledger stores no key, URL, prompt or response. Calls are
 grouped by run, SKU and UTC month. The dashboard flags 80% and stops requests that
 would exceed the configured estimate. The HTTP response for a budget refusal is
-429. Standalone legacy scripts and non-Gemini providers are not instrumented.
+429. The public photo proxy (`/api/photos/*`, `/api/places/photo/*`) serves
+site images, so it is recorded with `enforce=False` and never refused: images
+keep loading after a budget stop, and its spend still counts toward the total.
+Standalone legacy scripts and non-Gemini providers are not instrumented.
 
 ## Rollback
 
