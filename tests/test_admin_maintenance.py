@@ -126,3 +126,8 @@ def test_repair_target_change_invalidates_preview(setup):
     db,s=setup;p=s.preview_repair('m2',{'restaurant_id':'keep'})
     with db.get_connection() as c:c.execute('UPDATE restaurants SET name_hebrew="changed" WHERE id="keep"')
     with pytest.raises(Conflict):s.repair('m2',{'restaurant_id':'keep'},p['revision'],'a')
+
+def test_legacy_active_job_blocks_delete(setup):
+    db,s=setup
+    with db.get_connection() as c:c.execute('INSERT INTO jobs(id,job_type,status,current_video_id) VALUES("j","video","running","e1")')
+    with pytest.raises(Conflict):s.preview_delete('e1')

@@ -75,7 +75,7 @@ The additive mention column and snapshot table are compatible with older code.
 
 ## Validation record (2026-11-06)
 
-Focused backend suite: 110 passed, 3 skipped. Admin page tests: 3 passed.
+Focused backend suite: 111 passed, 3 skipped. Admin page tests: 3 passed.
 Desktop and 390px mobile fixtures were rendered and visually inspected, including
 a conflicting-identity preview with disabled confirmation. No production deploy.
 Untouched origin/main reproduces four unrelated failures in queue/headers/admin

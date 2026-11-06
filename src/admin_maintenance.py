@@ -90,8 +90,11 @@ class Maintenance:
         queue=self._rows(c,'video_queue','episode_id=? OR video_id=?',(eid,video_id))
         if any(q['status'] in {'queued','processing'} for q in queue):
             raise Conflict('Episode is queued or processing; stop it before deleting')
+        jobs=self._rows(c,'jobs','current_video_id=? OR video_url=? OR video_url=?',(video_id,'https://www.youtube.com/watch?v='+video_id,'https://youtu.be/'+video_id))
+        if any(j['status'] in {'pending','queued','processing','running'} for j in jobs):
+            raise Conflict('Episode has an active processing job; stop it before deleting')
         edits=self._rows(c,'restaurant_edits','restaurant_id IN (SELECT id FROM restaurants WHERE episode_id=?)',(eid,))
-        state={'episodes':ep,'restaurants':rs,'episode_mentions':ms,'video_queue':queue,'restaurant_edits':edits}
+        state={'episodes':ep,'restaurants':rs,'episode_mentions':ms,'video_queue':queue,'restaurant_edits':edits,'jobs':jobs}
         return {'revision':self._revision(state),'rows':state,'warnings':[], 'impact':{'episode_id':eid,'mentions_deleted':sum(m['episode_id']==eid for m in ms),'restaurants_deleted':[r['id'] for r in rs if r['id'] not in shared],'restaurants_preserved':[r['id'] for r in rs if r['id'] in shared]}}
 
     def preview_delete(self,video_id):
