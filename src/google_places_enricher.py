@@ -9,6 +9,7 @@ import time
 import logging
 from typing import Dict, List, Optional, Tuple
 import requests
+from cost_ledger import places_request, BudgetExceeded, run_id
 from dotenv import load_dotenv
 
 # Load environment variables from .env file
@@ -65,7 +66,7 @@ class GooglePlacesEnricher:
                     'skipHttpRedirect': 'true',
                     'key': self.api_key,
                 }
-                response = requests.get(url, params=params)
+                response = places_request('get', url, params=params)
                 response.raise_for_status()
                 data = response.json()
                 photo_uri = data.get('photoUri')
@@ -80,15 +81,17 @@ class GooglePlacesEnricher:
                     'photo_reference': photo_reference,
                     'key': self.api_key,
                 }
-                response = requests.get(url, params=params, allow_redirects=False)
+                response = places_request('get', url, params=params, allow_redirects=False)
                 if response.status_code in (301, 302):
                     return response.headers.get('Location')
                 elif response.status_code == 200:
                     # Sometimes the API returns the image directly
                     return response.url
                 return None
+        except BudgetExceeded:
+            raise
         except Exception as e:
-            self.logger.warning(f"Failed to resolve photo URL for {photo_reference[:50]}...: {e}")
+            self.logger.warning(f"Failed to resolve photo URL for {photo_reference[:50]}...: {type(e).__name__}")
             return None
 
     def _is_israeli_restaurant(self, restaurant_data: Dict) -> bool:
@@ -122,6 +125,8 @@ class GooglePlacesEnricher:
         Returns:
             Enhanced restaurant data with Google Places information
         """
+        import uuid
+        run_id.set('places-' + str(uuid.uuid4()))
         restaurant_name = restaurant_data.get('name_english') or ''
         hebrew_name = restaurant_data.get('name_hebrew') or ''
         location = restaurant_data.get('location') or {}
@@ -253,7 +258,7 @@ class GooglePlacesEnricher:
 
             self.logger.debug(f"🔎 Searching new Places API for: {query}")
 
-            response = requests.post(search_url, headers=headers, json=body)
+            response = places_request('post', search_url, headers=headers, json=body)
             response.raise_for_status()
 
             search_data = response.json()
@@ -263,7 +268,7 @@ class GooglePlacesEnricher:
             if not places and 'includedType' in body:
                 self.logger.debug(f"No results with type restriction, retrying without for: {query}")
                 body_no_type = {k: v for k, v in body.items() if k != 'includedType'}
-                response = requests.post(search_url, headers=headers, json=body_no_type)
+                response = places_request('post', search_url, headers=headers, json=body_no_type)
                 response.raise_for_status()
                 search_data = response.json()
                 places = search_data.get('places', [])
@@ -286,17 +291,19 @@ class GooglePlacesEnricher:
                 'X-Goog-FieldMask': 'id,displayName,formattedAddress,location,rating,userRatingCount,priceLevel,photos,photos.authorAttributions,regularOpeningHours,internationalPhoneNumber,websiteUri,googleMapsUri'
             }
 
-            details_response = requests.get(details_url, headers=details_headers)
+            details_response = places_request('get', details_url, headers=details_headers)
             details_response.raise_for_status()
 
             details_data = details_response.json()
             return self._map_new_api_response(details_data)
 
         except requests.RequestException as e:
-            self.logger.warning(f"New Places API error: {str(e)}")
+            self.logger.warning(f"New Places API error: {type(e).__name__}")
             return None
+        except BudgetExceeded:
+            raise
         except Exception as e:
-            self.logger.warning(f"Unexpected error in new Places API search: {str(e)}")
+            self.logger.warning(f"Unexpected error in new Places API search: {type(e).__name__}")
             return None
 
     def _map_new_api_response(self, data: Dict) -> Dict:
@@ -404,7 +411,7 @@ class GooglePlacesEnricher:
 
             self.logger.debug(f"🔎 Searching legacy Google Places for: {query}")
 
-            response = requests.get(search_url, params=search_params)
+            response = places_request('get', search_url, params=search_params)
             response.raise_for_status()
 
             search_data = response.json()
@@ -413,7 +420,7 @@ class GooglePlacesEnricher:
             if (search_data.get('status') != 'OK' or not search_data.get('results')) and 'type' in search_params:
                 self.logger.debug(f"No results with type restriction, retrying without for: {query}")
                 params_no_type = {k: v for k, v in search_params.items() if k != 'type'}
-                response = requests.get(search_url, params=params_no_type)
+                response = places_request('get', search_url, params=params_no_type)
                 response.raise_for_status()
                 search_data = response.json()
 
@@ -439,7 +446,7 @@ class GooglePlacesEnricher:
             # Rate limiting - be respectful to Google's API
             time.sleep(0.1)
 
-            details_response = requests.get(details_url, params=details_params)
+            details_response = places_request('get', details_url, params=details_params)
             details_response.raise_for_status()
 
             details_data = details_response.json()
@@ -451,10 +458,12 @@ class GooglePlacesEnricher:
                 return None
 
         except requests.RequestException as e:
-            self.logger.error(f"Error calling legacy Google Places API: {str(e)}")
+            self.logger.error(f"Error calling legacy Google Places API: {type(e).__name__}")
             return None
+        except BudgetExceeded:
+            raise
         except Exception as e:
-            self.logger.error(f"Unexpected error in legacy restaurant search: {str(e)}")
+            self.logger.error(f"Unexpected error in legacy restaurant search: {type(e).__name__}")
             return None
 
     def _merge_google_data(self, original_data: Dict, google_data: Dict) -> Dict:
@@ -526,8 +535,10 @@ class GooglePlacesEnricher:
                 if og_image:
                     enhanced_data['og_image_url'] = og_image
                     self.logger.info(f"📸 Found og:image for {original_data.get('name_hebrew', '')}")
+            except BudgetExceeded:
+                raise
             except Exception as e:
-                self.logger.debug(f"Could not fetch og:image: {e}")
+                self.logger.debug(f"Could not fetch og:image: {type(e).__name__}")
 
         # Add photos (supports both legacy photo_reference and new API name format)
         # Sort owner-attributed photos first for better quality primary images
@@ -633,8 +644,10 @@ class GooglePlacesEnricher:
             
             return save_path
             
+        except BudgetExceeded:
+            raise
         except Exception as e:
-            self.logger.error(f"Error enriching file {file_path}: {str(e)}")
+            self.logger.error(f"Error enriching file {file_path}: {type(e).__name__}")
             raise
 
     def enrich_all_restaurants(self, restaurants_dir: str) -> Dict[str, int]:
@@ -681,9 +694,11 @@ class GooglePlacesEnricher:
                 # Rate limiting between requests
                 time.sleep(0.2)
                 
+            except BudgetExceeded:
+                raise
             except Exception as e:
                 stats['failed'] += 1
-                self.logger.error(f"❌ Failed to enrich {filename}: {str(e)}")
+                self.logger.error(f"❌ Failed to enrich {filename}: {type(e).__name__}")
         
         self.logger.info(f"✅ Enrichment complete! Enriched: {stats['enriched']}, Skipped: {stats['skipped']}, Failed: {stats['failed']}")
         return stats

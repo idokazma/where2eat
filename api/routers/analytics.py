@@ -38,7 +38,7 @@ async def search_episodes(
     # Group restaurants by episode
     episode_groups = {}
     for r in restaurants:
-        video_id = r.get("episode_info", {}).get("video_id")
+        video_id = (r.get("episode_info") or {}).get("video_id")
         if video_id:
             if video_id not in episode_groups:
                 episode_groups[video_id] = {
@@ -55,7 +55,7 @@ async def search_episodes(
     # Date filtering
     if date_start or date_end:
         def in_date_range(ep):
-            analysis_date = ep.get("episode_info", {}).get("analysis_date")
+            analysis_date = (ep.get("episode_info") or {}).get("analysis_date")
             if not analysis_date:
                 return False
             if date_start and analysis_date < date_start:
@@ -96,7 +96,7 @@ async def search_episodes(
     def get_sort_value(ep):
         if sort_by == "restaurant_count":
             return len(ep["restaurants"])
-        return ep.get("episode_info", {}).get("analysis_date", "")
+        return ((ep.get("episode_info") or {}).get("analysis_date") or (ep.get("episode_info") or {}).get("published_at") or "")
 
     episodes.sort(key=get_sort_value, reverse=(sort_direction == "desc"))
 
@@ -180,7 +180,7 @@ async def get_timeline(
                     "cuisine_type": r.get("cuisine_type"),
                     "location": r.get("location"),
                     "host_opinion": r.get("host_opinion"),
-                    "episode_id": r.get("episode_info", {}).get("video_id"),
+                    "episode_id": (r.get("episode_info") or {}).get("video_id"),
                 })
             except Exception:
                 pass
@@ -217,7 +217,7 @@ async def get_timeline(
     # Top episodes by restaurant count
     episode_groups = {}
     for r in filtered:
-        video_id = r.get("episode_info", {}).get("video_id")
+        video_id = (r.get("episode_info") or {}).get("video_id")
         if video_id:
             if video_id not in episode_groups:
                 episode_groups[video_id] = {

@@ -10,7 +10,8 @@ import uuid
 from pathlib import Path
 from typing import Optional, Dict, Any, List
 
-from fastapi import APIRouter, HTTPException, Query, Body
+from fastapi import APIRouter, HTTPException, Query, Body, Depends
+from routers.admin import require_role
 
 logger = logging.getLogger(__name__)
 
@@ -156,7 +157,7 @@ async def get_episode_detail(video_id: str):
     summary="Delete all mentions for a specific episode",
     description="Clears episode_mentions rows for the given video_id. Use before re-seeding to eliminate duplicates.",
 )
-async def delete_episode_mentions(video_id: str):
+async def delete_episode_mentions(video_id: str, user: dict = Depends(require_role(["admin", "super_admin"]))):
     """Delete all episode_mentions for a specific video_id."""
     db = _get_sqlite_db()
     if not db:
@@ -174,7 +175,7 @@ async def delete_episode_mentions(video_id: str):
     summary="Reset all episode data",
     description="Deletes all episodes, mentions, and restaurants. Use with caution.",
 )
-async def reset_all_data():
+async def reset_all_data(user: dict = Depends(require_role(["super_admin"]))):
     """Delete all episodes, mentions, and restaurants."""
     db = _get_sqlite_db()
     if not db:
@@ -196,7 +197,7 @@ async def reset_all_data():
     summary="Seed an episode extraction",
     description="Accepts a full extraction JSON and creates episode + mentions in DB.",
 )
-async def seed_extraction(extraction: Dict[str, Any] = Body(...)):
+async def seed_extraction(extraction: Dict[str, Any] = Body(...), user: dict = Depends(require_role(["admin", "super_admin"]))):
     """Seed episode data from an extraction JSON."""
     db = _get_sqlite_db()
     if not db:

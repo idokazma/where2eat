@@ -12,6 +12,7 @@ from typing import Dict, List, Optional, Union
 from dataclasses import dataclass, asdict
 
 from llm_config import get_config, LLMProvider
+from cost_ledger import BudgetExceeded
 
 @dataclass
 class RestaurantInfo:
@@ -160,6 +161,8 @@ class UnifiedRestaurantAnalyzer:
             transcript_data = transcript_data.copy()
             transcript_data['transcript'] = transcript_text
             video_id = transcript_data.get('video_id', 'unknown')
+            from cost_ledger import run_id
+            run_id.set('analysis-' + str(video_id) + '-' + __import__('uuid').uuid4().hex)
 
             self.logger.info(f"═══════════════════════════════════════════════════════════")
             self.logger.info(f"Starting analysis for video: {video_id}")
@@ -175,6 +178,8 @@ class UnifiedRestaurantAnalyzer:
                 self.logger.info(f"Single-pass analysis (transcript fits in one chunk)")
                 return self._analyze_single_transcript(transcript_data)
 
+        except BudgetExceeded:
+            raise
         except Exception as e:
             self.logger.error(f"Error analyzing transcript: {str(e)}")
             return self._create_error_analysis(transcript_data, str(e))
@@ -492,6 +497,16 @@ Always respond with valid JSON only. No markdown formatting or additional text."
 
             full_prompt = self._get_system_prompt() + "\n\n" + prompt
 
+            from cost_ledger import CostLedger, MODELS, run_id
+            import uuid
+            ledger = CostLedger()
+            model = self.config.get_active_model()
+            if model not in MODELS:
+                raise BudgetExceeded('Unpriced Gemini model')
+            # UTF-8 bytes are a conservative token ceiling for text input.
+            # max_output_tokens includes thinking output for Gemini 2.5.
+            ceiling = len(full_prompt.encode('utf-8')) * MODELS[model]['input'] + self.config.get_active_max_tokens() * MODELS[model]['output']
+            attempt = ledger.reserve(run_id.get() or 'gemini-' + str(uuid.uuid4()), model, ceiling)
             response = self.client.models.generate_content(
                 model=self.config.get_active_model(),
                 contents=full_prompt,
@@ -506,6 +521,7 @@ Always respond with valid JSON only. No markdown formatting or additional text."
                 ),
             )
 
+            ledger.settle_gemini(attempt, getattr(response, 'usage_metadata', None))
             content = response.text
             if not content or not content.strip():
                 # Loud diagnostics for the empty-response failure mode
@@ -522,9 +538,11 @@ Always respond with valid JSON only. No markdown formatting or additional text."
             # Use safe JSON parsing to handle truncated responses
             return self._safe_parse_json(content)
 
+        except BudgetExceeded:
+            raise
         except Exception as e:
-            self.logger.error(f"Gemini API call failed: {str(e)}")
-            raise e
+            self.logger.error(f"Gemini API call failed: {type(e).__name__}")
+            raise RuntimeError("Gemini provider request failed") from None
 
     def _safe_parse_json(self, content: str) -> List[Dict]:
         """

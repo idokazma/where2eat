@@ -51,6 +51,7 @@ from routers import (
     admin_subscriptions_router,
     admin_pipeline_router,
     episodes_router,
+    admin_maintenance_router,
 )
 
 
@@ -997,6 +998,13 @@ app.add_middleware(SecurityHeadersMiddleware)
 app.add_middleware(OriginGateMiddleware)
 
 # Include routers
+from cost_ledger import BudgetExceeded
+from fastapi.responses import JSONResponse
+
+@app.exception_handler(BudgetExceeded)
+async def budget_exceeded_handler(request: Request, exc: BudgetExceeded):
+    return JSONResponse(status_code=429, content={"detail": str(exc), "estimate_only": True})
+
 app.include_router(health_router)
 app.include_router(restaurants_router)
 app.include_router(analytics_router)
@@ -1004,6 +1012,7 @@ app.include_router(analyze_router)
 app.include_router(places_router)
 app.include_router(photos_router)
 app.include_router(admin_router)
+app.include_router(admin_maintenance_router)
 app.include_router(admin_subscriptions_router)
 app.include_router(admin_pipeline_router)
 app.include_router(episodes_router)

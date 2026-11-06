@@ -50,6 +50,7 @@ const sections: NavSection[] = [
   {
     label: 'Content',
     items: [
+      { name: 'Maintenance', href: '/dashboard/maintenance', icon: ShieldCheck },
       { name: 'Restaurants', href: '/dashboard/restaurants', icon: UtensilsCrossed },
       { name: 'Articles', href: '/dashboard/articles', icon: FileText },
     ],
