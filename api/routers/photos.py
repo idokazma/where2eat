@@ -4,6 +4,7 @@ import os
 from typing import Optional
 
 import httpx
+from cost_ledger import async_places_request, BudgetExceeded
 from fastapi import APIRouter, HTTPException, Query
 from fastapi.responses import Response
 
@@ -85,7 +86,7 @@ async def get_photo(
     # Fetch photo from Google with redirect following
     async with httpx.AsyncClient(follow_redirects=True, timeout=30.0) as client:
         try:
-            resp = await client.get(photo_url)
+            resp = await async_places_request(client, photo_url, enforce=False)
         except httpx.TimeoutException:
             raise HTTPException(
                 status_code=504,
@@ -94,7 +95,7 @@ async def get_photo(
         except httpx.RequestError as e:
             raise HTTPException(
                 status_code=502,
-                detail=f"Failed to fetch photo: {str(e)}"
+                detail="Photo provider request failed"
             )
 
     if resp.status_code != 200:

@@ -86,11 +86,22 @@ Status mapping: `open` → `פתוח`, `new` → `חדש`
 
 ### Step 3: Seed episode mentions
 
-POST the full extraction JSON to the seed endpoint:
+POST the full extraction JSON to the seed endpoint. It requires an admin
+bearer token (admin or super_admin role). Log in with credentials from the
+`WHERE2EAT_ADMIN_EMAIL` / `WHERE2EAT_ADMIN_PASSWORD` environment variables (ask
+the user if they are unset; never print, hard-code or commit them):
 
 ```bash
+TOKEN=$(python3 -c 'import json,os; print(json.dumps({"email": os.environ["WHERE2EAT_ADMIN_EMAIL"], "password": os.environ["WHERE2EAT_ADMIN_PASSWORD"]}))' | \
+  curl -s -X POST "https://where2eat-production.up.railway.app/api/admin/auth/login" \
+    -H "Content-Type: application/json" \
+    -H "Origin: https://where2eat-delta.vercel.app" \
+    -d @- | python3 -c "import json,sys; print(json.load(sys.stdin).get('token',''))")
+[ -n "$TOKEN" ] || { echo "Admin login failed"; exit 1; }
+
 curl -s -X POST "https://where2eat-production.up.railway.app/api/episodes/seed" \
   -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $TOKEN" \
   -H "Origin: https://where2eat-delta.vercel.app" \
   -d @agentic_extractor/episode_{VIDEO_ID}_extraction.json
 ```

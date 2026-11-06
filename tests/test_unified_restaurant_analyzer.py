@@ -413,3 +413,10 @@ class TestCallGemini:
                 result = analyzer._call_gemini("test prompt")
 
         assert isinstance(result, list)
+
+
+@pytest.fixture(autouse=True)
+def mock_cost_reservations():
+    """These tests cover parsing, not billing. Ledger has dedicated tests."""
+    with patch('cost_ledger.CostLedger'), patch.dict('cost_ledger.MODELS', {'gemini-2.0-flash': {'input': 0.0000003, 'output': 0.0000025}}):
+        yield

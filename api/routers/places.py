@@ -4,6 +4,7 @@ import os
 from typing import Optional
 
 import httpx
+from cost_ledger import async_places_request, BudgetExceeded
 from fastapi import APIRouter, HTTPException, Query
 from fastapi.responses import Response
 
@@ -45,7 +46,7 @@ async def search_places(
         params["location"] = location
 
     async with httpx.AsyncClient() as client:
-        response = await client.get(search_url, params=params)
+        response = await async_places_request(client, search_url, params=params)
         data = response.json()
 
     if data.get("status") == "OK":
@@ -88,7 +89,7 @@ async def get_place_details(place_id: str):
     }
 
     async with httpx.AsyncClient() as client:
-        response = await client.get(details_url, params=params)
+        response = await async_places_request(client, details_url, params=params)
         data = response.json()
 
     if data.get("status") == "OK":
@@ -119,7 +120,7 @@ async def get_photo(
     )
 
     async with httpx.AsyncClient(follow_redirects=True) as client:
-        resp = await client.get(photo_url)
+        resp = await async_places_request(client, photo_url, enforce=False)
 
     if resp.status_code != 200:
         raise HTTPException(status_code=resp.status_code, detail="Failed to fetch photo")

@@ -23,3 +23,5 @@ __all__ = [
     "admin_pipeline_router",
     "episodes_router",
 ]
+
+from .admin_maintenance import router as admin_maintenance_router

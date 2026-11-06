@@ -2213,6 +2213,7 @@ class Database:
             cursor = conn.cursor()
             cursor.execute('''
                 SELECT em.*,
+                       COALESCE(r.name_hebrew, r_gp.name_hebrew, em.name_hebrew) as canonical_name_hebrew,
                        COALESCE(r.id, r_gp.id) as linked_restaurant_id,
                        COALESCE(r.image_url, r_gp.image_url) as image_url,
                        COALESCE(r.google_rating, r_gp.google_rating) as google_rating,
@@ -2228,8 +2229,8 @@ class Database:
                        COALESCE(r.contact_phone, r_gp.contact_phone) as phone,
                        COALESCE(r.special_features, r_gp.special_features) as special_features
                 FROM episode_mentions em
-                LEFT JOIN restaurants r ON em.restaurant_id = r.id
-                LEFT JOIN restaurants r_gp ON r_gp.google_place_id = em.google_place_id
+                LEFT JOIN restaurants r ON em.restaurant_id = r.id AND COALESCE(r.is_hidden,0)=0
+                LEFT JOIN restaurants r_gp ON r_gp.google_place_id = em.google_place_id AND COALESCE(r_gp.is_hidden,0)=0
                     AND em.restaurant_id IS NULL
                     AND em.google_place_id IS NOT NULL
                 WHERE em.video_id = ?
@@ -2240,6 +2241,8 @@ class Database:
             results = []
             for row in rows:
                 d = dict(row)
+                d['original_name_hebrew'] = d.get('original_name_hebrew') or d['name_hebrew']
+                d['name_hebrew'] = d.get('canonical_name_hebrew') or d['name_hebrew']
                 # Parse JSON fields
                 for field in ('host_quotes', 'dishes_mentioned', 'special_features'):
                     if d.get(field) and isinstance(d[field], str):
