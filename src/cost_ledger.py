@@ -133,9 +133,11 @@ async def async_places_request(client,url,enforce=True,**kwargs):
     """enforce=False is for public, user-facing traffic: record, never refuse."""
     sku=places_sku(url)
     if not enforce:
-        response=await client.get(url,**kwargs)
-        try:CostLedger().record(run_id.get() or 'public-photo-proxy',sku,RATES[sku])
-        except Exception as e:logger.warning('Cost ledger unavailable: %s',type(e).__name__)
-        return response
+        # Record in finally: a timeout or transport error may still be billed.
+        try:
+            return await client.get(url,**kwargs)
+        finally:
+            try:CostLedger().record(run_id.get() or 'public-photo-proxy',sku,RATES[sku])
+            except Exception as e:logger.warning('Cost ledger unavailable: %s',type(e).__name__)
     ledger=CostLedger();attempt=ledger.reserve(run_id.get(),sku,RATES[sku])
     response=await client.get(url,**kwargs);ledger.settle_places(attempt);return response

@@ -120,3 +120,14 @@ def test_places_exception_retains_reservation(ledger):
     with patch('cost_ledger.CostLedger',return_value=ledger),patch('requests.get',side_effect=TimeoutError):
         with pytest.raises(TimeoutError):places_request('get','https://places.googleapis.com/v1/places/x')
     assert ledger.summary()['unsettled_calls']==1
+
+def test_async_places_request_unenforced_records_transport_failure(tmp_path):
+    import asyncio
+    from unittest.mock import AsyncMock,patch
+    from cost_ledger import async_places_request
+    ledger=CostLedger(str(tmp_path/'x.db'),budget=10,opening=0)
+    client=AsyncMock();client.get.side_effect=TimeoutError
+    with patch('cost_ledger.CostLedger',return_value=ledger):
+        with pytest.raises(TimeoutError):
+            asyncio.run(async_places_request(client,'https://places.googleapis.com/v1/places/x/photos/y/media',enforce=False))
+    s=ledger.summary();assert s['skus'][0]['sku']=='places_photo' and s['skus'][0]['attempts']==1
