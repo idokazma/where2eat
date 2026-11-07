@@ -208,6 +208,23 @@ async def seed_extraction(extraction: Dict[str, Any] = Body(...), user: dict = D
     if not video_id:
         raise HTTPException(status_code=400, detail="Missing episode.video_id")
 
+    # Fail before create_episode or the destructive replacement of old mentions.
+    from publication_quality import publication_issues
+    blockers = publication_issues(
+        extraction.get('restaurants', []), extraction.get('transcript_segments', []),
+        video_id, _get_data_directory() / 'venue_images',
+    )
+    if blockers:
+        raise HTTPException(status_code=422, detail={'message': 'Publication review required', 'blockers': blockers})
+
+    from publication_quality import save_review_draft
+    try:
+        save_review_draft(video_id, extraction.get('restaurants', []),
+                          extraction.get('transcript_segments', []),
+                          {'passed': True, 'blockers': [], 'review_actor': user['id']}, _get_data_directory())
+    except (OSError, ValueError) as exc:
+        raise HTTPException(status_code=503, detail='Cannot preserve publication review') from exc
+
     episode_id = ep.get('episode_id') or str(uuid.uuid4())
 
     # Create episode — use the RETURNED id (create_episode handles ON CONFLICT and
@@ -314,7 +331,7 @@ async def seed_extraction(extraction: Dict[str, Any] = Body(...), user: dict = D
                     google_url=gp.get('google_url'),
                     latitude=location.get('latitude'),
                     longitude=location.get('longitude'),
-                    image_url=gp.get('photo_url'),
+                    image_url=r.get('image_url') or gp.get('photo_url'),
                     video_url=ep.get('video_url', f'https://www.youtube.com/watch?v={video_id}'),
                     video_id=video_id,
                     channel_name=ep.get('channel_name'),

@@ -202,6 +202,12 @@ class BackendService:
                     'restaurants': []
                 }
 
+            # A model cannot certify that a separate source/pixel review ran.
+            # Reviewed drafts are submitted later through the authenticated seed.
+            restaurants = analysis_result.get('restaurants', [])
+            for restaurant in restaurants:
+                restaurant.pop('publication_review', None)
+
             return {
                 'success': True,
                 'video_id': transcript_data.get('video_id'),
@@ -634,6 +640,32 @@ class BackendService:
 
         if progress_callback:
             progress_callback('saving_results', 0.8)
+
+        # Review evidence is intentionally separate from model output. Analysis
+        # may finish, but incomplete evidence must not create a live episode.
+        if save_to_db and restaurants:
+            from publication_quality import publication_issues
+            from pathlib import Path
+            blockers = publication_issues(
+                restaurants, transcript_result.get('segments', []), video_id,
+                Path(os.getenv('DATABASE_DIR', str(Path(self.db.db_path).parent))) / 'venue_images',
+            )
+            result['steps']['publication_quality'] = {'passed': not blockers, 'blockers': blockers}
+            if blockers:
+                result['success'] = False
+                result['needs_review'] = True
+                result['error'] = 'Publication review required; no episode or restaurant data saved'
+                # Preserve the paid analysis so a reviewer need not rerun it.
+                from publication_quality import save_review_draft
+                try:
+                    result['review_draft'] = save_review_draft(
+                        video_id, restaurants, transcript_result.get('segments', []),
+                        result['steps']['publication_quality'],
+                        Path(os.getenv('DATABASE_DIR', str(Path(self.db.db_path).parent))),
+                    )
+                except OSError as exc:
+                    result['review_draft_error'] = str(exc)
+                return result
 
         # Step 6: Save to database
         if save_to_db and restaurants:

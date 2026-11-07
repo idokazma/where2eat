@@ -11,6 +11,17 @@ You deploy approved episode extractions to the Where2Eat production backend on R
 
 **You are a WRITE agent. You modify production data. Only run when the user has reviewed and approved the extraction.**
 
+
+## Required source-backed publication review
+
+Follow `docs/episode-publication-quality.md` before producing upload-ready data or making an upload. Include original `transcript_segments` and a `publication_review` object for each feed candidate. Use surrounding city, chef, branch and address clues to resolve a mangled name; similar names are not identity proof. Review all occurrences and choose the actual substantive discussion, not an opening teaser, later recap or comparison. Preserve the source spelling and quote. No timed evidence means unresolved, not an invented 00:00.
+
+Search Hebrew and English venue-owned sites/socials and verified venue booking/delivery pages. Prefer actual food; label real interior as an alternative. Inspect pixels and reject logos, curtains, posters, placeholders, different venues and unapproved editorial/third-party photography. Save supported venue imagery through the authenticated durable venue-image storage route; do not publish signed social URLs. Record source, credit, content hash and identity/pixel checks. Do not rehost Google photos in venue storage. If unavailable, explicitly record why and leave image fields empty.
+
+Run `PYTHONPATH=src python scripts/check_episode_publication.py EXTRACTION.json --data-dir DATA_DIR` before upload. This is mandatory even if an older section below shows a shorter workflow. Do not pre-create restaurants through another route to bypass seed validation. A source-backed reviewer supplies evidence; do not have model output self-certify verification. A missing-image report is not approval to publish. Keep episode ingestion manual, with no new cron, unattended polling or paid-call expansion. Source verification, spending and production effects remain subject to the project's actual approval limits.
+
+After upload, verify the exact live card image and video playback at the selected discussion time, not merely an API200. Existing single-mention corrections use snapshot-backed maintenance, never destructive full-episode reseeding. The quality checker verifies evidence completeness, nearby original quote and local image bytes; it cannot replace a reviewer's semantic identity or image judgments.
+
 ## Prerequisites
 
 Before deploying, verify:

@@ -11,6 +11,17 @@ You are a data quality verifier for the Where2Eat extraction pipeline. You run A
 
 **You are READ-ONLY. You never modify extraction files, restaurant JSONs, or the production database. You produce a verification report only.**
 
+
+## Required source-backed publication review
+
+Follow `docs/episode-publication-quality.md` before producing upload-ready data or making an upload. Include original `transcript_segments` and a `publication_review` object for each feed candidate. Use surrounding city, chef, branch and address clues to resolve a mangled name; similar names are not identity proof. Review all occurrences and choose the actual substantive discussion, not an opening teaser, later recap or comparison. Preserve the source spelling and quote. No timed evidence means unresolved, not an invented 00:00.
+
+Search Hebrew and English venue-owned sites/socials and verified venue booking/delivery pages. Prefer actual food; label real interior as an alternative. Inspect pixels and reject logos, curtains, posters, placeholders, different venues and unapproved editorial/third-party photography. Save supported venue imagery through the authenticated durable venue-image storage route; do not publish signed social URLs. Record source, credit, content hash and identity/pixel checks. Do not rehost Google photos in venue storage. If unavailable, explicitly record why and leave image fields empty.
+
+Run `PYTHONPATH=src python scripts/check_episode_publication.py EXTRACTION.json --data-dir DATA_DIR` before upload. This is mandatory even if an older section below shows a shorter workflow. Do not pre-create restaurants through another route to bypass seed validation. A source-backed reviewer supplies evidence; do not have model output self-certify verification. A missing-image report is not approval to publish. Keep episode ingestion manual, with no new cron, unattended polling or paid-call expansion. Source verification, spending and production effects remain subject to the project's actual approval limits.
+
+After upload, verify the exact live card image and video playback at the selected discussion time, not merely an API200. Existing single-mention corrections use snapshot-backed maintenance, never destructive full-episode reseeding. The quality checker verifies evidence completeness, nearby original quote and local image bytes; it cannot replace a reviewer's semantic identity or image judgments.
+
 ## When to Run
 
 Run this agent after the episode-processor finishes, pointing it at a specific episode:
@@ -37,7 +48,7 @@ For each restaurant JSON in `data/restaurants/VIDEO_ID_*.json`:
 - `mention_level`, `video_id`, `channel_name`
 - `mention_timestamp_seconds`, `youtube_timestamped_url`
 - `latitude`, `longitude`, `google_place_id`
-- `image_url`
+- `image_url`, or explicit `publication_review.photo.status: unavailable` with a reason and empty image fields
 
 **Enum validation:**
 | Field | Allowed values |
@@ -50,8 +61,8 @@ For each restaurant JSON in `data/restaurants/VIDEO_ID_*.json`:
 **Type validation:**
 - `is_closing` must be `0` or `1` (integer, not boolean)
 - `photos` must be an array of objects with `{photo_reference, width, height, resolved_url}` — never an array of strings
-- `image_url` must start with `https://lh3.googleusercontent.com/` or `https://imageproxy.wolt.com/` — never a Google API reference URL
-- `latitude` and `longitude` must be valid numbers (Israel range: lat 29-34, lon 34-36)
+- Feed images follow the durable venue-source review in `docs/episode-publication-quality.md`; do not rely on a narrow historical CDN allowlist. Never store an expired Google API reference or signed social URL as a final image.
+- `latitude` and `longitude` must be valid global coordinates and match the verified city/branch; do not apply Israel-only bounds to foreign venues.
 - `mention_timestamp_seconds` must be a positive number
 
 **Forbidden fields** (API sets these — must NOT be in the JSON):
