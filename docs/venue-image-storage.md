@@ -28,8 +28,8 @@ The origin middleware allows only these GET asset paths and exact POST upload pa
 1. Snapshot affected restaurant rows and current volume backup. Preserve original episode associations/timestamps.
 2. Deploy this isolated patch. Do not enable the parked Google/runtime patch.
 3. Confirm unauthorized upload is 401, no default-secret fallback, and public invalid filenames are 404.
-4. Upload the verified Afrit source image using server-side credentials. Confirm the returned asset from a fresh unauthenticated client and inspect bytes/pixels.
-5. Snapshot and update only Afrit image_url to the full API-origin asset path. Verify its exact ID and actual homepage card, not a similar-name card. Repeat for Cezanne only after the canary passes.
+4. Upload the verified Jai Lek owner-published interior image using server-side credentials. Confirm the returned asset from a fresh unauthenticated client and inspect bytes/pixels.
+5. Snapshot and update only Jai Lek image_url to the full API-origin asset path. Verify its exact ID and actual homepage card, not a similar-name card. Other source-verified venue images remain separate assignments after the canary passes.
 6. Restart/redeploy once and recheck both assets and homepage cards to verify real volume persistence.
 
 No upload/assignment has been done in production by this preparation task. Production changes still need the user's deploy approval. Existing unauthenticated restaurant-update routes are not fixed by this patch; do not interpret the authenticated upload as broader API hardening.
