@@ -40,6 +40,7 @@ else:
 from models.analyze import DEFAULT_VIDEO_URL
 
 # Import routers
+from routers.venue_images import router as venue_images_router
 from routers import (
     restaurants_router,
     analytics_router,
@@ -937,6 +938,13 @@ class OriginGateMiddleware(BaseHTTPMiddleware):
         if request.method == "OPTIONS":
             return await call_next(request)
 
+        # Public curated JPEGs must also load through Next's server-side optimizer.
+        # Upload has its own fail-closed Bearer auth before any body is consumed.
+        if (request.method == 'GET' and path.startswith('/api/venue-images/')) or (
+            request.method == 'POST' and path == '/api/admin/venue-images'
+        ):
+            return await call_next(request)
+
         # Always allow exempt paths
         if any(path.startswith(p) for p in self.EXEMPT_PREFIXES):
             return await call_next(request)
@@ -1005,6 +1013,7 @@ from fastapi.responses import JSONResponse
 async def budget_exceeded_handler(request: Request, exc: BudgetExceeded):
     return JSONResponse(status_code=429, content={"detail": str(exc), "estimate_only": True})
 
+app.include_router(venue_images_router)
 app.include_router(health_router)
 app.include_router(restaurants_router)
 app.include_router(analytics_router)
