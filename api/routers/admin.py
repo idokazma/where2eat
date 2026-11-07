@@ -28,7 +28,22 @@ router = APIRouter(prefix="/api/admin", tags=["Admin"])
 security = HTTPBearer(auto_error=False)
 
 # Configuration
-SECRET_KEY = os.getenv("JWT_SECRET_KEY", "your-secret-key-change-in-production")
+DEFAULT_JWT_SECRET = "your-secret-key-change-in-production"
+
+
+def jwt_secret() -> str:
+    """Signing secret for admin tokens.
+
+    In production (Railway) a missing or default secret fails closed with 503,
+    so admin endpoints are unusable rather than forgeable. The public site,
+    which never uses admin auth, keeps working. Local dev keeps the default.
+    """
+    secret = os.getenv("JWT_SECRET_KEY") or DEFAULT_JWT_SECRET
+    if os.getenv("RAILWAY_ENVIRONMENT_ID") and secret == DEFAULT_JWT_SECRET:
+        raise HTTPException(status_code=503, detail="Admin authentication is not configured (set JWT_SECRET_KEY)")
+    return secret
+
+
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_HOURS = 24
 
@@ -72,7 +87,7 @@ def create_access_token(data: dict) -> str:
     to_encode = data.copy()
     expire = datetime.now() + timedelta(hours=ACCESS_TOKEN_EXPIRE_HOURS)
     to_encode.update({"exp": expire})
-    return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    return jwt.encode(to_encode, jwt_secret(), algorithm=ALGORITHM)
 
 
 async def get_current_user(
@@ -94,7 +109,7 @@ async def get_current_user(
         raise HTTPException(status_code=401, detail="Not authenticated")
 
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        payload = jwt.decode(token, jwt_secret(), algorithms=[ALGORITHM])
         user_id = payload.get("user_id")
         if user_id is None:
             raise HTTPException(status_code=401, detail="Invalid token")
