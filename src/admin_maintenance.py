@@ -149,6 +149,9 @@ class Maintenance:
             if set(changes) != {'timestamp_seconds'}:
                 c.execute('UPDATE episode_mentions SET original_name_hebrew=COALESCE(original_name_hebrew,name_hebrew) WHERE id=?',(mid,))
             for key,value in changes.items():c.execute(f'UPDATE episode_mentions SET {key}=? WHERE id=?',(value,mid))
+            if set(changes) == {'timestamp_seconds'}:
+                ts=changes['timestamp_seconds']
+                c.execute('UPDATE episode_mentions SET timestamp_display=? WHERE id=?',(f'{ts//60}:{ts%60:02d}',mid))
             return self._record(c,'repair_mention',actor,before,self._read_same(c,before))
 
     def _read_same(self,c,state):

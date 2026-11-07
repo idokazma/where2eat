@@ -492,7 +492,26 @@ async def patch_restaurant_admin(
         'host_opinion', 'host_comments', 'engaging_quote', 'instagram_url',
         'contact_phone', 'contact_website', 'is_hidden', 'is_closing', 'country',
         'latitude', 'longitude', 'google_place_id',
+        'image_url', 'photos',
     }
+
+    # Curated venue-image assignment (see docs/venue-image-storage.md). The
+    # frontend only renders a stored image_url directly when it is an https
+    # URL, so anything else would silently fall through to the photo proxy.
+    if 'image_url' in body:
+        value = body['image_url']
+        if not isinstance(value, str) or len(value) > 500 or (value and not value.startswith('https://')):
+            raise HTTPException(status_code=422, detail="image_url must be an https URL up to 500 characters, or an empty string to clear")
+    # Cards prefer Google photos[] over image_url; assigning a curated hero to
+    # a venue with stale Google photos requires clearing photos explicitly.
+    if 'photos' in body:
+        value = body['photos']
+        if not isinstance(value, list) or any(not isinstance(item, dict) for item in value):
+            raise HTTPException(status_code=422, detail="photos must be a list of photo objects")
+        try:
+            json.dumps(value)
+        except (TypeError, ValueError):
+            raise HTTPException(status_code=422, detail="photos must be JSON serializable")
 
     updates = {k: v for k, v in body.items() if k in allowed}
     if not updates:
