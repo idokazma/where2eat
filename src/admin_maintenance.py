@@ -118,9 +118,16 @@ class Maintenance:
             return self._record(c,'delete_episode',actor,before,self._read_same(c,before))
 
     def _repair_preview(self,c,mid,changes):
-        allowed={'restaurant_id','name_hebrew','name_english','verdict','mention_level','status','city','cuisine_type','host_opinion'}
-        if any(v is not None and not isinstance(v,str) for v in changes.values()):raise ValueError('Repair values must be strings or null')
-        if not changes or set(changes)-allowed:raise ValueError('Unsupported repair fields; quotes and timestamps are immutable')
+        timestamp_only = set(changes) == {'timestamp_seconds'}
+        if 'timestamp_seconds' in changes:
+            if not timestamp_only:
+                raise ValueError('Timestamp corrections must be a standalone change')
+            value = changes['timestamp_seconds']
+            if type(value) is not int or not 0 <= value <= 604800:
+                raise ValueError('Timestamp must be an integer between 0 and 604800 seconds')
+        allowed={'restaurant_id','name_hebrew','name_english','verdict','mention_level','status','city','cuisine_type','host_opinion','timestamp_seconds'}
+        if any(v is not None and not isinstance(v,str) for k,v in changes.items() if k != 'timestamp_seconds'):raise ValueError('Repair values must be strings or null')
+        if not changes or set(changes)-allowed:raise ValueError('Unsupported repair fields; source quotes are immutable')
         if 'name_hebrew' in changes and not str(changes['name_hebrew'] or '').strip():raise ValueError('Name must not be empty')
         if 'verdict' in changes and changes['verdict'] not in {'add_to_page','reference_only','rejected'}:raise ValueError('Invalid verdict')
         target=[]
@@ -139,7 +146,8 @@ class Maintenance:
     def repair(self,mid,changes,revision,actor):
         with self.db.get_connection() as c:
             c.execute('BEGIN IMMEDIATE');p=self._repair_preview(c,mid,changes);self._check(p,revision);before=p['rows']
-            c.execute('UPDATE episode_mentions SET original_name_hebrew=COALESCE(original_name_hebrew,name_hebrew) WHERE id=?',(mid,))
+            if set(changes) != {'timestamp_seconds'}:
+                c.execute('UPDATE episode_mentions SET original_name_hebrew=COALESCE(original_name_hebrew,name_hebrew) WHERE id=?',(mid,))
             for key,value in changes.items():c.execute(f'UPDATE episode_mentions SET {key}=? WHERE id=?',(value,mid))
             return self._record(c,'repair_mention',actor,before,self._read_same(c,before))
 

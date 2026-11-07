@@ -45,3 +45,14 @@ def test_legacy_write_routes_require_auth(client):
     assert client.delete('/api/episodes/reset').status_code==401
     assert client.delete('/api/episodes/e1/mentions').status_code==401
     assert client.post('/api/restaurants/merge-duplicates',json={}).status_code==401
+
+def test_timestamp_patch_requires_auth(client):
+    assert client.patch('/api/admin/maintenance/mentions/m1',json={'changes':{'timestamp_seconds':2958},'revision':'r'}).status_code==401
+
+def test_editor_timestamp_preview_keeps_integer(client):
+    client.app.dependency_overrides[get_current_user]=lambda:{'id':'e','role':'editor'}
+    with patch('routers.admin_maintenance.service') as s:
+        s.return_value.preview_repair.return_value={'revision':'r'}
+        r=client.post('/api/admin/maintenance/mentions/m1/preview',json={'changes':{'timestamp_seconds':2958}})
+        assert r.status_code==200
+        s.return_value.preview_repair.assert_called_once_with('m1',{'timestamp_seconds':2958})

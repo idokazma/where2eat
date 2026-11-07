@@ -139,3 +139,41 @@ def test_deleted_place_id_new_reference_blocks_undo(setup):
     p=s.preview_delete('e1');o=s.delete_episode('e1',p['revision'],'a')
     with db.get_connection() as c:c.execute('INSERT INTO episode_mentions(id,episode_id,video_id,name_hebrew,verdict,google_place_id) VALUES("new","e2","e2","x","add_to_page","gone-place")')
     with pytest.raises(Conflict):s.undo(o['operation_id'],'a')
+
+
+def test_timestamp_correction_preserves_history_and_undo(setup):
+    db,s=setup
+    with db.get_connection() as c:
+        before=dict(c.execute('SELECT * FROM episode_mentions WHERE id="m2"').fetchone())
+    changes={'timestamp_seconds':2958}
+    p=s.preview_repair('m2',changes)
+    out=s.repair('m2',changes,p['revision'],'admin')
+    with db.get_connection() as c:
+        after=dict(c.execute('SELECT * FROM episode_mentions WHERE id="m2"').fetchone())
+        assert after == {**before,'timestamp_seconds':2958}
+        op=c.execute('SELECT before_json FROM maintenance_operations WHERE id=?',(out['operation_id'],)).fetchone()
+        assert json.loads(op[0])['episode_mentions'][0] == before
+    s.undo(out['operation_id'],'admin')
+    with db.get_connection() as c:
+        assert dict(c.execute('SELECT * FROM episode_mentions WHERE id="m2"').fetchone()) == before
+
+@pytest.mark.parametrize('value',[None,True,False,'2958',2958.5,-1,604801])
+def test_timestamp_correction_rejects_invalid_values(setup,value):
+    _,s=setup
+    with pytest.raises(ValueError):s.preview_repair('m2',{'timestamp_seconds':value})
+
+def test_timestamp_correction_requires_standalone_change(setup):
+    _,s=setup
+    with pytest.raises(ValueError):s.preview_repair('m2',{'timestamp_seconds':2958,'name_hebrew':'other'})
+
+def test_timestamp_correction_rejects_stale_preview(setup):
+    db,s=setup;changes={'timestamp_seconds':2958};p=s.preview_repair('m2',changes)
+    with db.get_connection() as c:c.execute('UPDATE episode_mentions SET timestamp_seconds=21 WHERE id="m2"')
+    with pytest.raises(Conflict):s.repair('m2',changes,p['revision'],'admin')
+
+def test_timestamp_correction_rolls_back_if_snapshot_fails(setup,monkeypatch):
+    db,s=setup;changes={'timestamp_seconds':2958};p=s.preview_repair('m2',changes)
+    def fail(*args):raise RuntimeError('disk full')
+    monkeypatch.setattr(s,'_record',fail)
+    with pytest.raises(RuntimeError):s.repair('m2',changes,p['revision'],'admin')
+    with db.get_connection() as c:assert c.execute('SELECT timestamp_seconds FROM episode_mentions WHERE id="m2"').fetchone()[0]==20
