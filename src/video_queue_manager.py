@@ -194,6 +194,7 @@ class VideoQueueManager:
 
     # Error patterns that indicate permanent failures (no point retrying)
     PERMANENT_FAILURE_PATTERNS = [
+        "Publication review required",  # Human review, not a transient/provider error.
         "Transcript not available",
         "Video unavailable",
         "Private video",

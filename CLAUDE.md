@@ -2,6 +2,10 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Episode publication quality
+
+Before analysis/upload work, follow `docs/episode-publication-quality.md`. The seed and automatic-save paths now require source-backed identity/discussion/photo review before writing. Incomplete analysis is a saved review draft, not a live episode. Existing extraction files need review evidence before reseeding. No scheduler or paid-call expansion is authorized by this quality check.
+
 ## Project Overview
 
 Where2Eat is a restaurant discovery system that scrapes YouTube podcasts (primarily Hebrew food content), extracts restaurant mentions using AI analysis, and presents location-based recommendations. The system consists of four main components:

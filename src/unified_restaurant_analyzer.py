@@ -745,7 +745,7 @@ OUTPUT FORMAT - Return a JSON object:
             "host_recommendation": true/false,
             "host_comments": "ציטוט ישיר או פרפרזה של דברי המנחה",
             "engaging_quote": "ציטוט חי, צבעוני ומלא רגש מהמנחים על המסעדה - המילים שלהם ממש, לא תקציר יבש",
-            "mention_timestamp": "MM:SS — the [MM:SS] marker from the transcript closest to where this restaurant is first discussed",
+            "mention_timestamp": "MM:SS — the [MM:SS] marker from the transcript closest to where the full substantive discussion begins, excluding teasers",
             "signature_dishes": ["מנה מומלצת 1", "מנה מומלצת 2"],
             "menu_items": ["מנה שהוזכרה 1", "מנה שהוזכרה 2"],
             "special_features": ["תכונה מיוחדת", "אווירה", "נוף"],
@@ -770,7 +770,12 @@ The transcript contains [MM:SS] markers. For "mention_timestamp":
   location before stating the name.
 - Look ~30-60 seconds before the name mention for the start of the relevant discussion.
 - Return as "MM:SS" string (e.g., "12:30").
-- If no timestamp markers are present, use "00:00".
+- Inspect ALL occurrences across the episode. An intro/agenda/teaser may repeat the name or even a short quote from the later discussion. Do not select it merely because it appears first.
+- Do not blindly choose the latest occurrence either: it may be a closing recap or comparison. Choose the start of the substantive discussion using surrounding food/opinion/context.
+- If no timed source supports the choice, use null. Never fabricate "00:00" as a valid timestamp.
+
+IDENTITY INSTRUCTIONS:
+Preserve the transcript spelling and use surrounding city, chef/family, branch, cuisine and address clues. A similar name or transliteration is not identity proof. Do not confuse a community center, a similarly named restaurant, or another branch with the venue being discussed. Keep uncertain identity unresolved for review. Do not invent websites, addresses or photos. The publishing reviewer separately records source-backed identity/discussion/photo evidence; model output alone is not publication approval.
 
 CONFIDENCE LEVELS:
 - "high": שם מפורש עם הקשר ברור (e.g., "הלכנו למסעדת צ'קולי בנמל")

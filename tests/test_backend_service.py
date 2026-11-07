@@ -252,19 +252,16 @@ class TestFullPipeline:
         mock_analyzer.return_value = mock_analyzer_instance
 
         result = service.process_video(
-            video_url='https://www.youtube.com/watch?v=pipeTest123'
+            video_url='https://www.youtube.com/watch?v=pipeTest123', save_to_db=False
         )
 
         assert result['success'] is True
         assert result['video_id'] == 'pipeTest123'
         assert result['restaurants_found'] == 1
         assert len(result['restaurants']) == 1
-        assert result['episode_id'] is not None
-
-        # Verify data was saved to database
-        restaurants = service.get_all_restaurants()
-        assert len(restaurants) == 1
-        assert restaurants[0]['name_hebrew'] == 'צ\'קולי'
+        # Analysis-only mode remains usable without publication evidence.
+        assert result['episode_id'] is None
+        assert service.get_all_restaurants() == []
 
     @patch('backend_service.BackendService._get_transcript_collector')
     def test_process_video_transcript_failure(self, mock_collector, service):
@@ -773,7 +770,7 @@ class TestAnalyzeTranscriptCallConvention:
         mock_get_analyzer.return_value = mock_analyzer
 
         result = service.process_video(
-            video_url='https://www.youtube.com/watch?v=e2eTest1234'
+            video_url='https://www.youtube.com/watch?v=e2eTest1234', save_to_db=False
         )
 
         # Pipeline should succeed (not crash with TypeError)
