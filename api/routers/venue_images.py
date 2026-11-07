@@ -110,7 +110,7 @@ async def get_image(filename: str):
     if path.is_symlink() or not path.is_file():
         raise HTTPException(404, 'Image not found')
     return FileResponse(path, media_type='image/jpeg', headers={
-        'Cache-Control': 'public, max-age=31536000, immutable',
+        'Cache-Control': 'public, max-age=0, must-revalidate',
         'X-Content-Type-Options': 'nosniff',
         'Content-Security-Policy': "default-src 'none'; sandbox",
     })

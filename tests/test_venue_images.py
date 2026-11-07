@@ -38,7 +38,7 @@ def test_roundtrip_provenance_private_and_restart(client,tmp_path):
     r=upload(client);assert r.status_code==200,r.text
     asset=r.json()['asset_path'];g=client.get(asset)
     assert g.status_code==200 and g.headers['content-type']=='image/jpeg'
-    assert 'immutable' in g.headers['cache-control']
+    assert g.headers['cache-control']=='public, max-age=0, must-revalidate'
     assert g.headers['x-content-type-options']=='nosniff'
     assert Image.open(io.BytesIO(g.content)).size==(80,60)
     assert len(list((tmp_path/'venue_images'/'provenance').glob('*.json')))==1
