@@ -150,12 +150,21 @@ def test_timestamp_correction_preserves_history_and_undo(setup):
     out=s.repair('m2',changes,p['revision'],'admin')
     with db.get_connection() as c:
         after=dict(c.execute('SELECT * FROM episode_mentions WHERE id="m2"').fetchone())
-        assert after == {**before,'timestamp_seconds':2958}
+        assert after == {**before,'timestamp_seconds':2958,'timestamp_display':'49:18'}
         op=c.execute('SELECT before_json FROM maintenance_operations WHERE id=?',(out['operation_id'],)).fetchone()
         assert json.loads(op[0])['episode_mentions'][0] == before
     s.undo(out['operation_id'],'admin')
     with db.get_connection() as c:
         assert dict(c.execute('SELECT * FROM episode_mentions WHERE id="m2"').fetchone()) == before
+
+def test_timestamp_correction_recomputes_display(setup):
+    db,s=setup
+    for ts,display in [(0,'0:00'),(5,'0:05'),(140,'2:20'),(2958,'49:18'),(604800,'10080:00')]:
+        p=s.preview_repair('m2',{'timestamp_seconds':ts})
+        s.repair('m2',{'timestamp_seconds':ts},p['revision'],'admin')
+        with db.get_connection() as c:
+            row=c.execute('SELECT timestamp_seconds,timestamp_display FROM episode_mentions WHERE id="m2"').fetchone()
+            assert (row['timestamp_seconds'],row['timestamp_display'])==(ts,display)
 
 @pytest.mark.parametrize('value',[None,True,False,'2958',2958.5,-1,604801])
 def test_timestamp_correction_rejects_invalid_values(setup,value):

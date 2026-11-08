@@ -23,13 +23,24 @@ GET /api/venue-images/{sha256}.jpg is public and returns only a strictly named J
 
 The origin middleware allows only these GET asset paths and exact POST upload path through to their own handlers. The upload handler still requires its own Bearer authentication. This lets Next.js fetch JPEGs without an Origin header. No other write routes are changed.
 
+## Assigning an uploaded image to a restaurant
+
+Assignment is a separate role-authenticated admin call, so a single-venue photo repair needs no code change or redeploy:
+
+PATCH /api/admin/restaurants/{restaurant_id} with an editor-or-higher admin JWT now accepts two additional fields:
+
+- image_url: an https URL up to 500 characters, or an empty string to clear. The frontend renders a stored image_url directly only when it starts with https://, so pass the full API-origin asset path returned by the upload (for example https://<api-origin>/api/venue-images/<sha256>.jpg). Other schemes and bare paths are rejected with 422.
+- photos: a JSON list of photo objects. Restaurant cards prefer Google Places photos[] over image_url, so for a venue whose stale Google photos would keep hiding the curated image, include "photos": [] in the same PATCH. Snapshot the row first; clearing photos is reversible only from that snapshot or a Google re-fetch. When photos[] is already empty (the Jai Lek canary case), image_url alone updates the card.
+
+Both fields flow through the existing validated allowlist and db.update_restaurant; no other restaurant fields are affected, and the public unauthenticated PUT route remains unchanged and is not the repair path.
+
 ## Canary after explicit deploy approval
 
 1. Snapshot affected restaurant rows and current volume backup. Preserve original episode associations/timestamps.
 2. Deploy this isolated patch. Do not enable the parked Google/runtime patch.
 3. Confirm unauthorized upload is 401, no default-secret fallback, and public invalid filenames are 404.
 4. Upload the verified Jai Lek owner-published interior image using server-side credentials. Confirm the returned asset from a fresh unauthenticated client and inspect bytes/pixels.
-5. Snapshot and update only Jai Lek image_url to the full API-origin asset path. Verify its exact ID and actual homepage card, not a similar-name card. Other source-verified venue images remain separate assignments after the canary passes.
+5. Snapshot the Jai Lek row, then PATCH /api/admin/restaurants/61a9696d-b4fe-4fff-9bee-6ea6574c1cfd with an admin JWT, setting image_url to the full API-origin asset path (its photos[] is already empty, so no photos change is needed). Verify its exact ID and actual homepage card, not a similar-name card. Other source-verified venue images remain separate assignments after the canary passes.
 6. Restart/redeploy once and recheck both assets and homepage cards to verify real volume persistence.
 
 No upload/assignment has been done in production by this preparation task. Production changes still need the user's deploy approval. Existing unauthenticated restaurant-update routes are not fixed by this patch; do not interpret the authenticated upload as broader API hardening.
@@ -42,7 +53,7 @@ Local proof uses real Afrit and Cezanne venue-published images uploaded into a d
 
 ## Audited discussion-timestamp correction
 
-The same review branch includes a separate small maintenance commit for a discovered teaser-link error. `POST /api/admin/maintenance/mentions/{id}/preview` and the existing PATCH route now accept `{ "changes": { "timestamp_seconds": 2958 } }`. This must be the only change in the request and must be an integer from 0 through 604800 (7 days). The bound is a corruption guard, not evidence that the timestamp fits the episode: operators must verify against original timed captions/audio and the actual episode duration before applying it. Quotes, names, episode IDs and video IDs cannot be changed in this timestamp-only request.
+The same review branch includes a separate small maintenance commit for a discovered teaser-link error. `POST /api/admin/maintenance/mentions/{id}/preview` and the existing PATCH route now accept `{ "changes": { "timestamp_seconds": 2958 } }`. This must be the only change in the request and must be an integer from 0 through 604800 (7 days). The bound is a corruption guard, not evidence that the timestamp fits the episode: operators must verify against original timed captions/audio and the actual episode duration before applying it. Quotes, names, episode IDs and video IDs cannot be changed in this timestamp-only request. The stored timestamp_display label is recomputed from the corrected seconds (minutes:seconds), so cards never show a stale watch-time label; undo restores the original label as part of the before-snapshot.
 
 Existing editor/admin authentication, revision-bound comparison, one-transaction before/after snapshot and stale-safe undo remain mandatory. The original timestamp is retained in `maintenance_operations.before_json`; no source mention is deleted or reseeded. This intentionally changes the earlier timestamp-immutable policy for explicit audited corrections only. The normal name/identity repair path remains unchanged. No database migration, automated correction or production mention edit is performed by deploying this code.
 
