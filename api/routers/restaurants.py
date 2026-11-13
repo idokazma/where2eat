@@ -573,7 +573,7 @@ async def get_restaurant(restaurant_id: str):
     summary="Create restaurant",
     description="Create a new restaurant.",
 )
-async def create_restaurant(restaurant: RestaurantCreate):
+async def create_restaurant(restaurant: RestaurantCreate, user: dict = Depends(require_role(["editor", "admin", "super_admin"]))):
     """Create a new restaurant."""
     data = restaurant.model_dump()
     restaurant_id = data.get('id') or str(uuid.uuid4())
@@ -674,7 +674,7 @@ async def merge_duplicates(body: dict, user: dict = Depends(require_role(["admin
     summary="Update restaurant",
     description="Update an existing restaurant.",
 )
-async def update_restaurant(restaurant_id: str, restaurant: RestaurantUpdate):
+async def update_restaurant(restaurant_id: str, restaurant: RestaurantUpdate, user: dict = Depends(require_role(["editor", "admin", "super_admin"]))):
     """Update a restaurant."""
     data = restaurant.model_dump(exclude_unset=True)
     location = data.pop('location', None)
@@ -833,7 +833,7 @@ def _run_enrichment(restaurant_id: str):
     summary="Reprocess restaurant",
     description="Re-run Google Places enrichment for a restaurant using its current (possibly edited) fields.",
 )
-async def reprocess_restaurant(restaurant_id: str):
+async def reprocess_restaurant(restaurant_id: str, user: dict = Depends(require_role(["admin", "super_admin"]))):
     """Re-enrich a single restaurant via Google Places using its current DB fields."""
     import asyncio
     loop = asyncio.get_event_loop()
@@ -850,7 +850,7 @@ async def reprocess_restaurant(restaurant_id: str):
     summary="Delete restaurant",
     description="Delete a restaurant by ID.",
 )
-async def delete_restaurant(restaurant_id: str):
+async def delete_restaurant(restaurant_id: str, user: dict = Depends(require_role(["admin", "super_admin"]))):
     """Delete a restaurant."""
     # Try native SQLite first
     db = _get_sqlite_db()
