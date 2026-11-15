@@ -22,11 +22,14 @@ from youtube_transcript_collector import YouTubeTranscriptCollector
 API_BASE = os.getenv(
     "W2E_API_URL", "https://where2eat-production.up.railway.app"
 )
-ADMIN_EMAIL = os.getenv("W2E_ADMIN_EMAIL", "admin@where2eat.app")
-ADMIN_PASSWORD = os.getenv("W2E_ADMIN_PASSWORD", "w2e_admin_2026!")
+# Credentials come from the environment only; never hard-code them.
+ADMIN_EMAIL = os.getenv("WHERE2EAT_ADMIN_EMAIL") or os.getenv("W2E_ADMIN_EMAIL")
+ADMIN_PASSWORD = os.getenv("WHERE2EAT_ADMIN_PASSWORD") or os.getenv("W2E_ADMIN_PASSWORD")
 
 
 def login():
+    if not ADMIN_EMAIL or not ADMIN_PASSWORD:
+        sys.exit("Set WHERE2EAT_ADMIN_EMAIL and WHERE2EAT_ADMIN_PASSWORD to log in.")
     r = requests.post(
         f"{API_BASE}/api/admin/auth/login",
         json={"email": ADMIN_EMAIL, "password": ADMIN_PASSWORD},

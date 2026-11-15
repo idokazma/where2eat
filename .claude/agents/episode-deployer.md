@@ -58,11 +58,13 @@ If there are missing images, stop and ask the user if they want to proceed or fi
 
 ### Step 2: Upload restaurants
 
-For each `add_to_page` restaurant, POST to the Railway API:
+For each `add_to_page` restaurant, POST to the Railway API. This requires the
+admin bearer token: run the login snippet from Step 3 first to set `$TOKEN`.
 
 ```bash
 curl -s -X POST "https://where2eat-production.up.railway.app/api/restaurants" \
   -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $TOKEN" \
   -H "Origin: https://where2eat-delta.vercel.app" \
   -d '{
     "name_hebrew": "RESTAURANT_NAME",
