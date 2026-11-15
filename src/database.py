@@ -2274,6 +2274,10 @@ class Database:
                 review = json.loads(review)
             except (ValueError, TypeError):
                 review = None
+        # These rows are served publicly. The reviewer's admin user ID stays in
+        # storage and maintenance snapshots for audit, never in the response.
+        if isinstance(review, dict):
+            review = {k: v for k, v in review.items() if k != 'reviewed_by'}
         mention['verified_quote'] = review
         if isinstance(review, dict) and isinstance(review.get('text'), str) and review['text'].strip():
             mention['source_host_quotes'] = raw
