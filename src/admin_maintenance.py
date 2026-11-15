@@ -7,6 +7,7 @@ import hashlib
 import json
 import sqlite3
 import uuid
+from urllib.parse import urlsplit
 from datetime import datetime, timezone
 
 class Conflict(ValueError):
@@ -125,11 +126,27 @@ class Maintenance:
             value = changes['timestamp_seconds']
             if type(value) is not int or not 0 <= value <= 604800:
                 raise ValueError('Timestamp must be an integer between 0 and 604800 seconds')
-        allowed={'restaurant_id','name_hebrew','name_english','verdict','mention_level','status','city','cuisine_type','host_opinion','timestamp_seconds'}
-        if any(v is not None and not isinstance(v,str) for k,v in changes.items() if k != 'timestamp_seconds'):raise ValueError('Repair values must be strings or null')
+        allowed={'restaurant_id','name_hebrew','name_english','verdict','mention_level','status','city','cuisine_type','host_opinion','timestamp_seconds','verified_quote','host_comments','speaker'}
+        if any(v is not None and not isinstance(v,str) for k,v in changes.items() if k not in {'timestamp_seconds','verified_quote'}):raise ValueError('Repair values must be strings or null')
         if not changes or set(changes)-allowed:raise ValueError('Unsupported repair fields; source quotes are immutable')
         if 'name_hebrew' in changes and not str(changes['name_hebrew'] or '').strip():raise ValueError('Name must not be empty')
         if 'verdict' in changes and changes['verdict'] not in {'add_to_page','reference_only','rejected'}:raise ValueError('Invalid verdict')
+        if 'verified_quote' in changes:
+            review = changes['verified_quote']
+            if review is not None:
+                required = {'text','source_url','start_seconds','end_seconds'}
+                if not isinstance(review, dict) or set(review) != required:
+                    raise ValueError('Verified quote needs text, recording URL and audio range')
+                if not isinstance(review['text'], str) or not 1 <= len(review['text'].strip()) <= 1000:
+                    raise ValueError('Verified quote must contain 1-1000 characters')
+                if not isinstance(review['source_url'], str) or len(review['source_url']) > 2048:
+                    raise ValueError('Recording URL must be an HTTPS URL')
+                source = urlsplit(review['source_url'])
+                if source.scheme != 'https' or not source.hostname or source.username or source.password:
+                    raise ValueError('Recording URL must be an HTTPS URL without credentials')
+                start,end = review['start_seconds'],review['end_seconds']
+                if type(start) is not int or type(end) is not int or not 0 <= start < end <= 604800:
+                    raise ValueError('Audio range must be integer seconds, start before end')
         target=[]
         if changes.get('restaurant_id'):
             rows=self._rows(c,'restaurants','id=?',(changes['restaurant_id'],))
@@ -146,16 +163,30 @@ class Maintenance:
     def repair(self,mid,changes,revision,actor):
         with self.db.get_connection() as c:
             c.execute('BEGIN IMMEDIATE');p=self._repair_preview(c,mid,changes);self._check(p,revision);before=p['rows']
-            if set(changes) != {'timestamp_seconds'}:
+            if 'name_hebrew' in changes:
                 c.execute('UPDATE episode_mentions SET original_name_hebrew=COALESCE(original_name_hebrew,name_hebrew) WHERE id=?',(mid,))
-            for key,value in changes.items():c.execute(f'UPDATE episode_mentions SET {key}=? WHERE id=?',(value,mid))
+            for key,value in changes.items():
+                if key == 'verified_quote' and value is not None:
+                    value = json.dumps({**value, 'reviewed_by': actor, 'reviewed_at': datetime.now(timezone.utc).isoformat()},ensure_ascii=False)
+                c.execute(f'UPDATE episode_mentions SET {key}=? WHERE id=?',(value,mid))
             if set(changes) == {'timestamp_seconds'}:
                 ts=changes['timestamp_seconds']
                 c.execute('UPDATE episode_mentions SET timestamp_display=? WHERE id=?',(f'{ts//60}:{ts%60:02d}',mid))
             return self._record(c,'repair_mention',actor,before,self._read_same(c,before))
 
     def _read_same(self,c,state):
-        return {table:[dict(row) for old in rows for row in c.execute(f'SELECT * FROM {table} WHERE id=?',(old['id'],))] for table,rows in state.items()}
+        result = {}
+        for table,rows in state.items():
+            result[table] = []
+            for old in rows:
+                for row in c.execute(f'SELECT * FROM {table} WHERE id=?',(old['id'],)):
+                    current = dict(row)
+                    # Existing snapshots predate this nullable column. Keep
+                    # their undo usable, but do not ignore a later quote edit.
+                    if table == 'episode_mentions' and 'verified_quote' not in old and current.get('verified_quote') is None:
+                        current.pop('verified_quote',None)
+                    result[table].append(current)
+        return result
 
     def undo(self,oid,actor):
         with self.db.get_connection() as c:

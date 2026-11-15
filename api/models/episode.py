@@ -34,6 +34,8 @@ class EpisodeMention(BaseModel):
     timestamp_display: Optional[str] = None
     speaker: Optional[str] = None
     host_quotes: Optional[List[str]] = None
+    source_host_quotes: Optional[List[str]] = None
+    verified_quote: Optional[Dict[str, Any]] = None
     host_comments: Optional[str] = None
     dishes_mentioned: Optional[List[str]] = None
     mention_context: Optional[str] = None

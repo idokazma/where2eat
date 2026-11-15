@@ -534,6 +534,15 @@ class Database:
             cursor.execute('CREATE INDEX IF NOT EXISTS idx_episode_mentions_restaurant_id ON episode_mentions(restaurant_id)')
             cursor.execute('CREATE INDEX IF NOT EXISTS idx_episode_mentions_verdict ON episode_mentions(verdict)')
 
+            # Preserve raw transcript quotes. A reviewed display override is separate.
+            mention_cols = {r[1] for r in cursor.execute('PRAGMA table_info(episode_mentions)')}
+            if 'verified_quote' not in mention_cols:
+                try:
+                    cursor.execute('ALTER TABLE episode_mentions ADD COLUMN verified_quote TEXT')
+                except sqlite3.OperationalError:
+                    if 'verified_quote' not in {r[1] for r in cursor.execute('PRAGMA table_info(episode_mentions)')}:
+                        raise
+
             # Migrate existing episode_mentions tables that lack the status column
             try:
                 cursor.execute('ALTER TABLE episode_mentions ADD COLUMN status TEXT')
@@ -2250,8 +2259,30 @@ class Database:
                             d[field] = json.loads(d[field])
                         except (json.JSONDecodeError, TypeError):
                             pass
+                d = self._apply_verified_quote(d)
                 results.append(d)
             return results
+
+    @staticmethod
+    def _apply_verified_quote(mention):
+        # API consumers keep receiving host_quotes for display; the original
+        # extraction remains immutable in storage and explicit in the response.
+        raw = mention.get('host_quotes')
+        review = mention.get('verified_quote')
+        if isinstance(review, str):
+            try:
+                review = json.loads(review)
+            except (ValueError, TypeError):
+                review = None
+        # These rows are served publicly. The reviewer's admin user ID stays in
+        # storage and maintenance snapshots for audit, never in the response.
+        if isinstance(review, dict):
+            review = {k: v for k, v in review.items() if k != 'reviewed_by'}
+        mention['verified_quote'] = review
+        if isinstance(review, dict) and isinstance(review.get('text'), str) and review['text'].strip():
+            mention['source_host_quotes'] = raw
+            mention['host_quotes'] = [review['text']]
+        return mention
 
     def get_restaurant_mentions(self, restaurant_id: str) -> List[Dict[str, Any]]:
         """Get all mentions of a restaurant across episodes.
@@ -2282,7 +2313,7 @@ class Database:
                             d[field] = json.loads(d[field])
                         except (json.JSONDecodeError, TypeError):
                             pass
-                results.append(d)
+                results.append(self._apply_verified_quote(d))
             return results
 
     def get_episodes_with_mention_counts(self) -> List[Dict[str, Any]]:

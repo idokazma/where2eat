@@ -123,3 +123,16 @@ def test_no_valid_fields_is_400(client):
     response, record = patch_with_db(client, {'image_urll': ASSET})
     assert response.status_code == 400
     assert record == {}
+
+@pytest.mark.parametrize('level',['נטעם','הוזכר',None])
+def test_editor_can_correct_restaurant_mention_level(client,level):
+    as_role(client,'editor')
+    response,record=patch_with_db(client,{'mention_level':level})
+    assert response.status_code==200
+    assert record['updates']=={'mention_level':level}
+
+@pytest.mark.parametrize('level',['invented',1,[],{}])
+def test_mention_level_rejects_unknown_values(client,level):
+    as_role(client,'editor')
+    response,record=patch_with_db(client,{'mention_level':level})
+    assert response.status_code==422 and record=={}

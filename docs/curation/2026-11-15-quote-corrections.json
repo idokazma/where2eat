@@ -1,0 +1,125 @@
+[
+  {
+    "name": "הבגט של אשר",
+    "video_id": "U6mjFXw7_YA",
+    "mention_id": "91c13610-2d12-5b12-9f30-6b86bdb67273",
+    "restaurant_id": "1264ae0d-9ba8-4bc5-a1ac-1346cc04abac",
+    "restaurant_changes": {
+      "engaging_quote": "יש לאשר אחלה מוצר ואחלה בגטים.",
+      "host_comments": "יהונתן שיבח את הבגט והשניצל ואת הסלטים, לצד ביקורת על מחיר מנת הצ'יפס הקטנה."
+    },
+    "mention_changes": {
+      "verified_quote": {
+        "text": "יש לאשר אחלה מוצר ואחלה בגטים.",
+        "source_url": "https://traffic.megaphone.fm/POLTD7536406093.mp3",
+        "start_seconds": 300,
+        "end_seconds": 510
+      },
+      "host_comments": "יהונתן שיבח את הבגט והשניצל ואת הסלטים, לצד ביקורת על מחיר מנת הצ'יפס הקטנה."
+    }
+  },
+  {
+    "name": "יסמין",
+    "video_id": "1KUol-6LSVo",
+    "mention_id": "0ae60847-0011-5505-bdc1-5621c63757cf",
+    "restaurant_id": "ac856f11-6724-4395-8780-0968b07eb379",
+    "restaurant_changes": {
+      "engaging_quote": "הבשר היה עשוי מעולה.",
+      "host_comments": "בדיון שיבחו את הבשר והרכבת הפיתה. לצד זאת התפתח ויכוח ביקורתי על הדמיון לג'סמינו; זו אינה המלצה אחידה של כל המשתתפים.",
+      "host_opinion": "מעורבת"
+    },
+    "mention_changes": {
+      "verified_quote": {
+        "text": "הבשר היה עשוי מעולה.",
+        "source_url": "https://traffic.megaphone.fm/POLTD1907771502.mp3",
+        "start_seconds": 180,
+        "end_seconds": 480
+      },
+      "host_comments": "בדיון שיבחו את הבשר והרכבת הפיתה. לצד זאת התפתח ויכוח ביקורתי על הדמיון לג'סמינו; זו אינה המלצה אחידה של כל המשתתפים.",
+      "host_opinion": "מעורבת",
+      "speaker": null
+    }
+  },
+  {
+    "name": "ג'אגר",
+    "video_id": "1KUol-6LSVo",
+    "mention_id": "dc12aa9e-4ec5-5468-8daf-95ceff8401ed",
+    "restaurant_id": "83024ebb-21e2-4f08-9a58-d4c2abbe44bb",
+    "restaurant_changes": {
+      "engaging_quote": "אז לקחתי המבורגר והוא פשוט מצוין.",
+      "host_comments": "נטע שיבחה המבורגר בטייק אוויי מקניון רמת אביב, עם קציצה עסיסית ולחמנייה טובה. היא ציינה שמידת העשייה אדומה מאוד ושלטעמה חסר מעט תיבול."
+    },
+    "mention_changes": {
+      "verified_quote": {
+        "text": "אז לקחתי המבורגר והוא פשוט מצוין.",
+        "source_url": "https://traffic.megaphone.fm/POLTD1907771502.mp3",
+        "start_seconds": 755,
+        "end_seconds": 995
+      },
+      "host_comments": "נטע שיבחה המבורגר בטייק אוויי מקניון רמת אביב, עם קציצה עסיסית ולחמנייה טובה. היא ציינה שמידת העשייה אדומה מאוד ושלטעמה חסר מעט תיבול."
+    }
+  },
+  {
+    "name": "פיצה 194",
+    "video_id": "1KUol-6LSVo",
+    "mention_id": "ad31daf1-2d5f-5956-b73e-1e0bb6fb4e4d",
+    "restaurant_id": "ee785afb-349f-4938-a7d2-5de4ae2a4c42",
+    "restaurant_changes": {
+      "engaging_quote": "אחלה פיצה 194.",
+      "host_comments": "נטע דיברה על הסניף החדש בנס ציונה של פיצה 194, שמקורה ברחובות, ושיבחה את הסלייסים הדקים והקריספיים. כרטיס המסעדה עדיין מקושר לרחובות; שיוך הסניף בבדיקה."
+    },
+    "mention_changes": {
+      "verified_quote": {
+        "text": "אחלה פיצה 194.",
+        "source_url": "https://traffic.megaphone.fm/POLTD1907771502.mp3",
+        "start_seconds": 1935,
+        "end_seconds": 2160
+      },
+      "host_comments": "נטע דיברה על הסניף החדש בנס ציונה של פיצה 194, שמקורה ברחובות, ושיבחה את הסלייסים הדקים והקריספיים. כרטיס המסעדה עדיין מקושר לרחובות; שיוך הסניף בבדיקה.",
+      "speaker": "נטע סלונים"
+    }
+  },
+  {
+    "name": "סה טו",
+    "video_id": "1KUol-6LSVo",
+    "mention_id": "fef56b5d-33ad-500a-8cfa-41018bf9e0c5",
+    "restaurant_id": "b9c4403a-a74c-4e33-bbc7-6bc4b5a0bc6e",
+    "restaurant_changes": {
+      "engaging_quote": "הדג הוא השחקן המרכזי.",
+      "host_comments": "בדיון על סה טו באשדוד שיבחו ביצוע מדויק, מנות דגים נדיבות ותיבול עדין, ותיארו חלל גדול ומסעדת בילוי שבה הווליום עולה בערב."
+    },
+    "mention_changes": {
+      "verified_quote": {
+        "text": "הדג הוא השחקן המרכזי.",
+        "source_url": "https://traffic.megaphone.fm/POLTD1907771502.mp3",
+        "start_seconds": 2200,
+        "end_seconds": 2440
+      },
+      "host_comments": "בדיון על סה טו באשדוד שיבחו ביצוע מדויק, מנות דגים נדיבות ותיבול עדין, ותיארו חלל גדול ומסעדת בילוי שבה הווליום עולה בערב.",
+      "speaker": null
+    }
+  },
+  {
+    "name": "בונו",
+    "video_id": "1KUol-6LSVo",
+    "mention_id": "79e89952-a751-5e09-ade2-6f76f2682829",
+    "restaurant_id": "e6670f63-9e1a-499d-8b37-4ee487bb2d7a",
+    "restaurant_changes": {
+      "engaging_quote": "אבי אפרתי מאוד נהנה.",
+      "host_comments": "בונו בעמק חפר הוזכרה בסקירת ביקורת של אבי אפרתי. אחד המשתתפים סיפר שביקר בה וידבר על חוויותיו בפרק עתידי; זו אינה ביקורת טעימה שנמסרה בפרק הזה.",
+      "host_opinion": null
+    },
+    "mention_changes": {
+      "verified_quote": {
+        "text": "אבי אפרתי מאוד נהנה.",
+        "source_url": "https://traffic.megaphone.fm/POLTD1907771502.mp3",
+        "start_seconds": 2985,
+        "end_seconds": 3210
+      },
+      "host_comments": "בונו בעמק חפר הוזכרה בסקירת ביקורת של אבי אפרתי. אחד המשתתפים סיפר שביקר בה וידבר על חוויותיו בפרק עתידי; זו אינה ביקורת טעימה שנמסרה בפרק הזה.",
+      "mention_level": "הוזכר",
+      "host_opinion": null,
+      "speaker": null
+    }
+  }
+]
