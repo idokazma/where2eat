@@ -489,11 +489,14 @@ async def patch_restaurant_admin(
     allowed = {
         'name_hebrew', 'name_english', 'google_name', 'city', 'neighborhood',
         'address', 'region', 'cuisine_type', 'price_range', 'status',
-        'host_opinion', 'host_comments', 'engaging_quote', 'instagram_url',
+        'host_opinion', 'host_comments', 'engaging_quote', 'instagram_url', 'mention_level',
         'contact_phone', 'contact_website', 'is_hidden', 'is_closing', 'country',
         'latitude', 'longitude', 'google_place_id',
         'image_url', 'photos',
     }
+
+    if 'mention_level' in body and body['mention_level'] not in (None, 'נטעם', 'הוזכר'):
+        raise HTTPException(status_code=422, detail="mention_level must be נטעם, הוזכר, or null")
 
     # Curated venue-image assignment (see docs/venue-image-storage.md). The
     # frontend only renders a stored image_url directly when it is an https

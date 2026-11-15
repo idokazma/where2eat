@@ -186,3 +186,106 @@ def test_timestamp_correction_rolls_back_if_snapshot_fails(setup,monkeypatch):
     monkeypatch.setattr(s,'_record',fail)
     with pytest.raises(RuntimeError):s.repair('m2',changes,p['revision'],'admin')
     with db.get_connection() as c:assert c.execute('SELECT timestamp_seconds FROM episode_mentions WHERE id="m2"').fetchone()[0]==20
+
+
+def review(text='A complete verified sentence.'):
+    return {'text':text,'source_url':'https://traffic.megaphone.fm/example.mp3',
+            'start_seconds':300,'end_seconds':330}
+
+
+def test_verified_quote_preserves_raw_and_is_displayed(setup):
+    db,s=setup
+    changes={'verified_quote':review(),'host_comments':'Editorial context','speaker':'verified speaker'}
+    p=s.preview_repair('m2',changes)
+    out=s.repair('m2',changes,p['revision'],'reviewer')
+    with db.get_connection() as c:
+        row=dict(c.execute('SELECT * FROM episode_mentions WHERE id="m2"').fetchone())
+        assert row['host_quotes']=='["quote"]'
+        saved=json.loads(row['verified_quote'])
+        assert saved['reviewed_by']=='reviewer' and saved['reviewed_at']
+        assert row['original_name_hebrew'] is None
+    m=next(m for m in db.get_episode_mentions('e1') if m['id']=='m2')
+    assert m['source_host_quotes']==['quote']
+    assert m['host_quotes']==['A complete verified sentence.']
+    assert m['verified_quote']['source_url']==review()['source_url']
+    assert db.get_restaurant_mentions('drop')[0]['host_quotes']==m['host_quotes']
+    s.undo(out['operation_id'],'admin')
+    m=next(m for m in db.get_episode_mentions('e1') if m['id']=='m2')
+    assert m['host_quotes']==['quote'] and m['verified_quote'] is None
+
+
+@pytest.mark.parametrize('changes',[
+    {'host_quotes':['fabricated']},
+    {'verified_quote':{}},
+    {'verified_quote':{**review(),'text':' '}},
+    {'verified_quote':{**review(),'text':'x'*1001}},
+    {'verified_quote':{**review(),'source_url':'http://example.com/audio'}},
+    {'verified_quote':{**review(),'source_url':'https://user:secret@example.com/audio'}},
+    {'verified_quote':{**review(),'source_url':123}},
+    {'verified_quote':{**review(),'start_seconds':True}},
+    {'verified_quote':{**review(),'end_seconds':300}},
+    {'verified_quote':{**review(),'end_seconds':604801}},
+    {'verified_quote':{**review(),'reviewed_by':'spoofed'}},
+])
+def test_verified_quote_rejects_invalid_evidence(setup,changes):
+    _,s=setup
+    with pytest.raises(ValueError):s.preview_repair('m2',changes)
+
+
+def test_quote_change_checks_revision_and_undo_conflict(setup):
+    db,s=setup;changes={'verified_quote':review()};p=s.preview_repair('m2',changes)
+    with db.get_connection() as c:c.execute('UPDATE episode_mentions SET speaker="concurrent" WHERE id="m2"')
+    with pytest.raises(Conflict):s.repair('m2',changes,p['revision'],'a')
+    p=s.preview_repair('m2',changes);out=s.repair('m2',changes,p['revision'],'a')
+    with db.get_connection() as c:c.execute('UPDATE episode_mentions SET host_comments="later" WHERE id="m2"')
+    with pytest.raises(Conflict):s.undo(out['operation_id'],'a')
+
+
+def test_verified_quote_rolls_back_on_audit_failure(setup,monkeypatch):
+    db,s=setup;changes={'verified_quote':review()};p=s.preview_repair('m2',changes)
+    def fail(*args):raise RuntimeError('disk full')
+    monkeypatch.setattr(s,'_record',fail)
+    with pytest.raises(RuntimeError):s.repair('m2',changes,p['revision'],'a')
+    with db.get_connection() as c:
+        row=c.execute('SELECT verified_quote,host_quotes FROM episode_mentions WHERE id="m2"').fetchone()
+        assert row['verified_quote'] is None and row['host_quotes']=='["quote"]'
+
+
+def test_verified_quote_can_be_reset_without_erasing_source(setup):
+    db,s=setup;changes={'verified_quote':review()};p=s.preview_repair('m2',changes)
+    s.repair('m2',changes,p['revision'],'a')
+    changes={'verified_quote':None};p=s.preview_repair('m2',changes)
+    s.repair('m2',changes,p['revision'],'a')
+    assert db.get_restaurant_mentions('drop')[0]['host_quotes']==['quote']
+
+
+def test_quote_migration_is_repeatable(setup):
+    db,_=setup
+    Database(db.db_path)
+    with db.get_connection() as c:
+        assert sum(r['name']=='verified_quote' for r in c.execute('PRAGMA table_info(episode_mentions)'))==1
+
+
+def legacy_snapshot(db,oid):
+    with db.get_connection() as c:
+        row=c.execute('SELECT before_json,after_json FROM maintenance_operations WHERE id=?',(oid,)).fetchone()
+        values=[]
+        for value in row:
+            state=json.loads(value)
+            for m in state.get('episode_mentions',[]):m.pop('verified_quote',None)
+            values.append(json.dumps(state))
+        c.execute('UPDATE maintenance_operations SET before_json=?,after_json=? WHERE id=?',(*values,oid))
+
+
+def test_quote_migration_keeps_old_snapshot_undo(setup):
+    db,s=setup;changes={'host_opinion':'positive'};p=s.preview_repair('m2',changes)
+    out=s.repair('m2',changes,p['revision'],'a');legacy_snapshot(db,out['operation_id'])
+    s.undo(out['operation_id'],'a')
+    with db.get_connection() as c:assert c.execute('SELECT host_opinion FROM episode_mentions WHERE id="m2"').fetchone()[0] is None
+
+
+def test_old_snapshot_undo_refuses_later_verified_quote(setup):
+    db,s=setup;changes={'host_opinion':'positive'};p=s.preview_repair('m2',changes)
+    out=s.repair('m2',changes,p['revision'],'a');legacy_snapshot(db,out['operation_id'])
+    with db.get_connection() as c:c.execute('UPDATE episode_mentions SET verified_quote=? WHERE id="m2"',(json.dumps(review()),))
+    with pytest.raises(Conflict):s.undo(out['operation_id'],'a')

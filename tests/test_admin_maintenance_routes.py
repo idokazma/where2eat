@@ -56,3 +56,16 @@ def test_editor_timestamp_preview_keeps_integer(client):
         r=client.post('/api/admin/maintenance/mentions/m1/preview',json={'changes':{'timestamp_seconds':2958}})
         assert r.status_code==200
         s.return_value.preview_repair.assert_called_once_with('m1',{'timestamp_seconds':2958})
+
+def test_verified_quote_patch_requires_auth(client):
+    assert client.patch('/api/admin/maintenance/mentions/m1',json={'changes':{'verified_quote':None},'revision':'r'}).status_code==401
+
+
+def test_editor_verified_quote_passes_structured_evidence(client):
+    client.app.dependency_overrides[get_current_user]=lambda:{'id':'reviewer','role':'editor'}
+    quote={'text':'Verified sentence.','source_url':'https://example.com/recording.mp3','start_seconds':1,'end_seconds':3}
+    with patch('routers.admin_maintenance.service') as s:
+        s.return_value.repair.return_value={'operation_id':'snapshot','snapshot_saved':True}
+        r=client.patch('/api/admin/maintenance/mentions/m1',json={'changes':{'verified_quote':quote},'revision':'r'})
+        assert r.status_code==200
+        s.return_value.repair.assert_called_once_with('m1',{'verified_quote':quote},'r','reviewer')
