@@ -1,358 +1,197 @@
 # PRD: Where to eat, and according to whom?
 
-**where2eat • Fresh restaurant search that returns the review moment**
+**where2eat in ChatGPT and Gemini • Fresh restaurant answers backed by the creator's review moment**
 
-- **Version:** 0.2
+- **Version:** 0.3
 - **Date:** November 20, 2026
 - **Product owner:** Ido Kazma
 - **Status:** Draft. A proposal, not approved for development.
-- **Changes in 0.2:** review recommendations and one owner decision (content use without waiting for creator permission). See the change log at the end.
+- **Changes in 0.3:** the product is the serving layer only. Collecting and extracting creator content is solved by the existing agentic pipeline and is out of scope. See the change log at the end.
 
-> v0.1 was translated from the Hebrew PRD delivered on 2026-11-20. v0.2 revises it in English; where they differ, this version supersedes the Hebrew v0.1.
-
----
-
-## 1. Summary and chosen direction
-
-**Turn where2eat from a restaurant-mention archive into a discovery tool: ask in natural language, choose whose content to search, and get places with the reason they fit and the original evidence.** The result connects restaurant, dish, creator, context and date to the moment it was said. Conflicting opinions stay visible.
-
-### The direction chosen in conversation
-
-- **Within where2eat.** A home for several creators, with creator pages and content inside the site, not a network of separate sites.
-- **Creator-based search.** Review passages and a verifiable source, not another overall restaurant score.
-- **Freshness and a ChatGPT connection.**
-
-These are part of the product vision. The implementation order and first-version scope proposed in this document have not yet been approved for development.
-
-### What has not been decided
-
-This document is not approval for code, a PR, deployment, creator outreach, new content ingestion, automation or spend. The demos for Gil Harel, Niv Gilboa, Yubi Yam, Daniel David and Carnivorim Originale are illustrations, not a partnership or an already-connected catalog.
-
-### Decision proposal
-
-Prove search-with-evidence first, on the catalog the site already has: about 346 places from מדברים מהבטן, with episode mentions, host quotes and timestamp links. Only after quality, usefulness, editing time and cost are measured, add a second creator and choose between site search and the ChatGPT connection by measured cost per query. Every stage has a gate, not an invented launch date.
-
-### Owner decision: content use without waiting for permission
-
-Ido has decided not to wait for creator permission before using their public content. Creators are notified, not asked, and the product is built to keep that low-risk: short attributed excerpts, links back to the original moment, no re-hosting, no implied partnership and fast removal on request. See section 8, "Content use without prior permission". This is a business decision with legal exposure that is accepted, not eliminated.
-
-**Document map:** users and journeys → scope → search → trust → freshness → data → operations → ChatGPT → measurement → launch and budget → decisions and sources.
+> v0.1 was translated from the Hebrew PRD delivered on 2026-11-20. v0.2 and v0.3 revise it in English; where they differ, this version supersedes the Hebrew v0.1.
 
 ---
 
-## 2. The problem and the user
+## 1. Summary
 
-**Product hypothesis: trust in a creator + context + fresh evidence shortens the choice.**
+**People already ask ChatGPT and Gemini where to eat. Their answers lean on Google listings and older web content, not on what food creators said last week. where2eat answers inside those assistants with fresh, creator-backed evidence: the place, who recommended it, what they said, when, and a link to the exact moment in the video.**
 
-### The problem being tested
+where2eat's agentic pipeline already watches creators, extracts restaurant mentions with timestamps and quotes, and publishes reviewed entries (about 346 places today, from מדברים מהבטן). This PRD covers only how that published data is served to people through ChatGPT and Gemini.
 
-Food information is scattered across videos, podcasts and short-form content. It is hard to find who tasted what, at which branch, when, and why it fits the current request. An old review may be excellent but says nothing about the current state. New content may be PR rather than a visit. The claim that Google or chat search is not up to date is Ido's problem hypothesis, not a comparative finding. The test is not the absence of competitors, but whether the product finds more relevant, fresher evidence or helps choose better. Because freshness is the pitch, it needs an operational target, not only a display rule: see the ingestion target in section 8.
+### Why now
 
-### Proposed first audience
+Both assistants now accept third-party apps built on the same standard, MCP (Model Context Protocol):
 
-- **The intent-driven diner.** Looking for a place by area, dish, style or occasion. Wants to see why the place fits without watching a full episode.
-- **The creator follower.** Trusts one or several creators and wants to search within their content, including disagreements and changes of position over time.
-- **The scene enthusiast.** Wants to know what opened and what is getting attention. A news feed is a separate track, not a replacement for visit-based review.
+- **ChatGPT** accepts reviewed app submissions, with identity verification and per-country availability settings. [1–3]
+- **Gemini** opened a preview of Google's Connected Apps Platform on 2026-10-28: MCP apps that run in Gemini and Google Search, registered in the Google Connected Console, with mandatory review and a ban on serving third-party ads through the integration. [4–5]
+
+One read-only MCP server can therefore serve both.
+
+### The claim to prove
+
+"Assistants don't know what creators said recently, and where2eat makes their answers better." The first half is Ido's hypothesis, not a measured finding. Stage 0 tests it cheaply before building (section 9).
+
+### Out of scope
+
+Content discovery, transcription, extraction, enrichment and publication review: these belong to the existing pipeline and its publication gate. The serving layer only reads what the pipeline has published. Also out of scope: bookings, payments, user accounts, a unified creator score, and any write access from the assistants.
+
+The demos for Gil Harel, Niv Gilboa, Yubi Yam, Daniel David and Carnivorim Originale are illustrations, not a partnership or a connected source.
+
+---
+
+## 2. Users and journeys
+
+- **Intent-driven diner.** Asks the assistant for a place by area, dish, style or occasion, and wants to know why it fits without watching a full episode.
+- **Creator follower.** Asks "where did [creator] eat recently?" or "what did they think of X?"
+- **Scene enthusiast.** Asks what's new or getting attention lately.
 
 ### Core journeys
 
-1. Question → constraint understanding → up to three proposed results → source passage → decision whether to watch or read more. The number of results is a UX proposal, not a platform requirement.
-2. Choose a creator → search their collection → restaurant or tour → relevant passage. The creator page also shows coverage boundaries, not only top content.
-3. One restaurant → timeline of sources → who was enthusiastic, who reserved judgment, and what changed. No mixing of opinions from different periods or branches.
-
-### Not a target user in the first stage
-
-Not a booking tool, not a business-management system for creators, and not a guide promising full coverage of every restaurant in the country. Overseas content can be included if it exists and is well identified, with no geographic coverage promise.
+1. "Where's good hummus near Tira?" → the assistant calls where2eat → up to three places, each with the creator, a short excerpt, the date and a link to the moment → the user opens the moment or the map.
+2. "Where did Medabrim MeHaBeten eat this month?" → recent mentions by publication date, newest first.
+3. "Is Abu Omar worth it?" → every mention of that place across creators and episodes, positive and negative, each dated, with no invented average.
 
 ---
 
-## 3. Scope and boundaries
+## 3. What we build
 
-*Everything listed here is a prioritization proposal unless marked as a chosen direction.*
+### R1 | A read-only MCP server
 
-### Must in the first version: search with evidence
+Hosted alongside the existing FastAPI API and reading the same published data. Proposed tools (names and shapes to settle in Stage 1):
 
-- **R1 | Natural search and filtering.** Hebrew, area, dish or style, one or more creators, and a publication range. The chosen interpretation and active constraints are displayed.
-- **R2 | A verifiable result.** Restaurant and branch, creator and speaker, dates, source type, a passage faithful to the source, and a link to the review moment. Details in sections 4–5.
-- **R3 | A multi-source restaurant page.** Separate reviews by source and date. Positive and negative opinions do not become an invented average.
-- **R4 | A creator page inside the site.** Identity and source link, the included collection, last update date, and basic filtering. Presentation does not imply sponsorship or partnership.
-- **R5 | No match, no fabrication.** A no-coverage message, a reason, and an option to change the filter. We do not complete an answer from general knowledge as if a review were found.
-- **R6 | Quality control and correction.** Manual publication of reviewed content, hiding a problematic passage, versions, and recording the correction source. No automatic publication in the proposed version.
+- **`search_restaurants`** — filters: city or area, cuisine, dish, creator, published after, tasted vs mentioned, limit (max 5). Returns places with evidence (R2).
+- **`get_restaurant`** — one place: details, map link, and every mention across creators and episodes, each with date, excerpt and link to the moment.
+- **`whats_new`** — mentions published in the last N days (default 30), optionally by city or creator, newest first.
+- **`list_creators`** — which creators are included, how many places each, and when each was last updated, so coverage limits are explicit.
 
-### Near-term next stage
+The assistant interprets the user's question and calls these tools. **where2eat pays no language-model cost per question:** the server only runs database queries.
 
-Read-only ChatGPT connection, richer creator comparison, tours and stops, and relatively-new news marking. The infrastructure for news and dates is included in the data model from the start, but a feed is not guaranteed in the first stage.
+### R2 | Every result carries its evidence
 
-### Not in the first version
+Restaurant name and city · creator (channel) and speaker if known · tasted vs mentioned · publication date of the source · a short excerpt · a link to the exact moment (`youtube.com/watch?v=…&t=…s`) · map link · rating where available. Most of this already exists in the data (`episode_mentions`: `host_quotes`, `verified_quote`, `timestamp_seconds`, `mention_level`, `speaker`; `episodes`: `channel_name`, `published_at`).
 
-Automatic trend detection, alerts, learning personalization, mandatory accounts, payments, bookings, a unified creator rating, video clipping and storage, continuous ingestion from every network, or a creator-recruitment campaign.
+### R3 | Quote versus summary
 
-### Baseline and dependencies
+An excerpt is returned as a **quote** only when it was checked against the audio (`verified_quote`, added in PR #287). Otherwise it is returned as a **summary**, explicitly labeled. Tool descriptions instruct the assistant to attribute every claim to the named creator, keep summaries out of quotation marks, and always include the link. We cannot fully control how an assistant phrases its answer, so the structured fields must make the right answer the easy one.
 
-Per the project context, the site already shows an archive of Medabrim MeHaBeten, mentions and timestamp links, alongside place information. This is a planning starting point, not a live-service review. The data, search, permissions and API must be re-checked before estimating work or promising an external client. The site already collects usage analytics (Vercel Analytics): what visitors search, filter and open today is the first demand evidence and should be read in Stage 0, before building new search.
+### R4 | No match, no invention
 
----
+When nothing in the catalog matches, the tool returns an explicit "no coverage" result with the reason (city not covered, creator not included, nothing in the date range). It never returns the nearest place that fails a hard filter.
 
-## 4. Search and result behavior
+### R5 | Interface
 
-*Search that returns why, not only where.*
+Baseline: structured results that both assistants can render as text with links. Next: ChatGPT result cards (Apps SDK supports cards and carousels; embedding third-party frames such as YouTube players is restricted, so cards link out). [1] Card support in Gemini is to be checked during the preview.
 
-### Input and dialog
+### R6 | Only published data
 
-Usage example for illustration: searching for meat in the Sharon area by two chosen creators. The system extracts area, topic and sources. If the area or branch is ambiguous and changes the result, ask a short question. No clarification is required for every soft preference.
-
-- **Hard constraints.** A chosen creator, an explicit area and a mandatory time range filter the candidates. No silent deviation to fill a list. If visits were requested, news and mere mention are not a substitute.
-- **Soft preferences.** Style, atmosphere and dish fit affect ordering only when evidence exists. Budget remains unknown if no dated price is given in the source.
-
-### Proposed retrieval and ranking order
-
-Candidate filtering → name/location/dish matching → fit to the question's meaning → evidence strength → relevant freshness → source diversity. Weights are not set before testing. A new publication alone does not make a restaurant a better fit, and a mention does not get the weight of a tasting.
-
-### Result card
-
-Name and branch • why it fits the question • who said it and who published it • dish and context • publication date and visit date, or marked unknown • a short quote or a labeled summary • content type • commercial disclosure as it appears in the source • a button to the review moment. An image is an improvement, not a condition for understanding the evidence. A generated summary is not shown in quotation marks. On a general where-to-eat request, a positive recommendation requires suitable positive evidence; on a request for reviews of a place, showing a negative review is allowed and even desirable.
-
-### Edge cases and acceptance criteria
-
-- **A1.** Choosing a creator returns only their sources. Removing the filter is a visible user action.
-- **A2.** No hard match: a no-match message and an option to widen, with no place that fails the conditions.
-- **A3.** A blocked source link or missing timestamp: no promise of watching the moment. Show the limitation and the available source link, or hide the passage if it cannot be verified.
+The server serves only entries the pipeline has published. Rejected, review-held and draft entries are never exposed. Hidden restaurants stay hidden.
 
 ---
 
-## 5. Trust is a product requirement
+## 4. Freshness
 
-*Source, speaker, branch and context before persuasive phrasing.*
+Freshness is the pitch, so every result shows the source's **publication date**, and "new" means published within the last 30 days, labeled "by publication date". A new video about an old visit is not a "new visit". Visit dates are rarely stated in podcasts; the field can be returned when known but nothing is built on it in v1. Opening hours, prices, kashrut and similar details are returned with their source and date, never as current fact.
 
-### The unit of trust: a verified source passage
-
-Every claim rests on an identified source and time range. A quote requires checking against the audio itself, including the surrounding sentences. Automatic transcription is raw material, not proof the speaker said the phrasing. Do not cut a reservation, a joke, another person's quote, or conditions that change the meaning.
-
-- **Who said it.** Speaker, channel or publishing creator and their roles are kept separately. The content editor does not attribute the host's opinion to the guest, or vice versa.
-- **What happened.** Separation between a first-hand tasting or visit, a mention, news reporting, and a quoted third-party opinion. A tasting is marked only with clear evidence; otherwise the state is unknown.
-- **Where.** Matching to a branch, not only a chain name. An unresolved identification stays in review and is not automatically linked to a similarly named restaurant.
-- **Which position.** The opinion is kept about the specific dish or experience. Do not infer a blanket restaurant recommendation from one dish, or invent a score that was never given.
-
-### Quote versus summary
-
-A quote is phrasing verified against the audio, with enough context to understand. A summary is our wording, marked as such and linked to the evidence. When phrasing or meaning cannot be verified, do not publish a quote. Keep the passage in review, or show limited information without unsupported opinion attribution.
-
-**This split is also the scaling lever.** Checking audio for every passage does not scale for one editor. Proposed default for v1: a card shows a labeled summary checked against the transcript, plus the link to the moment; a direct quote in quotation marks appears only where the audio check was done. Audio checks go first to the passages that get the most traffic. The summary check is still a human review of meaning, branch and attribution; it just does not require listening.
-
-### Context-sensitive information
-
-Kashrut, allergens, hours, opening, price and availability do not become current just because a creator mentioned them. Show source and date, or unknown. On a request where this information is a necessary condition, do not promise a fit without suitable verification.
-
-### Quality gate per passage
-
-**A4:** A human reviewer can reconstruct from the card the source, speaker, place and context. An error in quote meaning, branch or visit type blocks publication. An error report allows hiding and correcting even without waiting for re-ingestion of a full episode.
+How fast new episodes reach the catalog is the pipeline's job. The serving layer exposes `last_updated` per creator (via `list_creators`) so staleness is visible rather than hidden.
 
 ---
 
-## 6. What's new, and what's actually a trend
+## 5. Content use without prior permission
 
-*An explicit freshness model, not a "new" tag on old content.*
+Ido has decided not to wait for creator permission. Serving excerpts inside third-party assistants makes these controls more important, not less. They are requirements:
 
-### Four separate times
-
-- **Visit time.** When the experience happened. Kept only if known, with a precision level such as day or month. Never inferred from the upload date. Podcasts rarely state it, so for most existing mentions it will be unknown: store the field, but v1 filters and display are built on publication time.
-- **Publication time.** When the source was published. Can be filtered even when the visit time is missing, as long as the interface says so.
-- **Event time.** For news such as an opening or change: when the change happened or is expected, and the source for it.
-- **Check and ingestion time.** When the information was entered and when verified. These are operational times, not proof the visit or event is fresh.
-
-### Proposed display rules
-
-Instead of a vague "up to date" tag, show an explicit date. If showing "relatively new": the proposed default is publication within the last 30 days, with the text "by publication date". A "visits from the last month" filter includes only visits whose date is known and meets the condition. A new video about an old visit does not get a "new visit" label. Later editing does not reset the age of the experience. Business status changed or a conflicting source: show a context warning, and do not treat the old review as current operational information.
-
-### News is a different content track
-
-An opening, menu change or relocation is shown as a news item with a source, event date and verification level. An opening item is not a recommendation that the food was checked, and a commercial publication is not an independent visit.
-
-### Trends: a later experiment, not an MVP promise
-
-Candidate rule for testing: at least three separate creator sources on the same topic or place within 30 days, after merging repeat publications and marking dependency or a shared campaign. Even then the label is "rising in the catalog's sources", not "a national trend". Source count and time window are visible.
-
-**A5:** A single source does not generate a trend tag. Absence of commercial disclosure is not proof of independence, and several videos by the same creator are not several independent sources.
+- **Excerpts, not copies.** Short excerpts only (proposed: up to two sentences per mention). Never full transcripts, never re-hosted video, audio or creator images.
+- **Attribution and the link, always.** Every result names the creator and links to the original moment. The product sends viewers to the creator.
+- **No implied partnership.** Creator results and pages say the creator is not affiliated unless they agreed. No creator names, faces or content in where2eat marketing without consent.
+- **Fast removal.** A visible removal contact; a creator's request is honored within 72 hours, and removal takes effect in the assistants immediately because the server reads live data.
+- **Notify, don't ask.** Tell each creator when their content is included.
+- **Legal check before public submission.** A short consultation with an Israeli IP lawyer on fair use (Copyright Act 2007, section 19) for this excerpt-and-link format, before submitting to the public directories in Stage 2.
 
 ---
 
-## 7. Proposed data model
+## 6. Security and cost
 
-*The data must preserve the distinctions even if the card shows only some of them.*
-
-### Core entities
-
-- **Creator and speaker.** Stable ID, display name, channels and original sources. A speaker-to-publisher link; collection state: demo, reviewed, published. No "partner" field switched on by mere recording.
-- **Source item.** ID and source URL, platform, creator, title, language, publication time, ingestion time, check time, availability, commercial disclosure and the disclosure text if present. Content use and display terms are recorded as needed.
-- **Place and branch.** Internal ID, original name and aliases, city, country, address and branch. An external ID is a matching aid, not a substitute for evidence. Identification state: verified, partial or unresolved.
-- **Mention or review.** Links to source, speaker and branch; start and end in seconds; raw text, verified quote and summary separately; dish, topic, position, experience type and visit time with precision and source.
-- **News item.** Event type, place, source, event date, publication time and verification status. No automatic conversion of a news item into a review.
-- **Quality control.** Review status, who checked and when, uncertainty reason, previous version, correction and hiding. A numeric confidence score does not replace these fields.
-
-### Integrity rules
-
-**A6:** A published passage must have an accessible source at check time, speaker attribution, a valid time range and a place identified at display level. An unknown field stays empty with a reason, not filled with a guess. A passage with unresolved branch identification can be kept internally but not appear as a definite result. Many reviews link to the same place without deleting a source or an opinion. Duplicate merging is reversible and documented. A re-uploaded video does not produce a new visit. A tour is an ordered collection of stops linked to passages, not a new source replacing them.
-
-### Compatibility with the current state
-
-The entities are a proposed logical model. No new database, vector engine, model provider or ingestion system was chosen. A fit check against the existing structure precedes any change or migration estimate.
+- **Read-only and isolated.** The MCP server reads published data and nothing else. No admin data, no write paths, no secrets exposed to the assistant.
+- **Fix open write endpoints first.** Publishing the API to two assistant platforms draws attention to it. PR #286 (login required on restaurant writes and paid analysis routes) must be merged before Stage 2.
+- **Rate limits.** Per-client and global request limits on the MCP endpoint.
+- **Cost.** Database queries cost close to nothing, and the language model runs on the assistant's side. The real cost risk is **photos**: Google Places photos served through `/api/photos` cost about $0.007 per uncached load, and that proxy is never budget-blocked. Inside a popular assistant this could exceed the $10/month cap on its own. v1 returns at most one image per result, prefers curated venue images (PR #283) and existing image URLs, and gives assistant traffic a separate photo budget that falls back to no image.
 
 ---
 
-## 8. Operations and content ingestion
+## 7. Measuring it
 
-*Measured expansion, with a responsible editor and no publication without review.*
+### Evaluation set (before submission)
 
-### Proposed pilot flow
+40 fixed questions, run in both ChatGPT and Gemini: 15 dish or area questions, 10 with creator and date filters, 5 about places with conflicting opinions, and 10 edge cases (duplicate names, wrong branch, mention-only, unverified kashrut, no coverage). Expected answers are prepared from the data in advance.
 
-1. Choose a small source list and notify its creators (see "Content use without prior permission") → 2. Transcribe or obtain a transcript → 3. Extract candidates and timestamps → 4. Identify place and branch → 5. Listen to context and check attribution → 6. Preview → 7. Manual approval to publish → 8. Check result and link in the product.
+### Acceptance gates
 
-The existing manual ingestion remains the default. Future automation can suggest candidates for review, but running a standing process or automatic publishing requires a separate decision. No commitment to collect every new piece of content from every creator.
+- **Trust.** Every quote shown is a checked quote; zero wrong attributions, branches or tasted/mentioned swaps in the sample.
+- **Constraint discipline.** Hard filters are always honored; every expected no-coverage case returns "no coverage", not an invented place.
+- **Relevance.** In at least 80% of answerable questions, one of the first three results is judged useful.
+- **Links.** Every link opens the right video within about 5 seconds of the relevant moment.
 
-**Proposed freshness target:** a new episode from an included creator is live, with reviewed summaries, within 3 days of publication. Measure it per episode. If the target cannot be met manually, that is the evidence for (or against) assisted ingestion, not an assumption.
+### Metrics
 
-### Responsibilities and work queue
-
-- **Ido as product owner.** Approves the pilot collection, priorities, budget and stage gates. This is a proposed role division, not an already-assigned task.
-- **Proposed content editor.** Checks audio, branches and passages; manages an unresolved queue and corrections. In practice this is Ido until measured otherwise. Stage 0 times two numbers: minutes per reviewed episode (summaries) and minutes per audio-checked quote. Those numbers set the catalog size and freshness target that are actually sustainable.
-- **Proposed technical owner.** Checks search fitness, permissions, source availability, measurement and hide/restore capability. No assumption that all capabilities exist.
-
-### Correction and unavailable content
-
-A fault report is tied to a passage ID. On a substantive complaint about attribution or branch, stop showing the passage until reviewed; other sources on the place may stay. A removed or restricted video is unavailable for viewing: do not promise a working link and do not replace it with an unauthorized copy. Keep internal documentation for review needs per a policy to be set.
-
-### Coverage and commercial disclosure
-
-A creator page says which items are included and when updated, without the impression this is all the creator's content. Disclosure states: marked commercial collaboration, no disclosure found in the checked source, or not checked. No "independent" label based only on absence of disclosure. No new video or image project is needed to test the search's value.
-
-### Content use without prior permission
-
-Per the owner decision in section 1, content is used before creators agree. The following controls are requirements, not suggestions:
-
-- **Excerpts, not copies.** Show short excerpts only (proposed: up to two sentences per passage). Never publish full transcripts, and never re-host video, audio or creator images.
-- **Attribution and a link to the moment, always.** Every passage names the creator and links to the original at its timestamp. The product sends traffic to the creator; it does not replace watching.
-- **No implied partnership.** Creator pages say the creator is not affiliated with where2eat unless they have agreed. No creator names, faces or content in where2eat marketing without their consent.
-- **Fast removal.** A visible removal contact on every creator page. A creator's request to remove or limit their content is honored within 72 hours, without argument.
-- **Notify, don't ask.** Tell each creator when their content is included, with a link to their page and the removal contact. This costs little and turns a surprise into a conversation.
-- **Platform terms.** Transcripts come from YouTube captions; YouTube's terms limit automated access. Keep ingestion manual and low-volume, and do not build a pipeline whose viability depends on scraping at scale.
-- **Legal check before public multi-creator launch.** Not a blocker for building, but recommended before Stage 2: a short consultation with an Israeli IP lawyer on fair use (Copyright Act 2007, section 19) for this specific excerpt-and-link format.
+Tool calls per day by platform and tool · no-coverage rate (and which cities, dishes and creators people ask for that we lack) · links opened to source moments (tracked with campaign tags in the site's existing analytics) · cost per 1,000 tool calls, including photos. The no-coverage list is also the best signal for which creators the pipeline should add next.
 
 ---
 
-## 9. The same catalog, in ChatGPT too
+## 8. Launch plan
 
-*A proposed channel after the core is proven, not a separate content product.*
-
-### The proposed experience
-
-Question in conversation → search the permitted collection → structured results with creator, passage and dates → short cards and a link to the source moment → option to change constraints. Same result and same trust rules on the site and in chat. Even without card display, return clear evidence and links.
-
-### What is known and what is not yet
-
-OpenAI documentation checked on 2026-11-20 describes interfaces with cards and carousels. Embedding third-party frame content is limited and subject to review. Therefore the proposed base version opens the source via a link and does not promise in-conversation YouTube playback. Clipping and storing video segments is not included. [1–2]
-
-**Cost note.** On the site, natural-language search means paying for a model call per query. In a ChatGPT connector, ChatGPT interprets the question on the user's side and the server only answers structured filter queries, which cost almost nothing. Under a $10/month cap this may make the connector cheaper than site search, so the order between them is decided by measured cost per query (Stage 1), not fixed in advance.
-
-Ido's account eligibility, distribution path, regional availability and publication approval are unverified. Before committing to the channel, check them separately against the relevant documentation and account. A demo on a private connection is not proof of public availability. [3]
-
-### Proposed logical service contract
-
-Input: question, filters, constraints and result limit. Output: stable result IDs, request interpretation, constraint matching, evidence with source and time range, dates, uncertainty and coverage state. An error or no-match result is a structured state, not text that looks like a recommendation. Read-only actions. No data changes, admin-interface exposure or browser secrets. Re-check how an authorized external client calls the API, including source limits, authentication, quotas and cost control. Do not bypass an existing protection to make a demo work.
-
-### Proposed non-functional requirements
-
-Experiment target: 95% of site requests complete within 5 seconds in the test environment with documented concurrency, excluding ChatGPT processing time or opening an external source. This is a measurement target, not a measured performance. Required: RTL, mobile and keyboard use, loading and failure states, limited request rate, and minimal usage logging without unneeded user details.
-
----
-
-## 10. How we'll know it works
-
-*Quality gates before growth, and usage metrics before claiming market fit.*
-
-### Proposed evaluation set, pre-pilot
-
-Prepare 40 fixed queries from the chosen collection: 15 dish-or-area questions, 10 with creator and time filters, 5 with conflicting opinions, and 10 edge cases such as a duplicate name, wrong branch, mention-only, unverified kashrut and no match. Prepare expected answers from the audio in advance, separately from the search output.
-
-### Proposed acceptance gates
-
-- **Trust.** 100% of quotes shown in the sample are checked against the audio. Zero material errors in attribution, branch, meaning and tasting classification. Such a failure blocks passage and requires correction and re-checking.
-- **Constraint discipline.** Every request with a hard filter is honored; in every expected no-match case the system avoids an invented recommendation. Filter changes do not happen silently.
-- **Relevance.** In at least 80% of questions answerable from the collection, at least one of the first three results is judged useful by documented human judgment. This is a proposed threshold, not an existing achievement.
-- **Source and time.** All sample links open at the right source and right moment; the proposed target is a deviation of up to 5 seconds from the start of the relevant sentence. Publication and visit dates are not swapped.
-
-### Value testing with people
-
-Proposal: 5–8 users, with their own real food questions and a comparison to their usual search method. Run it on the full existing catalog, not a 20–30 place sample: with a tiny catalog most real questions hit no coverage, and the test measures catalog size instead of search value. Measure whether they found a fitting place, whether they understood why, and whether the evidence changed the decision. Separate search failure from coverage failure. Do not infer demand from liking a demo.
-
-### Metrics to collect
-
-Query → result with evidence → source opening → report that a decision was made. Measure separately: no-match search, filter correction, time to choice, source faults and return usage. A click alone is not proof of value. No retention target set yet because there is no baseline. Every run also records QA time per item, ingestion cost, query cost and image cost. Test-set success rate, cost and fault documentation are attached to every expansion decision.
-
----
-
-## 11. Launch plan and budget
-
-*Progress by proof, not by a feature list.*
-
-### Proposed stages and gates
-
-- **Stage 0 | Feasibility check (about one week).** Map existing data and capabilities, read current usage analytics, time one reviewed episode and one audio-checked quote, and estimate cost per query. Exit: gap list, editing-time numbers, test collection and scope decision. No paid infrastructure is needed to approve a document.
-- **Stage 1 | Website pilot on the existing catalog.** Creator, area, dish and date filters, plus a model step that turns a question into those filters, over the existing ~346 places. Result cards show why the place fits and the jump to the moment, with the content-use controls from section 8 in place. Exit: passing the quality gates and user testing, and a measured cost per query. One creator does not prove a multi-creator experience.
-- **Stage 1b | Second creator.** Add one more creator, notified per section 8, once Stage 1 passes. This is where the multi-creator claim is tested.
-- **Stage 2 | ChatGPT.** Read-only connection to the same catalog, after checking API and distribution fitness; may move ahead of site search if Stage 1 shows it is cheaper per query. Exit: the same trust checks, usage and cost measurement on the channel. Public exposure is a separate decision.
-- **Stage 3 | Coverage and news.** Expand only if value and cost justify it. Examine tours, a news feed and a trends experiment separately; do not enable unsupervised ingestion by default.
-
-### Economic rule
-
-The project's existing work frame is up to $10 per month in total list-price cost, even if part of the cost is covered by credits. This is not approval to raise the cap. Ongoing expenses and cap protection are not verified within this document; do not infer that budget remains available.
-
-Monthly cost = existing infrastructure + ingestion and analysis + search or answer generation + information and images + other components. Human editing time is measured separately; it does not disappear because there is no invoice. There is currently no measured cost per query or per episode for a reliable forecast.
-
-Before a public connection, proposed: counting every billing path, quotas, an alert before the cap and a safe stop on new requests that may cost money. Caching and a fallback image may help, but choosing and implementing them requires a separate decision. A stopped request shows an explanation, not an invented answer.
+- **Stage 0 | Checks (about one week).**
+  - Test the claim: take restaurants from the last month's episodes and ask ChatGPT and Gemini about them. Record what they know and what they miss.
+  - Verify eligibility: ChatGPT app submission (identity verification, privacy policy, availability in Israel) and Google Connected Apps preview access.
+  - Merge PR #286.
+  - Exit: evidence for or against the claim, confirmed access on at least one platform.
+- **Stage 1 | Private build.** The MCP server and four tools, tested privately (ChatGPT developer mode, Google Connected Console testing). Run the evaluation set in both. Exit: gates in section 7 pass, cost per 1,000 calls measured.
+- **Stage 2 | Public submission.** Legal check (section 5), then submit to the ChatGPT directory and the Gemini/Search preview. Exit: approved and live on at least one platform.
+- **Stage 3 | Better presentation and coverage.** ChatGPT cards, Gemini presentation if supported, and more creators prioritized by the no-coverage list.
 
 ### Main risks
 
-Small coverage: show the boundaries. Expensive QA: measure before expansion, and default to transcript-checked summaries. Creator objection or takedown: honor within 72 hours, keep excerpts short and linked. Platform terms: keep ingestion manual and low-volume. Wrong branches and attribution: block the passage. A campaign that looks like a trend: keep dependency and disclosure. Expensive or unavailable external connection: keep the core useful on the site. No timeline or return promise before these checks.
+- **The claim is false:** if assistants already know recent creator picks, the value narrows to attribution and the link to the moment. Stage 0 finds out first.
+- **Platform rejection or limited regions:** keep the server platform-neutral, since one MCP server serves both.
+- **Wrong attribution inside an assistant:** quote vs summary labels, structured fields and the evaluation gates.
+- **Creator objection:** 72-hour removal, short excerpts, notify first.
+- **Photo cost:** capped image use and a separate photo budget.
 
 ---
 
-## 12. Open decisions and sources
+## 9. Open decisions
 
-*What is needed to turn the draft into an approved work plan.*
-
-### Decisions for Ido, before development
-
-1. **Version boundary.** Recommendation: website first, ChatGPT connection as a follow-on gate; news and trends do not block proving the search.
-2. **The pilot collection.** Recommendation: the existing מדברים מהבטן catalog first, then one second creator in Stage 1b. Decided: no waiting for permission; creators are notified and the section 8 controls apply. A demo still does not mean consent or partnership, and nothing may present it that way.
-3. **Operational capacity.** Who checks audio, and how much monthly time can be dedicated? Stage 0 measures minutes per episode and per quote; the 3-day freshness target and catalog size follow from those numbers.
-4. **Acceptance gates.** Approve or change the proposed 40-question set, relevance threshold, time target and trust gates.
-5. **Budget and distribution.** Approve a plan that respects the existing frame after measurement, and check account, access and distribution path before committing to ChatGPT.
+1. **Platform order.** Recommendation: build once, submit to whichever approves first; don't sequence by assumption.
+2. **Excerpt length and image policy** inside assistants (proposed: two sentences, one image per result).
+3. **Unchecked excerpts:** serve labeled summaries (recommended), or serve only audio-checked quotes and accept fewer results.
+4. **Budget:** keep $10/month total including assistant traffic, or set a separate cap for it once Stage 1 measures real cost.
 
 ### What counts as a finished first version
 
-The user can search, understand according to whom and why the result came back, open the source moment, and identify limitations and dates. The product does not invent a recommendation when there is no coverage. The collection is correctable, the evaluation gates passed, and operating cost was measured within an approved frame. Without these, a pretty interface is not a ready launch.
+A user in ChatGPT or Gemini asks where to eat and gets places from where2eat with who said it, when, a correctly labeled excerpt and a working link to the moment. No coverage is stated plainly. Creators are attributed and can be removed within 72 hours. Cost per 1,000 calls is measured and within the agreed cap.
 
-### Document basis
+---
 
-The direction and boundaries are based on a WhatsApp conversation with Ido from 2026-11-20, mainly choosing integration into where2eat, creator-based search, review moments, freshness and the PRD request. The site state and budget are based on the project context provided, not a live review of the product or account at writing time. The requirements, stages, measurement thresholds and logical model are proposals in this document. Demand, creator collaboration, advantage over alternatives and unit economics are unverified.
-
-### External documentation checked on 2026-11-20
+## Sources (checked 2026-11-20)
 
 1. OpenAI: result interfaces, cards, carousels and embedding limits. <https://developers.openai.com/apps-sdk/build/chatgpt-ui>
-2. OpenAI: interface guidelines and in-conversation card display. <https://developers.openai.com/apps-sdk/concepts/ui-guidelines>
-3. OpenAI Help: custom connectors in ChatGPT. Separate verification required for this product's eligibility and distribution. <https://help.openai.com/en/articles/12584461-creating-custom-mcp-apps-in-chatgpt>
+2. OpenAI: developers can now submit apps to ChatGPT. <https://openai.com/index/developers-can-now-submit-apps-to-chatgpt/>
+3. OpenAI: upload and submit (identity verification, country availability). <https://developers.openai.com/plugins/deploy/submission>
+4. Google Connected Apps Platform preview: MCP apps in Gemini and Search (secondary report). <https://ppc.land/google-opens-preview-for-third-party-apps-inside-search-and-gemini/>
+5. Google Connected Apps Platform preview (secondary report). <https://dev.to/alifar/google-connected-apps-platform-preview-brings-one-mcp-path-to-search-and-gemini-c49>
+
+Sources 4–5 are secondary reports; confirm the details against Google's own documentation in Stage 0.
 
 ---
 
 ## Change log
 
-**v0.2 (2026-11-20).** Revised after review:
-- Pilot runs on the existing catalog (~346 places, one creator), with a second creator as Stage 1b, instead of a 20–30 place sample.
-- Owner decision recorded: content is used without waiting for creator permission; creators are notified, and section 8 adds required content-use controls (short excerpts, attribution and link, no re-hosting, no implied partnership, 72-hour removal, legal check before Stage 2).
-- Transcript-checked summaries are the v1 default; audio-checked quotes are used where verified, prioritized by traffic.
-- Freshness target added: new episodes live within 3 days. Stage 0 times editing per episode and per quote.
-- Site search vs ChatGPT order is decided by measured cost per query.
-- Visit time is stored but v1 is built on publication time.
-- Existing usage analytics are read in Stage 0 as the first demand evidence.
+**v0.3 (2026-11-20).** The product is the serving layer only:
+- Harvesting (monitoring, extraction, publication review) is out of scope; it is solved by the existing agentic pipeline.
+- ChatGPT and Gemini are the primary channels, served by one read-only MCP server with four tools. The website is where links land.
+- Removed the site-search pilot, editorial time measurements, ingestion freshness targets and ingestion data model from v0.2.
+- Added: Gemini Connected Apps preview, cost model (no per-question model cost; photos are the risk), security prerequisites (PR #286), and Stage 0 test of the "assistants are stale" claim.
+- Kept: evidence rules, quote vs summary, no invented answers, content-use controls, evaluation gates.
+
+**v0.2 (2026-11-20).** Review recommendations and the decision to use content without waiting for creator permission.
 
 **v0.1 (2026-11-20).** Translated from the Hebrew original.
