@@ -4,7 +4,7 @@
 **Version:** 0.1
 **Date:** November 20, 2026
 **Product owner:** Ido Kazma
-**Status:** Draft — a proposal, not approved for development
+**Status:** Draft. A proposal, not approved for development.
 
 > Translated from the Hebrew PRD (v0.1) delivered on 2026-11-20. The Hebrew original is the source of record.
 
