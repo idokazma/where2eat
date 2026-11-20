@@ -1,10 +1,11 @@
 # PRD: Where to eat, and according to whom?
 
 **where2eat • Fresh restaurant search that returns the review moment**
-**Version:** 0.1
-**Date:** November 20, 2026
-**Product owner:** Ido Kazma
-**Status:** Draft. A proposal, not approved for development.
+
+- **Version:** 0.1
+- **Date:** November 20, 2026
+- **Product owner:** Ido Kazma
+- **Status:** Draft. A proposal, not approved for development.
 
 > Translated from the Hebrew PRD (v0.1) delivered on 2026-11-20. The Hebrew original is the source of record.
 
