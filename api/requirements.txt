@@ -27,3 +27,6 @@ python-dotenv>=1.0.0
 
 # Validate and re-encode curated venue uploads
 Pillow>=10.4.0,<13
+
+# Read-only MCP server for ChatGPT/Gemini (api/mcp_server.py)
+mcp>=1.20,<2
