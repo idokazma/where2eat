@@ -90,6 +90,8 @@ export interface RestaurantMention {
   mention_level?: string | null;
   episode_title?: string | null;
   youtube_url?: string | null;
+  channel_name?: string | null;
+  speaker?: string | null;
 }
 
 export interface EpisodeInfo {

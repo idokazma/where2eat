@@ -874,8 +874,9 @@ class Database:
             try:
                 cursor.execute('''\
                     SELECT em.restaurant_id, em.video_id, em.timestamp_seconds,
-                           em.timestamp_display, em.mention_level,
-                           e.title AS episode_title, e.video_url AS ep_video_url
+                           em.timestamp_display, em.mention_level, em.speaker,
+                           e.title AS episode_title, e.video_url AS ep_video_url,
+                           e.channel_name AS channel_name
                     FROM episode_mentions em
                     LEFT JOIN episodes e ON em.episode_id = e.id
                     WHERE em.restaurant_id IS NOT NULL
