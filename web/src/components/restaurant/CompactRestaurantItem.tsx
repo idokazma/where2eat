@@ -73,6 +73,10 @@ export function CompactRestaurantItem({
             )}
           </div>
           <div className="flex items-center gap-1.5 text-xs text-[var(--color-ink-muted)] mt-0.5">
+            {restaurant.episode_info?.channel_name && (
+              <span className="truncate">{restaurant.episode_info.channel_name}</span>
+            )}
+            {restaurant.episode_info?.channel_name && restaurant.location?.city && <span>·</span>}
             {restaurant.location?.city && (
               <span className="flex items-center gap-0.5">
                 <MapPin className="w-3 h-3" />

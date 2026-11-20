@@ -363,6 +363,11 @@ export default function RestaurantDetailPage() {
                 צפה בכל הפרק ←
               </Link>
             )}
+            {restaurant.episode_info?.channel_name && (
+              <span className="text-sm text-[var(--color-ink-muted)]">
+                {restaurant.episode_info.channel_name}
+              </span>
+            )}
           </div>
         )}
 

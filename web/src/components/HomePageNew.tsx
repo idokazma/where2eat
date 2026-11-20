@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Search, Shuffle, X } from 'lucide-react';
 import { Restaurant, getCoordinates } from '@/types/restaurant';
 import { PageLayout } from '@/components/layout';
-import { FilterBar, LocationFilter } from '@/components/filters';
+import { FilterBar, LocationFilter, CreatorFilter } from '@/components/filters';
 import { DiscoveryFeed } from '@/components/feed';
 import { PageLoadingSkeleton } from '@/components/ui/skeleton';
 import { useLocationFilter } from '@/contexts/location-filter-context';
@@ -57,6 +57,9 @@ export function HomePageNew() {
   // Search (instant, client-side)
   const [searchQuery, setSearchQuery] = useState('');
 
+  // Creator/channel filter (client-side)
+  const [selectedCreator, setSelectedCreator] = useState<string | null>(null);
+
   // Feeling Lucky — shuffle seed (null = default order, number = shuffled)
   const [shuffleSeed, setShuffleSeed] = useState<number | null>(null);
 
@@ -100,7 +103,21 @@ export function HomePageNew() {
   // Reset render count when filters change
   useEffect(() => {
     setRenderCount(RENDER_BATCH);
-  }, [searchQuery, locationFilter.mode, locationFilter.city, locationFilter.neighborhood]);
+  }, [searchQuery, selectedCreator, locationFilter.mode, locationFilter.city, locationFilter.neighborhood]);
+
+  // Distinct creators across episodes and per-mention attribution
+  const creators = useMemo(() => {
+    const names = new Set<string>();
+    for (const r of allRestaurants) {
+      const main = r.episode_info?.channel_name?.trim();
+      if (main) names.add(main);
+      for (const m of r.mentions ?? []) {
+        const cn = m.channel_name?.trim();
+        if (cn) names.add(cn);
+      }
+    }
+    return [...names].sort((a, b) => a.localeCompare(b, 'he'));
+  }, [allRestaurants]);
 
   // Stable references for memo deps
   const locMode = locationFilter.mode;
@@ -122,6 +139,15 @@ export function HomePageNew() {
           r.name_english?.toLowerCase().includes(q) ||
           r.cuisine_type?.toLowerCase().includes(q) ||
           r.host_comments?.toLowerCase().includes(q)
+      );
+    }
+
+    // Filter by creator/channel (episode or any of its mentions)
+    if (selectedCreator) {
+      result = result.filter(
+        (r) =>
+          r.episode_info?.channel_name === selectedCreator ||
+          (r.mentions ?? []).some((m) => m.channel_name === selectedCreator)
       );
     }
 
@@ -166,7 +192,7 @@ export function HomePageNew() {
     }
 
     return result;
-  }, [allRestaurants, searchQuery, locMode, locCity, locNeighborhood, locLat, locLng, settings.showOnlyIsrael, shuffleSeed]);
+  }, [allRestaurants, searchQuery, selectedCreator, locMode, locCity, locNeighborhood, locLat, locLng, settings.showOnlyIsrael, shuffleSeed]);
 
   // Slice for progressive rendering
   const visibleRestaurants = useMemo(
@@ -251,6 +277,11 @@ export function HomePageNew() {
         </div>
         <FilterBar>
           <LocationFilter />
+          <CreatorFilter
+            creators={creators}
+            selected={selectedCreator}
+            onSelect={setSelectedCreator}
+          />
           <div className="flex items-center shrink-0">
             <button
               onClick={handleShuffle}

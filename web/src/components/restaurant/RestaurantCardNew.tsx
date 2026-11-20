@@ -3,7 +3,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import Image from 'next/image';
 import useEmblaCarousel from 'embla-carousel-react';
-import { Heart, Star, Play, MapPin, ExternalLink, Camera, Calendar, ChevronLeft, Instagram } from 'lucide-react';
+import { Heart, Star, Play, MapPin, ExternalLink, Camera, Calendar, ChevronLeft, Instagram, Youtube } from 'lucide-react';
 import { Restaurant } from '@/types/restaurant';
 import { EpisodeBadge } from './EpisodeBadge';
 import { MentionLevelBadge } from './MentionLevelBadge';
@@ -78,6 +78,7 @@ export function RestaurantCardNew({
   const [showVideo, setShowVideo] = useState(false);
 
   const videoUrl = restaurant.episode_info?.video_url;
+  const channelName = restaurant.episode_info?.channel_name;
   const embedUrl = videoUrl ? getYouTubeEmbedUrl(videoUrl, restaurant.mention_timestamp_seconds) : null;
   const extraMentions = (restaurant.mentions ?? []).filter(
     (m) => m.youtube_url && !(m.video_id === restaurant.episode_info?.video_id && (m.timestamp_seconds ?? null) === (restaurant.mention_timestamp_seconds ?? null))
@@ -295,11 +296,22 @@ export function RestaurantCardNew({
           </div>
         )}
 
-        {/* Episode date + new badge */}
-        {formattedDate && (
+        {/* Creator + episode date + new badge */}
+        {(channelName || formattedDate) && (
           <div className="flex items-center gap-1.5 text-xs text-[var(--color-ink-muted)] mt-0.5">
-            <Calendar className="w-3 h-3" />
-            <span>{formattedDate}</span>
+            {channelName && (
+              <span className="flex items-center gap-1 font-medium text-[var(--color-ink)]">
+                <Youtube className="w-3.5 h-3.5 text-[var(--color-accent)]" />
+                {channelName}
+              </span>
+            )}
+            {channelName && formattedDate && <span>·</span>}
+            {formattedDate && (
+              <>
+                <Calendar className="w-3 h-3" />
+                <span>{formattedDate}</span>
+              </>
+            )}
             {isNew && (
               <span className="px-1.5 py-0.5 bg-emerald-500 text-white text-[9px] font-bold rounded leading-none">
                 חדש
@@ -429,7 +441,7 @@ export function RestaurantCardNew({
                   }}
                   className="text-white/80 text-xs font-medium hover:text-white text-right transition-colors"
                 >
-                  צפה · {m.episode_title || 'פרק'}{m.timestamp_display ? ` · ${m.timestamp_display}` : ''}
+                  צפה · {m.channel_name ? `${m.channel_name} · ` : ''}{m.episode_title || 'פרק'}{m.timestamp_display ? ` · ${m.timestamp_display}` : ''}
                 </button>
               ))}
             </div>
