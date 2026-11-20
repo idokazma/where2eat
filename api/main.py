@@ -847,7 +847,9 @@ async def lifespan(app: FastAPI):
     seed_initial_data()
     # Start pipeline scheduler
     _pipeline_scheduler = start_pipeline_scheduler()
-    yield
+    # Read-only MCP endpoint for ChatGPT/Gemini (no-op unless MCP_ENABLED=true)
+    async with mcp_server.lifespan(_mcp_server):
+        yield
     # Shutdown: stop scheduler and cleanup
     if _pipeline_scheduler:
         print("[SHUTDOWN] Stopping pipeline scheduler...")
@@ -929,7 +931,7 @@ class OriginGateMiddleware(BaseHTTPMiddleware):
     the origin check for server-to-server use.
     """
 
-    EXEMPT_PREFIXES = ("/health", "/docs", "/openapi.json", "/api/photos")
+    EXEMPT_PREFIXES = ("/health", "/docs", "/openapi.json", "/api/photos", "/mcp")
 
     async def dispatch(self, request: Request, call_next):
         path = request.url.path
@@ -1014,6 +1016,9 @@ async def budget_exceeded_handler(request: Request, exc: BudgetExceeded):
     return JSONResponse(status_code=429, content={"detail": str(exc), "estimate_only": True})
 
 app.include_router(venue_images_router)
+# Read-only MCP server at /mcp for ChatGPT and Gemini; off unless MCP_ENABLED=true.
+import mcp_server
+_mcp_server = mcp_server.mount(app)
 app.include_router(health_router)
 app.include_router(restaurants_router)
 app.include_router(analytics_router)
