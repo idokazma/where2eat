@@ -866,8 +866,25 @@ class Database:
                         # Merge in title/analysis_date from episode join
                         restaurant['episode_info'].setdefault('title', ep_title)
                         restaurant['episode_info'].setdefault('analysis_date', ep_analysis_date)
+                        # The row's denormalized channel_name is often empty; the episode knows it.
+                        if not restaurant['episode_info'].get('channel_name') and ep_channel_name:
+                            restaurant['episode_info']['channel_name'] = ep_channel_name
 
                 restaurants.append(restaurant)
+
+            if include_episode_info:
+                # Rows with no episode link at all: resolve the creator by video id.
+                missing = [r for r in restaurants
+                           if r.get('episode_info') and not r['episode_info'].get('channel_name')
+                           and r['episode_info'].get('video_id')]
+                if missing:
+                    cursor.execute("SELECT video_id, channel_name FROM episodes "
+                                   "WHERE channel_name IS NOT NULL AND TRIM(channel_name) != ''")
+                    channel_by_video = {row['video_id']: row['channel_name'] for row in cursor.fetchall()}
+                    for r in missing:
+                        name = channel_by_video.get(r['episode_info']['video_id'])
+                        if name:
+                            r['episode_info']['channel_name'] = name
 
             # Attach all episode mentions per restaurant (multi-mention support).
             # Additive: restaurants without mentions get an empty list.
