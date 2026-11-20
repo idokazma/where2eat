@@ -31,7 +31,7 @@ This document is not approval for code, a PR, deployment, creator outreach, new 
 
 Prove search-with-evidence first, on a small, curated collection on the website. Only after quality, usefulness and cost are measured, open a multi-creator pilot and the ChatGPT connection. Every stage has a gate, not an invented launch date.
 
-**Document map:** users and journeys ← scope ← search ← trust ← freshness ← data ← operations ← ChatGPT ← measurement ← launch and budget ← decisions and sources.
+**Document map:** users and journeys → scope → search → trust → freshness → data → operations → ChatGPT → measurement → launch and budget → decisions and sources.
 
 ---
 
@@ -51,9 +51,9 @@ Food information is scattered across videos, podcasts and short-form content. It
 
 ### Core journeys
 
-1. Question ← constraint understanding ← up to three proposed results ← source passage ← decision whether to watch or read more. The number of results is a UX proposal, not a platform requirement.
-2. Choose a creator ← search their collection ← restaurant or tour ← relevant passage. The creator page also shows coverage boundaries, not only top content.
-3. One restaurant ← timeline of sources ← who was enthusiastic, who reserved judgment, and what changed. No mixing of opinions from different periods or branches.
+1. Question → constraint understanding → up to three proposed results → source passage → decision whether to watch or read more. The number of results is a UX proposal, not a platform requirement.
+2. Choose a creator → search their collection → restaurant or tour → relevant passage. The creator page also shows coverage boundaries, not only top content.
+3. One restaurant → timeline of sources → who was enthusiastic, who reserved judgment, and what changed. No mixing of opinions from different periods or branches.
 
 ### Not a target user in the first stage
 
@@ -101,7 +101,7 @@ Usage example for illustration: searching for meat in the Sharon area by two cho
 
 ### Proposed retrieval and ranking order
 
-Candidate filtering ← name/location/dish matching ← fit to the question's meaning ← evidence strength ← relevant freshness ← source diversity. Weights are not set before testing. A new publication alone does not make a restaurant a better fit, and a mention does not get the weight of a tasting.
+Candidate filtering → name/location/dish matching → fit to the question's meaning → evidence strength → relevant freshness → source diversity. Weights are not set before testing. A new publication alone does not make a restaurant a better fit, and a mention does not get the weight of a tasting.
 
 ### Result card
 
@@ -198,7 +198,7 @@ The entities are a proposed logical model. No new database, vector engine, model
 
 ### Proposed pilot flow
 
-1. Choose a small source list with valid usage rights ← 2. Transcribe or obtain a transcript ← 3. Extract candidates and timestamps ← 4. Identify place and branch ← 5. Listen to context and check attribution ← 6. Preview ← 7. Manual approval to publish ← 8. Check result and link in the product.
+1. Choose a small source list with valid usage rights → 2. Transcribe or obtain a transcript → 3. Extract candidates and timestamps → 4. Identify place and branch → 5. Listen to context and check attribution → 6. Preview → 7. Manual approval to publish → 8. Check result and link in the product.
 
 The existing manual ingestion remains the default. Future automation can suggest candidates for review, but running a standing process or automatic publishing requires a separate decision. No commitment to collect every new piece of content from every creator.
 
@@ -224,7 +224,7 @@ A creator page says which items are included and when updated, without the impre
 
 ### The proposed experience
 
-Question in conversation ← search the permitted collection ← structured results with creator, passage and dates ← short cards and a link to the source moment ← option to change constraints. Same result and same trust rules on the site and in chat. Even without card display, return clear evidence and links.
+Question in conversation → search the permitted collection → structured results with creator, passage and dates → short cards and a link to the source moment → option to change constraints. Same result and same trust rules on the site and in chat. Even without card display, return clear evidence and links.
 
 ### What is known and what is not yet
 
@@ -263,7 +263,7 @@ Proposal: 5–8 users, with their own real food questions and a comparison to th
 
 ### Metrics to collect
 
-Query ← result with evidence ← source opening ← report that a decision was made. Measure separately: no-match search, filter correction, time to choice, source faults and return usage. A click alone is not proof of value. No retention target set yet because there is no baseline. Every run also records QA time per item, ingestion cost, query cost and image cost. Test-set success rate, cost and fault documentation are attached to every expansion decision.
+Query → result with evidence → source opening → report that a decision was made. Measure separately: no-match search, filter correction, time to choice, source faults and return usage. A click alone is not proof of value. No retention target set yet because there is no baseline. Every run also records QA time per item, ingestion cost, query cost and image cost. Test-set success rate, cost and fault documentation are attached to every expansion decision.
 
 ---
 
