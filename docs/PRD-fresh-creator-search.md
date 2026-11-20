@@ -25,7 +25,7 @@ These are part of the product vision. The implementation order and first-version
 
 ### What has not been decided
 
-This document is not approval for code, a PR, deployment, creator outreach, new content ingestion, automation or spend. The demos for Gil Harel, Niv Gilboa, Yubi Yam, Daniel David and Carnivorim Originale are illustrations, not a partnership or an already-connected repository.
+This document is not approval for code, a PR, deployment, creator outreach, new content ingestion, automation or spend. The demos for Gil Harel, Niv Gilboa, Yubi Yam, Daniel David and Carnivorim Originale are illustrations, not a partnership or an already-connected catalog.
 
 ### Decision proposal
 
@@ -163,7 +163,7 @@ An opening, menu change or relocation is shown as a news item with a source, eve
 
 ### Trends: a later experiment, not an MVP promise
 
-Candidate rule for testing: at least three separate creator sources on the same topic or place within 30 days, after merging repeat publications and marking dependency or a shared campaign. Even then the label is "rising in the repository's sources", not "a national trend". Source count and time window are visible.
+Candidate rule for testing: at least three separate creator sources on the same topic or place within 30 days, after merging repeat publications and marking dependency or a shared campaign. Even then the label is "rising in the catalog's sources", not "a national trend". Source count and time window are visible.
 
 **A5:** A single source does not generate a trend tag. Absence of commercial disclosure is not proof of independence, and several videos by the same creator are not several independent sources.
 
@@ -218,7 +218,7 @@ A creator page says which items are included and when updated, without the impre
 
 ---
 
-## 9. The same repository, in ChatGPT too
+## 9. The same catalog, in ChatGPT too
 
 *A proposed channel after the core is proven, not a separate content product.*
 
