@@ -23,6 +23,10 @@ class RepairRequest(BaseModel):
     changes: dict[str,Any]
     revision: str=''
 
+class SourceLabelRequest(BaseModel):
+    label: str=Field(min_length=1,max_length=120)
+    revision: str=''
+
 def service():return Maintenance(get_database())
 def invoke(fn,*args):
     try:return fn(*args)
@@ -53,6 +57,14 @@ def repair_preview(mention_id:str,body:RepairRequest,user:dict=editor):
 @router.patch('/mentions/{mention_id}')
 def repair(mention_id:str,body:RepairRequest,user:dict=editor):
     return invoke(service().repair,mention_id,body.changes,body.revision,user['id'])
+
+@router.post('/episodes/{video_id}/source-label/preview')
+def source_label_preview(video_id:str,body:SourceLabelRequest,user:dict=editor):
+    return invoke(service().preview_source_label,video_id,body.label)
+
+@router.patch('/episodes/{video_id}/source-label')
+def source_label(video_id:str,body:SourceLabelRequest,user:dict=editor):
+    return invoke(service().set_source_label,video_id,body.label,body.revision,user['id'])
 
 @router.get('/operations')
 def operations(user:dict=admin):

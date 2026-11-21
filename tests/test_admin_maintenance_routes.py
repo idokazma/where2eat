@@ -69,3 +69,13 @@ def test_editor_verified_quote_passes_structured_evidence(client):
         r=client.patch('/api/admin/maintenance/mentions/m1',json={'changes':{'verified_quote':quote},'revision':'r'})
         assert r.status_code==200
         s.return_value.repair.assert_called_once_with('m1',{'verified_quote':quote},'r','reviewer')
+
+def test_source_label_requires_editor_and_calls_service(client):
+    client.app.dependency_overrides[get_current_user]=lambda:{'id':'v','role':'viewer'}
+    assert client.patch('/api/admin/maintenance/episodes/e1/source-label',json={'label':'x'}).status_code==403
+    client.app.dependency_overrides[get_current_user]=lambda:{'id':'e','role':'editor'}
+    with patch('routers.admin_maintenance.service') as s:
+        s.return_value.set_source_label.return_value={'operation_id':'o'}
+        r=client.patch('/api/admin/maintenance/episodes/e1/source-label',json={'label':'x','revision':'r'})
+        assert r.json()=={'operation_id':'o'}
+        s.return_value.set_source_label.assert_called_once_with('e1','x','r','e')
