@@ -4,6 +4,7 @@ import {
   groupMapPoints,
   isSaved,
   getMapPreviewImage,
+  getRestaurantInstagramUrl,
 } from "../map-discovery";
 import type { Restaurant } from "@/types/restaurant";
 const make = (id: string, lat: number, lng: number): Restaurant => ({
@@ -126,5 +127,49 @@ describe("restaurant sources", () => {
       mentions: [{ channel_name: "מקור ב" }],
     } as unknown as Restaurant;
     expect(filterMapRestaurants([r], "", "מקור ב", "", false, [])).toEqual([r]);
+  });
+});
+
+describe("restaurant Instagram profile URLs", () => {
+  it.each([
+    "https://www.instagram.com/example_restaurant/",
+    "https://instagram.com/example.restaurant",
+  ])(
+    "accepts the stored profile %s without inventing a handle",
+    (instagram_url) => {
+      expect(
+        getRestaurantInstagramUrl({ name_hebrew: "דוגמה", instagram_url }),
+      ).toBe(instagram_url);
+    },
+  );
+  it("drops tracking parameters and fragments", () => {
+    expect(
+      getRestaurantInstagramUrl({
+        name_hebrew: "דוגמה",
+        instagram_url:
+          " https://www.instagram.com/example/?igsh=tracking#fragment ",
+      }),
+    ).toBe("https://www.instagram.com/example/");
+  });
+  it.each([
+    undefined,
+    null,
+    "",
+    "@example",
+    "javascript:alert(1)",
+    "http://instagram.com/example/",
+    "https://instagram.com.evil.test/example/",
+    "https://evil.test/example/",
+    "https://www.instagram.com/",
+    "https://www.instagram.com/p/post/",
+    "https://www.instagram.com/reel/video/",
+    "https://www.instagram.com/stories/example/123/",
+    "https://www.instagram.com/accounts/",
+    "https://user:pass@instagram.com/example/",
+    "https://instagram.com:8443/example/",
+  ])("rejects a missing, unsafe or non-profile URL: %s", (instagram_url) => {
+    expect(
+      getRestaurantInstagramUrl({ name_hebrew: "דוגמה", instagram_url }),
+    ).toBeNull();
   });
 });

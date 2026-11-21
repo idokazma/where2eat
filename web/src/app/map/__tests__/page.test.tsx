@@ -42,6 +42,7 @@ jest.mock("@/hooks/useGeolocation", () => ({
 const data = [
   {
     id: "a",
+    instagram_url: "https://www.instagram.com/example_restaurant/",
     name_hebrew: "מסעדה א",
     location: { lat: 32, lng: 35 },
     cuisine_type: "יפני",
@@ -111,6 +112,9 @@ it("selects one preview, saves persistently, and filters saved restaurants", asy
   renderPage();
   fireEvent.click(await screen.findByRole("button", { name: "מסעדה א" }));
   expect(screen.getAllByRole("region")).toHaveLength(1);
+  expect(
+    screen.getByRole("link", { name: /אינסטגרם של מסעדה א/ }),
+  ).toHaveAttribute("href", "https://www.instagram.com/example_restaurant/");
   fireEvent.click(screen.getByRole("button", { name: "שמירת המסעדה" }));
   await waitFor(() =>
     expect(JSON.parse(localStorage.getItem("where2eat-favorites")!)).toEqual([

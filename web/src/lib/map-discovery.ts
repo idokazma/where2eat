@@ -102,3 +102,42 @@ export function getMapPreviewImage(r: Restaurant): string | null {
   }
   return null;
 }
+
+/** Only the restaurant's stored Instagram profile, never an episode/creator link.
+ * This validates the URL shape, not ownership, and does not discover accounts. */
+export function getRestaurantInstagramUrl(r: Restaurant): string | null {
+  if (!r.instagram_url?.trim()) return null;
+  try {
+    const url = new URL(r.instagram_url.trim());
+    const profile = url.pathname.match(/^\/([a-zA-Z0-9._]{1,30})\/?$/)?.[1];
+    const reserved = new Set([
+      "p",
+      "reel",
+      "reels",
+      "tv",
+      "stories",
+      "explore",
+      "accounts",
+      "direct",
+      "about",
+      "developer",
+      "legal",
+      "privacy",
+      "terms",
+      "web",
+    ]);
+    if (
+      url.protocol !== "https:" ||
+      !["instagram.com", "www.instagram.com"].includes(url.hostname) ||
+      url.username ||
+      url.password ||
+      url.port ||
+      !profile ||
+      reserved.has(profile.toLowerCase())
+    )
+      return null;
+    return `${url.origin}${url.pathname}`;
+  } catch {
+    return null;
+  }
+}
