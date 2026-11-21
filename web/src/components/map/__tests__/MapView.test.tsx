@@ -1,112 +1,99 @@
-/**
- * @jest-environment jsdom
- */
-import { render, screen } from '@testing-library/react';
-import '@testing-library/jest-dom';
-
-// Mock next/navigation
-jest.mock('next/navigation', () => ({
-  useRouter: () => ({
-    push: jest.fn(),
+import "@testing-library/jest-dom";
+import { render, screen, fireEvent } from "@testing-library/react";
+import type { Restaurant } from "@/types/restaurant";
+const mockMap = {
+  getZoom: () => 13,
+  getMaxZoom: () => 19,
+  project: ([lat, lng]: number[]) => ({
+    x: lat * 10000,
+    y: lng * 10000,
+    add: () => ({ x: lat, y: lng }),
   }),
-}));
-
-// Mock react-leaflet components
-jest.mock('react-leaflet', () => ({
-  MapContainer: ({ children }: { children: React.ReactNode }) => <div data-testid="map-container">{children}</div>,
+  unproject: () => [32, 35],
+  flyTo: jest.fn(),
+  panTo: jest.fn(),
+  fitBounds: jest.fn(),
+  zoomIn: jest.fn(),
+  zoomOut: jest.fn(),
+};
+const mockUseMapEvents = jest.fn(() => mockMap);
+jest.mock("react-leaflet", () => ({
+  MapContainer: ({ children }: { children: React.ReactNode }) => (
+    <div data-testid="map-container">{children}</div>
+  ),
   TileLayer: () => <div data-testid="tile-layer" />,
-  Marker: ({ children }: { children: React.ReactNode }) => <div data-testid="marker">{children}</div>,
-  Popup: ({ children }: { children: React.ReactNode }) => <div data-testid="popup">{children}</div>,
-  useMap: () => ({
-    fitBounds: jest.fn(),
-    panTo: jest.fn(),
-    eachLayer: jest.fn(),
-    flyTo: jest.fn(),
-  }),
+  Marker: ({
+    title,
+    eventHandlers,
+    children,
+  }: {
+    title: string;
+    eventHandlers: { click: () => void };
+    children: React.ReactNode;
+  }) => (
+    <button data-testid="marker" title={title} onClick={eventHandlers.click}>
+      {children}
+    </button>
+  ),
+  Tooltip: ({ children }: { children: React.ReactNode }) => (
+    <span>{children}</span>
+  ),
+  useMap: () => mockMap,
+  useMapEvents: () => mockUseMapEvents(),
 }));
-
-// Mock leaflet
-jest.mock('leaflet', () => ({
-  Icon: {
-    Default: {
-      prototype: {
-        _getIconUrl: jest.fn(),
-      },
-      mergeOptions: jest.fn(),
-    },
-  },
+jest.mock("leaflet", () => ({
   divIcon: jest.fn(() => ({})),
-  latLngBounds: jest.fn(() => ({
-    extend: jest.fn(),
-  })),
+  latLngBounds: jest.fn(() => ({})),
 }));
-
-// We need to import after mocking
-const mockRestaurants = [
-  {
-    id: '1',
-    name_hebrew: 'מסעדת הבוקר',
-    name_english: 'Breakfast Place',
-    cuisine_type: 'ארוחת בוקר',
-    location: {
-      coordinates: {
-        latitude: 32.0853,
-        longitude: 34.7818,
-      },
-      city: 'תל אביב',
-    },
-    rating: {
-      google_rating: 4.5,
-      total_reviews: 120,
-    },
-    host_opinion: 'positive' as const,
+jest.mock("../UserLocationMarker", () => ({ UserLocationMarker: () => null }));
+import MapView from "../MapView";
+const make = (id: string, lat = 32): Restaurant => ({
+  id,
+  name_hebrew: `מסעדה ${id}`,
+  location: {
+    lat,
+    lng: 35,
+    city: null,
+    neighborhood: null,
+    address: null,
+    region: null,
   },
-  {
-    id: '2',
-    name_hebrew: 'פיצה רומא',
-    location: {
-      coordinates: {
-        latitude: 31.7683,
-        longitude: 35.2137,
-      },
-      city: 'ירושלים',
-    },
-    host_opinion: 'neutral' as const,
-  },
-];
-
-describe('MapView Component', () => {
-  it('renders map container when restaurants have coordinates', async () => {
-    // Dynamic import to avoid SSR issues in tests
-    const MapView = (await import('../MapView')).default;
-
-    render(<MapView restaurants={mockRestaurants} />);
-
-    expect(screen.getByTestId('map-container')).toBeInTheDocument();
-  });
-
-  it('shows empty state when no restaurants have coordinates', async () => {
-    const MapView = (await import('../MapView')).default;
-
-    render(<MapView restaurants={[]} />);
-
-    expect(screen.getByText(/אין מסעדות עם נתוני מיקום/)).toBeInTheDocument();
-  });
-
-  it('renders markers for each restaurant with coordinates', async () => {
-    const MapView = (await import('../MapView')).default;
-
-    render(<MapView restaurants={mockRestaurants} />);
-
-    const markers = screen.getAllByTestId('marker');
-    expect(markers).toHaveLength(2);
-  });
-
-  it('displays restaurant count overlay', async () => {
-    const MapView = (await import('../MapView')).default;
-
-    render(<MapView restaurants={mockRestaurants} />);
-
-    expect(screen.getByText(/2 מסעדות על המפה/)).toBeInTheDocument();
-  });
+});
+beforeEach(() => jest.clearAllMocks());
+it("renders separated pins without Leaflet popups", () => {
+  const select = jest.fn();
+  render(
+    <MapView restaurants={[make("a"), make("b", 33)]} onMarkerClick={select} />,
+  );
+  expect(screen.getAllByTestId("marker")).toHaveLength(2);
+  fireEvent.click(screen.getByTitle("מסעדה a"));
+  expect(select).toHaveBeenCalledWith("a");
+});
+it("groups close pins and zooms on cluster click", () => {
+  render(<MapView restaurants={[make("a"), make("b", 32.0001)]} />);
+  expect(screen.getAllByTestId("marker")).toHaveLength(1);
+  fireEvent.click(screen.getByTitle("2 מסעדות, לחצו להתקרבות"));
+  expect(mockMap.fitBounds).toHaveBeenCalled();
+});
+it("supports empty map, explicit location permission and zoom controls", () => {
+  const locate = jest.fn();
+  render(<MapView restaurants={[]} onLocateMe={locate} />);
+  expect(screen.queryAllByTestId("marker")).toHaveLength(0);
+  expect(locate).not.toHaveBeenCalled();
+  fireEvent.click(screen.getByLabelText("המיקום שלי"));
+  fireEvent.click(screen.getByLabelText("התקרבות"));
+  expect(locate).toHaveBeenCalledTimes(1);
+  expect(mockMap.zoomIn).toHaveBeenCalledTimes(1);
+});
+it("lists coincident restaurants when maximum zoom cannot split them", () => {
+  const selectCluster = jest.fn();
+  mockUseMapEvents.mockReturnValueOnce({ ...mockMap, getZoom: () => 19 });
+  render(
+    <MapView
+      restaurants={[make("a"), make("b")]}
+      onClusterSelect={selectCluster}
+    />,
+  );
+  fireEvent.click(screen.getByTitle("2 מסעדות, לחצו להתקרבות"));
+  expect(selectCluster).toHaveBeenCalledWith([make("a"), make("b")]);
 });

@@ -1,0 +1,108 @@
+import {
+  filterMapRestaurants,
+  groupMapPoints,
+  isSaved,
+  getMapPreviewImage,
+} from "../map-discovery";
+import type { Restaurant } from "@/types/restaurant";
+const make = (id: string, lat: number, lng: number): Restaurant => ({
+  id,
+  name_hebrew: `מסעדה ${id}`,
+  cuisine_type: "איטלקי",
+  location: {
+    lat,
+    lng,
+    city: "חיפה",
+    neighborhood: null,
+    address: null,
+    region: "North",
+  },
+  episode_info: {
+    video_id: "video",
+    video_url: "https://www.youtube.com/watch?v=video",
+    channel_name: "מקור א",
+  },
+});
+const project = (lat: number, lng: number) => ({ x: lat, y: lng });
+
+describe("map discovery", () => {
+  it("combines search, source, cuisine, saved and coordinate filters", () => {
+    const a = make("a", 32, 35);
+    const b = { ...make("b", 32, 35), cuisine_type: "יפני" };
+    expect(
+      filterMapRestaurants(
+        [a, b, { name_hebrew: "ללא מיקום" }],
+        "חיפה",
+        "מקור א",
+        "איטלקי",
+        true,
+        ["a"],
+      ),
+    ).toEqual([a]);
+    expect(filterMapRestaurants([a], "", "אחר", "", false, [])).toEqual([]);
+    expect(filterMapRestaurants([a], "לא קיים", "", "", false, [])).toEqual([]);
+  });
+  it("recognizes canonical and legacy favorites", () => {
+    const r = { ...make("a", 32, 35), google_places: { place_id: "place" } };
+    expect(isSaved(r, ["a"])).toBe(true);
+    expect(isSaved(r, ["place"])).toBe(true);
+    expect(isSaved(r, [])).toBe(false);
+  });
+  it("clusters nearby points and splits them when projected farther apart", () => {
+    const items = [
+      make("a", 32, 35),
+      make("b", 32.01, 35.01),
+      make("c", 100, 150),
+    ];
+    expect(groupMapPoints(items, project).map((g) => g.items.length)).toEqual([
+      2, 1,
+    ]);
+    expect(
+      groupMapPoints(items, (lat, lng) => ({ x: lat * 10000, y: lng * 10000 })),
+    ).toHaveLength(3);
+  });
+  it("keeps selected and coincident restaurants individually reachable", () => {
+    const items = [make("a", 32, 35), make("b", 32, 35), make("c", 32, 35)];
+    const groups = groupMapPoints(items, project, "b");
+    expect(
+      groups.find((g) => g.items.some((r) => r.id === "b"))?.items,
+    ).toHaveLength(1);
+    expect(groups.flatMap((g) => g.items)).toHaveLength(3);
+  });
+  it("skips missing coordinates and keeps every valid restaurant exactly once", () => {
+    const items = Array.from({ length: 100 }, (_, i) =>
+      make(String(i), 30 + i / 100, 35),
+    );
+    const groups = groupMapPoints([...items, { name_hebrew: "ללא" }], project);
+    expect(new Set(groups.flatMap((g) => g.items.map((r) => r.id))).size).toBe(
+      100,
+    );
+  });
+});
+
+it("uses only stored direct images, never a paid Places request", () => {
+  expect(
+    getMapPreviewImage({
+      name_hebrew: "א",
+      image_url: "places/123/photos/abc",
+    }),
+  ).toBeNull();
+  expect(
+    getMapPreviewImage({
+      name_hebrew: "א",
+      image_url: "https://app.example/api/photos/abc",
+    }),
+  ).toBeNull();
+  expect(
+    getMapPreviewImage({
+      name_hebrew: "א",
+      image_url: "https://places.googleapis.com/v1/places/a/photos/b/media",
+    }),
+  ).toBeNull();
+  expect(
+    getMapPreviewImage({
+      name_hebrew: "א",
+      image_url: "https://app.example/api/venue-images/a.jpg",
+    }),
+  ).toBe("https://app.example/api/venue-images/a.jpg");
+});
