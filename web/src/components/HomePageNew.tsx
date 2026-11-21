@@ -119,6 +119,26 @@ export function HomePageNew() {
     return [...names].sort((a, b) => a.localeCompare(b, 'he'));
   }, [allRestaurants]);
 
+  // Restaurants per source (a restaurant counts once per source, whether the
+  // source is its main episode or one of its extra mentions)
+  const creatorCounts = useMemo(() => {
+    const counts: Record<string, number> = {};
+    let total = 0;
+    for (const r of allRestaurants) {
+      if (r.is_hidden || r.is_closing || r.status === 'closed' || r.status === 'סגור') continue;
+      total += 1;
+      const names = new Set<string>();
+      const main = r.episode_info?.channel_name?.trim();
+      if (main) names.add(main);
+      for (const m of r.mentions ?? []) {
+        const cn = m.channel_name?.trim();
+        if (cn) names.add(cn);
+      }
+      names.forEach((n) => { counts[n] = (counts[n] ?? 0) + 1; });
+    }
+    return { counts, total };
+  }, [allRestaurants]);
+
   // Stable references for memo deps
   const locMode = locationFilter.mode;
   const locCity = locationFilter.city;
@@ -281,6 +301,8 @@ export function HomePageNew() {
             creators={creators}
             selected={selectedCreator}
             onSelect={setSelectedCreator}
+            counts={creatorCounts.counts}
+            totalCount={creatorCounts.total}
           />
           <div className="flex items-center shrink-0">
             <button
