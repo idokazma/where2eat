@@ -9,6 +9,7 @@ import { FilterBar, LocationFilter, CreatorFilter } from '@/components/filters';
 import { DiscoveryFeed } from '@/components/feed';
 import { PageLoadingSkeleton } from '@/components/ui/skeleton';
 import { useLocationFilter } from '@/contexts/location-filter-context';
+import { isListed, listedCount } from '@/lib/restaurant-visibility';
 import { useSettings } from '@/contexts/settings-context';
 import { useFavorites } from '@/contexts/favorites-context';
 import { endpoints } from '@/lib/config';
@@ -125,7 +126,7 @@ export function HomePageNew() {
     const counts: Record<string, number> = {};
     let total = 0;
     for (const r of allRestaurants) {
-      if (r.is_hidden || r.is_closing || r.status === 'closed' || r.status === 'סגור') continue;
+      if (!isListed(r)) continue;
       total += 1;
       const names = new Set<string>();
       const main = r.episode_info?.channel_name?.trim();
@@ -148,7 +149,7 @@ export function HomePageNew() {
 
   // Client-side filter + sort (instant)
   const processedRestaurants = useMemo(() => {
-    let result = allRestaurants.filter((r) => !r.is_hidden && !r.is_closing && r.status !== 'closed' && r.status !== 'סגור');
+    let result = allRestaurants.filter(isListed);
 
     // Search by name, English name, cuisine, host comments
     if (searchQuery.trim()) {
@@ -266,7 +267,7 @@ export function HomePageNew() {
         <div className="marquee-inner">
           {[0, 1].map((n) => (
             <span key={n} className="marquee-chunk">
-              אוכלים ✦ מדברים ✦ מדרגים ✦ <b>{allRestaurants.length} מסעדות</b> ✦ אפס פספוסים ✦
+              אוכלים ✦ מדברים ✦ מדרגים ✦ <b>{listedCount(allRestaurants)} מסעדות</b> ✦ אפס פספוסים ✦
             </span>
           ))}
         </div>
@@ -275,7 +276,7 @@ export function HomePageNew() {
       {/* Hero */}
       <div className="home-hero animate-fade-up">
         <h1>
-          {allRestaurants.length} מסעדות.{' '}
+          {listedCount(allRestaurants)} מסעדות.{' '}
           <span className="hl-marker">אפס פספוסים.</span>
         </h1>
         <p>כל המסעדות שמדברים מהבטן בדקו, דירגו ואכלו</p>
@@ -304,27 +305,6 @@ export function HomePageNew() {
             counts={creatorCounts.counts}
             totalCount={creatorCounts.total}
           />
-          <div className="flex items-center shrink-0">
-            <button
-              onClick={handleShuffle}
-              className={`flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium transition-colors ${
-                shuffleSeed !== null
-                  ? 'bg-[var(--color-accent)] text-[var(--color-on-accent)] rounded-r-none rounded-l-full border-2 border-[var(--color-ink)] shadow-[2.5px_2.5px_0_var(--color-ink)]'
-                  : 'bg-[var(--color-surface-elevated)] text-[var(--color-ink)] border-2 border-[var(--color-ink)] rounded-full shadow-[2.5px_2.5px_0_var(--color-ink)] font-bold'
-              }`}
-            >
-              <Shuffle className="w-3.5 h-3.5" />
-              <span>ערבב</span>
-            </button>
-            {shuffleSeed !== null && (
-              <button
-                onClick={() => setShuffleSeed(null)}
-                className="flex items-center px-2 py-1.5 bg-[var(--color-accent)] text-[var(--color-on-accent)] rounded-l-none rounded-r-full border-2 border-r-0 border-[var(--color-ink)] shadow-[2.5px_2.5px_0_var(--color-ink)]"
-              >
-                <X className="w-3.5 h-3.5" />
-              </button>
-            )}
-          </div>
         </FilterBar>
       </div>
 
@@ -339,6 +319,29 @@ export function HomePageNew() {
           isLoadingMore={false}
           onLoadMore={handleLoadMore}
           className="mt-2 pb-8"
+          headerActions={
+            <div className="flex items-center shrink-0">
+              <button
+                onClick={handleShuffle}
+                className={`flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium transition-colors ${
+                  shuffleSeed !== null
+                    ? 'bg-[var(--color-accent)] text-[var(--color-on-accent)] rounded-r-none rounded-l-full border-2 border-[var(--color-ink)] shadow-[2.5px_2.5px_0_var(--color-ink)]'
+                    : 'bg-[var(--color-surface-elevated)] text-[var(--color-ink)] border-2 border-[var(--color-ink)] rounded-full shadow-[2.5px_2.5px_0_var(--color-ink)] font-bold'
+                }`}
+              >
+                <Shuffle className="w-3.5 h-3.5" />
+                <span>ערבב</span>
+              </button>
+              {shuffleSeed !== null && (
+                <button
+                  onClick={() => setShuffleSeed(null)}
+                  className="flex items-center px-2 py-1.5 bg-[var(--color-accent)] text-[var(--color-on-accent)] rounded-l-none rounded-r-full border-2 border-r-0 border-[var(--color-ink)] shadow-[2.5px_2.5px_0_var(--color-ink)]"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              )}
+            </div>
+          }
         />
       </div>
 

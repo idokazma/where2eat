@@ -317,3 +317,24 @@ def test_source_label_validates_and_rejects_stale(setup):
     p=s.preview_source_label('e1','Show')
     with db.get_connection() as c:c.execute('UPDATE episodes SET channel_name="other" WHERE id="e1"')
     with pytest.raises(Conflict):s.set_source_label('e1','Show',p['revision'],'admin')
+
+
+def test_set_source_label_relabels_restaurants_linked_only_by_video(tmp_path):
+    from database import Database
+    from admin_maintenance import Maintenance
+    db = Database(str(tmp_path / 'label.db'))
+    with db.get_connection() as c:
+        c.execute("INSERT INTO episodes (id, video_id, video_url, channel_name) VALUES ('e1','vid1','u','בית הפודיום')")
+        c.execute("INSERT INTO restaurants (id, episode_id, name_hebrew, city, video_id, channel_name) VALUES ('r1','e1','א','טירה','vid1','בית הפודיום')")
+        c.execute("INSERT INTO restaurants (id, episode_id, name_hebrew, city, video_id, channel_name) VALUES ('r2',NULL,'ב','טירה','vid1','בית הפודיום')")
+        c.execute("INSERT INTO restaurants (id, episode_id, name_hebrew, city, video_id, channel_name) VALUES ('r3',NULL,'ג','טירה','other','בית הפודיום')")
+    m = Maintenance(db)
+    p = m.preview_source_label('vid1', 'מדברים מהבטן - הפודיום')
+    assert p['impact']['restaurants_relabelled'] == 2
+    out = m.set_source_label('vid1', 'מדברים מהבטן - הפודיום', p['revision'], 'admin')
+    with db.get_connection() as c:
+        labels = dict(c.execute('SELECT id, channel_name FROM restaurants').fetchall())
+    assert labels == {'r1': 'מדברים מהבטן - הפודיום', 'r2': 'מדברים מהבטן - הפודיום', 'r3': 'בית הפודיום'}
+    m.undo(out['operation_id'], 'admin')
+    with db.get_connection() as c:
+        assert {r[0] for r in c.execute("SELECT id FROM restaurants WHERE channel_name='בית הפודיום'")} == {'r1', 'r2', 'r3'}

@@ -47,6 +47,11 @@ export function CreatorFilter({
 
   if (creators.length < 2) return null;
 
+  // Largest sources first, so the main creator leads the list.
+  const ordered = [...creators].sort(
+    (a, b) => (counts?.[b] ?? 0) - (counts?.[a] ?? 0) || a.localeCompare(b, 'he')
+  );
+
   const choose = (creator: string | null) => {
     onSelect(creator);
     setIsOpen(false);
@@ -89,7 +94,7 @@ export function CreatorFilter({
               <span className="text-xs text-[var(--color-ink-muted)]">{totalCount}</span>
             )}
           </button>
-          {creators.map((creator) => {
+          {ordered.map((creator) => {
             const isSelected = selected === creator;
             return (
               <button
@@ -116,7 +121,7 @@ export function CreatorFilter({
   return (
     <div className={`flex items-center shrink-0 ${className}`}>
       <FilterChip
-        label={selected ? `מקור: ${selected}` : 'מקור: כולם'}
+        label={selected ? `מקור: ${selected}` : 'מקור'}
         icon={<Youtube className="w-4 h-4" />}
         hasDropdown
         isSelected={selected !== null}

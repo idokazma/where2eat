@@ -179,7 +179,8 @@ class Maintenance:
         label=label.strip()
         eps=self._rows(c,'episodes','video_id=?',(video_id,))
         if not eps:raise LookupError('Episode not found')
-        rests=self._rows(c,'restaurants','episode_id=?',(eps[0]['id'],))
+        # Linked by episode, or (no episode link) by the same video.
+        rests=self._rows(c,'restaurants','episode_id=? OR (episode_id IS NULL AND video_id=?)',(eps[0]['id'],video_id))
         state={'episodes':eps,'restaurants':rests}
         return {'rows':state,'revision':self._revision({'state':state,'label':label}),'label':label,
                 'impact':{'episode_id':eps[0]['id'],'old_label':eps[0].get('channel_name'),'restaurants_relabelled':len(rests)}}
@@ -192,7 +193,7 @@ class Maintenance:
         with self.db.get_connection() as c:
             c.execute('BEGIN IMMEDIATE');p=self._label_preview(c,video_id,label);self._check(p,revision);before=p['rows']
             c.execute('UPDATE episodes SET channel_name=? WHERE id=?',(p['label'],p['impact']['episode_id']))
-            c.execute('UPDATE restaurants SET channel_name=? WHERE episode_id=?',(p['label'],p['impact']['episode_id']))
+            c.execute('UPDATE restaurants SET channel_name=? WHERE episode_id=? OR (episode_id IS NULL AND video_id=?)',(p['label'],p['impact']['episode_id'],video_id))
             return self._record(c,'set_source_label',actor,before,self._read_same(c,before))
 
     def _read_same(self,c,state):
