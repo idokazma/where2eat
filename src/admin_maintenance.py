@@ -174,6 +174,28 @@ class Maintenance:
                 c.execute('UPDATE episode_mentions SET timestamp_display=? WHERE id=?',(f'{ts//60}:{ts%60:02d}',mid))
             return self._record(c,'repair_mention',actor,before,self._read_same(c,before))
 
+    def _label_preview(self,c,video_id,label):
+        if not isinstance(label,str) or not 1<=len(label.strip())<=120:raise ValueError('Source label must contain 1-120 characters')
+        label=label.strip()
+        eps=self._rows(c,'episodes','video_id=?',(video_id,))
+        if not eps:raise LookupError('Episode not found')
+        # Linked by episode, or (no episode link) by the same video.
+        rests=self._rows(c,'restaurants','episode_id=? OR (episode_id IS NULL AND video_id=?)',(eps[0]['id'],video_id))
+        state={'episodes':eps,'restaurants':rests}
+        return {'rows':state,'revision':self._revision({'state':state,'label':label}),'label':label,
+                'impact':{'episode_id':eps[0]['id'],'old_label':eps[0].get('channel_name'),'restaurants_relabelled':len(rests)}}
+
+    def preview_source_label(self,video_id,label):
+        with self.db.get_connection() as c:return self._label_preview(c,video_id,label)
+
+    def set_source_label(self,video_id,label,revision,actor):
+        """Relabel only channel_name on one episode and its restaurants. Undoable."""
+        with self.db.get_connection() as c:
+            c.execute('BEGIN IMMEDIATE');p=self._label_preview(c,video_id,label);self._check(p,revision);before=p['rows']
+            c.execute('UPDATE episodes SET channel_name=? WHERE id=?',(p['label'],p['impact']['episode_id']))
+            c.execute('UPDATE restaurants SET channel_name=? WHERE episode_id=? OR (episode_id IS NULL AND video_id=?)',(p['label'],p['impact']['episode_id'],video_id))
+            return self._record(c,'set_source_label',actor,before,self._read_same(c,before))
+
     def _read_same(self,c,state):
         result = {}
         for table,rows in state.items():

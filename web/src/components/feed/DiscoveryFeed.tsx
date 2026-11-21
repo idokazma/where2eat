@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useEffect, useCallback, useState } from 'react';
+import { useRef, useEffect, useCallback, useState, type ReactNode } from 'react';
 import { UtensilsCrossed, Loader2, LayoutGrid, List } from 'lucide-react';
 import { Restaurant, getCoordinates } from '@/types/restaurant';
 import { RestaurantCardNew } from '@/components/restaurant/RestaurantCardNew';
@@ -19,6 +19,8 @@ interface DiscoveryFeedProps {
   onLoadMore?: () => void;
   className?: string;
   totalCount?: number;
+  /** Extra feed controls shown next to the compact toggle (e.g. shuffle). */
+  headerActions?: ReactNode;
 }
 
 function calculateDistance(
@@ -45,6 +47,7 @@ export function DiscoveryFeed({
   onLoadMore,
   className = '',
   totalCount,
+  headerActions,
 }: DiscoveryFeedProps) {
   const { settings } = useSettings();
   const isTwoCol = settings.feedLayout === '2-col';
@@ -116,9 +119,11 @@ export function DiscoveryFeed({
           subtitle={undefined}
           className="flex-1"
         />
+        <div className="flex items-center gap-2 ml-4 shrink-0">
+        {headerActions}
         <button
           onClick={toggleCompact}
-          className="flex items-center gap-1.5 px-3 py-1.5 ml-4 rounded-full text-xs font-bold transition-all bg-[var(--color-surface-elevated)] border-2 border-[var(--color-ink)] text-[var(--color-ink)] shadow-[2.5px_2.5px_0_var(--color-ink)] active:shadow-none active:translate-x-[2px] active:translate-y-[2px]"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all bg-[var(--color-surface-elevated)] border-2 border-[var(--color-ink)] text-[var(--color-ink)] shadow-[2.5px_2.5px_0_var(--color-ink)] active:shadow-none active:translate-x-[2px] active:translate-y-[2px]"
           aria-label={isCompact ? 'תצוגת כרטיסים' : 'תצוגה קומפקטית'}
         >
           {isCompact ? (
@@ -133,6 +138,7 @@ export function DiscoveryFeed({
             </>
           )}
         </button>
+        </div>
       </div>
 
       <div className={`px-4 ${!isCompact && isTwoCol ? 'grid grid-cols-2 gap-3' : 'space-y-3'}`}>

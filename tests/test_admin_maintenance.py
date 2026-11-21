@@ -289,3 +289,52 @@ def test_old_snapshot_undo_refuses_later_verified_quote(setup):
     out=s.repair('m2',changes,p['revision'],'a');legacy_snapshot(db,out['operation_id'])
     with db.get_connection() as c:c.execute('UPDATE episode_mentions SET verified_quote=? WHERE id="m2"',(json.dumps(review()),))
     with pytest.raises(Conflict):s.undo(out['operation_id'],'a')
+
+def test_source_label_changes_only_label_and_undoes(setup):
+    db,s=setup
+    with db.get_connection() as c:
+        c.execute('UPDATE episodes SET channel_name="Publisher" WHERE id="e1"')
+        c.execute('UPDATE restaurants SET channel_name="Publisher" WHERE episode_id="e1"')
+        before=dict(c.execute('SELECT * FROM episodes WHERE id="e1"').fetchone())
+    p=s.preview_source_label('e1','Show');assert p['impact']['restaurants_relabelled']==2
+    o=s.set_source_label('e1','Show',p['revision'],'admin')
+    with db.get_connection() as c:
+        after=dict(c.execute('SELECT * FROM episodes WHERE id="e1"').fetchone())
+        assert after['channel_name']=='Show'
+        assert {k:v for k,v in after.items() if k!='channel_name'}=={k:v for k,v in before.items() if k!='channel_name'}
+        assert c.execute('SELECT COUNT(*) FROM restaurants WHERE channel_name="Show"').fetchone()[0]==2
+        assert c.execute('SELECT channel_name FROM episodes WHERE id="e2"').fetchone()[0] is None
+        assert c.execute('SELECT COUNT(*) FROM episode_mentions').fetchone()[0]==3
+    s.undo(o['operation_id'],'admin')
+    with db.get_connection() as c:
+        assert c.execute('SELECT channel_name FROM episodes WHERE id="e1"').fetchone()[0]=='Publisher'
+        assert c.execute('SELECT COUNT(*) FROM restaurants WHERE channel_name="Publisher"').fetchone()[0]==2
+
+def test_source_label_validates_and_rejects_stale(setup):
+    db,s=setup
+    with pytest.raises(ValueError):s.preview_source_label('e1','  ')
+    with pytest.raises(LookupError):s.preview_source_label('nope','Show')
+    p=s.preview_source_label('e1','Show')
+    with db.get_connection() as c:c.execute('UPDATE episodes SET channel_name="other" WHERE id="e1"')
+    with pytest.raises(Conflict):s.set_source_label('e1','Show',p['revision'],'admin')
+
+
+def test_set_source_label_relabels_restaurants_linked_only_by_video(tmp_path):
+    from database import Database
+    from admin_maintenance import Maintenance
+    db = Database(str(tmp_path / 'label.db'))
+    with db.get_connection() as c:
+        c.execute("INSERT INTO episodes (id, video_id, video_url, channel_name) VALUES ('e1','vid1','u','בית הפודיום')")
+        c.execute("INSERT INTO restaurants (id, episode_id, name_hebrew, city, video_id, channel_name) VALUES ('r1','e1','א','טירה','vid1','בית הפודיום')")
+        c.execute("INSERT INTO restaurants (id, episode_id, name_hebrew, city, video_id, channel_name) VALUES ('r2',NULL,'ב','טירה','vid1','בית הפודיום')")
+        c.execute("INSERT INTO restaurants (id, episode_id, name_hebrew, city, video_id, channel_name) VALUES ('r3',NULL,'ג','טירה','other','בית הפודיום')")
+    m = Maintenance(db)
+    p = m.preview_source_label('vid1', 'מדברים מהבטן - הפודיום')
+    assert p['impact']['restaurants_relabelled'] == 2
+    out = m.set_source_label('vid1', 'מדברים מהבטן - הפודיום', p['revision'], 'admin')
+    with db.get_connection() as c:
+        labels = dict(c.execute('SELECT id, channel_name FROM restaurants').fetchall())
+    assert labels == {'r1': 'מדברים מהבטן - הפודיום', 'r2': 'מדברים מהבטן - הפודיום', 'r3': 'בית הפודיום'}
+    m.undo(out['operation_id'], 'admin')
+    with db.get_connection() as c:
+        assert {r[0] for r in c.execute("SELECT id FROM restaurants WHERE channel_name='בית הפודיום'")} == {'r1', 'r2', 'r3'}
