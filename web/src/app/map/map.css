@@ -586,3 +586,19 @@
   outline: 3px solid #a92d68;
   outline-offset: 3px;
 }
+
+/* Narrow phones (iPhone SE 1st gen, 320px): with the Instagram button the
+   creator credit shrank to ~75px and was cut to "מדבר…". Give it its own row. */
+@media (max-width: 360px) {
+  .discovery-card-footer {
+    flex-wrap: wrap;
+    row-gap: 10px;
+  }
+  .discovery-credit {
+    flex-basis: 100%;
+  }
+  .discovery-review {
+    flex: 1;
+    justify-content: center;
+  }
+}
