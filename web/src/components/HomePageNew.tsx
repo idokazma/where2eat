@@ -7,6 +7,7 @@ import { Restaurant, getCoordinates } from '@/types/restaurant';
 import { PageLayout } from '@/components/layout';
 import { FilterBar, LocationFilter, CreatorFilter } from '@/components/filters';
 import { DiscoveryFeed } from '@/components/feed';
+import { HomeHero } from '@/components/HomeHero';
 import { PageLoadingSkeleton } from '@/components/ui/skeleton';
 import { useLocationFilter } from '@/contexts/location-filter-context';
 import { isListed, listedCount } from '@/lib/restaurant-visibility';
@@ -274,13 +275,7 @@ export function HomePageNew() {
       </div>
 
       {/* Hero */}
-      <div className="home-hero animate-fade-up">
-        <h1>
-          {listedCount(allRestaurants)} מסעדות.{' '}
-          <span className="hl-marker">אפס פספוסים.</span>
-        </h1>
-        <p>כל המסעדות שמדברים מהבטן בדקו, דירגו ואכלו</p>
-      </div>
+      <HomeHero />
 
       {/* Search + Filters */}
       <div className="animate-fade-up stagger-section-1">
