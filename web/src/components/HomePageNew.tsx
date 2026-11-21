@@ -295,7 +295,7 @@ export function HomePageNew() {
             />
           </div>
         </div>
-        <FilterBar>
+        <FilterBar className="flex-wrap !overflow-x-visible">
           <LocationFilter />
           <CreatorFilter
             creators={creators}
