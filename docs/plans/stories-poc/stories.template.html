@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Where2Eat · סטוריז לפי מיקום (POC)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@500;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+  :root {
+    --ink: #13201F; --cream: #FAF3DE; --paper: #FFFDF6; --teal: #0E8388; --sun: #F2B90C;
+    --coral: #FF5A3C; --muted: #5F695C; --shadow: 3px 3px 0 var(--ink);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  [hidden] { display: none !important; }
+  html, body { height: 100%; background: #0d1716; color: var(--ink); font-family: 'Heebo', system-ui, sans-serif; overflow: hidden; }
+  button { font: inherit; cursor: pointer; color: inherit; }
+  .app { position: relative; height: 100dvh; max-width: 440px; margin: 0 auto; overflow: hidden; background: var(--ink); }
+  @media (min-width: 600px) { .app { height: min(100dvh, 900px); margin-top: max(0px, calc((100dvh - 900px) / 2)); border-radius: 28px; box-shadow: 0 0 0 6px #000, 0 20px 60px rgba(0,0,0,.5); } }
+
+  /* sticker primitives */
+  .pill { display: inline-flex; align-items: center; gap: 6px; border: 2.5px solid var(--ink); border-radius: 999px; padding: 6px 12px; font-weight: 800; font-size: 14px; background: var(--paper); color: var(--ink); box-shadow: var(--shadow); white-space: nowrap; text-decoration: none; }
+  .pill.sun { background: var(--sun); } .pill.teal { background: var(--teal); color: #fff; } .pill.coral { background: var(--coral); color: #fff; }
+  .pill:active { transform: translate(2px, 2px); box-shadow: none; }
+
+  /* start screen */
+  .start { position: absolute; inset: 0; z-index: 50; background: var(--cream); overflow-y: auto; padding: 22px 20px 30px;
+    background-image: radial-gradient(rgba(19,32,31,.08) 2px, transparent 2.5px); background-size: 26px 26px; }
+  .start h1 { font-size: 34px; font-weight: 900; line-height: 1.1; margin: 14px 0 6px; }
+  .hl { background: var(--sun); padding: 0 8px; box-shadow: var(--shadow); display: inline-block; transform: rotate(-1.5deg); }
+  .start p.lead { color: var(--muted); font-weight: 600; font-size: 14px; margin: 12px 0 18px; }
+  .logo { display: inline-block; background: var(--teal); color: #fff; font-weight: 900; padding: 6px 14px; border: 3px solid var(--ink); border-radius: 14px; box-shadow: var(--shadow); transform: rotate(-3deg); direction: ltr; }
+  .card { background: var(--paper); border: 2.5px solid var(--ink); border-radius: 18px; box-shadow: var(--shadow); padding: 14px; margin-bottom: 14px; }
+  .card h3 { font-size: 15px; font-weight: 900; margin-bottom: 10px; }
+  .big { width: 100%; padding: 14px; font-size: 18px; justify-content: center; }
+  .grid { display: flex; flex-wrap: wrap; gap: 8px; }
+  .row { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 8px 0; font-weight: 700; font-size: 14px; }
+  select { font: inherit; font-weight: 700; border: 2.5px solid var(--ink); border-radius: 12px; padding: 6px 8px; background: var(--paper); max-width: 60%; }
+  .note { font-size: 12px; color: var(--muted); font-weight: 600; line-height: 1.5; }
+  .err { color: #b42318; font-weight: 700; font-size: 13px; margin-top: 8px; min-height: 1em; }
+
+  /* feed */
+  .feed { position: absolute; inset: 0; overflow-y: scroll; scroll-snap-type: y mandatory; scrollbar-width: none; }
+  .feed::-webkit-scrollbar, .slides::-webkit-scrollbar { display: none; }
+  .story { position: relative; height: 100%; scroll-snap-align: start; scroll-snap-stop: always; overflow: hidden; }
+  .slides { display: flex; height: 100%; overflow-x: scroll; scroll-snap-type: x mandatory; scrollbar-width: none; }
+  .slide { position: relative; flex: 0 0 100%; height: 100%; scroll-snap-align: start; }
+  .bg { position: absolute; inset: 0; background: #1d2b2a center/cover no-repeat; }
+  .bg.empty { display: grid; place-items: center; background: linear-gradient(160deg, var(--teal), #0a3d3f 55%, var(--ink)); font-size: 120px; }
+  .shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,.55) 0%, rgba(0,0,0,0) 22%, rgba(0,0,0,0) 38%, rgba(10,18,17,.92) 78%); pointer-events: none; }
+  .content { position: absolute; inset-inline: 0; bottom: 0; padding: 16px 16px calc(22px + env(safe-area-inset-bottom)); padding-left: 78px; color: #fff; }
+  .rail { position: absolute; z-index: 5; left: 12px; bottom: calc(26px + env(safe-area-inset-bottom)); display: flex; flex-direction: column; gap: 16px; align-items: center; }
+  .rbtn { display: flex; flex-direction: column; align-items: center; gap: 4px; background: none; border: 0; color: #fff; font-weight: 800; font-size: 11px; text-shadow: 0 1px 4px rgba(0,0,0,.7); }
+  .rbtn .ic { width: 50px; height: 50px; display: grid; place-items: center; border-radius: 50%; background: rgba(255,253,246,.94); color: var(--ink); border: 2.5px solid var(--ink); box-shadow: 2px 2px 0 var(--ink); font-size: 20px; text-shadow: none; }
+  .rbtn.play .ic { background: var(--sun); width: 58px; height: 58px; font-size: 22px; }
+  .rbtn[aria-pressed="true"] .ic { background: var(--coral); color: #fff; }
+  .rbtn:active .ic { transform: translate(2px, 2px); box-shadow: none; }
+  .src { display: inline-flex; align-items: center; gap: 6px; background: rgba(255,253,246,.95); color: var(--ink); border: 2px solid var(--ink); border-radius: 999px; padding: 3px 10px 3px 8px; font-size: 12px; font-weight: 800; max-width: 100%; }
+  .src span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .name { font-size: 32px; font-weight: 900; line-height: 1.05; margin: 14px 0 4px; text-shadow: 0 2px 10px rgba(0,0,0,.5); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .tick { font-size: 12px; font-weight: 800; background: #c9f2dc; color: var(--ink); border: 2px solid var(--ink); border-radius: 999px; padding: 1px 8px; text-shadow: none; }
+  .meta { font-size: 14px; font-weight: 700; opacity: .9; }
+  .meta b { color: var(--sun); }
+  .srcline { margin-top: 6px; font-size: 12px; font-weight: 700; opacity: .75; }
+  .badge { font-size: 12px; font-weight: 800; border-radius: 999px; padding: 2px 9px; border: 2px solid var(--ink); color: var(--ink); }
+  .badge.t { background: #c9f2dc; } .badge.m { background: #cfe8f7; } .badge.u { background: #e8e2cf; }
+  .dist { background: var(--sun); color: var(--ink); border: 2px solid var(--ink); border-radius: 8px; padding: 1px 7px; font-weight: 900; font-size: 13px; }
+  .quote { font-weight: 800; font-size: 19px; line-height: 1.4; text-shadow: 0 2px 10px rgba(0,0,0,.75); border-inline-start: 4px solid var(--sun); padding-inline-start: 10px; }
+  .quote .qt { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .quote.open .qt { -webkit-line-clamp: unset; }
+  .quote .more { display: none; font-size: 12px; font-weight: 900; color: var(--sun); margin-top: 2px; }
+  .quote.clamped .more { display: block; }
+  .quote.open .more { display: none; }
+  .quote small { display: block; font-size: 11px; font-weight: 800; color: var(--muted); margin-bottom: 4px; }
+  .actions { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+  .actions .pill { font-size: 14px; padding: 8px 12px; }
+  .warn { margin-top: 4px; font-size: 11px; font-weight: 700; color: #ffd8cf; }
+
+  /* chrome */
+  .top { position: absolute; z-index: 20; top: 0; inset-inline: 0; padding: calc(10px + env(safe-area-inset-top)) 12px 0; display: flex; gap: 8px; align-items: center; pointer-events: none; }
+  .top > * { pointer-events: auto; }
+  .top .pill { font-size: 13px; padding: 5px 10px; }
+  .count { margin-inline-start: auto; background: rgba(0,0,0,.55); color: #fff; border-radius: 999px; padding: 4px 10px; font-weight: 800; font-size: 13px; }
+  .dots { position: absolute; z-index: 15; top: calc(54px + env(safe-area-inset-top)); inset-inline: 12px; display: flex; gap: 4px; }
+  .dots i { flex: 1; height: 3px; border-radius: 3px; background: rgba(255,255,255,.35); }
+  .dots i.on { background: #fff; }
+  .divider { display: grid; place-items: center; text-align: center; height: 100%; background: var(--cream); padding: 30px;
+    background-image: radial-gradient(rgba(19,32,31,.08) 2px, transparent 2.5px); background-size: 26px 26px; }
+  .divider h2 { font-size: 30px; font-weight: 900; margin: 10px 0; }
+
+  /* sheets */
+  .sheet-wrap { position: absolute; inset: 0; z-index: 60; display: none; }
+  .sheet-wrap.open { display: block; }
+  .backdrop { position: absolute; inset: 0; background: rgba(0,0,0,.6); }
+  .sheet { position: absolute; inset-inline: 0; bottom: 0; background: var(--cream); border-top: 3px solid var(--ink); border-radius: 22px 22px 0 0; padding: 14px 14px calc(16px + env(safe-area-inset-bottom)); max-height: 88%; overflow-y: auto; }
+  .sheet header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+  .sheet header h3 { font-size: 17px; font-weight: 900; }
+  .x { width: 36px; height: 36px; border-radius: 50%; border: 2.5px solid var(--ink); background: var(--paper); font-weight: 900; box-shadow: 2px 2px 0 var(--ink); }
+  .player { position: relative; width: 100%; aspect-ratio: 16/9; background: #000; border: 2.5px solid var(--ink); border-radius: 12px; overflow: hidden; }
+  .player iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  #map { height: 52dvh; border: 2.5px solid var(--ink); border-radius: 14px; }
+  .help { position: absolute; z-index: 30; top: calc(78px + env(safe-area-inset-top)); left: 50%; transform: translateX(-50%); background: var(--sun); color: var(--ink); border: 2.5px solid var(--ink); border-radius: 999px; box-shadow: var(--shadow); padding: 6px 14px; font-weight: 900; font-size: 14px; white-space: nowrap; pointer-events: none; animation: fade 2.6s ease forwards; }
+  @keyframes fade { 0%, 70% { opacity: 1; } 100% { opacity: 0; } }
+  .feed:focus { outline: none; }
+  @media (prefers-reduced-motion: reduce) { .feed, .slides { scroll-behavior: auto !important; } .help { animation: none; display: none; } }
+</style>
+</head>
+<body>
+<div class="app" id="app">
+
+  <!-- start screen -->
+  <section class="start" id="start">
+    <span class="logo">Where2Eat</span>
+    <h1>איפה אוכלים <span class="hl">ליד?</span></h1>
+    <p class="lead">סטוריז של ביקורות מהפודקאסטים, מהקרוב לרחוק (בקו אווירי). החלק למעלה למסעדה הבאה, הצידה לאזכור הבא שלה.</p>
+
+    <div class="card">
+      <button class="pill teal big" id="useLoc">📍 לפי המיקום שלי</button>
+      <div class="err" id="locErr"></div>
+      <p class="note">המיקום נשאר בדפדפן: המיון נעשה כאן, ושום דבר לא נשלח לשרת.</p>
+    </div>
+
+    <div class="card">
+      <h3>או להתחיל מנקודה</h3>
+      <div class="grid" id="presets"></div>
+    </div>
+
+    <div class="card">
+      <h3>הגדרות</h3>
+      <div class="row"><label for="src">מקור</label><select id="src"></select></div>
+      <div class="row"><label for="radius">"קרוב" עד</label>
+        <select id="radius"><option value="10">10 ק״מ</option><option value="25">25 ק״מ</option><option value="50" selected>50 ק״מ</option><option value="100">100 ק״מ</option></select></div>
+      <div class="row"><label for="tasted">רק "נטעם"</label><input type="checkbox" id="tasted"></div>
+      <div class="row"><label for="noimg">להציג גם מסעדות בלי תמונה</label><input type="checkbox" id="noimg"></div>
+      <div class="row"><label for="speakers">להציג שמות דוברים (לא מאומתים)</label><input type="checkbox" id="speakers"></div>
+    </div>
+    <p class="note" id="dataNote"></p>
+  </section>
+
+  <!-- feed -->
+  <div class="top" id="top" hidden>
+    <button class="pill" id="back" aria-label="נקודת התחלה">⌂</button>
+    <button class="pill sun" id="refresh" hidden>↻ עדכן מיקום</button>
+    <span class="count" id="count"></span>
+  </div>
+  <div class="dots" id="dots"></div>
+  <div class="feed" id="feed" tabindex="0" aria-label="סטוריז מסעדות"></div>
+
+  <!-- player sheet -->
+  <div class="sheet-wrap" id="playerSheet" role="dialog" aria-modal="true" aria-label="נגן">
+    <div class="backdrop" data-close></div>
+    <div class="sheet">
+      <header><h3 id="playerTitle"></h3><button class="x" data-close aria-label="סגור">✕</button></header>
+      <div class="player" id="player"></div>
+      <div class="actions"><a class="pill" id="ytLink" target="_blank" rel="noopener">↗ פתח ביוטיוב ברגע הזה</a></div>
+      <p class="note" style="margin-top:10px">הנגן הרשמי של YouTube, בלי שכבות מעליו. כשהקובץ נפתח ישירות מהמחשב, YouTube חוסם את הנגן המוטמע (שגיאה 153); הכפתור פותח את אותו רגע ב-YouTube. מאתר אמיתי הנגן עובד כאן.</p>
+    </div>
+  </div>
+
+  <!-- map sheet -->
+  <div class="sheet-wrap" id="mapSheet" role="dialog" aria-modal="true" aria-label="מפה">
+    <div class="backdrop" data-close></div>
+    <div class="sheet">
+      <header><h3 id="mapTitle"></h3><button class="x" data-close aria-label="סגור">✕</button></header>
+      <div id="map"></div>
+      <p class="note" id="mapNote" style="margin-top:8px"></p>
+    </div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+/*__IMGS__*/
+</script>
+<script>
+const DATA = __DATA__;
+// Photos are URLs, or keys into the optional embedded IMGS block (build with --embed-photos).
+const IMGS = typeof IMGS_EMBEDDED !== 'undefined' ? IMGS_EMBEDDED : {};
+for (const r of DATA.restaurants) {
+  if (r.img && !/^(https?:|data:)/.test(r.img)) r.img = IMGS[r.img] ? 'data:image/jpeg;base64,' + IMGS[r.img] : null;
+}
+const PRESETS = [
+  ['תל אביב · דיזנגוף', 32.0809, 34.7740], ['ירושלים · מחנה יהודה', 31.7852, 35.2120], ['חיפה · המושבה הגרמנית', 32.8193, 34.9877],
+  ['הרצליה', 32.1663, 34.8433], ['באר שבע', 31.2520, 34.7915], ['נצרת', 32.7019, 35.2971], ['טירה', 32.2343, 34.9502], ['פראג', 50.0870, 14.4208],
+];
+const EMOJI = [[/חומוס/, '🥙'], [/פיצ/, '🍕'], [/המבורגר|בורגר/, '🍔'], [/בשר|שיפוד|גריל|סטייק/, '🥩'], [/דג|ים/, '🐟'], [/סושי|יפני|אסי/, '🍣'],
+  [/קפה|מאפ|בוקר/, '☕'], [/איטלק|פסטה/, '🍝'], [/גלידה|קינוח/, '🍨'], [/בר|יין/, '🍷'], [/פלאפל|סביח|פיתה|שווארמה|קבב/, '🧆']];
+
+const $ = (id) => document.getElementById(id);
+const store = { get(k, d) { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } },
+                set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} } };
+let saved = new Set(store.get('w2e_poc_saved', []));
+let state = { origin: null, accuracy: null, fromDevice: false, list: [], index: 0 };
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---------- helpers ---------- */
+function haversine(a, b) {
+  const R = 6371000, toRad = (d) => d * Math.PI / 180;
+  const dLat = toRad(b.lat - a.lat), dLng = toRad(b.lng - a.lng);
+  const h = Math.sin(dLat / 2) ** 2 + Math.cos(toRad(a.lat)) * Math.cos(toRad(b.lat)) * Math.sin(dLng / 2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(h));
+}
+function fmtDist(m) {
+  if (state.fromDevice && state.accuracy > 500 && m < 1500) return 'כ-1 ק״מ';
+  if (m < 1000) return `${Math.round(m / 10) * 10} מ׳`;
+  return `${(m / 1000).toFixed(m < 10000 ? 1 : 0)} ק״מ`;
+}
+function fmtTime(s) { if (s == null) return null; s = Math.max(0, Math.round(s)); return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`; }
+function fmtDate(d) { if (!d) return ''; const [y, m, dd] = d.split('-'); return `${+dd}.${+m}.${y.slice(2)}`; }
+function esc(t) { return String(t ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+function emoji(cu) { for (const [re, e] of EMOJI) if (re.test(cu || '')) return e; return '🍽️'; }
+const isTasted = (m) => m.lvl === 'נטעם';
+function sourceLabel(m) {
+  const ep = (m.ep || '').replace(/\s*\|.*$/, '').trim();
+  const num = ep.match(/מדברים מהבטן,?\s*(פרק\s*)?(\d+)/);
+  if (num) return `מדברים מהבטן ${num[2]}`;
+  return (m.ch || 'מקור לא ידוע').replace(/\s*-\s*הפודיום$/, '');
+}
+function moment(m) { const t = Math.max(0, (m.t || 0) - 3); return { start: t, url: `https://www.youtube.com/watch?v=${m.v}${t ? `&t=${t}s` : ''}` }; }
+
+/* ---------- start screen ---------- */
+function initStart() {
+  const sources = [...new Set(DATA.restaurants.flatMap((r) => r.m.map((m) => m.ch).filter(Boolean)))];
+  const counts = Object.fromEntries(sources.map((s) => [s, DATA.restaurants.filter((r) => r.m.some((m) => m.ch === s)).length]));
+  sources.sort((a, b) => counts[b] - counts[a]);
+  $('src').innerHTML = `<option value="">כל המקורות (${DATA.restaurants.length})</option>` +
+    sources.map((s) => `<option value="${esc(s)}">${esc(s)} (${counts[s]})</option>`).join('');
+  $('presets').innerHTML = PRESETS.map(([n], i) => `<button class="pill" data-p="${i}">${esc(n)}</button>`).join('');
+  $('presets').onclick = (e) => { const b = e.target.closest('[data-p]'); if (!b) return; const [, lat, lng] = PRESETS[+b.dataset.p];
+    begin({ lat, lng }, null, false); };
+  $('useLoc').onclick = locate;
+  $('dataNote').textContent = `נתונים: צילום מצב של האתר החי מ-${DATA.meta.generated}. ${DATA.restaurants.length} מסעדות; ${DATA.meta.no_coords} מסעדות בלי מיקום לא מוצגות, ו-${DATA.restaurants.filter((r) => !r.img).length} בלי תמונה זמינה מוסתרות כברירת מחדל. תמונות: רק מאוחסנות או ישירות, בלי פרוקסי התמונות בתשלום.`;
+}
+function locate() {
+  $('locErr').textContent = '';
+  if (!navigator.geolocation) { $('locErr').textContent = 'הדפדפן לא תומך במיקום. בחרו נקודה למטה.'; return; }
+  $('useLoc').textContent = '📍 מאתר…';
+  navigator.geolocation.getCurrentPosition(
+    (p) => { $('useLoc').textContent = '📍 לפי המיקום שלי'; begin({ lat: p.coords.latitude, lng: p.coords.longitude }, p.coords.accuracy, true); },
+    (e) => { $('useLoc').textContent = '📍 לפי המיקום שלי';
+      $('locErr').textContent = e.code === 1 ? 'אין הרשאת מיקום. בחרו נקודה למטה.' : 'לא הצלחנו לאתר מיקום. בחרו נקודה למטה.'; },
+    { enableHighAccuracy: false, timeout: 10000, maximumAge: 300000 });
+}
+
+/* ---------- build the ordered list (locked until "update location") ---------- */
+function begin(origin, accuracy, fromDevice) {
+  Object.assign(state, { origin, accuracy, fromDevice });
+  const src = $('src').value, onlyTasted = $('tasted').checked, radius = +$('radius').value * 1000;
+  let items = DATA.restaurants.map((r) => {
+    let ms = r.m.filter((m) => (!src || m.ch === src) && (!onlyTasted || isTasted(m)));
+    ms = [...ms].sort((a, b) => isTasted(b) - isTasted(a));       // tasted before mentioned
+    return { r, ms, d: haversine(origin, r) };
+  }).filter((x) => x.ms.length && ($('noimg').checked || x.r.img));
+  const near = items.filter((x) => x.d <= radius).sort((a, b) => a.d - b.d);
+  const far = items.filter((x) => x.d > radius).sort((a, b) => (a.r.c || '').localeCompare(b.r.c || '', 'he') || a.d - b.d);
+  state.list = [...near, ...(far.length ? [{ divider: true, far: far.length, radius: radius / 1000 }] : []), ...far];
+  state.nearCount = near.length;
+  render();
+  $('start').hidden = true; $('top').hidden = false; $('refresh').hidden = !fromDevice;
+  $('feed').scrollTop = 0; $('feed').focus();
+  const help = document.createElement('div'); help.className = 'help'; help.textContent = '↕ מסעדה הבאה   ↔ אזכור הבא';
+  $('app').appendChild(help); setTimeout(() => help.remove(), 2800);
+}
+
+/* ---------- render ---------- */
+function slideHTML(x, m, i) {
+  const r = x.r, q = m.q, showSp = $('speakers').checked && m.sp;
+  const text = q ? (q.kind === 'verified' ? `״${esc(q.text)}״` : esc(q.text)) : '';
+  const t = fmtTime(m.t), isSaved = saved.has(r.id);
+  return `<div class="slide" data-i="${i}">
+    <div class="bg ${r.img ? '' : 'empty'}" data-emoji="${emoji(r.cu)}" ${r.img ? `data-img="${esc(r.img)}"` : ''}>${r.img ? '' : emoji(r.cu)}</div>
+    <div class="shade"></div>
+    <div class="rail">
+      <button class="rbtn play" data-act="play" aria-label="נגן ברגע הזה"><span class="ic">▶</span>${t || 'נגן'}</button>
+      <button class="rbtn" data-act="map" aria-label="מפה"><span class="ic">📍</span>מפה</button>
+      <button class="rbtn" data-act="save" aria-label="שמור" aria-pressed="${isSaved}"><span class="ic">${isSaved ? '♥' : '♡'}</span>שמור</button>
+    </div>
+    <div class="content">
+      ${q ? `<div class="quote" data-act="quote"><div class="qt">${text}</div><div class="more">עוד ▾</div></div>` : ''}
+      <div class="name">${esc(r.n)}${m.lvl === 'נטעם' ? '<span class="tick">נטעם</span>' : ''}</div>
+      <div class="meta"><b>${fmtDist(x.d)}</b> · ${esc(r.c || '')}${r.cu ? ' · ' + esc(r.cu) : ''}</div>
+      <div class="srcline">${esc(sourceLabel(m))}${t ? ' · ' + t : ''}${showSp ? ' · ' + esc(m.sp) : ''}</div>
+      ${r.wm ? '<div class="warn">⚠ ייתכן שהמיקום שגוי</div>' : ''}
+    </div>
+  </div>`;
+}
+function render() {
+  const feed = $('feed');
+  feed.innerHTML = state.list.map((x, si) => x.divider
+    ? `<section class="story" data-s="${si}"><div class="divider"><div><span class="pill sun">${x.far} מסעדות</span><h2>מחוץ ל-${x.radius} ק״מ</h2><p class="note">מקובצות לפי עיר, עם המרחק האמיתי. החליקו כדי להמשיך.</p></div></div></section>`
+    : `<section class="story" data-s="${si}"><div class="slides">${x.ms.map((m, i) => slideHTML(x, m, i)).join('')}</div></section>`).join('');
+  if (!state.list.length) feed.innerHTML = '<section class="story"><div class="divider"><div><h2>אין תוצאות</h2><p class="note">נסו מקור אחר או לבטל "רק נטעם".</p></div></div></section>';
+  observe(); update();
+  requestAnimationFrame(markClamped);
+}
+function markClamped() {
+  document.querySelectorAll('.quote .qt').forEach((q) => q.parentElement.classList.toggle('clamped', q.scrollHeight > q.clientHeight + 2));
+}
+
+/* lazy images + current-story tracking */
+let io;
+function observe() {
+  io?.disconnect();
+  io = new IntersectionObserver((entries) => {
+    for (const e of entries) {
+      if (!e.isIntersecting) continue;
+      const si = +e.target.dataset.s;
+      [si, si + 1].forEach((k) => document.querySelectorAll(`.story[data-s="${k}"] .bg[data-img]`).forEach((bg) => {
+        const url = bg.dataset.img; bg.removeAttribute('data-img');
+        const im = new Image();
+        im.onload = () => { bg.style.backgroundImage = `url("${url}")`; };
+        im.onerror = () => { bg.classList.add('empty'); bg.textContent = bg.dataset.emoji || '🍽️'; };
+        im.src = url; }));
+      if (e.intersectionRatio > 0.6) { state.index = si; update(); }
+    }
+  }, { root: $('feed'), threshold: [0.01, 0.65] });
+  document.querySelectorAll('.story').forEach((s) => io.observe(s));
+  document.querySelectorAll('.slides').forEach((sl) => sl.addEventListener('scroll', () => update(), { passive: true }));
+}
+function currentSlides() { return document.querySelector(`.story[data-s="${state.index}"] .slides`); }
+function slideIndex(sl) { return sl ? Math.round(Math.abs(sl.scrollLeft) / sl.clientWidth) : 0; }
+function update() {
+  const x = state.list[state.index];
+  const pos = state.list.slice(0, state.index + 1).filter((y) => !y.divider).length;
+  const total = state.list.filter((y) => !y.divider).length;
+  $('count').textContent = x && !x.divider ? `${pos}/${total}` : `${state.nearCount} בטווח`;
+  const sl = currentSlides(), n = x && !x.divider ? x.ms.length : 0, cur = slideIndex(sl);
+  $('dots').innerHTML = n > 1 ? Array.from({ length: n }, (_, i) => `<i class="${i === cur ? 'on' : ''}"></i>`).join('') : '';
+}
+
+/* ---------- actions ---------- */
+$('feed').addEventListener('click', (e) => {
+  const b = e.target.closest('[data-act]'); if (!b) return;
+  const si = +b.closest('.story').dataset.s, x = state.list[si], m = x.ms[+b.closest('.slide').dataset.i];
+  if (b.dataset.act === 'quote') { b.classList.toggle('open'); return; }
+  if (b.dataset.act === 'play') openPlayer(x, m);
+  if (b.dataset.act === 'map') openMap(x);
+  if (b.dataset.act === 'save') {
+    saved.has(x.r.id) ? saved.delete(x.r.id) : saved.add(x.r.id); store.set('w2e_poc_saved', [...saved]);
+    document.querySelectorAll(`.story[data-s="${si}"] [data-act=save]`).forEach((s) => {
+      s.querySelector('.ic').textContent = saved.has(x.r.id) ? '♥' : '♡'; s.setAttribute('aria-pressed', saved.has(x.r.id)); });
+  }
+});
+function openSheet(id) { $(id).classList.add('open'); }
+function closeSheets() { document.querySelectorAll('.sheet-wrap.open').forEach((s) => s.classList.remove('open')); $('player').innerHTML = ''; $('feed').focus(); }
+document.querySelectorAll('[data-close]').forEach((el) => el.addEventListener('click', closeSheets));
+
+function openPlayer(x, m) {
+  const { start, url } = moment(m);
+  $('playerTitle').textContent = `${x.r.n} · ${fmtTime(start) || 'מההתחלה'}`;
+  $('ytLink').href = url;
+  // Official embed, loaded only on tap (facade). No overlays on the player.
+  $('player').innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(m.v)}?start=${start}&autoplay=1&playsinline=1&rel=0"
+    title="YouTube" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>`;
+  openSheet('playerSheet');
+}
+let map, layer;
+function openMap(x) {
+  $('mapTitle').textContent = x.r.n;
+  $('mapNote').textContent = `${fmtDist(x.d)} בקו אווירי מנקודת ההתחלה (לא זמן הליכה).`;
+  openSheet('mapSheet');
+  if (!window.L) { $('map').textContent = 'המפה לא נטענה (צריך חיבור לאינטרנט).'; return; }
+  if (!map) { map = L.map('map', { zoomControl: true }); L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap' }).addTo(map); }
+  layer?.remove();
+  const a = [state.origin.lat, state.origin.lng], b = [x.r.lat, x.r.lng];
+  layer = L.layerGroup([
+    L.circleMarker(a, { radius: 9, color: '#13201F', weight: 3, fillColor: '#0E8388', fillOpacity: 1 }).bindTooltip(state.fromDevice ? 'אתם כאן' : 'נקודת התחלה'),
+    L.marker(b).bindTooltip(x.r.n, { permanent: true, direction: 'top', offset: [-15, -12] }),
+    L.polyline([a, b], { color: '#13201F', dashArray: '6 6', weight: 2 }),
+  ]).addTo(map);
+  setTimeout(() => { map.invalidateSize(); map.fitBounds([a, b], { padding: [40, 40], maxZoom: 16 }); }, 50);
+}
+
+/* ---------- navigation ---------- */
+function goStory(delta) {
+  const next = Math.max(0, Math.min(state.list.length - 1, state.index + delta));
+  $('feed').querySelector(`.story[data-s="${next}"]`)?.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth' });
+}
+function goSlide(delta) {
+  const sl = currentSlides(); if (!sl) return;
+  const n = sl.children.length, i = Math.max(0, Math.min(n - 1, slideIndex(sl) + delta));
+  sl.children[i].scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'nearest', inline: 'start' });
+}
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') return closeSheets();
+  if (document.querySelector('.sheet-wrap.open') || !$('start').hidden) return;
+  if (e.key === 'ArrowDown' || e.key === 'PageDown') { e.preventDefault(); goStory(1); }
+  if (e.key === 'ArrowUp' || e.key === 'PageUp') { e.preventDefault(); goStory(-1); }
+  if (e.key === 'ArrowLeft') { e.preventDefault(); goSlide(1); }   // RTL: left = next
+  if (e.key === 'ArrowRight') { e.preventDefault(); goSlide(-1); }
+});
+$('back').onclick = () => { closeSheets(); $('start').hidden = false; $('top').hidden = true; $('dots').innerHTML = ''; };
+$('refresh').onclick = locate;
+
+initStart();
+</script>
+</body>
+</html>

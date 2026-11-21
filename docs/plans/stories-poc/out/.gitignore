@@ -1,0 +1,3 @@
+# Built prototypes contain Google Places photos and creator quotes: never commit them.
+*
+!.gitignore
