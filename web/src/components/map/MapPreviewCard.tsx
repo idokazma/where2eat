@@ -11,9 +11,13 @@ import {
   ChevronRight,
   UtensilsCrossed,
   Radio,
+  Instagram,
 } from "lucide-react";
 import type { Restaurant } from "@/types/restaurant";
-import { getMapPreviewImage } from "@/lib/map-discovery";
+import {
+  getMapPreviewImage,
+  getRestaurantInstagramUrl,
+} from "@/lib/map-discovery";
 
 interface Props {
   restaurant: Restaurant;
@@ -39,6 +43,7 @@ export function MapPreviewCard({
   distance,
 }: Props) {
   const image = getMapPreviewImage(r);
+  const instagramUrl = getRestaurantInstagramUrl(r);
   const [failedImage, setFailedImage] = useState<string | null>(null);
   const sameEpisode =
     r.mentions?.filter((m) => m.video_id === r.episode_info?.video_id) || [];
@@ -127,6 +132,18 @@ export function MapPreviewCard({
             {r.episode_info?.title && <small>{r.episode_info.title}</small>}
           </div>
         </div>
+        {instagramUrl && (
+          <a
+            className="discovery-instagram"
+            href={instagramUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`אינסטגרם של ${r.name_hebrew || r.name_english} (נפתח בחלון חדש)`}
+            title="האינסטגרם של המסעדה"
+          >
+            <Instagram size={21} aria-hidden="true" />
+          </a>
+        )}
         <button
           className={`discovery-save ${saved ? "is-saved" : ""}`}
           onClick={onSave}
