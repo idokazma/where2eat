@@ -1,230 +1,385 @@
-'use client';
+"use client";
 
-import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
-import dynamic from 'next/dynamic';
-import { PageLayout } from '@/components/layout';
-import { endpoints } from '@/lib/config';
-import { MapPin, Loader2, Heart, Calendar, MessageSquare } from 'lucide-react';
-import { useFavorites } from '@/contexts/favorites-context';
-import { Button } from '@/components/ui/button';
-import { getCoordinates } from '@/types/restaurant';
-import { useGeolocation } from '@/hooks/useGeolocation';
-import { haversineDistance } from '@/lib/geo-utils';
-import type { ColorMode, MapRestaurant } from '@/components/map/MapView';
-import type { MapBottomSheetHandle } from '@/components/map/MapBottomSheet';
-import type { WithDistance } from '@/lib/geo-utils';
+import { useEffect, useMemo, useRef, useState } from "react";
+import dynamic from "next/dynamic";
+import {
+  Search,
+  SlidersHorizontal,
+  X,
+  MapPin,
+  Loader2,
+  List,
+} from "lucide-react";
+import { PageLayout } from "@/components/layout";
+import { endpoints } from "@/lib/config";
+import { useFavorites } from "@/contexts/favorites-context";
+import { useGeolocation } from "@/hooks/useGeolocation";
+import type { Restaurant } from "@/types/restaurant";
+import { getCoordinates } from "@/types/restaurant";
+import {
+  favoriteKey,
+  filterMapRestaurants,
+  isSaved,
+  mapId,
+} from "@/lib/map-discovery";
+import { formatDistance, haversineDistance } from "@/lib/geo-utils";
+import { MapPreviewCard } from "@/components/map/MapPreviewCard";
+import "./map.css";
 
-// Dynamic imports to avoid SSR issues with Leaflet
-const MapView = dynamic(() => import('@/components/map/MapView'), {
+const MapView = dynamic(() => import("@/components/map/MapView"), {
   ssr: false,
   loading: () => (
-    <div className="flex items-center justify-center min-h-[60vh]">
-      <Loader2 className="w-8 h-8 animate-spin text-[var(--color-ink-muted)]" />
+    <div className="discovery-loading">
+      <Loader2 className="animate-spin" />
+      <span>טוען מפה…</span>
     </div>
   ),
 });
 
-const MapBottomSheet = dynamic(
-  () => import('@/components/map/MapBottomSheet').then((mod) => mod.MapBottomSheet),
-  { ssr: false }
-);
-
 export default function MapPage() {
-  const [restaurants, setRestaurants] = useState<MapRestaurant[]>([]);
+  const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [showSavedOnly, setShowSavedOnly] = useState(false);
-  const [colorMode, setColorMode] = useState<ColorMode>('heat');
-  const [selectedRestaurantId, setSelectedRestaurantId] = useState<string | null>(null);
-  const { favorites, setAllRestaurants } = useFavorites();
-  const bottomSheetRef = useRef<MapBottomSheetHandle>(null);
+  const [query, setQuery] = useState("");
+  const [source, setSource] = useState("");
+  const [cuisine, setCuisine] = useState("");
+  const [savedOnly, setSavedOnly] = useState(false);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [panel, setPanel] = useState<"filters" | "list">("filters");
+  const [clusterItems, setClusterItems] = useState<Restaurant[] | null>(null);
+  const dialog = useRef<HTMLDialogElement>(null);
+  const { favorites, setAllRestaurants, addFavorite, removeFavorite } =
+    useFavorites();
+  const {
+    coords,
+    accuracy,
+    loading: locating,
+    error: locationError,
+    getCurrentPosition,
+  } = useGeolocation();
 
-  // Geolocation (on-demand — user taps the location icon)
-  const { coords: userCoords, accuracy, loading: locationLoading, getCurrentPosition } = useGeolocation();
-
-  // Fetch restaurants from last 3 months
   useEffect(() => {
+    const controller = new AbortController();
     const threeMonthsAgo = new Date();
     threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
-    const dateStart = threeMonthsAgo.toISOString().split('T')[0];
-
-    fetch(endpoints.restaurants.search({ date_start: dateStart, sort_by: 'published_at', sort_direction: 'desc', limit: '100' }))
+    // Preserve existing data scope, including the 100-result cap.
+    fetch(
+      endpoints.restaurants.search({
+        date_start: threeMonthsAgo.toISOString().split("T")[0],
+        sort_by: "published_at",
+        sort_direction: "desc",
+        limit: "100",
+      }),
+      { signal: controller.signal },
+    )
       .then((res) => {
-        if (!res.ok) throw new Error('Failed to fetch restaurants');
+        if (!res.ok) throw new Error("fetch failed");
         return res.json();
       })
       .then((data) => {
-        const allRestaurants = data.restaurants || [];
-        setRestaurants(allRestaurants);
-        setAllRestaurants(allRestaurants);
+        setRestaurants(data.restaurants || []);
+        setAllRestaurants(data.restaurants || []);
         setLoading(false);
       })
       .catch((err) => {
-        console.error('Error fetching restaurants:', err);
-        setError('שגיאה בטעינת המסעדות');
-        setLoading(false);
+        if (err.name !== "AbortError") {
+          setError("שגיאה בטעינת המסעדות. נסו לרענן את העמוד.");
+          setLoading(false);
+        }
       });
+    return () => controller.abort();
   }, [setAllRestaurants]);
 
-  // Filter to restaurants that have coordinates
-  const mappableRestaurants = useMemo(
-    () => restaurants.filter((r) => getCoordinates(r.location) !== null),
-    [restaurants]
+  const mappable = useMemo(
+    () => restaurants.filter((r) => getCoordinates(r.location)),
+    [restaurants],
   );
-
-  // Apply saved filter
-  const displayedRestaurants = useMemo(() => {
-    if (!showSavedOnly) return mappableRestaurants;
-    return mappableRestaurants.filter((r) =>
-      favorites.includes(r.google_places?.place_id || r.name_hebrew)
+  const displayed = useMemo(() => {
+    const filtered = filterMapRestaurants(
+      mappable,
+      query,
+      source,
+      cuisine,
+      savedOnly,
+      favorites,
     );
-  }, [mappableRestaurants, showSavedOnly, favorites]);
-
+    if (!coords) return filtered;
+    const distanceTo = (r: Restaurant) => {
+      const c = getCoordinates(r.location)!;
+      return haversineDistance(coords, { lat: c.latitude, lng: c.longitude });
+    };
+    return filtered.sort((a, b) => distanceTo(a) - distanceTo(b));
+  }, [mappable, query, source, cuisine, savedOnly, favorites, coords]);
   const favoriteIds = useMemo(() => new Set(favorites), [favorites]);
-
-  // Build distance-aware list for bottom sheet, sorted by proximity when location is available
-  const restaurantsWithDistance: WithDistance<MapRestaurant>[] = useMemo(() => {
-    if (!userCoords) {
-      // No location — keep API order (by date), no distances
-      return displayedRestaurants.map((item) => ({ item, distance: 0 }));
-    }
-    // Compute distances and sort closest-first
-    return displayedRestaurants
-      .map((item) => {
-        const coords = getCoordinates(item.location);
-        if (!coords) return { item, distance: 0 };
-        return {
-          item,
-          distance: haversineDistance(userCoords, { lat: coords.latitude, lng: coords.longitude }),
-        };
-      })
-      .sort((a, b) => a.distance - b.distance);
-  }, [displayedRestaurants, userCoords]);
-
-  // Handle marker click from map — select and scroll bottom sheet
-  const handleMarkerClick = useCallback(
-    (id: string) => {
-      setSelectedRestaurantId(id);
-      bottomSheetRef.current?.scrollToId(id);
-      bottomSheetRef.current?.expandHalf();
-    },
-    []
+  const sources = useMemo(
+    () =>
+      [
+        ...new Set(
+          mappable
+            .map((r) => r.episode_info?.channel_name)
+            .filter((s): s is string => !!s),
+        ),
+      ].sort(),
+    [mappable],
   );
-
-  // Handle list item selection — sync to map
-  const handleListSelect = useCallback((id: string) => {
-    setSelectedRestaurantId(id);
-  }, []);
-
-  // Handle one-time location fetch
-  const handleLocateMe = useCallback(() => {
-    getCurrentPosition().catch(() => {
-      // Error is already set in the hook state
-    });
-  }, [getCurrentPosition]);
-
-  // Toggle color mode
-  const toggleColorMode = useCallback(() => {
-    setColorMode((prev) => (prev === 'heat' ? 'opinion' : 'heat'));
-  }, []);
+  const cuisines = useMemo(
+    () =>
+      [
+        ...new Set(
+          mappable.map((r) => r.cuisine_type).filter((s): s is string => !!s),
+        ),
+      ].sort(),
+    [mappable],
+  );
+  const selectedIndex = displayed.findIndex((r) => mapId(r) === selectedId);
+  const selected = displayed[selectedIndex];
+  const activeFilters =
+    Number(!!source) + Number(!!cuisine) + Number(savedOnly);
+  const openPanel = (
+    next: "filters" | "list",
+    items: Restaurant[] | null = null,
+  ) => {
+    setPanel(next);
+    setClusterItems(items);
+    dialog.current?.showModal();
+  };
+  const reset = () => {
+    setQuery("");
+    setSource("");
+    setCuisine("");
+    setSavedOnly(false);
+  };
+  const move = (delta: number) =>
+    setSelectedId(
+      mapId(
+        displayed[
+          (selectedIndex + delta + displayed.length) % displayed.length
+        ],
+      ),
+    );
+  const save = (r: Restaurant) => {
+    if (isSaved(r, favorites)) {
+      removeFavorite(favoriteKey(r));
+      const oldKey = r.google_places?.place_id || r.name_hebrew;
+      if (oldKey !== favoriteKey(r)) removeFavorite(oldKey);
+    } else addFavorite(favoriteKey(r));
+  };
+  const point = selected && getCoordinates(selected.location);
+  const distance =
+    point && coords
+      ? formatDistance(
+          haversineDistance(coords, {
+            lat: point.latitude,
+            lng: point.longitude,
+          }),
+        )
+      : undefined;
 
   return (
-    <PageLayout title="מפה" showHeader showBottomNav>
-      {loading ? (
-        <div className="flex items-center justify-center min-h-[60vh]">
-          <Loader2 className="w-8 h-8 animate-spin text-[var(--color-ink-muted)]" />
-        </div>
-      ) : error ? (
-        <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
-          <MapPin className="w-10 h-10 text-red-500 mb-4" />
-          <p className="text-red-500">{error}</p>
-        </div>
-      ) : mappableRestaurants.length === 0 ? (
-        <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
-          <MapPin className="w-10 h-10 text-[var(--color-ink-muted)] mb-4" />
-          <h2 className="text-xl font-bold text-[var(--color-ink)] mb-2">
-            אין מסעדות עם נתוני מיקום
-          </h2>
-          <p className="text-[var(--color-ink-muted)] max-w-xs">
-            כרגע אין מסעדות עם נתוני מיקום גיאוגרפי להצגה על המפה
-          </p>
-        </div>
-      ) : (
-        <div className="h-[calc(100vh-140px)] relative overflow-hidden">
-          {/* Top controls */}
-          <div className="absolute top-3 right-3 z-[1000] flex gap-2" dir="rtl">
-            {/* Saved toggle */}
-            <Button
-              onClick={() => setShowSavedOnly(!showSavedOnly)}
-              variant={showSavedOnly ? 'default' : 'outline'}
-              size="sm"
-              className={
-                showSavedOnly
-                  ? 'bg-red-500 hover:bg-red-600 text-white border-red-500 shadow-md'
-                  : 'bg-white hover:bg-gray-100 text-[var(--color-ink)] border-gray-300 shadow-md'
-              }
-            >
-              <Heart className={`w-4 h-4 ml-1 ${showSavedOnly ? 'fill-current' : ''}`} />
-              {showSavedOnly ? 'שמורים בלבד' : 'שמורים'}
-            </Button>
-
-            {/* Color mode toggle */}
-            <Button
-              onClick={toggleColorMode}
-              variant="outline"
-              size="sm"
-              className="bg-white hover:bg-gray-100 text-[var(--color-ink)] border-gray-300 shadow-md"
-            >
-              {colorMode === 'heat' ? (
-                <>
-                  <Calendar className="w-4 h-4 ml-1" />
-                  לפי תאריך
-                </>
-              ) : (
-                <>
-                  <MessageSquare className="w-4 h-4 ml-1" />
-                  לפי דעה
-                </>
-              )}
-            </Button>
+    <PageLayout showHeader={false} showBottomNav className="discovery-layout">
+      <div
+        className={`discovery-shell ${selected ? "has-preview" : ""}`}
+        dir="rtl"
+      >
+        <h1 className="sr-only">מפת המסעדות</h1>
+        {loading ? (
+          <div className="discovery-loading" role="status">
+            <Loader2 className="animate-spin" />
+            <span>טוען מסעדות…</span>
           </div>
-
-          {showSavedOnly && displayedRestaurants.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-full text-center px-4">
-              <Heart className="w-10 h-10 text-[var(--color-ink-muted)] mb-4" />
-              <h2 className="text-xl font-bold text-[var(--color-ink)] mb-2">
-                אין מסעדות שמורות עם מיקום
-              </h2>
-              <p className="text-[var(--color-ink-muted)] max-w-xs">
-                שמור מסעדות כדי לראות אותן על המפה
+        ) : error ? (
+          <div className="discovery-loading" role="alert">
+            <MapPin />
+            <p>{error}</p>
+          </div>
+        ) : (
+          <>
+            <MapView
+              restaurants={displayed}
+              favoriteIds={favoriteIds}
+              userCoords={coords}
+              userAccuracy={accuracy}
+              locationLoading={locating}
+              onLocateMe={() => {
+                getCurrentPosition().catch(() => {});
+              }}
+              selectedRestaurantId={selected ? mapId(selected) : null}
+              onMarkerClick={setSelectedId}
+              onDismiss={() => setSelectedId(null)}
+              onClusterSelect={(items) => openPanel("list", items)}
+            />
+            <div className="discovery-top">
+              <div className="discovery-search-row">
+                <label className="discovery-search">
+                  <Search size={22} />
+                  <input
+                    aria-label="חיפוש מסעדה או מטבח"
+                    placeholder="חיפוש מסעדה או מטבח"
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                  />
+                  {query && (
+                    <button
+                      aria-label="ניקוי חיפוש"
+                      onClick={() => setQuery("")}
+                    >
+                      <X size={17} />
+                    </button>
+                  )}
+                </label>
+                <button
+                  className="discovery-filter-button"
+                  aria-label="סינון מסעדות"
+                  onClick={() => openPanel("filters")}
+                >
+                  <SlidersHorizontal size={22} />
+                  {activeFilters > 0 && <b>{activeFilters}</b>}
+                </button>
+              </div>
+              <p className="discovery-scope" role="status">
+                {displayed.length} על המפה · עד 100 האחרונות מ־3 חודשים
+                {activeFilters > 0 || query ? " · מסונן" : ""}
               </p>
             </div>
-          ) : (
-            <>
-              <MapView
-                restaurants={displayedRestaurants}
-                favoriteIds={favoriteIds}
-                userCoords={userCoords}
-                userAccuracy={accuracy}
-                locationLoading={locationLoading}
-                onLocateMe={handleLocateMe}
-                colorMode={colorMode}
-                selectedRestaurantId={selectedRestaurantId}
-                onMarkerClick={handleMarkerClick}
+            {locationError && (
+              <p className="discovery-location-error" role="alert">
+                {locationError}
+              </p>
+            )}
+            {!displayed.length && (
+              <div className="discovery-empty">
+                <MapPin />
+                <h2>
+                  {mappable.length
+                    ? "אין תוצאות לסינון הזה"
+                    : "אין מסעדות עם נתוני מיקום"}
+                </h2>
+                {mappable.length > 0 && (
+                  <button onClick={reset}>ניקוי הסינון</button>
+                )}
+              </div>
+            )}
+            {selected ? (
+              <MapPreviewCard
+                key={mapId(selected)}
+                restaurant={selected}
+                saved={isSaved(selected, favorites)}
+                onSave={() => save(selected)}
+                onDismiss={() => setSelectedId(null)}
+                onPrevious={() => move(-1)}
+                onNext={() => move(1)}
+                count={displayed.length}
+                position={selectedIndex}
+                distance={distance}
               />
-
-              {/* Bottom sheet */}
-              <MapBottomSheet
-                ref={bottomSheetRef}
-                restaurants={restaurantsWithDistance}
-                selectedId={selectedRestaurantId}
-                onSelect={handleListSelect}
-                favoriteIds={favoriteIds}
-              />
-            </>
-          )}
-        </div>
-      )}
+            ) : (
+              displayed.length > 0 && (
+                <button
+                  className="discovery-list-button"
+                  onClick={() => openPanel("list")}
+                >
+                  <List size={18} /> רשימת המסעדות ({displayed.length})
+                </button>
+              )
+            )}
+          </>
+        )}
+        <dialog
+          ref={dialog}
+          className="discovery-dialog"
+          aria-labelledby="discovery-panel-title"
+          onClick={(e) => {
+            if (e.target === dialog.current) dialog.current.close();
+          }}
+        >
+          <div className="discovery-dialog-content" dir="rtl">
+            <header>
+              <h2 id="discovery-panel-title">
+                {panel === "filters"
+                  ? "מה מתחשק לך?"
+                  : clusterItems
+                    ? "מסעדות בנקודה הזו"
+                    : "המסעדות במפה"}
+              </h2>
+              <button
+                aria-label="סגירה"
+                onClick={() => dialog.current?.close()}
+              >
+                <X />
+              </button>
+            </header>
+            {panel === "filters" ? (
+              <>
+                <label className="discovery-field">
+                  מקור
+                  <select
+                    value={source}
+                    onChange={(e) => setSource(e.target.value)}
+                  >
+                    <option value="">כל המקורות</option>
+                    {sources.map((s) => (
+                      <option key={s}>{s}</option>
+                    ))}
+                  </select>
+                </label>
+                <label className="discovery-field">
+                  מטבח
+                  <select
+                    value={cuisine}
+                    onChange={(e) => setCuisine(e.target.value)}
+                  >
+                    <option value="">כל המטבחים</option>
+                    {cuisines.map((c) => (
+                      <option key={c}>{c}</option>
+                    ))}
+                  </select>
+                </label>
+                <label className="discovery-saved-toggle">
+                  <span>רק מסעדות ששמרתי</span>
+                  <input
+                    type="checkbox"
+                    checked={savedOnly}
+                    onChange={(e) => setSavedOnly(e.target.checked)}
+                  />
+                </label>
+                <div className="discovery-dialog-actions">
+                  <button onClick={reset}>ניקוי הכל</button>
+                  <button
+                    className="discovery-primary"
+                    onClick={() => dialog.current?.close()}
+                  >
+                    הצגת {displayed.length} מסעדות
+                  </button>
+                </div>
+              </>
+            ) : (
+              <ul className="discovery-results">
+                {(clusterItems || displayed).map((r) => (
+                  <li key={mapId(r)}>
+                    <button
+                      onClick={() => {
+                        setSelectedId(mapId(r));
+                        dialog.current?.close();
+                      }}
+                    >
+                      <b>{r.name_hebrew}</b>
+                      <span>
+                        {[
+                          r.cuisine_type,
+                          r.location?.city,
+                          r.episode_info?.channel_name,
+                        ]
+                          .filter(Boolean)
+                          .join(" · ")}
+                      </span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </dialog>
+      </div>
     </PageLayout>
   );
 }
