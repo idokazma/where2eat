@@ -53,6 +53,14 @@ const data = [
     location: { lat: 33, lng: 35 },
     cuisine_type: "איטלקי",
     episode_info: { channel_name: "מקור ב" },
+    mentions: [{ channel_name: "מקור ג" }],
+  },
+  {
+    id: "hidden",
+    name_hebrew: "מוסתרת",
+    location: { lat: 32.5, lng: 35 },
+    is_hidden: true,
+    episode_info: { channel_name: "מקור א" },
   },
 ];
 
@@ -77,22 +85,27 @@ const renderPage = () =>
       <MapPage />
     </FavoritesProvider>,
   );
-it("preserves the capped three-month query and does not request GPS at startup", async () => {
+it("loads every listed restaurant, with no date cutoff or 100 cap, and no GPS at startup", async () => {
   renderPage();
   await screen.findByText(/2 על המפה/);
   const url = new URL(
     (global.fetch as jest.Mock).mock.calls[0][0],
     "https://test.example",
   );
-  expect(url.searchParams.get("limit")).toBe("100");
-  expect(url.searchParams.get("sort_by")).toBe("published_at");
-  expect(url.searchParams.get("sort_direction")).toBe("desc");
-  const cutoff = new Date();
-  cutoff.setMonth(cutoff.getMonth() - 3);
-  expect(url.searchParams.get("date_start")).toBe(
-    cutoff.toISOString().split("T")[0],
-  );
+  expect(url.searchParams.get("limit")).toBe("500");
+  expect(url.searchParams.get("date_start")).toBeNull();
+  expect(screen.getByRole("status").textContent).not.toMatch(/100|חודשים/);
+  expect(screen.queryByText("מוסתרת")).toBeNull();
   expect(mockLocate).not.toHaveBeenCalled();
+});
+it("filters by a source that appears only in a restaurant's extra mentions", async () => {
+  renderPage();
+  await screen.findByText(/2 על המפה/);
+  fireEvent.click(screen.getByLabelText("סינון מסעדות"));
+  fireEvent.change(screen.getByLabelText("מקור", { exact: true }), {
+    target: { value: "מקור ג" },
+  });
+  expect(screen.getByText(/1 על המפה/)).toBeInTheDocument();
 });
 it("selects one preview, saves persistently, and filters saved restaurants", async () => {
   renderPage();

@@ -14,11 +14,13 @@ import { PageLayout } from "@/components/layout";
 import { endpoints } from "@/lib/config";
 import { useFavorites } from "@/contexts/favorites-context";
 import { useGeolocation } from "@/hooks/useGeolocation";
+import { isListed } from "@/lib/restaurant-visibility";
 import type { Restaurant } from "@/types/restaurant";
 import { getCoordinates } from "@/types/restaurant";
 import {
   favoriteKey,
   filterMapRestaurants,
+  restaurantSources,
   isSaved,
   mapId,
 } from "@/lib/map-discovery";
@@ -60,15 +62,13 @@ export default function MapPage() {
 
   useEffect(() => {
     const controller = new AbortController();
-    const threeMonthsAgo = new Date();
-    threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
-    // Preserve existing data scope, including the 100-result cap.
+    // The same full list as the home page, newest first.
     fetch(
       endpoints.restaurants.search({
-        date_start: threeMonthsAgo.toISOString().split("T")[0],
+        page: "1",
+        limit: "500",
         sort_by: "published_at",
         sort_direction: "desc",
-        limit: "100",
       }),
       { signal: controller.signal },
     )
@@ -91,7 +91,7 @@ export default function MapPage() {
   }, [setAllRestaurants]);
 
   const mappable = useMemo(
-    () => restaurants.filter((r) => getCoordinates(r.location)),
+    () => restaurants.filter((r) => isListed(r) && getCoordinates(r.location)),
     [restaurants],
   );
   const displayed = useMemo(() => {
@@ -115,9 +115,7 @@ export default function MapPage() {
     () =>
       [
         ...new Set(
-          mappable
-            .map((r) => r.episode_info?.channel_name)
-            .filter((s): s is string => !!s),
+          mappable.flatMap(restaurantSources),
         ),
       ].sort(),
     [mappable],
@@ -237,7 +235,7 @@ export default function MapPage() {
                 </button>
               </div>
               <p className="discovery-scope" role="status">
-                {displayed.length} על המפה · עד 100 האחרונות מ־3 חודשים
+                {displayed.length} על המפה
                 {activeFilters > 0 || query ? " · מסונן" : ""}
               </p>
             </div>

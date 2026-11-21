@@ -10,6 +10,18 @@ export const isSaved = (r: Restaurant, favorites: string[]) =>
   favorites.includes(favoriteKey(r)) ||
   favorites.includes(r.google_places?.place_id || r.name_hebrew);
 
+/** Every source a restaurant appears in: its main episode and any extra mentions. */
+export function restaurantSources(r: Restaurant): string[] {
+  const names = new Set<string>();
+  const main = r.episode_info?.channel_name?.trim();
+  if (main) names.add(main);
+  for (const m of r.mentions ?? []) {
+    const cn = m.channel_name?.trim();
+    if (cn) names.add(cn);
+  }
+  return [...names];
+}
+
 export function filterMapRestaurants(
   restaurants: Restaurant[],
   query: string,
@@ -26,7 +38,7 @@ export function filterMapRestaurants(
         [r.name_hebrew, r.name_english, r.cuisine_type, r.location?.city].some(
           (v) => v?.toLocaleLowerCase().includes(text),
         )) &&
-      (!source || r.episode_info?.channel_name === source) &&
+      (!source || restaurantSources(r).includes(source)) &&
       (!cuisine || r.cuisine_type === cuisine) &&
       (!savedOnly || isSaved(r, favorites)),
   );
