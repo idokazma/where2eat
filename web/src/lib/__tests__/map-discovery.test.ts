@@ -1,5 +1,6 @@
 import {
   filterMapRestaurants,
+  restaurantSources,
   groupMapPoints,
   isSaved,
   getMapPreviewImage,
@@ -105,4 +106,25 @@ it("uses only stored direct images, never a paid Places request", () => {
       image_url: "https://app.example/api/venue-images/a.jpg",
     }),
   ).toBe("https://app.example/api/venue-images/a.jpg");
+});
+
+describe("restaurant sources", () => {
+  it("includes the main episode's source and every extra mention's source", () => {
+    const r = {
+      name_hebrew: "x",
+      episode_info: { channel_name: "מקור א" },
+      mentions: [{ channel_name: "מקור ב" }, { channel_name: "מקור א" }, {}],
+    } as unknown as Restaurant;
+    expect(restaurantSources(r).sort()).toEqual(["מקור א", "מקור ב"]);
+  });
+  it("matches the source filter on an extra mention", () => {
+    const r = {
+      id: "m",
+      name_hebrew: "x",
+      location: { lat: 32, lng: 35 },
+      episode_info: { channel_name: "מקור א" },
+      mentions: [{ channel_name: "מקור ב" }],
+    } as unknown as Restaurant;
+    expect(filterMapRestaurants([r], "", "מקור ב", "", false, [])).toEqual([r]);
+  });
 });
