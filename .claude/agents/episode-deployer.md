@@ -56,13 +56,28 @@ else:
 
 If there are missing images, stop and ask the user if they want to proceed or fix first.
 
-### Step 2: Upload restaurants
+### Step 2: Log in, then upload restaurants
+
+Creating restaurants requires an editor or admin bearer token. Log in once with
+credentials from the `WHERE2EAT_ADMIN_EMAIL` / `WHERE2EAT_ADMIN_PASSWORD`
+environment variables (ask the user if they are unset; never print, hard-code or
+commit them). The same `$TOKEN` is used in Step 3.
+
+```bash
+TOKEN=$(python3 -c 'import json,os; print(json.dumps({"email": os.environ["WHERE2EAT_ADMIN_EMAIL"], "password": os.environ["WHERE2EAT_ADMIN_PASSWORD"]}))' | \
+  curl -s -X POST "https://where2eat-production.up.railway.app/api/admin/auth/login" \
+    -H "Content-Type: application/json" \
+    -H "Origin: https://where2eat-delta.vercel.app" \
+    -d @- | python3 -c "import json,sys; print(json.load(sys.stdin).get('token',''))")
+[ -n "$TOKEN" ] || { echo "Admin login failed"; exit 1; }
+```
 
 For each `add_to_page` restaurant, POST to the Railway API:
 
 ```bash
 curl -s -X POST "https://where2eat-production.up.railway.app/api/restaurants" \
   -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $TOKEN" \
   -H "Origin: https://where2eat-delta.vercel.app" \
   -d '{
     "name_hebrew": "RESTAURANT_NAME",
@@ -98,18 +113,9 @@ Status mapping: `open` → `פתוח`, `new` → `חדש`
 ### Step 3: Seed episode mentions
 
 POST the full extraction JSON to the seed endpoint. It requires an admin
-bearer token (admin or super_admin role). Log in with credentials from the
-`WHERE2EAT_ADMIN_EMAIL` / `WHERE2EAT_ADMIN_PASSWORD` environment variables (ask
-the user if they are unset; never print, hard-code or commit them):
+bearer token (admin or super_admin role): the `$TOKEN` from Step 2.
 
 ```bash
-TOKEN=$(python3 -c 'import json,os; print(json.dumps({"email": os.environ["WHERE2EAT_ADMIN_EMAIL"], "password": os.environ["WHERE2EAT_ADMIN_PASSWORD"]}))' | \
-  curl -s -X POST "https://where2eat-production.up.railway.app/api/admin/auth/login" \
-    -H "Content-Type: application/json" \
-    -H "Origin: https://where2eat-delta.vercel.app" \
-    -d @- | python3 -c "import json,sys; print(json.load(sys.stdin).get('token',''))")
-[ -n "$TOKEN" ] || { echo "Admin login failed"; exit 1; }
-
 curl -s -X POST "https://where2eat-production.up.railway.app/api/episodes/seed" \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $TOKEN" \

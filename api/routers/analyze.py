@@ -6,7 +6,8 @@ from pathlib import Path
 from typing import Optional
 from datetime import datetime, timedelta
 
-from fastapi import APIRouter, HTTPException, Query, BackgroundTasks
+from fastapi import APIRouter, Depends, HTTPException, Query, BackgroundTasks
+from routers.admin import require_role
 
 from models.analyze import (
     AnalyzeVideoRequest,
@@ -76,6 +77,7 @@ async def run_channel_analysis(channel_url: str, filters: dict, options: dict):
 async def analyze_video(
     request: AnalyzeVideoRequest,
     background_tasks: BackgroundTasks,
+    user: dict = Depends(require_role(["editor", "admin", "super_admin"])),
 ):
     """Analyze a YouTube video for restaurant mentions."""
     # Use default URL if not provided
@@ -104,6 +106,7 @@ async def analyze_video(
 async def analyze_channel(
     request: AnalyzeChannelRequest,
     background_tasks: BackgroundTasks,
+    user: dict = Depends(require_role(["editor", "admin", "super_admin"])),
 ):
     """Analyze a YouTube channel for restaurant mentions."""
     valid_patterns = [
@@ -262,7 +265,7 @@ async def get_job_results(job_id: str):
     summary="Cancel job",
     description="Cancel a running analysis job.",
 )
-async def cancel_job(job_id: str):
+async def cancel_job(job_id: str, user: dict = Depends(require_role(["editor", "admin", "super_admin"]))):
     """Cancel a running job."""
     # Mock cancellation
     return {
@@ -277,7 +280,7 @@ async def cancel_job(job_id: str):
     summary="Re-enrich restaurants",
     description="Re-enrich all restaurants missing Google Places data (coordinates, photos, ratings).",
 )
-async def reenrich_restaurants(background_tasks: BackgroundTasks):
+async def reenrich_restaurants(background_tasks: BackgroundTasks, user: dict = Depends(require_role(["admin", "super_admin"]))):
     """Re-enrich all un-enriched restaurants with Google Places data."""
     async def _run_reenrich():
         try:

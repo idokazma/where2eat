@@ -28,7 +28,9 @@ The project is at `/Users/ido.kazma/Desktop/Projects/private/where2eat`.
 
 **Production API**: `https://where2eat-production.up.railway.app`
 - All requests need header: `Origin: https://where2eat-delta.vercel.app`
-- Admin auth: POST `/api/admin/auth/login` with `{"email":"admin@where2eat.app","password":"w2e_admin_2026!"}`
+- Admin auth: POST `/api/admin/auth/login` with the email and password from the
+  `WHERE2EAT_ADMIN_EMAIL` / `WHERE2EAT_ADMIN_PASSWORD` environment variables (ask the
+  user if they are unset; never print, hard-code or commit them)
 
 **Endpoints:**
 
@@ -37,17 +39,20 @@ The project is at `/Users/ido.kazma/Desktop/Projects/private/where2eat`.
 | GET | `/api/restaurants` | List all restaurants |
 | GET | `/api/restaurants/{id}` | Get single restaurant |
 | GET | `/api/restaurants/search?query=...` | Search restaurants |
-| POST | `/api/restaurants` | Create restaurant (writes to SQLite) |
-| PUT | `/api/restaurants/{id}` | Update restaurant (requires `name_hebrew`) |
+| POST | `/api/restaurants` | Create restaurant (writes to SQLite; requires editor token) |
+| PUT | `/api/restaurants/{id}` | Update restaurant (requires `name_hebrew` and an editor token) |
 | DELETE | `/api/admin/restaurants/{id}` | Delete restaurant (requires admin token) |
 | GET | `/api/admin/restaurants?limit=500` | Admin list (includes hidden) |
 | GET | `/api/episodes/search` | List episodes |
 
-**Admin token** (required for admin endpoints):
+**Admin token** (required for admin endpoints and for creating or updating restaurants):
 ```bash
-TOKEN=$(curl -s -X POST -H "Origin: https://where2eat-delta.vercel.app" -H "Content-Type: application/json" \
-  -d '{"email":"admin@where2eat.app","password":"w2e_admin_2026!"}' \
-  "https://where2eat-production.up.railway.app/api/admin/auth/login" | python3 -c "import json,sys; print(json.load(sys.stdin).get('token',''))")
+TOKEN=$(python3 -c 'import json,os; print(json.dumps({"email": os.environ["WHERE2EAT_ADMIN_EMAIL"], "password": os.environ["WHERE2EAT_ADMIN_PASSWORD"]}))' | \
+  curl -s -X POST "https://where2eat-production.up.railway.app/api/admin/auth/login" \
+    -H "Content-Type: application/json" \
+    -H "Origin: https://where2eat-delta.vercel.app" \
+    -d @- | python3 -c "import json,sys; print(json.load(sys.stdin).get('token',''))")
+[ -n "$TOKEN" ] || { echo "Admin login failed"; exit 1; }
 ```
 
 ## Operations
@@ -83,6 +88,7 @@ Upload restaurants from the episode-processor agent's output files.
 # POST the restaurant
 RESULT=$(curl -s -X POST \
   -H "Origin: https://where2eat-delta.vercel.app" \
+  -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d @/path/to/restaurant.json \
   "https://where2eat-production.up.railway.app/api/restaurants")
@@ -93,6 +99,7 @@ echo "$RESULT" | python3 -c "import json,sys; r=json.load(sys.stdin); print(f'Cr
 ```bash
 curl -s -X PUT \
   -H "Origin: https://where2eat-delta.vercel.app" \
+  -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"name_hebrew": "HEBREW_NAME", "image_url": "RESOLVED_URL"}' \
   "https://where2eat-production.up.railway.app/api/restaurants/RESTAURANT_ID"
@@ -111,6 +118,7 @@ Update fields on an existing restaurant.
 ```bash
 curl -s -X PUT \
   -H "Origin: https://where2eat-delta.vercel.app" \
+  -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"name_hebrew": "REQUIRED", "field_to_update": "new_value"}' \
   "https://where2eat-production.up.railway.app/api/restaurants/RESTAURANT_ID"
@@ -129,9 +137,12 @@ Remove a restaurant from the database.
 4. DELETE via admin endpoint
 
 ```bash
-TOKEN=$(curl -s -X POST -H "Origin: https://where2eat-delta.vercel.app" -H "Content-Type: application/json" \
-  -d '{"email":"admin@where2eat.app","password":"w2e_admin_2026!"}' \
-  "https://where2eat-production.up.railway.app/api/admin/auth/login" | python3 -c "import json,sys; print(json.load(sys.stdin).get('token',''))")
+TOKEN=$(python3 -c 'import json,os; print(json.dumps({"email": os.environ["WHERE2EAT_ADMIN_EMAIL"], "password": os.environ["WHERE2EAT_ADMIN_PASSWORD"]}))' | \
+  curl -s -X POST "https://where2eat-production.up.railway.app/api/admin/auth/login" \
+    -H "Content-Type: application/json" \
+    -H "Origin: https://where2eat-delta.vercel.app" \
+    -d @- | python3 -c "import json,sys; print(json.load(sys.stdin).get('token',''))")
+[ -n "$TOKEN" ] || { echo "Admin login failed"; exit 1; }
 
 curl -s -X DELETE \
   -H "Origin: https://where2eat-delta.vercel.app" \
