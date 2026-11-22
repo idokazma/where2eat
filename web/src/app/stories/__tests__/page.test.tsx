@@ -544,6 +544,10 @@ describe("autoplay", () => {
     // Target is original2, crossing original1. Browser must not smooth-scroll
     // through the failed slot and report its intermediate69%intersection.
     expect((Element.prototype.scrollBy as jest.Mock).mock.calls.at(-1)[0].behavior).toBe('instant');
+    // Deliver a late intermediate failed-slot record AFTER the automatic jump.
+    // It must not replace the pending destination or arm another recovery.
+    act(() => observer().fire(frames[1]));
+    expect(paidImages()).toEqual([]);
     act(() => observer().fire(frames[2]));
     expect(paidImages()).toEqual([expect.stringContaining('ref2')]);
     expect(paidImages().some((u) => u.includes('ref1'))).toBe(false);

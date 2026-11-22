@@ -548,6 +548,9 @@ function StoryView({
   const [loaded, setLoaded] = useState<Set<string>>(new Set());
   const imageLoaded = (url: string) => setLoaded((old) => old.has(url) ? old : new Set(old).add(url));
   const framesRef = useRef<HTMLDivElement>(null);
+  // An atomic automatic skip owns its destination until that slot intersects.
+  // Late observer records for crossed slots must not restart failure recovery.
+  const settlingAt = useRef<number | null>(null);
   // Sideways pages are photos. The review (best source first) stays on the story.
   const primary = story.slides[0] ?? null;
   const primaryQuote = primary ? quoteFor(story, primary) : null;
@@ -571,7 +574,12 @@ function StoryView({
     const io = new IntersectionObserver(
       (entries) => {
         for (const e of entries)
-          if (e.isIntersecting && visible.includes(Number((e.target as HTMLElement).dataset.slide))) onSlide(Number((e.target as HTMLElement).dataset.slide), frames);
+          if (e.isIntersecting && visible.includes(Number((e.target as HTMLElement).dataset.slide))) {
+            const index = Number((e.target as HTMLElement).dataset.slide);
+            if (settlingAt.current !== null && settlingAt.current !== index) continue;
+            settlingAt.current = null;
+            onSlide(index, frames);
+          }
       },
       { root, threshold: 0.6 },
     );
@@ -590,6 +598,7 @@ function StoryView({
     if (targetIndex === undefined) return;
     const target = root?.querySelector<HTMLElement>(`[data-slide="${targetIndex}"]`);
     if (!root || !target) return;
+    settlingAt.current = instant ? targetIndex : null;
     root.scrollBy?.({
       left: target.getBoundingClientRect().left - root.getBoundingClientRect().left,
       behavior: smooth && !instant ? "smooth" : "instant" as ScrollBehavior,
