@@ -88,3 +88,22 @@ def test_episode_summary_routes_need_editor(client):
     with patch('routers.admin_maintenance.service') as s:
         s.return_value.set_episode_summary.return_value={'operation_id':'o'}
         assert client.patch('/api/admin/maintenance/episodes/e1/summary',json={'summary':'x','revision':'r'}).json()=={'operation_id':'o'}
+
+def test_restaurant_and_deepdive_write_routes_require_auth(client):
+    from routers.restaurants import router as rs
+    client.app.include_router(rs)
+    assert client.post('/api/restaurants',json={}).status_code==401
+    assert client.put('/api/restaurants/r1',json={'name_hebrew':'x'}).status_code==401
+    assert client.post('/api/restaurants/r1/reprocess').status_code==401
+    assert client.delete('/api/restaurants/r1').status_code==401
+    client.app.dependency_overrides[get_current_user]=lambda:{'id':'v','role':'viewer'}
+    assert client.put('/api/restaurants/r1',json={'name_hebrew':'x'}).status_code==403
+    assert client.delete('/api/restaurants/r1').status_code==403
+    client.app.dependency_overrides[get_current_user]=lambda:{'id':'e','role':'editor'}
+    assert client.delete('/api/restaurants/r1').status_code==403
+
+def test_main_app_write_routes_require_auth():
+    import main
+    c=TestClient(main.app,headers={'Origin':'http://localhost:3000'})
+    for method,path in [('post','/api/debug/clear-and-repoll'),('patch','/api/deepdive/restaurants/r1/visibility'),('post','/api/deepdive/v1/reprocess'),('post','/api/deepdive/fix-data'),('post','/api/admin/deepdive/v1/reprocess')]:
+        assert getattr(c,method)(path,json={}).status_code==401,path
