@@ -165,6 +165,9 @@ async def get_photo(
                 fresh = await _fresh_name(client, reference, api_key)
                 if fresh:
                     resp = await async_places_request(client, _media_url(fresh, api_key), enforce=False)
+        except BudgetExceeded:
+            raise HTTPException(status_code=404, detail="Photo not available (paid photo fetches paused)",
+                                headers={"Cache-Control": "no-store"})
         except httpx.TimeoutException:
             raise HTTPException(status_code=504, detail="Photo fetch timed out")
         except httpx.RequestError:

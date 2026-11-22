@@ -120,7 +120,11 @@ async def get_photo(
     )
 
     async with httpx.AsyncClient(follow_redirects=True) as client:
-        resp = await async_places_request(client, photo_url, enforce=False)
+        try:
+            resp = await async_places_request(client, photo_url, enforce=False)
+        except BudgetExceeded:
+            raise HTTPException(status_code=404, detail="Photo not available (paid photo fetches paused)",
+                                headers={"Cache-Control": "no-store"})
 
     if resp.status_code != 200:
         raise HTTPException(status_code=resp.status_code, detail="Failed to fetch photo")
