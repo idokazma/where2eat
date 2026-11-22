@@ -1,14 +1,95 @@
-"""Google Places photo proxy endpoints."""
+"""Google Places photo proxy endpoints.
 
+Read-through cache (owner decision 22.11.2026): every photo fetched from Google
+is saved on our volume (photo_cache/) and served from there afterwards, so each
+photo is paid for once instead of on every view. Google's terms forbid caching
+Places content; the owner accepted that risk. DELETE /api/admin/place-photos
+removes the saved copies.
+"""
+
+import hashlib
 import os
-from typing import Optional
+import time
+from pathlib import Path
+from typing import Dict, List, Optional, Tuple
 
 import httpx
 from cost_ledger import async_places_request, BudgetExceeded
 from fastapi import APIRouter, HTTPException, Query
-from fastapi.responses import Response
+from fastapi.responses import FileResponse, Response
 
 router = APIRouter(prefix="/api/photos", tags=["Photos"])
+
+CACHE_WIDTH = 1200          # one saved copy per photo serves every requested width
+MISS_TTL_SECONDS = 7 * 24 * 3600   # a photo Google could not give is not paid for again for a week
+FRESH_TTL_SECONDS = 3600
+CACHE_HEADERS = {
+    "Cache-Control": "public, max-age=31536000, immutable",
+    "X-Content-Type-Options": "nosniff",
+}
+# place_id -> (fetched_at, fresh photo names): one Place Details call per place, not per photo.
+_fresh_names: Dict[str, Tuple[float, List[str]]] = {}
+
+
+def cache_dir() -> Optional[Path]:
+    """The saved-photo folder on the volume, or None when storage is unavailable."""
+    try:
+        from routers.venue_images import asset_root
+        path = asset_root().parent / "photo_cache"
+        path.mkdir(parents=True, exist_ok=True)
+        return path
+    except Exception:
+        return None
+
+
+def _media_url(reference: str, api_key: str) -> str:
+    if reference.startswith("places/") and "/photos/" in reference:
+        return f"https://places.googleapis.com/v1/{reference}/media?maxWidthPx={CACHE_WIDTH}&key={api_key}"
+    return (f"https://maps.googleapis.com/maps/api/place/photo"
+            f"?maxwidth={CACHE_WIDTH}&photoreference={reference}&key={api_key}")
+
+
+def _reference_index(place_id: str, reference: str) -> int:
+    """Position of an (expired) reference in the restaurant's stored photo list."""
+    try:
+        from database import Database
+        restaurant = Database().get_restaurant(place_id) or {}
+        refs = [p.get("photo_reference") for p in restaurant.get("photos") or [] if isinstance(p, dict)]
+        return refs.index(reference) if reference in refs else 0
+    except Exception:
+        return 0
+
+
+async def _fresh_name(client: httpx.AsyncClient, reference: str, api_key: str) -> Optional[str]:
+    """Google photo names expire. Get the place's current names and pick the same position."""
+    place_id = reference.split("/")[1]
+    cached = _fresh_names.get(place_id)
+    if cached and time.time() - cached[0] < FRESH_TTL_SECONDS:
+        names = cached[1]
+    else:
+        details = await async_places_request(
+            client, f"https://places.googleapis.com/v1/places/{place_id}", enforce=False,
+            headers={"X-Goog-Api-Key": api_key, "X-Goog-FieldMask": "photos"})
+        if details.status_code != 200:
+            return None
+        names = [p["name"] for p in (details.json() or {}).get("photos") or [] if p.get("name")]
+        _fresh_names[place_id] = (time.time(), names)
+    if not names:
+        return None
+    index = _reference_index(place_id, reference)
+    return names[index] if index < len(names) else names[0]
+
+
+def _save(folder: Path, key: str, raw: bytes) -> Optional[bytes]:
+    """Store a clean JPEG copy; None when the bytes are not an image we can re-encode."""
+    try:
+        from routers.place_photos import shrink
+        from routers.venue_images import atomic_write
+        content, _, _ = shrink(raw)
+        atomic_write(folder / f"{key}.jpg", content)
+        return content
+    except Exception:
+        return None
 
 
 def get_api_key() -> str:
@@ -64,55 +145,44 @@ async def get_photo(
             detail="Photo reference is required"
         )
 
-    api_key = get_api_key()
+    key = hashlib.sha256(reference.encode()).hexdigest()
+    folder = cache_dir()
+    if folder:
+        saved = folder / f"{key}.jpg"
+        if saved.is_file() and not saved.is_symlink():
+            return FileResponse(saved, media_type="image/jpeg", headers=CACHE_HEADERS)
+        miss = folder / f"{key}.miss"
+        if miss.is_file() and time.time() - miss.stat().st_mtime < MISS_TTL_SECONDS:
+            raise HTTPException(status_code=404, detail="Photo not available")
 
-    # Detect API version based on reference format
-    # New API format: "places/PLACE_ID/photos/PHOTO_ID"
+    api_key = get_api_key()
     is_new_api = reference.startswith("places/") and "/photos/" in reference
 
-    if is_new_api:
-        # New Places API (v1) - use photo name directly in path
-        photo_url = (
-            f"https://places.googleapis.com/v1/{reference}/media"
-            f"?maxWidthPx={maxwidth}&key={api_key}"
-        )
-    else:
-        # Old Places API - use photo reference as query parameter
-        photo_url = (
-            f"https://maps.googleapis.com/maps/api/place/photo"
-            f"?maxwidth={maxwidth}&photoreference={reference}&key={api_key}"
-        )
-
-    # Fetch photo from Google with redirect following
     async with httpx.AsyncClient(follow_redirects=True, timeout=30.0) as client:
         try:
-            resp = await async_places_request(client, photo_url, enforce=False)
+            resp = await async_places_request(client, _media_url(reference, api_key), enforce=False)
+            if resp.status_code != 200 and is_new_api:
+                fresh = await _fresh_name(client, reference, api_key)
+                if fresh:
+                    resp = await async_places_request(client, _media_url(fresh, api_key), enforce=False)
         except httpx.TimeoutException:
-            raise HTTPException(
-                status_code=504,
-                detail="Photo fetch timed out"
-            )
-        except httpx.RequestError as e:
-            raise HTTPException(
-                status_code=502,
-                detail="Photo provider request failed"
-            )
+            raise HTTPException(status_code=504, detail="Photo fetch timed out")
+        except httpx.RequestError:
+            raise HTTPException(status_code=502, detail="Photo provider request failed")
 
     if resp.status_code != 200:
+        if folder and 400 <= resp.status_code < 500:
+            (folder / f"{key}.miss").touch()
         raise HTTPException(
-            status_code=resp.status_code,
-            detail=f"Failed to fetch photo from Google Places API (status: {resp.status_code})"
+            status_code=404 if 400 <= resp.status_code < 500 else resp.status_code,
+            detail=f"Failed to fetch photo from Google Places API (status: {resp.status_code})",
         )
 
-    # Get content type from response, default to JPEG
-    content_type = resp.headers.get("content-type", "image/jpeg")
-
-    # Return image with caching headers
-    # Cache for 7 days (604800 seconds) with immutable flag
+    content = _save(folder, key, resp.content) if folder else None
+    if content is not None:
+        return Response(content=content, media_type="image/jpeg", headers=CACHE_HEADERS)
     return Response(
         content=resp.content,
-        media_type=content_type,
-        headers={
-            "Cache-Control": "public, max-age=604800, immutable",
-        },
+        media_type=resp.headers.get("content-type", "image/jpeg"),
+        headers={"Cache-Control": "public, max-age=604800, immutable"},
     )

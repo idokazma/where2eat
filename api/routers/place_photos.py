@@ -138,7 +138,7 @@ def store_place_photos(
 
 @router.delete('/api/admin/place-photos', dependencies=[Depends(authorize_upload)])
 def delete_place_photos():
-    """Remove every stored Google photo copy: rows and files."""
+    """Remove every stored Google photo copy: rows, files and the proxy's saved copies."""
     db = Database()
     with db.get_connection() as conn:
         deleted_rows = conn.execute('DELETE FROM place_photos').rowcount
@@ -147,7 +147,15 @@ def delete_place_photos():
         if ASSET_NAME.fullmatch(path.name) and path.is_file() and not path.is_symlink():
             path.unlink()
             deleted_files += 1
-    return {'deleted_rows': deleted_rows, 'deleted_files': deleted_files}
+    # The photo proxy's read-through copies (routers/photos.py) go too.
+    deleted_cached = 0
+    cache = asset_root().parent / 'photo_cache'
+    if cache.is_dir():
+        for path in cache.iterdir():
+            if path.is_file() and not path.is_symlink() and path.suffix in ('.jpg', '.miss'):
+                deleted_cached += path.suffix == '.jpg'
+                path.unlink()
+    return {'deleted_rows': deleted_rows, 'deleted_files': deleted_files, 'deleted_cached': deleted_cached}
 
 
 @router.get('/api/place-photos/{filename}')
