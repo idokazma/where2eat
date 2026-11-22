@@ -15,7 +15,7 @@ function photoBelongsToRestaurant(photoReference: string, restaurant: Restaurant
 }
 
 /** Photos that belong to the restaurant's current place match. */
-function validPhotos(restaurant: Restaurant) {
+export function validPhotos(restaurant: Restaurant) {
   return (restaurant.photos || []).filter(
     (p) => !p.photo_reference || photoBelongsToRestaurant(p.photo_reference, restaurant)
   );

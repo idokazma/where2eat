@@ -1,6 +1,7 @@
 import type { EpisodeDetail, Restaurant } from "@/types/restaurant";
 import {
   buildStories,
+  storyFrames,
   excerpt,
   momentStart,
   quoteFromEpisode,
@@ -181,5 +182,40 @@ describe("moments and labels", () => {
     );
     expect(sourceLabel({ channel: "מדברים מהבטן - הפודיום", episodeTitle: "משהו אחר" })).toBe("מדברים מהבטן");
     expect(sourceLabel({ channel: null, episodeTitle: null })).toBe("מקור לא ידוע");
+  });
+});
+
+describe("storyFrames", () => {
+  const ref = (n: number, place = "P1") => ({ photo_reference: `places/${place}/photos/ref${n}`, photo_url: "", width: 1, height: 1 });
+  const mention = (v: string, ch: string) => ({ video_id: v, timestamp_seconds: 10, channel_name: ch });
+
+  it("pages through the place's photos, one creator quote per photo from different sources", () => {
+    const r = rest("a", {
+      google_places: { place_id: "P1" },
+      photos: [ref(1), ref(2), ref(3)],
+      mentions: [mention("v1", "יוצר א"), mention("v2", "יוצר ב")],
+    });
+    const frames = storyFrames(buildStories([r], TLV).near[0]);
+    expect(frames).toHaveLength(4);
+    expect(frames[0].photo).toEqual({ url: photo("a"), paid: false });
+    expect(frames[1].photo.url).toMatch(/\/api\/photos\/places\/P1\/photos\/ref1\?maxwidth=/);
+    expect(frames.every((f, i) => i === 0 || f.photo.paid)).toBe(true);
+    expect(frames.map((f) => f.mention?.channel ?? null)).toEqual(["יוצר א", "יוצר ב", null, null]);
+  });
+
+  it("repeats the photos when a place has more mentions than photos", () => {
+    const r = rest("a", { mentions: [mention("v1", "א"), mention("v2", "ב")] });
+    const frames = storyFrames(buildStories([r], TLV).near[0]);
+    expect(frames.map((f) => [f.photo.url, f.mention?.videoId])).toEqual([
+      [photo("a"), "v1"],
+      [photo("a"), "v2"],
+    ]);
+  });
+
+  it("skips photos of a different place (stale match) and can leave out paid photos entirely", () => {
+    const r = rest("a", { google_places: { place_id: "P1" }, photos: [ref(1), ref(2, "OTHER")] });
+    const story = buildStories([r], TLV).near[0];
+    expect(storyFrames(story)).toHaveLength(2);
+    expect(storyFrames(story, { extraPhotos: false })).toHaveLength(1);
   });
 });
