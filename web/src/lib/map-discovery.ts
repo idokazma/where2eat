@@ -87,6 +87,9 @@ export function groupMapPoints(
 export function getMapPreviewImage(r: Restaurant): string | null {
   const stored = getStoredPhotoUrls(r);
   if (stored.length > 0) return stored[0];
+  // Signed lh3.googleusercontent.com links expire, so any other direct image wins
+  // over them; one is used only when nothing else is stored.
+  let expiring: string | null = null;
   for (const value of [r.image_url, r.og_image_url]) {
     if (!value) continue;
     try {
@@ -98,12 +101,16 @@ export function getMapPreviewImage(r: Restaurant): string | null {
         url.hostname === "maps.googleapis.com"
       )
         continue;
+      if (url.hostname === "lh3.googleusercontent.com") {
+        expiring = expiring ?? value;
+        continue;
+      }
       return value;
     } catch {
       /* A Places reference is not a direct image URL. */
     }
   }
-  return null;
+  return expiring;
 }
 
 /** Only the restaurant's stored Instagram profile, never an episode/creator link.

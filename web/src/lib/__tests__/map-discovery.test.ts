@@ -184,3 +184,10 @@ describe("getMapPreviewImage with stored photos", () => {
     expect(getMapPreviewImage(r)).toBe("/api/place-photos/aaa.jpg");
   });
 });
+
+it("prefers a non-expiring direct image over a signed lh3 link", () => {
+  const lh3 = "https://lh3.googleusercontent.com/place-photos/abc=s4800-w800";
+  const og = "https://cdn.example/photo.jpg";
+  expect(getMapPreviewImage({ name_hebrew: "א", image_url: lh3, og_image_url: og })).toBe(og);
+  expect(getMapPreviewImage({ name_hebrew: "א", image_url: lh3 })).toBe(lh3);
+});
