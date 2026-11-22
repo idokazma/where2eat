@@ -274,3 +274,27 @@ it("drops a story whose photo fails to load before it is reached", async () => {
   fireEvent.error(farImg);
   await waitFor(() => expect(screen.getAllByRole("article")).toHaveLength(1));
 });
+
+it("builds only the stories around the one in view and follows the viewer down the feed", async () => {
+  const many = Array.from({ length: 60 }, (_, i) => ({
+    id: `r${i}`,
+    name_hebrew: `מסעדה ${i}`,
+    image_url: photo(`r${i}`),
+    location: { city: "תל אביב", lat: 32.081 + i * 0.0005, lng: 34.775 },
+    episode_info: { video_id: `vid${i}`, channel_name: "מקור" },
+  }));
+  (global.fetch as jest.Mock).mockImplementation((url: string) =>
+    Promise.resolve({ ok: true, json: async () => (String(url).includes("/api/episodes/") ? { mentions: {} } : { restaurants: many }) }),
+  );
+  await startFromTelAviv();
+  await screen.findAllByRole("article");
+  const names = () => screen.getAllByRole("article").map((a) => within(a).getByRole("heading").textContent);
+  expect(names()).toEqual(["מסעדה 0", "מסעדה 1", "מסעדה 2", "מסעדה 3", "מסעדה 4"]);
+  const slots = document.querySelectorAll(".stories-slot");
+  expect(slots).toHaveLength(60);
+  const feedObserver = observers.filter((o) => o.targets.length >= 60).pop()!;
+  act(() => feedObserver.fire(slots[20]));
+  await waitFor(() => expect(names()).toEqual(Array.from({ length: 7 }, (_, i) => `מסעדה ${18 + i}`)));
+  expect(document.querySelectorAll(".stories-slot")).toHaveLength(60);
+  expect(screen.getByText("21/60")).toBeInTheDocument();
+});

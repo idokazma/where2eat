@@ -168,6 +168,7 @@
 .stories-frames::-webkit-scrollbar {
   display: none;
 }
+.stories-slot,
 .stories-story,
 .stories-divider {
   position: relative;

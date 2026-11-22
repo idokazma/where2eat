@@ -29,6 +29,11 @@ import {
 import "./stories.css";
 
 const RADIUS_KM = 50;
+// Stories are placed by distance, but only the ones around the one in view are
+// built. The rest stay as empty full-height slots, so scrolling, snapping and
+// the count keep working while the page holds a handful of stories, not all.
+const MOUNT_BEHIND = 2;
+const MOUNT_AHEAD = 4;
 const PRESETS: [string, number, number][] = [
   ["תל אביב · דיזנגוף", 32.0809, 34.774],
   ["ירושלים · מחנה יהודה", 31.7852, 35.212],
@@ -318,9 +323,9 @@ export function StoriesView({ extraPhotoLimit }: { extraPhotoLimit: number }) {
               </div>
             </section>
           ) : (
+            <section key={item.story.restaurant.id} className="stories-slot" data-index={index}>
+              {index >= current - MOUNT_BEHIND && index <= current + MOUNT_AHEAD && (
             <StoryView
-              key={item.story.restaurant.id}
-              index={index}
               story={item.story}
               near={index >= current - 1 && index <= current + 3}
               broken={broken.has(item.story.restaurant.id!)}
@@ -338,6 +343,8 @@ export function StoriesView({ extraPhotoLimit }: { extraPhotoLimit: number }) {
                 else addFavorite(key);
               }}
             />
+              )}
+            </section>
           ),
         )}
       </div>
@@ -377,7 +384,6 @@ export function StoriesView({ extraPhotoLimit }: { extraPhotoLimit: number }) {
 }
 
 function StoryView({
-  index,
   story,
   near,
   broken,
@@ -391,7 +397,6 @@ function StoryView({
   onPlay,
   onSave,
 }: {
-  index: number;
   story: Story;
   near: boolean;
   broken: boolean;
@@ -416,6 +421,15 @@ function StoryView({
   );
   const n = frames.length;
   const framesRef = useRef<HTMLDivElement>(null);
+  // A story rebuilt after scrolling away reopens on the photo the viewer had reached.
+  useEffect(() => {
+    if (slideIndex > 0)
+      framesRef.current
+        ?.querySelector(`[data-slide="${slideIndex}"]`)
+        ?.scrollIntoView?.({ block: "nearest", inline: "start" });
+    // Only on mount: later slide changes come from the viewer's own scrolling.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   // Which photo is in view, from intersection rather than scrollLeft: browsers
   // disagree on the sign of scrollLeft in right-to-left scrollers.
   useEffect(() => {
@@ -439,7 +453,7 @@ function StoryView({
       ?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "start" });
 
   return (
-    <article className="stories-story" data-index={index} aria-label={r.name_hebrew}>
+    <article className="stories-story" aria-label={r.name_hebrew}>
       {near && !broken ? (
         <img className="stories-bg" src={story.image} alt="" onError={onImageError} />
       ) : (
