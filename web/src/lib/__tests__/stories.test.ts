@@ -242,7 +242,7 @@ describe("storyFrames with stored photos", () => {
 });
 
 describe("distance bands with recency", () => {
-  const at = (id: string, dLat: number, published?: string, episode?: string) =>
+  const at = (id: string, dLat: number, published?: string | null, episode?: string) =>
     rest(id, {
       location: { city: "תל אביב", lat: 32.08 + dLat, lng: 34.78 },
       published_at: published,
