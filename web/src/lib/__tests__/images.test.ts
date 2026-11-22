@@ -209,3 +209,21 @@ describe('stored photos (served from our own server, free per view)', () => {
     expect(getRestaurantImage(r)).toBe('/api/photos/owner1?maxwidth=800');
   });
 });
+
+describe('getRestaurantImage with expiring lh3 image_url', () => {
+  const lh3 = 'https://lh3.googleusercontent.com/place-photos/abc=s1600';
+  it('prefers non-Google og_image_url over lh3 image_url', () => {
+    const r = makeRestaurant({ image_url: lh3, og_image_url: 'https://cdn.example.com/og.jpg' });
+    expect(getRestaurantImage(r)).toBe('https://cdn.example.com/og.jpg');
+  });
+  it('keeps lh3 image_url when og_image_url is missing or also lh3', () => {
+    expect(getRestaurantImage(makeRestaurant({ image_url: lh3 }))).toBe(lh3);
+    expect(
+      getRestaurantImage(makeRestaurant({ image_url: lh3, og_image_url: 'https://lh3.googleusercontent.com/x' }))
+    ).toBe(lh3);
+  });
+  it('keeps non-lh3 image_url over og_image_url', () => {
+    const r = makeRestaurant({ image_url: 'https://a.com/i.jpg', og_image_url: 'https://b.com/o.jpg' });
+    expect(getRestaurantImage(r)).toBe('https://a.com/i.jpg');
+  });
+});
