@@ -79,3 +79,12 @@ def test_source_label_requires_editor_and_calls_service(client):
         r=client.patch('/api/admin/maintenance/episodes/e1/source-label',json={'label':'x','revision':'r'})
         assert r.json()=={'operation_id':'o'}
         s.return_value.set_source_label.assert_called_once_with('e1','x','r','e')
+
+def test_episode_summary_routes_need_editor(client):
+    assert client.patch('/api/admin/maintenance/episodes/e1/summary',json={'summary':'x'}).status_code==401
+    client.app.dependency_overrides[get_current_user]=lambda:{'id':'v','role':'viewer'}
+    assert client.patch('/api/admin/maintenance/episodes/e1/summary',json={'summary':'x'}).status_code==403
+    client.app.dependency_overrides[get_current_user]=lambda:{'id':'e','role':'editor'}
+    with patch('routers.admin_maintenance.service') as s:
+        s.return_value.set_episode_summary.return_value={'operation_id':'o'}
+        assert client.patch('/api/admin/maintenance/episodes/e1/summary',json={'summary':'x','revision':'r'}).json()=={'operation_id':'o'}
