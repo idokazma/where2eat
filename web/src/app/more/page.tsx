@@ -40,16 +40,6 @@ export default function MorePage() {
           })}
         </nav>
 
-        {/* Admin link */}
-        <div className="mt-8 px-4">
-          <Link
-            href="/admin"
-            className="block p-4 rounded-lg bg-[var(--color-surface)] text-center text-sm text-[var(--color-ink-muted)]"
-          >
-            ניהול (Admin)
-          </Link>
-        </div>
-
         {/* Version */}
         <div className="mt-8 text-center">
           <p className="text-xs text-[var(--color-ink-subtle)]">
