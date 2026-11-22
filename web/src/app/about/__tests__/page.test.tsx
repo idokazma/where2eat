@@ -44,6 +44,28 @@ describe('AboutPage', () => {
     });
   });
 
+  it('counts only listed restaurants, like the home ticker', async () => {
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        restaurants: [
+          { name_hebrew: 'א', status: 'פתוח', episode_info: { video_id: 'v1' } },
+          { name_hebrew: 'ב', status: 'סגור', episode_info: { video_id: 'v2' } },
+          { name_hebrew: 'ג', status: 'closed', episode_info: { video_id: 'v3' } },
+          { name_hebrew: 'ד', is_closing: 1, episode_info: { video_id: 'v4' } },
+          { name_hebrew: 'ה', is_hidden: 1, episode_info: { video_id: 'v5' } },
+        ],
+        count: 5,
+      }),
+    });
+
+    render(<AboutPage />);
+
+    await waitFor(() => {
+      expect(screen.getByText('1')).toBeInTheDocument();
+    });
+  });
+
   it('calculates unique episode count from video_ids', async () => {
     mockFetch.mockResolvedValueOnce({
       ok: true,
