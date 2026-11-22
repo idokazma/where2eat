@@ -44,6 +44,8 @@ const STORY_MS = 10_000;
 // Opening the site asks for the location; without an answer by then, newest first.
 const LOCATE_WAIT_MS = 8_000;
 const PHOTO_MS = 4_000;
+// A photo slot that failed is skipped after this pause instead of stopping the rotation.
+const SKIP_FAILED_MS = 700;
 const PRESETS: [string, number, number][] = [
   ["תל אביב · דיזנגוף", 32.0809, 34.774],
   ["ירושלים · מחנה יהודה", 31.7852, 35.212],
@@ -520,7 +522,15 @@ function StoryView({
   // next paid reference into the observed slot and grant it without a new gesture.
   // The primary/free backdrop and source remain visible beneath a failed slot.
   const frames = useMemo(() => storyFrames(base, { extraPhotos }), [base, extraPhotos]);
-  const currentFailed = failed.has(frames[slideIndex]?.photo.url) || failedImages.has(frames[slideIndex]?.photo.url);
+  // What a slot actually shows: the first slot shows the story's image, which may be a
+  // working backup when the stored main photo failed.
+  const slotUrl = (i: number) => (i === 0 && image ? image : frames[i]?.photo.url);
+  const slotFailed = (i: number) => {
+    const url = slotUrl(i);
+    return !!url && (failed.has(url) || failedImages.has(url));
+  };
+  const currentFailed = slotFailed(slideIndex);
+  const allFailed = frames.every((_, i) => slotFailed(i));
   const n = frames.length;
   const [loaded, setLoaded] = useState<Set<string>>(new Set());
   const imageLoaded = (url: string) => setLoaded((old) => old.has(url) ? old : new Set(old).add(url));
@@ -569,12 +579,24 @@ function StoryView({
   };
   // Next photo every few seconds while this place is in view, back to the first after the last.
   useEffect(() => {
-    if (!autoplay || n < 2 || currentFailed) return;
-    const t = setTimeout(() => go((slideIndex + 1) % n), PHOTO_MS);
+    if (!autoplay || n < 2 || allFailed) return;
+    if (!currentFailed) {
+      const t = setTimeout(() => go((slideIndex + 1) % n), PHOTO_MS);
+      return () => clearTimeout(t);
+    }
+    // A failed slot: skip ahead to the next free photo that has not failed (wrapping to
+    // the place's own photo). Never move on into a paid photo after a failure: expired
+    // Google references fail in chains, and each attempt is a paid request. A tap on
+    // "next" still opens one deliberately.
+    const next = Array.from({ length: n - 1 }, (_, k) => (slideIndex + 1 + k) % n).find(
+      (j) => !frames[j].photo.paid && !slotFailed(j),
+    );
+    if (next === undefined) return;
+    const t = setTimeout(() => go(next), SKIP_FAILED_MS);
     return () => clearTimeout(t);
     // go only reads refs and n.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [autoplay, slideIndex, n, currentFailed]);
+  }, [autoplay, slideIndex, n, currentFailed, allFailed]);
 
   return (
     <article className="stories-story" aria-label={r.name_hebrew}>
