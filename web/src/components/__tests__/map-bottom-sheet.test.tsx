@@ -176,7 +176,7 @@ describe('MapBottomSheet', () => {
     );
 
     // Find and click the first restaurant button
-    const firstRestaurant = screen.getByText('First Restaurant');
+    const firstRestaurant = screen.getByText('מסעדה ראשונה');
     const button = firstRestaurant.closest('button');
 
     expect(button).toBeInTheDocument();
@@ -195,8 +195,8 @@ describe('MapBottomSheet', () => {
       />
     );
 
-    expect(screen.getByText('First Restaurant')).toBeInTheDocument();
-    expect(screen.getByText('Second Restaurant')).toBeInTheDocument();
+    expect(screen.getByText('מסעדה ראשונה')).toBeInTheDocument();
+    expect(screen.getByText('מסעדה שנייה')).toBeInTheDocument();
   });
 
   it('shows correct count for single restaurant', () => {
@@ -234,7 +234,7 @@ describe('MapBottomSheet', () => {
       />
     );
 
-    const firstRestaurant = screen.getByText('First Restaurant');
+    const firstRestaurant = screen.getByText('מסעדה ראשונה');
     const button = firstRestaurant.closest('button');
 
     expect(button).toHaveClass('bg-blue-50');
@@ -290,7 +290,7 @@ describe('MapBottomSheet', () => {
     expect(screen.getByTestId('virtual-list')).toBeInTheDocument();
   });
 
-  it('uses google_name when available, falls back to name_hebrew', () => {
+  it("shows the restaurant's own name, Google's name only when it has none", () => {
     const restaurantsWithMixedNames: WithDistance<MapRestaurant>[] = [
       {
         item: {
@@ -303,8 +303,8 @@ describe('MapBottomSheet', () => {
       {
         item: {
           id: '2',
-          name_hebrew: 'שם עברי בלבד',
-          google_places: { place_id: 'place2' }, // No google_name
+          name_hebrew: '',
+          google_places: { place_id: 'place2', google_name: 'Google Only' },
         },
         distance: 1.2,
       },
@@ -318,8 +318,10 @@ describe('MapBottomSheet', () => {
       />
     );
 
-    expect(screen.getByText('Google Name')).toBeInTheDocument();
-    expect(screen.getByText('שם עברי בלבד')).toBeInTheDocument();
+    // Google matches can be wrong, so the stored name wins.
+    expect(screen.getByText('שם עברי')).toBeInTheDocument();
+    expect(screen.queryByText('Google Name')).toBeNull();
+    expect(screen.getByText('Google Only')).toBeInTheDocument();
   });
 
   it('handles restaurants without google_places', () => {

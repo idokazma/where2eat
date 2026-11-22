@@ -11,6 +11,14 @@ global.IntersectionObserver = class IntersectionObserver {
   unobserve() {}
 }
 
+// jsdom has no ResizeObserver; components that measure themselves need one to mount.
+global.ResizeObserver = class ResizeObserver {
+  constructor() {}
+  disconnect() {}
+  observe() {}
+  unobserve() {}
+}
+
 // Mock window.matchMedia
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
