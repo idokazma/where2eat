@@ -11,7 +11,7 @@ from datetime import datetime
 from pathlib import Path
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import Depends, FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.base import BaseHTTPMiddleware
 from dotenv import load_dotenv
@@ -40,6 +40,7 @@ else:
 from models.analyze import DEFAULT_VIDEO_URL
 
 # Import routers
+from routers.admin import require_role
 from routers.venue_images import router as venue_images_router
 from routers.place_photos import router as place_photos_router
 from routers import (
@@ -1176,7 +1177,7 @@ async def debug_pipeline():
 
 
 @app.post("/api/debug/clear-and-repoll")
-async def debug_clear_and_repoll():
+async def debug_clear_and_repoll(user: dict = Depends(require_role(["admin", "super_admin"]))):
     """Temporary: Clear queue and re-poll. Remove after debugging."""
     try:
         from database import get_database
@@ -1366,7 +1367,7 @@ async def deepdive_restaurant_detail(restaurant_id: str):
 
 
 @app.patch("/api/deepdive/restaurants/{restaurant_id}/visibility")
-async def toggle_restaurant_visibility(restaurant_id: str, request: Request):
+async def toggle_restaurant_visibility(restaurant_id: str, request: Request, user: dict = Depends(require_role(["editor", "admin", "super_admin"]))):
     """Toggle restaurant visibility (hide/unhide)."""
     from database import Database
 
@@ -1390,7 +1391,7 @@ async def toggle_restaurant_visibility(restaurant_id: str, request: Request):
 
 @app.post("/api/admin/deepdive/{video_id}/reprocess")
 @app.post("/api/deepdive/{video_id}/reprocess")
-async def reprocess_episode(video_id: str):
+async def reprocess_episode(video_id: str, user: dict = Depends(require_role(["editor", "admin", "super_admin"]))):
     """Re-queue a video for full pipeline reprocessing."""
     from database import Database
 
@@ -1432,7 +1433,7 @@ async def reprocess_episode(video_id: str):
 
 
 @app.post("/api/deepdive/fix-data")
-async def fix_data():
+async def fix_data(user: dict = Depends(require_role(["admin", "super_admin"]))):
     """One-time fix: resolve raw photo references to URLs and fix wrong published_at dates."""
     import requests as http_requests
     from database import Database
