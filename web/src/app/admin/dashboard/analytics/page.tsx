@@ -4,24 +4,9 @@ import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { restaurantsApi, usageApi, vercelAnalyticsApi } from '@/lib/admin/api';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/admin/ui/card';
-import {
-  AreaChart,
-  Area,
-  BarChart,
-  Bar,
-  PieChart,
-  Pie,
-  Cell,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-} from 'recharts';
 import { Info } from 'lucide-react';
+import { DailyAreaChart, HourlyBarChart, BarList, DeviceDonut } from '@/components/admin/analytics-charts';
 
-const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#14b8a6', '#f97316'];
 
 const FEATURE_LABELS: Record<string, string> = {
   map_open: 'פתיחת מפה',
@@ -124,7 +109,7 @@ export default function AnalyticsPage() {
       <Card className="border-blue-200 bg-blue-50 dark:bg-blue-950/20">
         <CardContent className="flex gap-3 pt-6">
           <Info className="h-5 w-5 text-blue-600 shrink-0 mt-0.5" />
-          <div className="text-sm text-blue-900 dark:text-blue-100 space-y-1">
+          <div className="text-sm text-blue-900 dark:text-blue-100 space-y-1 [overflow-wrap:anywhere]">
             <p>
               אנליטיקה עצמית עם מינימום פרטיות: בלי IP, בלי עוגיות, בלי טביעות אצבע, בלי טקסט חיפוש. הספירה מתחילה מהרגע שהמעקב עולה לאוויר — אין היסטוריה רטרואקטיבית.
             </p>
@@ -170,17 +155,7 @@ export default function AnalyticsPage() {
               עדיין לא נרשמו אירועי שימוש בחלון הזמן הזה.
             </p>
           ) : (
-            <div dir="ltr"><ResponsiveContainer width="99%" height={300}>
-              <AreaChart data={daily} margin={{ top: 5, right: 24, bottom: 5, left: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="day" fontSize={11} minTickGap={24} tickFormatter={(d: string) => d.slice(5)} padding={{ left: 10, right: 30 }} />
-                <YAxis allowDecimals={false} fontSize={12} />
-                <Tooltip />
-                <Legend />
-                <Area isAnimationActive={false} type="monotone" dataKey="page_views" name="צפיות" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.2} />
-                <Area isAnimationActive={false} type="monotone" dataKey="sessions" name="סשנים" stroke="#10b981" fill="#10b981" fillOpacity={0.2} />
-              </AreaChart>
-            </ResponsiveContainer></div>
+            <DailyAreaChart data={daily} />
           )}
         </CardContent>
       </Card>
@@ -193,24 +168,11 @@ export default function AnalyticsPage() {
             <CardDescription>צפיות לפי אזור באתר</CardDescription>
           </CardHeader>
           <CardContent>
-            {pages.length === 0 ? (
-              <p className="text-sm text-muted-foreground py-8 text-center">עדיין לא נרשמו צפיות.</p>
-            ) : (
-              <div className="space-y-2" dir="ltr">
-                {pages.map((p) => {
-                  const max = Math.max(...pages.map((x) => x.views), 1);
-                  return (
-                    <div key={p.page_type} className="flex items-center gap-2 text-sm">
-                      <span className="w-24 shrink-0 text-left text-muted-foreground">{p.page_type}</span>
-                      <div className="flex-1 h-5 rounded bg-muted overflow-hidden">
-                        <div className="h-full bg-blue-500" style={{ width: `${(p.views / max) * 100}%` }} />
-                      </div>
-                      <span className="w-8 shrink-0 text-right font-medium">{p.views}</span>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
+            <BarList
+              rows={pages.map((p) => ({ label: p.page_type, value: p.views }))}
+              color="#3b82f6"
+              emptyText="עדיין לא נרשמו צפיות."
+            />
           </CardContent>
         </Card>
 
@@ -221,15 +183,7 @@ export default function AnalyticsPage() {
             <CardDescription>אירועים לפי שעה (שעון השרת)</CardDescription>
           </CardHeader>
           <CardContent>
-            <div dir="ltr"><ResponsiveContainer width="99%" height={260}>
-              <BarChart data={hourly}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="hour" fontSize={11} interval={3} padding={{ left: 10, right: 34 }} />
-                <YAxis allowDecimals={false} fontSize={12} />
-                <Tooltip />
-                <Bar isAnimationActive={false} dataKey="events" name="אירועים" fill="#8b5cf6" />
-              </BarChart>
-            </ResponsiveContainer></div>
+            <HourlyBarChart data={hourly} />
           </CardContent>
         </Card>
       </div>
@@ -264,32 +218,7 @@ export default function AnalyticsPage() {
             <CardDescription>סשנים לפי סוג מכשיר</CardDescription>
           </CardHeader>
           <CardContent>
-            {devices.length === 0 ? (
-              <p className="text-sm text-muted-foreground py-8 text-center">עדיין לא נרשמו סשנים.</p>
-            ) : (
-              <div dir="ltr"><ResponsiveContainer width="99%" height={260}>
-                <PieChart>
-                  <Pie
-                    isAnimationActive={false}
-                    data={devices}
-                    dataKey="sessions"
-                    nameKey="device"
-                    cx="50%"
-                    cy="50%"
-                    outerRadius={80}
-                  >
-                    {devices.map((_, i) => (
-                      <Cell key={i} fill={COLORS[i % COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip />
-                  <Legend formatter={(value: string) => {
-                    const d = devices.find((x) => x.device === value);
-                    return `${value}: ${d?.sessions ?? 0}`;
-                  }} />
-                </PieChart>
-              </ResponsiveContainer></div>
-            )}
+            <DeviceDonut data={devices} />
           </CardContent>
         </Card>
       </div>
@@ -302,19 +231,12 @@ export default function AnalyticsPage() {
             <CardDescription>כמה פעמים כל פיצ׳ר שומש</CardDescription>
           </CardHeader>
           <CardContent>
-            {features.length === 0 ? (
-              <p className="text-sm text-muted-foreground py-8 text-center">עדיין לא נרשמו אירועי פיצ׳רים.</p>
-            ) : (
-              <div dir="ltr"><ResponsiveContainer width="99%" height={280}>
-                <BarChart data={features} layout="vertical" margin={{ top: 5, right: 30, bottom: 5, left: 10 }}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis type="number" allowDecimals={false} fontSize={12} />
-                  <YAxis type="category" dataKey="label" width={120} fontSize={12} />
-                  <Tooltip />
-                  <Bar isAnimationActive={false} dataKey="uses" name="שימושים" fill="#10b981" />
-                </BarChart>
-              </ResponsiveContainer></div>
-            )}
+            <BarList
+              rows={features.map((f) => ({ label: f.label, value: f.uses }))}
+              color="#10b981"
+              labelWidth="w-32"
+              emptyText="עדיין לא נרשמו אירועי פיצ׳רים."
+            />
           </CardContent>
         </Card>
 
@@ -325,19 +247,12 @@ export default function AnalyticsPage() {
             <CardDescription>קליקים ליוטיוב, אינסטגרם, ניווט ועוד</CardDescription>
           </CardHeader>
           <CardContent>
-            {outbound.length === 0 ? (
-              <p className="text-sm text-muted-foreground py-8 text-center">עדיין לא נרשמו יציאות.</p>
-            ) : (
-              <div dir="ltr"><ResponsiveContainer width="99%" height={280}>
-                <BarChart data={outbound}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="label" fontSize={12} />
-                  <YAxis allowDecimals={false} fontSize={12} />
-                  <Tooltip />
-                  <Bar isAnimationActive={false} dataKey="clicks" name="קליקים" fill="#f59e0b" />
-                </BarChart>
-              </ResponsiveContainer></div>
-            )}
+            <BarList
+              rows={outbound.map((o) => ({ label: o.label, value: o.clicks }))}
+              color="#f59e0b"
+              labelWidth="w-28"
+              emptyText="עדיין לא נרשמו יציאות."
+            />
           </CardContent>
         </Card>
       </div>
