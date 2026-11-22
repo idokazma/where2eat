@@ -107,3 +107,10 @@ def test_main_app_write_routes_require_auth():
     c=TestClient(main.app,headers={'Origin':'http://localhost:3000'})
     for method,path in [('post','/api/debug/clear-and-repoll'),('patch','/api/deepdive/restaurants/r1/visibility'),('post','/api/deepdive/v1/reprocess'),('post','/api/deepdive/fix-data'),('post','/api/admin/deepdive/v1/reprocess')]:
         assert getattr(c,method)(path,json={}).status_code==401,path
+
+def test_reenrich_requires_admin(client):
+    from routers.analyze import router as an
+    client.app.include_router(an)
+    assert client.post('/api/reenrich').status_code==401
+    client.app.dependency_overrides[get_current_user]=lambda:{'id':'e','role':'editor'}
+    assert client.post('/api/reenrich').status_code==403
