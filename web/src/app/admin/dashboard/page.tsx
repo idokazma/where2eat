@@ -2,7 +2,7 @@
 
 import { useAuth } from '@/lib/admin/auth-context';
 import { useQuery } from '@tanstack/react-query';
-import { analyticsApi, pipelineApi } from '@/lib/admin/api';
+import { pipelineApi, restaurantsApi, usageApi } from '@/lib/admin/api';
 import { queryKeys, REFETCH_INTERVALS } from '@/lib/admin/constants';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/admin/ui/card';
 import { MetricCard } from '@/components/admin/dashboard/metric-card';
@@ -15,17 +15,18 @@ export default function DashboardPage() {
   const { user } = useAuth();
   const router = useRouter();
 
-  // Fetch overview analytics
-  const { data: overview, isLoading: overviewLoading } = useQuery({
-    queryKey: queryKeys.analytics.overview(),
-    queryFn: () => analyticsApi.getOverview(),
+  // Total restaurant count (the old /api/admin/analytics/overview endpoint
+  // does not exist on the live FastAPI backend; restaurants list does)
+  const { data: restaurantList, isLoading: overviewLoading } = useQuery({
+    queryKey: ['admin-restaurants-count'],
+    queryFn: () => restaurantsApi.list({ page: 1, limit: 1 }),
     refetchInterval: REFETCH_INTERVALS.analytics,
   });
 
-  // Fetch restaurant analytics for sparklines
-  const { data: restaurantAnalytics } = useQuery({
-    queryKey: queryKeys.analytics.restaurants('7'),
-    queryFn: () => analyticsApi.getRestaurants({ period: '7' }),
+  // Self-hosted usage analytics (7-day window for the sparkline + cards)
+  const { data: usage } = useQuery({
+    queryKey: ['usage-summary', 7],
+    queryFn: () => usageApi.getSummary(7),
   });
 
   // Fetch pipeline overview for quick-status widget
@@ -42,10 +43,12 @@ export default function DashboardPage() {
     refetchInterval: REFETCH_INTERVALS.pipelineHistory,
   });
 
-  // Prepare sparkline data from growth data
-  const sparklineData = restaurantAnalytics?.growthData?.slice(-7).map((d: any) => ({
-    value: d.count || 0,
+  // Sparkline: daily page views over the last 7 days
+  const sparklineData = usage?.daily?.slice(-7).map((d) => ({
+    value: d.page_views || 0,
   })) || [];
+
+  const totalRestaurants = restaurantList?.pagination?.total;
 
   return (
     <div className="space-y-6">
@@ -61,7 +64,7 @@ export default function DashboardPage() {
       <StatusStrip
         overview={pipelineOverview?.overview ?? null}
         stats={pipelineStats?.stats ?? null}
-        restaurantCount={overview?.overview?.totalRestaurants}
+        restaurantCount={totalRestaurants}
         isLoading={pipelineLoading}
       />
 
@@ -83,29 +86,31 @@ export default function DashboardPage() {
           <>
             <MetricCard
               title="Total Restaurants"
-              value={overview?.overview.totalRestaurants.toLocaleString() || '0'}
-              trend={overview?.overview.trend}
+              value={totalRestaurants?.toLocaleString() || '0'}
               trendData={sparklineData}
               icon={<UtensilsCrossed className="h-4 w-4" />}
               href="/admin/dashboard/restaurants"
             />
 
             <MetricCard
-              title="Videos Processed"
-              value={overview?.videos.processed.toLocaleString() || '0'}
+              title="Sessions (7d)"
+              value={(usage?.totals?.sessions ?? 0).toLocaleString()}
               icon={<Video className="h-4 w-4" />}
+              href="/admin/dashboard/analytics"
             />
 
             <MetricCard
-              title="Published Articles"
-              value={overview?.articles.published.toLocaleString() || '0'}
+              title="Page Views (7d)"
+              value={(usage?.totals?.page_views ?? 0).toLocaleString()}
               icon={<FileText className="h-4 w-4" />}
+              href="/admin/dashboard/analytics"
             />
 
             <MetricCard
-              title="Active Jobs"
-              value={overview?.jobs.active.toLocaleString() || '0'}
+              title="Restaurant Views (7d)"
+              value={(usage?.totals?.restaurant_views ?? 0).toLocaleString()}
               icon={<Clock className="h-4 w-4" />}
+              href="/admin/dashboard/analytics"
             />
           </>
         )}
@@ -149,60 +154,6 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
       </div>
-
-      {/* Status Breakdown */}
-      {!overviewLoading && overview?.overview.byStatus && (
-        <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
-          <Card>
-            <CardHeader>
-              <CardTitle>Restaurant Status</CardTitle>
-              <CardDescription>Breakdown by current status</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                {Object.entries(overview.overview.byStatus).map(([status, count]: [string, any]) => (
-                  <div key={status} className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <div className={`h-2 w-2 rounded-full ${
-                        status === 'open' ? 'bg-green-500' :
-                        status === 'closed' ? 'bg-red-500' :
-                        status === 'new_opening' ? 'bg-blue-500' :
-                        'bg-yellow-500'
-                      }`} />
-                      <span className="text-sm capitalize">{status.replace('_', ' ')}</span>
-                    </div>
-                    <span className="text-sm font-medium">{count}</span>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Host Opinions</CardTitle>
-              <CardDescription>Sentiment distribution</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                {Object.entries(overview.overview.byOpinion).map(([opinion, count]: [string, any]) => (
-                  <div key={opinion} className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="text-lg">
-                        {opinion === 'positive' ? '\u{1F60D}' :
-                         opinion === 'negative' ? '\u{1F61E}' :
-                         opinion === 'mixed' ? '\u{1F914}' : '\u{1F610}'}
-                      </span>
-                      <span className="text-sm capitalize">{opinion}</span>
-                    </div>
-                    <span className="text-sm font-medium">{count}</span>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      )}
 
       {/* System Info */}
       <Card>

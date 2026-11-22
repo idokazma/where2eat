@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { useFavorites } from '@/contexts/favorites-context';
+import { trackRestaurantView, trackOutbound } from '@/lib/usage-tracker';
 import { endpoints } from '@/lib/config';
 import { MentionLevelBadge } from '@/components/restaurant/MentionLevelBadge';
 import { getRestaurantImage, getRestaurantImages, getCuisineGradient } from '@/lib/images';
@@ -68,6 +69,7 @@ export default function RestaurantDetailPage() {
           const found = await directResponse.json();
           if (found && !found.error) {
             setRestaurant(found);
+            trackRestaurantView(restaurantId);
             return;
           }
         }
@@ -85,6 +87,7 @@ export default function RestaurantDetailPage() {
           );
           if (found) {
             setRestaurant(found);
+            trackRestaurantView(restaurantId);
           } else {
             setError('המסעדה לא נמצאה');
           }
@@ -119,6 +122,7 @@ export default function RestaurantDetailPage() {
   };
 
   const handleNavigate = () => {
+    trackOutbound('navigation', restaurantId);
     if (restaurant?.google_places?.google_url) {
       window.open(restaurant.google_places.google_url, '_blank');
     } else if (restaurant?.location?.address) {
@@ -317,6 +321,7 @@ export default function RestaurantDetailPage() {
               href={restaurant.contact_info.website}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => trackOutbound('website', restaurantId)}
               className="w-12 h-12 flex items-center justify-center rounded-xl bg-[var(--color-surface-elevated)] border-2 border-[var(--color-ink)] shadow-[2.5px_2.5px_0_var(--color-ink)]"
             >
               <Globe className="w-5 h-5 text-[var(--color-ink)]" />
@@ -481,6 +486,36 @@ export default function RestaurantDetailPage() {
           </div>
         )}
 
+        {/* Order links (Wolt / Ontopo) - managed from admin */}
+        {(restaurant.wolt_url || restaurant.ontopo_url) && (
+          <div className="space-y-2">
+            {restaurant.wolt_url && (
+              <a
+                href={restaurant.wolt_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => trackOutbound('order', restaurantId)}
+                className="flex items-center justify-center gap-2 p-3 rounded-xl bg-[#009de0]/10 text-[var(--color-ink)] border-2 border-[var(--color-ink)] shadow-[2.5px_2.5px_0_var(--color-ink)] font-bold"
+              >
+                <span>הזמנה ב-Wolt</span>
+                <ExternalLink className="w-4 h-4" />
+              </a>
+            )}
+            {restaurant.ontopo_url && (
+              <a
+                href={restaurant.ontopo_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => trackOutbound('order', restaurantId)}
+                className="flex items-center justify-center gap-2 p-3 rounded-xl bg-[var(--color-surface-elevated)] text-[var(--color-ink)] border-2 border-[var(--color-ink)] shadow-[2.5px_2.5px_0_var(--color-ink)] font-bold"
+              >
+                <span>הזמנה ב-Ontopo</span>
+                <ExternalLink className="w-4 h-4" />
+              </a>
+            )}
+          </div>
+        )}
+
         {/* Google Places & Instagram Links */}
         {(restaurant.google_places?.google_url || restaurant.instagram_url) && (
           <div className="pt-4 border-t border-[var(--color-border)] space-y-2">
@@ -500,6 +535,7 @@ export default function RestaurantDetailPage() {
                 href={restaurant.instagram_url}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => trackOutbound('instagram', restaurantId)}
                 className="flex items-center justify-center gap-2 p-3 rounded-xl bg-gradient-to-r from-purple-50 to-pink-50 text-[var(--color-ink)] hover:from-purple-100 hover:to-pink-100 transition-colors"
               >
                 <Instagram className="w-4 h-4 text-pink-600" />

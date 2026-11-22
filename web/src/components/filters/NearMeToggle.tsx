@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useCallback } from 'react';
+import { trackFeature } from '@/lib/usage-tracker';
 import { MapPin, Loader2, Check } from 'lucide-react';
 import { useGeolocation } from '@/hooks/useGeolocation';
 
@@ -29,6 +30,7 @@ export function NearMeToggle({
     try {
       clearError();
       setShowError(false);
+      trackFeature('near_me_toggle');
       const coords = await getCurrentPosition();
       if (coords) {
         onActivate(coords);

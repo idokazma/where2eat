@@ -41,6 +41,9 @@ from models.analyze import DEFAULT_VIDEO_URL
 
 # Import routers
 from routers.venue_images import router as venue_images_router
+from routers.usage import router as usage_router
+from routers.admin_usage import router as admin_usage_router
+from routers.settings import router as settings_router
 from routers import (
     restaurants_router,
     analytics_router,
@@ -1020,6 +1023,9 @@ app.include_router(venue_images_router)
 import mcp_server
 _mcp_server = mcp_server.mount(app)
 app.include_router(health_router)
+app.include_router(usage_router)
+app.include_router(admin_usage_router)
+app.include_router(settings_router)
 app.include_router(restaurants_router)
 app.include_router(analytics_router)
 app.include_router(analyze_router)

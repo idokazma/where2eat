@@ -2,6 +2,7 @@
 /* eslint-disable @next/next/no-img-element -- Direct URLs and the existing photo proxy; no image optimizer. */
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { trackFeature } from '@/lib/usage-tracker';
 import Link from "next/link";
 import { Heart, MapPin, Navigation, Play, X, Loader2, ChevronLeft, ChevronRight } from "lucide-react";
 import { endpoints } from "@/lib/config";
@@ -197,6 +198,7 @@ export function StoriesView({ extraPhotoLimit }: { extraPhotoLimit: number }) {
   );
 
   const openPlayer = (story: Story, slide: StorySlide) => {
+    trackFeature('story_play');
     setPlayer({ story, slide });
     dialogRef.current?.showModal();
   };

@@ -55,6 +55,7 @@ const sections: NavSection[] = [
       { name: 'Feed', href: '/admin/dashboard/feed', icon: Eye },
       { name: 'Restaurants', href: '/admin/dashboard/restaurants', icon: UtensilsCrossed },
       { name: 'Articles', href: '/admin/dashboard/articles', icon: FileText },
+      { name: 'Site Content', href: '/admin/dashboard/site-content', icon: FileText },
       { name: 'Maintenance', href: '/admin/dashboard/maintenance', icon: Wrench },
     ],
   },

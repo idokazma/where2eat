@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { trackFeature } from '@/lib/usage-tracker';
 import { createPortal } from 'react-dom';
 import { Check, Youtube, X } from 'lucide-react';
 import { FilterChip } from './FilterChip';
@@ -53,6 +54,7 @@ export function CreatorFilter({
   );
 
   const choose = (creator: string | null) => {
+    trackFeature('creator_filter');
     onSelect(creator);
     setIsOpen(false);
   };

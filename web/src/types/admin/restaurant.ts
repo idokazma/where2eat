@@ -68,6 +68,12 @@ export interface Restaurant {
   created_at?: string;
   updated_at?: string;
   is_hidden?: boolean;
+  instagram_url?: string | null;
+  image_url?: string | null;
+  wolt_url?: string | null;
+  ontopo_url?: string | null;
+  engaging_quote?: string | null;
+  photos?: import('@/types/restaurant').RestaurantPhoto[];
 }
 
 export interface RestaurantListResponse {

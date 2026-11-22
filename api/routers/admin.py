@@ -493,7 +493,14 @@ async def patch_restaurant_admin(
         'contact_phone', 'contact_website', 'is_hidden', 'is_closing', 'country',
         'latitude', 'longitude', 'google_place_id',
         'image_url', 'photos',
+        'instagram_url', 'wolt_url', 'ontopo_url',
     }
+
+    for url_field in ('instagram_url', 'wolt_url', 'ontopo_url'):
+        if url_field in body:
+            value = body[url_field]
+            if not isinstance(value, str) or len(value) > 500 or (value and not value.startswith('https://')):
+                raise HTTPException(status_code=422, detail=f"{url_field} must be an https URL up to 500 characters, or an empty string to clear")
 
     if 'mention_level' in body and body['mention_level'] not in (None, 'נטעם', 'הוזכר'):
         raise HTTPException(status_code=422, detail="mention_level must be נטעם, הוזכר, or null")
@@ -525,6 +532,47 @@ async def patch_restaurant_admin(
     if not success:
         raise HTTPException(status_code=404, detail="Restaurant not found")
 
+    return {"success": True, "updated_fields": list(updates.keys())}
+
+
+@router.get(
+    "/restaurants/{restaurant_id}/mentions",
+    summary="List episode mentions for a restaurant (admin)",
+    description="Returns all episode mentions linked to the restaurant. Requires editor role or higher.",
+)
+async def list_restaurant_mentions_admin(
+    restaurant_id: str,
+    user: dict = Depends(require_role(["editor", "admin", "super_admin"])),
+):
+    from database import get_database
+    return {"mentions": get_database().get_restaurant_mentions(restaurant_id)}
+
+
+@router.patch(
+    "/mentions/{mention_id}",
+    summary="Update an episode mention's editable text (admin)",
+    description="Update host quotes/comments/context of one mention. Requires editor role or higher.",
+)
+async def update_mention_admin(
+    mention_id: str,
+    body: dict,
+    user: dict = Depends(require_role(["editor", "admin", "super_admin"])),
+):
+    from database import get_database
+    allowed = {'host_quotes', 'host_comments', 'mention_context', 'verdict'}
+    updates = {k: v for k, v in body.items() if k in allowed and isinstance(v, str)}
+    for k in updates:
+        if len(updates[k]) > 2000:
+            raise HTTPException(status_code=422, detail=f"{k} too long (max 2000)")
+    # host_quotes is stored as a JSON array of strings
+    if 'host_quotes' in updates:
+        text = updates['host_quotes'].strip()
+        updates['host_quotes'] = json.dumps([text] if text else [], ensure_ascii=False)
+    if not updates:
+        raise HTTPException(status_code=400, detail="No valid fields to update")
+    success = get_database().update_episode_mention(mention_id, **updates)
+    if not success:
+        raise HTTPException(status_code=404, detail="Mention not found")
     return {"success": True, "updated_fields": list(updates.keys())}
 
 

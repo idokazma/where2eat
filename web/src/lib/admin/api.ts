@@ -259,6 +259,137 @@ export const analyticsApi = {
 };
 
 /**
+ * Self-hosted usage analytics (privacy-minimal, count-only).
+ * Backed by /api/admin/usage/summary in the FastAPI backend.
+ */
+export interface UsageTotals {
+  page_views: number | null;
+  restaurant_views: number | null;
+  outbound_clicks: number | null;
+  feature_uses: number | null;
+  sessions: number | null;
+}
+
+export interface UsageDailyRow {
+  day: string;
+  events: number;
+  page_views: number;
+  sessions: number;
+}
+
+export interface UsageSummary {
+  days: number;
+  since: string;
+  totals: UsageTotals;
+  daily: UsageDailyRow[];
+  pages: Array<{ page_type: string; views: number }>;
+  top_restaurants: Array<{ restaurant_id: string; views: number; outbound: number }>;
+  outbound_rows: Array<{ target: string; restaurant_id: string; clicks: number }>;
+  outbound_by_target: Array<{ target: string; clicks: number }>;
+  features: Array<{ feature: string; uses: number }>;
+  referrers: Array<{ source: string; visits: number }>;
+  devices: Array<{ device: string; sessions: number }>;
+  hourly: Array<{ hour: number; events: number }>;
+}
+
+export const usageApi = {
+  async getSummary(days = 30): Promise<UsageSummary> {
+    return apiFetch(`/api/admin/usage/summary?days=${days}`);
+  },
+};
+
+/** Site-content settings (whitelisted keys, server-side validated). */
+export interface SiteSettings {
+  [key: string]: string;
+}
+
+export interface SettingsHistoryEntry {
+  id: string;
+  key: string;
+  old_value: string | null;
+  new_value: string;
+  changed_by: string | null;
+  changed_at: string;
+}
+
+export const settingsApi = {
+  async getAll(): Promise<SiteSettings> {
+    return apiFetch('/api/admin/settings');
+  },
+  async update(values: Record<string, string>): Promise<{ updated: string[] }> {
+    return apiFetch('/api/admin/settings', {
+      method: 'PUT',
+      body: JSON.stringify({ values }),
+    });
+  },
+  async history(key?: string): Promise<{ history: SettingsHistoryEntry[] }> {
+    const q = key ? `?key=${encodeURIComponent(key)}` : '';
+    return apiFetch(`/api/admin/settings/history${q}`);
+  },
+  async restore(historyId: string): Promise<{ restored: string; value: string }> {
+    return apiFetch(`/api/admin/settings/restore/${historyId}`, { method: 'POST' });
+  },
+};
+
+/** Vercel Web Analytics aggregates (only when backend env is configured). */
+export interface VercelAnalytics {
+  configured: boolean;
+  days: number;
+  totals?: { visitors?: number; pageviews?: number };
+  daily?: { timestamp: string; visitors: number; pageviews: number }[];
+  referrers?: { referrerHostname?: string; visitors: number }[];
+  countries?: { country: string; visitors: number }[];
+  devices?: { deviceType: string; visitors: number }[];
+  paths?: { requestPath: string; visitors: number }[];
+  note?: string;
+}
+export const vercelAnalyticsApi = {
+  async get(days = 30): Promise<VercelAnalytics> {
+    return apiFetch(`/api/admin/analytics/vercel?days=${days}`);
+  },
+};
+
+/** Episode mentions editing for restaurants. */
+export interface EpisodeMention {
+  id: string;
+  episode_id: string;
+  video_id: string;
+  verdict: string;
+  mention_level: string | null;
+  status: string | null;
+  timestamp_seconds: number | null;
+  timestamp_display: string | null;
+  speaker: string | null;
+  host_quotes: string | string[] | null;
+  host_comments: string | null;
+  dishes_mentioned: string | null;
+  mention_context: string | null;
+  created_at: string;
+  episode_title: string | null;
+  episode_date: string | null;
+}
+
+export const mentionsApi = {
+  async listForRestaurant(restaurantId: string): Promise<{ mentions: EpisodeMention[] }> {
+    return apiFetch(`/api/admin/restaurants/${encodeURIComponent(restaurantId)}/mentions`);
+  },
+  async update(mentionId: string, fields: Partial<Pick<EpisodeMention, 'host_quotes' | 'host_comments' | 'mention_context' | 'verdict'>>): Promise<{ success: boolean; updated_fields: string[] }> {
+    return apiFetch(`/api/admin/mentions/${encodeURIComponent(mentionId)}`, {
+      method: 'PATCH',
+      body: JSON.stringify(fields),
+    });
+  },
+};
+
+/** Patch individual restaurant fields (SQLite-backed). */
+export async function patchRestaurant(id: string, fields: Record<string, unknown>): Promise<{ success: boolean; updated_fields: string[] }> {
+  return apiFetch(`/api/admin/restaurants/${encodeURIComponent(id)}`, {
+    method: 'PATCH',
+    body: JSON.stringify(fields),
+  });
+}
+
+/**
  * Videos API endpoints
  */
 export const videosApi = {

@@ -6,7 +6,7 @@ Provides persistence for restaurants, episodes, and processing jobs.
 import os
 import json
 import sqlite3
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Any
 from contextlib import contextmanager
 import uuid
@@ -234,6 +234,22 @@ class Database:
                 )
             ''')
 
+            # History of site-content setting changes (restore support)
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS settings_history (
+                    id TEXT PRIMARY KEY,
+                    key TEXT NOT NULL,
+                    old_value TEXT,
+                    new_value TEXT,
+                    changed_by TEXT,
+                    changed_at TEXT DEFAULT CURRENT_TIMESTAMP
+                )
+            ''')
+            cursor.execute('''
+                CREATE INDEX IF NOT EXISTS idx_settings_history_key
+                ON settings_history(key, changed_at)
+            ''')
+
             # Articles table for CMS
             cursor.execute('''
                 CREATE TABLE IF NOT EXISTS articles (
@@ -392,6 +408,28 @@ class Database:
                 )
             ''')
 
+            # Privacy-minimal usage analytics events (no IP, no cookies,
+            # random per-tab session id only)
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS usage_events (
+                    id TEXT PRIMARY KEY,
+                    ts TEXT NOT NULL,
+                    event_type TEXT NOT NULL,
+                    path TEXT,
+                    page_type TEXT,
+                    restaurant_id TEXT,
+                    feature TEXT,
+                    target TEXT,
+                    referrer_domain TEXT,
+                    device_class TEXT,
+                    session_id TEXT,
+                    created_at TEXT DEFAULT CURRENT_TIMESTAMP
+                )
+            ''')
+            cursor.execute('CREATE INDEX IF NOT EXISTS idx_usage_events_ts ON usage_events(ts)')
+            cursor.execute('CREATE INDEX IF NOT EXISTS idx_usage_events_type_ts ON usage_events(event_type, ts)')
+            cursor.execute('CREATE INDEX IF NOT EXISTS idx_usage_events_restaurant ON usage_events(restaurant_id, ts)')
+
             # Schema migrations - add new columns gracefully
             try:
                 cursor.execute('ALTER TABLE restaurants ADD COLUMN photos TEXT')
@@ -428,6 +466,8 @@ class Database:
                 ('country', 'TEXT'),
                 ('instagram_url', 'TEXT'),
                 ('mention_level', 'TEXT'),
+                ('wolt_url', 'TEXT'),
+                ('ontopo_url', 'TEXT'),
             ]:
                 try:
                     cursor.execute(f'ALTER TABLE restaurants ADD COLUMN {col} {col_type}')
@@ -2357,6 +2397,233 @@ class Database:
                 ORDER BY e.published_at DESC
             ''')
             return [dict(row) for row in cursor.fetchall()]
+
+    # ==================== Usage analytics (privacy-minimal) ====================
+
+    def insert_usage_event(self, event: Dict[str, Any]) -> str:
+        """Insert one usage event. Caller validates/sanitizes fields."""
+        event_id = str(uuid.uuid4())
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute('''
+                INSERT INTO usage_events
+                    (id, ts, event_type, path, page_type, restaurant_id,
+                     feature, target, referrer_domain, device_class, session_id)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ''', (
+                event_id,
+                event.get('ts'),
+                event.get('event_type'),
+                event.get('path'),
+                event.get('page_type'),
+                event.get('restaurant_id'),
+                event.get('feature'),
+                event.get('target'),
+                event.get('referrer_domain'),
+                event.get('device_class'),
+                event.get('session_id'),
+            ))
+        return event_id
+
+    def get_usage_summary(self, days: int = 30) -> Dict[str, Any]:
+        """Aggregate usage events for the admin dashboard.
+
+        Counts only; no raw event export, no session id leakage.
+        """
+        cutoff = (datetime.now() - timedelta(days=days)).isoformat()
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+
+            cursor.execute('''
+                SELECT substr(ts, 1, 10) AS day,
+                       COUNT(*) AS events,
+                       SUM(CASE WHEN event_type = 'page_view' THEN 1 ELSE 0 END) AS page_views,
+                       COUNT(DISTINCT session_id) AS sessions
+                FROM usage_events
+                WHERE ts >= ?
+                GROUP BY day ORDER BY day
+            ''', (cutoff,))
+            daily = [dict(r) for r in cursor.fetchall()]
+
+            cursor.execute('''
+                SELECT
+                  SUM(CASE WHEN event_type = 'page_view' THEN 1 ELSE 0 END) AS page_views,
+                  SUM(CASE WHEN event_type = 'restaurant_view' THEN 1 ELSE 0 END) AS restaurant_views,
+                  SUM(CASE WHEN event_type = 'outbound_click' THEN 1 ELSE 0 END) AS outbound_clicks,
+                  SUM(CASE WHEN event_type = 'feature_use' THEN 1 ELSE 0 END) AS feature_uses,
+                  COUNT(DISTINCT session_id) AS sessions
+                FROM usage_events WHERE ts >= ?
+            ''', (cutoff,))
+            totals = dict(cursor.fetchone() or {})
+
+            cursor.execute('''
+                SELECT COALESCE(page_type, 'other') AS page_type, COUNT(*) AS views
+                FROM usage_events
+                WHERE ts >= ? AND event_type = 'page_view'
+                GROUP BY page_type ORDER BY views DESC
+            ''', (cutoff,))
+            pages = [dict(r) for r in cursor.fetchall()]
+
+            cursor.execute('''
+                SELECT restaurant_id,
+                       SUM(CASE WHEN event_type = 'restaurant_view' THEN 1 ELSE 0 END) AS views,
+                       SUM(CASE WHEN event_type = 'outbound_click' THEN 1 ELSE 0 END) AS outbound
+                FROM usage_events
+                WHERE ts >= ? AND restaurant_id IS NOT NULL
+                GROUP BY restaurant_id ORDER BY views DESC, outbound DESC LIMIT 25
+            ''', (cutoff,))
+            top_restaurants = [dict(r) for r in cursor.fetchall()]
+
+            cursor.execute('''
+                SELECT target, restaurant_id, COUNT(*) AS clicks
+                FROM usage_events
+                WHERE ts >= ? AND event_type = 'outbound_click' AND target IS NOT NULL
+                GROUP BY target, restaurant_id
+            ''', (cutoff,))
+            outbound_rows = [dict(r) for r in cursor.fetchall()]
+
+            cursor.execute('''
+                SELECT target, COUNT(*) AS clicks
+                FROM usage_events
+                WHERE ts >= ? AND event_type = 'outbound_click' AND target IS NOT NULL
+                GROUP BY target ORDER BY clicks DESC
+            ''', (cutoff,))
+            outbound_by_target = [dict(r) for r in cursor.fetchall()]
+
+            cursor.execute('''
+                SELECT feature, COUNT(*) AS uses
+                FROM usage_events
+                WHERE ts >= ? AND event_type = 'feature_use' AND feature IS NOT NULL
+                GROUP BY feature ORDER BY uses DESC
+            ''', (cutoff,))
+            features = [dict(r) for r in cursor.fetchall()]
+
+            cursor.execute('''
+                SELECT COALESCE(referrer_domain, '(direct)') AS source, COUNT(*) AS visits
+                FROM usage_events
+                WHERE ts >= ? AND event_type = 'session_start'
+                GROUP BY source ORDER BY visits DESC LIMIT 15
+            ''', (cutoff,))
+            referrers = [dict(r) for r in cursor.fetchall()]
+
+            cursor.execute('''
+                -- Attribute each session to exactly one device (its first event in
+                -- the window) so per-device counts sum to the distinct-session total.
+                SELECT COALESCE(device_class, 'unknown') AS device, COUNT(*) AS sessions
+                FROM (
+                    SELECT e.session_id, e.device_class
+                    FROM usage_events e
+                    JOIN (
+                        SELECT session_id, MIN(ts) AS first_ts
+                        FROM usage_events WHERE ts >= ? GROUP BY session_id
+                    ) f ON e.session_id = f.session_id AND e.ts = f.first_ts
+                    WHERE e.ts >= ?
+                )
+                GROUP BY device ORDER BY sessions DESC
+            ''', (cutoff, cutoff))
+            devices = [dict(r) for r in cursor.fetchall()]
+
+            cursor.execute('''
+                SELECT CAST(substr(ts, 12, 2) AS INTEGER) AS hour, COUNT(*) AS events
+                FROM usage_events
+                WHERE ts >= ? AND event_type = 'page_view'
+                GROUP BY hour ORDER BY hour
+            ''', (cutoff,))
+            hourly = [dict(r) for r in cursor.fetchall()]
+
+        return {
+            'days': days,
+            'since': cutoff,
+            'totals': totals,
+            'daily': daily,
+            'pages': pages,
+            'top_restaurants': top_restaurants,
+            'outbound_rows': outbound_rows,
+            'outbound_by_target': outbound_by_target,
+            'features': features,
+            'referrers': referrers,
+            'devices': devices,
+            'hourly': hourly,
+        }
+
+
+
+    # ---- Site settings (site-content editing) ----
+
+    def get_settings(self, keys: List[str] = None) -> Dict[str, str]:
+        """Return stored settings (optionally filtered to keys)."""
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+            if keys:
+                placeholders = ','.join('?' * len(keys))
+                cursor.execute(
+                    f'SELECT key, value FROM settings WHERE key IN ({placeholders})',
+                    keys)
+            else:
+                cursor.execute('SELECT key, value FROM settings')
+            return {row['key']: row['value'] for row in cursor.fetchall()}
+
+    def set_setting(self, key: str, value: str, changed_by: str = None) -> None:
+        """Upsert one setting and record the change in settings_history."""
+        now = datetime.now().isoformat()
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute('SELECT value FROM settings WHERE key = ?', (key,))
+            row = cursor.fetchone()
+            old_value = row['value'] if row else None
+            if old_value == value:
+                return  # no-op, keep history clean
+            cursor.execute('''
+                INSERT INTO settings (key, value, updated_by, updated_at)
+                VALUES (?, ?, ?, ?)
+                ON CONFLICT(key) DO UPDATE SET
+                    value = excluded.value,
+                    updated_by = excluded.updated_by,
+                    updated_at = excluded.updated_at
+            ''', (key, value, changed_by, now))
+            cursor.execute('''
+                INSERT INTO settings_history
+                    (id, key, old_value, new_value, changed_by, changed_at)
+                VALUES (?, ?, ?, ?, ?, ?)
+            ''', (str(uuid.uuid4()), key, old_value, value, changed_by, now))
+
+    def get_settings_history(self, key: str = None, limit: int = 50) -> List[Dict]:
+        """Recent setting changes, newest first."""
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+            if key:
+                cursor.execute('''
+                    SELECT id, key, old_value, new_value, changed_by, changed_at
+                    FROM settings_history WHERE key = ?
+                    ORDER BY changed_at DESC LIMIT ?
+                ''', (key, limit))
+            else:
+                cursor.execute('''
+                    SELECT id, key, old_value, new_value, changed_by, changed_at
+                    FROM settings_history ORDER BY changed_at DESC LIMIT ?
+                ''', (limit,))
+            return [dict(r) for r in cursor.fetchall()]
+
+
+
+    def update_episode_mention(self, mention_id: str, **fields) -> bool:
+        """Update whitelisted text fields of one episode mention."""
+        allowed = {'host_quotes', 'host_comments', 'mention_context', 'verdict'}
+        updates = {k: v for k, v in fields.items() if k in allowed}
+        if not updates:
+            return False
+        assignments = ', '.join(f'{k} = ?' for k in updates)
+        values: List[Any] = list(updates.values())
+        # Editing the quote invalidates any prior quote verification, so the
+        # public API stops serving the stale verified text over the edit.
+        if 'host_quotes' in updates:
+            assignments += ', verified_quote = NULL'
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute(
+                f'UPDATE episode_mentions SET {assignments} WHERE id = ?',
+                (*values, mention_id))
+            return cursor.rowcount > 0
 
 
 # Singleton instance for convenience
