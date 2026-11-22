@@ -21,7 +21,7 @@ export function BottomNav() {
 
   const navItems: NavItem[] = [
     {
-      href: '/',
+      href: '/home',
       label: 'Home',
       labelHe: 'בית',
       icon: <Home className="w-6 h-6" />,

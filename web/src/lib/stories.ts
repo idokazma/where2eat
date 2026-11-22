@@ -25,7 +25,8 @@ export interface StorySlide {
 export interface Story {
   restaurant: Restaurant;
   image: string;
-  distanceKm: number;
+  /** Straight-line distance from the starting point; null when there is no location. */
+  distanceKm: number | null;
   /** Episode upload time (ms since epoch), 0 when unknown. Never the ingestion date. */
   publishedAt: number;
   slides: StorySlide[];
@@ -117,10 +118,13 @@ export function publishedAtMs(r: Restaurant): number {
   return 0;
 }
 
-/** Stories around `origin`: within `radiusKm` by distance, the rest grouped by city. */
+/**
+ * Stories around `origin`: within `radiusKm` by distance, the rest grouped by city.
+ * Without a location (`origin` null) every listed place with a photo, newest episode first.
+ */
 export function buildStories(
   restaurants: Restaurant[],
-  origin: GeoCoords,
+  origin: GeoCoords | null,
   { radiusKm = 50, source = "" }: { radiusKm?: number; source?: string } = {},
 ): StoryFeed {
   // The same place is sometimes stored once per episode, which would show as two
@@ -132,13 +136,13 @@ export function buildStories(
     if (!isListed(r)) continue;
     const c = getCoordinates(r.location);
     const image = getMapPreviewImage(r);
-    if (!c || !image) continue;
+    if (!image || (origin && !c)) continue;
     const slides = storySlides(r).filter((s) => !source || s.channel === source);
     if (!slides.length) continue;
     const story: Story = {
       restaurant: r,
       image,
-      distanceKm: haversineDistance(origin, { lat: c.latitude, lng: c.longitude }),
+      distanceKm: origin && c ? haversineDistance(origin, { lat: c.latitude, lng: c.longitude }) : null,
       publishedAt: publishedAtMs(r),
       slides,
     };
@@ -148,7 +152,7 @@ export function buildStories(
       byImage.set(image, [...group, story]);
       continue;
     }
-    const keep = story.distanceKm < twin.distanceKm ? story : twin;
+    const keep = (story.distanceKm ?? 0) < (twin.distanceKm ?? 0) ? story : twin;
     const other = keep === story ? twin : story;
     keep.publishedAt = Math.max(keep.publishedAt, other.publishedAt);
     const seen = new Set(keep.slides.map((s) => `${s.videoId}@${s.seconds ?? ""}`));
@@ -157,18 +161,17 @@ export function buildStories(
     byImage.set(image, group.map((s) => (s === twin ? keep : s)));
   }
   const stories = [...byImage.values()].flat();
-  const near = stories.filter((s) => s.distanceKm <= radiusKm).sort(
-    (a, b) =>
-      distanceBand(a.distanceKm) - distanceBand(b.distanceKm) ||
-      b.publishedAt - a.publishedAt ||
-      a.distanceKm - b.distanceKm,
+  if (!origin) return { near: stories.sort((a, b) => b.publishedAt - a.publishedAt), far: [] };
+  const km = (s: Story) => s.distanceKm ?? 0;
+  const near = stories.filter((s) => km(s) <= radiusKm).sort(
+    (a, b) => distanceBand(km(a)) - distanceBand(km(b)) || b.publishedAt - a.publishedAt || km(a) - km(b),
   );
   const far = stories
-    .filter((s) => s.distanceKm > radiusKm)
+    .filter((s) => km(s) > radiusKm)
     .sort(
       (a, b) =>
         (a.restaurant.location?.city || "").localeCompare(b.restaurant.location?.city || "", "he") ||
-        a.distanceKm - b.distanceKm,
+        km(a) - km(b),
     );
   return { near, far };
 }
