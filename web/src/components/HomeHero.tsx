@@ -15,7 +15,7 @@ export function HomeHero() {
           <span className="home-stories-label">סטוריז</span>
         </Link>
       </div>
-      <p>כל המסעדות שמדברים מהבטן בדקו, דירגו ואכלו</p>
+      <p>כל המסעדות שמדברים עליהן בפודקאסטים ובביקורות אוכל ישראליות, במקום אחד</p>
     </div>
   );
 }
