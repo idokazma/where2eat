@@ -1,0 +1,90 @@
+{
+  "date": "2026-11-22",
+  "note": "Timings are +-1-2 s audio localisation by an independent audit, not word alignment. Operations are undoable.",
+  "ops": [
+    {
+      "name": "דיזנגוף 99",
+      "episode": "ep171",
+      "video_id": "TQQwJa67aWc",
+      "mention_id": "461b7a61-e253-50b5-90c6-670e36290484",
+      "source_url": "https://traffic.megaphone.fm/POLTD2782519188.mp3",
+      "change": "verified_quote window 1945-1965 -> 1974-1979",
+      "operation_id": "68296301-578e-432a-a834-387fa354af88",
+      "timestamp_change": "mention timestamp_seconds 1945 -> 1974 (playback)",
+      "timestamp_operation_id": "0104315c-19a0-471f-a315-93e56c09deb9",
+      "undo": "POST /api/admin/maintenance/operations/{operation_id}/undo"
+    },
+    {
+      "name": "פיצי",
+      "episode": "ep171",
+      "video_id": "TQQwJa67aWc",
+      "mention_id": "09d20bb1-52a3-5e5b-a912-5591ca502cf8",
+      "source_url": "https://traffic.megaphone.fm/POLTD2782519188.mp3",
+      "change": "verified_quote window 1955-1975 -> 1960-1965 (audited 1960-1964.5; API takes integer seconds)",
+      "operation_id": "e40bfe24-d9dd-448f-abe5-1c41e08c96fd",
+      "timestamp_change": null,
+      "timestamp_operation_id": null,
+      "undo": "POST /api/admin/maintenance/operations/{operation_id}/undo"
+    },
+    {
+      "name": "אנור (3930 record)",
+      "episode": "ep175",
+      "video_id": "GNiUaUqPY_Q",
+      "mention_id": "c9c71ef0-68f9-5436-b115-f9c8fe0dff9c",
+      "source_url": "https://traffic.megaphone.fm/POLTD5122589751.mp3",
+      "change": "verified_quote 'היה במקום בוכרי חדש שנקרא אנור' 3929-3933; host_comments: Avi Efrati (filling in for Yonatan Cohen) visited, hosts relay his column",
+      "operation_id": "87bc0de4-4b9a-4eb5-af48-4349b2cc015e",
+      "timestamp_change": null,
+      "timestamp_operation_id": null,
+      "undo": "POST /api/admin/maintenance/operations/{operation_id}/undo"
+    },
+    {
+      "name": "אנור (330 record, wrong segment)",
+      "episode": "ep175",
+      "video_id": "GNiUaUqPY_Q",
+      "mention_id": "5f80274d-24d5-5686-b1e9-0a688a65aa43",
+      "source_url": "https://traffic.megaphone.fm/POLTD5122589751.mp3",
+      "change": "same verified_quote and host_comments as the 3930 record",
+      "operation_id": "b6f6686a-231d-4593-9457-3a7d5eb23b79",
+      "timestamp_change": "mention timestamp_seconds 330 -> 3930 (both records now share video@3930, one slide)",
+      "timestamp_operation_id": "7599e246-6f6e-4ae0-b881-8828b8bb5d0d",
+      "undo": "POST /api/admin/maintenance/operations/{operation_id}/undo"
+    },
+    {
+      "name": "האוס אוף דלריי",
+      "episode": "ep175",
+      "video_id": "GNiUaUqPY_Q",
+      "mention_id": "42766b35-a025-5f4f-a355-b6d29e414cbb",
+      "source_url": "https://traffic.megaphone.fm/POLTD5122589751.mp3",
+      "change": "verified_quote 'שגיא כהן מאוד מאוד מאוד לא נהנה' 3769-3772 (audited 3769.5-3771.5); host_comments: host relays critic Sagi Cohen, not the hosts' opinion",
+      "operation_id": "1f6c534a-c0f5-408d-92ca-1a58a96d050d",
+      "timestamp_change": null,
+      "timestamp_operation_id": null,
+      "undo": "POST /api/admin/maintenance/operations/{operation_id}/undo"
+    },
+    {
+      "name": "קפה 38",
+      "episode": "ep156",
+      "video_id": "gRpspS9UEO8",
+      "mention_id": "5858a4e9-87b8-584a-a58c-fb2cfa406d6c",
+      "source_url": "https://traffic.megaphone.fm/POLTD5502573493.mp3",
+      "change": "verified_quote 'מקום ממש חמוד, אגב, אני מאוד ממליץ על המקום, נהניתי מאוד.' 2669-2674 (interjection zone excluded)",
+      "operation_id": "558cbba3-76d8-463c-a7e6-bd4cba541b36",
+      "timestamp_change": null,
+      "timestamp_operation_id": null,
+      "undo": "POST /api/admin/maintenance/operations/{operation_id}/undo"
+    },
+    {
+      "name": "הקוסם",
+      "episode": "ep150",
+      "video_id": "roSNmoPFTrs",
+      "mention_id": "64b42566-cec2-4bb7-953e-0cdeec5bcc38",
+      "source_url": "https://traffic.megaphone.fm/POLTD5272337640.mp3",
+      "change": "verified_quote 'והפעם נכנס קבאב.' 816-820 (clause does not itself name the venue; referent from the passage)",
+      "operation_id": "2a09928c-b519-4626-a8f8-962993e10029",
+      "timestamp_change": null,
+      "timestamp_operation_id": null,
+      "undo": "POST /api/admin/maintenance/operations/{operation_id}/undo"
+    }
+  ]
+}
