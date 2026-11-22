@@ -6,7 +6,8 @@ from pathlib import Path
 from typing import Optional
 from datetime import datetime, timedelta
 
-from fastapi import APIRouter, HTTPException, Query, BackgroundTasks
+from fastapi import APIRouter, Depends, HTTPException, Query, BackgroundTasks
+from routers.admin import require_role
 
 from models.analyze import (
     AnalyzeVideoRequest,
@@ -277,7 +278,7 @@ async def cancel_job(job_id: str):
     summary="Re-enrich restaurants",
     description="Re-enrich all restaurants missing Google Places data (coordinates, photos, ratings).",
 )
-async def reenrich_restaurants(background_tasks: BackgroundTasks):
+async def reenrich_restaurants(background_tasks: BackgroundTasks, user: dict = Depends(require_role(["admin", "super_admin"]))):
     """Re-enrich all un-enriched restaurants with Google Places data."""
     async def _run_reenrich():
         try:
