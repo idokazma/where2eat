@@ -374,14 +374,9 @@
   width: 44px;
   padding: 0;
 }
-.stories-count {
+/* Location button at the start, exit at the far end. */
+.stories-top > :last-child {
   margin-inline-start: auto;
-  background: rgba(0, 0, 0, 0.55);
-  color: #fff;
-  border-radius: 999px;
-  padding: 4px 10px;
-  font-weight: 800;
-  font-size: 13px;
 }
 .stories-dots {
   position: absolute;

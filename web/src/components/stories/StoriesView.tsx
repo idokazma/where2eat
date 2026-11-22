@@ -132,7 +132,6 @@ export function StoriesView({
       ...far.map((story) => ({ kind: "story" as const, story })),
     ];
   }, [feed, removed]);
-  const storyCount = items.filter((i) => i.kind === "story").length;
 
   // Track the story in view.
   useEffect(() => {
@@ -373,8 +372,6 @@ export function StoriesView({
     );
   }
 
-  const storyPos = items.slice(0, current + 1).filter((i) => i.kind === "story").length;
-  const currentItem = items[current];
 
   return (
     <main className="stories-app">
@@ -382,9 +379,6 @@ export function StoriesView({
         <button className="stories-pill" onClick={() => setOrigin(null)} aria-label="בחירת מיקום">
           <MapPin size={16} aria-hidden="true" />
         </button>
-        <span className="stories-count" aria-live="polite">
-          {currentItem?.kind === "story" ? `${storyPos}/${storyCount}` : `${storyCount} מסעדות`}
-        </span>
         <Link href="/home" className="stories-pill" aria-label="יציאה">
           <X size={16} aria-hidden="true" />
         </Link>
