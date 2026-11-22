@@ -157,15 +157,19 @@ it("uses the device location when allowed, and explains when it is denied", asyn
   expect(await screen.findByText(/בחרו נקודה/)).toBeInTheDocument();
 });
 
-it("pages through the place's photos, with quotes from different sources on different photos", async () => {
+it("pages sideways through photos only; reviews stay on the story, other sources as chips", async () => {
   await startFromTelAviv();
   const [near] = await screen.findAllByRole("article");
   const frames = within(near).getAllByRole("group");
   expect(frames).toHaveLength(3);
-  expect(within(frames[0]).getByText(/מדברים מהבטן 176 · 1:40/)).toBeInTheDocument();
-  expect(within(frames[0]).getByText("נטעם")).toBeInTheDocument();
-  expect(within(frames[1]).getByText(/יוצר אחר/)).toBeInTheDocument();
-  expect(within(frames[2]).queryByRole("button", { name: /נגן ברגע הזה/ })).toBeNull();
+  expect(within(near).getByText(/מדברים מהבטן 176 · 1:40/)).toBeInTheDocument();
+  expect(within(near).getByText("נטעם")).toBeInTheDocument();
+  // The second source is a chip on the story, not a sideways page.
+  expect(within(near).getByRole("button", { name: /יוצר אחר/ })).toBeInTheDocument();
+  for (const frame of frames) {
+    expect(within(frame).queryByText(/יוצר אחר|מדברים מהבטן 176/)).toBeNull();
+    expect(within(frame).queryByRole("button", { name: /נגן/ })).toBeNull();
+  }
   expect(screen.queryByText(/דובר/)).toBeNull();
 });
 
@@ -198,12 +202,12 @@ it("skips a photo that fails to load instead of showing an empty page", async ()
   fireEvent.error(dead);
   frames = within(near).getAllByRole("group");
   expect(frames).toHaveLength(2);
-  // A photo carrying a creator quote keeps its page, over the story's own photo.
+  // A page is a photo: when it fails there is no empty page left, and the reviews stay.
   act(() => observers.find((o) => o.targets.includes(frames[1]))!.fire(frames[1]));
   fireEvent.error(near.querySelector<HTMLImageElement>('img[src*="ref1"]')!);
   frames = within(near).getAllByRole("group");
-  expect(frames).toHaveLength(2);
-  expect(within(frames[1]).getByText(/יוצר אחר/)).toBeInTheDocument();
+  expect(frames).toHaveLength(1);
+  expect(within(near).getByRole("button", { name: /נגן ברגע הזה/ })).toBeInTheDocument();
 });
 
 it("moves to the next photo when the side of the photo is tapped", async () => {
@@ -225,10 +229,9 @@ it("shows the episode page's verified quote in quotation marks", async () => {
 it("shows unverified text plainly: no quotation marks and no status label", async () => {
   await startFromTelAviv();
   const [near] = await screen.findAllByRole("article");
-  const [tasted, other] = within(near).getAllByRole("group");
-  await within(tasted).findByText("״הפיצה הכי טובה בעיר״");
-  expect(await within(other).findByText("פיצה טובה ממש")).toBeInTheDocument();
-  expect(within(other).queryByText(/״/)).toBeNull();
+  await within(near).findByText("״הפיצה הכי טובה בעיר״");
+  // Only the lead review's text is on the story; the other source is a chip, not a second quote.
+  expect(within(near).queryByText("פיצה טובה ממש")).toBeNull();
   expect(screen.queryByText(/לא מאומת/)).toBeNull();
 });
 
@@ -247,7 +250,7 @@ it("loads the YouTube player only on tap, at the moment, from the privacy-enhanc
   await startFromTelAviv();
   const [near] = await screen.findAllByRole("article");
   expect(document.querySelector("iframe")).toBeNull();
-  fireEvent.click(within(within(near).getAllByRole("group")[0]).getByRole("button", { name: /נגן ברגע הזה/ }));
+  fireEvent.click(within(near).getByRole("button", { name: /נגן ברגע הזה/ }));
   const frame = document.querySelector("iframe")!;
   expect(frame.src).toBe("https://www.youtube-nocookie.com/embed/vidNEAR?start=97&autoplay=1&playsinline=1&rel=0");
   expect(screen.getByRole("link", { name: /פתיחה ביוטיוב/ })).toHaveAttribute(
