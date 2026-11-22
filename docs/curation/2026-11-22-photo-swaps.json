@@ -1,0 +1,20 @@
+[
+  {
+    "restaurant_id": "f36d65db-9656-4ab0-a610-8549d2d0feff",
+    "name": "משיה",
+    "old_image_url": "https://where2eat-production.up.railway.app/api/venue-images/bd502ab4150330aea0ed3d02335a7cd5366c005ce73a19520a9a08c95c494240.jpg",
+    "new_image_url": "https://where2eat-production.up.railway.app/api/venue-images/e22925c18e1ea52c4d31aa3f8f69dd1f9516e8d8c1e553bd1eff9c06a8d01b5b.jpg",
+    "source_url": "https://www.mashya.co.il/wp-content/uploads/2019/05/26113769_1940619036186941_8586948120552991962_n.jpg",
+    "credit": "Mashya restaurant (mashya.co.il)",
+    "sha256": "e22925c18e1ea52c4d31aa3f8f69dd1f9516e8d8c1e553bd1eff9c06a8d01b5b"
+  },
+  {
+    "restaurant_id": "36cc7b27-4ac8-4da5-9736-3b62180e3121",
+    "name": "שטפן",
+    "old_image_url": "https://where2eat-production.up.railway.app/api/venue-images/1e6c5b8a52fd9b3bc442bfe72e79c36c612be3b2c09da52ab3b0adf0fa06d2db.jpg",
+    "new_image_url": "https://where2eat-production.up.railway.app/api/venue-images/f0daf1a01cd425d9672b1ed52943d560b278dbf4ef70c977b58a08e35ee0d111.jpg",
+    "source_url": "https://media.getmood.io/warehouse/dynamic/376692.jpg",
+    "credit": "Stefan Bakery (stefanbakery.com)",
+    "sha256": "f0daf1a01cd425d9672b1ed52943d560b278dbf4ef70c977b58a08e35ee0d111"
+  }
+]
