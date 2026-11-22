@@ -184,3 +184,21 @@ describe("getMapPreviewImage with stored photos", () => {
     expect(getMapPreviewImage(r)).toBe("/api/place-photos/aaa.jpg");
   });
 });
+
+it("prefers a non-expiring direct image over a signed lh3 link", () => {
+  const lh3 = "https://lh3.googleusercontent.com/place-photos/abc=s4800-w800";
+  const og = "https://cdn.example/photo.jpg";
+  expect(getMapPreviewImage({ name_hebrew: "א", image_url: lh3, og_image_url: og })).toBe(og);
+  expect(getMapPreviewImage({ name_hebrew: "א", image_url: lh3 })).toBe(lh3);
+});
+
+it("keeps the Google photo when the only alternative is a site logo or icon", () => {
+  // Real case (22.11): מילגו's og image is its site's face-icon.png.
+  const lh3 = "https://lh3.googleusercontent.com/place-photos/abc=s4800-w800";
+  for (const og of [
+    "https://milgomilbar.co.il/wp-content/uploads/2022/03/face-icon.png",
+    "https://frankogrillbar.co.il/wp-content/uploads/sites/174/2021/11/logo_09-01-1024x1024.png",
+  ]) {
+    expect(getMapPreviewImage({ name_hebrew: "א", image_url: lh3, og_image_url: og })).toBe(lh3);
+  }
+});

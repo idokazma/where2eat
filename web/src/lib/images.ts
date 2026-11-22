@@ -14,6 +14,28 @@ function photoBelongsToRestaurant(photoReference: string, restaurant: Restaurant
   return m[1] === pid;
 }
 
+/**
+ * A site's logo, icon or favicon: not a photo of the place, so never preferred over
+ * a real photo. Judged by the file name only: folders lie (Ontopo keeps venue cover
+ * photos under /organization/icons/<hash>), and so does the host.
+ */
+export function looksLikeLogo(url: string): boolean {
+  try {
+    const file = decodeURIComponent(new URL(url).pathname).split('/').pop() ?? '';
+    return /(logo|favicon|icon|sprite|placeholder)/i.test(file);
+  } catch {
+    return false;
+  }
+}
+
+function isGoogleCdnUrl(url: string): boolean {
+  try {
+    return new URL(url).hostname === 'lh3.googleusercontent.com';
+  } catch {
+    return false;
+  }
+}
+
 /** Photos that belong to the restaurant's current place match. */
 export function validPhotos(restaurant: Restaurant) {
   return (restaurant.photos || []).filter(
@@ -51,7 +73,12 @@ export function getRestaurantImage(restaurant: Restaurant): string | null {
     }
   }
 
-  // Priority 3: image_url fallback
+  // Priority 3: image_url fallback. Signed lh3 Google CDN links expire, so a
+  // working og:image wins over them (no runtime fallback if both are dead).
+  if (restaurant.image_url && isGoogleCdnUrl(restaurant.image_url)) {
+    const og = restaurant.og_image_url;
+    if (og && !isGoogleCdnUrl(og) && !looksLikeLogo(og)) return og;
+  }
   if (restaurant.image_url) {
     if (!restaurant.image_url.startsWith('http')) {
       return getPhotoProxyUrl(restaurant.image_url);
