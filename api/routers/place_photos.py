@@ -40,8 +40,10 @@ def photo_dir() -> Path:
 def shrink(raw: bytes):
     """Re-encode as a metadata-free JPEG, at most MAX_SIDE pixels on a side."""
     with Image.open(io.BytesIO(raw)) as image:
-        if image.format not in ('JPEG', 'PNG', 'WEBP'):
+        # MPO is a JPEG with extra frames, common from phones; the first frame is the photo.
+        if image.format not in ('JPEG', 'MPO', 'PNG', 'WEBP'):
             raise ValueError('Unsupported image format')
+        image.seek(0)
         image.load()
         clean = ImageOps.exif_transpose(image).convert('RGB')
     clean.thumbnail((MAX_SIDE, MAX_SIDE))
