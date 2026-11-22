@@ -320,9 +320,9 @@ export function storyPhotos(story: Story, { extraPhotos = true }: { extraPhotos?
   const stored = getStoredPhotoUrls(story.restaurant);
   if (stored.length > 0) {
     for (const url of stored) if (!photos.some((p) => p.url === url)) photos.push({ url, paid: false });
-    return uniqueStoryPhotos(photos);
+    return uniqueStoryPhotos(photos, story.restaurant);
   }
-  if (!extraPhotos) return uniqueStoryPhotos(photos);
+  if (!extraPhotos) return uniqueStoryPhotos(photos, story.restaurant);
   for (const p of validPhotos(story.restaurant)) {
     const photo: StoryPhoto | null = p.photo_reference
       ? { url: getPhotoProxyUrl(p.photo_reference, STORY_PHOTO_WIDTH), paid: true }
@@ -331,13 +331,29 @@ export function storyPhotos(story: Story, { extraPhotos = true }: { extraPhotos?
         : null;
     if (photo && !photos.some((x) => x.url === photo.url)) photos.push(photo);
   }
-  return uniqueStoryPhotos(photos);
+  return uniqueStoryPhotos(photos, story.restaurant);
 }
 
-function uniqueStoryPhotos(photos: StoryPhoto[]): StoryPhoto[] {
+function uniqueStoryPhotos(photos: StoryPhoto[], restaurant: Restaurant): StoryPhoto[] {
+  // A recorded direct URL and its Places proxy are two routes to the SAME photo.
+  // Match only explicit same-place aliases, never guess identity from CDN paths,
+  // dimensions or crops. Ambiguous aliases are left separate rather than merging
+  // two different references. Keep the first (usually free primary) representative.
+  const aliases = new Map<string, Set<string>>();
+  for (const p of validPhotos(restaurant)) {
+    if (!p.photo_reference) continue;
+    const key = storyPhotoKey(getPhotoProxyUrl(p.photo_reference, STORY_PHOTO_WIDTH));
+    for (const url of [p.resolved_url, p.photo_url]) {
+      if (!url) continue;
+      const keys = aliases.get(url) ?? new Set<string>();
+      keys.add(key);
+      aliases.set(url, keys);
+    }
+  }
   const seen = new Set<string>();
   return photos.filter((p) => {
-    const key = storyPhotoKey(p.url);
+    const explicit = aliases.get(p.url);
+    const key = explicit?.size === 1 ? [...explicit][0] : storyPhotoKey(p.url);
     if (seen.has(key)) return false;
     seen.add(key);
     return true;
