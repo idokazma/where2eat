@@ -74,7 +74,7 @@ export default function LoginPage() {
               <Input
                 id="email"
                 type="email"
-                placeholder="admin@where2eat.com"
+                placeholder="Email"
                 {...register('email')}
                 disabled={isSubmitting}
               />
@@ -118,13 +118,6 @@ export default function LoginPage() {
               )}
             </Button>
           </form>
-
-          <div className="mt-6 text-center text-sm text-muted-foreground">
-            <p>Default credentials:</p>
-            <p className="font-mono text-xs mt-1">
-              admin@where2eat.com / admin123
-            </p>
-          </div>
         </CardContent>
       </Card>
     </div>
