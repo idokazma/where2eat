@@ -75,6 +75,7 @@ beforeAll(() => {
     this.removeAttribute("open");
   };
   Element.prototype.scrollIntoView = jest.fn();
+  Element.prototype.scrollBy = jest.fn();
   global.IntersectionObserver = FakeObserver as unknown as typeof IntersectionObserver;
 });
 
@@ -214,10 +215,15 @@ it("moves to the next photo when the side of the photo is tapped", async () => {
   await startFromTelAviv();
   const [near] = await screen.findAllByRole("article");
   const frames = within(near).getAllByRole("group");
-  const scroll = Element.prototype.scrollIntoView as jest.Mock;
-  scroll.mockClear();
+  const strip = near.querySelector(".stories-frames")!;
+  const pan = Element.prototype.scrollBy as jest.Mock;
+  const jump = Element.prototype.scrollIntoView as jest.Mock;
+  pan.mockClear();
+  jump.mockClear();
   fireEvent.click(within(frames[0]).getByRole("button", { name: "התמונה הבאה" }));
-  expect(scroll.mock.contexts[0]).toBe(frames[1]);
+  // Only the photo strip moves; scrollIntoView could also scroll the vertical feed.
+  expect(pan.mock.contexts[0]).toBe(strip);
+  expect(jump).not.toHaveBeenCalled();
 });
 
 it("shows the episode page's verified quote in quotation marks", async () => {
@@ -239,7 +245,7 @@ it("marks the slide in view as active, whatever the browser's RTL scroll convent
   await startFromTelAviv();
   const [near] = await screen.findAllByRole("article");
   const slides = within(near).getAllByRole("group");
-  const dots = () => [...near.querySelectorAll(".stories-dots i")].map((d) => d.className);
+  const dots = () => [...near.querySelectorAll(".stories-dots i")].map((d) => (d.classList.contains("on") ? "on" : ""));
   expect(dots()).toEqual(["on", "", ""]);
   const io = observers.find((o) => o.targets.includes(slides[1]))!;
   act(() => io.fire(slides[1]));
@@ -370,4 +376,73 @@ it("reopens a rebuilt story on its photo without moving the feed to it", async (
   await screen.findByRole("article", { name: "מסעדה 0" });
   // scrollIntoView would also scroll the vertical feed and yank the viewer back to story 0.
   expect(scroll).not.toHaveBeenCalled();
+});
+
+
+describe("autoplay", () => {
+  const feedEl = () => screen.getByLabelText("סטוריז מסעדות");
+  const nextStoryCalls = () =>
+    (Element.prototype.scrollIntoView as jest.Mock).mock.contexts.filter((el) => el === document.querySelector('[data-index="1"]'));
+  const stripMoves = (article: HTMLElement) =>
+    (Element.prototype.scrollBy as jest.Mock).mock.contexts.filter((el) => el === article.querySelector(".stories-frames"));
+
+  beforeEach(() => jest.useFakeTimers());
+  afterEach(() => jest.useRealTimers());
+
+  it("moves to the next place every 10 seconds", async () => {
+    await startFromTelAviv();
+    await screen.findAllByRole("article");
+    (Element.prototype.scrollIntoView as jest.Mock).mockClear();
+    act(() => jest.advanceTimersByTime(9_900));
+    expect(nextStoryCalls()).toHaveLength(0);
+    act(() => jest.advanceTimersByTime(200));
+    expect(nextStoryCalls()).toHaveLength(1);
+  });
+
+  it("changes the place's photo every 4 seconds", async () => {
+    await startFromTelAviv();
+    const [near] = await screen.findAllByRole("article");
+    (Element.prototype.scrollBy as jest.Mock).mockClear();
+    act(() => jest.advanceTimersByTime(3_900));
+    expect(stripMoves(near)).toHaveLength(0);
+    act(() => jest.advanceTimersByTime(200));
+    expect(stripMoves(near)).toHaveLength(1);
+  });
+
+  it("holds while a finger is on the screen and resumes after it lifts", async () => {
+    await startFromTelAviv();
+    const [near] = await screen.findAllByRole("article");
+    (Element.prototype.scrollIntoView as jest.Mock).mockClear();
+    (Element.prototype.scrollBy as jest.Mock).mockClear();
+    fireEvent.touchStart(feedEl());
+    act(() => jest.advanceTimersByTime(15_000));
+    expect(nextStoryCalls()).toHaveLength(0);
+    expect(stripMoves(near)).toHaveLength(0);
+    fireEvent.touchEnd(feedEl());
+    act(() => jest.advanceTimersByTime(10_100));
+    expect(nextStoryCalls()).toHaveLength(1);
+  });
+
+  it("holds while the video player is open", async () => {
+    await startFromTelAviv();
+    const [near] = await screen.findAllByRole("article");
+    fireEvent.click(within(near).getByRole("button", { name: /נגן ברגע הזה/ }));
+    (Element.prototype.scrollIntoView as jest.Mock).mockClear();
+    act(() => jest.advanceTimersByTime(15_000));
+    expect(nextStoryCalls()).toHaveLength(0);
+  });
+
+  it("does not move on its own for people who prefer reduced motion", async () => {
+    const original = window.matchMedia;
+    window.matchMedia = ((q: string) => ({ ...original(q), matches: q.includes("prefers-reduced-motion") })) as typeof window.matchMedia;
+    try {
+      await startFromTelAviv();
+      await screen.findAllByRole("article");
+      (Element.prototype.scrollIntoView as jest.Mock).mockClear();
+      act(() => jest.advanceTimersByTime(15_000));
+      expect(nextStoryCalls()).toHaveLength(0);
+    } finally {
+      window.matchMedia = original;
+    }
+  });
 });

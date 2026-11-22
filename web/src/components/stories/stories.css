@@ -400,6 +400,16 @@
 .stories-dots i.on {
   background: #fff;
 }
+/* Autoplay: the photo in view fills its bar over the 4 s before the next one. */
+.stories-dots i.run {
+  background: linear-gradient(to left, #fff 50%, rgba(255, 255, 255, 0.35) 50%) right / 200% 100% no-repeat;
+  animation: stories-fill 4s linear forwards;
+}
+@keyframes stories-fill {
+  to {
+    background-position: left;
+  }
+}
 .stories-hint {
   position: absolute;
   z-index: 30;
