@@ -87,7 +87,7 @@ export default function EpisodesPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetchEpisodes()
+    fetchEpisodes(200)
       .then((data) => {
         setEpisodes(data.episodes);
         setLoading(false);
