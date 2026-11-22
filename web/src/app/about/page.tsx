@@ -5,8 +5,10 @@ import Link from 'next/link';
 import { ChevronRight, Youtube, Sparkles, MapPin } from 'lucide-react';
 import { PageLayout } from '@/components/layout';
 import { endpoints } from '@/lib/config';
+import { useSiteSettings } from '@/lib/site-settings';
 
 export default function AboutPage() {
+  const { settings } = useSiteSettings();
   const [restaurantCount, setRestaurantCount] = useState<number | null>(null);
   const [episodeCount, setEpisodeCount] = useState<number | null>(null);
 
@@ -52,7 +54,7 @@ export default function AboutPage() {
         <div className="space-y-6">
           {/* Intro */}
           <p className="text-[var(--color-ink)] leading-relaxed">
-            Where2Eat הוא מנוע גילוי מסעדות המבוסס על המלצות מפודקאסטים ותוכניות אוכל ישראליות.
+            {settings['about.text'] || 'Where2Eat הוא מנוע גילוי מסעדות המבוסס על המלצות מפודקאסטים ותוכניות אוכל ישראליות.'}
           </p>
 
           {/* How it works */}

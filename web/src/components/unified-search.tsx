@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Search, Calendar, TrendingUp, Filter, X, RefreshCw } from "lucide-react"
 import { Restaurant } from "@/types/restaurant"
 import { endpoints, getApiUrl } from "@/lib/config"
+import { trackFeature } from "@/lib/usage-tracker"
 import { useLanguage } from "@/contexts/LanguageContext"
 
 interface UnifiedSearchProps {
@@ -161,6 +162,7 @@ export function UnifiedSearch({ onSearchResults, onLoadingChange }: UnifiedSearc
       const data = await response.json()
 
       if (response.ok) {
+        trackFeature('search_run')
         onSearchResults({
           restaurants: data.restaurants || [],
           timeline_data: data.timeline_data || [],

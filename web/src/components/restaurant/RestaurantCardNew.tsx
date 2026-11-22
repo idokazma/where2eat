@@ -8,6 +8,7 @@ import { Restaurant } from '@/types/restaurant';
 import { EpisodeBadge } from './EpisodeBadge';
 import { MentionLevelBadge } from './MentionLevelBadge';
 import { DistanceBadge } from './DistanceBadge';
+import { trackFeature, trackOutbound, trackRestaurantView } from '@/lib/usage-tracker';
 import { useFavorites } from '@/contexts/favorites-context';
 import { normalizeHostOpinion, getPriceDisplay } from '@/lib/data-normalizer';
 import { getTimedYouTubeUrl } from '@/lib/youtube';
@@ -126,6 +127,7 @@ export function RestaurantCardNew({
 
   const handleSaveClick = (e: React.MouseEvent) => {
     e.stopPropagation();
+    trackFeature('favorite_toggle');
     if (isSaved) {
       removeFavorite(restaurantId);
     } else {
@@ -137,6 +139,7 @@ export function RestaurantCardNew({
     e.stopPropagation();
     const videoUrl = restaurant.episode_info?.video_url;
     if (videoUrl) {
+      trackOutbound('youtube', restaurantId);
       window.open(
         getTimedYouTubeUrl(videoUrl, restaurant.mention_timestamp_seconds),
         '_blank'
@@ -146,6 +149,7 @@ export function RestaurantCardNew({
 
   const handleNavigateClick = (e: React.MouseEvent) => {
     e.stopPropagation();
+    trackOutbound('navigation', restaurantId);
     if (restaurant.google_places?.google_url) {
       window.open(restaurant.google_places.google_url, '_blank');
     } else if (restaurant.location?.address) {
@@ -195,7 +199,7 @@ export function RestaurantCardNew({
   const cardContent = (
     <article
       className={`restaurant-card ${className}`}
-      onClick={!showVideo ? onTap : undefined}
+      onClick={!showVideo && onTap ? () => { trackRestaurantView(restaurantId); onTap(); } : undefined}
       role={onTap && !showVideo ? 'button' : undefined}
       tabIndex={onTap && !showVideo ? 0 : undefined}
     >
@@ -385,7 +389,7 @@ export function RestaurantCardNew({
               href={restaurant.instagram_url}
               target="_blank"
               rel="noopener noreferrer"
-              onClick={(e) => e.stopPropagation()}
+              onClick={(e) => { e.stopPropagation(); trackOutbound('instagram', restaurantId); }}
               className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[var(--color-surface)] text-sm font-medium text-pink-500 hover:text-pink-600 transition-colors mr-auto"
               aria-label="Instagram"
             >

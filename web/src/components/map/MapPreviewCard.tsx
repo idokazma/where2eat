@@ -18,6 +18,7 @@ import {
   getMapPreviewImage,
   getRestaurantInstagramUrl,
 } from "@/lib/map-discovery";
+import { trackOutbound } from "@/lib/usage-tracker";
 
 interface Props {
   restaurant: Restaurant;
@@ -138,6 +139,7 @@ export function MapPreviewCard({
             href={instagramUrl}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => trackOutbound('instagram', String(r.id ?? r.google_places?.place_id ?? r.name_hebrew))}
             aria-label={`אינסטגרם של ${r.name_hebrew || r.name_english} (נפתח בחלון חדש)`}
             title="האינסטגרם של המסעדה"
           >

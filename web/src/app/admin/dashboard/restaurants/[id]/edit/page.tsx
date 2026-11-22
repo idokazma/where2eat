@@ -5,7 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { restaurantsApi } from '@/lib/admin/api';
+import { restaurantsApi, mentionsApi, patchRestaurant, type EpisodeMention } from '@/lib/admin/api';
 import { Restaurant } from '@/types/admin/restaurant';
 import { restaurantSchema, RestaurantFormData } from '@/lib/admin/validations/restaurant';
 import { Button } from '@/components/admin/ui/button';
@@ -13,7 +13,7 @@ import { Input } from '@/components/admin/ui/input';
 import { Label } from '@/components/admin/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/admin/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/admin/ui/tabs';
-import { Save, ArrowLeft, EyeOff } from 'lucide-react';
+import { Save, ArrowLeft, EyeOff, Star, Loader2 } from 'lucide-react';
 
 export default function EditRestaurantPage() {
   const params = useParams();
@@ -22,6 +22,23 @@ export default function EditRestaurantPage() {
   const restaurantId = params.id as string;
   const [activeTab, setActiveTab] = useState('basic');
   const [isHidden, setIsHidden] = useState(false);
+  const [instagramUrl, setInstagramUrl] = useState('');
+  const [imageUrl, setImageUrl] = useState('');
+  const [photos, setPhotos] = useState<any[]>([]);
+
+  const patchMutation = useMutation({
+    mutationFn: (fields: Record<string, unknown>) => patchRestaurant(restaurantId, fields),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['restaurant', restaurantId] });
+    },
+  });
+
+  const makeMainPhoto = (index: number) => {
+    if (index <= 0 || index >= photos.length) return;
+    const reordered = [photos[index], ...photos.slice(0, index), ...photos.slice(index + 1)];
+    patchMutation.mutate({ photos: reordered });
+  };
+
 
   // Fetch restaurant data
   const { data: restaurant, isLoading } = useQuery<Restaurant>({
@@ -63,6 +80,9 @@ export default function EditRestaurantPage() {
   // Load restaurant data into form
   useEffect(() => {
     if (restaurant) {
+      setInstagramUrl((restaurant as any).instagram_url || '');
+      setImageUrl((restaurant as any).image_url || '');
+      setPhotos(Array.isArray((restaurant as any).photos) ? (restaurant as any).photos : []);
       form.reset({
         name_hebrew: restaurant.name_hebrew,
         name_english: restaurant.name_english,
@@ -428,6 +448,25 @@ export default function EditRestaurantPage() {
                   placeholder="Mon-Fri: 12:00-23:00&#10;Sat: 18:00-00:00"
                 />
               </div>
+              <div className="space-y-2">
+                <Label htmlFor="instagram_url">Instagram URL</Label>
+                <Input
+                  id="instagram_url"
+                  value={instagramUrl}
+                  onChange={(e) => setInstagramUrl(e.target.value)}
+                  placeholder="https://www.instagram.com/restaurant/"
+                  type="url"
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  disabled={patchMutation.isPending}
+                  onClick={() => patchMutation.mutate({ instagram_url: instagramUrl })}
+                >
+                  Save Instagram
+                </Button>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
@@ -439,10 +478,78 @@ export default function EditRestaurantPage() {
               <CardTitle>Media & Photos</CardTitle>
               <CardDescription>Restaurant images and Google Places data</CardDescription>
             </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">
-                Media upload and Google Places integration coming soon...
-              </p>
+            <CardContent className="space-y-6">
+              <div className="space-y-2">
+                <Label htmlFor="image_url">Main image URL (https)</Label>
+                <Input
+                  id="image_url"
+                  value={imageUrl}
+                  onChange={(e) => setImageUrl(e.target.value)}
+                  placeholder="https://..."
+                  type="url"
+                />
+                <p className="text-xs text-muted-foreground">
+                  Used when no Google photos exist, or after clearing photos. Leave empty to clear.
+                </p>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  disabled={patchMutation.isPending}
+                  onClick={() => patchMutation.mutate({ image_url: imageUrl })}
+                >
+                  Save main image
+                </Button>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Google photos ({photos.length})</Label>
+                <p className="text-xs text-muted-foreground">
+                  The first photo is what cards show. Choose a main photo, or clear photos to fall back to the main image URL.
+                </p>
+                {photos.length === 0 ? (
+                  <p className="text-sm text-muted-foreground">No Google photos stored.</p>
+                ) : (
+                  <div className="grid grid-cols-3 gap-2">
+                    {photos.map((ph: any, i: number) => (
+                      <button
+                        key={ph.photo_reference || ph.photo_url || i}
+                        type="button"
+                        disabled={patchMutation.isPending}
+                        onClick={() => makeMainPhoto(i)}
+                        className={`relative rounded-md overflow-hidden border-2 ${i === 0 ? 'border-green-500' : 'border-transparent'}`}
+                        title={i === 0 ? 'Main photo' : 'Make main photo'}
+                      >
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={ph.photo_url || `/api/photos/${ph.photo_reference}`}
+                          alt=""
+                          className="w-full h-20 object-cover"
+                        />
+                        {i === 0 && (
+                          <span className="absolute top-1 left-1 bg-green-500 text-white rounded-full p-0.5">
+                            <Star className="h-3 w-3" />
+                          </span>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                )}
+                {photos.length > 0 && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    disabled={patchMutation.isPending}
+                    onClick={() => patchMutation.mutate({ photos: [] })}
+                  >
+                    Clear Google photos
+                  </Button>
+                )}
+                <p className="text-xs text-muted-foreground">
+                  Uploading brand-new image files is not included yet; paste an https image URL above instead.
+                </p>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
@@ -455,9 +562,7 @@ export default function EditRestaurantPage() {
               <CardDescription>Episode and mention details</CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-muted-foreground">
-                Episode information and timestamps will be shown here...
-              </p>
+              <MentionsEditor restaurantId={restaurantId} />
             </CardContent>
           </Card>
         </TabsContent>
@@ -470,9 +575,18 @@ export default function EditRestaurantPage() {
               <CardDescription>See how the restaurant card will appear</CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-muted-foreground">
-                Live card preview coming soon...
-              </p>
+              {restaurant && (
+                <div className="space-y-2 text-sm">
+                  <p><span className="font-medium">Name:</span> {restaurant.name_hebrew} {restaurant.name_english ? `/ ${restaurant.name_english}` : ''}</p>
+                  <p><span className="font-medium">City:</span> {restaurant.location?.city || '-'}</p>
+                  <p><span className="font-medium">Status:</span> {restaurant.status}</p>
+                  <p><span className="font-medium">Quote:</span> {(restaurant as any).engaging_quote || '-'}</p>
+                  <p><span className="font-medium">Instagram:</span> {(restaurant as any).instagram_url || '-'}</p>
+                  <p className="text-xs text-muted-foreground">
+                    Full visual card preview is not included yet; open the public restaurant page to see the live card.
+                  </p>
+                </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
@@ -488,6 +602,73 @@ export default function EditRestaurantPage() {
           </CardContent>
         </Card>
       )}
+    </div>
+  );
+}
+
+
+function MentionsEditor({ restaurantId }: { restaurantId: string }) {
+  const queryClient = useQueryClient();
+  const [edits, setEdits] = useState<Record<string, string>>({});
+
+  const { data, isLoading } = useQuery({
+    queryKey: ['restaurant-mentions', restaurantId],
+    queryFn: () => mentionsApi.listForRestaurant(restaurantId),
+  });
+
+  const saveMutation = useMutation({
+    mutationFn: ({ id, quote }: { id: string; quote: string }) =>
+      mentionsApi.update(id, { host_quotes: quote }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['restaurant-mentions', restaurantId] });
+    },
+  });
+
+  if (isLoading) {
+    return <div className="flex justify-center py-6"><Loader2 className="h-5 w-5 animate-spin" /></div>;
+  }
+
+  const quoteText = (q: unknown): string => {
+    if (Array.isArray(q)) return q.filter(Boolean).join('\n');
+    return typeof q === 'string' ? q : '';
+  };
+
+  const mentions = data?.mentions ?? [];
+  if (mentions.length === 0) {
+    return <p className="text-sm text-muted-foreground">No episode mentions linked to this restaurant.</p>;
+  }
+
+  return (
+    <div className="space-y-4">
+      {mentions.map((mn: EpisodeMention) => (
+        <div key={mn.id} className="border rounded-md p-3 space-y-2">
+          <div className="flex items-center justify-between text-sm">
+            <span className="font-medium">
+              {mn.episode_title || mn.video_id}
+              {mn.timestamp_display ? ` · ${mn.timestamp_display}` : ''}
+            </span>
+            <span className="text-xs text-muted-foreground">{mn.mention_level || mn.verdict}</span>
+          </div>
+          <textarea
+            className="w-full min-h-[70px] px-3 py-2 border rounded-md bg-background text-sm"
+            value={edits[mn.id] ?? quoteText(mn.host_quotes)}
+            onChange={(e) => setEdits({ ...edits, [mn.id]: e.target.value })}
+            placeholder="Host quote shown on the card"
+          />
+          {mn.mention_context && (
+            <p className="text-xs text-muted-foreground">Context: {mn.mention_context}</p>
+          )}
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            disabled={saveMutation.isPending || (edits[mn.id] ?? quoteText(mn.host_quotes)) === quoteText(mn.host_quotes)}
+            onClick={() => saveMutation.mutate({ id: mn.id, quote: edits[mn.id] ?? '' })}
+          >
+            Save quote
+          </Button>
+        </div>
+      ))}
     </div>
   );
 }

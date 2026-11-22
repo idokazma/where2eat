@@ -6,6 +6,7 @@ import { Search, Shuffle, X } from 'lucide-react';
 import { Restaurant, getCoordinates } from '@/types/restaurant';
 import { PageLayout } from '@/components/layout';
 import { FilterBar, LocationFilter, CreatorFilter } from '@/components/filters';
+import { useSiteSettings } from '@/lib/site-settings';
 import { DiscoveryFeed } from '@/components/feed';
 import { HomeHero } from '@/components/HomeHero';
 import { PageLoadingSkeleton } from '@/components/ui/skeleton';
@@ -46,6 +47,10 @@ function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: numbe
 const RENDER_BATCH = 15;
 
 export function HomePageNew() {
+  const { settings } = useSiteSettings();
+  const showRestaurantCount = settings['display.restaurant_count'] !== 'false';
+  const showCreatorFilter = settings['display.creator_filter'] !== 'false';
+
   const router = useRouter();
 
   // All restaurants loaded once
@@ -268,11 +273,31 @@ export function HomePageNew() {
         <div className="marquee-inner">
           {[0, 1].map((n) => (
             <span key={n} className="marquee-chunk">
-              אוכלים ✦ מדברים ✦ מדרגים ✦ <b>{listedCount(allRestaurants)} מסעדות</b> ✦ אפס פספוסים ✦
+              אוכלים ✦ מדברים ✦ מדרגים ✦ {showRestaurantCount && <b>{listedCount(allRestaurants)} מסעדות ✦ </b>}אפס פספוסים ✦
             </span>
           ))}
         </div>
       </div>
+
+      {/* Announcement banner (managed from admin Site Content) */}
+      {settings['site.banner_text'] && (
+        <div className="px-4 pt-2">
+          {settings['site.banner_link'] ? (
+            <a
+              href={settings['site.banner_link']}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block text-center text-sm font-medium bg-[var(--color-accent-subtle)] text-[var(--color-accent)] rounded-xl px-4 py-2.5 border border-[var(--color-accent)]"
+            >
+              {settings['site.banner_text']}
+            </a>
+          ) : (
+            <p className="text-center text-sm font-medium bg-[var(--color-accent-subtle)] text-[var(--color-accent)] rounded-xl px-4 py-2.5 border border-[var(--color-accent)]">
+              {settings['site.banner_text']}
+            </p>
+          )}
+        </div>
+      )}
 
       {/* Hero */}
       <HomeHero />
@@ -293,13 +318,15 @@ export function HomePageNew() {
         </div>
         <FilterBar className="flex-wrap !overflow-x-visible">
           <LocationFilter />
-          <CreatorFilter
-            creators={creators}
-            selected={selectedCreator}
-            onSelect={setSelectedCreator}
-            counts={creatorCounts.counts}
-            totalCount={creatorCounts.total}
-          />
+          {showCreatorFilter && (
+            <CreatorFilter
+              creators={creators}
+              selected={selectedCreator}
+              onSelect={setSelectedCreator}
+              counts={creatorCounts.counts}
+              totalCount={creatorCounts.total}
+            />
+          )}
         </FilterBar>
       </div>
 

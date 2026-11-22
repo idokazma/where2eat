@@ -2,6 +2,7 @@
 /* eslint-disable @next/next/no-img-element -- Stored direct URLs only, no image optimizer or paid photo proxy. */
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { trackFeature } from '@/lib/usage-tracker';
 import Link from "next/link";
 import { Heart, MapPin, Navigation, Play, X, Loader2 } from "lucide-react";
 import { endpoints } from "@/lib/config";
@@ -179,6 +180,7 @@ export default function StoriesPage() {
   );
 
   const openPlayer = (story: Story, slide: StorySlide) => {
+    trackFeature('story_play');
     setPlayer({ story, slide });
     dialogRef.current?.showModal();
   };

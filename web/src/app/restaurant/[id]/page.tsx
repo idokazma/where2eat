@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { useFavorites } from '@/contexts/favorites-context';
+import { trackRestaurantView } from '@/lib/usage-tracker';
 import { endpoints } from '@/lib/config';
 import { MentionLevelBadge } from '@/components/restaurant/MentionLevelBadge';
 import { getRestaurantImage, getRestaurantImages, getCuisineGradient } from '@/lib/images';
@@ -68,6 +69,7 @@ export default function RestaurantDetailPage() {
           const found = await directResponse.json();
           if (found && !found.error) {
             setRestaurant(found);
+            trackRestaurantView(restaurantId);
             return;
           }
         }
@@ -85,6 +87,7 @@ export default function RestaurantDetailPage() {
           );
           if (found) {
             setRestaurant(found);
+            trackRestaurantView(restaurantId);
           } else {
             setError('המסעדה לא נמצאה');
           }
