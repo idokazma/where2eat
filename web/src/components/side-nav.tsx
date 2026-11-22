@@ -10,7 +10,6 @@ import {
   Map,
   TrendingUp,
   Heart,
-  Settings,
   BarChart3
 } from "lucide-react"
 import { useFavorites } from "@/contexts/favorites-context"
@@ -71,15 +70,6 @@ export function SideNav() {
     },
   ]
 
-  const adminItems: NavItem[] = [
-    {
-      title: "Admin",
-      titleKey: "tabs.admin",
-      href: "/admin",
-      icon: Settings,
-    },
-  ]
-
   return (
     <div className="flex h-full w-64 flex-col gap-2 border-r border-border/40 bg-card/50 backdrop-blur-sm p-4">
       {/* Logo/Brand */}
@@ -127,31 +117,6 @@ export function SideNav() {
         })}
       </nav>
 
-      <Separator className="my-2" />
-
-      {/* Admin Section */}
-      <div className="space-y-1">
-        {adminItems.map((item) => {
-          const Icon = item.icon
-          const isActive = pathname === item.href
-
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={cn(
-                "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all hover:bg-muted/50",
-                isActive
-                  ? "bg-primary/10 text-primary shadow-sm"
-                  : "text-muted-foreground hover:text-foreground"
-              )}
-            >
-              <Icon className="size-4 shrink-0" />
-              <span className="flex-1">{t(item.titleKey)}</span>
-            </Link>
-          )
-        })}
-      </div>
     </div>
   )
 }
