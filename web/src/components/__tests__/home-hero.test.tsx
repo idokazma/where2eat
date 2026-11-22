@@ -17,3 +17,11 @@ describe('HomeHero', () => {
     expect(screen.getByRole('heading', { level: 1 }).textContent).not.toMatch(/\d|מסעדות|פספוסים/);
   });
 });
+
+describe('HomeHero stories button', () => {
+  it('links to the location stories from the top of the home page', () => {
+    render(<HomeHero />);
+    const link = screen.getByRole('link', { name: /סטוריז/ });
+    expect(link).toHaveAttribute('href', '/stories');
+  });
+});
