@@ -332,3 +332,39 @@ it("keeps the story in view and the order when a photo fails ahead of or at the 
   expect(names()).toEqual(after);
   expect(screen.getByText("6/29")).toBeInTheDocument();
 });
+
+it("reopens a rebuilt story on its photo without moving the feed to it", async () => {
+  const many = Array.from({ length: 30 }, (_, i) => ({
+    id: `r${i}`,
+    name_hebrew: `מסעדה ${i}`,
+    image_url: photo(`r${i}`),
+    location: { city: "תל אביב", lat: 32.081 + i * 0.0005, lng: 34.775 },
+    episode_info: { video_id: `vid${i}`, channel_name: "מקור" },
+    ...(i === 0
+      ? {
+          google_places: { place_id: "P0" },
+          photos: [
+            { photo_reference: "places/P0/photos/a", photo_url: "", width: 1, height: 1 },
+            { photo_reference: "places/P0/photos/b", photo_url: "", width: 1, height: 1 },
+          ],
+        }
+      : {}),
+  }));
+  (global.fetch as jest.Mock).mockImplementation((url: string) =>
+    Promise.resolve({ ok: true, json: async () => (String(url).includes("/api/episodes/") ? { mentions: {} } : { restaurants: many }) }),
+  );
+  await startFromTelAviv();
+  const first = (await screen.findAllByRole("article"))[0];
+  const frames = within(first).getAllByRole("group");
+  act(() => observers.find((o) => o.targets.includes(frames[1]))!.fire(frames[1]));
+  const slots = document.querySelectorAll(".stories-slot");
+  const feed = () => observers.filter((o) => o.targets.length >= 30).pop()!;
+  act(() => feed().fire(slots[5])); // story 0 is now out of the built window
+  await waitFor(() => expect(screen.queryByRole("article", { name: "מסעדה 0" })).toBeNull());
+  const scroll = Element.prototype.scrollIntoView as jest.Mock;
+  scroll.mockClear();
+  act(() => feed().fire(slots[2])); // story 0 is rebuilt, still off-screen
+  await screen.findByRole("article", { name: "מסעדה 0" });
+  // scrollIntoView would also scroll the vertical feed and yank the viewer back to story 0.
+  expect(scroll).not.toHaveBeenCalled();
+});

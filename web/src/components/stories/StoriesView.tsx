@@ -422,11 +422,14 @@ function StoryView({
   const n = frames.length;
   const framesRef = useRef<HTMLDivElement>(null);
   // A story rebuilt after scrolling away reopens on the photo the viewer had reached.
+  // Scroll only the photo strip: scrollIntoView would also scroll the vertical feed
+  // and pull the viewer back to this story while it is still off-screen. A relative
+  // move works whichever sign the browser gives scrollLeft in right-to-left strips.
   useEffect(() => {
-    if (slideIndex > 0)
-      framesRef.current
-        ?.querySelector(`[data-slide="${slideIndex}"]`)
-        ?.scrollIntoView?.({ block: "nearest", inline: "start" });
+    const root = framesRef.current;
+    const target = root?.querySelector<HTMLElement>(`[data-slide="${slideIndex}"]`);
+    if (!root || !target || slideIndex === 0) return;
+    root.scrollLeft += target.getBoundingClientRect().left - root.getBoundingClientRect().left;
     // Only on mount: later slide changes come from the viewer's own scrolling.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
