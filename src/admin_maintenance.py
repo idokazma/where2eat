@@ -196,6 +196,25 @@ class Maintenance:
             c.execute('UPDATE restaurants SET channel_name=? WHERE episode_id=? OR (episode_id IS NULL AND video_id=?)',(p['label'],p['impact']['episode_id'],video_id))
             return self._record(c,'set_source_label',actor,before,self._read_same(c,before))
 
+    def _summary_preview(self,c,video_id,summary):
+        if not isinstance(summary,str) or not 1<=len(summary.strip())<=4000:raise ValueError('Episode summary must contain 1-4000 characters')
+        summary=summary.strip()
+        eps=self._rows(c,'episodes','video_id=?',(video_id,))
+        if not eps:raise LookupError('Episode not found')
+        state={'episodes':eps}
+        return {'rows':state,'revision':self._revision({'state':state,'summary':summary}),'summary':summary,
+                'impact':{'episode_id':eps[0]['id'],'old_summary':eps[0].get('episode_summary')}}
+
+    def preview_episode_summary(self,video_id,summary):
+        with self.db.get_connection() as c:return self._summary_preview(c,video_id,summary)
+
+    def set_episode_summary(self,video_id,summary,revision,actor):
+        """Rewrite only episodes.episode_summary on one episode (proofreading). Undoable."""
+        with self.db.get_connection() as c:
+            c.execute('BEGIN IMMEDIATE');p=self._summary_preview(c,video_id,summary);self._check(p,revision);before=p['rows']
+            c.execute('UPDATE episodes SET episode_summary=? WHERE id=?',(p['summary'],p['impact']['episode_id']))
+            return self._record(c,'set_episode_summary',actor,before,self._read_same(c,before))
+
     def _read_same(self,c,state):
         result = {}
         for table,rows in state.items():

@@ -27,6 +27,10 @@ class SourceLabelRequest(BaseModel):
     label: str=Field(min_length=1,max_length=120)
     revision: str=''
 
+class EpisodeSummaryRequest(BaseModel):
+    summary: str=Field(min_length=1,max_length=4000)
+    revision: str=''
+
 def service():return Maintenance(get_database())
 def invoke(fn,*args):
     try:return fn(*args)
@@ -65,6 +69,14 @@ def source_label_preview(video_id:str,body:SourceLabelRequest,user:dict=editor):
 @router.patch('/episodes/{video_id}/source-label')
 def source_label(video_id:str,body:SourceLabelRequest,user:dict=editor):
     return invoke(service().set_source_label,video_id,body.label,body.revision,user['id'])
+
+@router.post('/episodes/{video_id}/summary/preview')
+def episode_summary_preview(video_id:str,body:EpisodeSummaryRequest,user:dict=editor):
+    return invoke(service().preview_episode_summary,video_id,body.summary)
+
+@router.patch('/episodes/{video_id}/summary')
+def episode_summary(video_id:str,body:EpisodeSummaryRequest,user:dict=editor):
+    return invoke(service().set_episode_summary,video_id,body.summary,body.revision,user['id'])
 
 @router.get('/operations')
 def operations(user:dict=admin):

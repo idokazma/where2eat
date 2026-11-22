@@ -338,3 +338,27 @@ def test_set_source_label_relabels_restaurants_linked_only_by_video(tmp_path):
     m.undo(out['operation_id'], 'admin')
     with db.get_connection() as c:
         assert {r[0] for r in c.execute("SELECT id FROM restaurants WHERE channel_name='בית הפודיום'")} == {'r1', 'r2', 'r3'}
+
+def test_episode_summary_changes_only_summary_and_undoes(setup):
+    db,s=setup
+    with db.get_connection() as c:
+        c.execute('UPDATE episodes SET episode_summary="old text" WHERE id="e1"')
+        before=dict(c.execute('SELECT * FROM episodes WHERE id="e1"').fetchone())
+    p=s.preview_episode_summary('e1','new text');assert p['impact']['old_summary']=='old text'
+    o=s.set_episode_summary('e1','new text',p['revision'],'admin')
+    with db.get_connection() as c:
+        after=dict(c.execute('SELECT * FROM episodes WHERE id="e1"').fetchone())
+        assert after['episode_summary']=='new text'
+        assert {k:v for k,v in after.items() if k!='episode_summary'}=={k:v for k,v in before.items() if k!='episode_summary'}
+        assert c.execute('SELECT episode_summary FROM episodes WHERE id="e2"').fetchone()[0]!='new text'
+    s.undo(o['operation_id'],'admin')
+    with db.get_connection() as c:
+        assert c.execute('SELECT episode_summary FROM episodes WHERE id="e1"').fetchone()[0]=='old text'
+
+def test_episode_summary_validates_and_rejects_stale(setup):
+    db,s=setup
+    with pytest.raises(ValueError):s.preview_episode_summary('e1','  ')
+    with pytest.raises(LookupError):s.preview_episode_summary('nope','x')
+    p=s.preview_episode_summary('e1','x')
+    with db.get_connection() as c:c.execute('UPDATE episodes SET episode_summary="other" WHERE id="e1"')
+    with pytest.raises(Conflict):s.set_episode_summary('e1','x',p['revision'],'admin')
