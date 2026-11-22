@@ -1,13 +1,16 @@
 /**
  * Location-ordered stories (design: docs/plans/location-stories-design.md, stage A).
  * Pure helpers: everything is computed in the browser from data the site already
- * loads. No new API, no paid calls: photos are stored or direct links only.
+ * loads. No new API. A story's first photo is always stored or a direct link
+ * (free); further photos of the place go through the paid Google photo proxy and
+ * are loaded only when the viewer moves to them (see the page's limit).
  */
 import type { EpisodeDetail, EpisodeMention, Restaurant } from "@/types/restaurant";
 import { getCoordinates } from "@/types/restaurant";
 import { isListed } from "@/lib/restaurant-visibility";
 import { getMapPreviewImage } from "@/lib/map-discovery";
 import { haversineDistance, type GeoCoords } from "@/lib/geo-utils";
+import { getPhotoProxyUrl, validPhotos } from "@/lib/images";
 
 export interface StorySlide {
   /** The restaurant record this mention belongs to (a merged duplicate may differ). */
@@ -24,6 +27,18 @@ export interface Story {
   image: string;
   distanceKm: number;
   slides: StorySlide[];
+}
+
+export interface StoryPhoto {
+  url: string;
+  /** Loaded through the paid Google photo proxy. */
+  paid: boolean;
+}
+
+/** One sideways page of a story: a photo of the place, with the next creator mention, if any. */
+export interface StoryFrame {
+  photo: StoryPhoto;
+  mention: StorySlide | null;
 }
 
 export interface StoryFeed {
@@ -190,4 +205,35 @@ export function formatClock(seconds: number | null): string | null {
   if (seconds == null) return null;
   const s = Math.max(0, Math.round(seconds));
   return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+}
+
+const STORY_PHOTO_WIDTH = 900;
+
+/** The place's photos: the free first photo, then its Google photos (paid, same place only). */
+export function storyPhotos(story: Story, { extraPhotos = true }: { extraPhotos?: boolean } = {}): StoryPhoto[] {
+  const photos: StoryPhoto[] = [{ url: story.image, paid: false }];
+  if (!extraPhotos) return photos;
+  for (const p of validPhotos(story.restaurant)) {
+    const photo: StoryPhoto | null = p.photo_reference
+      ? { url: getPhotoProxyUrl(p.photo_reference, STORY_PHOTO_WIDTH), paid: true }
+      : p.photo_url && !p.photo_url.includes("/api/photos/")
+        ? { url: p.photo_url, paid: false }
+        : null;
+    if (photo && !photos.some((x) => x.url === photo.url)) photos.push(photo);
+  }
+  return photos;
+}
+
+/**
+ * Sideways pages of a story: one per photo, each carrying the next creator
+ * mention so different sources are spread across the photos. When there are
+ * more mentions than photos, the photos repeat.
+ */
+export function storyFrames(story: Story, opts: { extraPhotos?: boolean } = {}): StoryFrame[] {
+  const photos = storyPhotos(story, opts);
+  const count = Math.max(photos.length, story.slides.length);
+  return Array.from({ length: count }, (_, i) => ({
+    photo: photos[i % photos.length],
+    mention: story.slides[i] ?? null,
+  }));
 }
