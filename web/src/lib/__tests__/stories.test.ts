@@ -11,6 +11,7 @@ import {
   sourceLabel,
   storySlides,
   storyAlternateImages,
+  storyGoogleFallback,
   youtubeEmbedUrl,
   youtubeMomentUrl,
 } from "../stories";
@@ -322,5 +323,24 @@ describe("storyAlternateImages", () => {
     const feed = buildStories([r], TLV);
     expect(feed.near[0].image).toBe(G);
     expect(feed.near[0].alternates).toEqual([OWN]);
+  });
+});
+
+describe("storyGoogleFallback", () => {
+  it("offers the place's first Google photo through the saving photo route", () => {
+    const r = rest("a", {
+      google_places: { place_id: "P1" },
+      photos: [
+        { photo_reference: "places/OTHER/photos/x", photo_url: "", width: 1, height: 1 },
+        { photo_reference: "places/P1/photos/g1", photo_url: "", width: 1, height: 1 },
+      ],
+    });
+    const [story] = buildStories([r], TLV).near;
+    expect(storyGoogleFallback(story)).toEqual([expect.stringMatching(/\/api\/photos\/places\/P1\/photos\/g1\?maxwidth=900$/)]);
+  });
+
+  it("offers nothing when the place has no Google photos", () => {
+    const [story] = buildStories([rest("a")], TLV).near;
+    expect(storyGoogleFallback(story)).toEqual([]);
   });
 });

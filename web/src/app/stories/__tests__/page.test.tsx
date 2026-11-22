@@ -303,6 +303,28 @@ it("keeps a story whose only photo fails to load and shows an intentional fallba
   expect(document.querySelector(`img[src="${photo("far")}"]`)).toBeNull();
 });
 
+it("tries the place's own Google photo (saved after first load) before the fallback card", async () => {
+  await startFromTelAviv();
+  const [near] = await screen.findAllByRole("article");
+  fireEvent.error(near.querySelector<HTMLImageElement>(`img[src="${photo("near")}"]`)!);
+  const google = await waitFor(() => {
+    const img = near.querySelector<HTMLImageElement>("img.stories-bg");
+    expect(img?.getAttribute("src")).toContain("/api/photos/places/PN/photos/ref1");
+    return img!;
+  });
+  expect(near.querySelector(".stories-bg.fallback")).toBeNull();
+  fireEvent.error(google);
+  await waitFor(() => expect(near.querySelector(".stories-bg.fallback")).not.toBeNull());
+});
+
+it("goes straight to the fallback card when extra Google photos are turned off", async () => {
+  await startFromTelAviv(0);
+  const [near] = await screen.findAllByRole("article");
+  fireEvent.error(near.querySelector<HTMLImageElement>(`img[src="${photo("near")}"]`)!);
+  await waitFor(() => expect(near.querySelector(".stories-bg.fallback")).not.toBeNull());
+  expect(document.querySelector('img[src*="/api/photos/"]')).toBeNull();
+});
+
 it("builds only the stories around the one in view and follows the viewer down the feed", async () => {
   const many = Array.from({ length: 60 }, (_, i) => ({
     id: `r${i}`,

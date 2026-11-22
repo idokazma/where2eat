@@ -314,3 +314,13 @@ export function storyPhotos(story: Story, { extraPhotos = true }: { extraPhotos?
 export function storyFrames(story: Story, opts: { extraPhotos?: boolean } = {}): StoryFrame[] {
   return storyPhotos(story, opts).map((photo) => ({ photo }));
 }
+
+/**
+ * Last resort before the fallback card: the place's first Google photo, through the
+ * photo route that saves each Google photo on first load and serves our copy after
+ * (and recovers expired references). Paid once per photo, not per view.
+ */
+export function storyGoogleFallback(story: Story): string[] {
+  const ref = validPhotos(story.restaurant).find((p) => p.photo_reference)?.photo_reference;
+  return ref ? [getPhotoProxyUrl(ref, STORY_PHOTO_WIDTH)] : [];
+}

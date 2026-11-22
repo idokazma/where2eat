@@ -19,6 +19,7 @@ import {
   quoteFromEpisode,
   sourceLabel,
   storyFrames,
+  storyGoogleFallback,
   youtubeEmbedUrl,
   youtubeMomentUrl,
   type Story,
@@ -502,7 +503,10 @@ function StoryView({
   onSave: () => void;
 }) {
   // The story's own photo, or the next free image of the same place when it failed.
-  const image = [base.image, ...base.alternates].find((u) => !failedImages.has(u)) ?? null;
+  const image =
+    [base.image, ...base.alternates, ...(extraPhotos ? storyGoogleFallback(base) : [])].find(
+      (u) => !failedImages.has(u),
+    ) ?? null;
   const story = useMemo(() => (image ? { ...base, image } : base), [base, image]);
   const r = story.restaurant;
   const c = getCoordinates(r.location);
