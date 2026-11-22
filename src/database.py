@@ -2507,11 +2507,20 @@ class Database:
             referrers = [dict(r) for r in cursor.fetchall()]
 
             cursor.execute('''
-                SELECT COALESCE(device_class, 'unknown') AS device, COUNT(DISTINCT session_id) AS sessions
-                FROM usage_events
-                WHERE ts >= ?
+                -- Attribute each session to exactly one device (its first event in
+                -- the window) so per-device counts sum to the distinct-session total.
+                SELECT COALESCE(device_class, 'unknown') AS device, COUNT(*) AS sessions
+                FROM (
+                    SELECT e.session_id, e.device_class
+                    FROM usage_events e
+                    JOIN (
+                        SELECT session_id, MIN(ts) AS first_ts
+                        FROM usage_events WHERE ts >= ? GROUP BY session_id
+                    ) f ON e.session_id = f.session_id AND e.ts = f.first_ts
+                    WHERE e.ts >= ?
+                )
                 GROUP BY device ORDER BY sessions DESC
-            ''', (cutoff,))
+            ''', (cutoff, cutoff))
             devices = [dict(r) for r in cursor.fetchall()]
 
             cursor.execute('''

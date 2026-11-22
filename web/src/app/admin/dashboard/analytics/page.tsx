@@ -170,22 +170,22 @@ export default function AnalyticsPage() {
               עדיין לא נרשמו אירועי שימוש בחלון הזמן הזה.
             </p>
           ) : (
-            <ResponsiveContainer width="100%" height={300}>
-              <AreaChart data={daily}>
+            <div dir="ltr"><ResponsiveContainer width="99%" height={300}>
+              <AreaChart data={daily} margin={{ top: 5, right: 24, bottom: 5, left: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="day" fontSize={12} />
+                <XAxis dataKey="day" fontSize={11} minTickGap={24} tickFormatter={(d: string) => d.slice(5)} padding={{ left: 10, right: 30 }} />
                 <YAxis allowDecimals={false} fontSize={12} />
                 <Tooltip />
                 <Legend />
                 <Area isAnimationActive={false} type="monotone" dataKey="page_views" name="צפיות" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.2} />
                 <Area isAnimationActive={false} type="monotone" dataKey="sessions" name="סשנים" stroke="#10b981" fill="#10b981" fillOpacity={0.2} />
               </AreaChart>
-            </ResponsiveContainer>
+            </ResponsiveContainer></div>
           )}
         </CardContent>
       </Card>
 
-      <div className="grid gap-4 grid-cols-1 lg:grid-cols-2">
+      <div className="grid gap-4 grid-cols-1 lg:grid-cols-2 [&>*]:min-w-0">
         {/* Pages */}
         <Card>
           <CardHeader>
@@ -193,15 +193,24 @@ export default function AnalyticsPage() {
             <CardDescription>צפיות לפי אזור באתר</CardDescription>
           </CardHeader>
           <CardContent>
-            <ResponsiveContainer width="100%" height={260}>
-              <BarChart data={pages} layout="vertical" style={{ direction: 'ltr' }}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis type="number" allowDecimals={false} fontSize={12} />
-                <YAxis type="category" dataKey="page_type" width={90} fontSize={12} />
-                <Tooltip />
-                <Bar isAnimationActive={false} dataKey="views" name="צפיות" fill="#3b82f6" />
-              </BarChart>
-            </ResponsiveContainer>
+            {pages.length === 0 ? (
+              <p className="text-sm text-muted-foreground py-8 text-center">עדיין לא נרשמו צפיות.</p>
+            ) : (
+              <div className="space-y-2" dir="ltr">
+                {pages.map((p) => {
+                  const max = Math.max(...pages.map((x) => x.views), 1);
+                  return (
+                    <div key={p.page_type} className="flex items-center gap-2 text-sm">
+                      <span className="w-24 shrink-0 text-left text-muted-foreground">{p.page_type}</span>
+                      <div className="flex-1 h-5 rounded bg-muted overflow-hidden">
+                        <div className="h-full bg-blue-500" style={{ width: `${(p.views / max) * 100}%` }} />
+                      </div>
+                      <span className="w-8 shrink-0 text-right font-medium">{p.views}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </CardContent>
         </Card>
 
@@ -212,20 +221,20 @@ export default function AnalyticsPage() {
             <CardDescription>אירועים לפי שעה (שעון השרת)</CardDescription>
           </CardHeader>
           <CardContent>
-            <ResponsiveContainer width="100%" height={260}>
+            <div dir="ltr"><ResponsiveContainer width="99%" height={260}>
               <BarChart data={hourly}>
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="hour" fontSize={12} interval={2} />
+                <XAxis dataKey="hour" fontSize={11} interval={3} padding={{ left: 10, right: 34 }} />
                 <YAxis allowDecimals={false} fontSize={12} />
                 <Tooltip />
                 <Bar isAnimationActive={false} dataKey="events" name="אירועים" fill="#8b5cf6" />
               </BarChart>
-            </ResponsiveContainer>
+            </ResponsiveContainer></div>
           </CardContent>
         </Card>
       </div>
 
-      <div className="grid gap-4 grid-cols-1 lg:grid-cols-2">
+      <div className="grid gap-4 grid-cols-1 lg:grid-cols-2 [&>*]:min-w-0">
         {/* Referrers */}
         <Card>
           <CardHeader>
@@ -258,7 +267,7 @@ export default function AnalyticsPage() {
             {devices.length === 0 ? (
               <p className="text-sm text-muted-foreground py-8 text-center">עדיין לא נרשמו סשנים.</p>
             ) : (
-              <ResponsiveContainer width="100%" height={260}>
+              <div dir="ltr"><ResponsiveContainer width="99%" height={260}>
                 <PieChart>
                   <Pie
                     isAnimationActive={false}
@@ -279,13 +288,13 @@ export default function AnalyticsPage() {
                     return `${value}: ${d?.sessions ?? 0}`;
                   }} />
                 </PieChart>
-              </ResponsiveContainer>
+              </ResponsiveContainer></div>
             )}
           </CardContent>
         </Card>
       </div>
 
-      <div className="grid gap-4 grid-cols-1 lg:grid-cols-2">
+      <div className="grid gap-4 grid-cols-1 lg:grid-cols-2 [&>*]:min-w-0">
         {/* Features */}
         <Card>
           <CardHeader>
@@ -296,15 +305,15 @@ export default function AnalyticsPage() {
             {features.length === 0 ? (
               <p className="text-sm text-muted-foreground py-8 text-center">עדיין לא נרשמו אירועי פיצ׳רים.</p>
             ) : (
-              <ResponsiveContainer width="100%" height={280}>
-                <BarChart data={features} layout="vertical" style={{ direction: 'ltr' }}>
+              <div dir="ltr"><ResponsiveContainer width="99%" height={280}>
+                <BarChart data={features} layout="vertical" margin={{ top: 5, right: 30, bottom: 5, left: 10 }}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis type="number" allowDecimals={false} fontSize={12} />
                   <YAxis type="category" dataKey="label" width={120} fontSize={12} />
                   <Tooltip />
                   <Bar isAnimationActive={false} dataKey="uses" name="שימושים" fill="#10b981" />
                 </BarChart>
-              </ResponsiveContainer>
+              </ResponsiveContainer></div>
             )}
           </CardContent>
         </Card>
@@ -319,7 +328,7 @@ export default function AnalyticsPage() {
             {outbound.length === 0 ? (
               <p className="text-sm text-muted-foreground py-8 text-center">עדיין לא נרשמו יציאות.</p>
             ) : (
-              <ResponsiveContainer width="100%" height={280}>
+              <div dir="ltr"><ResponsiveContainer width="99%" height={280}>
                 <BarChart data={outbound}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="label" fontSize={12} />
@@ -327,7 +336,7 @@ export default function AnalyticsPage() {
                   <Tooltip />
                   <Bar isAnimationActive={false} dataKey="clicks" name="קליקים" fill="#f59e0b" />
                 </BarChart>
-              </ResponsiveContainer>
+              </ResponsiveContainer></div>
             )}
           </CardContent>
         </Card>

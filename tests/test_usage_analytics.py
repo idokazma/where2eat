@@ -67,6 +67,19 @@ class TestUsageEventStorage:
         assert summary["totals"]["sessions"] == 2
         assert summary["totals"]["page_views"] == 4
 
+    def test_device_sessions_attribute_each_session_once(self, db):
+        """A session with mixed device_class events counts once, under its
+        first event's device, and per-device counts sum to the distinct total."""
+        t0 = datetime.now() - timedelta(minutes=5)
+        db.insert_usage_event(_event(ts=t0.isoformat(), device_class="mobile"))
+        db.insert_usage_event(_event(ts=(t0 + timedelta(minutes=1)).isoformat(), device_class="desktop"))
+        db.insert_usage_event(_event(ts=(t0 + timedelta(minutes=2)).isoformat(), device_class="mobile"))
+        db.insert_usage_event(_event(session="session-00000002", device_class="tablet"))
+        summary = db.get_usage_summary(days=1)
+        devices = {row["device"]: row["sessions"] for row in summary["devices"]}
+        assert devices == {"mobile": 1, "tablet": 1}
+        assert sum(devices.values()) == summary["totals"]["sessions"]
+
     def test_daily_buckets(self, db):
         today = datetime.now().isoformat()
         yesterday = (datetime.now() - timedelta(days=1)).isoformat()
