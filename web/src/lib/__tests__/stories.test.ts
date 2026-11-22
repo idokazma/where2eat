@@ -5,6 +5,8 @@ import {
   publishedAtMs,
   DISTANCE_BANDS_KM,
   storyFrames,
+  storyPhotoKey,
+  shouldLoadStoryFrame,
   excerpt,
   momentStart,
   quoteFromEpisode,
@@ -351,4 +353,38 @@ describe("storyGoogleFallback", () => {
     const [story] = buildStories([rest("a")], TLV).near;
     expect(storyGoogleFallback(story)).toEqual([]);
   });
+});
+
+
+describe("bounded photo identity and lookahead", () => {
+  const hash = "a".repeat(64);
+  it("deduplicates content-addressed bytes, not different dish/crop queries", () => {
+    expect(storyPhotoKey(`https://api.test/api/venue-images/${hash}.jpg`)).toBe(
+      storyPhotoKey(`/api/place-photos/${hash}.jpg`));
+    expect(storyPhotoKey("https://owner.test/dish?crop=1")).not.toBe(storyPhotoKey("https://owner.test/dish?crop=2"));
+    const r = rest("a", { image_url: `https://api.test/api/venue-images/${hash}.jpg`,
+      stored_photos: [{ path: `/api/place-photos/${hash}.jpg` }, { path: "/api/place-photos/other.jpg" }] });
+    expect(storyFrames(buildStories([r], TLV).near[0])).toHaveLength(2);
+  });
+  it("does not preload any paid frame, or all previous free frames", () => {
+    const frames = [false, false, false, true, false].map((paid, i) => ({ photo: { url: `p${i}`, paid } }));
+    const grants = new Set(["p3"]);
+    expect(shouldLoadStoryFrame(frames, 2, 1, true, false, grants)).toBe(false);
+    expect(shouldLoadStoryFrame(frames, 2, 1, true, true, grants)).toBe(true);
+    expect(shouldLoadStoryFrame(frames, 2, 1, false, true, grants)).toBe(false);
+    expect(shouldLoadStoryFrame(frames, 3, 2, true, true, grants)).toBe(false);
+    expect(shouldLoadStoryFrame(frames, 3, 3, true, false, grants)).toBe(true);
+    expect(shouldLoadStoryFrame(frames, 0, 3, true, true, grants)).toBe(false);
+  });
+});
+
+
+it("never classifies a direct Google API or logo as a free gallery photo", () => {
+  const r = rest("a", { photos: [
+    { photo_url: "https://places.googleapis.com/v1/places/P/photos/X/media?key=not-a-key" },
+    { photo_url: "https://owner.test/logo.png" },
+    { photo_url: "https://owner.test/dish.jpg" },
+  ] });
+  const frames = storyFrames(buildStories([r], TLV).near[0]);
+  expect(frames.map((f) => f.photo.url)).toEqual([photo("a"), "https://owner.test/dish.jpg"]);
 });

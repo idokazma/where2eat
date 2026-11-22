@@ -19,6 +19,7 @@ import {
   quoteFromEpisode,
   sourceLabel,
   storyFrames,
+  shouldLoadStoryFrame,
   storyGoogleFallback,
   youtubeEmbedUrl,
   youtubeMomentUrl,
@@ -224,7 +225,7 @@ export function StoriesView({
     setSlideAt((prev) => (prev[id] === i ? prev : { ...prev, [id]: i }));
     setGranted((prev) => {
       let next = prev;
-      for (const f of frames.slice(0, i + 1)) {
+      for (const f of frames.slice(i, i + 1)) {
         if (!f.photo.paid || next.has(f.photo.url)) continue;
         if (next.size >= extraPhotoLimit) break;
         if (next === prev) next = new Set(prev);
@@ -414,6 +415,7 @@ export function StoriesView({
             <StoryView
               story={item.story}
               near={index >= current - 1 && index <= current + 3}
+              active={index === current}
               failedImages={failedImages}
               saved={isSaved(item.story.restaurant, favorites)}
               slideIndex={slideAt[item.story.restaurant.id!] ?? 0}
@@ -474,6 +476,7 @@ export function StoriesView({
 function StoryView({
   story: base,
   near,
+  active,
   failedImages,
   saved,
   slideIndex,
@@ -489,6 +492,7 @@ function StoryView({
 }: {
   story: Story;
   near: boolean;
+  active: boolean;
   failedImages: Set<string>;
   saved: boolean;
   slideIndex: number;
@@ -518,6 +522,8 @@ function StoryView({
     [story, extraPhotos, failed, failedImages],
   );
   const n = frames.length;
+  const [loaded, setLoaded] = useState<Set<string>>(new Set());
+  const imageLoaded = (url: string) => setLoaded((old) => old.has(url) ? old : new Set(old).add(url));
   const framesRef = useRef<HTMLDivElement>(null);
   // Sideways pages are photos. The review (best source first) stays on the story.
   const primary = story.slides[0] ?? null;
@@ -573,7 +579,7 @@ function StoryView({
   return (
     <article className="stories-story" aria-label={r.name_hebrew}>
       {near && image ? (
-        <img className="stories-bg" src={image} alt="" onError={() => onImageError(image)} />
+        <img className="stories-bg" src={image} alt="" onLoad={() => imageLoaded(image)} onError={() => onImageError(image)} />
       ) : near ? (
         <div className="stories-bg empty fallback" aria-hidden="true">
           <UtensilsCrossed size={88} strokeWidth={1.1} />
@@ -583,11 +589,14 @@ function StoryView({
       )}
       <div className="stories-frames" ref={framesRef}>
         {frames.map((frame, i) => {
-          // The story's own photo is already underneath. Other photos load only
-          // once reached; paid ones only when granted within the visit limit.
+          // Keep a small decoded-image window. Only the active story gets a free
+          // next image, after the current image loaded. Paid frames never preload.
           const own = frame.photo.url === image;
           const show =
-            near && !own && !failed.has(frame.photo.url) && (frame.photo.paid ? granted.has(frame.photo.url) : i <= slideIndex + 1);
+            near && !own && !failed.has(frame.photo.url) && shouldLoadStoryFrame(
+              frames, i, slideIndex, active,
+              loaded.has(frames[slideIndex]?.photo.url), granted,
+            );
           return (
             <div
               key={i}
@@ -602,6 +611,7 @@ function StoryView({
                   className="stories-bg"
                   src={frame.photo.url}
                   alt=""
+                  onLoad={() => imageLoaded(frame.photo.url)}
                   onError={() => setFailed((prev) => new Set(prev).add(frame.photo.url))}
                 />
               )}

@@ -549,3 +549,31 @@ describe("opening the site starts with the stories", () => {
     expect(screen.getByRole("link", { name: "יציאה" })).toHaveAttribute("href", "/home");
   });
 });
+
+
+it("loads only one free photo ahead, after current loads, without Google prefetch", async () => {
+  const single = { ...restaurants[1],
+    stored_photos: Array.from({ length: 6 }, (_, i) => ({ path: `/api/place-photos/free${i}.jpg` })),
+  };
+  (global.fetch as jest.Mock).mockImplementation((url: string) => Promise.resolve({
+    ok: true, json: async () => String(url).includes("/api/episodes/") ? episode : { restaurants: [single] },
+  }));
+  await startFromTelAviv();
+  const article = (await screen.findAllByRole("article"))[0];
+  const images = () => [...article.querySelectorAll<HTMLImageElement>("img")];
+  expect(images().map((i) => i.src)).toHaveLength(1);
+  fireEvent.load(images()[0]);
+  await waitFor(() => expect(images()).toHaveLength(2));
+  expect(images()[1].src).toContain("free1.jpg");
+  expect(paidImages()).toEqual([]);
+  const frames = within(article).getAllByRole("group");
+  act(() => observers.find((o) => o.targets.includes(frames[3]))!.fire(frames[3]));
+  const current = images().find((i) => i.src.includes("free3.jpg"))!;
+  fireEvent.load(current);
+  await waitFor(() => expect(images().some((i) => i.src.includes("free4.jpg"))).toBe(true));
+  expect(images().some((i) => i.src.includes("free1.jpg"))).toBe(false);
+  expect(images().some((i) => i.src.includes("free5.jpg"))).toBe(false);
+  // Own backdrop + previous/current/next, rather than every reached photo.
+  expect(images().length).toBeLessThanOrEqual(4);
+  expect(paidImages()).toEqual([]);
+});
