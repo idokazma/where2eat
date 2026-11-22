@@ -599,10 +599,15 @@ function StoryView({
     const target = root?.querySelector<HTMLElement>(`[data-slide="${targetIndex}"]`);
     if (!root || !target) return;
     settlingAt.current = instant ? targetIndex : null;
-    root.scrollBy?.({
-      left: target.getBoundingClientRect().left - root.getBoundingClientRect().left,
-      behavior: smooth && !instant ? "smooth" : "instant" as ScrollBehavior,
-    });
+    const delta = target.getBoundingClientRect().left - root.getBoundingClientRect().left;
+    if (instant) {
+      // Relative scrollBy is a directional scroll: scroll-snap-stop:always can
+      // trap it at an intervening failed slot. Absolute endpoint navigation
+      // targets the requested snap area, preserving ordinary gesture snapping.
+      root.scrollTo?.({ left: root.scrollLeft + delta, behavior: "instant" as ScrollBehavior });
+    } else {
+      root.scrollBy?.({ left: delta, behavior: smooth ? "smooth" : "instant" as ScrollBehavior });
+    }
   };
   // Next photo every few seconds while this place is in view, back to the first after the last.
   useEffect(() => {

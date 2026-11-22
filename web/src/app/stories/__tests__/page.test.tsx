@@ -78,6 +78,7 @@ beforeAll(() => {
   };
   Element.prototype.scrollIntoView = jest.fn();
   Element.prototype.scrollBy = jest.fn();
+  Element.prototype.scrollTo = jest.fn();
   global.IntersectionObserver = FakeObserver as unknown as typeof IntersectionObserver;
 });
 
@@ -431,7 +432,7 @@ describe("autoplay", () => {
   const nextStoryCalls = () =>
     (Element.prototype.scrollIntoView as jest.Mock).mock.contexts.filter((el) => el === document.querySelector('[data-index="1"]'));
   const stripMoves = (article: HTMLElement) =>
-    (Element.prototype.scrollBy as jest.Mock).mock.contexts.filter((el) => el === article.querySelector(".stories-frames"));
+    [...(Element.prototype.scrollBy as jest.Mock).mock.contexts, ...(Element.prototype.scrollTo as jest.Mock).mock.contexts].filter((el) => el === article.querySelector(".stories-frames"));
 
   beforeEach(() => jest.useFakeTimers());
   afterEach(() => jest.useRealTimers());
@@ -461,6 +462,7 @@ describe("autoplay", () => {
     fireEvent.error(place.querySelector<HTMLImageElement>(`img[src="${dead}"]`)!);
     await waitFor(() => expect(place.querySelector(`img[src="${backup}"]`)).not.toBeNull());
     (Element.prototype.scrollBy as jest.Mock).mockClear();
+    (Element.prototype.scrollTo as jest.Mock).mockClear();
     act(() => jest.advanceTimersByTime(4_100));
     expect(stripMoves(place)).toHaveLength(1);
   });
@@ -473,6 +475,7 @@ describe("autoplay", () => {
     act(() => observers.find((o) => o.targets.includes(frames[1]))!.fire(frames[1]));
     fireEvent.error(near.querySelector<HTMLImageElement>('img[src*="/api/photos/"]')!);
     (Element.prototype.scrollBy as jest.Mock).mockClear();
+    (Element.prototype.scrollTo as jest.Mock).mockClear();
     act(() => jest.advanceTimersByTime(1_000));
     expect(stripMoves(near)).toHaveLength(1);
   });
@@ -488,10 +491,12 @@ describe("autoplay", () => {
     act(() => observers.find((o) => o.targets.includes(frames[1]))!.fire(frames[1]));
     fireEvent.error(article.querySelector<HTMLImageElement>('img[src*="ref1"]')!);
     (Element.prototype.scrollBy as jest.Mock).mockClear();
+    (Element.prototype.scrollTo as jest.Mock).mockClear();
     act(() => jest.advanceTimersByTime(710));
     expect(stripMoves(article)).toHaveLength(1); // one safe return to primary
     act(() => observers.find((o) => o.targets.includes(frames[0]))!.fire(frames[0]));
     (Element.prototype.scrollBy as jest.Mock).mockClear();
+    (Element.prototype.scrollTo as jest.Mock).mockClear();
     act(() => jest.advanceTimersByTime(8_500));
     expect(stripMoves(article)).toHaveLength(0); // no 0 -> failed1 -> 0 cycle
     expect(paidImages()).toEqual([]);
@@ -519,10 +524,12 @@ describe("autoplay", () => {
     act(() => observers.find((o) => o.targets.includes(frames[2]))!.fire(frames[2]));
     fireEvent.error(article.querySelector<HTMLImageElement>('img[src*="mixed2"]')!);
     (Element.prototype.scrollBy as jest.Mock).mockClear();
+    (Element.prototype.scrollTo as jest.Mock).mockClear();
     act(() => jest.advanceTimersByTime(710));
     expect(stripMoves(article)).toHaveLength(1);
     act(() => observers.find((o) => o.targets.includes(frames[0]))!.fire(frames[0]));
     (Element.prototype.scrollBy as jest.Mock).mockClear();
+    (Element.prototype.scrollTo as jest.Mock).mockClear();
     act(() => jest.advanceTimersByTime(8_500));
     expect(stripMoves(article)).toHaveLength(0);
     expect(paidImages()).toEqual([]);
@@ -537,13 +544,19 @@ describe("autoplay", () => {
     act(() => observer().fire(frames[1]));
     fireEvent.error(article.querySelector<HTMLImageElement>('img[src*="ref1"]')!);
     act(() => jest.advanceTimersByTime(710));
-    expect((Element.prototype.scrollBy as jest.Mock).mock.calls.at(-1)[0].behavior).toBe('instant');
+    expect((Element.prototype.scrollTo as jest.Mock).mock.calls.at(-1)[0].behavior).toBe('instant');
     act(() => observer().fire(frames[0]));
     (Element.prototype.scrollBy as jest.Mock).mockClear();
+    (Element.prototype.scrollTo as jest.Mock).mockClear();
+    const strip = article.querySelector<HTMLElement>('.stories-frames')!;
+    Object.defineProperty(strip, 'scrollLeft', { value: -390, writable: true, configurable: true });
+    strip.getBoundingClientRect = () => ({ left: 0 } as DOMRect);
+    (frames[2] as HTMLElement).getBoundingClientRect = () => ({ left: -780 } as DOMRect);
     act(() => jest.advanceTimersByTime(4_010));
+    expect((Element.prototype.scrollTo as jest.Mock).mock.calls.at(-1)[0].left).toBe(-1170);
     // Target is original2, crossing original1. Browser must not smooth-scroll
     // through the failed slot and report its intermediate69%intersection.
-    expect((Element.prototype.scrollBy as jest.Mock).mock.calls.at(-1)[0].behavior).toBe('instant');
+    expect((Element.prototype.scrollTo as jest.Mock).mock.calls.at(-1)[0].behavior).toBe('instant');
     // Deliver a late intermediate failed-slot record AFTER the automatic jump.
     // It must not replace the pending destination or arm another recovery.
     act(() => observer().fire(frames[1]));
@@ -570,6 +583,7 @@ describe("autoplay", () => {
     await startFromTelAviv();
     const [near] = await screen.findAllByRole("article");
     (Element.prototype.scrollBy as jest.Mock).mockClear();
+    (Element.prototype.scrollTo as jest.Mock).mockClear();
     act(() => jest.advanceTimersByTime(3_900));
     expect(stripMoves(near)).toHaveLength(0);
     act(() => jest.advanceTimersByTime(200));
@@ -583,12 +597,14 @@ describe("autoplay", () => {
     act(() => observers.find((o) => o.targets.includes(frames[1]))!.fire(frames[1]));
     fireEvent.error(near.querySelector<HTMLImageElement>('img[src*="ref1"]')!);
     (Element.prototype.scrollBy as jest.Mock).mockClear();
+    (Element.prototype.scrollTo as jest.Mock).mockClear();
     act(() => jest.advanceTimersByTime(8_500));
     // It goes back to the free first photo instead of stalling, and requests nothing paid.
     expect(stripMoves(near).length).toBeGreaterThan(0);
     expect(paidImages()).toEqual([]);
     expect(within(near).getAllByRole("group")[1]).toBe(frames[1]);
     (Element.prototype.scrollBy as jest.Mock).mockClear();
+    (Element.prototype.scrollTo as jest.Mock).mockClear();
     fireEvent.click(within(frames[1]).getByRole("button", { name: "התמונה הבאה" }));
     expect(stripMoves(near)).toHaveLength(1);
     act(() => observers.find((o) => o.targets.includes(frames[2]))!.fire(frames[2]));
@@ -600,6 +616,7 @@ describe("autoplay", () => {
     const [near] = await screen.findAllByRole("article");
     (Element.prototype.scrollIntoView as jest.Mock).mockClear();
     (Element.prototype.scrollBy as jest.Mock).mockClear();
+    (Element.prototype.scrollTo as jest.Mock).mockClear();
     fireEvent.touchStart(feedEl());
     act(() => jest.advanceTimersByTime(15_000));
     expect(nextStoryCalls()).toHaveLength(0);
