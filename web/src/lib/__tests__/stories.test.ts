@@ -318,6 +318,12 @@ describe("storyAlternateImages", () => {
     expect(storyAlternateImages(r, G)).toEqual([]);
   });
 
+  it("keeps a photo stored under a folder named icons (Ontopo venue covers), judging the file name only", () => {
+    const cover = "https://ros-prd-il-resources.s3.amazonaws.com/organization/icons/9246292ae66837cd9342b74941e14290";
+    const r = rest("a", { image_url: G, og_image_url: cover });
+    expect(storyAlternateImages(r, G)).toEqual([cover]);
+  });
+
   it("is attached to each story by buildStories and never repeats the primary", () => {
     const r = rest("a", { image_url: G, og_image_url: OWN });
     const feed = buildStories([r], TLV);
