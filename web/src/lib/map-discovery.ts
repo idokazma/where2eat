@@ -1,6 +1,6 @@
 import type { Restaurant } from "@/types/restaurant";
 import { getCoordinates } from "@/types/restaurant";
-import { getStoredPhotoUrls } from "@/lib/images";
+import { getStoredPhotoUrls, looksLikeLogo } from "@/lib/images";
 
 export const mapId = (r: Restaurant) =>
   r.google_places?.place_id || r.id || r.name_hebrew;
@@ -105,6 +105,8 @@ export function getMapPreviewImage(r: Restaurant): string | null {
         expiring = expiring ?? value;
         continue;
       }
+      // A site logo is not a photo of the place; keep looking (and keep any Google photo).
+      if (looksLikeLogo(value)) continue;
       return value;
     } catch {
       /* A Places reference is not a direct image URL. */

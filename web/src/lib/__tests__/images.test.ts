@@ -4,6 +4,7 @@ import {
   getPhotoProxyUrl,
   getCuisineGradient,
   getStoredPhotoUrls,
+  looksLikeLogo,
 } from '../images';
 import { Restaurant } from '@/types/restaurant';
 
@@ -225,5 +226,24 @@ describe('getRestaurantImage with expiring lh3 image_url', () => {
   it('keeps non-lh3 image_url over og_image_url', () => {
     const r = makeRestaurant({ image_url: 'https://a.com/i.jpg', og_image_url: 'https://b.com/o.jpg' });
     expect(getRestaurantImage(r)).toBe('https://a.com/i.jpg');
+  });
+});
+
+describe('looksLikeLogo', () => {
+  it('flags logos, icons and favicons by their file name, not food photos', () => {
+    expect(looksLikeLogo('https://x.co.il/wp-content/uploads/2022/03/face-icon.png')).toBe(true);
+    expect(looksLikeLogo('https://x.co.il/uploads/logo_09-01-1024x1024.png')).toBe(true);
+    // Ontopo keeps venue cover photos under /organization/icons/<hash>: a photo, not a logo.
+    expect(looksLikeLogo('https://ros-prd-il-resources.s3.amazonaws.com/organization/icons/9246292ae66837cd')).toBe(false);
+    expect(looksLikeLogo('https://x.co.il/favicon.ico')).toBe(true);
+    expect(looksLikeLogo('https://cdn.example/uploads/2023/hummus-plate.jpg')).toBe(false);
+    expect(looksLikeLogo('https://logo-restaurant.example/photos/dish.jpg')).toBe(false); // host is not the file
+    expect(looksLikeLogo('https://x.co.il/logos/2024/dinner-table.jpg')).toBe(false); // folder is not the file
+  });
+
+  it('keeps the Google photo on cards when the alternative is a logo', () => {
+    const lh3 = 'https://lh3.googleusercontent.com/place-photos/abc=s4800-w800';
+    const r = makeRestaurant({ image_url: lh3, og_image_url: 'https://x.co.il/uploads/site-logo-orange.png' });
+    expect(getRestaurantImage(r)).toBe(lh3);
   });
 });
