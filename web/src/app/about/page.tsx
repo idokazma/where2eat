@@ -123,6 +123,10 @@ export default function AboutPage() {
               , פודקאסט אוכל ישראלי פופולרי שמביא המלצות אותנטיות למסעדות מכל רחבי הארץ.
             </p>
             <p className="text-[var(--color-ink)] leading-relaxed">
+              בנוסף לפודקאסט, האתר מלקט המלצות מיוצרי תוכן אוכל נוספים, למשל גיל הראל.
+              זהו פרויקט עצמאי, ואין לו שיוך רשמי לפודקאסט או ליוצרים שמופיעים בו.
+            </p>
+            <p className="text-[var(--color-ink)] leading-relaxed">
               בגלגול הקודם שלו, הפרויקט נקרא{' '}
               <span className="font-bold">״מדברים מהbotן״</span>
               {' '}(או{' '}
