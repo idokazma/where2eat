@@ -178,8 +178,8 @@ export default function AnalyticsPage() {
                 <YAxis allowDecimals={false} fontSize={12} />
                 <Tooltip />
                 <Legend />
-                <Area type="monotone" dataKey="page_views" name="צפיות" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.2} />
-                <Area type="monotone" dataKey="sessions" name="סשנים" stroke="#10b981" fill="#10b981" fillOpacity={0.2} />
+                <Area isAnimationActive={false} type="monotone" dataKey="page_views" name="צפיות" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.2} />
+                <Area isAnimationActive={false} type="monotone" dataKey="sessions" name="סשנים" stroke="#10b981" fill="#10b981" fillOpacity={0.2} />
               </AreaChart>
             </ResponsiveContainer>
           )}
@@ -200,7 +200,7 @@ export default function AnalyticsPage() {
                 <XAxis type="number" allowDecimals={false} fontSize={12} />
                 <YAxis type="category" dataKey="page_type" width={90} fontSize={12} />
                 <Tooltip />
-                <Bar dataKey="views" name="צפיות" fill="#3b82f6" />
+                <Bar isAnimationActive={false} dataKey="views" name="צפיות" fill="#3b82f6" />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
@@ -219,7 +219,7 @@ export default function AnalyticsPage() {
                 <XAxis dataKey="hour" fontSize={12} />
                 <YAxis allowDecimals={false} fontSize={12} />
                 <Tooltip />
-                <Bar dataKey="events" name="אירועים" fill="#8b5cf6" />
+                <Bar isAnimationActive={false} dataKey="events" name="אירועים" fill="#8b5cf6" />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
@@ -262,6 +262,7 @@ export default function AnalyticsPage() {
               <ResponsiveContainer width="100%" height={260}>
                 <PieChart>
                   <Pie
+                    isAnimationActive={false}
                     data={devices}
                     dataKey="sessions"
                     nameKey="device"
@@ -302,7 +303,7 @@ export default function AnalyticsPage() {
                   <XAxis type="number" allowDecimals={false} fontSize={12} />
                   <YAxis type="category" dataKey="label" width={120} fontSize={12} />
                   <Tooltip />
-                  <Bar dataKey="uses" name="שימושים" fill="#10b981" />
+                  <Bar isAnimationActive={false} dataKey="uses" name="שימושים" fill="#10b981" />
                 </BarChart>
               </ResponsiveContainer>
             )}
@@ -325,7 +326,7 @@ export default function AnalyticsPage() {
                   <XAxis dataKey="label" fontSize={12} />
                   <YAxis allowDecimals={false} fontSize={12} />
                   <Tooltip />
-                  <Bar dataKey="clicks" name="קליקים" fill="#f59e0b" />
+                  <Bar isAnimationActive={false} dataKey="clicks" name="קליקים" fill="#f59e0b" />
                 </BarChart>
               </ResponsiveContainer>
             )}

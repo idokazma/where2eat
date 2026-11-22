@@ -21,7 +21,7 @@ export default function EditRestaurantPage() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const restaurantId = params.id as string;
-  const [activeTab, setActiveTab] = useState('basic');
+  const [activeTab, setActiveTab] = useState(new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '').get('tab') || 'basic');
   const [isHidden, setIsHidden] = useState(false);
   const [instagramUrl, setInstagramUrl] = useState('');
   const [imageUrl, setImageUrl] = useState('');
