@@ -10,6 +10,8 @@ import {
   quoteFromEpisode,
   sourceLabel,
   storySlides,
+  storyAlternateImages,
+  storyGoogleFallback,
   youtubeEmbedUrl,
   youtubeMomentUrl,
 } from "../stories";
@@ -290,5 +292,63 @@ describe("buildStories without a location (newest first)", () => {
     expect(feed.near.map((s) => s.restaurant.id)).toEqual(["fresh", "nocoords", "mid", "old"]);
     expect(feed.far).toEqual([]);
     expect(feed.near.every((s) => s.distanceKm === null)).toBe(true);
+  });
+});
+
+describe("storyAlternateImages", () => {
+  const G = "https://lh3.googleusercontent.com/place-photos/AG9N-dead=s4800-w800";
+  const OWN = "https://example.co.il/uploads/dish.jpg";
+
+  it("lists other free direct images of the same place, in order, without the primary", () => {
+    const r = rest("a", { image_url: G, og_image_url: OWN, photos: [{ photo_url: "https://example.co.il/uploads/room.jpg" }] });
+    expect(storyAlternateImages(r, G)).toEqual([OWN, "https://example.co.il/uploads/room.jpg"]);
+  });
+
+  it("skips logos, the paid photo proxy, Places URLs and non-http values", () => {
+    const r = rest("a", {
+      image_url: G,
+      og_image_url: "https://example.co.il/uploads/2021/12/logo_white.png",
+      photos: [
+        { photo_reference: "places/X/photos/Y", photo_url: "https://example.co.il/should-not-be-used.jpg" },
+        { photo_url: "https://where2eat-production.up.railway.app/api/photos/places/X/photos/Y?maxwidth=800" },
+        { photo_url: "https://places.googleapis.com/v1/places/X/photos/Y/media" },
+        { photo_url: "data:image/png;base64,AAAA" },
+      ],
+    });
+    expect(storyAlternateImages(r, G)).toEqual([]);
+  });
+
+  it("keeps a photo stored under a folder named icons (Ontopo venue covers), judging the file name only", () => {
+    const cover = "https://ros-prd-il-resources.s3.amazonaws.com/organization/icons/9246292ae66837cd9342b74941e14290";
+    const r = rest("a", { image_url: G, og_image_url: cover });
+    expect(storyAlternateImages(r, G)).toEqual([cover]);
+  });
+
+  it("is attached to each story by buildStories and never repeats the primary", () => {
+    const r = rest("a", { image_url: G, og_image_url: OWN });
+    const feed = buildStories([r], TLV);
+    // The site's own photo leads over an expiring Google link (#321); the Google link
+    // stays as a backup.
+    expect(feed.near[0].image).toBe(OWN);
+    expect(feed.near[0].alternates).toEqual([G]);
+  });
+});
+
+describe("storyGoogleFallback", () => {
+  it("offers the place's first Google photo through the saving photo route", () => {
+    const r = rest("a", {
+      google_places: { place_id: "P1" },
+      photos: [
+        { photo_reference: "places/OTHER/photos/x", photo_url: "", width: 1, height: 1 },
+        { photo_reference: "places/P1/photos/g1", photo_url: "", width: 1, height: 1 },
+      ],
+    });
+    const [story] = buildStories([r], TLV).near;
+    expect(storyGoogleFallback(story)).toEqual([expect.stringMatching(/\/api\/photos\/places\/P1\/photos\/g1\?maxwidth=900$/)]);
+  });
+
+  it("offers nothing when the place has no Google photos", () => {
+    const [story] = buildStories([rest("a")], TLV).near;
+    expect(storyGoogleFallback(story)).toEqual([]);
   });
 });

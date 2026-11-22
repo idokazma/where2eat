@@ -25,6 +25,8 @@ export interface StorySlide {
 export interface Story {
   restaurant: Restaurant;
   image: string;
+  /** Other free, direct images of the same place, tried in order when `image` fails to load. */
+  alternates: string[];
   /** Straight-line distance from the starting point; null when there is no location. */
   distanceKm: number | null;
   /** Episode upload time (ms since epoch), 0 when unknown. Never the ingestion date. */
@@ -118,6 +120,49 @@ export function publishedAtMs(r: Restaurant): number {
   return 0;
 }
 
+const NOT_A_PHOTO = /(logo|favicon|icon|sprite|placeholder)/i;
+
+function directImageUrl(value: string | null | undefined): string | null {
+  if (!value) return null;
+  try {
+    const url = new URL(value);
+    if (url.protocol !== "https:" && url.protocol !== "http:") return null;
+    if (url.pathname.includes("/api/photos/") || url.hostname === "places.googleapis.com" || url.hostname === "maps.googleapis.com")
+      return null;
+    return value;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Free direct images of this place, besides the story's own: stored copies, the
+ * og image and free photo links. Logos and icons are not photos of the food.
+ * Never the paid Google photo proxy, and never another restaurant's image.
+ */
+export function storyAlternateImages(r: Restaurant, primary: string): string[] {
+  const out: string[] = [];
+  const add = (value: string | null | undefined) => {
+    const url = directImageUrl(value);
+    if (!url || url === primary || out.includes(url)) return;
+    let file = url;
+    try {
+      file = decodeURIComponent(new URL(url).pathname).split("/").pop() ?? "";
+    } catch {
+      /* directImageUrl already validated it */
+    }
+    // The file name only: folders mislead (Ontopo keeps venue cover photos under
+    // /organization/icons/<hash>).
+    if (NOT_A_PHOTO.test(file)) return;
+    out.push(url);
+  };
+  getStoredPhotoUrls(r).forEach(add);
+  add(r.image_url);
+  add(r.og_image_url);
+  for (const p of r.photos ?? []) if (!p.photo_reference) add(p.photo_url);
+  return out;
+}
+
 /**
  * Stories around `origin`: within `radiusKm` by distance, the rest grouped by city.
  * Without a location (`origin` null) every listed place with a photo, newest episode first.
@@ -142,6 +187,7 @@ export function buildStories(
     const story: Story = {
       restaurant: r,
       image,
+      alternates: storyAlternateImages(r, image),
       distanceKm: origin && c ? haversineDistance(origin, { lat: c.latitude, lng: c.longitude }) : null,
       publishedAt: publishedAtMs(r),
       slides,
@@ -267,4 +313,14 @@ export function storyPhotos(story: Story, { extraPhotos = true }: { extraPhotos?
  */
 export function storyFrames(story: Story, opts: { extraPhotos?: boolean } = {}): StoryFrame[] {
   return storyPhotos(story, opts).map((photo) => ({ photo }));
+}
+
+/**
+ * Last resort before the fallback card: the place's first Google photo, through the
+ * photo route that saves each Google photo on first load and serves our copy after
+ * (and recovers expired references). Paid once per photo, not per view.
+ */
+export function storyGoogleFallback(story: Story): string[] {
+  const ref = validPhotos(story.restaurant).find((p) => p.photo_reference)?.photo_reference;
+  return ref ? [getPhotoProxyUrl(ref, STORY_PHOTO_WIDTH)] : [];
 }
