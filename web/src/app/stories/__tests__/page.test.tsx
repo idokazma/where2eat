@@ -170,16 +170,14 @@ it("shows the episode page's verified quote in quotation marks", async () => {
   expect(screen.queryByText(/לא זה/)).toBeNull();
 });
 
-it("labels text that was not checked against the recording, and only that text", async () => {
+it("shows unverified text plainly: no quotation marks and no status label", async () => {
   await startFromTelAviv();
   const [near] = await screen.findAllByRole("article");
   const [tasted, other] = within(near).getAllByRole("group");
   await within(tasted).findByText("״הפיצה הכי טובה בעיר״");
-  expect(within(tasted).queryByText("לא מאומת מול ההקלטה")).toBeNull();
-  (global.fetch as jest.Mock).mockClear();
-  // The second mention's episode has only a transcript quote.
   expect(await within(other).findByText("פיצה טובה ממש")).toBeInTheDocument();
-  expect(within(other).getByText("לא מאומת מול ההקלטה")).toBeInTheDocument();
+  expect(within(other).queryByText(/״/)).toBeNull();
+  expect(screen.queryByText(/לא מאומת/)).toBeNull();
 });
 
 it("marks the slide in view as active, whatever the browser's RTL scroll convention", async () => {

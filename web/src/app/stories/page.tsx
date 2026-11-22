@@ -431,7 +431,6 @@ function StoryView({
                 aria-label={`אזכור ${i + 1} מתוך ${n}`}
               >
                 {q && <p className="stories-quote">{q.verified ? `״${q.text}״` : q.text}</p>}
-                {q && !q.verified && <p className="stories-unverified">לא מאומת מול ההקלטה</p>}
                 <p className="stories-src">
                   {slide.tasted && <span className="stories-tick">נטעם</span>}
                   <span>
