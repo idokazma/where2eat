@@ -14,5 +14,7 @@ describe('admin login page', () => {
     expect(screen.getByRole('button', { name: /sign in/i })).toBeInTheDocument();
     expect(container.textContent).not.toMatch(/default credentials/i);
     expect(container.textContent).not.toMatch(/@where2eat\.com/i);
+    const email = container.querySelector('input[type="email"], input[name="email"]') as HTMLInputElement | null;
+    expect(email?.placeholder ?? '').not.toContain('@');
   });
 });

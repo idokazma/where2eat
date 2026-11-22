@@ -74,7 +74,7 @@ export default function LoginPage() {
               <Input
                 id="email"
                 type="email"
-                placeholder="admin@where2eat.com"
+                placeholder="Email"
                 {...register('email')}
                 disabled={isSubmitting}
               />
