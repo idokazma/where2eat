@@ -1,0 +1,36 @@
+[
+  {
+    "name": "דיזנגוף 99",
+    "video_id": "TQQwJa67aWc",
+    "mention_id": "461b7a61-e253-50b5-90c6-670e36290484",
+    "mention_changes": {
+      "verified_quote": {
+        "text": "דיזנגוף 99 שכרגע רק ארוחות הבוקר נפתחו, נכון?",
+        "source_url": "https://traffic.megaphone.fm/POLTD2782519188.mp3",
+        "start_seconds": 1945,
+        "end_seconds": 1965
+      },
+      "host_comments": "ראיון עם חיים כהן. המשפט הוא שאלה של המראיין, לא ביקורת על האוכל; לפי השיחה כרגע נפתחו שם רק ארוחות הבוקר."
+    },
+    "operation_id": "95163799-a107-4a90-9491-5c9be59b94b6",
+    "restaurant_id": "0ce832c3 (prefix)",
+    "evidence": "Ep171 published Thu 17 Sep 2026, RSS https://feeds.megaphone.fm/POLTD3242143576, audio https://traffic.megaphone.fm/POLTD2782519188.mp3, clip 1925-2000 s transcribed. Quote text is a contiguous run of words from that transcript. Window is a review window, not word-level timing. Earlier version of these two (ops be56eb70, fce221b8) was superseded: it dropped or stitched words."
+  },
+  {
+    "name": "פיצי",
+    "video_id": "TQQwJa67aWc",
+    "mention_id": "09d20bb1-52a3-5e5b-a912-5591ca502cf8",
+    "mention_changes": {
+      "verified_quote": {
+        "text": "אני פותח את פיצי בנווה גן, בשכונת נווה גן.",
+        "source_url": "https://traffic.megaphone.fm/POLTD2782519188.mp3",
+        "start_seconds": 1955,
+        "end_seconds": 1975
+      },
+      "host_comments": "ראיון עם חיים כהן: הוא מספר על פתיחת שלושה סניפים חדשים של פיצי השנה. זו הודעה על פתיחה ולא ביקורת על האוכל."
+    },
+    "operation_id": "e3c9d19f-0892-496d-b64c-23a8397d08f8",
+    "restaurant_id": "3ba759ed (prefix)",
+    "evidence": "Ep171 published Thu 17 Sep 2026, RSS https://feeds.megaphone.fm/POLTD3242143576, audio https://traffic.megaphone.fm/POLTD2782519188.mp3, clip 1925-2000 s transcribed. Quote text is a contiguous run of words from that transcript. Window is a review window, not word-level timing. Earlier version of these two (ops be56eb70, fce221b8) was superseded: it dropped or stitched words."
+  }
+]
