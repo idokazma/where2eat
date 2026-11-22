@@ -1,5 +1,6 @@
 'use client';
 
+import { listedCount } from '@/lib/restaurant-visibility';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ChevronRight, Youtube, Sparkles, MapPin } from 'lucide-react';
@@ -15,7 +16,7 @@ export default function AboutPage() {
       .then(res => res.json())
       .then(data => {
         const restaurants = data.restaurants || [];
-        setRestaurantCount(data.count ?? restaurants.length);
+        setRestaurantCount(listedCount(restaurants));
         const episodes = new Set(
           restaurants.map((r: { episode_info?: { video_id?: string } }) => r.episode_info?.video_id).filter(Boolean)
         );
