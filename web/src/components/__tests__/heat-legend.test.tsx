@@ -16,7 +16,7 @@ describe('HeatLegend', () => {
     const gradientBar = container.querySelector('[style*="background"]');
     expect(gradientBar).toBeInTheDocument();
     expect(gradientBar).toHaveStyle({
-      background: 'linear-gradient(to left, #3b82f6, #22c55e, #eab308, #f97316, #ef4444)',
+      background: 'linear-gradient(to left, #ef4444, #f97316, #eab308, #22c55e, #3b82f6)',
     });
 
     // Should display Hebrew labels
@@ -65,9 +65,11 @@ describe('HeatLegend', () => {
     const legendContainer = container.firstChild as HTMLElement;
 
     expect(legendContainer).toHaveClass('absolute');
-    expect(legendContainer).toHaveClass('bottom-14');
+    // Sits above the map's bottom controls.
+    expect(legendContainer).toHaveClass('bottom-24');
     expect(legendContainer).toHaveClass('left-4');
-    expect(legendContainer).toHaveClass('z-[1000]');
+    // Below the map's bottom sheet (z-[1000]), so the open sheet covers it.
+    expect(legendContainer).toHaveClass('z-[999]');
     expect(legendContainer).toHaveClass('bg-white/90');
     expect(legendContainer).toHaveClass('backdrop-blur-sm');
     expect(legendContainer).toHaveClass('rounded-lg');

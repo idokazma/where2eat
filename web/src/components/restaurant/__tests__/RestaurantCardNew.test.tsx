@@ -4,10 +4,17 @@ import { RestaurantCardNew } from '../RestaurantCardNew';
 
 describe('RestaurantCardNew', () => {
   it('renders restaurant name', () => {
-    const restaurant = createMockRestaurant({ name_hebrew: 'מסעדת טסט' });
+    const restaurant = createMockRestaurant({ name_hebrew: 'מסעדת טסט', name_english: undefined });
     renderWithProviders(<RestaurantCardNew restaurant={restaurant} />);
 
-    expect(screen.getByText('מסעדת טסט')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'מסעדת טסט' })).toBeInTheDocument();
+  });
+
+  it('titles the card with the English name when the restaurant has one', () => {
+    const restaurant = createMockRestaurant({ name_hebrew: 'מסעדת טסט', name_english: 'Test Place' });
+    renderWithProviders(<RestaurantCardNew restaurant={restaurant} />);
+
+    expect(screen.getByRole('heading', { name: 'Test Place' })).toBeInTheDocument();
   });
 
   it('renders image when imageUrl provided', () => {
