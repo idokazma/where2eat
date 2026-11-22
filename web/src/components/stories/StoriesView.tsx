@@ -19,6 +19,7 @@ import {
   quoteFromEpisode,
   sourceLabel,
   storyFrames,
+  storyPhotoKey,
   shouldLoadStoryFrame,
   storyGoogleFallback,
   youtubeEmbedUrl,
@@ -515,12 +516,11 @@ function StoryView({
   const r = story.restaurant;
   const c = getCoordinates(r.location);
   const [failed, setFailed] = useState<Set<string>>(new Set());
-  // A photo that fails to load (expired Google references are common) is skipped,
-  // unless it carries a creator quote: then the quote stays, over the story's photo.
-  const frames = useMemo(
-    () => storyFrames(story, { extraPhotos }).filter((f) => !failed.has(f.photo.url) && !failedImages.has(f.photo.url)),
-    [story, extraPhotos, failed, failedImages],
-  );
+  // Keep slot identities stable on errors. Removing a failed frame would move the
+  // next paid reference into the observed slot and grant it without a new gesture.
+  // The primary/free backdrop and source remain visible beneath a failed slot.
+  const frames = useMemo(() => storyFrames(base, { extraPhotos }), [base, extraPhotos]);
+  const currentFailed = failed.has(frames[slideIndex]?.photo.url) || failedImages.has(frames[slideIndex]?.photo.url);
   const n = frames.length;
   const [loaded, setLoaded] = useState<Set<string>>(new Set());
   const imageLoaded = (url: string) => setLoaded((old) => old.has(url) ? old : new Set(old).add(url));
@@ -569,12 +569,12 @@ function StoryView({
   };
   // Next photo every few seconds while this place is in view, back to the first after the last.
   useEffect(() => {
-    if (!autoplay || n < 2) return;
+    if (!autoplay || n < 2 || currentFailed) return;
     const t = setTimeout(() => go((slideIndex + 1) % n), PHOTO_MS);
     return () => clearTimeout(t);
     // go only reads refs and n.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [autoplay, slideIndex, n]);
+  }, [autoplay, slideIndex, n, currentFailed]);
 
   return (
     <article className="stories-story" aria-label={r.name_hebrew}>
@@ -593,13 +593,13 @@ function StoryView({
           // next image, after the current image loaded. Paid frames never preload.
           const own = frame.photo.url === image;
           const show =
-            near && !own && !failed.has(frame.photo.url) && shouldLoadStoryFrame(
+            near && !own && !failed.has(frame.photo.url) && !failedImages.has(frame.photo.url) && shouldLoadStoryFrame(
               frames, i, slideIndex, active,
               loaded.has(frames[slideIndex]?.photo.url), granted,
             );
           return (
             <div
-              key={i}
+              key={storyPhotoKey(frame.photo.url)}
               className="stories-frame"
               data-slide={i}
               role="group"
