@@ -34,6 +34,11 @@ const RADIUS_KM = 50;
 // the count keep working while the page holds a handful of stories, not all.
 const MOUNT_BEHIND = 2;
 const MOUNT_AHEAD = 4;
+// Autoplay: next place every 10 s, next photo of the place every 4 s. A finger on
+// the screen, the open player or a background tab holds both; reduced motion turns
+// autoplay off.
+const STORY_MS = 10_000;
+const PHOTO_MS = 4_000;
 const PRESETS: [string, number, number][] = [
   ["תל אביב · דיזנגוף", 32.0809, 34.774],
   ["ירושלים · מחנה יהודה", 31.7852, 35.212],
@@ -60,6 +65,11 @@ export function StoriesView({ extraPhotoLimit }: { extraPhotoLimit: number }) {
   const [granted, setGranted] = useState<Set<string>>(new Set());
   const [player, setPlayer] = useState<{ story: Story; slide: StorySlide } | null>(null);
   const [hint, setHint] = useState(false);
+  const [held, setHeld] = useState(false);
+  const [tabHidden, setTabHidden] = useState(false);
+  const [reducedMotion] = useState(
+    () => typeof window !== "undefined" && !!window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches,
+  );
   const requested = useRef(new Set<string>());
   const feedRef = useRef<HTMLDivElement>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -201,6 +211,20 @@ export function StoriesView({ extraPhotoLimit }: { extraPhotoLimit: number }) {
     [items.length, current],
   );
 
+  useEffect(() => {
+    const onVisibility = () => setTabHidden(document.hidden);
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => document.removeEventListener("visibilitychange", onVisibility);
+  }, []);
+
+  const autoplay = !!origin && !held && !player && !tabHidden && !reducedMotion;
+  // A new place in view (by hand or on its own) or a released finger restarts the count.
+  useEffect(() => {
+    if (!autoplay || current >= items.length - 1) return;
+    const t = setTimeout(() => goStory(1), STORY_MS);
+    return () => clearTimeout(t);
+  }, [autoplay, current, items.length, goStory]);
+
   const openPlayer = (story: Story, slide: StorySlide) => {
     setPlayer({ story, slide });
     dialogRef.current?.showModal();
@@ -303,8 +327,19 @@ export function StoriesView({ extraPhotoLimit }: { extraPhotoLimit: number }) {
           <X size={16} aria-hidden="true" />
         </Link>
       </div>
-      {hint && <div className="stories-hint">↕ מסעדה הבאה · ↔ תמונה הבאה</div>}
-      <div className="stories-feed" ref={feedRef} tabIndex={0} aria-label="סטוריז מסעדות">
+      {hint && <div className="stories-hint">↕ מסעדה הבאה · ↔ תמונה הבאה · החזיקו לעצירה</div>}
+      <div
+        className="stories-feed"
+        ref={feedRef}
+        tabIndex={0}
+        aria-label="סטוריז מסעדות"
+        onTouchStart={() => setHeld(true)}
+        onTouchEnd={(e) => e.touches.length === 0 && setHeld(false)}
+        onTouchCancel={() => setHeld(false)}
+        onMouseDown={() => setHeld(true)}
+        onMouseUp={() => setHeld(false)}
+        onMouseLeave={() => setHeld(false)}
+      >
         {!items.length && (
           <section className="stories-divider" data-index={0}>
             <div>
@@ -331,6 +366,8 @@ export function StoriesView({ extraPhotoLimit }: { extraPhotoLimit: number }) {
               broken={broken.has(item.story.restaurant.id!)}
               saved={isSaved(item.story.restaurant, favorites)}
               slideIndex={slideAt[item.story.restaurant.id!] ?? 0}
+              autoplay={autoplay && index === current}
+              smooth={!reducedMotion}
               extraPhotos={extraPhotoLimit > 0}
               granted={granted}
               quoteFor={quoteFor}
@@ -389,6 +426,8 @@ function StoryView({
   broken,
   saved,
   slideIndex,
+  autoplay,
+  smooth,
   extraPhotos,
   granted,
   quoteFor,
@@ -402,6 +441,8 @@ function StoryView({
   broken: boolean;
   saved: boolean;
   slideIndex: number;
+  autoplay: boolean;
+  smooth: boolean;
   extraPhotos: boolean;
   granted: Set<string>;
   quoteFor: (story: Story, slide: StorySlide) => StoryQuote | null;
@@ -453,10 +494,24 @@ function StoryView({
     // onSlide is recreated each render; the observed frames only change with the story.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [frames, n]);
-  const go = (i: number) =>
-    framesRef.current
-      ?.querySelector(`[data-slide="${Math.max(0, Math.min(n - 1, i))}"]`)
-      ?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "start" });
+  // Move only the photo strip: scrollIntoView could also scroll the vertical feed.
+  const go = (i: number) => {
+    const root = framesRef.current;
+    const target = root?.querySelector<HTMLElement>(`[data-slide="${Math.max(0, Math.min(n - 1, i))}"]`);
+    if (!root || !target) return;
+    root.scrollBy?.({
+      left: target.getBoundingClientRect().left - root.getBoundingClientRect().left,
+      behavior: smooth ? "smooth" : "auto",
+    });
+  };
+  // Next photo every few seconds while this place is in view, back to the first after the last.
+  useEffect(() => {
+    if (!autoplay || n < 2) return;
+    const t = setTimeout(() => go((slideIndex + 1) % n), PHOTO_MS);
+    return () => clearTimeout(t);
+    // go only reads refs and n.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoplay, slideIndex, n]);
 
   return (
     <article className="stories-story" aria-label={r.name_hebrew}>
@@ -544,7 +599,10 @@ function StoryView({
       {n > 1 && (
         <div className="stories-dots" aria-hidden="true">
           {frames.map((_, i) => (
-            <i key={i} className={i === slideIndex ? "on" : ""} />
+            <i
+              key={i === slideIndex && autoplay ? `run-${slideIndex}` : i}
+              className={i === slideIndex ? (autoplay ? "on run" : "on") : ""}
+            />
           ))}
         </div>
       )}
