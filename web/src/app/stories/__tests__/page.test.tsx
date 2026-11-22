@@ -290,12 +290,17 @@ it("saves a restaurant to the shared favorites", async () => {
   expect(save).toHaveAttribute("aria-pressed", "true");
 });
 
-it("drops a story whose photo fails to load before it is reached", async () => {
+it("keeps a story whose only photo fails to load and shows an intentional fallback", async () => {
   await startFromTelAviv();
   await screen.findAllByRole("article");
+  const before = screen.getAllByRole("article").length;
   const farImg = document.querySelector<HTMLImageElement>(`img[src="${photo("far")}"]`)!;
+  const farArticle = farImg.closest("article")!;
   fireEvent.error(farImg);
-  await waitFor(() => expect(screen.getAllByRole("article")).toHaveLength(1));
+  await waitFor(() => expect(farArticle.querySelector(".stories-bg.fallback")).not.toBeNull());
+  expect(screen.getAllByRole("article")).toHaveLength(before);
+  expect(within(farArticle).getByRole("heading")).toBeInTheDocument();
+  expect(document.querySelector(`img[src="${photo("far")}"]`)).toBeNull();
 });
 
 it("builds only the stories around the one in view and follows the viewer down the feed", async () => {
@@ -322,11 +327,13 @@ it("builds only the stories around the one in view and follows the viewer down t
   expect(screen.queryByText(/^\d+\/\d+$/)).toBeNull(); // no "n/M" counter
 });
 
-it("keeps the story in view and the order when a photo fails ahead of or at the current story", async () => {
+it("keeps every story and the order when a photo fails, trying the next free image first", async () => {
+  const alt = "https://owner.example/uploads/dish.jpg";
   const many = Array.from({ length: 30 }, (_, i) => ({
     id: `r${i}`,
     name_hebrew: `מסעדה ${i}`,
     image_url: photo(`r${i}`),
+    ...(i === 7 ? { og_image_url: alt } : {}),
     location: { city: "תל אביב", lat: 32.081 + i * 0.0005, lng: 34.775 },
     episode_info: { video_id: `vid${i}`, channel_name: "מקור" },
   }));
@@ -339,18 +346,21 @@ it("keeps the story in view and the order when a photo fails ahead of or at the 
   const feedObserver = observers.filter((o) => o.targets.length >= 30).pop()!;
   act(() => feedObserver.fire(document.querySelectorAll(".stories-slot")[5]));
   await waitFor(() => expect(names()).toEqual(Array.from({ length: 7 }, (_, i) => `מסעדה ${3 + i}`)));
+  const before = names();
 
-  // A photo-less story ahead is dropped: nothing before it moves, nothing repeats or is skipped.
+  // A failed photo ahead moves to the same place's next free image; nothing is dropped.
   fireEvent.error(document.querySelector<HTMLImageElement>(`img[src="${photo("r7")}"]`)!);
-  await waitFor(() => expect(document.querySelectorAll(".stories-slot")).toHaveLength(29));
-  const after = names();
-  expect(new Set(after).size).toBe(after.length);
-  expect(after).toEqual(["מסעדה 3", "מסעדה 4", "מסעדה 5", "מסעדה 6", "מסעדה 8", "מסעדה 9", "מסעדה 10"]);
+  await waitFor(() => expect(document.querySelector(`img[src="${alt}"]`)).not.toBeNull());
+  expect(document.querySelector(`img[src="${photo("r7")}"]`)).toBeNull();
+  expect(document.querySelectorAll(".stories-slot")).toHaveLength(30);
+  expect(names()).toEqual(before);
 
-  // A photo that fails at the story in view or behind keeps its place (shown without a photo).
+  // The alternate fails too, and a story with no other image fails: both stay with a fallback.
+  fireEvent.error(document.querySelector<HTMLImageElement>(`img[src="${alt}"]`)!);
   fireEvent.error(document.querySelector<HTMLImageElement>(`img[src="${photo("r5")}"]`)!);
-  await waitFor(() => expect(document.querySelectorAll(".stories-slot")).toHaveLength(29));
-  expect(names()).toEqual(after);
+  await waitFor(() => expect(document.querySelectorAll(".stories-bg.fallback")).toHaveLength(2));
+  expect(document.querySelectorAll(".stories-slot")).toHaveLength(30);
+  expect(names()).toEqual(before);
 });
 
 it("reopens a rebuilt story on its photo without moving the feed to it", async () => {

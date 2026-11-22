@@ -1,0 +1,10 @@
+{
+ "restaurant_id": "24c910d1-60b1-4ccd-a9f1-b7915efc3039",
+ "name": "ממה סואהם",
+ "old_image_url": "https://lh3.googleusercontent.com/place-photos/AG9NLjDEu84_xNNcq5xibQdrcUS4Vvz4Is9-bxJ34LDWzeG-QBRGyiK7HRtggUTLWzwAWW76u7Z5zN0zMYeH0Gs-aPGt-Ob1BSyxqv7pQ47RwEtu5kLUw_4VtzS0UGAU1yhR8KAzn0nWdL5bFGX3nQ=s4800-w800",
+ "old_og_image_url": "https://www.mamasuam.co.il/wp-content/uploads/2021/12/logo_white.png",
+ "new_image_url": "https://where2eat-production.up.railway.app/api/venue-images/4a3fe6586b303fa8f33c0adc0fbe2f10ce2587726ad09d5146e61e693ec5597c.jpg",
+ "source_url": "https://www.mamasuam.co.il/wp-content/uploads/2022/01/%D7%A4%D7%9C%D7%A4%D7%9C-%D7%9E%D7%9E%D7%95%D7%9C%D7%90.jpg",
+ "credit": "Mama Suam restaurant (mamasuam.co.il)",
+ "sha256": "4a3fe6586b303fa8f33c0adc0fbe2f10ce2587726ad09d5146e61e693ec5597c"
+}

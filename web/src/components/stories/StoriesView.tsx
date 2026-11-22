@@ -3,7 +3,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { Heart, MapPin, Navigation, Play, X, Loader2, ChevronLeft, ChevronRight } from "lucide-react";
+import { Heart, MapPin, Navigation, Play, X, Loader2, ChevronLeft, ChevronRight, UtensilsCrossed } from "lucide-react";
 import { endpoints } from "@/lib/config";
 import { fetchEpisodeDetail } from "@/lib/api/episodes";
 import { useFavorites } from "@/contexts/favorites-context";
@@ -68,8 +68,8 @@ export function StoriesView({
   const [source, setSource] = useState("");
   const [locError, setLocError] = useState<string | null>(null);
   const [current, setCurrent] = useState(0);
-  const [removed, setRemoved] = useState<Set<string>>(new Set());
-  const [broken, setBroken] = useState<Set<string>>(new Set());
+  // Image URLs that failed to load, kept for the whole visit so none is requested twice.
+  const [failedImages, setFailedImages] = useState<Set<string>>(new Set());
   const [episodes, setEpisodes] = useState<Record<string, EpisodeDetail | null>>({});
   const [slideAt, setSlideAt] = useState<Record<string, number>>({});
   // Paid Google photos granted this visit: only ones the viewer moved to, up to the limit.
@@ -123,15 +123,13 @@ export function StoriesView({
 
   const items: Item[] = useMemo(() => {
     if (!feed) return [];
-    const keep = (s: Story) => !removed.has(s.restaurant.id!);
-    const near = feed.near.filter(keep);
-    const far = feed.far.filter(keep);
+    const { near, far } = feed;
     return [
       ...near.map((story) => ({ kind: "story" as const, story })),
       ...(far.length ? [{ kind: "divider" as const, count: far.length }] : []),
       ...far.map((story) => ({ kind: "story" as const, story })),
     ];
-  }, [feed, removed]);
+  }, [feed]);
 
   // Track the story in view.
   useEffect(() => {
@@ -174,8 +172,6 @@ export function StoriesView({
     setAutoLocating(false);
     setOrigin({ coords, fromDevice });
     setCurrent(0);
-    setRemoved(new Set());
-    setBroken(new Set());
     setSlideAt({});
     setHint(true);
     feedRef.current?.scrollTo?.({ top: 0 });
@@ -219,11 +215,9 @@ export function StoriesView({
     return () => clearTimeout(t);
   }, [hint]);
 
-  const onImageError = (id: string, index: number) => {
-    // Photo-less cards read as a feed, not stories: drop them before they are reached.
-    if (index > current) setRemoved((prev) => new Set(prev).add(id));
-    else setBroken((prev) => new Set(prev).add(id));
-  };
+  // A story whose photo fails moves on to its next free image, then to an intentional
+  // fallback background. It is never dropped from the feed or left blank.
+  const onImageError = (url: string) => setFailedImages((prev) => (prev.has(url) ? prev : new Set(prev).add(url)));
 
   const reach = (id: string, i: number, frames: StoryFrame[]) => {
     setSlideAt((prev) => (prev[id] === i ? prev : { ...prev, [id]: i }));
@@ -419,7 +413,7 @@ export function StoriesView({
             <StoryView
               story={item.story}
               near={index >= current - 1 && index <= current + 3}
-              broken={broken.has(item.story.restaurant.id!)}
+              failedImages={failedImages}
               saved={isSaved(item.story.restaurant, favorites)}
               slideIndex={slideAt[item.story.restaurant.id!] ?? 0}
               autoplay={autoplay && index === current}
@@ -428,7 +422,7 @@ export function StoriesView({
               granted={granted}
               quoteFor={quoteFor}
               onSlide={(i, frames) => reach(item.story.restaurant.id!, i, frames)}
-              onImageError={() => onImageError(item.story.restaurant.id!, index)}
+              onImageError={onImageError}
               onPlay={(slide) => openPlayer(item.story, slide)}
               onSave={() => {
                 const key = favoriteKey(item.story.restaurant);
@@ -477,9 +471,9 @@ export function StoriesView({
 }
 
 function StoryView({
-  story,
+  story: base,
   near,
-  broken,
+  failedImages,
   saved,
   slideIndex,
   autoplay,
@@ -494,7 +488,7 @@ function StoryView({
 }: {
   story: Story;
   near: boolean;
-  broken: boolean;
+  failedImages: Set<string>;
   saved: boolean;
   slideIndex: number;
   autoplay: boolean;
@@ -503,18 +497,21 @@ function StoryView({
   granted: Set<string>;
   quoteFor: (story: Story, slide: StorySlide) => StoryQuote | null;
   onSlide: (i: number, frames: StoryFrame[]) => void;
-  onImageError: () => void;
+  onImageError: (url: string) => void;
   onPlay: (slide: StorySlide) => void;
   onSave: () => void;
 }) {
+  // The story's own photo, or the next free image of the same place when it failed.
+  const image = [base.image, ...base.alternates].find((u) => !failedImages.has(u)) ?? null;
+  const story = useMemo(() => (image ? { ...base, image } : base), [base, image]);
   const r = story.restaurant;
   const c = getCoordinates(r.location);
   const [failed, setFailed] = useState<Set<string>>(new Set());
   // A photo that fails to load (expired Google references are common) is skipped,
   // unless it carries a creator quote: then the quote stays, over the story's photo.
   const frames = useMemo(
-    () => storyFrames(story, { extraPhotos }).filter((f) => !failed.has(f.photo.url)),
-    [story, extraPhotos, failed],
+    () => storyFrames(story, { extraPhotos }).filter((f) => !failed.has(f.photo.url) && !failedImages.has(f.photo.url)),
+    [story, extraPhotos, failed, failedImages],
   );
   const n = frames.length;
   const framesRef = useRef<HTMLDivElement>(null);
@@ -571,8 +568,12 @@ function StoryView({
 
   return (
     <article className="stories-story" aria-label={r.name_hebrew}>
-      {near && !broken ? (
-        <img className="stories-bg" src={story.image} alt="" onError={onImageError} />
+      {near && image ? (
+        <img className="stories-bg" src={image} alt="" onError={() => onImageError(image)} />
+      ) : near ? (
+        <div className="stories-bg empty fallback" aria-hidden="true">
+          <UtensilsCrossed size={88} strokeWidth={1.1} />
+        </div>
       ) : (
         <div className="stories-bg empty" aria-hidden="true" />
       )}
@@ -580,7 +581,7 @@ function StoryView({
         {frames.map((frame, i) => {
           // The story's own photo is already underneath. Other photos load only
           // once reached; paid ones only when granted within the visit limit.
-          const own = frame.photo.url === story.image;
+          const own = frame.photo.url === image;
           const show =
             near && !own && !failed.has(frame.photo.url) && (frame.photo.paid ? granted.has(frame.photo.url) : i <= slideIndex + 1);
           return (

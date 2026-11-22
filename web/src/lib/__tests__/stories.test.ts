@@ -10,6 +10,7 @@ import {
   quoteFromEpisode,
   sourceLabel,
   storySlides,
+  storyAlternateImages,
   youtubeEmbedUrl,
   youtubeMomentUrl,
 } from "../stories";
@@ -290,5 +291,36 @@ describe("buildStories without a location (newest first)", () => {
     expect(feed.near.map((s) => s.restaurant.id)).toEqual(["fresh", "nocoords", "mid", "old"]);
     expect(feed.far).toEqual([]);
     expect(feed.near.every((s) => s.distanceKm === null)).toBe(true);
+  });
+});
+
+describe("storyAlternateImages", () => {
+  const G = "https://lh3.googleusercontent.com/place-photos/AG9N-dead=s4800-w800";
+  const OWN = "https://example.co.il/uploads/dish.jpg";
+
+  it("lists other free direct images of the same place, in order, without the primary", () => {
+    const r = rest("a", { image_url: G, og_image_url: OWN, photos: [{ photo_url: "https://example.co.il/uploads/room.jpg" }] });
+    expect(storyAlternateImages(r, G)).toEqual([OWN, "https://example.co.il/uploads/room.jpg"]);
+  });
+
+  it("skips logos, the paid photo proxy, Places URLs and non-http values", () => {
+    const r = rest("a", {
+      image_url: G,
+      og_image_url: "https://example.co.il/uploads/2021/12/logo_white.png",
+      photos: [
+        { photo_reference: "places/X/photos/Y", photo_url: "https://example.co.il/should-not-be-used.jpg" },
+        { photo_url: "https://where2eat-production.up.railway.app/api/photos/places/X/photos/Y?maxwidth=800" },
+        { photo_url: "https://places.googleapis.com/v1/places/X/photos/Y/media" },
+        { photo_url: "data:image/png;base64,AAAA" },
+      ],
+    });
+    expect(storyAlternateImages(r, G)).toEqual([]);
+  });
+
+  it("is attached to each story by buildStories and never repeats the primary", () => {
+    const r = rest("a", { image_url: G, og_image_url: OWN });
+    const feed = buildStories([r], TLV);
+    expect(feed.near[0].image).toBe(G);
+    expect(feed.near[0].alternates).toEqual([OWN]);
   });
 });

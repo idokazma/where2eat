@@ -188,6 +188,17 @@
 .stories-bg.empty {
   background: linear-gradient(160deg, var(--st-teal), #0a3d3f 55%, var(--st-ink));
 }
+/* A story whose photos all failed: an intentional card, not a blank one. */
+.stories-bg.fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 28%;
+  color: rgba(255, 255, 255, 0.22);
+  background:
+    radial-gradient(circle at 50% 38%, rgba(255, 255, 255, 0.1), transparent 55%),
+    linear-gradient(160deg, var(--st-teal), #0a3d3f 55%, var(--st-ink));
+}
 .stories-shade {
   position: absolute;
   inset: 0;
