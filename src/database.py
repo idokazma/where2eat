@@ -466,6 +466,8 @@ class Database:
                 ('country', 'TEXT'),
                 ('instagram_url', 'TEXT'),
                 ('mention_level', 'TEXT'),
+                ('wolt_url', 'TEXT'),
+                ('ontopo_url', 'TEXT'),
             ]:
                 try:
                     cursor.execute(f'ALTER TABLE restaurants ADD COLUMN {col} {col_type}')

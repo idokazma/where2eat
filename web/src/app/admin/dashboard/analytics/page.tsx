@@ -19,31 +19,32 @@ import {
   Legend,
   ResponsiveContainer,
 } from 'recharts';
+import type { PieLabelRenderProps } from 'recharts';
 import { Info } from 'lucide-react';
 
 const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#14b8a6', '#f97316'];
 
 const FEATURE_LABELS: Record<string, string> = {
-  map_open: 'Map opened',
-  stories_open: 'Stories opened',
-  story_play: 'Story played',
-  favorite_toggle: 'Favorite toggled',
-  near_me_toggle: 'Near-me toggled',
-  creator_filter: 'Creator filter',
-  search_run: 'Search run',
-  layout_toggle: 'Layout toggled',
-  language_toggle: 'Language toggled',
-  saved_page_open: 'Saved page',
-  instagram_preview: 'Instagram preview',
+  map_open: 'פתיחת מפה',
+  stories_open: 'פתיחת סטוריז',
+  story_play: 'הפעלת סטורי',
+  favorite_toggle: 'שמירת מועדפת',
+  near_me_toggle: 'קרוב אליי',
+  creator_filter: 'סינון לפי יוצר',
+  search_run: 'חיפוש',
+  layout_toggle: 'שינוי תצוגה',
+  language_toggle: 'החלפת שפה',
+  saved_page_open: 'עמוד שמורים',
+  instagram_preview: 'תצוגת אינסטגרם',
 };
 
 const TARGET_LABELS: Record<string, string> = {
-  youtube: 'YouTube',
-  instagram: 'Instagram',
-  navigation: 'Navigation',
-  website: 'Website',
-  order: 'Order',
-  google_maps: 'Google Maps',
+  youtube: 'יוטיוב',
+  instagram: 'אינסטגרם',
+  navigation: 'ניווט',
+  website: 'אתר המסעדה',
+  order: 'הזמנה',
+  google_maps: 'גוגל מפות',
 };
 
 export default function AnalyticsPage() {
@@ -70,8 +71,8 @@ export default function AnalyticsPage() {
   });
 
   const nameById = new Map<string, string>();
-  restaurantList?.restaurants?.forEach((r: any) => {
-    const name = r.name_hebrew || r.name_english || r.id;
+  restaurantList?.restaurants?.forEach((r) => {
+    const name = r.name_hebrew || r.name_english || r.id || '';
     if (r.id) nameById.set(String(r.id), name);
     if (r.google_places?.place_id) nameById.set(String(r.google_places.place_id), name);
     if (r.name_hebrew) nameById.set(String(r.name_hebrew), name);
@@ -97,13 +98,13 @@ export default function AnalyticsPage() {
   }));
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" dir="rtl">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Usage Analytics</h1>
+          <h1 className="text-3xl font-bold">נתוני שימוש</h1>
           <p className="text-muted-foreground mt-1">
-            Visits, referrers, restaurants and feature usage
+            כניסות, מקורות תנועה, מסעדות ושימוש בפיצ׳רים
           </p>
         </div>
 
@@ -113,9 +114,9 @@ export default function AnalyticsPage() {
             onChange={(e) => setDays(Number(e.target.value))}
             className="px-3 py-2 border rounded-md bg-background"
           >
-            <option value={7}>Last 7 days</option>
-            <option value={30}>Last 30 days</option>
-            <option value={90}>Last 90 days</option>
+            <option value={7}>7 ימים אחרונים</option>
+            <option value={30}>30 יום אחרונים</option>
+            <option value={90}>90 יום אחרונים</option>
           </select>
         </div>
       </div>
@@ -126,15 +127,10 @@ export default function AnalyticsPage() {
           <Info className="h-5 w-5 text-blue-600 shrink-0 mt-0.5" />
           <div className="text-sm text-blue-900 dark:text-blue-100 space-y-1">
             <p>
-              Self-hosted, privacy-minimal analytics: no IPs, no cookies, no
-              fingerprints, no search text. Counts start from deployment of the
-              tracker - there is no retroactive history.
+              אנליטיקה עצמית עם מינימום פרטיות: בלי IP, בלי עוגיות, בלי טביעות אצבע, בלי טקסט חיפוש. הספירה מתחילה מהרגע שהמעקב עולה לאוויר — אין היסטוריה רטרואקטיבית.
             </p>
             <p>
-              A Vercel Analytics integration also exists on the public site.
-              Verified Nov 22: the Hobby plan exposes the last 31 days through
-              the API. It appears here once VERCEL_API_TOKEN/TEAM_ID/PROJECT_ID
-              are set in the backend environment; it is not wired yet.
+              קיימת גם אינטגרציית Vercel Analytics באתר. אומת ב־22 בנוב׳: בתוכנית Hobby ה־API חושף 31 ימים אחרונים. הנתונים יופיעו כאן אחרי הגדרת VERCEL_API_TOKEN/TEAM_ID/PROJECT_ID בסביבת השרת — עדיין לא מחובר.
             </p>
           </div>
         </CardContent>
@@ -143,10 +139,10 @@ export default function AnalyticsPage() {
       {/* Totals */}
       <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
         {[
-          { label: 'Sessions', value: totals?.sessions },
-          { label: 'Page Views', value: totals?.page_views },
-          { label: 'Restaurant Views', value: totals?.restaurant_views },
-          { label: 'Outbound Clicks', value: totals?.outbound_clicks },
+          { label: 'ביקורים (סשנים)', value: totals?.sessions },
+          { label: 'צפיות בעמודים', value: totals?.page_views },
+          { label: 'צפיות במסעדות', value: totals?.restaurant_views },
+          { label: 'יציאות לאתרים חיצוניים', value: totals?.outbound_clicks },
         ].map((m) => (
           <Card key={m.label}>
             <CardHeader className="pb-2">
@@ -166,13 +162,13 @@ export default function AnalyticsPage() {
       {/* Daily trend */}
       <Card>
         <CardHeader>
-          <CardTitle>Daily Activity</CardTitle>
-          <CardDescription>Sessions and page views per day</CardDescription>
+          <CardTitle>פעילות יומית</CardTitle>
+          <CardDescription>סשנים וצפיות בעמודים לפי יום</CardDescription>
         </CardHeader>
         <CardContent>
           {daily.length === 0 && !isLoading ? (
             <p className="text-sm text-muted-foreground py-12 text-center">
-              No usage events recorded in this window yet.
+              עדיין לא נרשמו אירועי שימוש בחלון הזמן הזה.
             </p>
           ) : (
             <ResponsiveContainer width="100%" height={300}>
@@ -182,8 +178,8 @@ export default function AnalyticsPage() {
                 <YAxis allowDecimals={false} fontSize={12} />
                 <Tooltip />
                 <Legend />
-                <Area type="monotone" dataKey="page_views" name="Page views" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.2} />
-                <Area type="monotone" dataKey="sessions" name="Sessions" stroke="#10b981" fill="#10b981" fillOpacity={0.2} />
+                <Area type="monotone" dataKey="page_views" name="צפיות" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.2} />
+                <Area type="monotone" dataKey="sessions" name="סשנים" stroke="#10b981" fill="#10b981" fillOpacity={0.2} />
               </AreaChart>
             </ResponsiveContainer>
           )}
@@ -194,8 +190,8 @@ export default function AnalyticsPage() {
         {/* Pages */}
         <Card>
           <CardHeader>
-            <CardTitle>Pages</CardTitle>
-            <CardDescription>Page views by section</CardDescription>
+            <CardTitle>עמודים</CardTitle>
+            <CardDescription>צפיות לפי אזור באתר</CardDescription>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={260}>
@@ -204,7 +200,7 @@ export default function AnalyticsPage() {
                 <XAxis type="number" allowDecimals={false} fontSize={12} />
                 <YAxis type="category" dataKey="page_type" width={90} fontSize={12} />
                 <Tooltip />
-                <Bar dataKey="views" name="Views" fill="#3b82f6" />
+                <Bar dataKey="views" name="צפיות" fill="#3b82f6" />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
@@ -213,8 +209,8 @@ export default function AnalyticsPage() {
         {/* Hourly */}
         <Card>
           <CardHeader>
-            <CardTitle>Time of Day</CardTitle>
-            <CardDescription>Events by hour (local server time)</CardDescription>
+            <CardTitle>שעות ביום</CardTitle>
+            <CardDescription>אירועים לפי שעה (שעון השרת)</CardDescription>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={260}>
@@ -223,7 +219,7 @@ export default function AnalyticsPage() {
                 <XAxis dataKey="hour" fontSize={12} />
                 <YAxis allowDecimals={false} fontSize={12} />
                 <Tooltip />
-                <Bar dataKey="events" name="Events" fill="#8b5cf6" />
+                <Bar dataKey="events" name="אירועים" fill="#8b5cf6" />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
@@ -234,18 +230,18 @@ export default function AnalyticsPage() {
         {/* Referrers */}
         <Card>
           <CardHeader>
-            <CardTitle>Traffic Sources</CardTitle>
-            <CardDescription>Referrer domains of new sessions</CardDescription>
+            <CardTitle>מקורות תנועה</CardTitle>
+            <CardDescription>דומיינים מפנים של סשנים חדשים</CardDescription>
           </CardHeader>
           <CardContent>
             {referrers.length === 0 ? (
-              <p className="text-sm text-muted-foreground py-8 text-center">No sessions recorded yet.</p>
+              <p className="text-sm text-muted-foreground py-8 text-center">עדיין לא נרשמו סשנים.</p>
             ) : (
               <div className="space-y-2">
                 {referrers.map((r) => (
                   <div key={r.source} className="flex items-center justify-between border-b pb-2 last:border-0">
                     <span className="text-sm font-medium">{r.source}</span>
-                    <span className="text-sm text-muted-foreground">{r.visits} sessions</span>
+                    <span className="text-sm text-muted-foreground">{r.visits} סשנים</span>
                   </div>
                 ))}
               </div>
@@ -256,12 +252,12 @@ export default function AnalyticsPage() {
         {/* Devices */}
         <Card>
           <CardHeader>
-            <CardTitle>Devices</CardTitle>
-            <CardDescription>Sessions by device class</CardDescription>
+            <CardTitle>מכשירים</CardTitle>
+            <CardDescription>סשנים לפי סוג מכשיר</CardDescription>
           </CardHeader>
           <CardContent>
             {devices.length === 0 ? (
-              <p className="text-sm text-muted-foreground py-8 text-center">No sessions recorded yet.</p>
+              <p className="text-sm text-muted-foreground py-8 text-center">עדיין לא נרשמו סשנים.</p>
             ) : (
               <ResponsiveContainer width="100%" height={260}>
                 <PieChart>
@@ -272,7 +268,10 @@ export default function AnalyticsPage() {
                     cx="50%"
                     cy="50%"
                     outerRadius={90}
-                    label={({ device, sessions }) => `${device}: ${sessions}`}
+                    label={(props: PieLabelRenderProps) => {
+                      const p = props as unknown as { device?: string; sessions?: number };
+                      return `${p.device}: ${p.sessions}`;
+                    }}
                   >
                     {devices.map((_, i) => (
                       <Cell key={i} fill={COLORS[i % COLORS.length]} />
@@ -290,12 +289,12 @@ export default function AnalyticsPage() {
         {/* Features */}
         <Card>
           <CardHeader>
-            <CardTitle>Feature Usage</CardTitle>
-            <CardDescription>How often each feature was used</CardDescription>
+            <CardTitle>שימוש בפיצ׳רים</CardTitle>
+            <CardDescription>כמה פעמים כל פיצ׳ר שומש</CardDescription>
           </CardHeader>
           <CardContent>
             {features.length === 0 ? (
-              <p className="text-sm text-muted-foreground py-8 text-center">No feature events recorded yet.</p>
+              <p className="text-sm text-muted-foreground py-8 text-center">עדיין לא נרשמו אירועי פיצ׳רים.</p>
             ) : (
               <ResponsiveContainer width="100%" height={280}>
                 <BarChart data={features} layout="vertical">
@@ -303,7 +302,7 @@ export default function AnalyticsPage() {
                   <XAxis type="number" allowDecimals={false} fontSize={12} />
                   <YAxis type="category" dataKey="label" width={120} fontSize={12} />
                   <Tooltip />
-                  <Bar dataKey="uses" name="Uses" fill="#10b981" />
+                  <Bar dataKey="uses" name="שימושים" fill="#10b981" />
                 </BarChart>
               </ResponsiveContainer>
             )}
@@ -313,12 +312,12 @@ export default function AnalyticsPage() {
         {/* Outbound */}
         <Card>
           <CardHeader>
-            <CardTitle>Outbound Clicks</CardTitle>
-            <CardDescription>Clicks out to YouTube, Instagram, navigation and more</CardDescription>
+            <CardTitle>יציאות לאתרים חיצוניים</CardTitle>
+            <CardDescription>קליקים ליוטיוב, אינסטגרם, ניווט ועוד</CardDescription>
           </CardHeader>
           <CardContent>
             {outbound.length === 0 ? (
-              <p className="text-sm text-muted-foreground py-8 text-center">No outbound clicks recorded yet.</p>
+              <p className="text-sm text-muted-foreground py-8 text-center">עדיין לא נרשמו יציאות.</p>
             ) : (
               <ResponsiveContainer width="100%" height={280}>
                 <BarChart data={outbound}>
@@ -326,7 +325,7 @@ export default function AnalyticsPage() {
                   <XAxis dataKey="label" fontSize={12} />
                   <YAxis allowDecimals={false} fontSize={12} />
                   <Tooltip />
-                  <Bar dataKey="clicks" name="Clicks" fill="#f59e0b" />
+                  <Bar dataKey="clicks" name="קליקים" fill="#f59e0b" />
                 </BarChart>
               </ResponsiveContainer>
             )}
@@ -340,34 +339,33 @@ export default function AnalyticsPage() {
           <CardHeader>
             <CardTitle>Vercel Web Analytics</CardTitle>
             <CardDescription>
-              Verified history, last {vercel.days} days (Hobby plan keeps 31).
-              Includes owner/admin visits; bot-filtered by Vercel.
+              היסטוריה מאומתת, {vercel.days} ימים אחרונים (תוכנית Hobby שומרת 31). כולל ביקורי בעלים/ניהול; Vercel מסננת בוטים.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
               <div>
-                <p className="text-sm text-muted-foreground">Visitors</p>
+                <p className="text-sm text-muted-foreground">מבקרים</p>
                 <p className="text-2xl font-bold">{vercel.totals.visitors?.toLocaleString() ?? '-'}</p>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Pageviews</p>
+                <p className="text-sm text-muted-foreground">צפיות</p>
                 <p className="text-2xl font-bold">{vercel.totals.pageviews?.toLocaleString() ?? '-'}</p>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Top referrers</p>
+                <p className="text-sm text-muted-foreground">מקורות מובילים</p>
                 <div className="text-sm">
-                  {(vercel.referrers ?? []).slice(0, 4).map((r: any) => (
+                  {(vercel.referrers ?? []).slice(0, 4).map((r) => (
                     <p key={r.referrerHostname || 'direct'}>
-                      {r.referrerHostname || '(direct)'}: {r.visitors}
+                      {r.referrerHostname || '(ישיר)'}: {r.visitors}
                     </p>
                   ))}
                 </div>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Countries</p>
+                <p className="text-sm text-muted-foreground">מדינות</p>
                 <div className="text-sm">
-                  {(vercel.countries ?? []).slice(0, 4).map((c: any) => (
+                  {(vercel.countries ?? []).slice(0, 4).map((c) => (
                     <p key={c.country}>{c.country}: {c.visitors}</p>
                   ))}
                 </div>
@@ -380,20 +378,20 @@ export default function AnalyticsPage() {
       {/* Top restaurants */}
       <Card>
         <CardHeader>
-          <CardTitle>Top Restaurants</CardTitle>
-          <CardDescription>Card opens and outbound clicks per restaurant</CardDescription>
+          <CardTitle>מסעדות מובילות</CardTitle>
+          <CardDescription>פתיחות כרטיס ויציאות לפי מסעדה</CardDescription>
         </CardHeader>
         <CardContent>
           {topRestaurants.length === 0 ? (
-            <p className="text-sm text-muted-foreground py-8 text-center">No restaurant interactions recorded yet.</p>
+            <p className="text-sm text-muted-foreground py-8 text-center">עדיין לא נרשמו אינטראקציות עם מסעדות.</p>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b text-left">
-                    <th className="py-2 font-medium">Restaurant</th>
-                    <th className="py-2 font-medium text-right">Views</th>
-                    <th className="py-2 font-medium text-right">Outbound Clicks</th>
+                    <th className="py-2 font-medium">מסעדה</th>
+                    <th className="py-2 font-medium text-left">צפיות</th>
+                    <th className="py-2 font-medium text-left">יציאות</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -402,8 +400,8 @@ export default function AnalyticsPage() {
                       <td className="py-2">
                         {nameById.get(String(r.restaurant_id)) ?? r.restaurant_id}
                       </td>
-                      <td className="py-2 text-right">{r.views}</td>
-                      <td className="py-2 text-right">{r.outbound}</td>
+                      <td className="py-2 text-left">{r.views}</td>
+                      <td className="py-2 text-left">{r.outbound}</td>
                     </tr>
                   ))}
                 </tbody>

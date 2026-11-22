@@ -332,8 +332,19 @@ export const settingsApi = {
 };
 
 /** Vercel Web Analytics aggregates (only when backend env is configured). */
+export interface VercelAnalytics {
+  configured: boolean;
+  days: number;
+  totals?: { visitors?: number; pageviews?: number };
+  daily?: { timestamp: string; visitors: number; pageviews: number }[];
+  referrers?: { referrerHostname?: string; visitors: number }[];
+  countries?: { country: string; visitors: number }[];
+  devices?: { deviceType: string; visitors: number }[];
+  paths?: { requestPath: string; visitors: number }[];
+  note?: string;
+}
 export const vercelAnalyticsApi = {
-  async get(days = 30): Promise<any> {
+  async get(days = 30): Promise<VercelAnalytics> {
     return apiFetch(`/api/admin/analytics/vercel?days=${days}`);
   },
 };

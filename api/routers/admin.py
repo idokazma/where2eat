@@ -493,7 +493,14 @@ async def patch_restaurant_admin(
         'contact_phone', 'contact_website', 'is_hidden', 'is_closing', 'country',
         'latitude', 'longitude', 'google_place_id',
         'image_url', 'photos',
+        'instagram_url', 'wolt_url', 'ontopo_url',
     }
+
+    for url_field in ('instagram_url', 'wolt_url', 'ontopo_url'):
+        if url_field in body:
+            value = body[url_field]
+            if not isinstance(value, str) or len(value) > 500 or (value and not value.startswith('https://')):
+                raise HTTPException(status_code=422, detail=f"{url_field} must be an https URL up to 500 characters, or an empty string to clear")
 
     if 'mention_level' in body and body['mention_level'] not in (None, 'נטעם', 'הוזכר'):
         raise HTTPException(status_code=422, detail="mention_level must be נטעם, הוזכר, or null")

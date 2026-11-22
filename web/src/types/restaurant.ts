@@ -76,6 +76,8 @@ export interface Restaurant {
   photos?: RestaurantPhoto[];
   image_url?: string | null;
   og_image_url?: string | null;
+  wolt_url?: string | null;
+  ontopo_url?: string | null;
   published_at?: string | null;
   instagram_url?: string | null;
   mention_level?: 'נטעם' | 'הוזכר' | null;

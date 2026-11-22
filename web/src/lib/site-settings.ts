@@ -46,8 +46,11 @@ let inflight: Promise<SiteSettings> | null = null
 export async function fetchSiteSettings(): Promise<SiteSettings> {
   if (cache) return cache
   if (inflight) return inflight
-  inflight = fetch(getApiUrl('/api/settings/public'))
-    .then((res) => (res.ok ? res.json() : {}))
+  // Promise.resolve().then(...) so a missing/mocked fetch (tests, old browsers)
+  // lands in .catch instead of throwing synchronously.
+  inflight = Promise.resolve()
+    .then(() => fetch(getApiUrl('/api/settings/public')))
+    .then((res) => (res && res.ok ? res.json() : {}))
     .then((data) => {
       cache = { ...SITE_SETTING_DEFAULTS, ...data }
       return cache as SiteSettings

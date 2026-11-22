@@ -7,6 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { restaurantsApi, mentionsApi, patchRestaurant, type EpisodeMention } from '@/lib/admin/api';
 import { Restaurant } from '@/types/admin/restaurant';
+import { RestaurantPhoto } from '@/types/restaurant';
 import { restaurantSchema, RestaurantFormData } from '@/lib/admin/validations/restaurant';
 import { Button } from '@/components/admin/ui/button';
 import { Input } from '@/components/admin/ui/input';
@@ -24,7 +25,9 @@ export default function EditRestaurantPage() {
   const [isHidden, setIsHidden] = useState(false);
   const [instagramUrl, setInstagramUrl] = useState('');
   const [imageUrl, setImageUrl] = useState('');
-  const [photos, setPhotos] = useState<any[]>([]);
+  const [woltUrl, setWoltUrl] = useState('');
+  const [ontopoUrl, setOntopoUrl] = useState('');
+  const [photos, setPhotos] = useState<RestaurantPhoto[]>([]);
 
   const patchMutation = useMutation({
     mutationFn: (fields: Record<string, unknown>) => patchRestaurant(restaurantId, fields),
@@ -80,9 +83,11 @@ export default function EditRestaurantPage() {
   // Load restaurant data into form
   useEffect(() => {
     if (restaurant) {
-      setInstagramUrl((restaurant as any).instagram_url || '');
-      setImageUrl((restaurant as any).image_url || '');
-      setPhotos(Array.isArray((restaurant as any).photos) ? (restaurant as any).photos : []);
+      setInstagramUrl(restaurant.instagram_url || '');
+      setWoltUrl(restaurant.wolt_url || '');
+      setOntopoUrl(restaurant.ontopo_url || '');
+      setImageUrl(restaurant.image_url || '');
+      setPhotos(Array.isArray(restaurant.photos) ? restaurant.photos : []);
       form.reset({
         name_hebrew: restaurant.name_hebrew,
         name_english: restaurant.name_english,
@@ -449,7 +454,7 @@ export default function EditRestaurantPage() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="instagram_url">Instagram URL</Label>
+                <Label htmlFor="instagram_url">אינסטגרם (URL)</Label>
                 <Input
                   id="instagram_url"
                   value={instagramUrl}
@@ -464,7 +469,47 @@ export default function EditRestaurantPage() {
                   disabled={patchMutation.isPending}
                   onClick={() => patchMutation.mutate({ instagram_url: instagramUrl })}
                 >
-                  Save Instagram
+                  שמירת אינסטגרם
+                </Button>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="wolt_url">Wolt (URL)</Label>
+                <Input
+                  id="wolt_url"
+                  value={woltUrl}
+                  onChange={(e) => setWoltUrl(e.target.value)}
+                  placeholder="https://wolt.com/..."
+                  type="url"
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  disabled={patchMutation.isPending}
+                  onClick={() => patchMutation.mutate({ wolt_url: woltUrl })}
+                >
+                  שמירת Wolt
+                </Button>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="ontopo_url">Ontopo (URL)</Label>
+                <Input
+                  id="ontopo_url"
+                  value={ontopoUrl}
+                  onChange={(e) => setOntopoUrl(e.target.value)}
+                  placeholder="https://ontopo.co.il/..."
+                  type="url"
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  disabled={patchMutation.isPending}
+                  onClick={() => patchMutation.mutate({ ontopo_url: ontopoUrl })}
+                >
+                  שמירת Ontopo
                 </Button>
               </div>
             </CardContent>
@@ -480,7 +525,7 @@ export default function EditRestaurantPage() {
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-2">
-                <Label htmlFor="image_url">Main image URL (https)</Label>
+                <Label htmlFor="image_url">תמונה ראשית — כתובת https</Label>
                 <Input
                   id="image_url"
                   value={imageUrl}
@@ -489,7 +534,7 @@ export default function EditRestaurantPage() {
                   type="url"
                 />
                 <p className="text-xs text-muted-foreground">
-                  Used when no Google photos exist, or after clearing photos. Leave empty to clear.
+                  משמשת כשאין תמונות גוגל, או אחרי ניקוי התמונות. ריק = מחיקה.
                 </p>
                 <Button
                   type="button"
@@ -498,27 +543,27 @@ export default function EditRestaurantPage() {
                   disabled={patchMutation.isPending}
                   onClick={() => patchMutation.mutate({ image_url: imageUrl })}
                 >
-                  Save main image
+                  שמירת תמונה ראשית
                 </Button>
               </div>
 
               <div className="space-y-2">
-                <Label>Google photos ({photos.length})</Label>
+                <Label>תמונות גוגל ({photos.length})</Label>
                 <p className="text-xs text-muted-foreground">
-                  The first photo is what cards show. Choose a main photo, or clear photos to fall back to the main image URL.
+                  התמונה הראשונה היא מה שמוצג בכרטיסים. אפשר לבחור תמונה ראשית או לנקות ולחזור לכתובת התמונה הראשית.
                 </p>
                 {photos.length === 0 ? (
-                  <p className="text-sm text-muted-foreground">No Google photos stored.</p>
+                  <p className="text-sm text-muted-foreground">אין תמונות גוגל שמורות.</p>
                 ) : (
                   <div className="grid grid-cols-3 gap-2">
-                    {photos.map((ph: any, i: number) => (
+                    {photos.map((ph, i: number) => (
                       <button
                         key={ph.photo_reference || ph.photo_url || i}
                         type="button"
                         disabled={patchMutation.isPending}
                         onClick={() => makeMainPhoto(i)}
                         className={`relative rounded-md overflow-hidden border-2 ${i === 0 ? 'border-green-500' : 'border-transparent'}`}
-                        title={i === 0 ? 'Main photo' : 'Make main photo'}
+                        title={i === 0 ? 'תמונה ראשית' : 'הפיכה לראשית'}
                       >
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
@@ -543,11 +588,11 @@ export default function EditRestaurantPage() {
                     disabled={patchMutation.isPending}
                     onClick={() => patchMutation.mutate({ photos: [] })}
                   >
-                    Clear Google photos
+                    ניקוי תמונות גוגל
                   </Button>
                 )}
                 <p className="text-xs text-muted-foreground">
-                  Uploading brand-new image files is not included yet; paste an https image URL above instead.
+                  העלאת קבצי תמונה חדשים עדיין לא נתמכת — מדביקים כתובת https למעלה.
                 </p>
               </div>
             </CardContent>
@@ -580,10 +625,10 @@ export default function EditRestaurantPage() {
                   <p><span className="font-medium">Name:</span> {restaurant.name_hebrew} {restaurant.name_english ? `/ ${restaurant.name_english}` : ''}</p>
                   <p><span className="font-medium">City:</span> {restaurant.location?.city || '-'}</p>
                   <p><span className="font-medium">Status:</span> {restaurant.status}</p>
-                  <p><span className="font-medium">Quote:</span> {(restaurant as any).engaging_quote || '-'}</p>
-                  <p><span className="font-medium">Instagram:</span> {(restaurant as any).instagram_url || '-'}</p>
+                  <p><span className="font-medium">Quote:</span> {restaurant.engaging_quote || '-'}</p>
+                  <p><span className="font-medium">Instagram:</span> {restaurant.instagram_url || '-'}</p>
                   <p className="text-xs text-muted-foreground">
-                    Full visual card preview is not included yet; open the public restaurant page to see the live card.
+                    תצוגה מקדימה ויזואלית מלאה עדיין לא כלולה; אפשר לפתוח את עמוד המסעדה הציבורי לראות את הכרטיס החי.
                   </p>
                 </div>
               )}
@@ -635,7 +680,7 @@ function MentionsEditor({ restaurantId }: { restaurantId: string }) {
 
   const mentions = data?.mentions ?? [];
   if (mentions.length === 0) {
-    return <p className="text-sm text-muted-foreground">No episode mentions linked to this restaurant.</p>;
+    return <p className="text-sm text-muted-foreground">אין אזכורים בפרקים המקושרים למסעדה הזו.</p>;
   }
 
   return (
@@ -653,7 +698,7 @@ function MentionsEditor({ restaurantId }: { restaurantId: string }) {
             className="w-full min-h-[70px] px-3 py-2 border rounded-md bg-background text-sm"
             value={edits[mn.id] ?? quoteText(mn.host_quotes)}
             onChange={(e) => setEdits({ ...edits, [mn.id]: e.target.value })}
-            placeholder="Host quote shown on the card"
+            placeholder="ציטוט המערכת שמוצג בכרטיס"
           />
           {mn.mention_context && (
             <p className="text-xs text-muted-foreground">Context: {mn.mention_context}</p>
@@ -665,7 +710,7 @@ function MentionsEditor({ restaurantId }: { restaurantId: string }) {
             disabled={saveMutation.isPending || (edits[mn.id] ?? quoteText(mn.host_quotes)) === quoteText(mn.host_quotes)}
             onClick={() => saveMutation.mutate({ id: mn.id, quote: edits[mn.id] ?? '' })}
           >
-            Save quote
+            שמירת ציטוט
           </Button>
         </div>
       ))}

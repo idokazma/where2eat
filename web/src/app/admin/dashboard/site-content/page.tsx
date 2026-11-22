@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { settingsApi, type SettingsHistoryEntry, type SiteSettings } from '@/lib/admin/api';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/admin/ui/card';
@@ -10,21 +10,21 @@ import { Label } from '@/components/admin/ui/label';
 import { Loader2, RotateCcw, Save } from 'lucide-react';
 
 const TEXT_FIELDS: Array<{ key: string; label: string; hint?: string; multiline?: boolean }> = [
-  { key: 'site.hero_title', label: 'Hero title', hint: 'Main homepage headline (before the highlighted word)' },
-  { key: 'site.hero_highlight', label: 'Hero highlighted word', hint: 'The marked part of the headline' },
-  { key: 'site.hero_subtitle', label: 'Hero subtitle' },
-  { key: 'site.banner_text', label: 'Announcement banner text', hint: 'Empty hides the banner' },
-  { key: 'site.banner_link', label: 'Announcement banner link', hint: 'https://... (optional)' },
-  { key: 'social.instagram', label: 'Instagram link' },
-  { key: 'social.youtube_mdaberim', label: 'YouTube - Mdaberim MeHabeten' },
-  { key: 'social.youtube_gil', label: 'YouTube - Gil Harel' },
-  { key: 'about.text', label: 'About page text', multiline: true },
+  { key: 'site.hero_title', label: 'כותרת ראשית', hint: 'כותרת דף הבית (לפני המילה המסומנת)' },
+  { key: 'site.hero_highlight', label: 'מילה מסומנת בכותרת', hint: 'החלק המודגש בכותרת' },
+  { key: 'site.hero_subtitle', label: 'תת־כותרת' },
+  { key: 'site.banner_text', label: 'טקסט באנר הכרזה', hint: 'ריק = הבאנר מוסתר' },
+  { key: 'site.banner_link', label: 'קישור הבאנר', hint: 'https://... (אופציונלי)' },
+  { key: 'social.instagram', label: 'אינסטגרם' },
+  { key: 'social.youtube_mdaberim', label: 'יוטיוב — מדברים מהבטן' },
+  { key: 'social.youtube_gil', label: 'יוטיוב — גיל הראל' },
+  { key: 'about.text', label: 'עמוד אודות — טקסט חופשי', multiline: true },
 ];
 
 const TOGGLES: Array<{ key: string; label: string; hint: string }> = [
-  { key: 'display.restaurant_count', label: 'Restaurant count on homepage', hint: 'Shows the live count in the top strip' },
-  { key: 'display.creator_filter', label: 'Creator filter', hint: 'Shows the Mdaberim / Gil Harel filter on the homepage' },
-  { key: 'site.maintenance_mode', label: 'Maintenance mode', hint: 'Visitors see a "back soon" page instead of the site' },
+  { key: 'display.restaurant_count', label: 'הצגת מספר מסעדות בדף הבית', hint: 'מציג את המספר החי בפס העליון' },
+  { key: 'display.creator_filter', label: 'סינון לפי יוצר', hint: 'מציג סינון מדברים מהבטן / גיל הראל בדף הבית' },
+  { key: 'site.maintenance_mode', label: 'מצב תחזוקה', hint: 'גולשים רואים עמוד ״חוזרים בקרוב״ במקום האתר' },
 ];
 
 export default function SiteContentPage() {
@@ -42,9 +42,14 @@ export default function SiteContentPage() {
     queryFn: () => settingsApi.history(),
   });
 
-  useEffect(() => {
-    if (settings) setDraft(settings);
-  }, [settings]);
+  // Sync the fetched settings into the draft. Render-time adjustment (React's
+  // recommended pattern) instead of an effect: when the query data changes,
+  // replace the draft with it.
+  const [loadedSettings, setLoadedSettings] = useState(settings);
+  if (settings && settings !== loadedSettings) {
+    setLoadedSettings(settings);
+    setDraft(settings);
+  }
 
   const saveMutation = useMutation({
     mutationFn: (values: Record<string, string>) => settingsApi.update(values),
@@ -83,18 +88,18 @@ export default function SiteContentPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" dir="rtl">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Site Content</h1>
+          <h1 className="text-3xl font-bold">תוכן האתר</h1>
           <p className="text-muted-foreground mt-1">
-            Texts and links shown to visitors - no code changes needed
+            טקסטים ולינקים שמוצגים לגולשים — בלי לגעת בקוד
           </p>
         </div>
         <div className="flex items-center gap-3">
-          {saved && <span className="text-sm text-green-600">Saved</span>}
+          {saved && <span className="text-sm text-green-600">נשמר</span>}
           {saveMutation.isError && (
-            <span className="text-sm text-destructive">Save failed - check values</span>
+            <span className="text-sm text-destructive">השמירה נכשלה — בדקו את הערכים</span>
           )}
           <Button
             onClick={save}
@@ -105,15 +110,15 @@ export default function SiteContentPage() {
             ) : (
               <Save className="h-4 w-4 mr-2" />
             )}
-            Save {dirtyKeys.length > 0 ? `(${dirtyKeys.length})` : ''}
+            שמירה {dirtyKeys.length > 0 ? `(${dirtyKeys.length})` : ''}
           </Button>
         </div>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Homepage & Links</CardTitle>
-          <CardDescription>Hero texts, announcement banner and social links</CardDescription>
+          <CardTitle>דף הבית ולינקים</CardTitle>
+          <CardDescription>כותרות, באנר הכרזות ולינקים חברתיים</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           {TEXT_FIELDS.map((f) => (
@@ -141,8 +146,8 @@ export default function SiteContentPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Display Settings</CardTitle>
-          <CardDescription>What visitors see</CardDescription>
+          <CardTitle>הגדרות תצוגה</CardTitle>
+          <CardDescription>מה שגולשים רואים</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           {TOGGLES.map((t) => {
@@ -172,12 +177,12 @@ export default function SiteContentPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Change History</CardTitle>
-          <CardDescription>Every save is recorded and can be restored</CardDescription>
+          <CardTitle>היסטוריית שינויים</CardTitle>
+          <CardDescription>כל שמירה נשמרת ואפשר לשחזר</CardDescription>
         </CardHeader>
         <CardContent>
           {!historyData?.history?.length ? (
-            <p className="text-sm text-muted-foreground">No changes yet.</p>
+            <p className="text-sm text-muted-foreground">עדיין אין שינויים.</p>
           ) : (
             <div className="space-y-2">
               {historyData.history.slice(0, 20).map((h: SettingsHistoryEntry) => (
@@ -185,7 +190,7 @@ export default function SiteContentPage() {
                   <div className="min-w-0">
                     <p className="font-medium truncate">{h.key}</p>
                     <p className="text-xs text-muted-foreground truncate">
-                      {h.old_value === null ? '(new)' : `"${h.old_value}"`} → "{h.new_value}"
+                      {h.old_value === null ? '(חדש)' : `"${h.old_value}"`} → &quot;{h.new_value}&quot;
                     </p>
                     <p className="text-xs text-muted-foreground">
                       {new Date(h.changed_at).toLocaleString()}{h.changed_by ? ` · ${h.changed_by}` : ''}
@@ -198,8 +203,8 @@ export default function SiteContentPage() {
                       disabled={restoreMutation.isPending}
                       onClick={() => restoreMutation.mutate(h.id)}
                     >
-                      <RotateCcw className="h-3.5 w-3.5 mr-1" />
-                      Restore
+                      <RotateCcw className="h-3.5 w-3.5 ml-1" />
+                      שחזור
                     </Button>
                   )}
                 </div>

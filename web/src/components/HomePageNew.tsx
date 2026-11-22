@@ -47,9 +47,9 @@ function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: numbe
 const RENDER_BATCH = 15;
 
 export function HomePageNew() {
-  const { settings } = useSiteSettings();
-  const showRestaurantCount = settings['display.restaurant_count'] !== 'false';
-  const showCreatorFilter = settings['display.creator_filter'] !== 'false';
+  const { settings: siteSettings } = useSiteSettings();
+  const showRestaurantCount = siteSettings['display.restaurant_count'] !== 'false';
+  const showCreatorFilter = siteSettings['display.creator_filter'] !== 'false';
 
   const router = useRouter();
 
@@ -280,20 +280,20 @@ export function HomePageNew() {
       </div>
 
       {/* Announcement banner (managed from admin Site Content) */}
-      {settings['site.banner_text'] && (
+      {siteSettings['site.banner_text'] && (
         <div className="px-4 pt-2">
-          {settings['site.banner_link'] ? (
+          {siteSettings['site.banner_link'] ? (
             <a
-              href={settings['site.banner_link']}
+              href={siteSettings['site.banner_link']}
               target="_blank"
               rel="noopener noreferrer"
               className="block text-center text-sm font-medium bg-[var(--color-accent-subtle)] text-[var(--color-accent)] rounded-xl px-4 py-2.5 border border-[var(--color-accent)]"
             >
-              {settings['site.banner_text']}
+              {siteSettings['site.banner_text']}
             </a>
           ) : (
             <p className="text-center text-sm font-medium bg-[var(--color-accent-subtle)] text-[var(--color-accent)] rounded-xl px-4 py-2.5 border border-[var(--color-accent)]">
-              {settings['site.banner_text']}
+              {siteSettings['site.banner_text']}
             </p>
           )}
         </div>

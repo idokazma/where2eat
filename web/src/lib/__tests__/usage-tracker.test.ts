@@ -21,11 +21,7 @@ describe('usage-tracker', () => {
     _resetForTests()
     window.sessionStorage.clear()
     beacon = jest.fn().mockReturnValue(true)
-    Object.defineProperty(window.navigator, 'sendBeacon', {
-      value: beacon,
-      writable: true,
-      configurable: true,
-    })
+    ;(window.navigator as any).sendBeacon = beacon
   })
 
   afterEach(() => {
@@ -35,7 +31,13 @@ describe('usage-tracker', () => {
   async function lastBeaconBody(): Promise<any> {
     expect(beacon).toHaveBeenCalled()
     const blob: Blob = beacon.mock.calls[beacon.mock.calls.length - 1][1]
-    return JSON.parse(await blob.text())
+    const text = await new Promise<string>((resolve, reject) => {
+      const reader = new FileReader()
+      reader.onload = () => resolve(reader.result as string)
+      reader.onerror = reject
+      reader.readAsText(blob)
+    })
+    return JSON.parse(text)
   }
 
   it('creates and reuses a per-tab session id', () => {
