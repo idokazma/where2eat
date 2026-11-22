@@ -335,7 +335,7 @@ async def seed_extraction(extraction: Dict[str, Any] = Body(...), user: dict = D
                     video_url=ep.get('video_url', f'https://www.youtube.com/watch?v={video_id}'),
                     video_id=video_id,
                     channel_name=ep.get('channel_name'),
-                    country='Israel',
+                    country=(r.get('country') or location.get('country') or 'Israel'),
                     engaging_quote=(r.get('host_quotes', []) or [None])[0],
                     contact_phone=gp.get('phone'),
                     contact_website=gp.get('website'),
