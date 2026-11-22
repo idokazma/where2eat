@@ -129,6 +129,15 @@ async function startFromTelAviv(limit?: number) {
   fireEvent.click(preset);
 }
 
+it("shows no 'n of M' counter over the stories", async () => {
+  await startFromTelAviv();
+  await screen.findAllByRole("article");
+  expect(document.querySelector(".stories-count")).toBeNull();
+  expect(screen.queryByText(/^\d+\/\d+$/)).toBeNull();
+  // The top bar holds only the location and exit buttons.
+  expect(document.querySelector(".stories-top")!.textContent).toBe("");
+});
+
 it("can be indexed now that the home page links to it", () => {
   expect(metadata.robots).toBeUndefined();
 });
@@ -310,7 +319,7 @@ it("builds only the stories around the one in view and follows the viewer down t
   act(() => feedObserver.fire(slots[20]));
   await waitFor(() => expect(names()).toEqual(Array.from({ length: 7 }, (_, i) => `מסעדה ${18 + i}`)));
   expect(document.querySelectorAll(".stories-slot")).toHaveLength(60);
-  expect(screen.getByText("21/60")).toBeInTheDocument();
+  expect(screen.queryByText(/^\d+\/\d+$/)).toBeNull(); // no "n/M" counter
 });
 
 it("keeps the story in view and the order when a photo fails ahead of or at the current story", async () => {
@@ -329,13 +338,11 @@ it("keeps the story in view and the order when a photo fails ahead of or at the 
   const names = () => screen.getAllByRole("article").map((a) => within(a).getByRole("heading").textContent);
   const feedObserver = observers.filter((o) => o.targets.length >= 30).pop()!;
   act(() => feedObserver.fire(document.querySelectorAll(".stories-slot")[5]));
-  await waitFor(() => expect(screen.getByText("6/30")).toBeInTheDocument());
-  expect(names()).toEqual(Array.from({ length: 7 }, (_, i) => `מסעדה ${3 + i}`));
+  await waitFor(() => expect(names()).toEqual(Array.from({ length: 7 }, (_, i) => `מסעדה ${3 + i}`)));
 
   // A photo-less story ahead is dropped: nothing before it moves, nothing repeats or is skipped.
   fireEvent.error(document.querySelector<HTMLImageElement>(`img[src="${photo("r7")}"]`)!);
   await waitFor(() => expect(document.querySelectorAll(".stories-slot")).toHaveLength(29));
-  expect(screen.getByText("6/29")).toBeInTheDocument();
   const after = names();
   expect(new Set(after).size).toBe(after.length);
   expect(after).toEqual(["מסעדה 3", "מסעדה 4", "מסעדה 5", "מסעדה 6", "מסעדה 8", "מסעדה 9", "מסעדה 10"]);
@@ -344,7 +351,6 @@ it("keeps the story in view and the order when a photo fails ahead of or at the 
   fireEvent.error(document.querySelector<HTMLImageElement>(`img[src="${photo("r5")}"]`)!);
   await waitFor(() => expect(document.querySelectorAll(".stories-slot")).toHaveLength(29));
   expect(names()).toEqual(after);
-  expect(screen.getByText("6/29")).toBeInTheDocument();
 });
 
 it("reopens a rebuilt story on its photo without moving the feed to it", async () => {
