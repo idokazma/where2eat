@@ -19,7 +19,6 @@ import {
   Legend,
   ResponsiveContainer,
 } from 'recharts';
-import type { PieLabelRenderProps } from 'recharts';
 import { Info } from 'lucide-react';
 
 const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#14b8a6', '#f97316'];
@@ -216,7 +215,7 @@ export default function AnalyticsPage() {
             <ResponsiveContainer width="100%" height={260}>
               <BarChart data={hourly}>
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="hour" fontSize={12} />
+                <XAxis dataKey="hour" fontSize={12} interval={2} />
                 <YAxis allowDecimals={false} fontSize={12} />
                 <Tooltip />
                 <Bar isAnimationActive={false} dataKey="events" name="אירועים" fill="#8b5cf6" />
@@ -268,17 +267,17 @@ export default function AnalyticsPage() {
                     nameKey="device"
                     cx="50%"
                     cy="50%"
-                    outerRadius={90}
-                    label={(props: PieLabelRenderProps) => {
-                      const p = props as unknown as { device?: string; sessions?: number };
-                      return `${p.device}: ${p.sessions}`;
-                    }}
+                    outerRadius={80}
                   >
                     {devices.map((_, i) => (
                       <Cell key={i} fill={COLORS[i % COLORS.length]} />
                     ))}
                   </Pie>
                   <Tooltip />
+                  <Legend formatter={(value: string) => {
+                    const d = devices.find((x) => x.device === value);
+                    return `${value}: ${d?.sessions ?? 0}`;
+                  }} />
                 </PieChart>
               </ResponsiveContainer>
             )}
