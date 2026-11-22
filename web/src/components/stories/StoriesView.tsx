@@ -581,7 +581,7 @@ function StoryView({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [frames, n, visibleKey]);
   // Move only the photo strip: scrollIntoView could also scroll the vertical feed.
-  const go = (i: number) => {
+  const go = (i: number, instant = false) => {
     const root = framesRef.current;
     const direction = i >= slideIndex ? 1 : -1;
     const requested = Math.max(0, Math.min(n - 1, i));
@@ -592,7 +592,7 @@ function StoryView({
     if (!root || !target) return;
     root.scrollBy?.({
       left: target.getBoundingClientRect().left - root.getBoundingClientRect().left,
-      behavior: smooth ? "smooth" : "auto",
+      behavior: smooth && !instant ? "smooth" : "instant" as ScrollBehavior,
     });
   };
   // Next photo every few seconds while this place is in view, back to the first after the last.
@@ -605,7 +605,12 @@ function StoryView({
         (j) => visible.includes(j) && !slotFailed(j),
       );
       if (next === undefined) return;
-      const t = setTimeout(() => go(next), PHOTO_MS);
+      // A smooth jump across failed slots would make the observer report an
+      // intermediate failed slot as current, whose recovery interrupts the jump.
+      // Skip those slots atomically; keep ordinary adjacent/manual moves smooth.
+      const crossesFailed = Array.from({ length: (next - slideIndex + n) % n }, (_, k) =>
+        (slideIndex + 1 + k) % n).some((j) => visible.includes(j) && slotFailed(j));
+      const t = setTimeout(() => go(next, crossesFailed), PHOTO_MS);
       return () => clearTimeout(t);
     }
     // A failed slot: skip ahead to the next free photo that has not failed (wrapping to
@@ -616,11 +621,11 @@ function StoryView({
       (j) => visible.includes(j) && !frames[j].photo.paid && !slotFailed(j),
     );
     if (next === undefined) return;
-    const t = setTimeout(() => go(next), SKIP_FAILED_MS);
+    const t = setTimeout(() => go(next, true), SKIP_FAILED_MS);
     return () => clearTimeout(t);
     // go only reads refs and n.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [autoplay, slideIndex, n, currentFailed, allFailed, visibleKey]);
+  }, [autoplay, slideIndex, n, currentFailed, allFailed, visibleKey, failed, failedImages]);
 
   return (
     <article className="stories-story" aria-label={r.name_hebrew}>

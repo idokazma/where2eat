@@ -529,6 +529,29 @@ describe("autoplay", () => {
     expect(within(article).getAllByRole('group')).toHaveLength(2);
   });
 
+  it("atomically skips failed intermediate geometry rather than smooth-crossing it", async () => {
+    await startFromTelAviv();
+    const [article] = await screen.findAllByRole('article');
+    const frames = within(article).getAllByRole('group');
+    const observer = () => observers.find((o) => o.targets.includes(frames[1]))!;
+    act(() => observer().fire(frames[1]));
+    fireEvent.error(article.querySelector<HTMLImageElement>('img[src*="ref1"]')!);
+    act(() => jest.advanceTimersByTime(710));
+    expect((Element.prototype.scrollBy as jest.Mock).mock.calls.at(-1)[0].behavior).toBe('instant');
+    act(() => observer().fire(frames[0]));
+    (Element.prototype.scrollBy as jest.Mock).mockClear();
+    act(() => jest.advanceTimersByTime(4_010));
+    // Target is original2, crossing original1. Browser must not smooth-scroll
+    // through the failed slot and report its intermediate69%intersection.
+    expect((Element.prototype.scrollBy as jest.Mock).mock.calls.at(-1)[0].behavior).toBe('instant');
+    act(() => observer().fire(frames[2]));
+    expect(paidImages()).toEqual([expect.stringContaining('ref2')]);
+    expect(paidImages().some((u) => u.includes('ref1'))).toBe(false);
+    // Manual reverse remains smooth and can deliberately visit the failed slot.
+    fireEvent.click(within(frames[2]).getByRole('button', { name: 'התמונה הקודמת' }));
+    expect((Element.prototype.scrollBy as jest.Mock).mock.calls.at(-1)[0].behavior).toBe('smooth');
+  });
+
   it("moves to the next place every 10 seconds", async () => {
     await startFromTelAviv();
     await screen.findAllByRole("article");
