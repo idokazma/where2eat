@@ -139,3 +139,23 @@ def test_saved_copies_are_removed_with_the_other_google_copies(env, monkeypatch)
     r = TestClient(app).delete('/api/admin/place-photos', headers={'Authorization': 'Bearer ' + 'x' * 40})
     assert r.status_code == 200 and r.json()['deleted_cached'] == 1
     assert list((tmp_path / 'photo_cache').glob('*')) == []
+
+
+def test_phone_multi_picture_jpeg_is_saved_too(env):
+    """Phone photos are often MPO (a JPEG with extra frames). Seen live on 22.11.2026."""
+    client, tmp_path = env
+    b = io.BytesIO()
+    Image.new('RGB', (1200, 1600), 'blue').save(b, 'MPO', save_all=True,
+                                                append_images=[Image.new('RGB', (1200, 1600), 'green')])
+    mpo = b.getvalue()
+
+    async def google(_client, url, **kwargs):
+        return response(200, mpo)
+
+    with patch('httpx.AsyncClient.get', new=google):
+        first = get(client)
+    assert first.headers['cache-control'] == 'public, max-age=31536000, immutable'
+    saved = list((tmp_path / 'photo_cache').glob('*.jpg'))
+    assert len(saved) == 1
+    with Image.open(saved[0]) as im:
+        assert im.format == 'JPEG' and max(im.size) <= 1200
