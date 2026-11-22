@@ -19,6 +19,8 @@ import {
   quoteFromEpisode,
   sourceLabel,
   storyFrames,
+  storyPhotoKey,
+  shouldLoadStoryFrame,
   storyGoogleFallback,
   youtubeEmbedUrl,
   youtubeMomentUrl,
@@ -42,6 +44,8 @@ const STORY_MS = 10_000;
 // Opening the site asks for the location; without an answer by then, newest first.
 const LOCATE_WAIT_MS = 8_000;
 const PHOTO_MS = 4_000;
+// A photo slot that failed is skipped after this pause instead of stopping the rotation.
+const SKIP_FAILED_MS = 700;
 const PRESETS: [string, number, number][] = [
   ["תל אביב · דיזנגוף", 32.0809, 34.774],
   ["ירושלים · מחנה יהודה", 31.7852, 35.212],
@@ -224,7 +228,7 @@ export function StoriesView({
     setSlideAt((prev) => (prev[id] === i ? prev : { ...prev, [id]: i }));
     setGranted((prev) => {
       let next = prev;
-      for (const f of frames.slice(0, i + 1)) {
+      for (const f of frames.slice(i, i + 1)) {
         if (!f.photo.paid || next.has(f.photo.url)) continue;
         if (next.size >= extraPhotoLimit) break;
         if (next === prev) next = new Set(prev);
@@ -414,6 +418,7 @@ export function StoriesView({
             <StoryView
               story={item.story}
               near={index >= current - 1 && index <= current + 3}
+              active={index === current}
               failedImages={failedImages}
               saved={isSaved(item.story.restaurant, favorites)}
               slideIndex={slideAt[item.story.restaurant.id!] ?? 0}
@@ -474,6 +479,7 @@ export function StoriesView({
 function StoryView({
   story: base,
   near,
+  active,
   failedImages,
   saved,
   slideIndex,
@@ -489,6 +495,7 @@ function StoryView({
 }: {
   story: Story;
   near: boolean;
+  active: boolean;
   failedImages: Set<string>;
   saved: boolean;
   slideIndex: number;
@@ -511,13 +518,22 @@ function StoryView({
   const r = story.restaurant;
   const c = getCoordinates(r.location);
   const [failed, setFailed] = useState<Set<string>>(new Set());
-  // A photo that fails to load (expired Google references are common) is skipped,
-  // unless it carries a creator quote: then the quote stays, over the story's photo.
-  const frames = useMemo(
-    () => storyFrames(story, { extraPhotos }).filter((f) => !failed.has(f.photo.url) && !failedImages.has(f.photo.url)),
-    [story, extraPhotos, failed, failedImages],
-  );
+  // Keep slot identities stable on errors. Removing a failed frame would move the
+  // next paid reference into the observed slot and grant it without a new gesture.
+  // The primary/free backdrop and source remain visible beneath a failed slot.
+  const frames = useMemo(() => storyFrames(base, { extraPhotos }), [base, extraPhotos]);
+  // What a slot actually shows: the first slot shows the story's image, which may be a
+  // working backup when the stored main photo failed.
+  const slotUrl = (i: number) => (i === 0 && image ? image : frames[i]?.photo.url);
+  const slotFailed = (i: number) => {
+    const url = slotUrl(i);
+    return !!url && (failed.has(url) || failedImages.has(url));
+  };
+  const currentFailed = slotFailed(slideIndex);
+  const allFailed = frames.every((_, i) => slotFailed(i));
   const n = frames.length;
+  const [loaded, setLoaded] = useState<Set<string>>(new Set());
+  const imageLoaded = (url: string) => setLoaded((old) => old.has(url) ? old : new Set(old).add(url));
   const framesRef = useRef<HTMLDivElement>(null);
   // Sideways pages are photos. The review (best source first) stays on the story.
   const primary = story.slides[0] ?? null;
@@ -563,17 +579,29 @@ function StoryView({
   };
   // Next photo every few seconds while this place is in view, back to the first after the last.
   useEffect(() => {
-    if (!autoplay || n < 2) return;
-    const t = setTimeout(() => go((slideIndex + 1) % n), PHOTO_MS);
+    if (!autoplay || n < 2 || allFailed) return;
+    if (!currentFailed) {
+      const t = setTimeout(() => go((slideIndex + 1) % n), PHOTO_MS);
+      return () => clearTimeout(t);
+    }
+    // A failed slot: skip ahead to the next free photo that has not failed (wrapping to
+    // the place's own photo). Never move on into a paid photo after a failure: expired
+    // Google references fail in chains, and each attempt is a paid request. A tap on
+    // "next" still opens one deliberately.
+    const next = Array.from({ length: n - 1 }, (_, k) => (slideIndex + 1 + k) % n).find(
+      (j) => !frames[j].photo.paid && !slotFailed(j),
+    );
+    if (next === undefined) return;
+    const t = setTimeout(() => go(next), SKIP_FAILED_MS);
     return () => clearTimeout(t);
     // go only reads refs and n.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [autoplay, slideIndex, n]);
+  }, [autoplay, slideIndex, n, currentFailed, allFailed]);
 
   return (
     <article className="stories-story" aria-label={r.name_hebrew}>
       {near && image ? (
-        <img className="stories-bg" src={image} alt="" onError={() => onImageError(image)} />
+        <img className="stories-bg" src={image} alt="" onLoad={() => imageLoaded(image)} onError={() => onImageError(image)} />
       ) : near ? (
         <div className="stories-bg empty fallback" aria-hidden="true">
           <UtensilsCrossed size={88} strokeWidth={1.1} />
@@ -583,14 +611,17 @@ function StoryView({
       )}
       <div className="stories-frames" ref={framesRef}>
         {frames.map((frame, i) => {
-          // The story's own photo is already underneath. Other photos load only
-          // once reached; paid ones only when granted within the visit limit.
+          // Keep a small decoded-image window. Only the active story gets a free
+          // next image, after the current image loaded. Paid frames never preload.
           const own = frame.photo.url === image;
           const show =
-            near && !own && !failed.has(frame.photo.url) && (frame.photo.paid ? granted.has(frame.photo.url) : i <= slideIndex + 1);
+            near && !own && !failed.has(frame.photo.url) && !failedImages.has(frame.photo.url) && shouldLoadStoryFrame(
+              frames, i, slideIndex, active,
+              loaded.has(frames[slideIndex]?.photo.url), granted,
+            );
           return (
             <div
-              key={i}
+              key={storyPhotoKey(frame.photo.url)}
               className="stories-frame"
               data-slide={i}
               role="group"
@@ -602,6 +633,7 @@ function StoryView({
                   className="stories-bg"
                   src={frame.photo.url}
                   alt=""
+                  onLoad={() => imageLoaded(frame.photo.url)}
                   onError={() => setFailed((prev) => new Set(prev).add(frame.photo.url))}
                 />
               )}

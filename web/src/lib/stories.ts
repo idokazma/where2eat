@@ -10,7 +10,7 @@ import { getCoordinates } from "@/types/restaurant";
 import { isListed } from "@/lib/restaurant-visibility";
 import { getMapPreviewImage } from "@/lib/map-discovery";
 import { haversineDistance, type GeoCoords } from "@/lib/geo-utils";
-import { getPhotoProxyUrl, getStoredPhotoUrls, validPhotos } from "@/lib/images";
+import { getPhotoProxyUrl, getStoredPhotoUrls, looksLikeLogo, validPhotos } from "@/lib/images";
 
 export interface StorySlide {
   /** The restaurant record this mention belongs to (a merged duplicate may differ). */
@@ -286,6 +286,33 @@ export function formatClock(seconds: number | null): string | null {
 
 const STORY_PHOTO_WIDTH = 900;
 
+/** Same bytes in our content-addressed storage, or the exact same external URL.
+ * Do not strip arbitrary query strings: different crops/dishes may share a path.
+ * This is exact identity deduplication, not a claim of visual similarity.
+ */
+export function storyPhotoKey(value: string): string {
+  try {
+    const u = new URL(value, "https://relative.invalid");
+    const asset = u.pathname.match(/^\/api\/(?:venue-images|place-photos)\/([a-f0-9]{64})\.jpg$/);
+    if (asset) return `sha256:${asset[1]}`;
+    const proxy = u.pathname.match(/^\/api\/photos\/(.+)$/);
+    if (proxy) return `google:${proxy[1]}`;
+  } catch { /* Keep the original string if it cannot be parsed. */ }
+  return value;
+}
+
+/** A bounded image window. Never speculate a paid request for the next frame. */
+export function shouldLoadStoryFrame(
+  frames: StoryFrame[], index: number, current: number,
+  active: boolean, currentLoaded: boolean, granted: Set<string>,
+): boolean {
+  const frame = frames[index];
+  if (!frame) return false;
+  if (frame.photo.paid) return index === current && granted.has(frame.photo.url);
+  return index === current || (active && Math.abs(index - current) === 1 &&
+    (index < current || currentLoaded));
+}
+
 /** The place's photos: the free first photo, then its Google photos (paid, same place only). */
 export function storyPhotos(story: Story, { extraPhotos = true }: { extraPhotos?: boolean } = {}): StoryPhoto[] {
   const photos: StoryPhoto[] = [{ url: story.image, paid: false }];
@@ -293,18 +320,28 @@ export function storyPhotos(story: Story, { extraPhotos = true }: { extraPhotos?
   const stored = getStoredPhotoUrls(story.restaurant);
   if (stored.length > 0) {
     for (const url of stored) if (!photos.some((p) => p.url === url)) photos.push({ url, paid: false });
-    return photos;
+    return uniqueStoryPhotos(photos);
   }
-  if (!extraPhotos) return photos;
+  if (!extraPhotos) return uniqueStoryPhotos(photos);
   for (const p of validPhotos(story.restaurant)) {
     const photo: StoryPhoto | null = p.photo_reference
       ? { url: getPhotoProxyUrl(p.photo_reference, STORY_PHOTO_WIDTH), paid: true }
-      : p.photo_url && !p.photo_url.includes("/api/photos/")
+      : p.photo_url && directImageUrl(p.photo_url) && !looksLikeLogo(p.photo_url)
         ? { url: p.photo_url, paid: false }
         : null;
     if (photo && !photos.some((x) => x.url === photo.url)) photos.push(photo);
   }
-  return photos;
+  return uniqueStoryPhotos(photos);
+}
+
+function uniqueStoryPhotos(photos: StoryPhoto[]): StoryPhoto[] {
+  const seen = new Set<string>();
+  return photos.filter((p) => {
+    const key = storyPhotoKey(p.url);
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
 }
 
 /**

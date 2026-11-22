@@ -208,21 +208,25 @@ it("stops loading paid photos at the visit limit, showing the story's own photo 
   expect(near.querySelector(`img[src="${photo("near")}"]`)).not.toBeNull();
 });
 
-it("skips a photo that fails to load instead of showing an empty page", async () => {
+it("keeps a failed paid slot stable without granting the next reference", async () => {
   await startFromTelAviv();
   const [near] = await screen.findAllByRole("article");
-  let frames = within(near).getAllByRole("group");
-  act(() => observers.find((o) => o.targets.includes(frames[2]))!.fire(frames[2]));
-  const dead = near.querySelector<HTMLImageElement>('img[src*="ref2"]')!;
-  fireEvent.error(dead);
-  frames = within(near).getAllByRole("group");
-  expect(frames).toHaveLength(2);
-  // A page is a photo: when it fails there is no empty page left, and the reviews stay.
+  const frames = within(near).getAllByRole("group");
   act(() => observers.find((o) => o.targets.includes(frames[1]))!.fire(frames[1]));
   fireEvent.error(near.querySelector<HTMLImageElement>('img[src*="ref1"]')!);
-  frames = within(near).getAllByRole("group");
-  expect(frames).toHaveLength(1);
+  expect(within(near).getAllByRole("group")).toHaveLength(3);
+  // Even another observer notification for the same slot cannot grant REF2.
+  act(() => observers.find((o) => o.targets.includes(frames[1]))!.fire(frames[1]));
+  expect(paidImages()).toEqual([]);
+  expect(near.querySelector(`img[src="${photo("near")}"]`)).not.toBeNull();
   expect(within(near).getByRole("button", { name: /נגן ברגע הזה/ })).toBeInTheDocument();
+  // A deliberate next transition can reach the next paid photo.
+  fireEvent.click(within(frames[1]).getByRole("button", { name: "התמונה הבאה" }));
+  act(() => observers.find((o) => o.targets.includes(frames[2]))!.fire(frames[2]));
+  expect(paidImages()).toEqual([expect.stringContaining("ref2")]);
+  // Reverse to the failed slot: no retry and no different reference substituted.
+  act(() => observers.find((o) => o.targets.includes(frames[1]))!.fire(frames[1]));
+  expect(paidImages()).toEqual([]);
 });
 
 it("moves to the next photo when the side of the photo is tapped", async () => {
@@ -432,6 +436,47 @@ describe("autoplay", () => {
   beforeEach(() => jest.useFakeTimers());
   afterEach(() => jest.useRealTimers());
 
+  it("keeps rotating photos when a place's main photo failed and a backup is shown", async () => {
+    // Real case: the stored main image is a dead link, a free backup (og image) shows instead,
+    // and the place has another free photo. The rotation must not stop on the first slot.
+    const dead = "https://example.co.il/dead-main.jpg";
+    const backup = "https://example.co.il/og-photo.jpg";
+    const second = "https://example.co.il/dish-2.jpg";
+    const rows = [
+      {
+        id: "p1",
+        name_hebrew: "מקום עם גיבוי",
+        image_url: dead,
+        og_image_url: backup,
+        photos: [{ photo_url: second, width: 1, height: 1 }],
+        location: { city: "תל אביב", lat: 32.081, lng: 34.775 },
+        episode_info: { video_id: "vidP1", channel_name: "מקור" },
+      },
+    ];
+    (global.fetch as jest.Mock).mockImplementation((url: string) =>
+      Promise.resolve({ ok: true, json: async () => (String(url).includes("/api/episodes/") ? { mentions: {} } : { restaurants: rows }) }),
+    );
+    await startFromTelAviv();
+    const [place] = await screen.findAllByRole("article");
+    fireEvent.error(place.querySelector<HTMLImageElement>(`img[src="${dead}"]`)!);
+    await waitFor(() => expect(place.querySelector(`img[src="${backup}"]`)).not.toBeNull());
+    (Element.prototype.scrollBy as jest.Mock).mockClear();
+    act(() => jest.advanceTimersByTime(4_100));
+    expect(stripMoves(place)).toHaveLength(1);
+  });
+
+  it("skips a photo slot that failed instead of stopping there (to the next free photo)", async () => {
+    await startFromTelAviv();
+    const [near] = await screen.findAllByRole("article");
+    const frames = within(near).getAllByRole("group");
+    // Reach the second photo (a Google photo) and let it fail.
+    act(() => observers.find((o) => o.targets.includes(frames[1]))!.fire(frames[1]));
+    fireEvent.error(near.querySelector<HTMLImageElement>('img[src*="/api/photos/"]')!);
+    (Element.prototype.scrollBy as jest.Mock).mockClear();
+    act(() => jest.advanceTimersByTime(1_000));
+    expect(stripMoves(near)).toHaveLength(1);
+  });
+
   it("moves to the next place every 10 seconds", async () => {
     await startFromTelAviv();
     await screen.findAllByRole("article");
@@ -450,6 +495,25 @@ describe("autoplay", () => {
     expect(stripMoves(near)).toHaveLength(0);
     act(() => jest.advanceTimersByTime(200));
     expect(stripMoves(near)).toHaveLength(1);
+  });
+
+  it("after a paid photo fails, autoplay never moves on into another paid photo; a tap still can", async () => {
+    await startFromTelAviv();
+    const [near] = await screen.findAllByRole("article");
+    const frames = within(near).getAllByRole("group");
+    act(() => observers.find((o) => o.targets.includes(frames[1]))!.fire(frames[1]));
+    fireEvent.error(near.querySelector<HTMLImageElement>('img[src*="ref1"]')!);
+    (Element.prototype.scrollBy as jest.Mock).mockClear();
+    act(() => jest.advanceTimersByTime(8_500));
+    // It goes back to the free first photo instead of stalling, and requests nothing paid.
+    expect(stripMoves(near).length).toBeGreaterThan(0);
+    expect(paidImages()).toEqual([]);
+    expect(within(near).getAllByRole("group")[1]).toBe(frames[1]);
+    (Element.prototype.scrollBy as jest.Mock).mockClear();
+    fireEvent.click(within(frames[1]).getByRole("button", { name: "התמונה הבאה" }));
+    expect(stripMoves(near)).toHaveLength(1);
+    act(() => observers.find((o) => o.targets.includes(frames[2]))!.fire(frames[2]));
+    expect(paidImages()).toEqual([expect.stringContaining("ref2")]);
   });
 
   it("holds while a finger is on the screen and resumes after it lifts", async () => {
@@ -548,4 +612,58 @@ describe("opening the site starts with the stories", () => {
     await headings();
     expect(screen.getByRole("link", { name: "יציאה" })).toHaveAttribute("href", "/home");
   });
+});
+
+
+it("loads only one free photo ahead, after current loads, without Google prefetch", async () => {
+  const single = { ...restaurants[1],
+    stored_photos: Array.from({ length: 6 }, (_, i) => ({ path: `/api/place-photos/free${i}.jpg` })),
+  };
+  (global.fetch as jest.Mock).mockImplementation((url: string) => Promise.resolve({
+    ok: true, json: async () => String(url).includes("/api/episodes/") ? episode : { restaurants: [single] },
+  }));
+  await startFromTelAviv();
+  const article = (await screen.findAllByRole("article"))[0];
+  const images = () => [...article.querySelectorAll<HTMLImageElement>("img")];
+  expect(images().map((i) => i.src)).toHaveLength(1);
+  fireEvent.load(images()[0]);
+  await waitFor(() => expect(images()).toHaveLength(2));
+  expect(images()[1].src).toContain("free1.jpg");
+  expect(paidImages()).toEqual([]);
+  const frames = within(article).getAllByRole("group");
+  act(() => observers.find((o) => o.targets.includes(frames[3]))!.fire(frames[3]));
+  const current = images().find((i) => i.src.includes("free3.jpg"))!;
+  fireEvent.load(current);
+  await waitFor(() => expect(images().some((i) => i.src.includes("free4.jpg"))).toBe(true));
+  expect(images().some((i) => i.src.includes("free1.jpg"))).toBe(false);
+  expect(images().some((i) => i.src.includes("free5.jpg"))).toBe(false);
+  // Own backdrop + previous/current/next, rather than every reached photo.
+  expect(images().length).toBeLessThanOrEqual(4);
+  expect(paidImages()).toEqual([]);
+});
+
+
+it("keeps the visit cap after failure and an explicit next transition", async () => {
+  await startFromTelAviv(1);
+  const [near] = await screen.findAllByRole("article");
+  const frames = within(near).getAllByRole("group");
+  act(() => observers.find((o) => o.targets.includes(frames[1]))!.fire(frames[1]));
+  fireEvent.error(near.querySelector<HTMLImageElement>('img[src*="ref1"]')!);
+  act(() => observers.find((o) => o.targets.includes(frames[2]))!.fire(frames[2]));
+  expect(paidImages()).toEqual([]);
+  expect(within(near).getAllByRole("group")).toHaveLength(3);
+});
+
+it("keeps successful paid slots distinct on forward and reverse transitions", async () => {
+  await startFromTelAviv();
+  const [near] = await screen.findAllByRole("article");
+  const frames = within(near).getAllByRole("group");
+  for (const index of [1, 2, 1]) {
+    act(() => observers.find((o) => o.targets.includes(frames[index]))!.fire(frames[index]));
+    const image = near.querySelector<HTMLImageElement>(`img[src*="ref${index}"]`)!;
+    expect(image).not.toBeNull();
+    fireEvent.load(image);
+    expect(paidImages()).toHaveLength(1);
+  }
+  expect(within(near).getAllByRole("group")).toHaveLength(3);
 });
