@@ -477,6 +477,28 @@ describe("autoplay", () => {
     expect(stripMoves(near)).toHaveLength(1);
   });
 
+  it("never rotates back onto a known failed slot over the primary backdrop", async () => {
+    const single = { ...restaurants[1], photos: [restaurants[1].photos![0]] };
+    (global.fetch as jest.Mock).mockImplementation((url: string) => Promise.resolve({
+      ok: true, json: async () => String(url).includes('/api/episodes/') ? episode : { restaurants: [single] },
+    }));
+    await startFromTelAviv();
+    const [article] = await screen.findAllByRole('article');
+    const frames = within(article).getAllByRole('group');
+    act(() => observers.find((o) => o.targets.includes(frames[1]))!.fire(frames[1]));
+    fireEvent.error(article.querySelector<HTMLImageElement>('img[src*="ref1"]')!);
+    (Element.prototype.scrollBy as jest.Mock).mockClear();
+    act(() => jest.advanceTimersByTime(710));
+    expect(stripMoves(article)).toHaveLength(1); // one safe return to primary
+    act(() => observers.find((o) => o.targets.includes(frames[0]))!.fire(frames[0]));
+    (Element.prototype.scrollBy as jest.Mock).mockClear();
+    act(() => jest.advanceTimersByTime(8_500));
+    expect(stripMoves(article)).toHaveLength(0); // no 0 -> failed1 -> 0 cycle
+    expect(paidImages()).toEqual([]);
+    expect(within(article).getAllByRole('group')).toHaveLength(2);
+    expect(within(frames[0]).getByRole('button', { name: 'התמונה הבאה' })).toBeEnabled();
+  });
+
   it("moves to the next place every 10 seconds", async () => {
     await startFromTelAviv();
     await screen.findAllByRole("article");

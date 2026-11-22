@@ -581,7 +581,13 @@ function StoryView({
   useEffect(() => {
     if (!autoplay || n < 2 || allFailed) return;
     if (!currentFailed) {
-      const t = setTimeout(() => go((slideIndex + 1) % n), PHOTO_MS);
+      // Never rotate back onto a known failed slot. If only this working image
+      // remains, hold it rather than animate a fake change over the same backdrop.
+      const next = Array.from({ length: n - 1 }, (_, k) => (slideIndex + 1 + k) % n).find(
+        (j) => !slotFailed(j),
+      );
+      if (next === undefined) return;
+      const t = setTimeout(() => go(next), PHOTO_MS);
       return () => clearTimeout(t);
     }
     // A failed slot: skip ahead to the next free photo that has not failed (wrapping to
