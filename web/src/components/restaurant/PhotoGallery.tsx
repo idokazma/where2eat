@@ -86,7 +86,7 @@ export function PhotoGallery({ photos, restaurantName }: PhotoGalleryProps) {
           </button>
 
           {/* Photo counter */}
-          <div className="absolute top-4 right-4 z-10 px-3 py-1.5 bg-white/10 backdrop-blur-sm rounded-full text-white text-sm font-medium">
+          <div dir="ltr" className="absolute top-4 right-4 z-10 px-3 py-1.5 bg-white/10 backdrop-blur-sm rounded-full text-white text-sm font-medium">
             {currentSlide + 1} / {photos.length}
           </div>
 

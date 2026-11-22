@@ -70,7 +70,7 @@ export function NearMeToggle({
 
       {/* Error toast */}
       {showError && error && (
-        <div className="absolute top-full mt-2 right-0 left-0 min-w-[200px] p-3 bg-[var(--color-negative-subtle)] border border-[var(--color-negative)] rounded-lg text-sm text-[var(--color-negative)] animate-fade-up z-10">
+        <div role="alert" className="mt-2 min-w-[200px] p-3 bg-[var(--color-negative-subtle)] border border-[var(--color-negative)] rounded-lg text-sm text-[var(--color-negative)] animate-fade-up z-10">
           {error}
         </div>
       )}
