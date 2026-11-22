@@ -6,6 +6,10 @@ import { ChevronRight, Youtube, Sparkles, MapPin } from 'lucide-react';
 import { PageLayout } from '@/components/layout';
 import { endpoints } from '@/lib/config';
 
+// Public contact address. The section stays hidden until this is set in the
+// deployment environment, so no address is ever hard-coded or guessed.
+const CONTACT_EMAIL = process.env.NEXT_PUBLIC_CONTACT_EMAIL || '';
+
 export default function AboutPage() {
   const [restaurantCount, setRestaurantCount] = useState<number | null>(null);
   const [episodeCount, setEpisodeCount] = useState<number | null>(null);
@@ -126,6 +130,23 @@ export default function AboutPage() {
               ) — שם שמשלב את שם הפודקאסט המקורי עם הבוט שמאחורי הקלעים, שמאזין, מנתח ומחלץ את ההמלצות באופן אוטומטי.
             </p>
           </div>
+
+          {/* Contact */}
+          {CONTACT_EMAIL && (
+            <div className="space-y-3">
+              <h2 className="text-lg font-bold text-[var(--color-ink)]">צור קשר</h2>
+              <p className="text-[var(--color-ink)] leading-relaxed">
+                מצאתם טעות, יש מסעדה שחסרה או שיש לכם המלצה? נשמח לשמוע.
+              </p>
+              <a
+                href={`mailto:${CONTACT_EMAIL}`}
+                className="inline-block font-bold text-[var(--color-accent)] underline"
+                dir="ltr"
+              >
+                {CONTACT_EMAIL}
+              </a>
+            </div>
+          )}
 
           {/* Version */}
           <div className="pt-6 border-t border-[var(--color-border)] text-center">
