@@ -8,8 +8,9 @@ dashboard raises an "unverified" alert; set COST_REQUIRE_VERIFIED_OPENING=true
 to refuse paid calls instead. Stale prices raise an alert, never a stop.
 
 Public, user-facing calls (the photo proxy that serves site images, enforce=False)
-are budget-checked too, and are refused outright while the current month's opening
-spend is unverified (set COST_PUBLIC_PHOTOS_ALLOW_UNVERIFIED=true to override).
+are budget-checked too: they are refused once the month's estimated spend reaches
+the budget. An unverified opening spend only raises the dashboard alert; set
+COST_PUBLIC_PHOTOS_REQUIRE_VERIFIED=true to also refuse them until it is entered.
 Images already saved on the volume never reach this code, so they keep serving.
 """
 import logging
@@ -34,8 +35,8 @@ run_id=contextvars.ContextVar('cost_run_id',default=None)
 PRICE_REVIEW_DAYS=90
 logger=logging.getLogger(__name__)
 
-def _public_unverified_allowed():
-    return os.getenv('COST_PUBLIC_PHOTOS_ALLOW_UNVERIFIED','').lower() in {'1','true','yes'}
+def _public_requires_verified():
+    return os.getenv('COST_PUBLIC_PHOTOS_REQUIRE_VERIFIED','').lower() in {'1','true','yes'}
 
 def _strict_opening():
     return os.getenv('COST_REQUIRE_VERIFIED_OPENING','').lower() in {'1','true','yes'}
@@ -79,7 +80,7 @@ class CostLedger:
             c.execute('BEGIN IMMEDIATE')
             if c.execute('SELECT id FROM calls WHERE id=?',(attempt,)).fetchone():return attempt
             o=c.execute('SELECT usd FROM openings WHERE month=?',(self.month,)).fetchone()
-            if o is None and public and not _public_unverified_allowed():raise BudgetExceeded('Public photo fetches paused: current-month opening spend unverified')
+            if o is None and public and _public_requires_verified():raise BudgetExceeded('Public photo fetches paused: current-month opening spend unverified')
             if o is None and _strict_opening():raise BudgetExceeded('Current-month opening spend unverified; configure COST_OPENING_MONTH and COST_OPENING_SPEND_USD')
             opening=o[0] if o else 0
             spent=c.execute('SELECT COALESCE(SUM(COALESCE(actual,reserved)),0) FROM calls WHERE month=?',(self.month,)).fetchone()[0]
@@ -121,7 +122,7 @@ class CostLedger:
             skus=[dict(r) for r in c.execute('SELECT sku,COUNT(*) as attempts,SUM(COALESCE(actual,reserved)) as estimated_usd FROM calls WHERE month=? GROUP BY sku',(self.month,))]
         total=(opening or 0)+calls[0];overdue=price_review_overdue()
         stopped=total>=self.budget or (opening is None and _strict_opening())
-        return {'label':'Estimate, not provider balance','timezone':'UTC','month':self.month,'opening_spend_verified':opening is not None,'opening_usd':opening,'estimated_usd':total,'budget_usd':self.budget,'alert':opening is None or overdue or total>=self.budget*.8,'stopped':stopped,'price_review_overdue':overdue,'public_photos_enforced':True,'public_photos_paused':(opening is None and not _public_unverified_allowed()) or total>=self.budget,'unsettled_calls':calls[1] or 0,'runs':runs,'skus':skus,'price_date':PRICE_DATE,'price_sources':PRICE_SOURCES,'coverage':'Instrumented Gemini analyzer, Places enricher and API proxies only; public photo proxy is budget-checked and paused while opening spend is unverified; excludes unrelated keys/clients and historical unrecorded spend'}
+        return {'label':'Estimate, not provider balance','timezone':'UTC','month':self.month,'opening_spend_verified':opening is not None,'opening_usd':opening,'estimated_usd':total,'budget_usd':self.budget,'alert':opening is None or overdue or total>=self.budget*.8,'stopped':stopped,'price_review_overdue':overdue,'public_photos_enforced':True,'public_photos_paused':(opening is None and _public_requires_verified()) or total>=self.budget,'unsettled_calls':calls[1] or 0,'runs':runs,'skus':skus,'price_date':PRICE_DATE,'price_sources':PRICE_SOURCES,'coverage':'Instrumented Gemini analyzer, Places enricher and API proxies only; public photo proxy is budget-checked (paused once the budget is spent, or while opening spend is unverified if COST_PUBLIC_PHOTOS_REQUIRE_VERIFIED); excludes unrelated keys/clients and historical unrecorded spend'}
 
 def places_request(method,url,**kwargs):
     """Count one network attempt. Never persist URL, key, query, body or response."""

@@ -54,7 +54,6 @@ class Google:
 def env(tmp_path, monkeypatch):
     monkeypatch.setenv('DATABASE_DIR', str(tmp_path))
     monkeypatch.setenv('GOOGLE_PLACES_API_KEY', 'dummy')
-    monkeypatch.setenv('COST_PUBLIC_PHOTOS_ALLOW_UNVERIFIED', 'true')  # these tests are about caching, not the budget guard
     monkeypatch.delenv('RAILWAY_ENVIRONMENT_ID', raising=False)
     db = Database(str(tmp_path / 'where2eat.db'))
     photos = [{'photo_reference': f'places/PLACE1/photos/oldref{i}'} for i in range(3)]
