@@ -1,0 +1,70 @@
+[
+  {
+    "name": "קפה 38",
+    "video_id": "gRpspS9UEO8",
+    "mention_id": "5858a4e9-87b8-584a-a58c-fb2cfa406d6c",
+    "restaurant_id": "f308b30c",
+    "mention_changes": {
+      "verified_quote": {
+        "text": "מקום ממש חמוד, אגב אני מאוד ממליץ על המקום, נהניתי מאוד.",
+        "source_url": "https://traffic.megaphone.fm/POLTD5502573493.mp3",
+        "start_seconds": 2660,
+        "end_seconds": 2700
+      },
+      "host_comments": "דובר אורח (לא זוהה בשם) מספר על ביקור בקפה 38 בחוף פרישמן."
+    },
+    "operation_id": "e671d8d7-aeec-4ebf-a35c-bfa798f3888c",
+    "evidence": "Publisher RSS https://feeds.megaphone.fm/POLTD3242143576; audio https://traffic.megaphone.fm/POLTD5502573493.mp3; ~60 s clip from the mention timestamp transcribed. Start/end seconds are the reviewed window, not word-level timing."
+  },
+  {
+    "name": "הקוסם",
+    "video_id": "roSNmoPFTrs",
+    "mention_id": "64b42566-cec2-4bb7-953e-0cdeec5bcc38",
+    "restaurant_id": "66dac55f",
+    "mention_changes": {
+      "verified_quote": {
+        "text": "והפעם נכנס קבאב. יש קבאב בקוסם.",
+        "source_url": "https://traffic.megaphone.fm/POLTD5272337640.mp3",
+        "start_seconds": 795,
+        "end_seconds": 830
+      },
+      "host_comments": "המנחה משבח את הקבאב החדש בקוסם."
+    },
+    "operation_id": "0c51cb5c-df90-4e4d-b044-938c946c298d",
+    "evidence": "Publisher RSS https://feeds.megaphone.fm/POLTD3242143576; audio https://traffic.megaphone.fm/POLTD5272337640.mp3; ~60 s clip from the mention timestamp transcribed. Start/end seconds are the reviewed window, not word-level timing."
+  },
+  {
+    "name": "האוס אוף דלריי",
+    "video_id": "GNiUaUqPY_Q",
+    "mention_id": "42766b35-a025-5f4f-a355-b6d29e414cbb",
+    "restaurant_id": "cebe6df5",
+    "mention_changes": {
+      "verified_quote": {
+        "text": "אני הבנתי שזה מלון קטן בפאתי שוק הכרמל ויש שם גם מסעדה.",
+        "source_url": "https://traffic.megaphone.fm/POLTD5122589751.mp3",
+        "start_seconds": 3745,
+        "end_seconds": 3775
+      },
+      "host_comments": "המנחים מצטטים ביקורת קשה של שגיא כהן על המקום; זו אינה דעת המנחים."
+    },
+    "operation_id": "dac05bf7-8ef7-4c51-a5e2-6dfc78d3efd0",
+    "evidence": "Publisher RSS https://feeds.megaphone.fm/POLTD3242143576; audio https://traffic.megaphone.fm/POLTD5122589751.mp3; ~60 s clip from the mention timestamp transcribed. Start/end seconds are the reviewed window, not word-level timing."
+  },
+  {
+    "name": "לחמים",
+    "video_id": "GNiUaUqPY_Q",
+    "mention_id": "04de85c9-05ac-558c-b02a-9f822b97dc88",
+    "restaurant_id": "041f1008",
+    "mention_changes": {
+      "verified_quote": {
+        "text": "האמת היא שהם ממש ממש טובים.",
+        "source_url": "https://traffic.megaphone.fm/POLTD5122589751.mp3",
+        "start_seconds": 175,
+        "end_seconds": 205
+      },
+      "host_comments": "המנחה משבחת את המאפייה, כולל הסניף בקניון אביב ברמת אביב."
+    },
+    "operation_id": "fe9c24d8-3ee1-44b7-938b-fb34394913db",
+    "evidence": "Publisher RSS https://feeds.megaphone.fm/POLTD3242143576; audio https://traffic.megaphone.fm/POLTD5122589751.mp3; ~60 s clip from the mention timestamp transcribed. Start/end seconds are the reviewed window, not word-level timing."
+  }
+]
