@@ -334,11 +334,8 @@ export function storyPhotos(story: Story, { extraPhotos = true }: { extraPhotos?
   return uniqueStoryPhotos(photos, story.restaurant);
 }
 
-function uniqueStoryPhotos(photos: StoryPhoto[], restaurant: Restaurant): StoryPhoto[] {
-  // A recorded direct URL and its Places proxy are two routes to the SAME photo.
-  // Match only explicit same-place aliases, never guess identity from CDN paths,
-  // dimensions or crops. Ambiguous aliases are left separate rather than merging
-  // two different references. Keep the first (usually free primary) representative.
+/** Explicit recorded alias identity, including the currently displayed fallback. */
+export function storyPhotoIdentity(url: string, restaurant: Restaurant): string {
   const aliases = new Map<string, Set<string>>();
   for (const p of validPhotos(restaurant)) {
     if (!p.photo_reference) continue;
@@ -350,14 +347,24 @@ function uniqueStoryPhotos(photos: StoryPhoto[], restaurant: Restaurant): StoryP
       aliases.set(url, keys);
     }
   }
+  const explicit = aliases.get(url);
+  return explicit?.size === 1 ? [...explicit][0] : storyPhotoKey(url);
+}
+
+function uniqueStoryPhotos(photos: StoryPhoto[], restaurant: Restaurant): StoryPhoto[] {
   const seen = new Set<string>();
   return photos.filter((p) => {
-    const explicit = aliases.get(p.url);
-    const key = explicit?.size === 1 ? [...explicit][0] : storyPhotoKey(p.url);
+    const key = storyPhotoIdentity(p.url, restaurant);
     if (seen.has(key)) return false;
     seen.add(key);
     return true;
   });
+}
+
+/** Retain original slot IDs, but hide any proxy alias of the current backdrop. */
+export function visibleStoryFrameIndices(frames: StoryFrame[], image: string | null, restaurant: Restaurant): number[] {
+  const primary = image ? storyPhotoIdentity(image, restaurant) : null;
+  return frames.flatMap((f, i) => i === 0 || !primary || storyPhotoIdentity(f.photo.url, restaurant) !== primary ? [i] : []);
 }
 
 /**

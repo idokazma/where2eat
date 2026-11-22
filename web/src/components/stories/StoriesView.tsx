@@ -20,6 +20,7 @@ import {
   sourceLabel,
   storyFrames,
   storyPhotoKey,
+  visibleStoryFrameIndices,
   shouldLoadStoryFrame,
   storyGoogleFallback,
   youtubeEmbedUrl,
@@ -531,7 +532,19 @@ function StoryView({
   };
   const currentFailed = slotFailed(slideIndex);
   const allFailed = frames.every((_, i) => slotFailed(i));
+  const visible = useMemo(() => visibleStoryFrameIndices(frames, image, r), [frames, image, r]);
+  const visibleKey = visible.join(",");
   const n = frames.length;
+  // If the displayed backup aliases the active proxy slot, return to its free
+  // representative without reindexing or granting a different paid reference.
+  useEffect(() => {
+    if (visible.includes(slideIndex)) return;
+    onSlide(0, frames);
+    const root = framesRef.current;
+    const first = root?.querySelector<HTMLElement>('[data-slide="0"]');
+    if (root && first) root.scrollLeft += first.getBoundingClientRect().left - root.getBoundingClientRect().left;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [visibleKey, slideIndex]);
   const [loaded, setLoaded] = useState<Set<string>>(new Set());
   const imageLoaded = (url: string) => setLoaded((old) => old.has(url) ? old : new Set(old).add(url));
   const framesRef = useRef<HTMLDivElement>(null);
@@ -558,19 +571,24 @@ function StoryView({
     const io = new IntersectionObserver(
       (entries) => {
         for (const e of entries)
-          if (e.isIntersecting) onSlide(Number((e.target as HTMLElement).dataset.slide), frames);
+          if (e.isIntersecting && visible.includes(Number((e.target as HTMLElement).dataset.slide))) onSlide(Number((e.target as HTMLElement).dataset.slide), frames);
       },
       { root, threshold: 0.6 },
     );
-    root.querySelectorAll("[data-slide]").forEach((el) => io.observe(el));
+    root.querySelectorAll<HTMLElement>("[data-slide]").forEach((el) => { if (!el.hidden) io.observe(el); });
     return () => io.disconnect();
     // onSlide is recreated each render; the observed frames only change with the story.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [frames, n]);
+  }, [frames, n, visibleKey]);
   // Move only the photo strip: scrollIntoView could also scroll the vertical feed.
   const go = (i: number) => {
     const root = framesRef.current;
-    const target = root?.querySelector<HTMLElement>(`[data-slide="${Math.max(0, Math.min(n - 1, i))}"]`);
+    const direction = i >= slideIndex ? 1 : -1;
+    const requested = Math.max(0, Math.min(n - 1, i));
+    const targetIndex = visible.includes(requested) ? requested :
+      (direction > 0 ? visible.find((j) => j > requested) : [...visible].reverse().find((j) => j < requested));
+    if (targetIndex === undefined) return;
+    const target = root?.querySelector<HTMLElement>(`[data-slide="${targetIndex}"]`);
     if (!root || !target) return;
     root.scrollBy?.({
       left: target.getBoundingClientRect().left - root.getBoundingClientRect().left,
@@ -579,7 +597,7 @@ function StoryView({
   };
   // Next photo every few seconds while this place is in view, back to the first after the last.
   useEffect(() => {
-    if (!autoplay || n < 2 || allFailed) return;
+    if (!autoplay || visible.length < 2 || allFailed) return;
     if (!currentFailed) {
       const t = setTimeout(() => go((slideIndex + 1) % n), PHOTO_MS);
       return () => clearTimeout(t);
@@ -589,14 +607,14 @@ function StoryView({
     // Google references fail in chains, and each attempt is a paid request. A tap on
     // "next" still opens one deliberately.
     const next = Array.from({ length: n - 1 }, (_, k) => (slideIndex + 1 + k) % n).find(
-      (j) => !frames[j].photo.paid && !slotFailed(j),
+      (j) => visible.includes(j) && !frames[j].photo.paid && !slotFailed(j),
     );
     if (next === undefined) return;
     const t = setTimeout(() => go(next), SKIP_FAILED_MS);
     return () => clearTimeout(t);
     // go only reads refs and n.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [autoplay, slideIndex, n, currentFailed, allFailed]);
+  }, [autoplay, slideIndex, n, currentFailed, allFailed, visibleKey]);
 
   return (
     <article className="stories-story" aria-label={r.name_hebrew}>
@@ -615,18 +633,20 @@ function StoryView({
           // next image, after the current image loaded. Paid frames never preload.
           const own = frame.photo.url === image;
           const show =
-            near && !own && !failed.has(frame.photo.url) && !failedImages.has(frame.photo.url) && shouldLoadStoryFrame(
-              frames, i, slideIndex, active,
-              loaded.has(frames[slideIndex]?.photo.url), granted,
+            near && visible.includes(i) && !own && !failed.has(frame.photo.url) && !failedImages.has(frame.photo.url) && shouldLoadStoryFrame(
+              visible.map((j) => frames[j]), visible.indexOf(i), visible.indexOf(slideIndex), active,
+              loaded.has(slotUrl(slideIndex)), granted,
             );
           return (
             <div
               key={storyPhotoKey(frame.photo.url)}
               className="stories-frame"
               data-slide={i}
+              hidden={!visible.includes(i)}
+              style={!visible.includes(i) ? { display: "none" } : undefined}
               role="group"
               aria-roledescription="תמונה"
-              aria-label={`תמונה ${i + 1} מתוך ${n}`}
+              aria-label={`תמונה ${visible.indexOf(i) + 1} מתוך ${visible.length}`}
             >
               {show && (
                 <img
@@ -638,13 +658,13 @@ function StoryView({
                 />
               )}
               <div className="stories-shade" />
-              {n > 1 && (
+              {visible.length > 1 && (
                 <>
                   <button
                     className="stories-tap prev"
                     onClick={() => go(i - 1)}
                     aria-label="התמונה הקודמת"
-                    disabled={i === 0}
+                    disabled={i === visible[0]}
                   >
                     <ChevronRight size={22} aria-hidden="true" />
                   </button>
@@ -652,7 +672,7 @@ function StoryView({
                     className="stories-tap next"
                     onClick={() => go(i + 1)}
                     aria-label="התמונה הבאה"
-                    disabled={i === n - 1}
+                    disabled={i === visible[visible.length - 1]}
                   >
                     <ChevronLeft size={22} aria-hidden="true" />
                   </button>
@@ -689,9 +709,9 @@ function StoryView({
           )}
         </div>
       )}
-      {n > 1 && (
+      {visible.length > 1 && (
         <div className="stories-dots" aria-hidden="true">
-          {frames.map((_, i) => (
+          {visible.map((i) => (
             <i
               key={i === slideIndex && autoplay ? `run-${slideIndex}` : i}
               className={i === slideIndex ? (autoplay ? "on run" : "on") : ""}

@@ -667,3 +667,27 @@ it("keeps successful paid slots distinct on forward and reverse transitions", as
   }
   expect(within(near).getAllByRole("group")).toHaveLength(3);
 });
+
+it("deduplicates the runtime fallback alias without shifting the next paid slot", async () => {
+  const direct = 'https://lh3.googleusercontent.com/maayan=s4800-w800';
+  const single = { ...restaurants[1], image_url: direct, og_image_url: 'https://owner.test/primary.jpg',
+    photos: [1, 2, 3, 4, 5].map((i) => ({ photo_reference: `places/PN/photos/alias${i}`,
+      resolved_url: i === 1 ? direct : `https://owner.test/other${i}.jpg`, photo_url: '', width: 800, height: 600 })),
+  };
+  (global.fetch as jest.Mock).mockImplementation((url: string) => Promise.resolve({
+    ok: true, json: async () => String(url).includes('/api/episodes/') ? episode : { restaurants: [single] },
+  }));
+  await startFromTelAviv();
+  const article = (await screen.findAllByRole('article'))[0];
+  const original = within(article).getAllByRole('group');
+  expect(original).toHaveLength(6); // og primary is distinct before it fails
+  fireEvent.error(article.querySelector<HTMLImageElement>('img[src="https://owner.test/primary.jpg"]')!);
+  await waitFor(() => expect(article.querySelector(`img[src="${direct}"]`)).not.toBeNull());
+  expect(within(article).getAllByRole('group')).toHaveLength(5);
+  expect(original[1]).toHaveAttribute('hidden');
+  expect(original[2]).toHaveAttribute('data-slide', '2'); // identity was NOT shifted
+  expect(paidImages()).toEqual([]);
+  act(() => observers.find((o) => o.targets.includes(original[2]))!.fire(original[2]));
+  expect(paidImages()).toEqual([expect.stringContaining('alias2')]);
+  expect(within(article).getByRole('button', { name: /נגן ברגע הזה/ })).toBeInTheDocument();
+});
