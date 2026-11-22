@@ -41,6 +41,7 @@ from models.analyze import DEFAULT_VIDEO_URL
 
 # Import routers
 from routers.venue_images import router as venue_images_router
+from routers.place_photos import router as place_photos_router
 from routers import (
     restaurants_router,
     analytics_router,
@@ -931,7 +932,7 @@ class OriginGateMiddleware(BaseHTTPMiddleware):
     the origin check for server-to-server use.
     """
 
-    EXEMPT_PREFIXES = ("/health", "/docs", "/openapi.json", "/api/photos", "/mcp")
+    EXEMPT_PREFIXES = ("/health", "/docs", "/openapi.json", "/api/photos", "/mcp", "/api/place-photos/")
 
     async def dispatch(self, request: Request, call_next):
         path = request.url.path
@@ -1016,6 +1017,7 @@ async def budget_exceeded_handler(request: Request, exc: BudgetExceeded):
     return JSONResponse(status_code=429, content={"detail": str(exc), "estimate_only": True})
 
 app.include_router(venue_images_router)
+app.include_router(place_photos_router)
 # Read-only MCP server at /mcp for ChatGPT and Gemini; off unless MCP_ENABLED=true.
 import mcp_server
 _mcp_server = mcp_server.mount(app)

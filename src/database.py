@@ -484,6 +484,23 @@ class Database:
             except sqlite3.OperationalError:
                 pass
 
+            # Stored copies of Google Places photos (api/routers/place_photos.py).
+            # Kept apart from curated venue images so they can be purged in one step.
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS place_photos (
+                    restaurant_id TEXT NOT NULL,
+                    position INTEGER NOT NULL,
+                    sha256 TEXT NOT NULL,
+                    width INTEGER,
+                    height INTEGER,
+                    google_photo_name TEXT,
+                    author_name TEXT,
+                    author_uri TEXT,
+                    stored_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                    PRIMARY KEY (restaurant_id, sha256)
+                )
+            ''')
+
             # Create indexes for common queries
             cursor.execute('CREATE INDEX IF NOT EXISTS idx_restaurants_city ON restaurants(city)')
             cursor.execute('CREATE INDEX IF NOT EXISTS idx_restaurants_cuisine ON restaurants(cuisine_type)')
@@ -740,14 +757,39 @@ class Database:
             cursor = conn.cursor()
             cursor.execute('SELECT * FROM restaurants WHERE id = ?', (restaurant_id,))
             row = cursor.fetchone()
-            if row:
-                return self._row_to_restaurant(row)
-            # Fallback: search by google_place_id (used when navigating from map)
-            cursor.execute('SELECT * FROM restaurants WHERE google_place_id = ?', (restaurant_id,))
-            row = cursor.fetchone()
-            if row:
-                return self._row_to_restaurant(row)
-            return None
+            if not row:
+                # Fallback: search by google_place_id (used when navigating from map)
+                cursor.execute('SELECT * FROM restaurants WHERE google_place_id = ?', (restaurant_id,))
+                row = cursor.fetchone()
+            if not row:
+                return None
+            restaurant = self._row_to_restaurant(row)
+            self._attach_stored_photos(cursor, [restaurant])
+            return restaurant
+
+    def _attach_stored_photos(self, cursor, restaurants: List[Dict]) -> None:
+        """Add stored_photos (copies served from our volume) to each restaurant.
+
+        Additive and best-effort: on any error, restaurants get an empty list.
+        """
+        try:
+            cursor.execute('SELECT restaurant_id, sha256, width, height, author_name, author_uri '
+                           'FROM place_photos ORDER BY restaurant_id, position')
+            by_id: Dict[str, List[Dict]] = {}
+            for p in cursor.fetchall():
+                by_id.setdefault(p['restaurant_id'], []).append({
+                    'path': f"/api/place-photos/{p['sha256']}.jpg",
+                    'width': p['width'],
+                    'height': p['height'],
+                    'credit': p['author_name'],
+                    'credit_url': p['author_uri'],
+                })
+            for restaurant in restaurants:
+                restaurant['stored_photos'] = by_id.get(restaurant.get('id'), [])
+        except Exception as err:
+            print(f"Warning: failed to attach stored photos: {err}")
+            for restaurant in restaurants:
+                restaurant.setdefault('stored_photos', [])
 
     def _row_to_restaurant(self, row: sqlite3.Row) -> Dict:
         """Convert database row to restaurant dict with nested structures."""
@@ -919,6 +961,7 @@ class Database:
                 for restaurant in restaurants:
                     restaurant.setdefault('mentions', [])
 
+            self._attach_stored_photos(cursor, restaurants)
             return restaurants
 
     def search_restaurants(

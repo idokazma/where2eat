@@ -81,6 +81,18 @@ export interface Restaurant {
   mention_level?: 'נטעם' | 'הוזכר' | null;
   host_quotes?: string[];
   mentions?: RestaurantMention[];
+  /** Copies of the place's photos served from our own server (free per view). */
+  stored_photos?: StoredPhoto[];
+}
+
+export interface StoredPhoto {
+  /** Path on the API server, e.g. /api/place-photos/<sha256>.jpg */
+  path: string;
+  width?: number | null;
+  height?: number | null;
+  /** Photographer credit from Google. */
+  credit?: string | null;
+  credit_url?: string | null;
 }
 
 export interface RestaurantMention {

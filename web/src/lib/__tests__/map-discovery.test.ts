@@ -173,3 +173,14 @@ describe("restaurant Instagram profile URLs", () => {
     ).toBeNull();
   });
 });
+
+describe("getMapPreviewImage with stored photos", () => {
+  it("prefers the first stored photo over a direct image link", () => {
+    const r = {
+      name_hebrew: "x",
+      image_url: "https://lh3.googleusercontent.com/expired",
+      stored_photos: [{ path: "/api/place-photos/aaa.jpg", width: 1, height: 1, credit: null }],
+    } as unknown as Restaurant;
+    expect(getMapPreviewImage(r)).toBe("/api/place-photos/aaa.jpg");
+  });
+});

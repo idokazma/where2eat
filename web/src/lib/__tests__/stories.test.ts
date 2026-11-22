@@ -219,3 +219,22 @@ describe("storyFrames", () => {
     expect(storyFrames(story, { extraPhotos: false })).toHaveLength(1);
   });
 });
+
+describe("storyFrames with stored photos", () => {
+  it("pages through stored photos for free and never adds paid Google photos", () => {
+    const r = rest("a", {
+      image_url: null,
+      google_places: { place_id: "P1" },
+      photos: [{ photo_reference: "places/P1/photos/g1", photo_url: "", width: 1, height: 1 }],
+      stored_photos: [
+        { path: "/api/place-photos/s1.jpg", width: 1, height: 1, credit: "א" },
+        { path: "/api/place-photos/s2.jpg", width: 1, height: 1, credit: "ב" },
+      ],
+    });
+    const frames = storyFrames(buildStories([r], TLV).near[0]);
+    expect(frames.map((f) => f.photo)).toEqual([
+      { url: "/api/place-photos/s1.jpg", paid: false },
+      { url: "/api/place-photos/s2.jpg", paid: false },
+    ]);
+  });
+});
