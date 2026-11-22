@@ -396,13 +396,16 @@
   background: #fff;
 }
 /* Autoplay: the photo in view fills its bar over the 4 s before the next one. */
+/* The image is twice the bar: grey on its left half, white on its right half. Sliding
+   it from showing the grey half to the white half fills the bar from the right edge
+   leftwards, the way the photos advance in Hebrew (right to left). */
 .stories-dots i.run {
-  background: linear-gradient(to left, #fff 50%, rgba(255, 255, 255, 0.35) 50%) right / 200% 100% no-repeat;
+  background: linear-gradient(to left, #fff 50%, rgba(255, 255, 255, 0.35) 50%) left / 200% 100% no-repeat;
   animation: stories-fill 4s linear forwards;
 }
 @keyframes stories-fill {
   to {
-    background-position: left;
+    background-position: right;
   }
 }
 .stories-hint {
