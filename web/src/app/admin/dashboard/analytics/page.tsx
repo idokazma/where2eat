@@ -194,7 +194,7 @@ export default function AnalyticsPage() {
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={260}>
-              <BarChart data={pages} layout="vertical">
+              <BarChart data={pages} layout="vertical" style={{ direction: 'ltr' }}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis type="number" allowDecimals={false} fontSize={12} />
                 <YAxis type="category" dataKey="page_type" width={90} fontSize={12} />
@@ -297,7 +297,7 @@ export default function AnalyticsPage() {
               <p className="text-sm text-muted-foreground py-8 text-center">עדיין לא נרשמו אירועי פיצ׳רים.</p>
             ) : (
               <ResponsiveContainer width="100%" height={280}>
-                <BarChart data={features} layout="vertical">
+                <BarChart data={features} layout="vertical" style={{ direction: 'ltr' }}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis type="number" allowDecimals={false} fontSize={12} />
                   <YAxis type="category" dataKey="label" width={120} fontSize={12} />
