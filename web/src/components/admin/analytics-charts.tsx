@@ -1,5 +1,28 @@
 'use client';
 
+import { useEffect, useRef, useState } from 'react';
+
+/**
+ * Measures the rendered width of the chart wrapper so the SVG viewBox matches
+ * real pixels 1:1. Without this, viewBox scaling shrinks tick labels on narrow
+ * screens (and enlarges them on desktop).
+ */
+function useChartWidth(fallback = 600) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [width, setWidth] = useState(fallback);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const ro = new ResizeObserver((entries) => {
+      const w = entries[0]?.contentRect.width;
+      if (w && w > 0) setWidth(Math.round(w));
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+  return [ref, width] as const;
+}
+
 /**
  * Lightweight charts for the admin analytics page.
  *
@@ -17,10 +40,10 @@ export interface DailyRow {
 
 /** Two-series area chart (page views + sessions) as inline SVG with viewBox. */
 export function DailyAreaChart({ data }: { data: DailyRow[] }) {
-  const W = 600;
+  const [ref, W] = useChartWidth();
   const H = 200;
-  const PAD_L = 28;
-  const PAD_R = 8;
+  const PAD_L = 30;
+  const PAD_R = 10;
   const PAD_T = 10;
   const PAD_B = 22;
   const innerW = W - PAD_L - PAD_R;
@@ -39,15 +62,22 @@ export function DailyAreaChart({ data }: { data: DailyRow[] }) {
     data.map((d, i) => `${i === 0 ? 'M' : 'L'}${x(i)},${y(d[key])}`).join(' ');
 
   const gridLines = [0, 0.25, 0.5, 0.75, 1].map((f) => Math.round(yMax * f));
-  const labelEvery = Math.max(1, Math.ceil(data.length / 6));
+  const maxLabels = Math.max(2, Math.floor(W / 48));
+  const labelEvery = Math.max(1, Math.ceil(data.length / maxLabels));
+  // Always label the last day, but never let it overlap the previous cadence label.
+  const showLabel = (i: number) => {
+    if (i === data.length - 1) return true;
+    if (i % labelEvery !== 0) return false;
+    return x(data.length - 1) - x(i) >= 44;
+  };
 
   return (
-    <div dir="ltr">
+    <div dir="ltr" ref={ref}>
       <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-auto" role="img" aria-label="פעילות יומית">
         {gridLines.map((g) => (
           <g key={g}>
             <line x1={PAD_L} y1={y(g)} x2={W - PAD_R} y2={y(g)} stroke="#e5e7eb" strokeDasharray="3 3" />
-            <text x={PAD_L - 5} y={y(g) + 3} fontSize="9" textAnchor="end" fill="#6b7280">
+            <text x={PAD_L - 5} y={y(g) + 3} fontSize="10" textAnchor="end" fill="#6b7280">
               {g}
             </text>
           </g>
@@ -57,8 +87,15 @@ export function DailyAreaChart({ data }: { data: DailyRow[] }) {
         <path d={area('page_views')} fill="#3b82f6" fillOpacity={0.15} />
         <path d={line('page_views')} fill="none" stroke="#3b82f6" strokeWidth={1.5} />
         {data.map((d, i) =>
-          i % labelEvery === 0 || i === data.length - 1 ? (
-            <text key={d.day} x={x(i)} y={H - 8} fontSize="8" textAnchor="middle" fill="#6b7280">
+          showLabel(i) ? (
+            <text
+              key={d.day}
+              x={i === data.length - 1 ? W - 2 : x(i)}
+              y={H - 6}
+              fontSize="10"
+              textAnchor={i === data.length - 1 ? 'end' : 'middle'}
+              fill="#6b7280"
+            >
               {d.day.slice(5)}
             </text>
           ) : null,
@@ -116,10 +153,10 @@ export function BarList({
 
 /** Hour-of-day column chart as inline SVG (24 fixed columns). */
 export function HourlyBarChart({ data }: { data: { hour: number; events: number }[] }) {
-  const W = 600;
+  const [ref, W] = useChartWidth();
   const H = 180;
-  const PAD_L = 28;
-  const PAD_R = 8;
+  const PAD_L = 30;
+  const PAD_R = 10;
   const PAD_T = 10;
   const PAD_B = 22;
   const innerW = W - PAD_L - PAD_R;
@@ -129,14 +166,15 @@ export function HourlyBarChart({ data }: { data: { hour: number; events: number 
   const band = innerW / 24;
   const y = (v: number) => PAD_T + innerH - (v / yMax) * innerH;
   const gridLines = [0, 0.5, 1].map((f) => Math.round(yMax * f));
+  const labelStep = Math.max(1, Math.ceil(24 / Math.max(2, Math.floor(W / 26))));
 
   return (
-    <div dir="ltr">
+    <div dir="ltr" ref={ref}>
       <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-auto" role="img" aria-label="אירועים לפי שעה">
         {gridLines.map((g) => (
           <g key={g}>
             <line x1={PAD_L} y1={y(g)} x2={W - PAD_R} y2={y(g)} stroke="#e5e7eb" strokeDasharray="3 3" />
-            <text x={PAD_L - 5} y={y(g) + 3} fontSize="9" textAnchor="end" fill="#6b7280">
+            <text x={PAD_L - 5} y={y(g) + 3} fontSize="10" textAnchor="end" fill="#6b7280">
               {g}
             </text>
           </g>
@@ -151,8 +189,8 @@ export function HourlyBarChart({ data }: { data: { hour: number; events: number 
               fill="#8b5cf6"
               rx={1}
             />
-            {d.hour % 4 === 0 ? (
-              <text x={PAD_L + d.hour * band + band / 2} y={H - 8} fontSize="8" textAnchor="middle" fill="#6b7280">
+            {d.hour % labelStep === 0 ? (
+              <text x={PAD_L + d.hour * band + band / 2} y={H - 6} fontSize="10" textAnchor="middle" fill="#6b7280">
                 {d.hour}
               </text>
             ) : null}
