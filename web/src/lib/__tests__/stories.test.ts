@@ -327,8 +327,10 @@ describe("storyAlternateImages", () => {
   it("is attached to each story by buildStories and never repeats the primary", () => {
     const r = rest("a", { image_url: G, og_image_url: OWN });
     const feed = buildStories([r], TLV);
-    expect(feed.near[0].image).toBe(G);
-    expect(feed.near[0].alternates).toEqual([OWN]);
+    // The site's own photo leads over an expiring Google link (#321); the Google link
+    // stays as a backup.
+    expect(feed.near[0].image).toBe(OWN);
+    expect(feed.near[0].alternates).toEqual([G]);
   });
 });
 
