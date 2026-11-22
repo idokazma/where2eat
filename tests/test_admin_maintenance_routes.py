@@ -114,3 +114,13 @@ def test_reenrich_requires_admin(client):
     assert client.post('/api/reenrich').status_code==401
     client.app.dependency_overrides[get_current_user]=lambda:{'id':'e','role':'editor'}
     assert client.post('/api/reenrich').status_code==403
+
+def test_analyze_and_job_cancel_require_editor(client):
+    from routers.analyze import router as an
+    client.app.include_router(an)
+    calls=[('post','/api/analyze',{'url':'https://youtube.com/watch?v=x'}),('post','/api/analyze/channel',{'channel_url':'https://youtube.com/@x'}),('delete','/api/jobs/j1',None)]
+    for m,p,b in calls:
+        assert getattr(client,m)(p,**({'json':b} if b else {})).status_code==401,p
+    client.app.dependency_overrides[get_current_user]=lambda:{'id':'v','role':'viewer'}
+    for m,p,b in calls:
+        assert getattr(client,m)(p,**({'json':b} if b else {})).status_code==403,p
