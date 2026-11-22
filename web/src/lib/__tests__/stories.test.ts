@@ -1,6 +1,9 @@
 import type { EpisodeDetail, Restaurant } from "@/types/restaurant";
 import {
   buildStories,
+  distanceBand,
+  publishedAtMs,
+  DISTANCE_BANDS_KM,
   storyFrames,
   excerpt,
   momentStart,
@@ -235,5 +238,43 @@ describe("storyFrames with stored photos", () => {
       { url: "/api/place-photos/s1.jpg", paid: false },
       { url: "/api/place-photos/s2.jpg", paid: false },
     ]);
+  });
+});
+
+describe("distance bands with recency", () => {
+  const at = (id: string, dLat: number, published?: string, episode?: string) =>
+    rest(id, {
+      location: { city: "תל אביב", lat: 32.08 + dLat, lng: 34.78 },
+      published_at: published,
+      episode_info: { video_id: `vid_${id}`, video_url: "", channel_name: "מקור", title: "פרק", published_at: episode },
+    });
+
+  it("bands are 1, 3, 10 and 50 km", () => {
+    expect(DISTANCE_BANDS_KM).toEqual([1, 3, 10, 50]);
+    expect([0.5, 1, 1.01, 3, 9.9, 10.1, 50, 60].map((k) => distanceBand(k))).toEqual([0, 0, 1, 1, 2, 3, 3, 4]);
+  });
+
+  it("sorts bands nearest first and the newest episode first inside a band", () => {
+    const oldClose = at("oldClose", 0.001, "2026-01-01T00:00:00Z");
+    const newFarther = at("newFarther", 0.007, "2026-09-01T00:00:00Z"); // ~0.8 km, same band
+    const midBand = at("midBand", 0.03, "2026-11-01T00:00:00Z"); // ~3.3 km, band 2
+    const feed = buildStories([midBand, oldClose, newFarther], TLV);
+    expect(feed.near.map((s) => s.restaurant.id)).toEqual(["newFarther", "oldClose", "midBand"]);
+  });
+
+  it("uses the episode upload date, falls back to the episode record, and puts unknown dates last in the band", () => {
+    expect(publishedAtMs(at("a", 0, "2026-05-01T00:00:00Z", "2026-01-01T00:00:00Z"))).toBe(Date.parse("2026-05-01T00:00:00Z"));
+    expect(publishedAtMs(at("b", 0, null, "2026-01-01T00:00:00Z"))).toBe(Date.parse("2026-01-01T00:00:00Z"));
+    expect(publishedAtMs(at("c", 0))).toBe(0);
+    const feed = buildStories([at("unknown", 0.001), at("dated", 0.002, "2026-02-01T00:00:00Z")], TLV);
+    expect(feed.near.map((s) => s.restaurant.id)).toEqual(["dated", "unknown"]);
+  });
+
+  it("merged twins keep the newest date", () => {
+    const a = at("a", 0, "2026-01-01T00:00:00Z");
+    const dup = { ...at("dup", 0, "2026-08-01T00:00:00Z"), image_url: a.image_url } as Restaurant;
+    const feed = buildStories([a, dup], TLV);
+    expect(feed.near).toHaveLength(1);
+    expect(feed.near[0].publishedAt).toBe(Date.parse("2026-08-01T00:00:00Z"));
   });
 });

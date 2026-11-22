@@ -26,6 +26,8 @@ export interface Story {
   restaurant: Restaurant;
   image: string;
   distanceKm: number;
+  /** Episode upload time (ms since epoch), 0 when unknown. Never the ingestion date. */
+  publishedAt: number;
   slides: StorySlide[];
 }
 
@@ -95,6 +97,26 @@ export function storySlides(r: Restaurant): StorySlide[] {
   return slides.sort((a, b) => Number(b.tasted) - Number(a.tasted));
 }
 
+/**
+ * Upper edges (km) of the distance bands the near feed is sorted in. Inside a band
+ * the newest episode comes first; bands themselves go nearest to farthest.
+ */
+export const DISTANCE_BANDS_KM = [1, 3, 10, 50];
+
+export function distanceBand(km: number, bands: number[] = DISTANCE_BANDS_KM): number {
+  const i = bands.findIndex((edge) => km <= edge);
+  return i === -1 ? bands.length : i;
+}
+
+/** Episode upload time of a record: its own published_at, else its episode's. */
+export function publishedAtMs(r: Restaurant): number {
+  for (const v of [r.published_at, r.episode_info?.published_at]) {
+    const t = v ? Date.parse(v) : NaN;
+    if (!Number.isNaN(t)) return t;
+  }
+  return 0;
+}
+
 /** Stories around `origin`: within `radiusKm` by distance, the rest grouped by city. */
 export function buildStories(
   restaurants: Restaurant[],
@@ -117,6 +139,7 @@ export function buildStories(
       restaurant: r,
       image,
       distanceKm: haversineDistance(origin, { lat: c.latitude, lng: c.longitude }),
+      publishedAt: publishedAtMs(r),
       slides,
     };
     const group = byImage.get(image) ?? [];
@@ -127,13 +150,19 @@ export function buildStories(
     }
     const keep = story.distanceKm < twin.distanceKm ? story : twin;
     const other = keep === story ? twin : story;
+    keep.publishedAt = Math.max(keep.publishedAt, other.publishedAt);
     const seen = new Set(keep.slides.map((s) => `${s.videoId}@${s.seconds ?? ""}`));
     const extra = other.slides.filter((s) => !seen.has(`${s.videoId}@${s.seconds ?? ""}`));
     keep.slides = [...keep.slides, ...extra].sort((a, b) => Number(b.tasted) - Number(a.tasted));
     byImage.set(image, group.map((s) => (s === twin ? keep : s)));
   }
   const stories = [...byImage.values()].flat();
-  const near = stories.filter((s) => s.distanceKm <= radiusKm).sort((a, b) => a.distanceKm - b.distanceKm);
+  const near = stories.filter((s) => s.distanceKm <= radiusKm).sort(
+    (a, b) =>
+      distanceBand(a.distanceKm) - distanceBand(b.distanceKm) ||
+      b.publishedAt - a.publishedAt ||
+      a.distanceKm - b.distanceKm,
+  );
   const far = stories
     .filter((s) => s.distanceKm > radiusKm)
     .sort(
