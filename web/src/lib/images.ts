@@ -36,6 +36,21 @@ function isGoogleCdnUrl(url: string): boolean {
   }
 }
 
+/**
+ * A photo we host ourselves (uploaded venue image): free per view and already
+ * checked, so it wins over a Google proxy photo, which can be paused or cost money.
+ */
+export function ownVenueImageUrl(restaurant: Restaurant): string | null {
+  const url = restaurant.image_url;
+  if (!url) return null;
+  try {
+    const path = new URL(url, 'http://local.invalid').pathname;
+    return path.startsWith('/api/venue-images/') ? url : null;
+  } catch {
+    return null;
+  }
+}
+
 /** Photos that belong to the restaurant's current place match. */
 export function validPhotos(restaurant: Restaurant) {
   return (restaurant.photos || []).filter(
@@ -51,6 +66,10 @@ export function getRestaurantImage(restaurant: Restaurant): string | null {
   // Priority 0: our own stored copies (free per view)
   const stored = getStoredPhotoUrls(restaurant);
   if (stored.length > 0) return stored[0];
+
+  // Priority 0.5: our own uploaded venue image, before any paid Google proxy photo
+  const own = ownVenueImageUrl(restaurant);
+  if (own) return own;
 
   const photos = validPhotos(restaurant);
 
@@ -104,6 +123,10 @@ export function getRestaurantImages(restaurant: Restaurant): string[] {
   if (stored.length > 0) return stored;
 
   const images: string[] = [];
+
+  // Our own uploaded venue image leads the gallery; the Google photos stay after it.
+  const own = ownVenueImageUrl(restaurant);
+  if (own) images.push(own);
 
   // Add Google Places photos
   const photos = validPhotos(restaurant);

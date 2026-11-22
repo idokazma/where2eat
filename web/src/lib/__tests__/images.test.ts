@@ -247,3 +247,40 @@ describe('looksLikeLogo', () => {
     expect(getRestaurantImage(r)).toBe(lh3);
   });
 });
+
+describe('our own uploaded venue image', () => {
+  const own = 'https://api.example.com/api/venue-images/abc123.jpg';
+  const gallery = [
+    { photo_reference: 'places/PLACE1/photos/ref1', is_owner_photo: true },
+    { photo_reference: 'places/PLACE1/photos/ref2' },
+  ];
+
+  it('wins over a Google proxy photo for the card image', () => {
+    const r = makeRestaurant({ image_url: own, photos: gallery as never, google_place_id: 'PLACE1' });
+    expect(getRestaurantImage(r)).toBe(own);
+  });
+
+  it('leads the gallery, with the Google photos after it', () => {
+    const r = makeRestaurant({ image_url: own, photos: gallery as never, google_place_id: 'PLACE1' });
+    const images = getRestaurantImages(r);
+    expect(images[0]).toBe(own);
+    expect(images).toHaveLength(3);
+  });
+
+  it('does not treat other image_url values as our own', () => {
+    const r = makeRestaurant({
+      image_url: 'https://lh3.googleusercontent.com/x=s800',
+      photos: gallery as never,
+      google_place_id: 'PLACE1',
+    });
+    expect(getRestaurantImage(r)).toContain('/api/photos/places/PLACE1/photos/ref1');
+  });
+
+  it('still prefers stored place photos', () => {
+    const r = makeRestaurant({
+      image_url: own,
+      stored_photos: [{ path: '/api/stored/1.jpg' }] as never,
+    });
+    expect(getRestaurantImage(r)).toContain('/api/stored/1.jpg');
+  });
+});
