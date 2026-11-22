@@ -123,8 +123,8 @@ async function startFromTelAviv(limit?: number) {
   fireEvent.click(preset);
 }
 
-it("is kept out of search engines while it is unlinked", () => {
-  expect(metadata.robots).toMatchObject({ index: false, follow: false });
+it("can be indexed now that the home page links to it", () => {
+  expect(metadata.robots).toBeUndefined();
 });
 
 it("asks for location only when the button is pressed", async () => {
