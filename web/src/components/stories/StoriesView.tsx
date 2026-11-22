@@ -548,6 +548,15 @@ function StoryView({
   const [loaded, setLoaded] = useState<Set<string>>(new Set());
   const imageLoaded = (url: string) => setLoaded((old) => old.has(url) ? old : new Set(old).add(url));
   const framesRef = useRef<HTMLDivElement>(null);
+  // Opt-in local QA trace only. No network/log upload; disabled unless explicitly
+  // enabled on this tab. Captures identities/state, never credentials or content.
+  const tracePhoto = (event: string, detail: Record<string, unknown> = {}) => {
+    if (typeof window === "undefined" || sessionStorage.getItem("stories-photo-debug") !== "1") return;
+    window.dispatchEvent(new CustomEvent("stories-photo-debug", { detail: {
+      at: performance.now(), event, id: r.id, current: slideIndex,
+      failed: [...failed], globalFailed: [...failedImages], visible, ...detail,
+    } }));
+  };
   // Sideways pages are photos. The review (best source first) stays on the story.
   const primary = story.slides[0] ?? null;
   const primaryQuote = primary ? quoteFor(story, primary) : null;
@@ -571,7 +580,10 @@ function StoryView({
     const io = new IntersectionObserver(
       (entries) => {
         for (const e of entries)
-          if (e.isIntersecting && visible.includes(Number((e.target as HTMLElement).dataset.slide))) onSlide(Number((e.target as HTMLElement).dataset.slide), frames);
+          if (e.isIntersecting && visible.includes(Number((e.target as HTMLElement).dataset.slide))) {
+            tracePhoto("observer", { target: Number((e.target as HTMLElement).dataset.slide), ratio: e.intersectionRatio });
+            onSlide(Number((e.target as HTMLElement).dataset.slide), frames);
+          }
       },
       { root, threshold: 0.6 },
     );
@@ -590,6 +602,7 @@ function StoryView({
     if (targetIndex === undefined) return;
     const target = root?.querySelector<HTMLElement>(`[data-slide="${targetIndex}"]`);
     if (!root || !target) return;
+    tracePhoto("go", { requested: i, target: targetIndex, key: frames[targetIndex]?.photo.url, smooth });
     root.scrollBy?.({
       left: target.getBoundingClientRect().left - root.getBoundingClientRect().left,
       behavior: smooth ? "smooth" : "auto",
@@ -605,7 +618,7 @@ function StoryView({
         (j) => visible.includes(j) && !slotFailed(j),
       );
       if (next === undefined) return;
-      const t = setTimeout(() => go(next), PHOTO_MS);
+      const t = setTimeout(() => { tracePhoto("timer", { target: next, key: frames[next]?.photo.url }); go(next); }, PHOTO_MS);
       return () => clearTimeout(t);
     }
     // A failed slot: skip ahead to the next free photo that has not failed (wrapping to
@@ -616,7 +629,7 @@ function StoryView({
       (j) => visible.includes(j) && !frames[j].photo.paid && !slotFailed(j),
     );
     if (next === undefined) return;
-    const t = setTimeout(() => go(next), SKIP_FAILED_MS);
+    const t = setTimeout(() => { tracePhoto("recovery", { target: next, key: frames[next]?.photo.url }); go(next); }, SKIP_FAILED_MS);
     return () => clearTimeout(t);
     // go only reads refs and n.
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -660,7 +673,7 @@ function StoryView({
                   src={frame.photo.url}
                   alt=""
                   onLoad={() => imageLoaded(frame.photo.url)}
-                  onError={() => setFailed((prev) => new Set(prev).add(frame.photo.url))}
+                  onError={() => { tracePhoto("error", { target: i, key: frame.photo.url }); setFailed((prev) => new Set(prev).add(frame.photo.url)); }}
                 />
               )}
               <div className="stories-shade" />
