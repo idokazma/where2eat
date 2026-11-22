@@ -16,5 +16,14 @@
     "source_url": "https://media.getmood.io/warehouse/dynamic/376692.jpg",
     "credit": "Stefan Bakery (stefanbakery.com)",
     "sha256": "f0daf1a01cd425d9672b1ed52943d560b278dbf4ef70c977b58a08e35ee0d111"
+  },
+  {
+    "restaurant_id": "b4872d3c-2d94-447d-9992-f69d48c5e432",
+    "name": "בית תאילנדי",
+    "old_image_url": "https://lh3.googleusercontent.com/grass-cs/AABkmLdVRdF8Mvn6mHYdsenuvJXLR33TMzYvQa1RDejv7QiKZFcCgue3M64XYFGpaTCRW7UTcphHb2LQITpBvekzh7YErm34E3HU02hM7s81WN0cEy0Gx-hjuQGagfqJ1KVIOBTe18A5=s4800-w800",
+    "new_image_url": "https://where2eat-production.up.railway.app/api/venue-images/ba552cea0fd4f2def386529b23f040561857a5dcdd7e012e72202b4e1d330af7.jpg",
+    "source_url": "https://www.thai-house.co.il/wp-content/uploads/2023/04/Kab-Kem-15-scaled.jpg",
+    "credit": "Thai House (thai-house.co.il)",
+    "sha256": "ba552cea0fd4f2def386529b23f040561857a5dcdd7e012e72202b4e1d330af7"
   }
 ]
