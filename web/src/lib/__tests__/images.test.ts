@@ -3,6 +3,7 @@ import {
   getRestaurantImages,
   getPhotoProxyUrl,
   getCuisineGradient,
+  getStoredPhotoUrls,
 } from '../images';
 import { Restaurant } from '@/types/restaurant';
 
@@ -182,5 +183,29 @@ describe('getCuisineGradient', () => {
   it('is case insensitive', () => {
     expect(getCuisineGradient('ITALIAN')).toBe('gradient-italian');
     expect(getCuisineGradient('Hummus')).toBe('gradient-hummus');
+  });
+});
+
+describe('stored photos (served from our own server, free per view)', () => {
+  const stored = [
+    { path: '/api/place-photos/aaa.jpg', width: 1200, height: 900, credit: 'צלם א' },
+    { path: '/api/place-photos/bbb.jpg', width: 1200, height: 900, credit: 'צלם ב' },
+  ];
+  const googlePhotos = [{ photo_reference: 'owner1', photo_url: '', width: 400, height: 300, is_owner_photo: true }];
+
+  it('uses the first stored photo as the main image, before any paid Google photo', () => {
+    const r = makeRestaurant({ stored_photos: stored, photos: googlePhotos, image_url: 'https://x.example/a.jpg' });
+    expect(getRestaurantImage(r)).toBe('/api/place-photos/aaa.jpg');
+  });
+
+  it('builds the gallery from stored photos only when there are some', () => {
+    const r = makeRestaurant({ stored_photos: stored, photos: googlePhotos });
+    expect(getRestaurantImages(r)).toEqual(['/api/place-photos/aaa.jpg', '/api/place-photos/bbb.jpg']);
+    expect(getStoredPhotoUrls(r)).toEqual(['/api/place-photos/aaa.jpg', '/api/place-photos/bbb.jpg']);
+  });
+
+  it('falls back to the previous order without stored photos', () => {
+    const r = makeRestaurant({ stored_photos: [], photos: googlePhotos });
+    expect(getRestaurantImage(r)).toBe('/api/photos/owner1?maxwidth=800');
   });
 });

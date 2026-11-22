@@ -10,7 +10,7 @@ import { getCoordinates } from "@/types/restaurant";
 import { isListed } from "@/lib/restaurant-visibility";
 import { getMapPreviewImage } from "@/lib/map-discovery";
 import { haversineDistance, type GeoCoords } from "@/lib/geo-utils";
-import { getPhotoProxyUrl, validPhotos } from "@/lib/images";
+import { getPhotoProxyUrl, getStoredPhotoUrls, validPhotos } from "@/lib/images";
 
 export interface StorySlide {
   /** The restaurant record this mention belongs to (a merged duplicate may differ). */
@@ -212,6 +212,12 @@ const STORY_PHOTO_WIDTH = 900;
 /** The place's photos: the free first photo, then its Google photos (paid, same place only). */
 export function storyPhotos(story: Story, { extraPhotos = true }: { extraPhotos?: boolean } = {}): StoryPhoto[] {
   const photos: StoryPhoto[] = [{ url: story.image, paid: false }];
+  // Our own stored copies are free per view and replace the paid Google photos.
+  const stored = getStoredPhotoUrls(story.restaurant);
+  if (stored.length > 0) {
+    for (const url of stored) if (!photos.some((p) => p.url === url)) photos.push({ url, paid: false });
+    return photos;
+  }
   if (!extraPhotos) return photos;
   for (const p of validPhotos(story.restaurant)) {
     const photo: StoryPhoto | null = p.photo_reference

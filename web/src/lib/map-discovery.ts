@@ -1,5 +1,6 @@
 import type { Restaurant } from "@/types/restaurant";
 import { getCoordinates } from "@/types/restaurant";
+import { getStoredPhotoUrls } from "@/lib/images";
 
 export const mapId = (r: Restaurant) =>
   r.google_places?.place_id || r.id || r.name_hebrew;
@@ -84,6 +85,8 @@ export function groupMapPoints(
 /** Map previews use already stored direct images only. Do not resolve Places
  * references or call the paid photo proxy just to browse a pin. */
 export function getMapPreviewImage(r: Restaurant): string | null {
+  const stored = getStoredPhotoUrls(r);
+  if (stored.length > 0) return stored[0];
   for (const value of [r.image_url, r.og_image_url]) {
     if (!value) continue;
     try {

@@ -26,6 +26,10 @@ export function validPhotos(restaurant: Restaurant) {
  * Priority: owner photo > og:image > first Google photo > image_url fallback.
  */
 export function getRestaurantImage(restaurant: Restaurant): string | null {
+  // Priority 0: our own stored copies (free per view)
+  const stored = getStoredPhotoUrls(restaurant);
+  if (stored.length > 0) return stored[0];
+
   const photos = validPhotos(restaurant);
 
   // Priority 1: Owner-attributed Google Places photo (highest quality)
@@ -68,6 +72,10 @@ export function getRestaurantImage(restaurant: Restaurant): string | null {
  * Includes og:image in the gallery when available.
  */
 export function getRestaurantImages(restaurant: Restaurant): string[] {
+  // Our own stored copies replace the paid Google photos entirely.
+  const stored = getStoredPhotoUrls(restaurant);
+  if (stored.length > 0) return stored;
+
   const images: string[] = [];
 
   // Add Google Places photos
@@ -92,6 +100,12 @@ export function getRestaurantImages(restaurant: Restaurant): string[] {
   }
 
   return images;
+}
+
+/** URLs of the place's photos stored on our own server (free per view). */
+export function getStoredPhotoUrls(restaurant: Restaurant): string[] {
+  const base = config.apiUrl || '';
+  return (restaurant.stored_photos || []).filter((p) => p?.path).map((p) => `${base}${p.path}`);
 }
 
 /**
