@@ -7,8 +7,10 @@ current UTC month. If it is missing, spend is assumed to start at 0 and the
 dashboard raises an "unverified" alert; set COST_REQUIRE_VERIFIED_OPENING=true
 to refuse paid calls instead. Stale prices raise an alert, never a stop.
 
-Public, user-facing calls (the photo proxy that serves site images) are only
-recorded via enforce=False: they are never refused by the budget.
+Public, user-facing calls (the photo proxy that serves site images, enforce=False)
+are budget-checked too, and are refused outright while the current month's opening
+spend is unverified (set COST_PUBLIC_PHOTOS_ALLOW_UNVERIFIED=true to override).
+Images already saved on the volume never reach this code, so they keep serving.
 """
 import logging
 import contextvars
@@ -31,6 +33,9 @@ MODELS={'gemini-2.5-flash':{'input':.30/1_000_000,'output':2.50/1_000_000}}
 run_id=contextvars.ContextVar('cost_run_id',default=None)
 PRICE_REVIEW_DAYS=90
 logger=logging.getLogger(__name__)
+
+def _public_unverified_allowed():
+    return os.getenv('COST_PUBLIC_PHOTOS_ALLOW_UNVERIFIED','').lower() in {'1','true','yes'}
 
 def _strict_opening():
     return os.getenv('COST_REQUIRE_VERIFIED_OPENING','').lower() in {'1','true','yes'}
@@ -64,7 +69,7 @@ class CostLedger:
             raise
         finally:
             c.close()
-    def reserve(self,run,sku,amount,attempt=None):
+    def reserve(self,run,sku,amount,attempt=None,public=False):
         if price_review_overdue():
             logger.warning('Cost ledger prices are older than %s days; review src/cost_ledger.py',PRICE_REVIEW_DAYS)
         if sku not in RATES and sku not in MODELS:raise BudgetExceeded('Unpriced model/SKU; configure a reviewed price before calling provider')
@@ -74,6 +79,7 @@ class CostLedger:
             c.execute('BEGIN IMMEDIATE')
             if c.execute('SELECT id FROM calls WHERE id=?',(attempt,)).fetchone():return attempt
             o=c.execute('SELECT usd FROM openings WHERE month=?',(self.month,)).fetchone()
+            if o is None and public and not _public_unverified_allowed():raise BudgetExceeded('Public photo fetches paused: current-month opening spend unverified')
             if o is None and _strict_opening():raise BudgetExceeded('Current-month opening spend unverified; configure COST_OPENING_MONTH and COST_OPENING_SPEND_USD')
             opening=o[0] if o else 0
             spent=c.execute('SELECT COALESCE(SUM(COALESCE(actual,reserved)),0) FROM calls WHERE month=?',(self.month,)).fetchone()[0]
@@ -115,7 +121,7 @@ class CostLedger:
             skus=[dict(r) for r in c.execute('SELECT sku,COUNT(*) as attempts,SUM(COALESCE(actual,reserved)) as estimated_usd FROM calls WHERE month=? GROUP BY sku',(self.month,))]
         total=(opening or 0)+calls[0];overdue=price_review_overdue()
         stopped=total>=self.budget or (opening is None and _strict_opening())
-        return {'label':'Estimate, not provider balance','timezone':'UTC','month':self.month,'opening_spend_verified':opening is not None,'opening_usd':opening,'estimated_usd':total,'budget_usd':self.budget,'alert':opening is None or overdue or total>=self.budget*.8,'stopped':stopped,'price_review_overdue':overdue,'public_photos_enforced':False,'unsettled_calls':calls[1] or 0,'runs':runs,'skus':skus,'price_date':PRICE_DATE,'price_sources':PRICE_SOURCES,'coverage':'Instrumented Gemini analyzer, Places enricher and API proxies only; public photo proxy is recorded but never blocked; excludes unrelated keys/clients and historical unrecorded spend'}
+        return {'label':'Estimate, not provider balance','timezone':'UTC','month':self.month,'opening_spend_verified':opening is not None,'opening_usd':opening,'estimated_usd':total,'budget_usd':self.budget,'alert':opening is None or overdue or total>=self.budget*.8,'stopped':stopped,'price_review_overdue':overdue,'public_photos_enforced':True,'public_photos_paused':(opening is None and not _public_unverified_allowed()) or total>=self.budget,'unsettled_calls':calls[1] or 0,'runs':runs,'skus':skus,'price_date':PRICE_DATE,'price_sources':PRICE_SOURCES,'coverage':'Instrumented Gemini analyzer, Places enricher and API proxies only; public photo proxy is budget-checked and paused while opening spend is unverified; excludes unrelated keys/clients and historical unrecorded spend'}
 
 def places_request(method,url,**kwargs):
     """Count one network attempt. Never persist URL, key, query, body or response."""
@@ -133,11 +139,14 @@ async def async_places_request(client,url,enforce=True,**kwargs):
     """enforce=False is for public, user-facing traffic: record, never refuse."""
     sku=places_sku(url)
     if not enforce:
-        # Record in finally: a timeout or transport error may still be billed.
+        # Public traffic: refuse before the paid call when the budget is spent or
+        # unverified, then settle. A timeout or transport error may still be billed,
+        # so the reservation is kept (settled) in finally.
+        ledger=CostLedger();attempt=ledger.reserve(run_id.get() or 'public-photo-proxy',sku,RATES[sku],public=True)
         try:
             return await client.get(url,**kwargs)
         finally:
-            try:CostLedger().record(run_id.get() or 'public-photo-proxy',sku,RATES[sku])
+            try:ledger.settle_places(attempt)
             except Exception as e:logger.warning('Cost ledger unavailable: %s',type(e).__name__)
     ledger=CostLedger();attempt=ledger.reserve(run_id.get(),sku,RATES[sku])
     response=await client.get(url,**kwargs);ledger.settle_places(attempt);return response

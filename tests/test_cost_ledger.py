@@ -49,15 +49,40 @@ def test_record_swallows_ledger_storage_errors(tmp_path):
     ledger.path=str(tmp_path/'missing-dir'/'x.db')
     ledger.record('r','places_photo',.007)  # must not raise
 
-def test_async_places_request_unenforced_sends_when_over_budget(tmp_path,monkeypatch):
+def test_async_places_request_public_refused_when_over_budget(tmp_path):
     import asyncio
     from unittest.mock import AsyncMock,patch
     from cost_ledger import async_places_request
     ledger=CostLedger(str(tmp_path/'x.db'),budget=0,opening=0)
     client=AsyncMock();client.get.return_value='img'
     with patch('cost_ledger.CostLedger',return_value=ledger):
+        with pytest.raises(BudgetExceeded):
+            asyncio.run(async_places_request(client,'https://places.googleapis.com/v1/places/x/photos/y/media',enforce=False))
+    assert not client.get.called
+
+def test_async_places_request_public_sends_and_settles_when_verified_and_under_budget(tmp_path):
+    import asyncio
+    from unittest.mock import AsyncMock,patch
+    from cost_ledger import async_places_request
+    ledger=CostLedger(str(tmp_path/'x.db'),budget=10,opening=1)
+    client=AsyncMock();client.get.return_value='img'
+    with patch('cost_ledger.CostLedger',return_value=ledger):
         assert asyncio.run(async_places_request(client,'https://places.googleapis.com/v1/places/x/photos/y/media',enforce=False))=='img'
-    assert ledger.summary()['skus'][0]['sku']=='places_photo'
+    s=ledger.summary();assert s['skus'][0]['sku']=='places_photo' and s['unsettled_calls']==0
+
+def test_public_photo_refused_while_opening_unverified_unless_overridden(tmp_path,monkeypatch):
+    import asyncio
+    from unittest.mock import AsyncMock,patch
+    from cost_ledger import async_places_request
+    ledger=CostLedger(str(tmp_path/'x.db'),budget=10,opening=None)
+    client=AsyncMock();client.get.return_value='img'
+    url='https://places.googleapis.com/v1/places/x/photos/y/media'
+    monkeypatch.delenv('COST_PUBLIC_PHOTOS_ALLOW_UNVERIFIED',raising=False)
+    with patch('cost_ledger.CostLedger',return_value=ledger):
+        with pytest.raises(BudgetExceeded):asyncio.run(async_places_request(client,url,enforce=False))
+        assert not client.get.called and ledger.summary()['public_photos_paused'] is True
+        monkeypatch.setenv('COST_PUBLIC_PHOTOS_ALLOW_UNVERIFIED','true')
+        assert asyncio.run(async_places_request(client,url,enforce=False))=='img'
 
 def test_unknown_model_refused(ledger):
     with pytest.raises(BudgetExceeded):ledger.reserve('r','unknown',.01,'a')
