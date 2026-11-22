@@ -1,7 +1,8 @@
 # Episode 171 interview canary (22.11.2026)
 
-Scope: 2 of the 10 places in episode 171, the two verified against the audio. Nothing hidden, nothing deleted.
-Applied through the maintenance repair API (preview, then PATCH). Undo with POST /api/admin/maintenance/operations/{operation_id}/undo (ids in the JSON).
+Only דיזנגוף 99 and פיצי were checked against the audio (1925-2000 s). Nothing hidden or deleted. Undo ids are in the JSON.
+Episode 171 is an interview with Chaim Cohen. The Dizengoff 99 quote is the interviewer's question (contiguous words, speaker is the interviewer), not a review.
 
-Finding: episode 171 is an interview with Chaim Cohen. The raw ASR quote for Dizengoff 99 ("דנג אוף 99...") is a host question with a garbled name, not a review.
-Only the Dizengoff 99 and פיצי mentions were checked (audio 1925-2000 s). The other 8 places in this episode are unverified and unchanged.
+Pending, not fixed (a second batch was applied then fully undone because the quotes were not provably one speaker or one referent):
+- אנור: audio at the stored 330 s (ep175) is sandwich banter, not Anur. Stored timestamp or quote is wrong. Needs a wider audio search.
+- קפה 38, הקוסם, האוס אוף דל ריי, לחמים: raw text restored. Known problems: Delray's text is a critic being read aloud, and the same text is also shown on לחמים (wrong referent). Needs word-level alignment before any verified quote.
