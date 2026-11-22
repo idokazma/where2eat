@@ -637,7 +637,7 @@ function StoryView({
   }, [autoplay, slideIndex, n, currentFailed, allFailed, visibleKey, failed, failedImages]);
 
   return (
-    <article className="stories-story" aria-label={r.name_hebrew}>
+    <article className="stories-story" aria-label={r.name_hebrew} onPointerDown={() => { settlingAt.current = null; }}>
       {near && image ? (
         <img className="stories-bg" src={image} alt="" onLoad={() => imageLoaded(image)} onError={() => onImageError(image)} />
       ) : near ? (
