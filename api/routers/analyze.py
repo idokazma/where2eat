@@ -77,6 +77,7 @@ async def run_channel_analysis(channel_url: str, filters: dict, options: dict):
 async def analyze_video(
     request: AnalyzeVideoRequest,
     background_tasks: BackgroundTasks,
+    user: dict = Depends(require_role(["editor", "admin", "super_admin"])),
 ):
     """Analyze a YouTube video for restaurant mentions."""
     # Use default URL if not provided
@@ -105,6 +106,7 @@ async def analyze_video(
 async def analyze_channel(
     request: AnalyzeChannelRequest,
     background_tasks: BackgroundTasks,
+    user: dict = Depends(require_role(["editor", "admin", "super_admin"])),
 ):
     """Analyze a YouTube channel for restaurant mentions."""
     valid_patterns = [
@@ -263,7 +265,7 @@ async def get_job_results(job_id: str):
     summary="Cancel job",
     description="Cancel a running analysis job.",
 )
-async def cancel_job(job_id: str):
+async def cancel_job(job_id: str, user: dict = Depends(require_role(["editor", "admin", "super_admin"]))):
     """Cancel a running job."""
     # Mock cancellation
     return {
