@@ -38,6 +38,8 @@ const MOUNT_AHEAD = 4;
 // the screen, the open player or a background tab holds both; reduced motion turns
 // autoplay off.
 const STORY_MS = 10_000;
+// Opening the site asks for the location; without an answer by then, newest first.
+const LOCATE_WAIT_MS = 8_000;
 const PHOTO_MS = 4_000;
 const PRESETS: [string, number, number][] = [
   ["תל אביב · דיזנגוף", 32.0809, 34.774],
@@ -50,10 +52,19 @@ const PRESETS: [string, number, number][] = [
 
 type Item = { kind: "story"; story: Story } | { kind: "divider"; count: number };
 
-export function StoriesView({ extraPhotoLimit }: { extraPhotoLimit: number }) {
+export function StoriesView({
+  extraPhotoLimit,
+  autoStart = true,
+}: {
+  extraPhotoLimit: number;
+  /** Open straight into stories: by location when allowed, otherwise newest first. */
+  autoStart?: boolean;
+}) {
   const [restaurants, setRestaurants] = useState<Restaurant[] | null>(null);
   const [loadError, setLoadError] = useState(false);
-  const [origin, setOrigin] = useState<{ coords: GeoCoords; fromDevice: boolean } | null>(null);
+  // coords null: no location, newest first.
+  const [origin, setOrigin] = useState<{ coords: GeoCoords | null; fromDevice: boolean } | null>(null);
+  const [autoLocating, setAutoLocating] = useState(autoStart);
   const [source, setSource] = useState("");
   const [locError, setLocError] = useState<string | null>(null);
   const [current, setCurrent] = useState(0);
@@ -74,7 +85,10 @@ export function StoriesView({ extraPhotoLimit }: { extraPhotoLimit: number }) {
   const feedRef = useRef<HTMLDivElement>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const { favorites, addFavorite, removeFavorite } = useFavorites();
-  const { loading: locating, getCurrentPosition } = useGeolocation({ enableHighAccuracy: false });
+  const { loading: locating, getCurrentPosition } = useGeolocation({
+    enableHighAccuracy: false,
+    timeout: LOCATE_WAIT_MS,
+  });
 
   useEffect(() => {
     const controller = new AbortController();
@@ -157,7 +171,8 @@ export function StoriesView({ extraPhotoLimit }: { extraPhotoLimit: number }) {
     return summary ? { text: summary, verified: false } : null;
   };
 
-  const begin = (coords: GeoCoords, fromDevice: boolean) => {
+  const begin = (coords: GeoCoords | null, fromDevice: boolean) => {
+    setAutoLocating(false);
     setOrigin({ coords, fromDevice });
     setCurrent(0);
     setRemoved(new Set());
@@ -176,6 +191,28 @@ export function StoriesView({ extraPhotoLimit }: { extraPhotoLimit: number }) {
       setLocError("לא הצלחנו לאתר מיקום. בחרו נקודה למטה.");
     }
   };
+
+  // Open straight into stories: ask for the location once; if it is refused, unavailable
+  // or not answered in time, show the newest places instead. A late answer is ignored
+  // so the feed does not reorder under the viewer (the pin button changes it).
+  const autoStarted = useRef(false);
+  useEffect(() => {
+    if (!autoStart || autoStarted.current) return;
+    autoStarted.current = true;
+    let settled = false;
+    const settle = (coords: GeoCoords | null) => {
+      if (settled) return;
+      settled = true;
+      begin(coords, !!coords);
+    };
+    const t = setTimeout(() => settle(null), LOCATE_WAIT_MS);
+    getCurrentPosition()
+      .then((coords) => settle(coords ?? null))
+      .catch(() => settle(null));
+    return () => clearTimeout(t);
+    // begin and getCurrentPosition are stable enough for a one-time start.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoStart]);
 
   useEffect(() => {
     if (!hint) return;
@@ -250,11 +287,31 @@ export function StoriesView({ extraPhotoLimit }: { extraPhotoLimit: number }) {
     return () => document.removeEventListener("keydown", onKey);
   }, [origin, player, goStory]);
 
+  if (autoLocating || (origin && !restaurants && !loadError)) {
+    return (
+      <main className="stories-app">
+        <section className="stories-locating" role="status">
+          <span className="stories-logo">Where2Eat</span>
+          <Loader2 size={34} className="animate-spin" aria-hidden="true" />
+          <p>{autoLocating ? "מחפשים מסעדות קרובות אליך…" : "טוען מסעדות…"}</p>
+          {autoLocating && (
+            <button className="stories-pill" onClick={() => begin(null, false)}>
+              דלגו: הכי חדשות
+            </button>
+          )}
+          <Link href="/home" className="stories-pill" aria-label="יציאה">
+            <X size={16} aria-hidden="true" /> לעמוד הראשי
+          </Link>
+        </section>
+      </main>
+    );
+  }
+
   if (!origin) {
     return (
       <main className="stories-app">
         <section className="stories-start">
-          <Link href="/" className="stories-logo">
+          <Link href="/home" className="stories-logo">
             Where2Eat
           </Link>
           <h1>
@@ -284,6 +341,11 @@ export function StoriesView({ extraPhotoLimit }: { extraPhotoLimit: number }) {
                 </button>
               ))}
             </div>
+          </div>
+          <div className="stories-card">
+            <button className="stories-pill big" disabled={!restaurants} onClick={() => begin(null, false)}>
+              החדשות ביותר
+            </button>
           </div>
           {sources.length > 1 && (
             <div className="stories-card">
@@ -317,13 +379,13 @@ export function StoriesView({ extraPhotoLimit }: { extraPhotoLimit: number }) {
   return (
     <main className="stories-app">
       <div className="stories-top">
-        <button className="stories-pill" onClick={() => setOrigin(null)} aria-label="חזרה לנקודת ההתחלה">
+        <button className="stories-pill" onClick={() => setOrigin(null)} aria-label="בחירת מיקום">
           <MapPin size={16} aria-hidden="true" />
         </button>
         <span className="stories-count" aria-live="polite">
           {currentItem?.kind === "story" ? `${storyPos}/${storyCount}` : `${storyCount} מסעדות`}
         </span>
-        <Link href="/" className="stories-pill" aria-label="יציאה">
+        <Link href="/home" className="stories-pill" aria-label="יציאה">
           <X size={16} aria-hidden="true" />
         </Link>
       </div>
@@ -609,8 +671,10 @@ function StoryView({
       <div className="stories-content">
         <h2 className="stories-name">{r.name_hebrew}</h2>
         <p className="stories-meta">
-          <b>{formatDistance(story.distanceKm)}</b>
-          {[r.location?.city, r.cuisine_type].filter(Boolean).map((v) => ` · ${v}`)}
+          {story.distanceKm !== null && <b>{formatDistance(story.distanceKm)}</b>}
+          {[r.location?.city, r.cuisine_type]
+            .filter(Boolean)
+            .map((v, i) => (i === 0 && story.distanceKm === null ? v : ` · ${v}`))}
         </p>
         <div className="stories-actions">
           <button

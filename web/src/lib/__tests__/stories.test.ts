@@ -278,3 +278,17 @@ describe("distance bands with recency", () => {
     expect(feed.near[0].publishedAt).toBe(Date.parse("2026-08-01T00:00:00Z"));
   });
 });
+
+describe("buildStories without a location (newest first)", () => {
+  it("orders every listed place with a photo by its newest episode, with no distance and no far group", () => {
+    const old = rest("old", { published_at: "2026-01-01" });
+    const fresh = rest("fresh", { published_at: "2026-11-01", location: { city: "חיפה", lat: 32.8, lng: 34.98 } });
+    const mid = rest("mid", { published_at: "2026-06-01" });
+    const noCoords = rest("nocoords", { published_at: "2026-09-01", location: { city: "תל אביב" } });
+    const hidden = rest("hidden", { published_at: "2026-11-20", is_hidden: true });
+    const feed = buildStories([old, fresh, mid, noCoords, hidden], null);
+    expect(feed.near.map((s) => s.restaurant.id)).toEqual(["fresh", "nocoords", "mid", "old"]);
+    expect(feed.far).toEqual([]);
+    expect(feed.near.every((s) => s.distanceKm === null)).toBe(true);
+  });
+});

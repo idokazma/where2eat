@@ -37,7 +37,7 @@ export default function RestaurantError({
             נסה שוב
           </button>
           <button
-            onClick={() => router.push('/')}
+            onClick={() => router.push('/home')}
             className="px-5 py-2.5 bg-[var(--color-surface)] text-[var(--color-ink)] rounded-xl font-medium text-sm border border-[var(--color-border)]"
           >
             חזרה לדף הראשי

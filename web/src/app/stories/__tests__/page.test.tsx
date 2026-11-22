@@ -14,6 +14,7 @@ const photo = (id: string) => `https://where2eat-production.up.railway.app/api/v
 const restaurants = [
   {
     id: "far",
+    published_at: "2026-11-10",
     name_hebrew: "רחוקה בחיפה",
     image_url: photo("far"),
     location: { city: "חיפה", lat: 32.8, lng: 34.98 },
@@ -22,6 +23,7 @@ const restaurants = [
   },
   {
     id: "near",
+    published_at: "2026-01-10",
     name_hebrew: "קרובה",
     cuisine_type: "פיצה",
     image_url: photo("near"),
@@ -112,9 +114,12 @@ beforeEach(() => {
   ) as jest.Mock;
 });
 
+// Most tests drive the start screen (pin button); the opening flow is tested separately.
 const renderPage = (limit?: number) =>
   render(
-    <FavoritesProvider>{limit === undefined ? <StoriesPage /> : <StoriesView extraPhotoLimit={limit} />}</FavoritesProvider>,
+    <FavoritesProvider>
+      <StoriesView extraPhotoLimit={limit ?? 40} autoStart={false} />
+    </FavoritesProvider>,
   );
 
 async function startFromTelAviv(limit?: number) {
@@ -152,7 +157,7 @@ it("uses the device location when allowed, and explains when it is denied", asyn
   const stories = await screen.findAllByRole("article");
   expect(within(stories[0]).getByRole("heading").textContent).toBe("רחוקה בחיפה");
 
-  fireEvent.click(screen.getByRole("button", { name: "חזרה לנקודת ההתחלה" }));
+  fireEvent.click(screen.getByRole("button", { name: "בחירת מיקום" }));
   mockLocate.mockRejectedValueOnce(new Error("denied"));
   fireEvent.click(screen.getByRole("button", { name: /לפי המיקום שלי/ }));
   expect(await screen.findByText(/בחרו נקודה/)).toBeInTheDocument();
@@ -444,5 +449,65 @@ describe("autoplay", () => {
     } finally {
       window.matchMedia = original;
     }
+  });
+});
+
+
+describe("opening the site starts with the stories", () => {
+  const openSite = () =>
+    render(
+      <FavoritesProvider>
+        <StoriesPage />
+      </FavoritesProvider>,
+    );
+  const headings = async () =>
+    (await screen.findAllByRole("article")).map((a) => within(a).getByRole("heading").textContent);
+
+  it("is the site's front page", async () => {
+    const { default: FrontPage } = await import("../../page");
+    expect(FrontPage).toBe(StoriesPage);
+  });
+
+  it("asks for the location on open and orders by distance when it is allowed", async () => {
+    mockLocate.mockResolvedValueOnce({ lat: 32.081, lng: 34.775 });
+    openSite();
+    expect(await headings()).toEqual(["קרובה", "רחוקה בחיפה"]);
+    expect(mockLocate).toHaveBeenCalledTimes(1);
+    expect(screen.getByText(/מחוץ ל-50 ק״מ/)).toBeInTheDocument();
+  });
+
+  it("shows the newest places first when the location is refused", async () => {
+    mockLocate.mockRejectedValueOnce(new Error("denied"));
+    openSite();
+    expect(await headings()).toEqual(["רחוקה בחיפה", "קרובה"]);
+    expect(screen.queryByText(/מחוץ ל-/)).toBeNull();
+    expect(screen.queryByText(/ק״מ|מ׳/)).toBeNull(); // no distances without a location
+  });
+
+  it("shows the newest places when the location question is not answered in time", async () => {
+    jest.useFakeTimers();
+    try {
+      mockLocate.mockReturnValueOnce(new Promise(() => {}));
+      openSite();
+      expect(screen.getByText(/מחפשים מסעדות קרובות/)).toBeInTheDocument();
+      act(() => jest.advanceTimersByTime(8_100));
+      expect(await headings()).toEqual(["רחוקה בחיפה", "קרובה"]);
+    } finally {
+      jest.useRealTimers();
+    }
+  });
+
+  it("lets the viewer skip the location and see the newest right away", async () => {
+    mockLocate.mockReturnValueOnce(new Promise(() => {}));
+    openSite();
+    fireEvent.click(screen.getByRole("button", { name: /הכי חדשות/ }));
+    expect(await headings()).toEqual(["רחוקה בחיפה", "קרובה"]);
+  });
+
+  it("leaves to the main page with X", async () => {
+    mockLocate.mockRejectedValueOnce(new Error("denied"));
+    openSite();
+    await headings();
+    expect(screen.getByRole("link", { name: "יציאה" })).toHaveAttribute("href", "/home");
   });
 });
