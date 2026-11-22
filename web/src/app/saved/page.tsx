@@ -1,13 +1,34 @@
 'use client';
 
+import { useEffect } from 'react';
 import { Heart } from 'lucide-react';
 import { PageLayout } from '@/components/layout';
 import { RestaurantCardNew } from '@/components/restaurant';
 import { useFavorites } from '@/contexts/favorites-context';
 import { getRestaurantImage } from '@/lib/images';
+import { endpoints } from '@/lib/config';
 
 export default function SavedPage() {
-  const { favoriteRestaurants } = useFavorites();
+  const { favorites, favoriteRestaurants, setAllRestaurants } = useFavorites();
+
+  // The restaurant list is normally loaded by the home dashboard. Opening /saved
+  // directly (reload, installed app, shared link) skips it, so load it here.
+  const needsLoad = favorites.length > 0 && favoriteRestaurants.length === 0;
+  useEffect(() => {
+    if (!needsLoad) return;
+    let cancelled = false;
+    fetch(endpoints.restaurants.list())
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (!cancelled && data?.restaurants) setAllRestaurants(data.restaurants);
+      })
+      .catch(() => {
+        // Keep the empty state; the next visit retries.
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [needsLoad, setAllRestaurants]);
 
   return (
     <PageLayout title="שמורים" showHeader showBottomNav>
