@@ -499,6 +499,36 @@ describe("autoplay", () => {
     expect(within(frames[0]).getByRole('button', { name: 'התמונה הבאה' })).toBeEnabled();
   });
 
+  it("does not let a hidden fallback alias redirect autoplay onto a failed paid slot", async () => {
+    const direct = 'https://lh3.googleusercontent.com/maayan=s4800-w800';
+    const single = { ...restaurants[1], image_url: direct, og_image_url: 'https://owner.test/primary.jpg',
+      photos: [1, 2].map((i) => ({ photo_reference: `places/PN/photos/mixed${i}`,
+        resolved_url: i === 1 ? direct : 'https://owner.test/other.jpg', photo_url: '', width: 800, height: 600 })),
+    };
+    (global.fetch as jest.Mock).mockImplementation((url: string) => Promise.resolve({
+      ok: true, json: async () => String(url).includes('/api/episodes/') ? episode : { restaurants: [single] },
+    }));
+    await startFromTelAviv();
+    const [article] = await screen.findAllByRole('article');
+    const frames = within(article).getAllByRole('group');
+    fireEvent.error(article.querySelector<HTMLImageElement>('img[src="https://owner.test/primary.jpg"]')!);
+    await waitFor(() => expect(frames[1]).toHaveAttribute('hidden'));
+    // A stale intersection for the hidden alias may not grant its paid reference.
+    act(() => observers.find((o) => o.targets.includes(frames[2]))!.fire(frames[1]));
+    expect(paidImages()).toEqual([]);
+    act(() => observers.find((o) => o.targets.includes(frames[2]))!.fire(frames[2]));
+    fireEvent.error(article.querySelector<HTMLImageElement>('img[src*="mixed2"]')!);
+    (Element.prototype.scrollBy as jest.Mock).mockClear();
+    act(() => jest.advanceTimersByTime(710));
+    expect(stripMoves(article)).toHaveLength(1);
+    act(() => observers.find((o) => o.targets.includes(frames[0]))!.fire(frames[0]));
+    (Element.prototype.scrollBy as jest.Mock).mockClear();
+    act(() => jest.advanceTimersByTime(8_500));
+    expect(stripMoves(article)).toHaveLength(0);
+    expect(paidImages()).toEqual([]);
+    expect(within(article).getAllByRole('group')).toHaveLength(2);
+  });
+
   it("moves to the next place every 10 seconds", async () => {
     await startFromTelAviv();
     await screen.findAllByRole("article");

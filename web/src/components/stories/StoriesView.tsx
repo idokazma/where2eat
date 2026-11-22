@@ -602,7 +602,7 @@ function StoryView({
       // Never rotate back onto a known failed slot. If only this working image
       // remains, hold it rather than animate a fake change over the same backdrop.
       const next = Array.from({ length: n - 1 }, (_, k) => (slideIndex + 1 + k) % n).find(
-        (j) => !slotFailed(j),
+        (j) => visible.includes(j) && !slotFailed(j),
       );
       if (next === undefined) return;
       const t = setTimeout(() => go(next), PHOTO_MS);
