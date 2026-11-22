@@ -240,6 +240,12 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+.stories-content p.stories-unverified {
+  margin-top: -4px;
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.72);
+}
 .stories-src {
   display: flex;
   align-items: center;

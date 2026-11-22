@@ -99,13 +99,39 @@ describe("buildStories", () => {
     const a = rest("a", { location: { city: "תל אביב", lat: 32.081, lng: 34.781 } });
     const dup = rest("dup", {
       image_url: photo("a"),
-      location: { city: "תל אביב", lat: 32.09, lng: 34.79 },
+      location: { city: "תל אביב", lat: 32.0812, lng: 34.7812 },
       episode_info: { video_id: "vid_dup", video_url: "", channel_name: "מקור" },
     });
     const feed = buildStories([a, dup], TLV);
     expect(feed.near).toHaveLength(1);
     expect(feed.near[0].restaurant.id).toBe("a");
     expect(feed.near[0].slides.map((s) => s.videoId).sort()).toEqual(["vid_a", "vid_dup"]);
+  });
+  it("keeps branches apart: same photo but different Google places", () => {
+    const rehovot = rest("rehovot", {
+      image_url: photo("chain"),
+      google_places: { place_id: "PLACE_REHOVOT" },
+      location: { city: "רחובות", lat: 31.894, lng: 34.811 },
+    });
+    const nessZiona = rest("ness", {
+      image_url: photo("chain"),
+      google_places: { place_id: "PLACE_NESS" },
+      location: { city: "נס ציונה", lat: 31.93, lng: 34.8 },
+    });
+    const feed = buildStories([rehovot, nessZiona], TLV, { radiusKm: 100 });
+    expect(feed.near.map((s) => s.restaurant.id).sort()).toEqual(["ness", "rehovot"]);
+  });
+  it("keeps apart same-photo records more than 100 m apart even without Google places", () => {
+    const a = rest("a", { image_url: photo("x"), location: { city: "תל אביב", lat: 32.08, lng: 34.78 } });
+    const b = rest("b", { image_url: photo("x"), location: { city: "תל אביב", lat: 32.082, lng: 34.78 } });
+    expect(buildStories([a, b], TLV).near).toHaveLength(2);
+  });
+  it("merges a same-place record when only one side has a Google place", () => {
+    const a = rest("a", { image_url: photo("x"), google_places: { place_id: "P" } });
+    const b = rest("b", { image_url: photo("x"), episode_info: { video_id: "vid_b", video_url: "", channel_name: "מקור" } });
+    const feed = buildStories([a, b], TLV);
+    expect(feed.near).toHaveLength(1);
+    expect(feed.near[0].slides).toHaveLength(2);
   });
   it("filters by source across all of a restaurant's mentions", () => {
     const a = rest("a", { mentions: [{ video_id: "v", channel_name: "יוצר" }] });

@@ -384,6 +384,23 @@ function StoryView({
   const r = story.restaurant;
   const c = getCoordinates(r.location);
   const n = story.slides.length;
+  const slidesRef = useRef<HTMLDivElement>(null);
+  // Which slide is in view, from intersection rather than scrollLeft: browsers
+  // disagree on the sign of scrollLeft in right-to-left scrollers.
+  useEffect(() => {
+    const root = slidesRef.current;
+    if (!root || n < 2 || typeof IntersectionObserver === "undefined") return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) if (e.isIntersecting) onSlide(Number((e.target as HTMLElement).dataset.slide));
+      },
+      { root, threshold: 0.6 },
+    );
+    root.querySelectorAll("[data-slide]").forEach((el) => io.observe(el));
+    return () => io.disconnect();
+    // onSlide is recreated each render; the observed slides only change with the story.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [story, n]);
   return (
     <article className="stories-story" data-index={index} aria-label={r.name_hebrew}>
       {near && !broken ? (
@@ -400,13 +417,7 @@ function StoryView({
         </div>
       )}
       <div className="stories-content">
-        <div
-          className="stories-slides"
-          onScroll={(e) => {
-            const el = e.currentTarget;
-            onSlide(Math.round(Math.abs(el.scrollLeft) / Math.max(1, el.clientWidth)));
-          }}
-        >
+        <div className="stories-slides" ref={slidesRef}>
           {story.slides.map((slide, i) => {
             const q = quoteFor(story, slide);
             const clock = formatClock(slide.seconds);
@@ -414,11 +425,13 @@ function StoryView({
               <div
                 key={`${slide.videoId}${slide.seconds}`}
                 className="stories-slide"
+                data-slide={i}
                 role="group"
                 aria-roledescription="אזכור"
                 aria-label={`אזכור ${i + 1} מתוך ${n}`}
               >
                 {q && <p className="stories-quote">{q.verified ? `״${q.text}״` : q.text}</p>}
+                {q && !q.verified && <p className="stories-unverified">לא מאומת מול ההקלטה</p>}
                 <p className="stories-src">
                   {slide.tasted && <span className="stories-tick">נטעם</span>}
                   <span>

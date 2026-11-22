@@ -87,9 +87,11 @@ export function buildStories(
   origin: GeoCoords,
   { radiusKm = 50, source = "" }: { radiusKm?: number; source?: string } = {},
 ): StoryFeed {
-  // Keyed by photo: the same restaurant stored twice (one record per episode)
-  // shares its photo, and would otherwise show as two identical stories.
-  const byImage = new Map<string, Story>();
+  // The same place is sometimes stored once per episode, which would show as two
+  // identical stories. Merge only records that share a photo AND are the same
+  // place: no conflicting Google place IDs and less than 100 m apart. Branches of
+  // a chain often share a photo but have their own place IDs and locations.
+  const byImage = new Map<string, Story[]>();
   for (const r of restaurants) {
     if (!isListed(r)) continue;
     const c = getCoordinates(r.location);
@@ -97,25 +99,26 @@ export function buildStories(
     if (!c || !image) continue;
     const slides = storySlides(r).filter((s) => !source || s.channel === source);
     if (!slides.length) continue;
-    const story = {
+    const story: Story = {
       restaurant: r,
       image,
       distanceKm: haversineDistance(origin, { lat: c.latitude, lng: c.longitude }),
       slides,
     };
-    const existing = byImage.get(image);
-    if (!existing) {
-      byImage.set(image, story);
+    const group = byImage.get(image) ?? [];
+    const twin = group.find((s) => samePlace(s.restaurant, r));
+    if (!twin) {
+      byImage.set(image, [...group, story]);
       continue;
     }
-    const keep = story.distanceKm < existing.distanceKm ? story : existing;
-    const other = keep === story ? existing : story;
+    const keep = story.distanceKm < twin.distanceKm ? story : twin;
+    const other = keep === story ? twin : story;
     const seen = new Set(keep.slides.map((s) => `${s.videoId}@${s.seconds ?? ""}`));
     const extra = other.slides.filter((s) => !seen.has(`${s.videoId}@${s.seconds ?? ""}`));
     keep.slides = [...keep.slides, ...extra].sort((a, b) => Number(b.tasted) - Number(a.tasted));
-    byImage.set(image, keep);
+    byImage.set(image, group.map((s) => (s === twin ? keep : s)));
   }
-  const stories = [...byImage.values()];
+  const stories = [...byImage.values()].flat();
   const near = stories.filter((s) => s.distanceKm <= radiusKm).sort((a, b) => a.distanceKm - b.distanceKm);
   const far = stories
     .filter((s) => s.distanceKm > radiusKm)
@@ -125,6 +128,26 @@ export function buildStories(
         a.distanceKm - b.distanceKm,
     );
   return { near, far };
+}
+
+const SAME_PLACE_KM = 0.1;
+
+function placeId(r: Restaurant): string | null {
+  return r.google_places?.place_id || (r as Restaurant & { google_place_id?: string | null }).google_place_id || null;
+}
+
+/** Two records of one place: no conflicting Google place IDs and less than 100 m apart. */
+export function samePlace(a: Restaurant, b: Restaurant): boolean {
+  const pa = placeId(a);
+  const pb = placeId(b);
+  if (pa && pb && pa !== pb) return false;
+  const ca = getCoordinates(a.location);
+  const cb = getCoordinates(b.location);
+  if (!ca || !cb) return false;
+  return (
+    haversineDistance({ lat: ca.latitude, lng: ca.longitude }, { lat: cb.latitude, lng: cb.longitude }) <
+    SAME_PLACE_KM
+  );
 }
 
 /** The quote the episode page shows for this restaurant: verified first, else the transcript. */

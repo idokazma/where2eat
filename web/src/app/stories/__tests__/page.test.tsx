@@ -1,5 +1,5 @@
 import "@testing-library/jest-dom";
-import { render, screen, fireEvent, waitFor, within } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor, within, act } from "@testing-library/react";
 import StoriesPage from "../page";
 import { metadata } from "../layout";
 import { FavoritesProvider } from "@/contexts/favorites-context";
@@ -56,6 +56,11 @@ const episode = {
   },
 };
 
+const otherEpisode = {
+  episode: {},
+  mentions: { tasted: [], mentioned: [{ restaurant_id: "near", host_quotes: ["פיצה טובה ממש"] }], reference_only: [] },
+};
+
 beforeAll(() => {
   HTMLDialogElement.prototype.showModal = function () {
     this.setAttribute("open", "");
@@ -64,14 +69,38 @@ beforeAll(() => {
     this.removeAttribute("open");
   };
   Element.prototype.scrollIntoView = jest.fn();
+  global.IntersectionObserver = FakeObserver as unknown as typeof IntersectionObserver;
 });
+
+const observers: FakeObserver[] = [];
+class FakeObserver {
+  targets: Element[] = [];
+  constructor(private cb: IntersectionObserverCallback) {
+    observers.push(this);
+  }
+  observe(el: Element) {
+    this.targets.push(el);
+  }
+  disconnect() {
+    this.targets = [];
+  }
+  unobserve() {}
+  fire(el: Element) {
+    this.cb([{ target: el, isIntersecting: true, intersectionRatio: 1 } as unknown as IntersectionObserverEntry], this as never);
+  }
+}
 beforeEach(() => {
   localStorage.clear();
   jest.clearAllMocks();
   global.fetch = jest.fn((url: string) =>
     Promise.resolve({
       ok: true,
-      json: async () => (String(url).includes("/api/episodes/vidNEAR") ? episode : { restaurants }),
+      json: async () =>
+        String(url).includes("/api/episodes/vidNEAR")
+          ? episode
+          : String(url).includes("/api/episodes/vidOTHER")
+            ? otherEpisode
+            : { restaurants },
     }),
   ) as jest.Mock;
 });
@@ -139,6 +168,29 @@ it("shows the episode page's verified quote in quotation marks", async () => {
   await startFromTelAviv();
   expect(await screen.findByText("״הפיצה הכי טובה בעיר״")).toBeInTheDocument();
   expect(screen.queryByText(/לא זה/)).toBeNull();
+});
+
+it("labels text that was not checked against the recording, and only that text", async () => {
+  await startFromTelAviv();
+  const [near] = await screen.findAllByRole("article");
+  const [tasted, other] = within(near).getAllByRole("group");
+  await within(tasted).findByText("״הפיצה הכי טובה בעיר״");
+  expect(within(tasted).queryByText("לא מאומת מול ההקלטה")).toBeNull();
+  (global.fetch as jest.Mock).mockClear();
+  // The second mention's episode has only a transcript quote.
+  expect(await within(other).findByText("פיצה טובה ממש")).toBeInTheDocument();
+  expect(within(other).getByText("לא מאומת מול ההקלטה")).toBeInTheDocument();
+});
+
+it("marks the slide in view as active, whatever the browser's RTL scroll convention", async () => {
+  await startFromTelAviv();
+  const [near] = await screen.findAllByRole("article");
+  const slides = within(near).getAllByRole("group");
+  const dots = () => [...near.querySelectorAll(".stories-dots i")].map((d) => d.className);
+  expect(dots()).toEqual(["on", ""]);
+  const io = observers.find((o) => o.targets.includes(slides[1]))!;
+  act(() => io.fire(slides[1]));
+  expect(dots()).toEqual(["", "on"]);
 });
 
 it("loads the YouTube player only on tap, at the moment, from the privacy-enhanced domain", async () => {
