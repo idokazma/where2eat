@@ -165,7 +165,7 @@
   outline: none;
 }
 .stories-feed::-webkit-scrollbar,
-.stories-slides::-webkit-scrollbar {
+.stories-frames::-webkit-scrollbar {
   display: none;
 }
 .stories-story,
@@ -199,34 +199,83 @@
     rgba(10, 18, 17, 0.94) 72%
   );
 }
+/* Sideways strip of the place's photos, over the story's own photo. */
+.stories-frames {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+.stories-frames::-webkit-scrollbar {
+  display: none;
+}
+.stories-frame {
+  position: relative;
+  flex: 0 0 100%;
+  height: 100%;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+.stories-frame-text {
+  position: absolute;
+  inset-inline: 0;
+  /* Clears the fixed footer: name, meta and actions. */
+  bottom: calc(150px + env(safe-area-inset-bottom));
+  padding-inline: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  color: #fff;
+}
+.stories-frame-text p {
+  color: #fff;
+}
+/* Tap the sides of a photo to move between photos (RTL: next is on the left). */
+.stories-app .stories-tap {
+  position: absolute;
+  top: calc(80px + env(safe-area-inset-top));
+  bottom: 52%;
+  width: 34%;
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  border: 0;
+  background: none;
+  color: #fff;
+  opacity: 0.6;
+  cursor: pointer;
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.7));
+}
+.stories-app .stories-tap.next {
+  left: 0;
+  justify-content: flex-start;
+}
+.stories-app .stories-tap.prev {
+  right: 0;
+  justify-content: flex-end;
+}
+.stories-app .stories-tap:disabled {
+  visibility: hidden;
+}
 .stories-content {
   position: absolute;
+  z-index: 5;
   inset-inline: 0;
   bottom: 0;
   padding: 0 16px calc(20px + env(safe-area-inset-bottom));
   color: #fff;
+  pointer-events: none;
+}
+.stories-content > * {
+  pointer-events: auto;
 }
 /* globals.css colors every h2 and p; text over the photo must stay white. */
 .stories-content h2,
 .stories-content p {
   color: #fff;
-}
-.stories-slides {
-  display: flex;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  scrollbar-width: none;
-  margin-inline: -16px;
-}
-.stories-slide {
-  flex: 0 0 100%;
-  scroll-snap-align: start;
-  padding-inline: 16px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: flex-end;
-  gap: 8px;
 }
 .stories-quote {
   font-weight: 800;
@@ -258,6 +307,9 @@
   padding: 0 8px;
 }
 .stories-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   font-size: 30px;
   font-weight: 900;
   line-height: 1.1;
@@ -439,7 +491,7 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .stories-feed,
-  .stories-slides {
+  .stories-frames {
     scroll-behavior: auto;
   }
   .stories-hint {

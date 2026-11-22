@@ -1,6 +1,7 @@
 import "@testing-library/jest-dom";
 import { render, screen, fireEvent, waitFor, within, act } from "@testing-library/react";
 import StoriesPage from "../page";
+import { StoriesView } from "@/components/stories/StoriesView";
 import { metadata } from "../layout";
 import { FavoritesProvider } from "@/contexts/favorites-context";
 
@@ -24,6 +25,11 @@ const restaurants = [
     name_hebrew: "קרובה",
     cuisine_type: "פיצה",
     image_url: photo("near"),
+    google_places: { place_id: "PN" },
+    photos: [
+      { photo_reference: "places/PN/photos/ref1", photo_url: "", width: 1, height: 1 },
+      { photo_reference: "places/PN/photos/ref2", photo_url: "", width: 1, height: 1 },
+    ],
     location: { city: "תל אביב", lat: 32.081, lng: 34.775 },
     episode_info: { video_id: "vidNEAR", channel_name: "מדברים מהבטן - הפודיום", title: "מדברים מהבטן 176" },
     mentions: [
@@ -105,15 +111,13 @@ beforeEach(() => {
   ) as jest.Mock;
 });
 
-const renderPage = () =>
+const renderPage = (limit?: number) =>
   render(
-    <FavoritesProvider>
-      <StoriesPage />
-    </FavoritesProvider>,
+    <FavoritesProvider>{limit === undefined ? <StoriesPage /> : <StoriesView extraPhotoLimit={limit} />}</FavoritesProvider>,
   );
 
-async function startFromTelAviv() {
-  renderPage();
+async function startFromTelAviv(limit?: number) {
+  renderPage(limit);
   const preset = await screen.findByRole("button", { name: /תל אביב/ });
   await waitFor(() => expect(preset).toBeEnabled());
   fireEvent.click(preset);
@@ -153,15 +157,63 @@ it("uses the device location when allowed, and explains when it is denied", asyn
   expect(await screen.findByText(/בחרו נקודה/)).toBeInTheDocument();
 });
 
-it("makes one slide per creator mention, tasted first, with the source and no speaker name", async () => {
+it("pages through the place's photos, with quotes from different sources on different photos", async () => {
   await startFromTelAviv();
   const [near] = await screen.findAllByRole("article");
-  const slides = within(near).getAllByRole("group");
-  expect(slides).toHaveLength(2);
-  expect(within(slides[0]).getByText(/מדברים מהבטן 176 · 1:40/)).toBeInTheDocument();
-  expect(within(slides[0]).getByText("נטעם")).toBeInTheDocument();
-  expect(within(slides[1]).getByText(/יוצר אחר/)).toBeInTheDocument();
+  const frames = within(near).getAllByRole("group");
+  expect(frames).toHaveLength(3);
+  expect(within(frames[0]).getByText(/מדברים מהבטן 176 · 1:40/)).toBeInTheDocument();
+  expect(within(frames[0]).getByText("נטעם")).toBeInTheDocument();
+  expect(within(frames[1]).getByText(/יוצר אחר/)).toBeInTheDocument();
+  expect(within(frames[2]).queryByRole("button", { name: /נגן ברגע הזה/ })).toBeNull();
   expect(screen.queryByText(/דובר/)).toBeNull();
+});
+
+const paidImages = () => [...document.querySelectorAll("img")].map((i) => i.getAttribute("src")!).filter((u) => u.includes("/api/photos/"));
+
+it("loads a paid Google photo only when the viewer moves to it", async () => {
+  await startFromTelAviv();
+  const [near] = await screen.findAllByRole("article");
+  const frames = within(near).getAllByRole("group");
+  expect(paidImages()).toEqual([]);
+  act(() => observers.find((o) => o.targets.includes(frames[1]))!.fire(frames[1]));
+  expect(paidImages()).toEqual([expect.stringContaining("/api/photos/places/PN/photos/ref1?maxwidth=900")]);
+});
+
+it("stops loading paid photos at the visit limit, showing the story's own photo instead", async () => {
+  await startFromTelAviv(1);
+  const [near] = await screen.findAllByRole("article");
+  const frames = within(near).getAllByRole("group");
+  act(() => observers.find((o) => o.targets.includes(frames[2]))!.fire(frames[2]));
+  expect(paidImages()).toHaveLength(1);
+  expect(near.querySelector(`img[src="${photo("near")}"]`)).not.toBeNull();
+});
+
+it("skips a photo that fails to load instead of showing an empty page", async () => {
+  await startFromTelAviv();
+  const [near] = await screen.findAllByRole("article");
+  let frames = within(near).getAllByRole("group");
+  act(() => observers.find((o) => o.targets.includes(frames[2]))!.fire(frames[2]));
+  const dead = near.querySelector<HTMLImageElement>('img[src*="ref2"]')!;
+  fireEvent.error(dead);
+  frames = within(near).getAllByRole("group");
+  expect(frames).toHaveLength(2);
+  // A photo carrying a creator quote keeps its page, over the story's own photo.
+  act(() => observers.find((o) => o.targets.includes(frames[1]))!.fire(frames[1]));
+  fireEvent.error(near.querySelector<HTMLImageElement>('img[src*="ref1"]')!);
+  frames = within(near).getAllByRole("group");
+  expect(frames).toHaveLength(2);
+  expect(within(frames[1]).getByText(/יוצר אחר/)).toBeInTheDocument();
+});
+
+it("moves to the next photo when the side of the photo is tapped", async () => {
+  await startFromTelAviv();
+  const [near] = await screen.findAllByRole("article");
+  const frames = within(near).getAllByRole("group");
+  const scroll = Element.prototype.scrollIntoView as jest.Mock;
+  scroll.mockClear();
+  fireEvent.click(within(frames[0]).getByRole("button", { name: "התמונה הבאה" }));
+  expect(scroll.mock.contexts[0]).toBe(frames[1]);
 });
 
 it("shows the episode page's verified quote in quotation marks", async () => {
@@ -185,10 +237,10 @@ it("marks the slide in view as active, whatever the browser's RTL scroll convent
   const [near] = await screen.findAllByRole("article");
   const slides = within(near).getAllByRole("group");
   const dots = () => [...near.querySelectorAll(".stories-dots i")].map((d) => d.className);
-  expect(dots()).toEqual(["on", ""]);
+  expect(dots()).toEqual(["on", "", ""]);
   const io = observers.find((o) => o.targets.includes(slides[1]))!;
   act(() => io.fire(slides[1]));
-  expect(dots()).toEqual(["", "on"]);
+  expect(dots()).toEqual(["", "on", ""]);
 });
 
 it("loads the YouTube player only on tap, at the moment, from the privacy-enhanced domain", async () => {
