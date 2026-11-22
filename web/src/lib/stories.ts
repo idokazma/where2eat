@@ -35,10 +35,9 @@ export interface StoryPhoto {
   paid: boolean;
 }
 
-/** One sideways page of a story: a photo of the place, with the next creator mention, if any. */
+/** One sideways page of a story: a photo of the place. */
 export interface StoryFrame {
   photo: StoryPhoto;
-  mention: StorySlide | null;
 }
 
 export interface StoryFeed {
@@ -231,15 +230,9 @@ export function storyPhotos(story: Story, { extraPhotos = true }: { extraPhotos?
 }
 
 /**
- * Sideways pages of a story: one per photo, each carrying the next creator
- * mention so different sources are spread across the photos. When there are
- * more mentions than photos, the photos repeat.
+ * Sideways pages of a story: one per distinct photo of the place. Reviews do not
+ * add pages; they stay on the story (see StoriesView).
  */
 export function storyFrames(story: Story, opts: { extraPhotos?: boolean } = {}): StoryFrame[] {
-  const photos = storyPhotos(story, opts);
-  const count = Math.max(photos.length, story.slides.length);
-  return Array.from({ length: count }, (_, i) => ({
-    photo: photos[i % photos.length],
-    mention: story.slides[i] ?? null,
-  }));
+  return storyPhotos(story, opts).map((photo) => ({ photo }));
 }

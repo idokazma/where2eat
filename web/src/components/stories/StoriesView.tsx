@@ -237,7 +237,7 @@ export function StoriesView({ extraPhotoLimit }: { extraPhotoLimit: number }) {
             איפה אוכלים <span className="stories-hl">ליד?</span>
           </h1>
           <p className="stories-lead">
-            ביקורות מהפודקאסטים, מהקרוב לרחוק. החליקו למעלה למסעדה הבאה, והצידה לאזכור הבא שלה.
+            ביקורות מהפודקאסטים, מהקרוב לרחוק. החליקו למעלה למסעדה הבאה, והצידה לתמונה הבאה של המקום.
           </p>
           <div className="stories-card">
             <button className="stories-pill teal big" onClick={locate} disabled={locating || !restaurants}>
@@ -303,7 +303,7 @@ export function StoriesView({ extraPhotoLimit }: { extraPhotoLimit: number }) {
           <X size={16} aria-hidden="true" />
         </Link>
       </div>
-      {hint && <div className="stories-hint">↕ מסעדה הבאה · ↔ אזכור הבא</div>}
+      {hint && <div className="stories-hint">↕ מסעדה הבאה · ↔ תמונה הבאה</div>}
       <div className="stories-feed" ref={feedRef} tabIndex={0} aria-label="סטוריז מסעדות">
         {!items.length && (
           <section className="stories-divider" data-index={0}>
@@ -416,11 +416,14 @@ function StoryView({
   // A photo that fails to load (expired Google references are common) is skipped,
   // unless it carries a creator quote: then the quote stays, over the story's photo.
   const frames = useMemo(
-    () => storyFrames(story, { extraPhotos }).filter((f) => f.mention || !failed.has(f.photo.url)),
+    () => storyFrames(story, { extraPhotos }).filter((f) => !failed.has(f.photo.url)),
     [story, extraPhotos, failed],
   );
   const n = frames.length;
   const framesRef = useRef<HTMLDivElement>(null);
+  // Sideways pages are photos. The review (best source first) stays on the story.
+  const primary = story.slides[0] ?? null;
+  const primaryQuote = primary ? quoteFor(story, primary) : null;
   // A story rebuilt after scrolling away reopens on the photo the viewer had reached.
   // Scroll only the photo strip: scrollIntoView would also scroll the vertical feed
   // and pull the viewer back to this story while it is still off-screen. A relative
@@ -464,9 +467,6 @@ function StoryView({
       )}
       <div className="stories-frames" ref={framesRef}>
         {frames.map((frame, i) => {
-          const m = frame.mention;
-          const q = m ? quoteFor(story, m) : null;
-          const clock = m ? formatClock(m.seconds) : null;
           // The story's own photo is already underneath. Other photos load only
           // once reached; paid ones only when granted within the visit limit.
           const own = frame.photo.url === story.image;
@@ -510,25 +510,37 @@ function StoryView({
                   </button>
                 </>
               )}
-              {m && (
-                <div className="stories-frame-text">
-                  {q && <p className="stories-quote">{q.verified ? `״${q.text}״` : q.text}</p>}
-                  <p className="stories-src">
-                    {m.tasted && <span className="stories-tick">נטעם</span>}
-                    <span>
-                      {sourceLabel(m)}
-                      {clock ? ` · ${clock}` : ""}
-                    </span>
-                  </p>
-                  <button className="stories-pill sun" onClick={() => onPlay(m)}>
-                    <Play size={16} aria-hidden="true" /> נגן ברגע הזה
-                  </button>
-                </div>
-              )}
             </div>
           );
         })}
       </div>
+      {primary && (
+        <div className="stories-frame-text">
+          {primaryQuote && (
+            <p className="stories-quote">{primaryQuote.verified ? `״${primaryQuote.text}״` : primaryQuote.text}</p>
+          )}
+          <p className="stories-src">
+            {primary.tasted && <span className="stories-tick">נטעם</span>}
+            <span>
+              {sourceLabel(primary)}
+              {formatClock(primary.seconds) ? ` · ${formatClock(primary.seconds)}` : ""}
+            </span>
+          </p>
+          <button className="stories-pill sun" onClick={() => onPlay(primary)}>
+            <Play size={16} aria-hidden="true" /> נגן ברגע הזה
+          </button>
+          {story.slides.length > 1 && (
+            <div className="stories-more">
+              {story.slides.slice(1, 4).map((m) => (
+                <button key={`${m.videoId}@${m.seconds ?? ""}`} className="stories-chip" onClick={() => onPlay(m)}>
+                  <Play size={12} aria-hidden="true" /> {sourceLabel(m)}
+                  {formatClock(m.seconds) ? ` · ${formatClock(m.seconds)}` : ""}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
       {n > 1 && (
         <div className="stories-dots" aria-hidden="true">
           {frames.map((_, i) => (

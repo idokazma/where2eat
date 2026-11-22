@@ -221,6 +221,9 @@
 }
 .stories-frame-text {
   position: absolute;
+  z-index: 4;
+  /* Over the photos: swipes pass through, only the buttons take taps. */
+  pointer-events: none;
   inset-inline: 0;
   /* Clears the fixed footer: name, meta and actions. */
   bottom: calc(150px + env(safe-area-inset-bottom));
@@ -498,4 +501,27 @@
   .stories-hint {
     display: none;
   }
+}
+
+.stories-frame-text button {
+  pointer-events: auto;
+}
+.stories-more {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.stories-app .stories-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 30px;
+  padding: 4px 10px;
+  border: 1.5px solid rgba(255, 255, 255, 0.6);
+  border-radius: 999px;
+  background: rgba(10, 18, 17, 0.55);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
 }
