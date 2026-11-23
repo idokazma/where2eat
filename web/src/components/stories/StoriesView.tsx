@@ -498,7 +498,6 @@ export function StoriesView({
               onImageError={onImageError}
               onPlay={(slide) => openPlayer(item.story, slide)}
               onShare={() => shareStory(item.story)}
-              onPrevStory={() => goStory(-1)}
               onNextStory={() => goStory(1)}
               ignoreTap={wasLongPress}
               onSave={() => {
@@ -563,7 +562,6 @@ function StoryView({
   onImageError,
   onPlay,
   onSave,
-  onPrevStory,
   onNextStory,
   ignoreTap,
   onShare,
@@ -583,7 +581,6 @@ function StoryView({
   onImageError: (url: string) => void;
   onPlay: (slide: StorySlide) => void;
   onSave: () => void;
-  onPrevStory: () => void;
   onNextStory: () => void;
   ignoreTap: () => boolean;
   onShare: () => void;
@@ -646,10 +643,14 @@ function StoryView({
     // onSlide is recreated each render; the observed frames only change with the story.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [frames, n]);
-  const tap = (target: number) => {
+  const tap = (to: number) => {
+    let target = to;
     if (ignoreTap()) return;
-    if (target < 0) onPrevStory();
-    else if (target >= n) onNextStory();
+    // Taps never go back to the previous place (a right-thumb tap on the back strip did
+    // exactly that); on the first photo the back strip moves forward like any tap.
+    // Swiping down returns to the previous place.
+    if (target < 0) target = 1;
+    if (target >= n) onNextStory();
     else go(target);
   };
   // Move only the photo strip: scrollIntoView could also scroll the vertical feed.
@@ -724,8 +725,8 @@ function StoryView({
               )}
               <div className="stories-shade" />
               {/* Instagram-style: a tap goes to the next photo; only a narrow strip at the
-                  right edge (the start side in Hebrew) goes back. Past the first or last photo
-                  it moves to the previous or next restaurant. */}
+                  right edge (the start side in Hebrew) goes back to the previous photo of the
+                  same place. Past the last photo a tap moves to the next restaurant. */}
               <button className="stories-tap prev" onClick={() => tap(i - 1)} aria-label="התמונה הקודמת" />
               <button className="stories-tap next" onClick={() => tap(i + 1)} aria-label="התמונה הבאה" />
             </div>
