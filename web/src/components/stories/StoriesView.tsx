@@ -809,10 +809,13 @@ function StoryView({
       )}
       {visible.length > 1 && (
         <div className="stories-dots" aria-hidden="true">
-          {visible.map((i) => (
+          {visible.map((i, pos) => (
             <i
               key={i === slideIndex && autoplay ? `run-${slideIndex}` : i}
-              className={i === slideIndex ? (autoplay ? "on run" : "on") : ""}
+              // Like Instagram: photos already passed keep a full bar.
+              className={
+                i === slideIndex ? (autoplay ? "on run" : "on") : pos < visible.indexOf(slideIndex) ? "seen" : ""
+              }
             />
           ))}
         </div>
