@@ -343,6 +343,22 @@ it("marks the slide in view as active, whatever the browser's RTL scroll convent
   expect(dots()).toEqual(["", "on", ""]);
 });
 
+it("fills the bars of photos already seen, like Instagram", async () => {
+  await startFromTelAviv();
+  const [near] = await screen.findAllByRole("article");
+  const slides = within(near).getAllByRole("group");
+  const bars = () =>
+    [...near.querySelectorAll(".stories-dots i")].map((d) =>
+      d.classList.contains("on") ? "on" : d.classList.contains("seen") ? "seen" : "",
+    );
+  expect(bars()).toEqual(["on", "", ""]);
+  act(() => observers.find((o) => o.targets.includes(slides[2]))!.fire(slides[2]));
+  expect(bars()).toEqual(["seen", "seen", "on"]);
+  // Going back empties the bars after the photo in view.
+  act(() => observers.find((o) => o.targets.includes(slides[1]))!.fire(slides[1]));
+  expect(bars()).toEqual(["seen", "on", ""]);
+});
+
 it("loads the YouTube player only on tap, at the moment, from the privacy-enhanced domain", async () => {
   await startFromTelAviv();
   const [near] = await screen.findAllByRole("article");
