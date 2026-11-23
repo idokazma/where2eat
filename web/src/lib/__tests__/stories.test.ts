@@ -229,6 +229,28 @@ describe("storyFrames", () => {
   });
 });
 
+describe("storyFrames for a place without a saved photo list", () => {
+  it("asks for the place's photos by position, as paid frames after the free first photo", () => {
+    const r = rest("a", { google_place_id: "ChIJx", photos: [] });
+    const frames = storyFrames(buildStories([r], TLV).near[0]);
+    expect(frames[0].photo).toEqual({ url: photo("a"), paid: false });
+    const rest_ = frames.slice(1).map((f) => f.photo);
+    expect(rest_.length).toBeGreaterThanOrEqual(3);
+    expect(rest_.every((p) => p.paid && /\/api\/photos\/place\/ChIJx\/\d+\?maxwidth=/.test(p.url))).toBe(true);
+    expect(rest_[0].url).toContain("/api/photos/place/ChIJx/0?");
+  });
+  it("adds nothing without a Google ID, when paid photos are off, or once a list is saved", () => {
+    expect(storyFrames(buildStories([rest("a", { photos: [] })], TLV).near[0])).toHaveLength(1);
+    const r = rest("a", { google_place_id: "ChIJx", photos: [] });
+    expect(storyFrames(buildStories([r], TLV).near[0], { extraPhotos: false })).toHaveLength(1);
+    const saved = rest("b", {
+      google_place_id: "ChIJy",
+      photos: [{ photo_reference: "places/ChIJy/photos/p1", photo_url: "", width: 1, height: 1 }],
+    });
+    expect(storyFrames(buildStories([saved], TLV).near[0]).some((f) => f.photo.url.includes("/photos/place/"))).toBe(false);
+  });
+});
+
 describe("storyFrames with stored photos", () => {
   it("pages through stored photos for free and never adds paid Google photos", () => {
     const r = rest("a", {

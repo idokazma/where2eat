@@ -11,6 +11,7 @@ import { isListed } from "@/lib/restaurant-visibility";
 import { getMapPreviewImage } from "@/lib/map-discovery";
 import { haversineDistance, type GeoCoords } from "@/lib/geo-utils";
 import { getPhotoProxyUrl, getStoredPhotoUrls, looksLikeLogo, validPhotos } from "@/lib/images";
+import { config } from "@/lib/config";
 
 export interface StorySlide {
   /** The restaurant record this mention belongs to (a merged duplicate may differ). */
@@ -331,7 +332,20 @@ export function storyPhotos(story: Story, { extraPhotos = true }: { extraPhotos?
         : null;
     if (photo && !photos.some((x) => x.url === photo.url)) photos.push(photo);
   }
+  // No saved photo list yet: ask for the place's photos by position. The API fetches the
+  // list once, saves it on the restaurant and caches each photo (owner decision 23.11.2026).
+  const placeId = story.restaurant.google_place_id;
+  if (placeId && validPhotos(story.restaurant).length === 0) {
+    for (let i = 0; i < PLACE_PHOTO_SLOTS; i++) photos.push({ url: placePhotoUrl(placeId, i), paid: true });
+  }
   return uniqueStoryPhotos(photos, story.restaurant);
+}
+
+/** How many photos to ask for when the place's photo list is not saved yet. */
+const PLACE_PHOTO_SLOTS = 5;
+
+function placePhotoUrl(placeId: string, index: number): string {
+  return `${config.apiUrl || ""}/api/photos/place/${encodeURIComponent(placeId)}/${index}?maxwidth=${STORY_PHOTO_WIDTH}`;
 }
 
 /** Explicit recorded alias identity, including the currently displayed fallback. */
