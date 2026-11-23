@@ -3,7 +3,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { Heart, MapPin, Navigation, Play, X, Loader2, ChevronLeft, ChevronRight, UtensilsCrossed } from "lucide-react";
+import { Heart, MapPin, Navigation, Play, X, Loader2, UtensilsCrossed } from "lucide-react";
 import { endpoints } from "@/lib/config";
 import { fetchEpisodeDetail } from "@/lib/api/episodes";
 import { useFavorites } from "@/contexts/favorites-context";
@@ -82,6 +82,27 @@ export function StoriesView({
   const [player, setPlayer] = useState<{ story: Story; slide: StorySlide } | null>(null);
   const [hint, setHint] = useState(false);
   const [held, setHeld] = useState(false);
+  // Holding pauses; a tap that ends a long hold is not a tap (Instagram behaviour).
+  // Decided when the press ends and used once, so a keyboard activation (no press) is
+  // never mistaken for the end of an earlier hold.
+  const pressStart = useRef(0);
+  const lastPressWasLong = useRef(false);
+  const LONG_PRESS_MS = 350;
+  const press = () => {
+    pressStart.current = Date.now();
+    lastPressWasLong.current = false;
+    setHeld(true);
+  };
+  const release = () => {
+    if (pressStart.current) lastPressWasLong.current = Date.now() - pressStart.current > LONG_PRESS_MS;
+    pressStart.current = 0;
+    setHeld(false);
+  };
+  const wasLongPress = () => {
+    const long = lastPressWasLong.current;
+    lastPressWasLong.current = false;
+    return long;
+  };
   const [tabHidden, setTabHidden] = useState(false);
   const [reducedMotion] = useState(
     () => typeof window !== "undefined" && !!window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches,
@@ -316,7 +337,7 @@ export function StoriesView({
             איפה אוכלים <span className="stories-hl">ליד?</span>
           </h1>
           <p className="stories-lead">
-            ביקורות מהפודקאסטים, מהקרוב לרחוק. החליקו למעלה למסעדה הבאה, והצידה לתמונה הבאה של המקום.
+            ביקורות מהפודקאסטים, מהקרוב לרחוק. הקישו בצד התמונה לתמונה הבאה או הקודמת, והחליקו למעלה למסעדה הבאה.
           </p>
           <div className="stories-card">
             <button className="stories-pill teal big" onClick={locate} disabled={locating || !restaurants}>
@@ -382,17 +403,17 @@ export function StoriesView({
           <X size={16} aria-hidden="true" />
         </Link>
       </div>
-      {hint && <div className="stories-hint">↕ מסעדה הבאה · ↔ תמונה הבאה · החזיקו לעצירה</div>}
+      {hint && <div className="stories-hint">הקשה בצד: תמונה · החלקה למעלה: מסעדה · החזקה: עצירה</div>}
       <div
         className="stories-feed"
         ref={feedRef}
         tabIndex={0}
         aria-label="סטוריז מסעדות"
-        onTouchStart={() => setHeld(true)}
-        onTouchEnd={(e) => e.touches.length === 0 && setHeld(false)}
-        onTouchCancel={() => setHeld(false)}
-        onMouseDown={() => setHeld(true)}
-        onMouseUp={() => setHeld(false)}
+        onTouchStart={press}
+        onTouchEnd={(e) => e.touches.length === 0 && release()}
+        onTouchCancel={release}
+        onMouseDown={press}
+        onMouseUp={release}
         onMouseLeave={() => setHeld(false)}
       >
         {!items.length && (
@@ -430,6 +451,9 @@ export function StoriesView({
               onSlide={(i, frames) => reach(item.story.restaurant.id!, i, frames)}
               onImageError={onImageError}
               onPlay={(slide) => openPlayer(item.story, slide)}
+              onPrevStory={() => goStory(-1)}
+              onNextStory={() => goStory(1)}
+              ignoreTap={wasLongPress}
               onSave={() => {
                 const key = favoriteKey(item.story.restaurant);
                 if (isSaved(item.story.restaurant, favorites)) removeFavorite(key);
@@ -492,6 +516,9 @@ function StoryView({
   onImageError,
   onPlay,
   onSave,
+  onPrevStory,
+  onNextStory,
+  ignoreTap,
 }: {
   story: Story;
   near: boolean;
@@ -508,6 +535,9 @@ function StoryView({
   onImageError: (url: string) => void;
   onPlay: (slide: StorySlide) => void;
   onSave: () => void;
+  onPrevStory: () => void;
+  onNextStory: () => void;
+  ignoreTap: () => boolean;
 }) {
   // The story's own photo, or the next free image of the same place when it failed.
   const image =
@@ -567,6 +597,12 @@ function StoryView({
     // onSlide is recreated each render; the observed frames only change with the story.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [frames, n]);
+  const tap = (target: number) => {
+    if (ignoreTap()) return;
+    if (target < 0) onPrevStory();
+    else if (target >= n) onNextStory();
+    else go(target);
+  };
   // Move only the photo strip: scrollIntoView could also scroll the vertical feed.
   const go = (i: number) => {
     const root = framesRef.current;
@@ -638,26 +674,11 @@ function StoryView({
                 />
               )}
               <div className="stories-shade" />
-              {n > 1 && (
-                <>
-                  <button
-                    className="stories-tap prev"
-                    onClick={() => go(i - 1)}
-                    aria-label="התמונה הקודמת"
-                    disabled={i === 0}
-                  >
-                    <ChevronRight size={22} aria-hidden="true" />
-                  </button>
-                  <button
-                    className="stories-tap next"
-                    onClick={() => go(i + 1)}
-                    aria-label="התמונה הבאה"
-                    disabled={i === n - 1}
-                  >
-                    <ChevronLeft size={22} aria-hidden="true" />
-                  </button>
-                </>
-              )}
+              {/* Instagram-style: tap a side to move. In Hebrew the next photo is to the left,
+                  so the left half goes forward and the right half back; past the first or last
+                  photo it moves to the previous or next restaurant. */}
+              <button className="stories-tap prev" onClick={() => tap(i - 1)} aria-label="התמונה הקודמת" />
+              <button className="stories-tap next" onClick={() => tap(i + 1)} aria-label="התמונה הבאה" />
             </div>
           );
         })}

@@ -216,7 +216,10 @@
   position: absolute;
   inset: 0;
   display: flex;
-  overflow-x: auto;
+  /* Photos change by tapping a side (or autoplay), not by sideways swipes; vertical
+     swipes still move between restaurants. Script scrolling still works when hidden. */
+  overflow-x: hidden;
+  touch-action: pan-y;
   scroll-snap-type: x mandatory;
   scrollbar-width: none;
 }
@@ -249,31 +252,28 @@
   color: #fff;
 }
 /* Tap the sides of a photo to move between photos (RTL: next is on the left). */
+/* Instagram-style tap halves over the whole photo (below the top bar). Invisible;
+   a keyboard focus ring only. */
 .stories-app .stories-tap {
   position: absolute;
-  top: calc(80px + env(safe-area-inset-top));
-  bottom: 52%;
-  width: 34%;
-  display: flex;
-  align-items: center;
-  padding: 0 8px;
+  top: calc(70px + env(safe-area-inset-top));
+  bottom: 0;
+  width: 50%;
+  padding: 0;
   border: 0;
   background: none;
-  color: #fff;
-  opacity: 0.6;
   cursor: pointer;
-  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.7));
+  -webkit-tap-highlight-color: transparent;
 }
 .stories-app .stories-tap.next {
   left: 0;
-  justify-content: flex-start;
 }
 .stories-app .stories-tap.prev {
   right: 0;
-  justify-content: flex-end;
 }
-.stories-app .stories-tap:disabled {
-  visibility: hidden;
+.stories-app .stories-tap:focus-visible {
+  outline: 3px solid var(--st-sun);
+  outline-offset: -6px;
 }
 .stories-content {
   position: absolute;
@@ -284,7 +284,9 @@
   color: #fff;
   pointer-events: none;
 }
-.stories-content > * {
+/* Taps on the name and details reach the tap halves; only links and buttons take taps. */
+.stories-content a,
+.stories-content button {
   pointer-events: auto;
 }
 /* globals.css colors every h2 and p; text over the photo must stay white. */
