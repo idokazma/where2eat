@@ -449,7 +449,7 @@ export function StoriesView({
           {toast}
         </div>
       )}
-      {hint && <div className="stories-hint">הקשה בצד: תמונה · החלקה למעלה: מסעדה · החזקה: עצירה</div>}
+      {hint && <div className="stories-hint">הקשה: תמונה הבאה · החלקה למעלה: מסעדה · החזקה: עצירה</div>}
       <div
         className="stories-feed"
         ref={feedRef}
@@ -723,9 +723,9 @@ function StoryView({
                 />
               )}
               <div className="stories-shade" />
-              {/* Instagram-style: tap a side to move. In Hebrew the next photo is to the left,
-                  so the left half goes forward and the right half back; past the first or last
-                  photo it moves to the previous or next restaurant. */}
+              {/* Instagram-style: a tap goes to the next photo; only a narrow strip at the
+                  right edge (the start side in Hebrew) goes back. Past the first or last photo
+                  it moves to the previous or next restaurant. */}
               <button className="stories-tap prev" onClick={() => tap(i - 1)} aria-label="התמונה הקודמת" />
               <button className="stories-tap next" onClick={() => tap(i + 1)} aria-label="התמונה הבאה" />
             </div>

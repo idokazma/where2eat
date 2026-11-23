@@ -254,11 +254,12 @@
 /* Tap the sides of a photo to move between photos (RTL: next is on the left). */
 /* Instagram-style tap halves over the whole photo (below the top bar). Invisible;
    a keyboard focus ring only. */
+/* Like Instagram, most of the photo moves forward: a tap anywhere goes to the next
+   photo, and only a narrow strip at the start edge (the right, in Hebrew) goes back. */
 .stories-app .stories-tap {
   position: absolute;
   top: calc(70px + env(safe-area-inset-top));
   bottom: 0;
-  width: 50%;
   padding: 0;
   border: 0;
   background: none;
@@ -267,9 +268,11 @@
 }
 .stories-app .stories-tap.next {
   left: 0;
+  width: 75%;
 }
 .stories-app .stories-tap.prev {
   right: 0;
+  width: 25%;
 }
 .stories-app .stories-tap:focus-visible {
   outline: 3px solid var(--st-sun);
