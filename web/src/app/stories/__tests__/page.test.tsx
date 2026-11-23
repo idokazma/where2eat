@@ -181,7 +181,11 @@ it("pages sideways through photos only; reviews stay on the story, other sources
   expect(within(near).getByText(/מדברים מהבטן 176 · 1:40/)).toBeInTheDocument();
   expect(within(near).getByText("נטעם")).toBeInTheDocument();
   // The second source is a chip on the story, not a sideways page.
-  expect(within(near).getByRole("button", { name: /יוצר אחר/ })).toBeInTheDocument();
+  fireEvent.click(within(near).getByRole("button", { name: /כל הסקירות \(2\)/ }));
+  const reviews = document.querySelector("dialog.stories-reviews")!;
+  expect(reviews.querySelectorAll("li")).toHaveLength(2);
+  expect(reviews.textContent).toContain("יוצר אחר");
+  expect(within(reviews as HTMLElement).getAllByRole("button", { name: /נגן ברגע הזה/ })).toHaveLength(2);
   for (const frame of frames) {
     expect(within(frame).queryByText(/יוצר אחר|מדברים מהבטן 176/)).toBeNull();
     expect(within(frame).queryByRole("button", { name: /נגן/ })).toBeNull();

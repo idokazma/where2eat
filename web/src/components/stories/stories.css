@@ -589,3 +589,38 @@
   box-shadow: var(--st-shadow);
   pointer-events: none;
 }
+
+/* All reviews of one place */
+.stories-reviews {
+  max-height: 80vh;
+  overflow-y: auto;
+}
+.stories-review-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.stories-review {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 10px 12px;
+  border: 2px solid var(--st-ink);
+  border-radius: 14px;
+  background: var(--st-paper);
+}
+.stories-review-src {
+  font-size: 13px;
+  font-weight: 700;
+}
+.stories-review-src .stories-tick {
+  margin-inline-end: 6px;
+}
+.stories-review-quote {
+  font-size: 16px;
+  line-height: 1.4;
+}

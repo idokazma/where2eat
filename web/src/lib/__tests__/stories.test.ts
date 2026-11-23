@@ -11,6 +11,7 @@ import {
   storyPhotoKey,
   shouldLoadStoryFrame,
   excerpt,
+  formatClock,
   momentStart,
   quoteFromEpisode,
   sourceLabel,
@@ -41,6 +42,17 @@ function rest(id: string, over: Partial<Record<keyof Restaurant, unknown>> = {})
     ...over,
   } as unknown as Restaurant;
 }
+
+describe("formatClock", () => {
+  it("formats a moment as m:ss", () => {
+    expect(formatClock(211)).toBe("3:31");
+    expect(formatClock(65.4)).toBe("1:05");
+  });
+  it("treats a missing or zero moment as no timestamp (it is not a real 0:00)", () => {
+    expect(formatClock(null)).toBeNull();
+    expect(formatClock(0)).toBeNull();
+  });
+});
 
 describe("excerpt", () => {
   it("keeps at most two sentences", () => {
@@ -167,6 +179,11 @@ describe("quoteFromEpisode", () => {
   it("falls back to the first transcript quote, unverified", () => {
     const q = quoteFromEpisode(detail([{ restaurant_id: "a", host_quotes: ["טעים מאוד"] }]), "a");
     expect(q).toEqual({ text: "טעים מאוד", verified: false });
+  });
+  it("skips a disclaimer-only quote for a later venue quote, else returns null", () => {
+    const d = "טוב, אבל יש דיסקליימר שאני חבר של השף";
+    expect(quoteFromEpisode(detail([{ restaurant_id: "a", host_quotes: [d, "המנה הייתה מעולה"] }]), "a")).toEqual({ text: "המנה הייתה מעולה", verified: false });
+    expect(quoteFromEpisode(detail([{ restaurant_id: "a", host_quotes: [d] }]), "a")).toBeNull();
   });
   it("returns null when the restaurant has no quote in the episode", () => {
     expect(quoteFromEpisode(detail([{ restaurant_id: "other", host_quotes: ["x"] }]), "a")).toBeNull();
