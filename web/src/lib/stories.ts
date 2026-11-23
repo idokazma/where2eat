@@ -361,3 +361,31 @@ export function storyGoogleFallback(story: Story): string[] {
   const ref = validPhotos(story.restaurant).find((p) => p.photo_reference)?.photo_reference;
   return ref ? [getPhotoProxyUrl(ref, STORY_PHOTO_WIDTH)] : [];
 }
+
+/** Link that opens the stories with this place first. */
+export function storyShareUrl(origin: string, restaurantId: string): string {
+  return `${origin}/?story=${encodeURIComponent(restaurantId)}`;
+}
+
+/** Message sent with a shared story: name and city, a short quote, the site name. */
+export function storyShareText(r: Restaurant, quote: string | null | undefined): string {
+  const title = [r.name_hebrew || r.name_english, r.location?.city].filter(Boolean).join(" · ");
+  const short = excerpt(quote, 120);
+  return [title, short ? `״${short}״` : null, "מצאתי ב-Where2Eat"].filter(Boolean).join("\n");
+}
+
+/**
+ * A shared place first (also when it is beyond the near radius, or merged into a
+ * twin record), the rest of the feed in its usual order. Unchanged when not found.
+ */
+export function pinStory(feed: StoryFeed, restaurantId: string): StoryFeed {
+  const matches = (s: Story) => s.restaurant.id === restaurantId || s.slides.some((m) => m.restaurantId === restaurantId);
+  const inNear = feed.near.find(matches);
+  const inFar = inNear ? undefined : feed.far.find(matches);
+  const story = inNear ?? inFar;
+  if (!story) return feed;
+  return {
+    near: [story, ...feed.near.filter((s) => s !== story)],
+    far: feed.far.filter((s) => s !== story),
+  };
+}

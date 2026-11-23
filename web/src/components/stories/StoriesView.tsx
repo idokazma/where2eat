@@ -3,7 +3,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { Heart, MapPin, Navigation, Play, X, Loader2, UtensilsCrossed } from "lucide-react";
+import { Heart, MapPin, Navigation, Play, Share2, X, Loader2, UtensilsCrossed } from "lucide-react";
 import { endpoints } from "@/lib/config";
 import { fetchEpisodeDetail } from "@/lib/api/episodes";
 import { useFavorites } from "@/contexts/favorites-context";
@@ -19,6 +19,9 @@ import {
   quoteFromEpisode,
   sourceLabel,
   storyFrames,
+  storyShareText,
+  storyShareUrl,
+  pinStory,
   storyPhotoKey,
   shouldLoadStoryFrame,
   storyGoogleFallback,
@@ -82,6 +85,12 @@ export function StoriesView({
   const [player, setPlayer] = useState<{ story: Story; slide: StorySlide } | null>(null);
   const [hint, setHint] = useState(false);
   const [held, setHeld] = useState(false);
+  // Sharing: a link with ?story=<id> opens with that place first.
+  const [sharedId] = useState(() =>
+    typeof window === "undefined" ? null : new URLSearchParams(window.location.search).get("story"),
+  );
+  const [sharing, setSharing] = useState(false);
+  const [toast, setToast] = useState<string | null>(null);
   // Holding pauses; a tap that ends a long hold is not a tap (Instagram behaviour).
   // Decided when the press ends and used once, so a keyboard activation (no press) is
   // never mistaken for the end of an earlier hold.
@@ -142,10 +151,11 @@ export function StoriesView({
     return [...counts].sort((a, b) => b[1] - a[1]);
   }, [restaurants]);
 
-  const feed = useMemo(
-    () => (origin && restaurants ? buildStories(restaurants, origin.coords, { radiusKm: RADIUS_KM, source }) : null),
-    [origin, restaurants, source],
-  );
+  const feed = useMemo(() => {
+    if (!origin || !restaurants) return null;
+    const built = buildStories(restaurants, origin.coords, { radiusKm: RADIUS_KM, source });
+    return sharedId ? pinStory(built, sharedId) : built;
+  }, [origin, restaurants, source, sharedId]);
 
   const items: Item[] = useMemo(() => {
     if (!feed) return [];
@@ -273,7 +283,38 @@ export function StoriesView({
     return () => document.removeEventListener("visibilitychange", onVisibility);
   }, []);
 
-  const autoplay = !!origin && !held && !player && !tabHidden && !reducedMotion;
+  const autoplay = !!origin && !held && !player && !sharing && !tabHidden && !reducedMotion;
+
+  useEffect(() => {
+    if (!toast) return;
+    const t = setTimeout(() => setToast(null), 2200);
+    return () => clearTimeout(t);
+  }, [toast]);
+
+  // The phone's share menu (WhatsApp, Instagram, Messages…); otherwise copy the link;
+  // if that fails too, open WhatsApp with the message ready.
+  const shareStory = async (story: Story) => {
+    const url = storyShareUrl(window.location.origin, story.restaurant.id!);
+    const lead = story.slides[0];
+    const text = storyShareText(story.restaurant, lead ? quoteFor(story, lead)?.text : null);
+    if (typeof navigator.share === "function") {
+      setSharing(true);
+      try {
+        await navigator.share({ title: story.restaurant.name_hebrew || "Where2Eat", text, url });
+      } catch {
+        // Closed without sharing.
+      } finally {
+        setSharing(false);
+      }
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(url);
+      setToast("הקישור הועתק");
+    } catch {
+      window.open(`https://wa.me/?text=${encodeURIComponent(`${text}\n${url}`)}`, "_blank", "noopener,noreferrer");
+    }
+  };
   // A new place in view (by hand or on its own) or a released finger restarts the count.
   useEffect(() => {
     if (!autoplay || current >= items.length - 1) return;
@@ -403,6 +444,11 @@ export function StoriesView({
           <X size={16} aria-hidden="true" />
         </Link>
       </div>
+      {toast && (
+        <div className="stories-toast" role="status">
+          {toast}
+        </div>
+      )}
       {hint && <div className="stories-hint">הקשה בצד: תמונה · החלקה למעלה: מסעדה · החזקה: עצירה</div>}
       <div
         className="stories-feed"
@@ -451,6 +497,7 @@ export function StoriesView({
               onSlide={(i, frames) => reach(item.story.restaurant.id!, i, frames)}
               onImageError={onImageError}
               onPlay={(slide) => openPlayer(item.story, slide)}
+              onShare={() => shareStory(item.story)}
               onPrevStory={() => goStory(-1)}
               onNextStory={() => goStory(1)}
               ignoreTap={wasLongPress}
@@ -519,6 +566,7 @@ function StoryView({
   onPrevStory,
   onNextStory,
   ignoreTap,
+  onShare,
 }: {
   story: Story;
   near: boolean;
@@ -538,6 +586,7 @@ function StoryView({
   onPrevStory: () => void;
   onNextStory: () => void;
   ignoreTap: () => boolean;
+  onShare: () => void;
 }) {
   // The story's own photo, or the next free image of the same place when it failed.
   const image =
@@ -748,6 +797,9 @@ function StoryView({
               <Navigation size={20} aria-hidden="true" />
             </a>
           )}
+          <button className="stories-round" onClick={onShare} aria-label={`שיתוף של ${r.name_hebrew}`}>
+            <Share2 size={20} aria-hidden="true" />
+          </button>
           <Link className="stories-pill" href={`/restaurant/${encodeURIComponent(r.id!)}`}>
             לביקורת ↗
           </Link>
