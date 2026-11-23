@@ -499,7 +499,6 @@ export function StoriesView({
               onImageError={onImageError}
               onPlay={(slide) => openPlayer(item.story, slide)}
               onShare={() => shareStory(item.story)}
-              onPrevStory={() => goStory(-1)}
               onNextStory={() => goStory(1)}
               ignoreTap={wasLongPress}
               onSave={() => {
@@ -564,7 +563,6 @@ function StoryView({
   onImageError,
   onPlay,
   onSave,
-  onPrevStory,
   onNextStory,
   ignoreTap,
   onShare,
@@ -584,7 +582,6 @@ function StoryView({
   onImageError: (url: string) => void;
   onPlay: (slide: StorySlide) => void;
   onSave: () => void;
-  onPrevStory: () => void;
   onNextStory: () => void;
   ignoreTap: () => boolean;
   onShare: () => void;
@@ -614,6 +611,7 @@ function StoryView({
   const visible = useMemo(() => visibleStoryFrameIndices(frames, image, r), [frames, image, r]);
   const visibleKey = visible.join(",");
   const n = frames.length;
+  const framesRef = useRef<HTMLDivElement>(null);
   // If the displayed backup aliases the active proxy slot, return to its free
   // representative without reindexing or granting a different paid reference.
   useEffect(() => {
@@ -626,7 +624,6 @@ function StoryView({
   }, [visibleKey, slideIndex]);
   const [loaded, setLoaded] = useState<Set<string>>(new Set());
   const imageLoaded = (url: string) => setLoaded((old) => old.has(url) ? old : new Set(old).add(url));
-  const framesRef = useRef<HTMLDivElement>(null);
   // An atomic automatic skip owns its destination until that slot intersects.
   // Late observer records for crossed slots must not restart failure recovery.
   const settlingAt = useRef<number | null>(null);
@@ -667,16 +664,16 @@ function StoryView({
     // onSlide is recreated each render; the observed frames only change with the story.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [frames, n, visibleKey]);
-  // A tap moves by VISIBLE position (a hidden alias slot is never a stop). Past the
-  // first or last visible photo it moves to the previous or next restaurant.
+  // A tap moves by VISIBLE position (a hidden alias slot is never a stop). Taps never go
+  // back to the previous place (a right-thumb tap on the back strip did exactly that): on
+  // the first visible photo the back strip moves forward like any tap. Swiping down
+  // returns to the previous place. Past the last visible photo a tap moves to the next one.
   const tap = (slot: number, dir: 1 | -1) => {
     if (ignoreTap()) return;
     const pos = visible.indexOf(slot);
     if (pos < 0) return;
-    if (dir < 0) {
-      if (pos === 0) onPrevStory();
-      else go(visible[pos - 1]);
-    } else if (pos >= visible.length - 1) onNextStory();
+    if (dir < 0 && pos > 0) go(visible[pos - 1]);
+    else if (pos >= visible.length - 1) onNextStory();
     else go(visible[pos + 1]);
   };
   // Move only the photo strip: scrollIntoView could also scroll the vertical feed.
@@ -775,8 +772,8 @@ function StoryView({
               )}
               <div className="stories-shade" />
               {/* Instagram-style: a tap goes to the next photo; only a narrow strip at the
-                  right edge (the start side in Hebrew) goes back. Past the first or last photo
-                  it moves to the previous or next restaurant. */}
+                  right edge (the start side in Hebrew) goes back to the previous photo of the
+                  same place. Past the last photo a tap moves to the next restaurant. */}
               <button className="stories-tap prev" onClick={() => tap(i, -1)} aria-label="התמונה הקודמת" />
               <button className="stories-tap next" onClick={() => tap(i, 1)} aria-label="התמונה הבאה" />
             </div>

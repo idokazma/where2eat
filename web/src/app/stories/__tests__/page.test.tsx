@@ -260,7 +260,8 @@ describe("Instagram-style taps", () => {
     expect(storyJumps(1)).toHaveLength(1);
   });
 
-  it("tapping back on a place's first photo moves to the previous restaurant, even with a single photo", async () => {
+  it("a tap on the back strip of a place's first photo never returns to the previous restaurant", async () => {
+    // Seen on a phone: a right-thumb tap on the second place went back to the first.
     await startFromTelAviv();
     const articles = await screen.findAllByRole("article");
     const far = articles[articles.length - 1]; // one photo only
@@ -269,7 +270,29 @@ describe("Instagram-style taps", () => {
     (Element.prototype.scrollIntoView as jest.Mock).mockClear();
     fireEvent.click(within(far).getByRole("button", { name: "התמונה הקודמת" }));
     const prevIndex = Number(slot.getAttribute("data-index")) - 1;
-    expect(storyJumps(prevIndex)).toHaveLength(1);
+    expect(storyJumps(prevIndex)).toHaveLength(0);
+  });
+
+  it("a tap on the back strip of a place's first photo moves forward like any tap", async () => {
+    await startFromTelAviv();
+    const [near] = await screen.findAllByRole("article");
+    const frames = within(near).getAllByRole("group");
+    expect(frames.length).toBeGreaterThan(1);
+    (Element.prototype.scrollBy as jest.Mock).mockClear();
+    fireEvent.click(within(frames[0]).getByRole("button", { name: "התמונה הקודמת" }));
+    expect(Element.prototype.scrollBy).toHaveBeenCalledTimes(1);
+    expect(storyJumps(0)).toHaveLength(0);
+  });
+
+  it("the back strip still goes to the previous photo of the same place", async () => {
+    await startFromTelAviv();
+    const [near] = await screen.findAllByRole("article");
+    const frames = within(near).getAllByRole("group");
+    (Element.prototype.scrollBy as jest.Mock).mockClear();
+    (Element.prototype.scrollIntoView as jest.Mock).mockClear();
+    fireEvent.click(within(frames[1]).getByRole("button", { name: "התמונה הקודמת" }));
+    expect(Element.prototype.scrollBy).toHaveBeenCalledTimes(1);
+    expect(Element.prototype.scrollIntoView).not.toHaveBeenCalled();
   });
 
   it("a tap at the end of a long hold does not move (holding only pauses)", async () => {
