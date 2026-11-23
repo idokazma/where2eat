@@ -5,6 +5,9 @@ import {
   publishedAtMs,
   DISTANCE_BANDS_KM,
   storyFrames,
+  storyShareUrl,
+  storyShareText,
+  pinStory,
   storyPhotoKey,
   shouldLoadStoryFrame,
   excerpt,
@@ -387,4 +390,41 @@ it("never classifies a direct Google API or logo as a free gallery photo", () =>
   ] });
   const frames = storyFrames(buildStories([r], TLV).near[0]);
   expect(frames.map((f) => f.photo.url)).toEqual([photo("a"), "https://owner.test/dish.jpg"]);
+});
+
+describe("sharing a story", () => {
+  it("links to the stories with that place first", () => {
+    expect(storyShareUrl("https://www.where2eat.rest", "abc 1")).toBe("https://www.where2eat.rest/?story=abc%201");
+  });
+
+  it("writes a short message with the name, city and a short quote", () => {
+    const r = rest("a", { name_hebrew: "בית תאילנדי", location: { city: "תל אביב", lat: 32.08, lng: 34.78 } });
+    expect(storyShareText(r, null)).toBe("בית תאילנדי · תל אביב\nמצאתי ב-Where2Eat");
+    const long = "המסעדה התאילנדית הכי טובה בעולם מחוץ לתאילנד, ".repeat(5);
+    const text = storyShareText(r, long);
+    expect(text.startsWith("בית תאילנדי · תל אביב\n״")).toBe(true);
+    expect(text.split("\n")[1].length).toBeLessThanOrEqual(122); // quote marks + 120 chars
+    expect(text.endsWith("מצאתי ב-Where2Eat")).toBe(true);
+  });
+
+  it("puts a shared place first, from the near list or beyond 50 km, and leaves the rest in order", () => {
+    const a = rest("a");
+    const b = rest("b", { location: { city: "תל אביב", lat: 32.09, lng: 34.79 } });
+    const far = rest("far", { location: { city: "חיפה", lat: 32.8, lng: 34.98 } });
+    const feed = buildStories([a, b, far], TLV);
+    expect(pinStory(feed, "b").near.map((s) => s.restaurant.id)).toEqual(["b", "a"]);
+    const pinnedFar = pinStory(feed, "far");
+    expect(pinnedFar.near.map((s) => s.restaurant.id)).toEqual(["far", "a", "b"]);
+    expect(pinnedFar.far).toEqual([]);
+    expect(pinStory(feed, "missing")).toBe(feed);
+  });
+
+  it("finds a shared place stored as a merged duplicate", () => {
+    const a = rest("a", { image_url: photo("x"), location: { city: "תל אביב", lat: 32.081, lng: 34.781 } });
+    const dup = rest("dup", { image_url: photo("x"), location: { city: "תל אביב", lat: 32.0812, lng: 34.7812 },
+      episode_info: { video_id: "vid_dup", video_url: "", channel_name: "מקור" } });
+    const other = rest("o", { location: { city: "תל אביב", lat: 32.08, lng: 34.78 } });
+    const feed = buildStories([a, dup, other], TLV);
+    expect(pinStory(feed, "dup").near[0].slides.some((s) => s.restaurantId === "dup")).toBe(true);
+  });
 });

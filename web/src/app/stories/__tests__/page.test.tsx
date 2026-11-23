@@ -716,3 +716,55 @@ it("keeps successful paid slots distinct on forward and reverse transitions", as
   }
   expect(within(near).getAllByRole("group")).toHaveLength(3);
 });
+
+describe("sharing a story", () => {
+  afterEach(() => {
+    delete (navigator as { share?: unknown }).share;
+    window.history.replaceState({}, "", "/");
+  });
+
+  it("opens the phone's share menu with a link to this place and a short message", async () => {
+    const share = jest.fn().mockResolvedValue(undefined);
+    Object.defineProperty(navigator, "share", { value: share, configurable: true });
+    await startFromTelAviv();
+    const [near] = await screen.findAllByRole("article");
+    fireEvent.click(within(near).getByRole("button", { name: /שיתוף/ }));
+    await waitFor(() => expect(share).toHaveBeenCalledTimes(1));
+    const arg = share.mock.calls[0][0];
+    expect(arg.url).toBe(`${window.location.origin}/?story=near`);
+    expect(arg.text).toContain("קרובה");
+    expect(arg.text).toContain("מצאתי ב-Where2Eat");
+  });
+
+  it("copies the link when the browser has no share menu", async () => {
+    const writeText = jest.fn().mockResolvedValue(undefined);
+    Object.defineProperty(navigator, "clipboard", { value: { writeText }, configurable: true });
+    await startFromTelAviv();
+    const [near] = await screen.findAllByRole("article");
+    fireEvent.click(within(near).getByRole("button", { name: /שיתוף/ }));
+    await waitFor(() => expect(writeText).toHaveBeenCalledWith(`${window.location.origin}/?story=near`));
+    expect(await screen.findByText("הקישור הועתק")).toBeInTheDocument();
+  });
+
+  it("a shared link opens with that place first", async () => {
+    window.history.replaceState({}, "", "/?story=far");
+    await startFromTelAviv();
+    const stories = await screen.findAllByRole("article");
+    expect(within(stories[0]).getByRole("heading").textContent).toBe("רחוקה בחיפה");
+  });
+
+  it("autoplay waits while the share menu is open", async () => {
+    jest.useFakeTimers();
+    try {
+      Object.defineProperty(navigator, "share", { value: jest.fn(() => new Promise(() => {})), configurable: true });
+      await startFromTelAviv();
+      const [near] = await screen.findAllByRole("article");
+      fireEvent.click(within(near).getByRole("button", { name: /שיתוף/ }));
+      (Element.prototype.scrollIntoView as jest.Mock).mockClear();
+      act(() => jest.advanceTimersByTime(15_000));
+      expect(Element.prototype.scrollIntoView).not.toHaveBeenCalled();
+    } finally {
+      jest.useRealTimers();
+    }
+  });
+});

@@ -566,3 +566,22 @@
   font-weight: 800;
   color: var(--st-cream);
 }
+
+/* Short confirmation, e.g. after copying a story link. */
+.stories-toast {
+  position: absolute;
+  z-index: 30;
+  top: calc(70px + env(safe-area-inset-top));
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  background: var(--st-paper);
+  color: var(--st-ink);
+  border: 2.5px solid var(--st-ink);
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-weight: 800;
+  font-size: 14px;
+  box-shadow: var(--st-shadow);
+  pointer-events: none;
+}
