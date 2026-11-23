@@ -41,6 +41,8 @@ export interface ContactInfo {
 }
 
 export interface RestaurantPhoto {
+  /** Direct URL explicitly resolved from this photo reference, when recorded. */
+  resolved_url?: string | null;
   photo_reference: string;
   photo_url: string;
   width: number;
