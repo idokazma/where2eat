@@ -243,6 +243,8 @@ export function samePlace(a: Restaurant, b: Restaurant): boolean {
   );
 }
 
+const DISCLAIMER_RE = /דיסקליימר|disclaimer/i;
+
 /** The quote the episode page shows for this restaurant: verified first, else the transcript. */
 export function quoteFromEpisode(detail: EpisodeDetail, restaurantId: string): StoryQuote | null {
   const groups = detail?.mentions ?? {};
@@ -253,7 +255,9 @@ export function quoteFromEpisode(detail: EpisodeDetail, restaurantId: string): S
     if ((m.linked_restaurant_id || m.restaurant_id) !== restaurantId) continue;
     const verified = excerpt(m.verified_quote?.text);
     if (verified) return { text: verified, verified: true };
-    const transcript = excerpt(m.host_quotes?.[0]);
+    // Recorded words stay as spoken; a quote that is only a disclaimer is skipped, not rewritten.
+    const own = (m.host_quotes ?? []).find((q) => !DISCLAIMER_RE.test(q || ""));
+    const transcript = excerpt(own);
     if (transcript) return { text: transcript, verified: false };
   }
   return null;

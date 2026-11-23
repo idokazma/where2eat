@@ -168,6 +168,11 @@ describe("quoteFromEpisode", () => {
     const q = quoteFromEpisode(detail([{ restaurant_id: "a", host_quotes: ["טעים מאוד"] }]), "a");
     expect(q).toEqual({ text: "טעים מאוד", verified: false });
   });
+  it("skips a disclaimer-only quote for a later venue quote, else returns null", () => {
+    const d = "טוב, אבל יש דיסקליימר שאני חבר של השף";
+    expect(quoteFromEpisode(detail([{ restaurant_id: "a", host_quotes: [d, "המנה הייתה מעולה"] }]), "a")).toEqual({ text: "המנה הייתה מעולה", verified: false });
+    expect(quoteFromEpisode(detail([{ restaurant_id: "a", host_quotes: [d] }]), "a")).toBeNull();
+  });
   it("returns null when the restaurant has no quote in the episode", () => {
     expect(quoteFromEpisode(detail([{ restaurant_id: "other", host_quotes: ["x"] }]), "a")).toBeNull();
   });
