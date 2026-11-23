@@ -244,6 +244,55 @@ it("moves to the next photo when the side of the photo is tapped", async () => {
   expect(jump).not.toHaveBeenCalled();
 });
 
+describe("Instagram-style taps", () => {
+  const storyJumps = (index: number) =>
+    (Element.prototype.scrollIntoView as jest.Mock).mock.contexts.filter(
+      (el) => el === document.querySelector(`[data-index="${index}"]`),
+    );
+
+  it("tapping forward on a place's last photo moves to the next restaurant", async () => {
+    await startFromTelAviv();
+    const [near] = await screen.findAllByRole("article");
+    const frames = within(near).getAllByRole("group");
+    (Element.prototype.scrollIntoView as jest.Mock).mockClear();
+    fireEvent.click(within(frames[frames.length - 1]).getByRole("button", { name: "התמונה הבאה" }));
+    expect(storyJumps(1)).toHaveLength(1);
+  });
+
+  it("tapping back on a place's first photo moves to the previous restaurant, even with a single photo", async () => {
+    await startFromTelAviv();
+    const articles = await screen.findAllByRole("article");
+    const far = articles[articles.length - 1]; // one photo only
+    const slot = far.closest("[data-index]")!;
+    act(() => observers.filter((o) => o.targets.includes(slot)).pop()!.fire(slot));
+    (Element.prototype.scrollIntoView as jest.Mock).mockClear();
+    fireEvent.click(within(far).getByRole("button", { name: "התמונה הקודמת" }));
+    const prevIndex = Number(slot.getAttribute("data-index")) - 1;
+    expect(storyJumps(prevIndex)).toHaveLength(1);
+  });
+
+  it("a tap at the end of a long hold does not move (holding only pauses)", async () => {
+    await startFromTelAviv();
+    const [near] = await screen.findAllByRole("article");
+    const frames = within(near).getAllByRole("group");
+    const now = jest.spyOn(Date, "now");
+    try {
+      now.mockReturnValue(1_000);
+      fireEvent.touchStart(screen.getByLabelText("סטוריז מסעדות"));
+      now.mockReturnValue(1_900); // held for 0.9 s
+      fireEvent.touchEnd(screen.getByLabelText("סטוריז מסעדות"));
+      (Element.prototype.scrollBy as jest.Mock).mockClear();
+      fireEvent.click(within(frames[0]).getByRole("button", { name: "התמונה הבאה" }));
+      expect(Element.prototype.scrollBy).not.toHaveBeenCalled();
+      // A later activation without a press (keyboard Enter) works again.
+      fireEvent.click(within(frames[0]).getByRole("button", { name: "התמונה הבאה" }));
+      expect(Element.prototype.scrollBy).toHaveBeenCalledTimes(1);
+    } finally {
+      now.mockRestore();
+    }
+  });
+});
+
 it("shows the episode page's verified quote in quotation marks", async () => {
   await startFromTelAviv();
   expect(await screen.findByText("״הפיצה הכי טובה בעיר״")).toBeInTheDocument();
