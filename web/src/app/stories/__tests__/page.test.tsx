@@ -706,12 +706,44 @@ describe("autoplay", () => {
     (Element.prototype.scrollBy as jest.Mock).mockClear();
     (Element.prototype.scrollTo as jest.Mock).mockClear();
     fireEvent.touchStart(feedEl());
+    act(() => jest.advanceTimersByTime(300)); // the finger stays down: now it is a hold
     act(() => jest.advanceTimersByTime(15_000));
     expect(nextStoryCalls()).toHaveLength(0);
     expect(stripMoves(near)).toHaveLength(0);
     fireEvent.touchEnd(feedEl());
     act(() => jest.advanceTimersByTime(10_100));
     expect(nextStoryCalls()).toHaveLength(1);
+  });
+
+  it("a quick tap does not pause, so the running bar never restarts (no empty flash)", async () => {
+    await startFromTelAviv();
+    const [near] = await screen.findAllByRole("article");
+    act(() => jest.advanceTimersByTime(1_000));
+    const bar = near.querySelector(".stories-dots i.run");
+    expect(bar).not.toBeNull();
+    const seen: string[] = [];
+    const watch = new MutationObserver(() => seen.push(bar!.className));
+    watch.observe(bar!, { attributes: true });
+    fireEvent.touchStart(feedEl());
+    act(() => jest.advanceTimersByTime(120));
+    fireEvent.touchEnd(feedEl());
+    act(() => jest.advanceTimersByTime(50));
+    watch.disconnect();
+    // Same element, still running: not swapped for a paused bar and remounted from empty.
+    expect(near.querySelector(".stories-dots i.run")).toBe(bar);
+    expect(bar!.isConnected).toBe(true);
+    expect(seen.every((c) => c.includes("run"))).toBe(true);
+  });
+
+  it("a finger kept down pauses once it is a hold", async () => {
+    await startFromTelAviv();
+    const [near] = await screen.findAllByRole("article");
+    fireEvent.touchStart(feedEl());
+    act(() => jest.advanceTimersByTime(400));
+    expect(near.querySelector(".stories-dots i.run")).toBeNull();
+    fireEvent.touchEnd(feedEl());
+    act(() => jest.advanceTimersByTime(50));
+    expect(near.querySelector(".stories-dots i.run")).not.toBeNull();
   });
 
   it("holds while the video player is open", async () => {

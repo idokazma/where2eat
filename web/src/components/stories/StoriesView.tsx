@@ -98,16 +98,26 @@ export function StoriesView({
   const pressStart = useRef(0);
   const lastPressWasLong = useRef(false);
   const LONG_PRESS_MS = 350;
+  // Pause only once a finger stays down: pausing on every touch restarted the running
+  // bar on release, so a quick tap flashed the bar empty before the next photo came in.
+  const HOLD_DELAY_MS = 200;
+  const holdTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const press = () => {
     pressStart.current = Date.now();
     lastPressWasLong.current = false;
-    setHeld(true);
+    if (holdTimer.current) clearTimeout(holdTimer.current);
+    holdTimer.current = setTimeout(() => setHeld(true), HOLD_DELAY_MS);
   };
   const release = () => {
     if (pressStart.current) lastPressWasLong.current = Date.now() - pressStart.current > LONG_PRESS_MS;
     pressStart.current = 0;
+    if (holdTimer.current) clearTimeout(holdTimer.current);
+    holdTimer.current = null;
     setHeld(false);
   };
+  useEffect(() => () => {
+    if (holdTimer.current) clearTimeout(holdTimer.current);
+  }, []);
   const wasLongPress = () => {
     const long = lastPressWasLong.current;
     lastPressWasLong.current = false;
@@ -461,7 +471,11 @@ export function StoriesView({
         onTouchCancel={release}
         onMouseDown={press}
         onMouseUp={release}
-        onMouseLeave={() => setHeld(false)}
+        onMouseLeave={() => {
+          if (holdTimer.current) clearTimeout(holdTimer.current);
+          holdTimer.current = null;
+          setHeld(false);
+        }}
       >
         {!items.length && (
           <section className="stories-divider" data-index={0}>
