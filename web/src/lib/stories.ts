@@ -320,9 +320,9 @@ export function storyPhotos(story: Story, { extraPhotos = true }: { extraPhotos?
   const stored = getStoredPhotoUrls(story.restaurant);
   if (stored.length > 0) {
     for (const url of stored) if (!photos.some((p) => p.url === url)) photos.push({ url, paid: false });
-    return uniqueStoryPhotos(photos);
+    return uniqueStoryPhotos(photos, story.restaurant);
   }
-  if (!extraPhotos) return uniqueStoryPhotos(photos);
+  if (!extraPhotos) return uniqueStoryPhotos(photos, story.restaurant);
   for (const p of validPhotos(story.restaurant)) {
     const photo: StoryPhoto | null = p.photo_reference
       ? { url: getPhotoProxyUrl(p.photo_reference, STORY_PHOTO_WIDTH), paid: true }
@@ -331,17 +331,40 @@ export function storyPhotos(story: Story, { extraPhotos = true }: { extraPhotos?
         : null;
     if (photo && !photos.some((x) => x.url === photo.url)) photos.push(photo);
   }
-  return uniqueStoryPhotos(photos);
+  return uniqueStoryPhotos(photos, story.restaurant);
 }
 
-function uniqueStoryPhotos(photos: StoryPhoto[]): StoryPhoto[] {
+/** Explicit recorded alias identity, including the currently displayed fallback. */
+export function storyPhotoIdentity(url: string, restaurant: Restaurant): string {
+  const aliases = new Map<string, Set<string>>();
+  for (const p of validPhotos(restaurant)) {
+    if (!p.photo_reference) continue;
+    const key = storyPhotoKey(getPhotoProxyUrl(p.photo_reference, STORY_PHOTO_WIDTH));
+    for (const url of [p.resolved_url, p.photo_url]) {
+      if (!url) continue;
+      const keys = aliases.get(url) ?? new Set<string>();
+      keys.add(key);
+      aliases.set(url, keys);
+    }
+  }
+  const explicit = aliases.get(url);
+  return explicit?.size === 1 ? [...explicit][0] : storyPhotoKey(url);
+}
+
+function uniqueStoryPhotos(photos: StoryPhoto[], restaurant: Restaurant): StoryPhoto[] {
   const seen = new Set<string>();
   return photos.filter((p) => {
-    const key = storyPhotoKey(p.url);
+    const key = storyPhotoIdentity(p.url, restaurant);
     if (seen.has(key)) return false;
     seen.add(key);
     return true;
   });
+}
+
+/** Retain original slot IDs, but hide any proxy alias of the current backdrop. */
+export function visibleStoryFrameIndices(frames: StoryFrame[], image: string | null, restaurant: Restaurant): number[] {
+  const primary = image ? storyPhotoIdentity(image, restaurant) : null;
+  return frames.flatMap((f, i) => i === 0 || !primary || storyPhotoIdentity(f.photo.url, restaurant) !== primary ? [i] : []);
 }
 
 /**

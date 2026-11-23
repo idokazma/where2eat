@@ -23,6 +23,7 @@ import {
   storyShareUrl,
   pinStory,
   storyPhotoKey,
+  visibleStoryFrameIndices,
   shouldLoadStoryFrame,
   storyGoogleFallback,
   youtubeEmbedUrl,
@@ -607,10 +608,25 @@ function StoryView({
   };
   const currentFailed = slotFailed(slideIndex);
   const allFailed = frames.every((_, i) => slotFailed(i));
+  const visible = useMemo(() => visibleStoryFrameIndices(frames, image, r), [frames, image, r]);
+  const visibleKey = visible.join(",");
   const n = frames.length;
+  const framesRef = useRef<HTMLDivElement>(null);
+  // If the displayed backup aliases the active proxy slot, return to its free
+  // representative without reindexing or granting a different paid reference.
+  useEffect(() => {
+    if (visible.includes(slideIndex)) return;
+    onSlide(0, frames);
+    const root = framesRef.current;
+    const first = root?.querySelector<HTMLElement>('[data-slide="0"]');
+    if (root && first) root.scrollLeft += first.getBoundingClientRect().left - root.getBoundingClientRect().left;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [visibleKey, slideIndex]);
   const [loaded, setLoaded] = useState<Set<string>>(new Set());
   const imageLoaded = (url: string) => setLoaded((old) => old.has(url) ? old : new Set(old).add(url));
-  const framesRef = useRef<HTMLDivElement>(null);
+  // An atomic automatic skip owns its destination until that slot intersects.
+  // Late observer records for crossed slots must not restart failure recovery.
+  const settlingAt = useRef<number | null>(null);
   // Sideways pages are photos. The review (best source first) stays on the story.
   const primary = story.slides[0] ?? null;
   const primaryQuote = primary ? quoteFor(story, primary) : null;
@@ -634,40 +650,69 @@ function StoryView({
     const io = new IntersectionObserver(
       (entries) => {
         for (const e of entries)
-          if (e.isIntersecting) onSlide(Number((e.target as HTMLElement).dataset.slide), frames);
+          if (e.isIntersecting && visible.includes(Number((e.target as HTMLElement).dataset.slide))) {
+            const index = Number((e.target as HTMLElement).dataset.slide);
+            if (settlingAt.current !== null && settlingAt.current !== index) continue;
+            settlingAt.current = null;
+            onSlide(index, frames);
+          }
       },
       { root, threshold: 0.6 },
     );
-    root.querySelectorAll("[data-slide]").forEach((el) => io.observe(el));
+    root.querySelectorAll<HTMLElement>("[data-slide]").forEach((el) => { if (!el.hidden) io.observe(el); });
     return () => io.disconnect();
     // onSlide is recreated each render; the observed frames only change with the story.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [frames, n]);
-  const tap = (to: number) => {
-    let target = to;
+  }, [frames, n, visibleKey]);
+  // A tap moves by VISIBLE position (a hidden alias slot is never a stop). Taps never go
+  // back to the previous place (a right-thumb tap on the back strip did exactly that): on
+  // the first visible photo the back strip moves forward like any tap. Swiping down
+  // returns to the previous place. Past the last visible photo a tap moves to the next one.
+  const tap = (slot: number, dir: 1 | -1) => {
     if (ignoreTap()) return;
-    // Taps never go back to the previous place (a right-thumb tap on the back strip did
-    // exactly that); on the first photo the back strip moves forward like any tap.
-    // Swiping down returns to the previous place.
-    if (target < 0) target = 1;
-    if (target >= n) onNextStory();
-    else go(target);
+    const pos = visible.indexOf(slot);
+    if (pos < 0) return;
+    if (dir < 0 && pos > 0) go(visible[pos - 1]);
+    else if (pos >= visible.length - 1) onNextStory();
+    else go(visible[pos + 1]);
   };
   // Move only the photo strip: scrollIntoView could also scroll the vertical feed.
-  const go = (i: number) => {
+  const go = (i: number, instant = false) => {
     const root = framesRef.current;
-    const target = root?.querySelector<HTMLElement>(`[data-slide="${Math.max(0, Math.min(n - 1, i))}"]`);
+    const direction = i >= slideIndex ? 1 : -1;
+    const requested = Math.max(0, Math.min(n - 1, i));
+    const targetIndex = visible.includes(requested) ? requested :
+      (direction > 0 ? visible.find((j) => j > requested) : [...visible].reverse().find((j) => j < requested));
+    if (targetIndex === undefined) return;
+    const target = root?.querySelector<HTMLElement>(`[data-slide="${targetIndex}"]`);
     if (!root || !target) return;
-    root.scrollBy?.({
-      left: target.getBoundingClientRect().left - root.getBoundingClientRect().left,
-      behavior: smooth ? "smooth" : "auto",
-    });
+    settlingAt.current = instant ? targetIndex : null;
+    const delta = target.getBoundingClientRect().left - root.getBoundingClientRect().left;
+    if (instant) {
+      // Relative scrollBy is a directional scroll: scroll-snap-stop:always can
+      // trap it at an intervening failed slot. Absolute endpoint navigation
+      // targets the requested snap area, preserving ordinary gesture snapping.
+      root.scrollTo?.({ left: root.scrollLeft + delta, behavior: "instant" as ScrollBehavior });
+    } else {
+      root.scrollBy?.({ left: delta, behavior: smooth ? "smooth" : "instant" as ScrollBehavior });
+    }
   };
   // Next photo every few seconds while this place is in view, back to the first after the last.
   useEffect(() => {
-    if (!autoplay || n < 2 || allFailed) return;
+    if (!autoplay || visible.length < 2 || allFailed) return;
     if (!currentFailed) {
-      const t = setTimeout(() => go((slideIndex + 1) % n), PHOTO_MS);
+      // Never rotate back onto a known failed slot. If only this working image
+      // remains, hold it rather than animate a fake change over the same backdrop.
+      const next = Array.from({ length: n - 1 }, (_, k) => (slideIndex + 1 + k) % n).find(
+        (j) => visible.includes(j) && !slotFailed(j),
+      );
+      if (next === undefined) return;
+      // A smooth jump across failed slots would make the observer report an
+      // intermediate failed slot as current, whose recovery interrupts the jump.
+      // Skip those slots atomically; keep ordinary adjacent/manual moves smooth.
+      const crossesFailed = Array.from({ length: (next - slideIndex + n) % n }, (_, k) =>
+        (slideIndex + 1 + k) % n).some((j) => visible.includes(j) && slotFailed(j));
+      const t = setTimeout(() => go(next, crossesFailed), PHOTO_MS);
       return () => clearTimeout(t);
     }
     // A failed slot: skip ahead to the next free photo that has not failed (wrapping to
@@ -675,17 +720,17 @@ function StoryView({
     // Google references fail in chains, and each attempt is a paid request. A tap on
     // "next" still opens one deliberately.
     const next = Array.from({ length: n - 1 }, (_, k) => (slideIndex + 1 + k) % n).find(
-      (j) => !frames[j].photo.paid && !slotFailed(j),
+      (j) => visible.includes(j) && !frames[j].photo.paid && !slotFailed(j),
     );
     if (next === undefined) return;
-    const t = setTimeout(() => go(next), SKIP_FAILED_MS);
+    const t = setTimeout(() => go(next, true), SKIP_FAILED_MS);
     return () => clearTimeout(t);
     // go only reads refs and n.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [autoplay, slideIndex, n, currentFailed, allFailed]);
+  }, [autoplay, slideIndex, n, currentFailed, allFailed, visibleKey, failed, failedImages]);
 
   return (
-    <article className="stories-story" aria-label={r.name_hebrew}>
+    <article className="stories-story" aria-label={r.name_hebrew} onPointerDown={() => { settlingAt.current = null; }}>
       {near && image ? (
         <img className="stories-bg" src={image} alt="" onLoad={() => imageLoaded(image)} onError={() => onImageError(image)} />
       ) : near ? (
@@ -701,18 +746,20 @@ function StoryView({
           // next image, after the current image loaded. Paid frames never preload.
           const own = frame.photo.url === image;
           const show =
-            near && !own && !failed.has(frame.photo.url) && !failedImages.has(frame.photo.url) && shouldLoadStoryFrame(
-              frames, i, slideIndex, active,
-              loaded.has(frames[slideIndex]?.photo.url), granted,
+            near && visible.includes(i) && !own && !failed.has(frame.photo.url) && !failedImages.has(frame.photo.url) && shouldLoadStoryFrame(
+              visible.map((j) => frames[j]), visible.indexOf(i), visible.indexOf(slideIndex), active,
+              loaded.has(slotUrl(slideIndex)), granted,
             );
           return (
             <div
               key={storyPhotoKey(frame.photo.url)}
               className="stories-frame"
               data-slide={i}
+              hidden={!visible.includes(i)}
+              style={!visible.includes(i) ? { display: "none" } : undefined}
               role="group"
               aria-roledescription="תמונה"
-              aria-label={`תמונה ${i + 1} מתוך ${n}`}
+              aria-label={`תמונה ${visible.indexOf(i) + 1} מתוך ${visible.length}`}
             >
               {show && (
                 <img
@@ -727,8 +774,8 @@ function StoryView({
               {/* Instagram-style: a tap goes to the next photo; only a narrow strip at the
                   right edge (the start side in Hebrew) goes back to the previous photo of the
                   same place. Past the last photo a tap moves to the next restaurant. */}
-              <button className="stories-tap prev" onClick={() => tap(i - 1)} aria-label="התמונה הקודמת" />
-              <button className="stories-tap next" onClick={() => tap(i + 1)} aria-label="התמונה הבאה" />
+              <button className="stories-tap prev" onClick={() => tap(i, -1)} aria-label="התמונה הקודמת" />
+              <button className="stories-tap next" onClick={() => tap(i, 1)} aria-label="התמונה הבאה" />
             </div>
           );
         })}
@@ -760,9 +807,9 @@ function StoryView({
           )}
         </div>
       )}
-      {n > 1 && (
+      {visible.length > 1 && (
         <div className="stories-dots" aria-hidden="true">
-          {frames.map((_, i) => (
+          {visible.map((i) => (
             <i
               key={i === slideIndex && autoplay ? `run-${slideIndex}` : i}
               className={i === slideIndex ? (autoplay ? "on run" : "on") : ""}

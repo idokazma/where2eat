@@ -428,3 +428,38 @@ describe("sharing a story", () => {
     expect(pinStory(feed, "dup").near[0].slides.some((s) => s.restaurantId === "dup")).toBe(true);
   });
 });
+
+describe("explicit resolved photo aliases", () => {
+  const direct = "https://lh3.googleusercontent.com/recorded-photo=s4800-w800";
+  const google = (id: string, resolved: string, place = "P1") => ({
+    photo_reference: `places/${place}/photos/${id}`, photo_url: "", resolved_url: resolved,
+    width: 800, height: 600,
+  });
+  it("keeps a Maayan-like primary and removes only its first-reference alias", () => {
+    const photos = Array.from({ length: 5 }, (_, i) => google(`ref${i}`, i ? `${direct}-${i}` : direct));
+    const r = rest("maayan", { image_url: direct, google_places: { place_id: "P1" }, photos });
+    const frames = storyFrames(buildStories([r], TLV).near[0]);
+    expect(frames).toHaveLength(5);
+    expect(frames[0].photo).toEqual({ url: direct, paid: false });
+    expect(frames.slice(1).map((f) => f.photo.url)).toEqual(
+      [1, 2, 3, 4].map((i) => expect.stringContaining(`/photos/ref${i}?`)));
+    expect(r.photos).toHaveLength(5); // no data/gallery/provenance deletion
+  });
+  it("does not guess that a different CDN size or crop is the same photo", () => {
+    const r = rest("a", { image_url: direct.replace("w800", "w900"),
+      photos: [google("ref0", direct)], google_places: { place_id: "P1" } });
+    expect(storyFrames(buildStories([r], TLV).near[0])).toHaveLength(2);
+  });
+  it("ignores another place's alias and leaves ambiguous ref mappings separate", () => {
+    const r = rest("a", { image_url: direct, google_places: { place_id: "P1" },
+      photos: [google("ref0", direct, "OTHER"), google("ref1", direct), google("ref2", direct)] });
+    const frames = storyFrames(buildStories([r], TLV).near[0]);
+    expect(frames).toHaveLength(3);
+    expect(frames.some((f) => f.photo.url.includes("OTHER"))).toBe(false);
+  });
+  it("recognizes the explicitly recorded photo_url alias too", () => {
+    const r = rest("a", { image_url: direct, google_places: { place_id: "P1" },
+      photos: [{ ...google("ref0", ""), photo_url: direct }] });
+    expect(storyFrames(buildStories([r], TLV).near[0])).toHaveLength(1);
+  });
+});
