@@ -84,6 +84,9 @@ export function StoriesView({
   // Paid Google photos granted this visit: only ones the viewer moved to, up to the limit.
   const [granted, setGranted] = useState<Set<string>>(new Set());
   const [player, setPlayer] = useState<{ story: Story; slide: StorySlide } | null>(null);
+  // All reviews of one place, opened from its card. Separate from the photo strip.
+  const [reviewsFor, setReviewsFor] = useState<Story | null>(null);
+  const reviewsRef = useRef<HTMLDialogElement>(null);
   const [hint, setHint] = useState(false);
   const [held, setHeld] = useState(false);
   // Sharing: a link with ?story=<id> opens with that place first.
@@ -294,7 +297,7 @@ export function StoriesView({
     return () => document.removeEventListener("visibilitychange", onVisibility);
   }, []);
 
-  const autoplay = !!origin && !held && !player && !sharing && !tabHidden && !reducedMotion;
+  const autoplay = !!origin && !held && !player && !reviewsFor && !sharing && !tabHidden && !reducedMotion;
 
   useEffect(() => {
     if (!toast) return;
@@ -337,6 +340,18 @@ export function StoriesView({
     setPlayer({ story, slide });
     dialogRef.current?.showModal();
   };
+  const openReviews = (story: Story) => {
+    setReviewsFor(story);
+    reviewsRef.current?.showModal();
+  };
+  const closeReviews = () => {
+    reviewsRef.current?.close();
+    setReviewsFor(null);
+  };
+  const playFromReviews = (story: Story, slide: StorySlide) => {
+    closeReviews();
+    openPlayer(story, slide);
+  };
   const closePlayer = () => {
     dialogRef.current?.close();
     setPlayer(null);
@@ -345,7 +360,7 @@ export function StoriesView({
   useEffect(() => {
     if (!origin) return;
     const onKey = (e: KeyboardEvent) => {
-      if (player) return;
+      if (player || reviewsFor) return;
       if (e.key === "ArrowDown" || e.key === "PageDown") {
         e.preventDefault();
         goStory(1);
@@ -356,7 +371,7 @@ export function StoriesView({
     };
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
-  }, [origin, player, goStory]);
+  }, [origin, player, reviewsFor, goStory]);
 
   if (autoLocating || (origin && !restaurants && !loadError)) {
     return (
@@ -512,6 +527,7 @@ export function StoriesView({
               onSlide={(i, frames) => reach(item.story.restaurant.id!, i, frames)}
               onImageError={onImageError}
               onPlay={(slide) => openPlayer(item.story, slide)}
+              onReviews={() => openReviews(item.story)}
               onShare={() => shareStory(item.story)}
               onNextStory={() => goStory(1)}
               ignoreTap={wasLongPress}
@@ -526,6 +542,45 @@ export function StoriesView({
           ),
         )}
       </div>
+      <dialog ref={reviewsRef} className="stories-sheet stories-reviews" onClose={() => setReviewsFor(null)} aria-label="כל הסקירות">
+        {reviewsFor && (
+          <>
+            <header>
+              <h2>
+                {reviewsFor.restaurant.name_hebrew} · {reviewsFor.slides.length} סקירות
+              </h2>
+              <button className="stories-x" onClick={closeReviews} aria-label="סגירה">
+                <X size={18} aria-hidden="true" />
+              </button>
+            </header>
+            <ul className="stories-review-list">
+              {reviewsFor.slides.map((slide) => {
+                const q = quoteFor(reviewsFor, slide);
+                const published = episodes[slide.videoId]?.episode?.published_at;
+                const date = published && !Number.isNaN(Date.parse(published))
+                  ? new Date(published).toLocaleDateString("he-IL", { year: "numeric", month: "long" })
+                  : null;
+                return (
+                  <li key={`${slide.videoId}@${slide.seconds ?? ""}`} className="stories-review">
+                    <p className="stories-review-src">
+                      {slide.tasted && <span className="stories-tick">נטעם</span>}
+                      <strong>{sourceLabel(slide)}</strong>
+                      {date ? ` · ${date}` : ""}
+                      {formatClock(slide.seconds) ? ` · ${formatClock(slide.seconds)}` : ""}
+                    </p>
+                    <p className="stories-review-quote">
+                      {q ? (q.verified ? `״${q.text}״` : q.text) : "אין ציטוט זמין לסקירה הזו"}
+                    </p>
+                    <button className="stories-pill sun" onClick={() => playFromReviews(reviewsFor, slide)}>
+                      <Play size={14} aria-hidden="true" /> נגן ברגע הזה
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          </>
+        )}
+      </dialog>
       <dialog ref={dialogRef} className="stories-sheet" onClose={() => setPlayer(null)} aria-label="נגן">
         {player && (
           <>
@@ -576,6 +631,7 @@ function StoryView({
   onSlide,
   onImageError,
   onPlay,
+  onReviews,
   onSave,
   onNextStory,
   ignoreTap,
@@ -595,6 +651,7 @@ function StoryView({
   onSlide: (i: number, frames: StoryFrame[]) => void;
   onImageError: (url: string) => void;
   onPlay: (slide: StorySlide) => void;
+  onReviews: () => void;
   onSave: () => void;
   onNextStory: () => void;
   ignoreTap: () => boolean;
@@ -811,12 +868,9 @@ function StoryView({
           </button>
           {story.slides.length > 1 && (
             <div className="stories-more">
-              {story.slides.slice(1, 4).map((m) => (
-                <button key={`${m.videoId}@${m.seconds ?? ""}`} className="stories-chip" onClick={() => onPlay(m)}>
-                  <Play size={12} aria-hidden="true" /> {sourceLabel(m)}
-                  {formatClock(m.seconds) ? ` · ${formatClock(m.seconds)}` : ""}
-                </button>
-              ))}
+              <button className="stories-chip" onClick={onReviews}>
+                כל הסקירות ({story.slides.length})
+              </button>
             </div>
           )}
         </div>
