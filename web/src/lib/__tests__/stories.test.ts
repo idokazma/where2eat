@@ -11,6 +11,7 @@ import {
   storyPhotoKey,
   shouldLoadStoryFrame,
   excerpt,
+  formatClock,
   momentStart,
   quoteFromEpisode,
   sourceLabel,
@@ -41,6 +42,17 @@ function rest(id: string, over: Partial<Record<keyof Restaurant, unknown>> = {})
     ...over,
   } as unknown as Restaurant;
 }
+
+describe("formatClock", () => {
+  it("formats a moment as m:ss", () => {
+    expect(formatClock(211)).toBe("3:31");
+    expect(formatClock(65.4)).toBe("1:05");
+  });
+  it("treats a missing or zero moment as no timestamp (it is not a real 0:00)", () => {
+    expect(formatClock(null)).toBeNull();
+    expect(formatClock(0)).toBeNull();
+  });
+});
 
 describe("excerpt", () => {
   it("keeps at most two sentences", () => {

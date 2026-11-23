@@ -284,7 +284,8 @@ export function sourceLabel(s: Pick<StorySlide, "channel" | "episodeTitle">): st
 }
 
 export function formatClock(seconds: number | null): string | null {
-  if (seconds == null) return null;
+  // 0 is how a mention without a recorded moment comes back: show no time, not "0:00".
+  if (seconds == null || seconds <= 0) return null;
   const s = Math.max(0, Math.round(seconds));
   return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
 }

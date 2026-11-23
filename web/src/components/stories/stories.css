@@ -617,6 +617,9 @@
   font-size: 13px;
   font-weight: 700;
 }
+.stories-review-src .stories-tick {
+  margin-inline-end: 6px;
+}
 .stories-review-quote {
   font-size: 16px;
   line-height: 1.4;
