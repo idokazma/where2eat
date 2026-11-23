@@ -8,6 +8,7 @@ removes the saved copies.
 """
 
 import hashlib
+import json
 import os
 import time
 from pathlib import Path
@@ -101,6 +102,73 @@ def get_api_key() -> str:
             detail="Google Places API key not configured"
         )
     return api_key
+
+
+def _place_photo_names(place_id: str) -> Optional[List[str]]:
+    """The saved photo names of our restaurant with this Google ID; None when it is not ours."""
+    from database import Database
+    with Database().get_connection() as conn:
+        row = conn.execute("SELECT photos FROM restaurants WHERE google_place_id = ? LIMIT 1",
+                           (place_id,)).fetchone()
+    if row is None:
+        return None
+    try:
+        photos = json.loads(row["photos"] or "[]")
+        while isinstance(photos, str):
+            photos = json.loads(photos)
+    except (TypeError, ValueError):
+        photos = []
+    return [p["photo_reference"] for p in photos if isinstance(p, dict) and p.get("photo_reference")]
+
+
+def _save_place_photo_names(place_id: str, details: list) -> None:
+    """Keep the list on every restaurant row with this Google ID that has none yet."""
+    from database import Database
+    photos = [{"photo_reference": p["name"], "photo_url": "", "width": p.get("widthPx"),
+               "height": p.get("heightPx")} for p in details if p.get("name")]
+    with Database().get_connection() as conn:
+        conn.execute("UPDATE restaurants SET photos = ? WHERE google_place_id = ? "
+                     "AND (photos IS NULL OR photos IN ('', '[]', 'null'))",
+                     (json.dumps(photos, ensure_ascii=False), place_id))
+
+
+@router.get(
+    "/place/{place_id}/{index}",
+    summary="A place's n-th Google photo, for places whose photo list is not saved yet",
+    response_class=Response,
+)
+async def get_place_photo(place_id: str, index: int, maxwidth: int = Query(800, ge=100, le=1600)):
+    """Owner decision 23.11.2026: fill missing photos on the fly. The place's photo list is
+    fetched once (one paid Place Details call) and saved on the restaurant; the photo itself
+    goes through the saved-copy cache under its own name, so it is paid for once."""
+    if index < 0 or index > 9:
+        raise HTTPException(status_code=404, detail="Photo not available")
+    names = _place_photo_names(place_id)
+    if names is None:
+        raise HTTPException(status_code=404, detail="Unknown place")
+    if not names:
+        api_key = get_api_key()
+        async with httpx.AsyncClient(follow_redirects=True, timeout=30.0) as client:
+            try:
+                details = await async_places_request(
+                    client, f"https://places.googleapis.com/v1/places/{place_id}", enforce=False,
+                    headers={"X-Goog-Api-Key": api_key, "X-Goog-FieldMask": "photos"})
+            except BudgetExceeded:
+                raise HTTPException(status_code=404, detail="Photo not available (paid photo fetches paused)",
+                                    headers={"Cache-Control": "no-store"})
+            except httpx.TimeoutException:
+                raise HTTPException(status_code=504, detail="Photo list fetch timed out")
+            except httpx.RequestError:
+                raise HTTPException(status_code=502, detail="Photo provider request failed")
+        if details.status_code != 200:
+            raise HTTPException(status_code=404, detail="Photo list not available")
+        listed = [p for p in (details.json() or {}).get("photos") or [] if p.get("name")]
+        _save_place_photo_names(place_id, listed)
+        names = [p["name"] for p in listed]
+        _fresh_names[place_id] = (time.time(), names)
+    if index >= len(names):
+        raise HTTPException(status_code=404, detail="Photo not available")
+    return await get_photo(names[index], maxwidth)
 
 
 @router.get(

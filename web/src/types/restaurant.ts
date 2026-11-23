@@ -55,6 +55,8 @@ export interface Restaurant {
   name_hebrew: string;
   name_english?: string | null;
   google_name?: string | null;
+  /** Google Places ID of the matched place, when matched. */
+  google_place_id?: string | null;
   location?: Location;
   cuisine_type?: string | null;
   status?: string | null;
