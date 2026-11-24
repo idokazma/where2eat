@@ -800,10 +800,11 @@ class Database:
                 if not video_url and md.get('video_id'):
                     video_url = f"https://www.youtube.com/watch?v={md['video_id']}"
                 ts = md.get('timestamp_seconds')
-                md['youtube_url'] = (
-                    f"{video_url}&t={int(ts)}s"
-                    if video_url and ts is not None else video_url
-                )
+                if video_url and ts is not None:
+                    separator = '&' if '?' in video_url else '?'
+                    md['youtube_url'] = f"{video_url}{separator}t={int(ts)}s"
+                else:
+                    md['youtube_url'] = video_url
                 for field in ('host_quotes', 'dishes_mentioned'):
                     raw = md.get(field)
                     if isinstance(raw, str):

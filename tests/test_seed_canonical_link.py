@@ -101,7 +101,7 @@ def test_canonical_link_attaches_review_without_duplicate(seed_client):
     assert reviews[0]['video_id'] == 'shorts1'
     assert reviews[0]['host_quotes'] == ['exact quote from the timed segment']
     assert reviews[0]['channel_name'] == 'קרניבורים אורגינל'
-    assert reviews[0]['youtube_url'].endswith('&t=10s')
+    assert reviews[0]['youtube_url'].endswith('?t=10s')
 
 
 def test_unknown_canonical_id_fails_mention_without_writes(seed_client):
@@ -213,3 +213,13 @@ def test_admin_patch_clearing_image_clears_provenance(admin_client):
     assert restaurant['image_url'] == ''
     assert restaurant['image_source'] is None
     assert restaurant['image_credit'] is None
+
+
+def test_review_links_use_valid_timestamp_separator(seed_client):
+    client, db = seed_client
+    canonical_id = db.create_restaurant(name_hebrew='ARC', city='יפו')
+    payload = seed_payload([reviewed_row(canonical_restaurant_id=canonical_id)])
+    assert client.post('/api/episodes/seed', json=payload).status_code == 200
+    url = db.get_restaurant_reviews(canonical_id)[0]['youtube_url']
+    # A Shorts URL has no query string yet, so the timestamp starts one with "?".
+    assert url == 'https://www.youtube.com/shorts/shorts1?t=10s'
