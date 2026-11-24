@@ -429,7 +429,7 @@ export function StoriesView({
             איפה אוכלים <span className="stories-hl">ליד?</span>
           </h1>
           <p className="stories-lead">
-            ביקורות מהפודקאסטים, מהקרוב לרחוק. הקישו בצד התמונה לתמונה הבאה או הקודמת, והחליקו למעלה למסעדה הבאה.
+            ביקורות מהפודקאסטים, מהקרוב לרחוק. הקישו על התמונה לתמונה הבאה, והחליקו למעלה למסעדה הבאה.
           </p>
           <div className="stories-card">
             <button className="stories-pill teal big" onClick={locate} disabled={locating || !restaurants}>
