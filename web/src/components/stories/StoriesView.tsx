@@ -25,6 +25,8 @@ import {
   storyPhotoKey,
   visibleStoryFrameIndices,
   shouldLoadStoryFrame,
+  needsPlacePhotoCount,
+  placePhotoCountUrl,
   PREFETCH_AHEAD,
   storyGoogleFallback,
   youtubeEmbedUrl,
@@ -223,6 +225,26 @@ export function StoriesView({
     root.querySelectorAll("[data-index]").forEach((el) => io.observe(el));
     return () => io.disconnect();
   }, [items]);
+
+  // Places with a Google ID but no saved photo list: ask how many photos each has (the API
+  // asks Google once per place and saves the list), for the story in view and the next one,
+  // so the story shows exactly that many photos and never guessed empty slots.
+  const [placeCounts, setPlaceCounts] = useState<Record<string, number>>({});
+  const countsRequested = useRef(new Set<string>());
+  useEffect(() => {
+    if (extraPhotoLimit <= 0) return;
+    for (const item of items.slice(current, current + 2)) {
+      if (item.kind !== "story") continue;
+      const r = item.story.restaurant;
+      const placeId = r.google_place_id;
+      if (!placeId || !needsPlacePhotoCount(r) || countsRequested.current.has(placeId)) continue;
+      countsRequested.current.add(placeId);
+      fetch(placePhotoCountUrl(placeId))
+        .then(async (res) => (res.ok ? Number((await res.json())?.count) || 0 : 0))
+        .catch(() => 0)
+        .then((count) => setPlaceCounts((prev) => ({ ...prev, [placeId]: count })));
+    }
+  }, [items, current, extraPhotoLimit]);
 
   // Quotes come from the episode pages, loaded only for the stories in and just after view.
   useEffect(() => {
@@ -551,6 +573,7 @@ export function StoriesView({
               autoplay={autoplay && index === current}
               smooth={!reducedMotion}
               extraPhotos={extraPhotoLimit > 0}
+              placePhotoCount={placeCounts[item.story.restaurant.google_place_id ?? ""] ?? 0}
               granted={granted}
               quoteFor={quoteFor}
               onSlide={(i, frames) => reach(item.story.restaurant.id!, i, frames)}
@@ -666,6 +689,7 @@ function StoryView({
   autoplay,
   smooth,
   extraPhotos,
+  placePhotoCount,
   granted,
   quoteFor,
   onSlide,
@@ -687,6 +711,7 @@ function StoryView({
   autoplay: boolean;
   smooth: boolean;
   extraPhotos: boolean;
+  placePhotoCount: number;
   granted: Set<string>;
   quoteFor: (story: Story, slide: StorySlide) => StoryQuote | null;
   onSlide: (i: number, frames: StoryFrame[]) => void;
@@ -711,7 +736,7 @@ function StoryView({
   // Keep slot identities stable on errors. Removing a failed frame would move the
   // next paid reference into the observed slot and grant it without a new gesture.
   // The primary/free backdrop and source remain visible beneath a failed slot.
-  const frames = useMemo(() => storyFrames(base, { extraPhotos }), [base, extraPhotos]);
+  const frames = useMemo(() => storyFrames(base, { extraPhotos, placePhotoCount }), [base, extraPhotos, placePhotoCount]);
   // What a slot actually shows: the first slot shows the story's image, which may be a
   // working backup when the stored main photo failed.
   const slotUrl = (i: number) => (i === 0 && image ? image : frames[i]?.photo.url);

@@ -337,7 +337,13 @@ export function shouldLoadStoryFrame(
 export const PREFETCH_AHEAD = 2;
 
 /** The place's photos: the free first photo, then its Google photos (paid, same place only). */
-export function storyPhotos(story: Story, { extraPhotos = true }: { extraPhotos?: boolean } = {}): StoryPhoto[] {
+export interface StoryPhotoOptions {
+  extraPhotos?: boolean;
+  /** How many Google photos the place has, from /api/photos/place/<id>, when no list is saved. */
+  placePhotoCount?: number;
+}
+
+export function storyPhotos(story: Story, { extraPhotos = true, placePhotoCount = 0 }: StoryPhotoOptions = {}): StoryPhoto[] {
   const photos: StoryPhoto[] = [{ url: story.image, paid: false }];
   // Our own stored copies are free per view and replace the paid Google photos.
   const stored = getStoredPhotoUrls(story.restaurant);
@@ -354,17 +360,30 @@ export function storyPhotos(story: Story, { extraPhotos = true }: { extraPhotos?
         : null;
     if (photo && !photos.some((x) => x.url === photo.url)) photos.push(photo);
   }
-  // No saved photo list yet: ask for the place's photos by position. The API fetches the
-  // list once, saves it on the restaurant and caches each photo (owner decision 23.11.2026).
+  // No saved photo list yet: exactly as many photos as the place has (the API asked Google
+  // once and saved the list), by position. Never guessed: a Google ID alone does not mean
+  // the place has photos (owner decision 24.11.2026).
   const placeId = story.restaurant.google_place_id;
   if (placeId && validPhotos(story.restaurant).length === 0) {
-    for (let i = 0; i < PLACE_PHOTO_SLOTS; i++) photos.push({ url: placePhotoUrl(placeId, i), paid: true });
+    for (let i = 0; i < Math.min(placePhotoCount, MAX_PLACE_PHOTOS); i++) {
+      photos.push({ url: placePhotoUrl(placeId, i), paid: true });
+    }
   }
   return uniqueStoryPhotos(photos, story.restaurant);
 }
 
-/** How many photos to ask for when the place's photo list is not saved yet. */
-const PLACE_PHOTO_SLOTS = 5;
+/** The photo route serves positions 0-9. */
+const MAX_PLACE_PHOTOS = 10;
+
+/** A place whose Google photo count must be asked before its photos can be shown. */
+export function needsPlacePhotoCount(r: Restaurant): boolean {
+  return !!r.google_place_id && validPhotos(r).length === 0 && getStoredPhotoUrls(r).length === 0;
+}
+
+/** Where to ask how many Google photos a place has. */
+export function placePhotoCountUrl(placeId: string): string {
+  return `${config.apiUrl || ""}/api/photos/place/${encodeURIComponent(placeId)}`;
+}
 
 function placePhotoUrl(placeId: string, index: number): string {
   return `${config.apiUrl || ""}/api/photos/place/${encodeURIComponent(placeId)}/${index}?maxwidth=${STORY_PHOTO_WIDTH}`;
@@ -407,7 +426,7 @@ export function visibleStoryFrameIndices(frames: StoryFrame[], image: string | n
  * Sideways pages of a story: one per distinct photo of the place. Reviews do not
  * add pages; they stay on the story (see StoriesView).
  */
-export function storyFrames(story: Story, opts: { extraPhotos?: boolean } = {}): StoryFrame[] {
+export function storyFrames(story: Story, opts: StoryPhotoOptions = {}): StoryFrame[] {
   return storyPhotos(story, opts).map((photo) => ({ photo }));
 }
 

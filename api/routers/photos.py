@@ -17,7 +17,7 @@ from typing import Dict, List, Optional, Tuple
 import httpx
 from cost_ledger import async_places_request, BudgetExceeded
 from fastapi import APIRouter, HTTPException, Query
-from fastapi.responses import FileResponse, Response
+from fastapi.responses import FileResponse, JSONResponse, Response
 
 router = APIRouter(prefix="/api/photos", tags=["Photos"])
 
@@ -132,6 +132,82 @@ def _save_place_photo_names(place_id: str, details: list) -> None:
                      (json.dumps(photos, ensure_ascii=False), place_id))
 
 
+# place_id -> when Google said the place has no photos (also kept on disk, see below).
+_no_photos: Dict[str, float] = {}
+
+
+def _no_photos_marker(place_id: str) -> Optional[Path]:
+    folder = cache_dir()
+    return folder / f"place-{hashlib.sha256(place_id.encode()).hexdigest()}.none" if folder else None
+
+
+def _known_without_photos(place_id: str) -> bool:
+    """Google said this place has no photos within the last week: do not pay to ask again."""
+    seen = _no_photos.get(place_id)
+    if seen and time.time() - seen < MISS_TTL_SECONDS:
+        return True
+    marker = _no_photos_marker(place_id)
+    return bool(marker and marker.is_file() and time.time() - marker.stat().st_mtime < MISS_TTL_SECONDS)
+
+
+def _remember_without_photos(place_id: str) -> None:
+    _no_photos[place_id] = time.time()
+    marker = _no_photos_marker(place_id)
+    if marker:
+        try:
+            marker.touch()
+        except OSError:
+            pass
+
+
+async def _place_names(place_id: str) -> List[str]:
+    """The photo names of our place with this Google ID. Asks Google at most once per place
+    (one paid Place Details call): a found list is saved on the restaurant, and a place with
+    no photos is remembered for a week, so neither is paid for again."""
+    names = _place_photo_names(place_id)
+    if names is None:
+        raise HTTPException(status_code=404, detail="Unknown place")
+    if names or _known_without_photos(place_id):
+        return names
+    api_key = get_api_key()
+    async with httpx.AsyncClient(follow_redirects=True, timeout=30.0) as client:
+        try:
+            details = await async_places_request(
+                client, f"https://places.googleapis.com/v1/places/{place_id}", enforce=False,
+                headers={"X-Goog-Api-Key": api_key, "X-Goog-FieldMask": "photos"})
+        except BudgetExceeded:
+            raise HTTPException(status_code=404, detail="Photo not available (paid photo fetches paused)",
+                                headers={"Cache-Control": "no-store"})
+        except httpx.TimeoutException:
+            raise HTTPException(status_code=504, detail="Photo list fetch timed out")
+        except httpx.RequestError:
+            raise HTTPException(status_code=502, detail="Photo provider request failed")
+    if 400 <= details.status_code < 500:
+        _remember_without_photos(place_id)  # Google does not know this place: no photos to get
+        return []
+    if details.status_code != 200:
+        raise HTTPException(status_code=502, detail="Photo list not available")
+    listed = [p for p in (details.json() or {}).get("photos") or [] if p.get("name")]
+    if not listed:
+        _remember_without_photos(place_id)
+        return []
+    _save_place_photo_names(place_id, listed)
+    names = [p["name"] for p in listed]
+    _fresh_names[place_id] = (time.time(), names)
+    return names
+
+
+@router.get(
+    "/place/{place_id}",
+    summary="How many Google photos a place has, so the stories show exactly that many",
+)
+async def get_place_photo_count(place_id: str):
+    """Owner decision 24.11.2026 (replacing guessed photo slots): the stories ask this once
+    per place in view and show exactly that many photos."""
+    names = await _place_names(place_id)
+    return JSONResponse({"count": len(names)}, headers={"Cache-Control": "public, max-age=3600"})
+
+
 @router.get(
     "/place/{place_id}/{index}",
     summary="A place's n-th Google photo, for places whose photo list is not saved yet",
@@ -139,33 +215,11 @@ def _save_place_photo_names(place_id: str, details: list) -> None:
 )
 async def get_place_photo(place_id: str, index: int, maxwidth: int = Query(800, ge=100, le=1600)):
     """Owner decision 23.11.2026: fill missing photos on the fly. The place's photo list is
-    fetched once (one paid Place Details call) and saved on the restaurant; the photo itself
-    goes through the saved-copy cache under its own name, so it is paid for once."""
+    fetched once and saved on the restaurant; the photo itself goes through the saved-copy
+    cache under its own name, so it is paid for once."""
     if index < 0 or index > 9:
         raise HTTPException(status_code=404, detail="Photo not available")
-    names = _place_photo_names(place_id)
-    if names is None:
-        raise HTTPException(status_code=404, detail="Unknown place")
-    if not names:
-        api_key = get_api_key()
-        async with httpx.AsyncClient(follow_redirects=True, timeout=30.0) as client:
-            try:
-                details = await async_places_request(
-                    client, f"https://places.googleapis.com/v1/places/{place_id}", enforce=False,
-                    headers={"X-Goog-Api-Key": api_key, "X-Goog-FieldMask": "photos"})
-            except BudgetExceeded:
-                raise HTTPException(status_code=404, detail="Photo not available (paid photo fetches paused)",
-                                    headers={"Cache-Control": "no-store"})
-            except httpx.TimeoutException:
-                raise HTTPException(status_code=504, detail="Photo list fetch timed out")
-            except httpx.RequestError:
-                raise HTTPException(status_code=502, detail="Photo provider request failed")
-        if details.status_code != 200:
-            raise HTTPException(status_code=404, detail="Photo list not available")
-        listed = [p for p in (details.json() or {}).get("photos") or [] if p.get("name")]
-        _save_place_photo_names(place_id, listed)
-        names = [p["name"] for p in listed]
-        _fresh_names[place_id] = (time.time(), names)
+    names = await _place_names(place_id)
     if index >= len(names):
         raise HTTPException(status_code=404, detail="Photo not available")
     return await get_photo(names[index], maxwidth)
