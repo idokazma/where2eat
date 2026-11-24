@@ -1106,3 +1106,76 @@ describe("photos of a place without a saved photo list", () => {
     expect(document.querySelector('img[src*="/api/photos/place/"]')).toBeNull();
   });
 });
+
+describe("preloading the YouTube player", () => {
+  beforeEach(() => jest.useFakeTimers());
+  afterEach(() => jest.useRealTimers());
+  const frames = () => [...document.querySelectorAll("iframe")];
+  const commands = (frame: HTMLIFrameElement) =>
+    (frame.contentWindow!.postMessage as unknown as jest.Mock).mock.calls.map((c) => JSON.parse(c[0]).func);
+  const spyOn = (frame: HTMLIFrameElement) => jest.spyOn(frame.contentWindow!, "postMessage").mockImplementation(() => {});
+
+  it("loads the moment's player in the background once the place has been in view a moment, without playing", async () => {
+    await startFromTelAviv();
+    expect(frames()).toHaveLength(0);
+    act(() => jest.advanceTimersByTime(1600));
+    const [frame] = frames();
+    expect(frame.src).toContain("https://www.youtube-nocookie.com/embed/vidNEAR?start=97");
+    expect(frame.src).toContain("enablejsapi=1");
+    expect(frame.src).not.toContain("autoplay=1");
+    expect(document.querySelector<HTMLDialogElement>('dialog[aria-label="נגן"]')!.open).toBe(false);
+  });
+
+  it("a tap shows the preloaded player and starts it, without loading it again", async () => {
+    await startFromTelAviv();
+    const [near] = await screen.findAllByRole("article");
+    act(() => jest.advanceTimersByTime(1600));
+    const [frame] = frames();
+    spyOn(frame);
+    fireEvent.load(frame);
+    fireEvent.click(within(near).getByRole("button", { name: /נגן ברגע הזה/ }));
+    act(() => jest.advanceTimersByTime(1000));
+    expect(frames()).toEqual([frame]);
+    expect(frame.src).not.toContain("autoplay=1");
+    expect(commands(frame)).toContain("playVideo");
+    // Closing stops it (the same player stays ready for this place).
+    fireEvent.click(screen.getByRole("button", { name: "סגירה" }));
+    expect(commands(frame)).toContain("pauseVideo");
+  });
+
+  it("a tap before the preloaded player is ready loads it the usual way, playing", async () => {
+    await startFromTelAviv();
+    const [near] = await screen.findAllByRole("article");
+    act(() => jest.advanceTimersByTime(1600));
+    fireEvent.click(within(near).getByRole("button", { name: /נגן ברגע הזה/ }));
+    const [frame] = frames();
+    expect(frame.src).toBe("https://www.youtube-nocookie.com/embed/vidNEAR?start=97&autoplay=1&playsinline=1&rel=0");
+  });
+
+  it("does not preload while the place is only passing by", async () => {
+    await startFromTelAviv();
+    act(() => jest.advanceTimersByTime(800));
+    expect(frames()).toHaveLength(0);
+  });
+});
+
+describe("preloading the YouTube player after another moment played", () => {
+  beforeEach(() => jest.useFakeTimers());
+  afterEach(() => jest.useRealTimers());
+  it("waits for the reloaded player before treating it as ready", async () => {
+    await startFromTelAviv();
+    const [near] = await screen.findAllByRole("article");
+    act(() => jest.advanceTimersByTime(1600));
+    fireEvent.load(document.querySelector("iframe")!);
+    // Another moment (the second review) plays in a fresh player.
+    fireEvent.click(within(near).getByRole("button", { name: /כל הסקירות/ }));
+    const reviews = document.querySelector<HTMLElement>("dialog.stories-reviews")!;
+    fireEvent.click(within(within(reviews).getAllByRole("listitem")[1]).getByRole("button", { name: "נגן" }));
+    expect(document.querySelector("iframe")!.src).toContain("vidOTHER");
+    fireEvent.click(screen.getByRole("button", { name: "סגירה" }));
+    // Back to the preloaded player, reloading: a tap now must not count on it yet.
+    expect(document.querySelector("iframe")!.src).toContain("enablejsapi=1");
+    fireEvent.click(within(near).getByRole("button", { name: /נגן ברגע הזה/ }));
+    expect(document.querySelector("iframe")!.src).toContain("autoplay=1");
+  });
+});
