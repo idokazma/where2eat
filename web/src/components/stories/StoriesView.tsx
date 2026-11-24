@@ -36,6 +36,30 @@ import {
 } from "@/lib/stories";
 import "./stories.css";
 
+/** A source-video cover, never a restaurant photo or a frame at the review time. */
+function ReviewThumbnail({ slide }: { slide: StorySlide }) {
+  const [failed, setFailed] = useState(false);
+  return (
+    <div className="stories-review-thumbnail">
+      {failed ? (
+        <span className="stories-review-thumbnail-fallback">
+          <Play size={20} aria-hidden="true" />
+          תמונה לא זמינה
+        </span>
+      ) : (
+        <img
+          src={`https://img.youtube.com/vi/${encodeURIComponent(slide.videoId)}/hqdefault.jpg`}
+          alt={`תמונת הסרטון של ${sourceLabel(slide)}`}
+          width={480}
+          height={360}
+          loading="lazy"
+          onError={() => setFailed(true)}
+        />
+      )}
+    </div>
+  );
+}
+
 const RADIUS_KM = 50;
 // Stories are placed by distance, but only the ones around the one in view are
 // built. The rest stay as empty full-height slots, so scrolling, snapping and
@@ -560,17 +584,20 @@ export function StoriesView({
                   : null;
                 return (
                   <li key={`${slide.videoId}@${slide.seconds ?? ""}`} className="stories-review">
-                    <p className="stories-review-src">
+                    <div className="stories-review-heading">
+                      <ReviewThumbnail slide={slide} />
+                      <p className="stories-review-src">
                       {slide.tasted && <span className="stories-tick">נטעם</span>}
                       <strong>{sourceLabel(slide)}</strong>
                       {date ? ` · ${date}` : ""}
                       {formatClock(slide.seconds) ? ` · ${formatClock(slide.seconds)}` : ""}
-                    </p>
+                      </p>
+                    </div>
                     <p className="stories-review-quote">
                       {q ? (q.verified ? `״${q.text}״` : q.text) : "אין ציטוט זמין לסקירה הזו"}
                     </p>
                     <button className="stories-pill sun" onClick={() => playFromReviews(reviewsFor, slide)}>
-                      <Play size={14} aria-hidden="true" /> נגן ברגע הזה
+                      <Play size={14} aria-hidden="true" /> נגן
                     </button>
                   </li>
                 );
