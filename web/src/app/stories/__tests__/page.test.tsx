@@ -135,6 +135,25 @@ async function startFromTelAviv(limit?: number) {
   fireEvent.click(preset);
 }
 
+
+it.each([
+  ["תל אביב · שוק הכרמל", 32.068683, 34.769047],
+  ["תל אביב · שוק לוינסקי", 32.0594379, 34.7728971],
+  ["חיפה · ואדי ניסנאס", 32.816496, 34.99608449999999],
+])("starts the feed from the verified market/neighborhood anchor: %s", async (name, lat, lng) => {
+  const coords = jest.mocked(storyHelpers.buildStories);
+  renderPage();
+  const button = await screen.findByRole("button", { name });
+  await waitFor(() => expect(button).toBeEnabled());
+  for (const old of ["תל אביב · דיזנגוף", "ירושלים · מחנה יהודה", "חיפה · המושבה הגרמנית", "הרצליה", "באר שבע", "נצרת"])
+    expect(screen.getByRole("button", { name: old })).toBeInTheDocument();
+  fireEvent.click(button);
+  await screen.findAllByRole("article");
+  expect(coords).toHaveBeenLastCalledWith(expect.any(Array), { lat, lng }, { radiusKm: 50, source: "" });
+
+});
+
+
 it("shows no 'n of M' counter over the stories", async () => {
   await startFromTelAviv();
   await screen.findAllByRole("article");
@@ -1002,22 +1021,4 @@ it("deduplicates the runtime fallback alias without shifting the next paid slot"
   act(() => observers.find((o) => o.targets.includes(original[2]))!.fire(original[2]));
   expect(paidImages()).toEqual([expect.stringContaining('alias2')]);
   expect(within(article).getByRole('button', { name: /נגן ברגע הזה/ })).toBeInTheDocument();
-});
-
-
-it.each([
-  ["תל אביב · שוק הכרמל", 32.068683, 34.769047],
-  ["תל אביב · שוק לוינסקי", 32.0594379, 34.7728971],
-  ["חיפה · ואדי ניסנאס", 32.816496, 34.99608449999999],
-])("starts the feed from the verified market/neighborhood anchor: %s", async (name, lat, lng) => {
-  const coords = jest.mocked(storyHelpers.buildStories);
-  renderPage();
-  const button = await screen.findByRole("button", { name });
-  await waitFor(() => expect(button).toBeEnabled());
-  for (const old of ["תל אביב · דיזנגוף", "ירושלים · מחנה יהודה", "חיפה · המושבה הגרמנית", "הרצליה", "באר שבע", "נצרת"])
-    expect(screen.getByRole("button", { name: old })).toBeInTheDocument();
-  fireEvent.click(button);
-  await screen.findAllByRole("article");
-  expect(coords).toHaveBeenLastCalledWith(expect.any(Array), { lat, lng }, { radiusKm: 50, source: "" });
-
 });
