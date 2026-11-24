@@ -384,8 +384,13 @@
 }
 .stories-round.on {
   background: var(--st-coral);
-  color: #fff;
+  color: var(--st-ink);
 }
+/* Buttons otherwise inherit the white story-text color and override .stories-round.
+   Keep every action icon dark on its light/coral button, including saved hearts. */
+.stories-app .stories-round { color: var(--st-ink); }
+.stories-app .stories-pill { color: var(--st-ink); }
+.stories-app .stories-pill.teal { color: #fff; }
 
 /* chrome */
 .stories-top {
@@ -705,4 +710,10 @@
 .stories-review-thumbnail:focus-visible {
   outline: 3px solid var(--st-sun);
   outline-offset: 2px;
+}
+
+@media (max-width: 360px) {
+  .stories-actions { gap: 6px; }
+  .stories-actions .stories-round { width: 42px; height: 44px; }
+  .stories-actions .stories-pill { padding-inline: 8px; font-size: 13px; white-space: nowrap; }
 }
