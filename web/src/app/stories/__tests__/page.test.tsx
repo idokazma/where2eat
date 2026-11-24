@@ -204,17 +204,18 @@ it("loads a paid Google photo only when the viewer moves to it", async () => {
   expect(paidImages()).toEqual([expect.stringContaining("/api/photos/places/PN/photos/ref1?maxwidth=900")]);
 });
 
-it("prefetches the next Google photo once the photo in view has loaded", async () => {
+it("prefetches the next two photos once the photo in view has loaded", async () => {
   await startFromTelAviv();
   const [near] = await screen.findAllByRole("article");
   expect(paidImages()).toEqual([]);
   fireEvent.load(near.querySelector<HTMLImageElement>(`img[src="${photo("near")}"]`)!);
+  // The next two photos load on the phone ahead of the taps, one after the other.
   expect(paidImages()).toEqual([expect.stringContaining("/api/photos/places/PN/photos/ref1?maxwidth=900")]);
-  // Moving on: the prefetched photo is the one in view, the one after it is next to load.
-  const frames = within(near).getAllByRole("group");
-  act(() => observers.find((o) => o.targets.includes(frames[1]))!.fire(frames[1]));
   fireEvent.load(near.querySelector<HTMLImageElement>('img[src*="ref1"]')!);
-  expect(paidImages()).toEqual([expect.stringContaining("ref1"), expect.stringContaining("ref2")]);
+  expect(paidImages()).toEqual([
+    expect.stringContaining("/api/photos/places/PN/photos/ref1?maxwidth=900"),
+    expect.stringContaining("/api/photos/places/PN/photos/ref2?maxwidth=900"),
+  ]);
 });
 
 it("prefetching counts toward the visit limit", async () => {
@@ -859,9 +860,9 @@ describe("opening the site starts with the stories", () => {
 });
 
 
-it("loads only one free photo ahead, after current loads, without Google prefetch", async () => {
+it("loads two free photos ahead, after current loads, never every reached photo", async () => {
   const single = { ...restaurants[1],
-    stored_photos: Array.from({ length: 6 }, (_, i) => ({ path: `/api/place-photos/free${i}.jpg` })),
+    stored_photos: Array.from({ length: 8 }, (_, i) => ({ path: `/api/place-photos/free${i}.jpg` })),
   };
   (global.fetch as jest.Mock).mockImplementation((url: string) => Promise.resolve({
     ok: true, json: async () => String(url).includes("/api/episodes/") ? episode : { restaurants: [single] },
@@ -869,20 +870,26 @@ it("loads only one free photo ahead, after current loads, without Google prefetc
   await startFromTelAviv();
   const article = (await screen.findAllByRole("article"))[0];
   const images = () => [...article.querySelectorAll<HTMLImageElement>("img")];
+  const has = (n: number) => images().some((i) => i.src.includes(`free${n}.jpg`));
   expect(images().map((i) => i.src)).toHaveLength(1);
   fireEvent.load(images()[0]);
-  await waitFor(() => expect(images()).toHaveLength(2));
-  expect(images()[1].src).toContain("free1.jpg");
+  await waitFor(() => expect(has(1)).toBe(true));
+  expect(has(2)).toBe(false); // in order: the second one ahead waits for the first
+  fireEvent.load(images().find((i) => i.src.includes("free1.jpg"))!);
+  await waitFor(() => expect(has(2)).toBe(true));
+  expect(has(3)).toBe(false);
   expect(paidImages()).toEqual([]);
   const frames = within(article).getAllByRole("group");
   act(() => observers.find((o) => o.targets.includes(frames[3]))!.fire(frames[3]));
   const current = images().find((i) => i.src.includes("free3.jpg"))!;
   fireEvent.load(current);
-  await waitFor(() => expect(images().some((i) => i.src.includes("free4.jpg"))).toBe(true));
-  expect(images().some((i) => i.src.includes("free1.jpg"))).toBe(false);
-  expect(images().some((i) => i.src.includes("free5.jpg"))).toBe(false);
-  // Own backdrop + previous/current/next, rather than every reached photo.
-  expect(images().length).toBeLessThanOrEqual(4);
+  await waitFor(() => expect(has(4)).toBe(true));
+  fireEvent.load(images().find((i) => i.src.includes("free4.jpg"))!);
+  await waitFor(() => expect(has(5)).toBe(true));
+  expect(has(1)).toBe(false);
+  expect(has(6)).toBe(false);
+  // Own backdrop + previous/current/next two, rather than every reached photo.
+  expect(images().length).toBeLessThanOrEqual(5);
   expect(paidImages()).toEqual([]);
 });
 
