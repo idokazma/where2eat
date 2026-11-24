@@ -268,8 +268,16 @@ export function momentStart(seconds: number | null | undefined): number {
   return Math.max(0, Math.floor(seconds ?? 0) - 3);
 }
 
+export const YOUTUBE_ORIGIN = "https://www.youtube-nocookie.com";
+
 export function youtubeEmbedUrl(videoId: string, start: number): string {
-  return `https://www.youtube-nocookie.com/embed/${encodeURIComponent(videoId)}?start=${start}&autoplay=1&playsinline=1&rel=0`;
+  return `${YOUTUBE_ORIGIN}/embed/${encodeURIComponent(videoId)}?start=${start}&autoplay=1&playsinline=1&rel=0`;
+}
+
+/** A player loaded ahead, not playing: started by a command when the viewer taps play. */
+export function youtubePreloadUrl(videoId: string, start: number, origin: string): string {
+  return `${YOUTUBE_ORIGIN}/embed/${encodeURIComponent(videoId)}?start=${start}&playsinline=1&rel=0` +
+    `&enablejsapi=1&origin=${encodeURIComponent(origin)}`;
 }
 
 export function youtubeMomentUrl(videoId: string, start: number): string {
