@@ -1066,3 +1066,10 @@ it("puts a review's source on one line and its month and moment on the next, nev
   expect(when.trim().endsWith("·")).toBe(false);
   expect(entry.querySelector(".stories-review-src")!.textContent).not.toMatch(/·\s*$/);
 });
+
+it("the start screen explains the taps as they work now: a tap goes to the next photo", async () => {
+  renderPage();
+  const intro = await screen.findByText(/הקישו על התמונה לתמונה הבאה/);
+  expect(intro.textContent).toContain("החליקו למעלה למסעדה הבאה");
+  expect(screen.queryByText(/הקישו בצד התמונה/)).toBeNull();
+});
