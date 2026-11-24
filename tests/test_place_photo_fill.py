@@ -62,6 +62,7 @@ def env(tmp_path, monkeypatch):
                   ('r1', 'אחת', 'PLACE1', '[]'))
     from routers import photos as photos_router
     photos_router._fresh_names.clear()
+    photos_router._no_photos.clear()
     app = FastAPI()
     app.include_router(photos_router.router)
     return TestClient(app), db
@@ -133,3 +134,64 @@ def test_get_place_photo_budget_stopped_makes_no_paid_call(env, monkeypatch):
     with patch('httpx.AsyncClient.get', new=google):
         r = client.get('/api/photos/place/PLACE1/0')
     assert r.status_code == 404 and google.calls == [] and r.headers['cache-control'] == 'no-store'
+
+
+# ── how many photos a place has (no guessing) and remembering places with none
+
+def test_get_place_photo_count_fetches_the_list_once_and_saves_it(env):
+    client, db = env
+    google = Google()
+    with patch('httpx.AsyncClient.get', new=google):
+        first = client.get('/api/photos/place/PLACE1')
+        again = client.get('/api/photos/place/PLACE1')
+    assert first.status_code == 200 and first.json() == {'count': 3}
+    assert again.json() == {'count': 3}
+    assert len(google.details()) == 1 and google.media() == []
+    assert stored_refs(db) == NAMES
+
+
+def test_a_place_without_google_photos_is_asked_about_once(env):
+    client, _ = env
+    google = Google(names=[])
+    with patch('httpx.AsyncClient.get', new=google):
+        assert client.get('/api/photos/place/PLACE1').json() == {'count': 0}
+        assert client.get('/api/photos/place/PLACE1').json() == {'count': 0}
+        assert client.get('/api/photos/place/PLACE1/0').status_code == 404
+        assert client.get('/api/photos/place/PLACE1/1').status_code == 404
+    assert len(google.calls) == 1
+
+
+def test_no_photos_is_remembered_across_restarts(env):
+    client, _ = env
+    from routers import photos as photos_router
+    with patch('httpx.AsyncClient.get', new=Google(names=[])):
+        client.get('/api/photos/place/PLACE1')
+    photos_router._fresh_names.clear()  # a new process keeps only what is on disk
+    photos_router._no_photos.clear()
+    google = Google()
+    with patch('httpx.AsyncClient.get', new=google):
+        assert client.get('/api/photos/place/PLACE1').json() == {'count': 0}
+    assert google.calls == []
+
+
+def test_get_place_photo_count_unknown_place_makes_no_google_call(env):
+    client, _ = env
+    google = Google()
+    with patch('httpx.AsyncClient.get', new=google):
+        r = client.get('/api/photos/place/NOT_OURS')
+    assert r.status_code == 404 and google.calls == []
+
+
+def test_get_place_photo_count_budget_stopped_is_not_remembered(env, monkeypatch):
+    client, _ = env
+    monkeypatch.setenv('COST_REQUIRE_VERIFIED_OPENING', 'true')
+    monkeypatch.setenv('COST_MONTHLY_BUDGET_USD', '0')
+    monkeypatch.delenv('COST_OPENING_MONTH', raising=False)
+    with patch('httpx.AsyncClient.get', new=Google()) as google:
+        r = client.get('/api/photos/place/PLACE1')
+    assert r.status_code == 404 and r.headers['cache-control'] == 'no-store'
+    monkeypatch.setenv('COST_REQUIRE_VERIFIED_OPENING', 'false')
+    monkeypatch.delenv('COST_MONTHLY_BUDGET_USD')
+    google = Google()
+    with patch('httpx.AsyncClient.get', new=google):
+        assert client.get('/api/photos/place/PLACE1').json() == {'count': 3}

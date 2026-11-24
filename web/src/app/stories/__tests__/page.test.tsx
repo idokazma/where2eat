@@ -1073,3 +1073,36 @@ it("the start screen explains the taps as they work now: a tap goes to the next 
   expect(intro.textContent).toContain("החליקו למעלה למסעדה הבאה");
   expect(screen.queryByText(/הקישו בצד התמונה/)).toBeNull();
 });
+
+describe("photos of a place without a saved photo list", () => {
+  const counted = (count: number) => {
+    const place = { ...restaurants[1], google_place_id: "ChIJcount", photos: [], stored_photos: [] };
+    const calls: string[] = [];
+    (global.fetch as jest.Mock).mockImplementation((url: string) => {
+      calls.push(String(url));
+      return Promise.resolve({
+        ok: true,
+        json: async () => String(url).includes("/api/photos/place/") ? { count }
+          : String(url).includes("/api/episodes/") ? episode : { restaurants: [place] },
+      });
+    });
+    return calls;
+  };
+
+  it("asks once how many photos the place has and shows exactly that many", async () => {
+    const calls = counted(3);
+    await startFromTelAviv();
+    const article = (await screen.findAllByRole("article"))[0];
+    await waitFor(() => expect(within(article).getAllByRole("group")).toHaveLength(4));
+    expect(calls.filter((u) => u.endsWith("/api/photos/place/ChIJcount"))).toHaveLength(1);
+  });
+
+  it("shows only the place's own photo when it has no Google photos (no guessed slots)", async () => {
+    const calls = counted(0);
+    await startFromTelAviv();
+    const article = (await screen.findAllByRole("article"))[0];
+    await waitFor(() => expect(calls.some((u) => u.endsWith("/api/photos/place/ChIJcount"))).toBe(true));
+    expect(within(article).getAllByRole("group")).toHaveLength(1);
+    expect(document.querySelector('img[src*="/api/photos/place/"]')).toBeNull();
+  });
+});

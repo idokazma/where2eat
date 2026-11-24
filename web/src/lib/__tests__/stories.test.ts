@@ -12,6 +12,7 @@ import {
   shouldLoadStoryFrame,
   excerpt,
   formatClock,
+  needsPlacePhotoCount,
   momentStart,
   quoteFromEpisode,
   sourceLabel,
@@ -247,24 +248,36 @@ describe("storyFrames", () => {
 });
 
 describe("storyFrames for a place without a saved photo list", () => {
-  it("asks for the place's photos by position, as paid frames after the free first photo", () => {
+  it("adds no guessed photos: a Google ID alone does not mean the place has photos", () => {
     const r = rest("a", { google_place_id: "ChIJx", photos: [] });
-    const frames = storyFrames(buildStories([r], TLV).near[0]);
-    expect(frames[0].photo).toEqual({ url: photo("a"), paid: false });
-    const rest_ = frames.slice(1).map((f) => f.photo);
-    expect(rest_.length).toBeGreaterThanOrEqual(3);
-    expect(rest_.every((p) => p.paid && /\/api\/photos\/place\/ChIJx\/\d+\?maxwidth=/.test(p.url))).toBe(true);
-    expect(rest_[0].url).toContain("/api/photos/place/ChIJx/0?");
+    expect(storyFrames(buildStories([r], TLV).near[0])).toHaveLength(1);
   });
-  it("adds nothing without a Google ID, when paid photos are off, or once a list is saved", () => {
-    expect(storyFrames(buildStories([rest("a", { photos: [] })], TLV).near[0])).toHaveLength(1);
+  it("adds exactly as many photos as the place has, asked by position, as paid frames", () => {
     const r = rest("a", { google_place_id: "ChIJx", photos: [] });
-    expect(storyFrames(buildStories([r], TLV).near[0], { extraPhotos: false })).toHaveLength(1);
+    const frames = storyFrames(buildStories([r], TLV).near[0], { placePhotoCount: 2 });
+    expect(frames[0].photo).toEqual({ url: photo("a"), paid: false });
+    expect(frames.slice(1).map((f) => f.photo)).toEqual([
+      { url: expect.stringContaining("/api/photos/place/ChIJx/0?maxwidth="), paid: true },
+      { url: expect.stringContaining("/api/photos/place/ChIJx/1?maxwidth="), paid: true },
+    ]);
+    expect(storyFrames(buildStories([r], TLV).near[0], { placePhotoCount: 0 })).toHaveLength(1);
+    expect(storyFrames(buildStories([r], TLV).near[0], { placePhotoCount: 2, extraPhotos: false })).toHaveLength(1);
+  });
+  it("ignores the count once a list is saved (the saved photos are used)", () => {
     const saved = rest("b", {
       google_place_id: "ChIJy",
       photos: [{ photo_reference: "places/ChIJy/photos/p1", photo_url: "", width: 1, height: 1 }],
     });
-    expect(storyFrames(buildStories([saved], TLV).near[0]).some((f) => f.photo.url.includes("/photos/place/"))).toBe(false);
+    const frames = storyFrames(buildStories([saved], TLV).near[0], { placePhotoCount: 5 });
+    expect(frames.some((f) => f.photo.url.includes("/photos/place/"))).toBe(false);
+  });
+  it("needsPlacePhotoCount: only places with a Google ID and nothing saved", () => {
+    expect(needsPlacePhotoCount(rest("a", { google_place_id: "ChIJx", photos: [] }))).toBe(true);
+    expect(needsPlacePhotoCount(rest("a", { photos: [] }))).toBe(false);
+    expect(needsPlacePhotoCount(rest("a", { google_place_id: "ChIJx",
+      photos: [{ photo_reference: "places/ChIJx/photos/p1", photo_url: "", width: 1, height: 1 }] }))).toBe(false);
+    expect(needsPlacePhotoCount(rest("a", { google_place_id: "ChIJx", photos: [],
+      stored_photos: [{ path: "/api/place-photos/s.jpg" }] }))).toBe(false);
   });
 });
 
