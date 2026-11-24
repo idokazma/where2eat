@@ -23,7 +23,8 @@ INSTRUCTIONS = (
     "the creator, the publication date, a short excerpt and a link to the exact moment in the video. "
     "Cities and cuisines are stored in Hebrew; English names of common ones also work. Call list_creators "
     "to see coverage and valid city and cuisine values. Credit the creator for every claim and include the "
-    "moment link. Quote only excerpts with kind=verified_quote. If a tool returns no_coverage, tell the user "
+    "moment link. To show a place, offer its story_url (photos, quotes and video moments on where2eat). "
+    "Quote only excerpts with kind=verified_quote. If a tool returns no_coverage, tell the user "
     "where2eat has no creator coverage for that request instead of substituting other places."
 )
 
