@@ -979,9 +979,25 @@ describe("sharing a story", () => {
 
   it("a shared link opens with that place first", async () => {
     window.history.replaceState({}, "", "/?story=far");
-    await startFromTelAviv();
+    mockLocate.mockResolvedValueOnce({ lat: 32.081, lng: 34.775 });
+    render(<FavoritesProvider><StoriesPage /></FavoritesProvider>);
     const stories = await screen.findAllByRole("article");
     expect(within(stories[0]).getByRole("heading").textContent).toBe("רחוקה בחיפה");
+  });
+
+  it.each(["device", "preset", "newest"])("an explicit %s choice releases the shared restaurant priority", async (choice) => {
+    window.history.replaceState({}, "", "/?story=far");
+    mockLocate.mockResolvedValue({ lat: 32.081, lng: 34.775 });
+    render(<FavoritesProvider><StoriesPage /></FavoritesProvider>);
+    await screen.findByRole("article", { name: "רחוקה בחיפה" });
+    fireEvent.click(screen.getByRole("button", { name: "בחירת מיקום" }));
+    const label = choice === "device" ? /לפי המיקום שלי/ : choice === "preset" ? "תל אביב · דיזנגוף" : "החדשות ביותר";
+    fireEvent.click(screen.getByRole("button", { name: label }));
+    await waitFor(() => {
+      const first = screen.getAllByRole("article")[0];
+      expect(within(first).getByRole("heading").textContent).toBe(choice === "newest" ? "רחוקה בחיפה" : "קרובה");
+    });
+    expect(screen.getByRole("article", { name: "רחוקה בחיפה" })).toBeInTheDocument();
   });
 
   it("autoplay waits while the share menu is open", async () => {

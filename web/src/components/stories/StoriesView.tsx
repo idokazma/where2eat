@@ -126,7 +126,7 @@ export function StoriesView({
   const [hint, setHint] = useState(false);
   const [held, setHeld] = useState(false);
   // Sharing: a link with ?story=<id> opens with that place first.
-  const [sharedId] = useState(() =>
+  const [sharedId, setSharedId] = useState(() =>
     typeof window === "undefined" ? null : new URLSearchParams(window.location.search).get("story"),
   );
   const [sharing, setSharing] = useState(false);
@@ -274,7 +274,9 @@ export function StoriesView({
     return summary ? { text: summary, verified: false } : null;
   };
 
-  const begin = (coords: GeoCoords | null, fromDevice: boolean) => {
+  const begin = (coords: GeoCoords | null, fromDevice: boolean, preserveShared = false) => {
+    // A shared restaurant leads only the opening view, never a new location choice.
+    if (!preserveShared) setSharedId(null);
     setAutoLocating(false);
     setOrigin({ coords, fromDevice });
     setCurrent(0);
@@ -304,7 +306,7 @@ export function StoriesView({
     const settle = (coords: GeoCoords | null) => {
       if (settled) return;
       settled = true;
-      begin(coords, !!coords);
+      begin(coords, !!coords, true);
     };
     const t = setTimeout(() => settle(null), LOCATE_WAIT_MS);
     getCurrentPosition()
