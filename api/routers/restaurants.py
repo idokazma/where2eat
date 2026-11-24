@@ -533,6 +533,13 @@ async def get_restaurant(restaurant_id: str):
                 # Return 404 for hidden restaurants on public endpoint
                 if restaurant.get("is_hidden"):
                     raise HTTPException(status_code=404, detail="Restaurant not found")
+                # Attach every linked mention with its review content, so
+                # reviews seeded against a canonical restaurant surface here
+                # with their own creator attribution.
+                try:
+                    restaurant['mentions'] = db.get_restaurant_reviews(restaurant['id'])
+                except Exception:
+                    restaurant.setdefault('mentions', [])
                 return restaurant
         except HTTPException:
             raise

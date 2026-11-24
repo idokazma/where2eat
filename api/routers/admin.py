@@ -492,11 +492,30 @@ async def patch_restaurant_admin(
         'host_opinion', 'host_comments', 'engaging_quote', 'instagram_url', 'mention_level',
         'contact_phone', 'contact_website', 'is_hidden', 'is_closing', 'country',
         'latitude', 'longitude', 'google_place_id',
-        'image_url', 'photos',
+        'image_url', 'photos', 'image_credit', 'image_source',
     }
 
     if 'mention_level' in body and body['mention_level'] not in (None, 'נטעם', 'הוזכר'):
         raise HTTPException(status_code=422, detail="mention_level must be נטעם, הוזכר, or null")
+
+    # Truthful photo provenance (see docs/episode-publication-quality.md). A
+    # recorded source always needs a credit, so a creator/editorial/directory
+    # image is never shown looking like the venue's own photo.
+    IMAGE_SOURCE_KINDS = {
+        'venue_owned', 'venue_booking_listing', 'venue_delivery_listing',
+        'creator_owned', 'editorial', 'directory',
+    }
+    if 'image_source' in body:
+        value = body['image_source']
+        if value not in (None, '') and value not in IMAGE_SOURCE_KINDS:
+            raise HTTPException(status_code=422, detail="image_source must be a known photo source kind, or empty to clear")
+        body['image_source'] = value or None
+    if 'image_credit' in body:
+        value = body['image_credit']
+        if value is not None and (not isinstance(value, str) or len(value) > 300):
+            raise HTTPException(status_code=422, detail="image_credit must be a string up to 300 characters, or null to clear")
+        if isinstance(value, str) and not value.strip():
+            body['image_credit'] = None
 
     # Curated venue-image assignment (see docs/venue-image-storage.md). The
     # frontend only renders a stored image_url directly when it is an https
@@ -521,6 +540,19 @@ async def patch_restaurant_admin(
         raise HTTPException(status_code=400, detail="No valid fields to update")
 
     db = get_database()
+    if updates.get('image_url') == '':
+        # Clearing the curated image clears its provenance with it.
+        updates['image_credit'] = None
+        updates['image_source'] = None
+    elif any(k in updates for k in ('image_source', 'image_credit')):
+        existing = db.get_restaurant(restaurant_id)
+        if not existing:
+            raise HTTPException(status_code=404, detail="Restaurant not found")
+        merged_source = updates.get('image_source', existing.get('image_source'))
+        merged_credit = updates.get('image_credit', existing.get('image_credit'))
+        if merged_source and not (isinstance(merged_credit, str) and merged_credit.strip()):
+            raise HTTPException(status_code=422, detail="image_source requires a non-empty image_credit")
+
     success = db.update_restaurant(restaurant_id, **updates)
     if not success:
         raise HTTPException(status_code=404, detail="Restaurant not found")

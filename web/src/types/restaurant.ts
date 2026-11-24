@@ -85,6 +85,10 @@ export interface Restaurant {
   mention_level?: 'נטעם' | 'הוזכר' | null;
   host_quotes?: string[];
   mentions?: RestaurantMention[];
+  /** Truthful provenance of the curated hero image, when recorded. */
+  image_credit?: string | null;
+  /** Who the hero image actually belongs to; never relabelled as venue-owned. */
+  image_source?: 'venue_owned' | 'venue_booking_listing' | 'venue_delivery_listing' | 'creator_owned' | 'editorial' | 'directory' | null;
   /** Copies of the place's photos served from our own server (free per view). */
   stored_photos?: StoredPhoto[];
 }
@@ -101,6 +105,7 @@ export interface StoredPhoto {
 
 export interface RestaurantMention {
   video_id: string;
+  verdict?: string | null;
   timestamp_seconds?: number | null;
   timestamp_display?: string | null;
   mention_level?: string | null;
@@ -108,6 +113,11 @@ export interface RestaurantMention {
   youtube_url?: string | null;
   channel_name?: string | null;
   speaker?: string | null;
+  /** Review content of this mention, kept per creator. */
+  host_quotes?: string[] | null;
+  host_comments?: string | null;
+  dishes_mentioned?: string[] | null;
+  published_at?: string | null;
 }
 
 export interface EpisodeInfo {

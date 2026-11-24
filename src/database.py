@@ -428,6 +428,8 @@ class Database:
                 ('country', 'TEXT'),
                 ('instagram_url', 'TEXT'),
                 ('mention_level', 'TEXT'),
+                ('image_credit', 'TEXT'),
+                ('image_source', 'TEXT'),
             ]:
                 try:
                     cursor.execute(f'ALTER TABLE restaurants ADD COLUMN {col} {col_type}')
@@ -703,8 +705,9 @@ class Database:
                     google_user_ratings_total, latitude, longitude, image_url, photos,
                     google_name, published_at, og_image_url,
                     video_url, video_id, channel_name, google_url, engaging_quote,
-                    is_closing, country, instagram_url, mention_level, is_hidden
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    is_closing, country, instagram_url, mention_level, is_hidden,
+                    image_credit, image_source
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ''', (
                 restaurant_id,
                 episode_id,
@@ -747,6 +750,8 @@ class Database:
                 kwargs.get('instagram_url'),
                 kwargs.get('mention_level'),
                 1 if kwargs.get('is_hidden') else 0,
+                kwargs.get('image_credit'),
+                kwargs.get('image_source'),
             ))
 
             return restaurant_id
@@ -766,6 +771,48 @@ class Database:
             restaurant = self._row_to_restaurant(row)
             self._attach_stored_photos(cursor, [restaurant])
             return restaurant
+
+    def get_restaurant_reviews(self, restaurant_id: str) -> List[Dict]:
+        """All episode mentions linked to a restaurant, with review content.
+
+        Powers the additional-reviews section: every mention keeps its own
+        creator/channel attribution, quote and timestamped video link, so a
+        review seeded against a canonical restaurant is shown as its own
+        creator's words, never merged into another review.
+        """
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute('''\
+                SELECT em.video_id, em.timestamp_seconds, em.timestamp_display,
+                       em.mention_level, em.speaker, em.host_quotes, em.host_comments,
+                       em.dishes_mentioned, em.verdict,
+                       e.title AS episode_title, e.video_url AS ep_video_url,
+                       e.channel_name AS channel_name, e.published_at AS published_at
+                FROM episode_mentions em
+                LEFT JOIN episodes e ON em.episode_id = e.id
+                WHERE em.restaurant_id = ?
+                ORDER BY e.published_at ASC, em.created_at ASC
+            ''', (restaurant_id,))
+            mentions = []
+            for m in cursor.fetchall():
+                md = dict(m)
+                video_url = md.pop('ep_video_url', None)
+                if not video_url and md.get('video_id'):
+                    video_url = f"https://www.youtube.com/watch?v={md['video_id']}"
+                ts = md.get('timestamp_seconds')
+                md['youtube_url'] = (
+                    f"{video_url}&t={int(ts)}s"
+                    if video_url and ts is not None else video_url
+                )
+                for field in ('host_quotes', 'dishes_mentioned'):
+                    raw = md.get(field)
+                    if isinstance(raw, str):
+                        try:
+                            md[field] = json.loads(raw)
+                        except (TypeError, ValueError):
+                            md[field] = [raw] if raw.strip() else None
+                mentions.append(md)
+            return mentions
 
     def _attach_stored_photos(self, cursor, restaurants: List[Dict]) -> None:
         """Add stored_photos (copies served from our volume) to each restaurant.

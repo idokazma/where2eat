@@ -229,3 +229,39 @@ def test_reviewed_seed_saves_evidence_and_discussion(monkeypatch, tmp_path, good
     evidence = json.loads(next((tmp_path / 'publication_reviews').glob('*.json')).read_text())
     assert evidence['quality_report']['review_actor'] == 'reviewing-admin'
     assert evidence['restaurants'][0]['publication_review'] == good['publication_review']
+
+
+@pytest.mark.parametrize('kind', ['creator_owned', 'editorial', 'directory'])
+def test_curated_photo_kinds_pass_with_full_evidence(good, segments, tmp_path, kind):
+    data = b'curated image bytes'
+    digest = hashlib.sha256(data).hexdigest()
+    (tmp_path / (digest + '.jpg')).write_bytes(data)
+    good['image_url'] = 'https://where2eat-production.up.railway.app/api/venue-images/' + digest + '.jpg'
+    good['publication_review']['photo'] = {
+        'status': 'verified', 'source_kind': kind, 'source_url': 'https://source.example/photo',
+        'credit': 'Truthful source label', 'identity_checked': True, 'pixels_checked': True,
+        'content_kind': 'food', 'sha256': digest,
+    }
+    assert codes(good, segments, asset_root=tmp_path) == []
+
+
+def test_unknown_photo_kind_still_blocked(good, segments, tmp_path):
+    data = b'curated image bytes'
+    digest = hashlib.sha256(data).hexdigest()
+    (tmp_path / (digest + '.jpg')).write_bytes(data)
+    good['image_url'] = 'https://where2eat-production.up.railway.app/api/venue-images/' + digest + '.jpg'
+    good['publication_review']['photo'] = {
+        'status': 'verified', 'source_kind': 'owner', 'source_url': 'https://source.example/photo',
+        'credit': 'Relabelled as owner', 'identity_checked': True, 'pixels_checked': True,
+        'content_kind': 'food', 'sha256': digest,
+    }
+    assert 'venue_photo_evidence_missing' in codes(good, segments, asset_root=tmp_path)
+
+
+def test_canonical_restaurant_id_format(good, segments):
+    good['canonical_restaurant_id'] = 'dbe58419-7e3a-4343-a609-6e8b6a48b128'
+    assert 'canonical_restaurant_id_invalid' not in codes(good, segments)
+    good['canonical_restaurant_id'] = 'arc'
+    assert 'canonical_restaurant_id_invalid' in codes(good, segments)
+    good['canonical_restaurant_id'] = 12345
+    assert 'canonical_restaurant_id_invalid' in codes(good, segments)

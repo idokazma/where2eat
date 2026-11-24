@@ -166,6 +166,14 @@ export default function RestaurantDetailPage() {
   const allPhotos = getRestaurantImages(restaurant);
   const hasHeroImage = heroImage && !heroImageError;
 
+  // Reviews from other episodes/creators linked to this same venue. Each keeps
+  // its own creator attribution and quote; the venue's own primary review is
+  // shown above and excluded here.
+  const primaryVideoId = restaurant.episode_info?.video_id;
+  const additionalReviews = (restaurant.mentions || []).filter(
+    (m) => m.video_id && m.video_id !== primaryVideoId && m.verdict !== 'reference_only'
+  );
+
   return (
     <div className="min-h-screen bg-[var(--color-paper)]">
       {/* Hero Section */}
@@ -293,6 +301,13 @@ export default function RestaurantDetailPage() {
         </div>
       )}
 
+      {/* Truthful photo credit: recorded whenever the curated image has known provenance */}
+      {restaurant.image_credit && (
+        <p className="px-4 pt-1 text-[11px] text-[var(--color-ink-subtle)]">
+          תמונה: {restaurant.image_credit}
+        </p>
+      )}
+
       {/* Content */}
       <div className="px-4 py-4 space-y-5">
         {/* Quick Actions Bar */}
@@ -385,6 +400,48 @@ export default function RestaurantDetailPage() {
                 {restaurant.host_comments}
               </p>
             )}
+          </div>
+        )}
+
+        {/* Reviews of the same venue from other episodes or creators */}
+        {additionalReviews.length > 0 && (
+          <div className="space-y-3">
+            <h2 className="text-lg font-bold text-[var(--color-ink)]">ביקורות נוספות</h2>
+            {additionalReviews.map((mention, index) => {
+              const quote = mention.host_quotes?.[0] || mention.host_comments;
+              return (
+                <div
+                  key={`${mention.video_id}-${index}`}
+                  className="p-4 rounded-xl bg-[var(--color-surface-elevated)] border-2 border-[var(--color-ink)] shadow-[2.5px_2.5px_0_var(--color-ink)] space-y-2"
+                >
+                  <div className="flex items-center gap-2 flex-wrap">
+                    {(mention.mention_level === 'נטעם' || mention.mention_level === 'הוזכר') && (
+                      <MentionLevelBadge mentionLevel={mention.mention_level} size="sm" />
+                    )}
+                    {(mention.channel_name || mention.speaker) && (
+                      <span className="text-sm font-medium text-[var(--color-ink-muted)]">
+                        {mention.channel_name || mention.speaker}
+                      </span>
+                    )}
+                    {mention.youtube_url && (
+                      <a
+                        href={mention.youtube_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm text-[var(--color-accent)] hover:underline mr-auto"
+                      >
+                        צפה{mention.timestamp_display ? ` · ${mention.timestamp_display}` : ''} ←
+                      </a>
+                    )}
+                  </div>
+                  {quote && (
+                    <p className="text-[var(--color-ink)] leading-relaxed text-[15px]">
+                      &ldquo;{quote}&rdquo;
+                    </p>
+                  )}
+                </div>
+              );
+            })}
           </div>
         )}
 
