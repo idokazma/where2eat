@@ -91,7 +91,8 @@
 .stories-place-search li:last-child { border-bottom: 0; }
 .stories-place-search li[aria-selected="true"], .stories-place-search li:hover { background: var(--st-sun); }
 .stories-place-search li span { display: block; color: var(--st-muted); font-size: 12px; }
-.stories-place-search a { text-decoration: underline; }
+.stories-data-sources { text-align: center; }
+.stories-data-sources a { text-decoration: underline; }
 
 
 /* start screen */

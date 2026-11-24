@@ -6,6 +6,7 @@ it("requires an explicit suggestion and supports keyboard selection", async () =
   const onSelect = jest.fn();
   render(<PlaceAutocomplete disabled={false} onSelect={onSelect} />);
   const input = screen.getByRole("combobox");
+  expect(screen.queryByText(/GeoNames|CC BY/)).toBeNull();
   fireEvent.focus(input);
   fireEvent.change(input, { target: { value: "רעננה" } });
   expect(await screen.findByRole("option", { name: /רעננה/ })).toBeInTheDocument();

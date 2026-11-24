@@ -434,6 +434,7 @@ export function StoriesView({
               החדשות ביותר
             </button>
           </div>
+          <p className="stories-note stories-data-sources"><Link href="/data-sources">מקורות מידע</Link></p>
           {sources.length > 1 && (
             <div className="stories-card">
               <label className="stories-row">

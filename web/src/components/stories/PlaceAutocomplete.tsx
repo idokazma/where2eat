@@ -70,7 +70,7 @@ export function PlaceAutocomplete({ disabled, onSelect }: { disabled: boolean; o
       {open && error && <p role="status">לא הצלחנו לטעון את הרשימה. אפשר לבחור נקודה מהרשימה הקיימת.</p>}
       {open && places && query.trim().length >= 2 && !matches.length && <p role="status">לא נמצא מקום תואם. אפשר לנסות שם אחר או לבחור נקודה קיימת.</p>}
       <p className="stories-note" id={`${id}-help`}>בחרו הצעה כדי להתחיל בסביבה ולהמשיך למקומות רחוקים יותר. הרשימה כוללת יישובים ואזורים נבחרים, לא כל רחוב או מקום בארץ.</p>
-      <p className="stories-note">נתוני מקומות: <a href="https://www.geonames.org/" target="_blank" rel="noreferrer">GeoNames</a>, ברישיון <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noreferrer">CC BY 4.0</a>.</p>
+
     </div>
   );
 }

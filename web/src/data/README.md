@@ -6,7 +6,7 @@ Built on 2026-11-24 by `python scripts/build_story_places.py` from repository ro
 
 `israel-places.json`: 951 entries. 946 qualified locality records, 4 reviewed geographic-region representative points, 1 market. Source coordinates and original names/aliases: GeoNames, https://www.geonames.org/ . Licensed CC BY 4.0, https://creativecommons.org/licenses/by/4.0/ . This snapshot filters and normalizes the original data and adds reviewed Hebrew display/search spellings for curated regions. It is not the original complete GeoNames database.
 
-Source: https://download.geonames.org/export/dump/IL.zip . Format and license: https://download.geonames.org/export/dump/readme.txt . Data is provided as-is. Preserve the visible attribution in the component when updating.
+Source: https://download.geonames.org/export/dump/IL.zip . Format and license: https://download.geonames.org/export/dump/readme.txt . Data is provided as-is. Preserve attribution on /data-sources, linked unobtrusively from the Stories start screen and More menu, when updating.
 
 For locality qualification, the build compares against the official Population and Immigration Authority name list, resource `8f714b6f-c35c-4b40-a0e7-547b675eee0e`, https://data.gov.il/dataset/citiesandsettelments . The official list is used as a build-time audit input only; distributed locality display names/aliases and coordinates come from GeoNames. Official codes appear in the audit to identify unresolved joins, not as a claim that those places do not exist.
 
