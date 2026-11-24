@@ -307,14 +307,20 @@ export function storyPhotoKey(value: string): string {
   return value;
 }
 
-/** A bounded image window. Never speculate a paid request for the next frame. */
+/**
+ * A bounded image window: the photo in view, and on the active story its neighbours (the
+ * next one only after the photo in view loaded, so it never competes with it). A paid
+ * Google photo loads only when granted: the viewer reached it, or it is the next one on
+ * the active story and the visit's limit allows it. Each is paid once (the server keeps
+ * a copy), so prefetching costs at most one photo per place opened.
+ */
 export function shouldLoadStoryFrame(
   frames: StoryFrame[], index: number, current: number,
   active: boolean, currentLoaded: boolean, granted: Set<string>,
 ): boolean {
   const frame = frames[index];
   if (!frame) return false;
-  if (frame.photo.paid) return index === current && granted.has(frame.photo.url);
+  if (frame.photo.paid && !granted.has(frame.photo.url)) return false;
   return index === current || (active && Math.abs(index - current) === 1 &&
     (index < current || currentLoaded));
 }

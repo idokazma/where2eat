@@ -408,15 +408,30 @@ describe("bounded photo identity and lookahead", () => {
       stored_photos: [{ path: `/api/place-photos/${hash}.jpg` }, { path: "/api/place-photos/other.jpg" }] });
     expect(storyFrames(buildStories([r], TLV).near[0])).toHaveLength(2);
   });
-  it("does not preload any paid frame, or all previous free frames", () => {
+  it("loads the current photo and its neighbours on the active story, never all previous free frames", () => {
     const frames = [false, false, false, true, false].map((paid, i) => ({ photo: { url: `p${i}`, paid } }));
     const grants = new Set(["p3"]);
     expect(shouldLoadStoryFrame(frames, 2, 1, true, false, grants)).toBe(false);
     expect(shouldLoadStoryFrame(frames, 2, 1, true, true, grants)).toBe(true);
     expect(shouldLoadStoryFrame(frames, 2, 1, false, true, grants)).toBe(false);
-    expect(shouldLoadStoryFrame(frames, 3, 2, true, true, grants)).toBe(false);
     expect(shouldLoadStoryFrame(frames, 3, 3, true, false, grants)).toBe(true);
     expect(shouldLoadStoryFrame(frames, 0, 3, true, true, grants)).toBe(false);
+  });
+  it("prefetches the next Google photo once the current one loaded, if it was granted", () => {
+    const frames = [false, true, true].map((paid, i) => ({ photo: { url: `p${i}`, paid } }));
+    // Granted next photo: loads ahead on the active story after the current photo loaded.
+    expect(shouldLoadStoryFrame(frames, 1, 0, true, true, new Set(["p1"]))).toBe(true);
+    expect(shouldLoadStoryFrame(frames, 1, 0, true, false, new Set(["p1"]))).toBe(false);
+    expect(shouldLoadStoryFrame(frames, 1, 0, false, true, new Set(["p1"]))).toBe(false);
+    // Not granted (over the visit's limit): never fetched ahead.
+    expect(shouldLoadStoryFrame(frames, 1, 0, true, true, new Set())).toBe(false);
+    // Two ahead: never.
+    expect(shouldLoadStoryFrame(frames, 2, 0, true, true, new Set(["p1", "p2"]))).toBe(false);
+  });
+  it("keeps the previous Google photo loaded on the active story, so going back is instant", () => {
+    const frames = [false, true, true].map((paid, i) => ({ photo: { url: `p${i}`, paid } }));
+    expect(shouldLoadStoryFrame(frames, 1, 2, true, false, new Set(["p1", "p2"]))).toBe(true);
+    expect(shouldLoadStoryFrame(frames, 1, 2, false, false, new Set(["p1", "p2"]))).toBe(false);
   });
 });
 
