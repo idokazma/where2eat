@@ -35,6 +35,7 @@ import {
   type StorySlide,
 } from "@/lib/stories";
 import "./stories.css";
+import { PlaceAutocomplete } from "./PlaceAutocomplete";
 
 const RADIUS_KM = 50;
 // Stories are placed by distance, but only the ones around the one in view are
@@ -409,6 +410,9 @@ export function StoriesView({
             </button>
             {locError && <p className="stories-err">{locError}</p>}
             <p className="stories-note">המיקום נשאר בדפדפן: המיון נעשה כאן ושום דבר לא נשלח לשרת.</p>
+          </div>
+          <div className="stories-card">
+            <PlaceAutocomplete disabled={!restaurants} onSelect={(coords) => begin(coords, false)} />
           </div>
           <div className="stories-card">
             <h2>או להתחיל מנקודה</h2>
