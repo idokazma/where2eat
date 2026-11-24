@@ -204,6 +204,30 @@ it("loads a paid Google photo only when the viewer moves to it", async () => {
   expect(paidImages()).toEqual([expect.stringContaining("/api/photos/places/PN/photos/ref1?maxwidth=900")]);
 });
 
+it("prefetches the next Google photo once the photo in view has loaded", async () => {
+  await startFromTelAviv();
+  const [near] = await screen.findAllByRole("article");
+  expect(paidImages()).toEqual([]);
+  fireEvent.load(near.querySelector<HTMLImageElement>(`img[src="${photo("near")}"]`)!);
+  expect(paidImages()).toEqual([expect.stringContaining("/api/photos/places/PN/photos/ref1?maxwidth=900")]);
+  // Moving on: the prefetched photo is the one in view, the one after it is next to load.
+  const frames = within(near).getAllByRole("group");
+  act(() => observers.find((o) => o.targets.includes(frames[1]))!.fire(frames[1]));
+  fireEvent.load(near.querySelector<HTMLImageElement>('img[src*="ref1"]')!);
+  expect(paidImages()).toEqual([expect.stringContaining("ref1"), expect.stringContaining("ref2")]);
+});
+
+it("prefetching counts toward the visit limit", async () => {
+  await startFromTelAviv(1);
+  const [near] = await screen.findAllByRole("article");
+  fireEvent.load(near.querySelector<HTMLImageElement>(`img[src="${photo("near")}"]`)!);
+  expect(paidImages()).toEqual([expect.stringContaining("ref1")]);
+  const frames = within(near).getAllByRole("group");
+  act(() => observers.find((o) => o.targets.includes(frames[1]))!.fire(frames[1]));
+  fireEvent.load(near.querySelector<HTMLImageElement>('img[src*="ref1"]')!);
+  expect(paidImages()).toEqual([expect.stringContaining("ref1")]);
+});
+
 it("stops loading paid photos at the visit limit, showing the story's own photo instead", async () => {
   await startFromTelAviv(1);
   const [near] = await screen.findAllByRole("article");
@@ -883,7 +907,11 @@ it("keeps successful paid slots distinct on forward and reverse transitions", as
     const image = near.querySelector<HTMLImageElement>(`img[src*="ref${index}"]`)!;
     expect(image).not.toBeNull();
     fireEvent.load(image);
-    expect(paidImages()).toHaveLength(1);
+    // The photo in view plus at most its neighbour (kept or prefetched), never duplicated.
+    const loaded = paidImages();
+    expect(new Set(loaded).size).toBe(loaded.length);
+    expect(loaded.length).toBeLessThanOrEqual(2);
+    expect(loaded).toContainEqual(expect.stringContaining(`ref${index}`));
   }
   expect(within(near).getAllByRole("group")).toHaveLength(3);
 });

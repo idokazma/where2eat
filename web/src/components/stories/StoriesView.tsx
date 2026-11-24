@@ -269,18 +269,14 @@ export function StoriesView({
   // fallback background. It is never dropped from the feed or left blank.
   const onImageError = (url: string) => setFailedImages((prev) => (prev.has(url) ? prev : new Set(prev).add(url)));
 
+  // Paid photos allowed this visit, up to the limit: ones the viewer reached, and the
+  // next one on the active story (prefetched once the photo in view loaded).
+  const grant = (url: string) =>
+    setGranted((prev) => (prev.has(url) || prev.size >= extraPhotoLimit ? prev : new Set(prev).add(url)));
   const reach = (id: string, i: number, frames: StoryFrame[]) => {
     setSlideAt((prev) => (prev[id] === i ? prev : { ...prev, [id]: i }));
-    setGranted((prev) => {
-      let next = prev;
-      for (const f of frames.slice(i, i + 1)) {
-        if (!f.photo.paid || next.has(f.photo.url)) continue;
-        if (next.size >= extraPhotoLimit) break;
-        if (next === prev) next = new Set(prev);
-        next.add(f.photo.url);
-      }
-      return next;
-    });
+    const f = frames[i];
+    if (f?.photo.paid) grant(f.photo.url);
   };
 
   const goStory = useCallback(
@@ -525,6 +521,7 @@ export function StoriesView({
               granted={granted}
               quoteFor={quoteFor}
               onSlide={(i, frames) => reach(item.story.restaurant.id!, i, frames)}
+              onPrefetch={grant}
               onImageError={onImageError}
               onPlay={(slide) => openPlayer(item.story, slide)}
               onReviews={() => openReviews(item.story)}
@@ -629,6 +626,7 @@ function StoryView({
   granted,
   quoteFor,
   onSlide,
+  onPrefetch,
   onImageError,
   onPlay,
   onReviews,
@@ -649,6 +647,7 @@ function StoryView({
   granted: Set<string>;
   quoteFor: (story: Story, slide: StorySlide) => StoryQuote | null;
   onSlide: (i: number, frames: StoryFrame[]) => void;
+  onPrefetch: (url: string) => void;
   onImageError: (url: string) => void;
   onPlay: (slide: StorySlide) => void;
   onReviews: () => void;
@@ -695,6 +694,18 @@ function StoryView({
   }, [visibleKey, slideIndex]);
   const [loaded, setLoaded] = useState<Set<string>>(new Set());
   const imageLoaded = (url: string) => setLoaded((old) => old.has(url) ? old : new Set(old).add(url));
+  // Once the photo in view has loaded on the active story, allow the next photo to load
+  // ahead (paid ones included, within the visit's limit), so a tap shows it at once.
+  const currentReady = loaded.has(slotUrl(slideIndex) ?? "");
+  useEffect(() => {
+    if (!active || !currentReady) return;
+    const next = visible[visible.indexOf(slideIndex) + 1];
+    if (next === undefined || slotFailed(next)) return;
+    const photo = frames[next].photo;
+    if (photo.paid) onPrefetch(photo.url);
+    // onPrefetch and slotFailed are recreated each render; these are the inputs that matter.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [active, currentReady, slideIndex, visibleKey, frames]);
   // An atomic automatic skip owns its destination until that slot intersects.
   // Late observer records for crossed slots must not restart failure recovery.
   const settlingAt = useRef<number | null>(null);
