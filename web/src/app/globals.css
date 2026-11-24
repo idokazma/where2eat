@@ -353,8 +353,9 @@
     bottom: 0;
     left: 0;
     right: 0;
-    height: 64px;
-    padding-bottom: env(safe-area-inset-bottom);
+    /* Add the home-indicator inset, do not take it out of the icon row. */
+    height: calc(64px + env(safe-area-inset-bottom, 0px));
+    padding-bottom: env(safe-area-inset-bottom, 0px);
     background: var(--color-surface-elevated);
     border-top: 1px solid var(--color-border);
     display: flex;
