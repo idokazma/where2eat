@@ -1,10 +1,15 @@
 import "@testing-library/jest-dom";
 import { render, screen, fireEvent, waitFor, within, act } from "@testing-library/react";
 import StoriesPage from "../page";
+import * as storyHelpers from "@/lib/stories";
 import { StoriesView } from "@/components/stories/StoriesView";
 import { metadata } from "../layout";
 import { FavoritesProvider } from "@/contexts/favorites-context";
 
+jest.mock("@/lib/stories", () => {
+  const actual = jest.requireActual("@/lib/stories");
+  return { ...actual, buildStories: jest.fn(actual.buildStories) };
+});
 const mockLocate = jest.fn();
 jest.mock("@/hooks/useGeolocation", () => ({
   useGeolocation: () => ({ coords: null, accuracy: null, loading: false, error: null, getCurrentPosition: mockLocate }),
@@ -125,7 +130,7 @@ const renderPage = (limit?: number) =>
 
 async function startFromTelAviv(limit?: number) {
   renderPage(limit);
-  const preset = await screen.findByRole("button", { name: /תל אביב/ });
+  const preset = await screen.findByRole("button", { name: "תל אביב · דיזנגוף" });
   await waitFor(() => expect(preset).toBeEnabled());
   fireEvent.click(preset);
 }
@@ -997,4 +1002,22 @@ it("deduplicates the runtime fallback alias without shifting the next paid slot"
   act(() => observers.find((o) => o.targets.includes(original[2]))!.fire(original[2]));
   expect(paidImages()).toEqual([expect.stringContaining('alias2')]);
   expect(within(article).getByRole('button', { name: /נגן ברגע הזה/ })).toBeInTheDocument();
+});
+
+
+it.each([
+  ["תל אביב · שוק הכרמל", 32.068683, 34.769047],
+  ["תל אביב · שוק לוינסקי", 32.0594379, 34.7728971],
+  ["חיפה · ואדי ניסנאס", 32.816496, 34.99608449999999],
+])("starts the feed from the verified market/neighborhood anchor: %s", async (name, lat, lng) => {
+  const coords = jest.mocked(storyHelpers.buildStories);
+  renderPage();
+  const button = await screen.findByRole("button", { name });
+  await waitFor(() => expect(button).toBeEnabled());
+  for (const old of ["תל אביב · דיזנגוף", "ירושלים · מחנה יהודה", "חיפה · המושבה הגרמנית", "הרצליה", "באר שבע", "נצרת"])
+    expect(screen.getByRole("button", { name: old })).toBeInTheDocument();
+  fireEvent.click(button);
+  await screen.findAllByRole("article");
+  expect(coords).toHaveBeenLastCalledWith(expect.any(Array), { lat, lng }, { radiusKm: 50, source: "" });
+
 });
