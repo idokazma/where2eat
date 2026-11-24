@@ -37,10 +37,10 @@ import {
 import "./stories.css";
 
 /** A source-video cover, never a restaurant photo or a frame at the review time. */
-function ReviewThumbnail({ slide }: { slide: StorySlide }) {
+function ReviewThumbnail({ slide, onPlay }: { slide: StorySlide; onPlay: () => void }) {
   const [failed, setFailed] = useState(false);
   return (
-    <div className="stories-review-thumbnail">
+    <button className="stories-review-thumbnail" onClick={onPlay} aria-label={`נגן את הסרטון של ${sourceLabel(slide)}`}>
       {failed ? (
         <span className="stories-review-thumbnail-fallback">
           <Play size={20} aria-hidden="true" />
@@ -56,7 +56,7 @@ function ReviewThumbnail({ slide }: { slide: StorySlide }) {
           onError={() => setFailed(true)}
         />
       )}
-    </div>
+    </button>
   );
 }
 
@@ -585,13 +585,20 @@ export function StoriesView({
                 return (
                   <li key={`${slide.videoId}@${slide.seconds ?? ""}`} className="stories-review">
                     <div className="stories-review-heading">
-                      <ReviewThumbnail slide={slide} />
-                      <p className="stories-review-src">
-                      {slide.tasted && <span className="stories-tick">נטעם</span>}
-                      <strong>{sourceLabel(slide)}</strong>
-                      {date ? ` · ${date}` : ""}
-                      {formatClock(slide.seconds) ? ` · ${formatClock(slide.seconds)}` : ""}
-                      </p>
+                      <ReviewThumbnail slide={slide} onPlay={() => playFromReviews(reviewsFor, slide)} />
+                      {/* Source on one line, month and moment on the next: a narrow screen never
+                          leaves a separator at the start or end of a line. */}
+                      <div className="stories-review-meta">
+                        <p className="stories-review-src">
+                          {slide.tasted && <span className="stories-tick">נטעם</span>}
+                          <strong className="stories-review-part">{sourceLabel(slide)}</strong>
+                        </p>
+                        {(date || formatClock(slide.seconds)) && (
+                          <p className="stories-review-when">
+                            {[date, formatClock(slide.seconds)].filter(Boolean).join(" · ")}
+                          </p>
+                        )}
+                      </div>
                     </div>
                     <p className="stories-review-quote">
                       {q ? (q.verified ? `״${q.text}״` : q.text) : "אין ציטוט זמין לסקירה הזו"}

@@ -633,6 +633,10 @@
   min-width: 0;
 }
 .stories-review-thumbnail {
+  padding: 0;
+  border: 0;
+  cursor: pointer;
+  font: inherit;
   flex: 0 0 96px;
   aspect-ratio: 16 / 9;
   overflow: hidden;
@@ -655,4 +659,34 @@
   gap: 2px;
   font-size: 10px;
 }
-.stories-review-src { min-width: 0; overflow-wrap: anywhere; }
+.stories-review-meta {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.stories-review-src {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.stories-review-when {
+  font-size: 13px;
+  font-weight: 700;
+  opacity: 0.75;
+  white-space: nowrap;
+}
+.stories-review-part {
+  white-space: nowrap;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.stories-review-src .stories-tick {
+  margin-inline-end: 0;
+}
+.stories-review-thumbnail:focus-visible {
+  outline: 3px solid var(--st-sun);
+  outline-offset: 2px;
+}

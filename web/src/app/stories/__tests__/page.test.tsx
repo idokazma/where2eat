@@ -1018,3 +1018,27 @@ it("shows source-matched review thumbnails, an honest failure state and unchange
   fireEvent.click(within(entries[1]).getByRole("button", { name: "נגן" }));
   expect(document.querySelector("iframe")!.src).toBe("https://www.youtube-nocookie.com/embed/vidOTHER?start=27&autoplay=1&playsinline=1&rel=0");
 });
+
+it("plays a review from its video cover too", async () => {
+  await startFromTelAviv();
+  const [near] = await screen.findAllByRole("article");
+  fireEvent.click(within(near).getByRole("button", { name: /כל הסקירות/ }));
+  const reviews = document.querySelector<HTMLElement>("dialog.stories-reviews")!;
+  const entries = within(reviews).getAllByRole("listitem");
+  fireEvent.click(within(entries[1]).getByRole("button", { name: /נגן את הסרטון של יוצר אחר/ }));
+  expect(document.querySelector("iframe")!.src).toBe("https://www.youtube-nocookie.com/embed/vidOTHER?start=27&autoplay=1&playsinline=1&rel=0");
+});
+
+it("puts a review's source on one line and its month and moment on the next, never a lone separator", async () => {
+  await startFromTelAviv();
+  const [near] = await screen.findAllByRole("article");
+  fireEvent.click(within(near).getByRole("button", { name: /כל הסקירות/ }));
+  const reviews = document.querySelector<HTMLElement>("dialog.stories-reviews")!;
+  const entry = reviews.querySelectorAll("li")[1];
+  expect(entry.querySelector(".stories-review-src strong")!.textContent).toBe("יוצר אחר");
+  const when = entry.querySelector(".stories-review-when")!.textContent!;
+  expect(when).toContain("0:30");
+  expect(when.trim().startsWith("·")).toBe(false);
+  expect(when.trim().endsWith("·")).toBe(false);
+  expect(entry.querySelector(".stories-review-src")!.textContent).not.toMatch(/·\s*$/);
+});
