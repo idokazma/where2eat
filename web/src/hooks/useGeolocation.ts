@@ -54,7 +54,8 @@ export function useGeolocation(options: UseGeolocationOptions = {}) {
   const timeout = options.timeout ?? defaultOptions.timeout;
   const maximumAge = options.maximumAge ?? defaultOptions.maximumAge;
 
-  const getCurrentPosition = useCallback((): Promise<GeolocationState['coords']> => {
+  // Per-call options override the hook's, e.g. a fresh precise fix when the user asks.
+  const getCurrentPosition = useCallback((overrides: UseGeolocationOptions = {}): Promise<GeolocationState['coords']> => {
     return new Promise((resolve, reject) => {
       if (!navigator.geolocation) {
         const error = 'Geolocation is not supported by this browser';
@@ -91,9 +92,9 @@ export function useGeolocation(options: UseGeolocationOptions = {}) {
           reject(new Error(errorMessage));
         },
         {
-          enableHighAccuracy: enableHighAccuracy,
-          timeout: timeout,
-          maximumAge: maximumAge,
+          enableHighAccuracy: overrides.enableHighAccuracy ?? enableHighAccuracy,
+          timeout: overrides.timeout ?? timeout,
+          maximumAge: overrides.maximumAge ?? maximumAge,
         }
       );
     });

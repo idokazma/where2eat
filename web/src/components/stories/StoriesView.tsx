@@ -77,6 +77,12 @@ const MOUNT_AHEAD = 4;
 const STORY_MS = 10_000;
 // Opening the site asks for the location; without an answer by then, newest first.
 const LOCATE_WAIT_MS = 8_000;
+// "My location" must be where the viewer is now: a fresh precise fix (GPS), and if that is
+// not available in time, a quick approximate one. Opening the site accepts a position at
+// most a minute old so the feed opens fast.
+const PRECISE_FIX = { enableHighAccuracy: true, maximumAge: 0, timeout: 6_000 };
+const QUICK_FIX = { enableHighAccuracy: false, maximumAge: 60_000, timeout: 6_000 };
+const OPENING_FIX = { enableHighAccuracy: false, maximumAge: 60_000, timeout: LOCATE_WAIT_MS };
 const PHOTO_MS = 4_000;
 // A photo slot that failed is skipped after this pause instead of stopping the rotation.
 const SKIP_FAILED_MS = 700;
@@ -287,12 +293,18 @@ export function StoriesView({
 
   const locate = async () => {
     setLocError(null);
+    let coords: GeoCoords | null | undefined = null;
     try {
-      const coords = await getCurrentPosition();
-      if (coords) begin(coords, true);
+      coords = await getCurrentPosition(PRECISE_FIX);
     } catch {
-      setLocError("לא הצלחנו לאתר מיקום. בחרו נקודה למטה.");
+      try {
+        coords = await getCurrentPosition(QUICK_FIX);
+      } catch {
+        coords = null;
+      }
     }
+    if (coords) begin(coords, true);
+    else setLocError("לא הצלחנו לאתר מיקום. בחרו נקודה למטה.");
   };
 
   // Open straight into stories: ask for the location once; if it is refused, unavailable
@@ -309,7 +321,7 @@ export function StoriesView({
       begin(coords, !!coords, true);
     };
     const t = setTimeout(() => settle(null), LOCATE_WAIT_MS);
-    getCurrentPosition()
+    getCurrentPosition(OPENING_FIX)
       .then((coords) => settle(coords ?? null))
       .catch(() => settle(null));
     return () => clearTimeout(t);

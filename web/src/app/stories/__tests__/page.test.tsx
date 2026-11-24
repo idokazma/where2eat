@@ -1207,3 +1207,36 @@ describe("preloading the YouTube player after another moment played", () => {
     expect(document.querySelector("iframe")!.src).toContain("autoplay=1");
   });
 });
+
+describe("stories from my current location", () => {
+  it("asking for my location gets a fresh, precise position (never an old one)", async () => {
+    mockLocate.mockResolvedValueOnce({ lat: 32.8, lng: 34.98 });
+    renderPage();
+    const locateButton = await screen.findByRole("button", { name: /לפי המיקום שלי/ });
+    await waitFor(() => expect(locateButton).toBeEnabled());
+    fireEvent.click(locateButton);
+    await screen.findAllByRole("article");
+    expect(mockLocate).toHaveBeenCalledTimes(1);
+    expect(mockLocate.mock.calls[0][0]).toEqual(expect.objectContaining({ enableHighAccuracy: true, maximumAge: 0 }));
+  });
+
+  it("falls back to a quick approximate position when a precise one is not available", async () => {
+    mockLocate.mockRejectedValueOnce(new Error("timeout")).mockResolvedValueOnce({ lat: 32.8, lng: 34.98 });
+    renderPage();
+    const locateButton = await screen.findByRole("button", { name: /לפי המיקום שלי/ });
+    await waitFor(() => expect(locateButton).toBeEnabled());
+    fireEvent.click(locateButton);
+    const stories = await screen.findAllByRole("article");
+    expect(within(stories[0]).getByRole("heading").textContent).toBe("רחוקה בחיפה");
+    expect(mockLocate).toHaveBeenCalledTimes(2);
+    expect(mockLocate.mock.calls[1][0]).toEqual(expect.objectContaining({ enableHighAccuracy: false }));
+    expect(mockLocate.mock.calls[1][0].maximumAge).toBeLessThanOrEqual(60_000);
+  });
+
+  it("on opening, accepts a position at most a minute old", async () => {
+    mockLocate.mockResolvedValueOnce({ lat: 32.081, lng: 34.775 });
+    render(<FavoritesProvider><StoriesPage /></FavoritesProvider>);
+    await screen.findAllByRole("article");
+    expect(mockLocate.mock.calls[0][0].maximumAge).toBeLessThanOrEqual(60_000);
+  });
+});
