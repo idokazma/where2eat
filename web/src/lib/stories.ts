@@ -308,22 +308,33 @@ export function storyPhotoKey(value: string): string {
 }
 
 /**
- * A bounded image window: the photo in view, and on the active story its neighbours (the
- * next one only after the photo in view loaded, so it never competes with it). A paid
- * Google photo loads only when granted: the viewer reached it, or it is the next one on
- * the active story and the visit's limit allows it. Each is paid once (the server keeps
- * a copy), so prefetching costs at most one photo per place opened.
+ * A bounded image window: the photo in view, and on the active story the previous one and
+ * the next two, loaded one after the other once the photo in view loaded (so they never
+ * compete with it, or the nearer one with the farther one).
+ * A Google photo loads only when granted: the viewer reached it, or it is among the next
+ * two on the active story and the visit's limit allows it. Each is fetched from Google once
+ * and served from our server after, so prefetching costs at most two photos per place.
  */
 export function shouldLoadStoryFrame(
   frames: StoryFrame[], index: number, current: number,
-  active: boolean, currentLoaded: boolean, granted: Set<string>,
+  active: boolean, currentLoaded: boolean, granted: Set<string>, nextLoaded = false,
 ): boolean {
   const frame = frames[index];
   if (!frame) return false;
   if (frame.photo.paid && !granted.has(frame.photo.url)) return false;
-  return index === current || (active && Math.abs(index - current) === 1 &&
-    (index < current || currentLoaded));
+  if (index === current) return true;
+  if (!active) return false;
+  // Behind: the previous photo stays, so going back is instant.
+  if (index === current - 1) return true;
+  // Ahead, in order so the very next photo gets the bandwidth first: the next one once the
+  // photo in view loaded, the one after it once the next one loaded.
+  if (index === current + 1) return currentLoaded;
+  if (index === current + PREFETCH_AHEAD) return currentLoaded && nextLoaded;
+  return false;
 }
+
+/** How many photos load on the phone ahead of the one in view (owner: two). */
+export const PREFETCH_AHEAD = 2;
 
 /** The place's photos: the free first photo, then its Google photos (paid, same place only). */
 export function storyPhotos(story: Story, { extraPhotos = true }: { extraPhotos?: boolean } = {}): StoryPhoto[] {

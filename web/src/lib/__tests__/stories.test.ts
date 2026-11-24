@@ -425,8 +425,19 @@ describe("bounded photo identity and lookahead", () => {
     expect(shouldLoadStoryFrame(frames, 1, 0, false, true, new Set(["p1"]))).toBe(false);
     // Not granted (over the visit's limit): never fetched ahead.
     expect(shouldLoadStoryFrame(frames, 1, 0, true, true, new Set())).toBe(false);
-    // Two ahead: never.
-    expect(shouldLoadStoryFrame(frames, 2, 0, true, true, new Set(["p1", "p2"]))).toBe(false);
+  });
+  it("loads the next two photos ahead in order, never three", () => {
+    const frames = [false, true, true, true].map((paid, i) => ({ photo: { url: `p${i}`, paid } }));
+    const all = new Set(["p1", "p2", "p3"]);
+    expect(shouldLoadStoryFrame(frames, 1, 0, true, true, all)).toBe(true);
+    // The second one waits for the first, so the very next photo gets the bandwidth.
+    expect(shouldLoadStoryFrame(frames, 2, 0, true, true, all, false)).toBe(false);
+    expect(shouldLoadStoryFrame(frames, 2, 0, true, true, all, true)).toBe(true);
+    expect(shouldLoadStoryFrame(frames, 3, 0, true, true, all)).toBe(false);
+    // Free photos too.
+    const free = [0, 1, 2, 3].map((i) => ({ photo: { url: `f${i}`, paid: false } }));
+    expect(shouldLoadStoryFrame(free, 2, 0, true, true, new Set(), true)).toBe(true);
+    expect(shouldLoadStoryFrame(free, 3, 0, true, true, new Set(), true)).toBe(false);
   });
   it("keeps the previous Google photo loaded on the active story, so going back is instant", () => {
     const frames = [false, true, true].map((paid, i) => ({ photo: { url: `p${i}`, paid } }));

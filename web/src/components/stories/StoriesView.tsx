@@ -25,6 +25,7 @@ import {
   storyPhotoKey,
   visibleStoryFrameIndices,
   shouldLoadStoryFrame,
+  PREFETCH_AHEAD,
   storyGoogleFallback,
   youtubeEmbedUrl,
   youtubeMomentUrl,
@@ -694,15 +695,19 @@ function StoryView({
   }, [visibleKey, slideIndex]);
   const [loaded, setLoaded] = useState<Set<string>>(new Set());
   const imageLoaded = (url: string) => setLoaded((old) => old.has(url) ? old : new Set(old).add(url));
-  // Once the photo in view has loaded on the active story, allow the next photo to load
-  // ahead (paid ones included, within the visit's limit), so a tap shows it at once.
+  // Once the photo in view has loaded on the active story, allow the next two photos to load
+  // ahead (Google ones included, within the visit's limit), so a tap shows them at once.
   const currentReady = loaded.has(slotUrl(slideIndex) ?? "");
+  const nextSlot = visible[visible.indexOf(slideIndex) + 1];
+  const nextReady = nextSlot !== undefined && loaded.has(slotUrl(nextSlot) ?? "");
   useEffect(() => {
     if (!active || !currentReady) return;
-    const next = visible[visible.indexOf(slideIndex) + 1];
-    if (next === undefined || slotFailed(next)) return;
-    const photo = frames[next].photo;
-    if (photo.paid) onPrefetch(photo.url);
+    const at = visible.indexOf(slideIndex);
+    for (const next of visible.slice(at + 1, at + 1 + PREFETCH_AHEAD)) {
+      if (slotFailed(next)) continue;
+      const photo = frames[next].photo;
+      if (photo.paid) onPrefetch(photo.url);
+    }
     // onPrefetch and slotFailed are recreated each render; these are the inputs that matter.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [active, currentReady, slideIndex, visibleKey, frames]);
@@ -830,7 +835,7 @@ function StoryView({
           const show =
             near && visible.includes(i) && !own && !failed.has(frame.photo.url) && !failedImages.has(frame.photo.url) && shouldLoadStoryFrame(
               visible.map((j) => frames[j]), visible.indexOf(i), visible.indexOf(slideIndex), active,
-              loaded.has(slotUrl(slideIndex)), granted,
+              loaded.has(slotUrl(slideIndex)), granted, nextReady,
             );
           return (
             <div
