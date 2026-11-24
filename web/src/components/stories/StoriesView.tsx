@@ -36,6 +36,30 @@ import {
 } from "@/lib/stories";
 import "./stories.css";
 
+/** A source-video cover, never a restaurant photo or a frame at the review time. */
+function ReviewThumbnail({ slide, onPlay }: { slide: StorySlide; onPlay: () => void }) {
+  const [failed, setFailed] = useState(false);
+  return (
+    <button className="stories-review-thumbnail" onClick={onPlay} aria-label={`נגן את הסרטון של ${sourceLabel(slide)}`}>
+      {failed ? (
+        <span className="stories-review-thumbnail-fallback">
+          <Play size={20} aria-hidden="true" />
+          תמונה לא זמינה
+        </span>
+      ) : (
+        <img
+          src={`https://img.youtube.com/vi/${encodeURIComponent(slide.videoId)}/hqdefault.jpg`}
+          alt={`תמונת הסרטון של ${sourceLabel(slide)}`}
+          width={480}
+          height={360}
+          loading="lazy"
+          onError={() => setFailed(true)}
+        />
+      )}
+    </button>
+  );
+}
+
 const RADIUS_KM = 50;
 // Stories are placed by distance, but only the ones around the one in view are
 // built. The rest stay as empty full-height slots, so scrolling, snapping and
@@ -560,17 +584,27 @@ export function StoriesView({
                   : null;
                 return (
                   <li key={`${slide.videoId}@${slide.seconds ?? ""}`} className="stories-review">
-                    <p className="stories-review-src">
-                      {slide.tasted && <span className="stories-tick">נטעם</span>}
-                      <strong>{sourceLabel(slide)}</strong>
-                      {date ? ` · ${date}` : ""}
-                      {formatClock(slide.seconds) ? ` · ${formatClock(slide.seconds)}` : ""}
-                    </p>
+                    <div className="stories-review-heading">
+                      <ReviewThumbnail slide={slide} onPlay={() => playFromReviews(reviewsFor, slide)} />
+                      {/* Source on one line, month and moment on the next: a narrow screen never
+                          leaves a separator at the start or end of a line. */}
+                      <div className="stories-review-meta">
+                        <p className="stories-review-src">
+                          {slide.tasted && <span className="stories-tick">נטעם</span>}
+                          <strong className="stories-review-part">{sourceLabel(slide)}</strong>
+                        </p>
+                        {(date || formatClock(slide.seconds)) && (
+                          <p className="stories-review-when">
+                            {[date, formatClock(slide.seconds)].filter(Boolean).join(" · ")}
+                          </p>
+                        )}
+                      </div>
+                    </div>
                     <p className="stories-review-quote">
                       {q ? (q.verified ? `״${q.text}״` : q.text) : "אין ציטוט זמין לסקירה הזו"}
                     </p>
                     <button className="stories-pill sun" onClick={() => playFromReviews(reviewsFor, slide)}>
-                      <Play size={14} aria-hidden="true" /> נגן ברגע הזה
+                      <Play size={14} aria-hidden="true" /> נגן
                     </button>
                   </li>
                 );

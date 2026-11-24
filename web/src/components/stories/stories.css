@@ -624,3 +624,69 @@
   font-size: 16px;
   line-height: 1.4;
 }
+
+.stories-review-heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-width: 0;
+}
+.stories-review-thumbnail {
+  padding: 0;
+  border: 0;
+  cursor: pointer;
+  font: inherit;
+  flex: 0 0 96px;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: 8px;
+  background: var(--st-ink);
+  color: var(--st-paper);
+}
+.stories-review-thumbnail img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.stories-review-thumbnail-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  height: 100%;
+  gap: 2px;
+  font-size: 10px;
+}
+.stories-review-meta {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.stories-review-src {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.stories-review-when {
+  font-size: 13px;
+  font-weight: 700;
+  opacity: 0.75;
+  white-space: nowrap;
+}
+.stories-review-part {
+  white-space: nowrap;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.stories-review-src .stories-tick {
+  margin-inline-end: 0;
+}
+.stories-review-thumbnail:focus-visible {
+  outline: 3px solid var(--st-sun);
+  outline-offset: 2px;
+}

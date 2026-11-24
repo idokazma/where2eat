@@ -185,7 +185,7 @@ it("pages sideways through photos only; reviews stay on the story, other sources
   const reviews = document.querySelector("dialog.stories-reviews")!;
   expect(reviews.querySelectorAll("li")).toHaveLength(2);
   expect(reviews.textContent).toContain("יוצר אחר");
-  expect(within(reviews as HTMLElement).getAllByRole("button", { name: /נגן ברגע הזה/ })).toHaveLength(2);
+  expect(within(reviews as HTMLElement).getAllByRole("button", { name: "נגן" })).toHaveLength(2);
   for (const frame of frames) {
     expect(within(frame).queryByText(/יוצר אחר|מדברים מהבטן 176/)).toBeNull();
     expect(within(frame).queryByRole("button", { name: /נגן/ })).toBeNull();
@@ -997,4 +997,48 @@ it("deduplicates the runtime fallback alias without shifting the next paid slot"
   act(() => observers.find((o) => o.targets.includes(original[2]))!.fire(original[2]));
   expect(paidImages()).toEqual([expect.stringContaining('alias2')]);
   expect(within(article).getByRole('button', { name: /נגן ברגע הזה/ })).toBeInTheDocument();
+});
+
+
+it("shows source-matched review thumbnails, an honest failure state and unchanged playback moments", async () => {
+  await startFromTelAviv();
+  const [near] = await screen.findAllByRole("article");
+  expect(document.querySelectorAll(".stories-review-thumbnail img")).toHaveLength(0);
+  fireEvent.click(within(near).getByRole("button", { name: /כל הסקירות/ }));
+  const reviews = document.querySelector<HTMLElement>("dialog.stories-reviews")!;
+  const entries = within(reviews).getAllByRole("listitem");
+  const first = within(entries[0]).getByRole("img");
+  expect(first).toHaveAttribute("src", "https://img.youtube.com/vi/vidNEAR/hqdefault.jpg");
+  expect(within(entries[1]).getByRole("img")).toHaveAttribute("src", "https://img.youtube.com/vi/vidOTHER/hqdefault.jpg");
+  expect(first).toHaveAttribute("loading", "lazy");
+  fireEvent.error(first);
+  expect(within(entries[0]).queryByRole("img")).toBeNull();
+  expect(within(entries[0]).getByText("תמונה לא זמינה")).toBeInTheDocument();
+  expect(within(entries[1]).getByRole("img")).toBeInTheDocument();
+  fireEvent.click(within(entries[1]).getByRole("button", { name: "נגן" }));
+  expect(document.querySelector("iframe")!.src).toBe("https://www.youtube-nocookie.com/embed/vidOTHER?start=27&autoplay=1&playsinline=1&rel=0");
+});
+
+it("plays a review from its video cover too", async () => {
+  await startFromTelAviv();
+  const [near] = await screen.findAllByRole("article");
+  fireEvent.click(within(near).getByRole("button", { name: /כל הסקירות/ }));
+  const reviews = document.querySelector<HTMLElement>("dialog.stories-reviews")!;
+  const entries = within(reviews).getAllByRole("listitem");
+  fireEvent.click(within(entries[1]).getByRole("button", { name: /נגן את הסרטון של יוצר אחר/ }));
+  expect(document.querySelector("iframe")!.src).toBe("https://www.youtube-nocookie.com/embed/vidOTHER?start=27&autoplay=1&playsinline=1&rel=0");
+});
+
+it("puts a review's source on one line and its month and moment on the next, never a lone separator", async () => {
+  await startFromTelAviv();
+  const [near] = await screen.findAllByRole("article");
+  fireEvent.click(within(near).getByRole("button", { name: /כל הסקירות/ }));
+  const reviews = document.querySelector<HTMLElement>("dialog.stories-reviews")!;
+  const entry = reviews.querySelectorAll("li")[1];
+  expect(entry.querySelector(".stories-review-src strong")!.textContent).toBe("יוצר אחר");
+  const when = entry.querySelector(".stories-review-when")!.textContent!;
+  expect(when).toContain("0:30");
+  expect(when.trim().startsWith("·")).toBe(false);
+  expect(when.trim().endsWith("·")).toBe(false);
+  expect(entry.querySelector(".stories-review-src")!.textContent).not.toMatch(/·\s*$/);
 });
