@@ -79,6 +79,21 @@
   margin-top: 8px;
 }
 
+
+/* Local place autocomplete: no geocoder requests while typing. */
+.stories-place-search label { display: block; font-weight: 900; margin-bottom: 8px; }
+.stories-place-search input {
+  width: 100%; min-width: 0; min-height: 48px; border: 2px solid var(--st-ink);
+  border-radius: 12px; padding: 10px; font: inherit; color: var(--st-ink); background: var(--st-paper);
+}
+.stories-place-search ul { list-style: none; margin: 8px 0 0; padding: 0; border: 2px solid var(--st-ink); border-radius: 12px; overflow: hidden; }
+.stories-place-search li { min-height: 48px; padding: 10px; cursor: pointer; border-bottom: 1px solid var(--st-muted); }
+.stories-place-search li:last-child { border-bottom: 0; }
+.stories-place-search li[aria-selected="true"], .stories-place-search li:hover { background: var(--st-sun); }
+.stories-place-search li span { display: block; color: var(--st-muted); font-size: 12px; }
+.stories-place-search a { text-decoration: underline; }
+
+
 /* start screen */
 .stories-start {
   position: absolute;
@@ -624,16 +639,3 @@
   font-size: 16px;
   line-height: 1.4;
 }
-
-/* Local place autocomplete: no geocoder requests while typing. */
-.stories-place-search label { display: block; font-weight: 900; margin-bottom: 8px; }
-.stories-place-search input {
-  width: 100%; min-width: 0; min-height: 48px; border: 2px solid var(--st-ink);
-  border-radius: 12px; padding: 10px; font: inherit; color: var(--st-ink); background: var(--st-paper);
-}
-.stories-place-search ul { list-style: none; margin: 8px 0 0; padding: 0; border: 2px solid var(--st-ink); border-radius: 12px; overflow: hidden; }
-.stories-place-search li { min-height: 48px; padding: 10px; cursor: pointer; border-bottom: 1px solid var(--st-muted); }
-.stories-place-search li:last-child { border-bottom: 0; }
-.stories-place-search li[aria-selected="true"], .stories-place-search li:hover { background: var(--st-sun); }
-.stories-place-search li span { display: block; color: var(--st-muted); font-size: 12px; }
-.stories-place-search a { text-decoration: underline; }
