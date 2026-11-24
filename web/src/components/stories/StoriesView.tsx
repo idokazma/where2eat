@@ -30,6 +30,8 @@ import {
   PREFETCH_AHEAD,
   storyGoogleFallback,
   youtubeEmbedUrl,
+  youtubePreloadUrl,
+  YOUTUBE_ORIGIN,
   youtubeMomentUrl,
   type Story,
   type StoryFrame,
@@ -78,6 +80,9 @@ const LOCATE_WAIT_MS = 8_000;
 const PHOTO_MS = 4_000;
 // A photo slot that failed is skipped after this pause instead of stopping the rotation.
 const SKIP_FAILED_MS = 700;
+// The player of a place's first moment loads in the background once the place has been in
+// view this long (not for places only passing by), so a tap on play starts it at once.
+const PRELOAD_PLAYER_MS = 1_500;
 const PRESETS: [string, number, number][] = [
   ["תל אביב · דיזנגוף", 32.0809, 34.774],
   ["תל אביב · שוק הכרמל", 32.068683, 34.769047],
@@ -387,6 +392,62 @@ export function StoriesView({
     setPlayer({ story, slide });
     dialogRef.current?.showModal();
   };
+
+  // The player loaded ahead for the place in view (its first moment), and whether it loaded.
+  const [preload, setPreload] = useState<{ videoId: string; start: number } | null>(null);
+  const [preloadReady, setPreloadReady] = useState(false);
+  const playerFrame = useRef<HTMLIFrameElement>(null);
+  const preloadItem = items[current];
+  const preloadTarget =
+    origin && preloadItem?.kind === "story" && preloadItem.story.slides[0]
+      ? { videoId: preloadItem.story.slides[0].videoId, start: momentStart(preloadItem.story.slides[0].seconds) }
+      : null;
+  const preloadKey = preloadTarget ? `${preloadTarget.videoId}@${preloadTarget.start}` : "";
+  useEffect(() => {
+    if (!preloadTarget || player) return;
+    if (preload && `${preload.videoId}@${preload.start}` === preloadKey) return;
+    const t = setTimeout(() => {
+      setPreload(preloadTarget);
+      setPreloadReady(false);
+    }, PRELOAD_PLAYER_MS);
+    return () => clearTimeout(t);
+    // preloadTarget is rebuilt each render; preloadKey is its identity.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [preloadKey, player]);
+  const command = (func: string, args: unknown[] = []) =>
+    playerFrame.current?.contentWindow?.postMessage(JSON.stringify({ event: "command", func, args }), YOUTUBE_ORIGIN);
+  // The player shown: the preloaded one when the tap is for its moment and it has loaded,
+  // otherwise a fresh player that plays on load (as before preloading).
+  const usesPreloaded =
+    !!player && !!preload && preloadReady &&
+    player.slide.videoId === preload.videoId && momentStart(player.slide.seconds) === preload.start;
+  const frameSrc = player && !usesPreloaded
+    ? youtubeEmbedUrl(player.slide.videoId, momentStart(player.slide.seconds))
+    : preload && typeof window !== "undefined"
+      ? youtubePreloadUrl(preload.videoId, preload.start, window.location.origin)
+      : null;
+  // A player swapped in (another moment played, or back to the preloaded one) has to load
+  // again before it can take commands.
+  const lastFrameSrc = useRef(frameSrc);
+  useEffect(() => {
+    if (lastFrameSrc.current !== frameSrc && !usesPreloaded) setPreloadReady(false);
+    lastFrameSrc.current = frameSrc;
+    // Only on a swap of the player.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [frameSrc]);
+  useEffect(() => {
+    if (!usesPreloaded || !preload) return;
+    // A few tries: the player may still be starting up right after it loaded.
+    const play = () => {
+      command("seekTo", [preload.start, true]);
+      command("playVideo");
+    };
+    play();
+    const timers = [setTimeout(play, 300), setTimeout(play, 900)];
+    return () => timers.forEach(clearTimeout);
+    // command only reads the frame ref.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [usesPreloaded]);
   const openReviews = (story: Story) => {
     setReviewsFor(story);
     reviewsRef.current?.showModal();
@@ -400,6 +461,7 @@ export function StoriesView({
     openPlayer(story, slide);
   };
   const closePlayer = () => {
+    if (usesPreloaded) command("pauseVideo");
     dialogRef.current?.close();
     setPlayer(null);
   };
@@ -644,9 +706,16 @@ export function StoriesView({
           </>
         )}
       </dialog>
-      <dialog ref={dialogRef} className="stories-sheet" onClose={() => setPlayer(null)} aria-label="נגן">
+      <dialog
+        ref={dialogRef}
+        className="stories-sheet"
+        onClose={() => {
+          if (usesPreloaded) command("pauseVideo");
+          setPlayer(null);
+        }}
+        aria-label="נגן"
+      >
         {player && (
-          <>
             <header>
               <h2>
                 {player.story.restaurant.name_hebrew} · {formatClock(momentStart(player.slide.seconds)) ?? "מההתחלה"}
@@ -655,15 +724,25 @@ export function StoriesView({
                 <X size={18} aria-hidden="true" />
               </button>
             </header>
-            <div className="stories-player">
-              <iframe
-                src={youtubeEmbedUrl(player.slide.videoId, momentStart(player.slide.seconds))}
-                title="YouTube"
-                allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
-                allowFullScreen
-                referrerPolicy="strict-origin-when-cross-origin"
-              />
-            </div>
+        )}
+        {/* One player: loaded ahead (hidden while the sheet is closed) or loaded on the tap. */}
+        {frameSrc && (
+          <div className="stories-player">
+            <iframe
+              key={frameSrc}
+              ref={playerFrame}
+              src={frameSrc}
+              title="YouTube"
+              allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+              allowFullScreen
+              referrerPolicy="strict-origin-when-cross-origin"
+              onLoad={() => {
+                if (frameSrc.includes("enablejsapi=1")) setPreloadReady(true);
+              }}
+            />
+          </div>
+        )}
+        {player && (
             <a
               className="stories-pill"
               href={youtubeMomentUrl(player.slide.videoId, momentStart(player.slide.seconds))}
@@ -672,7 +751,6 @@ export function StoriesView({
             >
               ↗ פתיחה ביוטיוב ברגע הזה
             </a>
-          </>
         )}
       </dialog>
     </main>
