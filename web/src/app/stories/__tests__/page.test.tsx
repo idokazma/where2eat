@@ -28,6 +28,7 @@ const restaurants = [
   },
   {
     id: "near",
+    instagram_url: "https://www.instagram.com/near_venue/?igsh=tracking",
     published_at: "2026-01-10",
     name_hebrew: "קרובה",
     cuisine_type: "פיצה",
@@ -1105,6 +1106,17 @@ describe("photos of a place without a saved photo list", () => {
     expect(within(article).getAllByRole("group")).toHaveLength(1);
     expect(document.querySelector('img[src*="/api/photos/place/"]')).toBeNull();
   });
+});
+
+
+it("links the Story to its stored business profile, never inventing missing accounts", async () => {
+  await startFromTelAviv();
+  const articles = await screen.findAllByRole("article");
+  const link = within(articles[0]).getByRole("link", { name: /אינסטגרם של קרובה/ });
+  expect(link).toHaveAttribute("href", "https://www.instagram.com/near_venue/");
+  expect(link).toHaveAttribute("target", "_blank");
+  expect(link).toHaveAttribute("rel", "noopener noreferrer");
+  expect(within(articles[1]).queryByRole("link", { name: /אינסטגרם/ })).toBeNull();
 });
 
 describe("preloading the YouTube player", () => {

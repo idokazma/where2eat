@@ -3,12 +3,12 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { Heart, MapPin, Navigation, Play, Share2, X, Loader2, UtensilsCrossed } from "lucide-react";
+import { Heart, MapPin, Navigation, Play, Share2, X, Loader2, UtensilsCrossed, Instagram } from "lucide-react";
 import { endpoints } from "@/lib/config";
 import { fetchEpisodeDetail } from "@/lib/api/episodes";
 import { useFavorites } from "@/contexts/favorites-context";
 import { useGeolocation } from "@/hooks/useGeolocation";
-import { favoriteKey, isSaved } from "@/lib/map-discovery";
+import { favoriteKey, isSaved, getRestaurantInstagramUrl } from "@/lib/map-discovery";
 import { formatDistance, type GeoCoords } from "@/lib/geo-utils";
 import { getCoordinates, type EpisodeDetail, type Restaurant } from "@/types/restaurant";
 import {
@@ -809,6 +809,7 @@ function StoryView({
     ) ?? null;
   const story = useMemo(() => (image ? { ...base, image } : base), [base, image]);
   const r = story.restaurant;
+  const instagramUrl = getRestaurantInstagramUrl(r);
   const c = getCoordinates(r.location);
   const [failed, setFailed] = useState<Set<string>>(new Set());
   // Keep slot identities stable on errors. Removing a failed frame would move the
@@ -1075,6 +1076,12 @@ function StoryView({
               aria-label={`ניווט אל ${r.name_hebrew}`}
             >
               <Navigation size={20} aria-hidden="true" />
+            </a>
+          )}
+          {instagramUrl && (
+            <a className="stories-round" href={instagramUrl} target="_blank" rel="noopener noreferrer"
+              aria-label={`אינסטגרם של ${r.name_hebrew} (נפתח בחלון חדש)`}>
+              <Instagram size={20} aria-hidden="true" />
             </a>
           )}
           <button className="stories-round" onClick={onShare} aria-label={`שיתוף של ${r.name_hebrew}`}>
