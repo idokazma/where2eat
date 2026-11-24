@@ -714,6 +714,6 @@
 
 @media (max-width: 360px) {
   .stories-actions { gap: 6px; }
-  .stories-actions .stories-round { width: 42px; height: 44px; }
+  .stories-actions .stories-round { width: 42px; height: 42px; }
   .stories-actions .stories-pill { padding-inline: 8px; font-size: 13px; white-space: nowrap; }
 }
