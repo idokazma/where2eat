@@ -185,3 +185,53 @@ def test_excerpt_unpunctuated_transcript_capped_at_200_chars():
     from mcp_catalog import excerpt
     out = excerpt('מילה ' * 120)
     assert len(out) <= 200 and out.endswith('…')
+
+
+# ── updates for the stories features (24.11.2026)
+
+def test_mention_evidence_skips_a_disclaimer_only_quote():
+    ev = Catalog._mention_evidence({'host_quotes': json.dumps(['טוב, יש דיסקליימר שאני חבר של השף', 'המנה הייתה מעולה']),
+                                    'channel_name': 'x', 'timestamp_seconds': 10, 'video_id': 'v'})
+    assert ev['excerpt'] == {'text': 'המנה הייתה מעולה', 'kind': 'unverified_transcript'}
+
+
+def test_mention_evidence_with_only_a_disclaimer_has_no_transcript_excerpt():
+    ev = Catalog._mention_evidence({'host_quotes': json.dumps(['Disclaimer: I know the owner']),
+                                    'channel_name': 'x', 'video_id': 'v'})
+    assert ev['excerpt'] is None or ev['excerpt']['kind'] != 'unverified_transcript'
+
+
+def test_search_results_link_to_the_place_story(catalog):
+    card = catalog.get_restaurant('r1')['restaurant']
+    assert card['story_url'].startswith('https://www.where2eat.rest/?story=r1&')
+    assert 'utm_source=assistant' in card['story_url']
+
+
+def _saved(folder, ref):
+    import hashlib
+    folder.mkdir(exist_ok=True)
+    (folder / (hashlib.sha256(ref.encode()).hexdigest() + '.jpg')).write_bytes(b'\xff\xd8x')
+
+
+def test_photos_are_only_ones_our_server_already_saved(tmp_path):
+    db = Database(str(tmp_path / 't.db'))
+    refs = ['places/PID1/photos/a', 'places/PID1/photos/b', 'places/PID1/photos/c', 'places/PID1/photos/d']
+    with db.get_connection() as c:
+        _restaurant(c, 'r1', 'אבו עומר', 'טירה', 'חומוסייה', google_place_id='PID1',
+                    photos=json.dumps([{'photo_reference': r} for r in refs]))
+    folder = tmp_path / 'photo_cache'
+    for r in refs[:2] + refs[3:]:
+        _saved(folder, r)
+    card = Catalog(db, today=TODAY, photo_cache=folder).get_restaurant('r1')['restaurant']
+    # Saved copies only (b is served, c was never fetched so it is left out), at most 3.
+    assert card['photos'] == [f'https://where2eat-production.up.railway.app/api/photos/{r}?maxwidth=900'
+                              for r in (refs[0], refs[1], refs[3])]
+
+
+def test_no_saved_photos_means_an_empty_list_and_no_paid_link(tmp_path):
+    db = Database(str(tmp_path / 't.db'))
+    with db.get_connection() as c:
+        _restaurant(c, 'r1', 'אבו עומר', 'טירה', 'חומוסייה',
+                    photos=json.dumps([{'photo_reference': 'places/PID1/photos/a'}]))
+    card = Catalog(db, today=TODAY, photo_cache=tmp_path / 'none').get_restaurant('r1')['restaurant']
+    assert card['photos'] == []

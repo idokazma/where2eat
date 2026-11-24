@@ -20,7 +20,7 @@ A read-only [MCP](https://modelcontextprotocol.io) server that lets ChatGPT and 
 
 Cities and cuisines are stored in Hebrew; common English names (Tel Aviv, pizza, hummus…) are mapped. A request with no match returns `no_coverage` with a reason instead of other places.
 
-Every result carries `evidence[]` with `creator`, `published_at` (publication, not visit, date), `experience` (`tasted` / `mentioned` / `unknown`), `excerpt` (`kind` = `verified_quote` / `unverified_transcript` / `unverified_summary`, at most two sentences or 200 characters) and `moment_url`. Only `verified_quote` excerpts should be shown in quotation marks; the tool descriptions and an `answer_guidance` field tell the assistant this. Images are returned only as direct URLs, never through the paid `/api/photos` proxy.
+Every result carries `evidence[]` with `creator`, `published_at` (publication, not visit, date), `experience` (`tasted` / `mentioned` / `unknown`), `excerpt` (`kind` = `verified_quote` / `unverified_transcript` / `unverified_summary`, at most two sentences or 200 characters) and `moment_url`. Only `verified_quote` excerpts should be shown in quotation marks; the tool descriptions and an `answer_guidance` field tell the assistant this. Each result also has `story_url` (the site's stories, opened at that place) and `photos[]`. `image_url` is the main image when it is a direct URL. `photos[]` holds up to 3 Google photos, and only ones our server already saved. Our photo route serves those from the saved copy, so an assistant answer never causes a new paid Google request. Quotes that are only a disclaimer are skipped, as on the site.
 
 ## Settings
 

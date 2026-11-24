@@ -5,18 +5,27 @@ and city, and episode mentions that were not rejected. Every result carries
 its evidence: the creator, the publication date, a short labeled excerpt and
 a link to the exact moment in the video.
 
-No language-model calls and no paid lookups happen here. Images are returned
-only when they are direct URLs, never through the paid Google photo proxy.
+No language-model calls and no paid lookups happen here. Images are the main
+image when it is a direct URL, plus Google photos only when our server already
+saved a copy (so an assistant answer never causes a new paid Google request).
 """
+import hashlib
 import json
+import os
 import re
 import threading
 import time
 from datetime import date, datetime, timedelta, timezone
-from typing import Any, Dict, List, Optional
+from pathlib import Path
+from typing import Any, Callable, Dict, List, Optional, Union
 from urllib.parse import quote, urlencode
 
 SITE = 'https://www.where2eat.rest'
+API = os.getenv('PUBLIC_API_URL', 'https://where2eat-production.up.railway.app').rstrip('/')
+MAX_PHOTOS = 3
+PHOTO_WIDTH = 900
+# A quote that is only a disclaimer says nothing about the food; the site skips it too.
+_DISCLAIMER = re.compile(r'דיסקליימר|disclaimer', re.IGNORECASE)
 UTM = 'utm_source=assistant&utm_medium=mcp'
 MAX_RESULTS = 5
 MAX_EVIDENCE_PER_RESULT = 2
@@ -122,8 +131,11 @@ def _moment_url(video_id: Optional[str], seconds: Optional[int]) -> Optional[str
 
 
 class Catalog:
-    def __init__(self, db, today: Optional[date] = None, ttl_seconds: float = 60.0):
+    def __init__(self, db, today: Optional[date] = None, ttl_seconds: float = 60.0,
+                 photo_cache: Union[Path, Callable[[], Optional[Path]], None] = None):
         self.db = db
+        # Where the photo route keeps its saved copies (api/routers/photos.py); found lazily.
+        self._photo_cache = photo_cache
         self._today = today
         self._ttl = ttl_seconds
         self._cache: Optional[Dict[str, Any]] = None
@@ -185,7 +197,8 @@ class Catalog:
         if isinstance(review, dict) and isinstance(review.get('text'), str) and review['text'].strip():
             text, kind = excerpt(review['text']), 'verified_quote'  # reviewer identity is never copied
         else:
-            quotes = [q for q in _json_list(m.get('host_quotes')) if isinstance(q, str) and q.strip()]
+            quotes = [q for q in _json_list(m.get('host_quotes'))
+                      if isinstance(q, str) and q.strip() and not _DISCLAIMER.search(q)]
             if quotes:
                 text, kind = excerpt(quotes[0]), 'unverified_transcript'
             elif m.get('host_comments'):
@@ -217,6 +230,35 @@ class Catalog:
         }
 
     # ── presentation
+    def _photo_folder(self) -> Optional[Path]:
+        source = self._photo_cache
+        if source is None:
+            try:
+                from routers.photos import cache_dir as source  # the API's saved-photo folder
+            except Exception:
+                return None
+        try:
+            folder = source() if callable(source) else source
+        except Exception:
+            return None
+        return folder if folder and Path(folder).is_dir() else None
+
+    def _photos(self, r: Dict[str, Any]) -> List[str]:
+        """Google photos our server already saved: free to serve, no new Google request."""
+        folder = self._photo_folder()
+        if not folder:
+            return []
+        out = []
+        for p in _json_list(r.get('photos')):
+            ref = p.get('photo_reference') if isinstance(p, dict) else None
+            if not isinstance(ref, str) or not ref:
+                continue
+            if (Path(folder) / (hashlib.sha256(ref.encode()).hexdigest() + '.jpg')).is_file():
+                out.append(f'{API}/api/photos/{ref}?maxwidth={PHOTO_WIDTH}')
+            if len(out) >= MAX_PHOTOS:
+                break
+        return out
+
     @staticmethod
     def _image(r: Dict[str, Any]) -> Optional[str]:
         url = r.get('image_url') or ''
@@ -247,7 +289,10 @@ class Catalog:
             'google_rating': r.get('google_rating'),
             'closing': bool(r.get('is_closing')),
             'image_url': self._image(r),
+            'photos': self._photos(r),
             'where2eat_url': f"{SITE}/restaurant/{quote(str(r['id']))}?{UTM}",
+            # Opens the site's stories at this place: its photos, quotes and the video moments.
+            'story_url': f"{SITE}/?story={quote(str(r['id']))}&{UTM}",
             'map_url': self._map_url(r),
             'evidence': evidence,
         }
