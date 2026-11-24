@@ -5,6 +5,7 @@ import { Settings, Info, ChevronLeft } from 'lucide-react';
 import { PageLayout } from '@/components/layout';
 
 const menuItems = [
+  { icon: Info, label: 'מקורות מידע', href: '/data-sources' },
   {
     icon: Settings,
     label: 'הגדרות',

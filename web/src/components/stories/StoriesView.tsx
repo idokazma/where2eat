@@ -35,6 +35,7 @@ import {
   type StorySlide,
 } from "@/lib/stories";
 import "./stories.css";
+import { PlaceAutocomplete } from "./PlaceAutocomplete";
 
 /** A source-video cover, never a restaurant photo or a frame at the review time. */
 function ReviewThumbnail({ slide, onPlay }: { slide: StorySlide; onPlay: () => void }) {
@@ -438,6 +439,9 @@ export function StoriesView({
             <p className="stories-note">המיקום נשאר בדפדפן: המיון נעשה כאן ושום דבר לא נשלח לשרת.</p>
           </div>
           <div className="stories-card">
+            <PlaceAutocomplete disabled={!restaurants} onSelect={(coords) => begin(coords, false)} />
+          </div>
+          <div className="stories-card">
             <h2>או להתחיל מנקודה</h2>
             <div className="stories-grid">
               {PRESETS.map(([name, lat, lng]) => (
@@ -457,6 +461,7 @@ export function StoriesView({
               החדשות ביותר
             </button>
           </div>
+          <p className="stories-note stories-data-sources"><Link href="/data-sources">מקורות מידע</Link></p>
           {sources.length > 1 && (
             <div className="stories-card">
               <label className="stories-row">
