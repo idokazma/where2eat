@@ -247,14 +247,25 @@ describe("storyFrames", () => {
 });
 
 describe("storyFrames for a place without a saved photo list", () => {
-  it("asks for the place's photos by position, as paid frames after the free first photo", () => {
-    const r = rest("a", { google_place_id: "ChIJx", photos: [] });
-    const frames = storyFrames(buildStories([r], TLV).near[0]);
-    expect(frames[0].photo).toEqual({ url: photo("a"), paid: false });
-    const rest_ = frames.slice(1).map((f) => f.photo);
-    expect(rest_.length).toBeGreaterThanOrEqual(3);
-    expect(rest_.every((p) => p.paid && /\/api\/photos\/place\/ChIJx\/\d+\?maxwidth=/.test(p.url))).toBe(true);
-    expect(rest_[0].url).toContain("/api/photos/place/ChIJx/0?");
+  it("keeps only the known photo even with a Google ID and several reviews", () => {
+    const r = rest("a", {
+      google_place_id: "ChIJx", photos: [],
+      mentions: [
+        { video_id: "v1", timestamp_seconds: 30, channel_name: "א" },
+        { video_id: "v1", timestamp_seconds: 60, channel_name: "א" },
+        { video_id: "v2", timestamp_seconds: 0, channel_name: "ב" },
+      ],
+    });
+    const story = buildStories([r], TLV).near[0];
+    expect(story.slides).toHaveLength(3);
+    expect(storyFrames(story)).toEqual([{ photo: { url: photo("a"), paid: false } }]);
+    expect(storyFrames(story).some((f) => f.photo.url.includes("/api/photos/place/"))).toBe(false);
+  });
+  it("does not invent replacements when all references belong to another place", () => {
+    const r = rest("a", { google_place_id: "ChIJx", photos: [
+      { photo_reference: "places/OTHER/photos/p1", photo_url: "", width: 1, height: 1 },
+    ] });
+    expect(storyFrames(buildStories([r], TLV).near[0])).toHaveLength(1);
   });
   it("adds nothing without a Google ID, when paid photos are off, or once a list is saved", () => {
     expect(storyFrames(buildStories([rest("a", { photos: [] })], TLV).near[0])).toHaveLength(1);
