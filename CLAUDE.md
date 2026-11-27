@@ -108,7 +108,7 @@ python scripts/cli.py analytics trends --period 3months
 ### Data Flow
 
 ```
-Episode → audio-based transcript (committed as `agentic_extractor/<video_id>/transcript.json`) → AI extraction + source-backed review → seed → database (Postgres in production, SQLite locally) → FastAPI → Next.js frontend
+Episode → audio-based transcript (committed as `agentic_extractor/<video_id>/transcript.json`) → AI extraction + source-backed review → seed → database (SQLite on the Railway volume in production, `data/where2eat.db` locally) → FastAPI → Next.js frontend
 
 Episode ingestion is manual: new episodes are added when the owner asks. The scheduler exists in code but is disabled in production. See `docs/PROJECT_OVERVIEW.md`.
 ```
@@ -228,7 +228,7 @@ Separate Next.js app for content management:
 
 ### Data Storage
 
-Git is intended to hold the durable text and extraction record (transcripts, extraction files, snapshots). It is NOT proven to be enough to rebuild the live site: Railway Postgres (a `postgres` service next to `where2eat`, `DATABASE_URL`) is what serves the site, and uploaded venue image bytes, the photo cache and the cost ledger live on the Railway volume at `/app/persistent`, outside Git. Do not assume full recovery from Git alone until a restore has been tested. Required backups: a Postgres dump, a copy of the volume (`venue_images/`, `photo_cache/`, `cost_estimates.db`), and a check of snapshot freshness (see `data/snapshots/manifest.json` `exported_at` and counts against the live API). A restore procedure has not been tested.
+Git is intended to hold the durable text and extraction record (transcripts, extraction files, snapshots). It is NOT proven to be enough to rebuild the live site: the live data is the SQLite file on the Railway volume (`/app/persistent/where2eat.db`, under `DATABASE_DIR`). The API reads it first; Postgres (`DATABASE_URL`) is only a fallback and a partial copy (write-through from some paths, the SQLite-to-Postgres sync is disabled in `api/main.py`). Uploaded venue image bytes, the photo cache and the cost ledger live on the same volume, outside Git. Verified 27.11.2026: photo lists saved by the photo route (SQLite only) are served by both `/api/restaurants` and `/api/restaurants/search`. Do not assume full recovery from Git alone until a restore has been tested. Required backups: a copy of the volume, above all `where2eat.db` (plus `venue_images/`, `photo_cache/`, `cost_estimates.db`), a Postgres dump only as a secondary copy, and a check of snapshot freshness (see `data/snapshots/manifest.json` `exported_at` and counts against the live API). A restore procedure has not been tested.
 
 | Path | Tracked? | Contents |
 |------|----------|----------|

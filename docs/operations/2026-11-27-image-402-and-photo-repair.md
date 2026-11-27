@@ -64,5 +64,5 @@ Duplicate records noticed and left unmerged (same venue, two rows): Wine House (
 - Gallery and thumbnail proxy exposure (section 4).
 - Verify the cost ledger against the provider console and enter the opening spend; find the cause of the five extra photo attempts.
 - The 22 no-image and 53 dead-fallback records, and the 69 Google-reference heroes, whose current state is unverified and cannot be checked without a paid request (53 have a dead fallback URL, 16 an alive one).
-- Backups: the owned images exist only on the Railway volume, not in Git; confirm the volume and Postgres are backed up (see `docs/PROJECT_OVERVIEW.md` section 4a).
+- Backups: the owned images exist only on the Railway volume, not in Git; confirm the volume (including the live database `where2eat.db`) is backed up (see `docs/PROJECT_OVERVIEW.md` section 4a).
 - Duplicate records (Wine House, Petrozilia, Mantiz, Dilek, Waffle House).
