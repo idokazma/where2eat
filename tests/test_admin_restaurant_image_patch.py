@@ -71,7 +71,8 @@ def test_empty_string_clears_image(client):
     as_role(client, 'editor')
     response, record = patch_with_db(client, {'image_url': ''})
     assert response.status_code == 200
-    assert record['updates'] == {'image_url': ''}
+    # Clearing the image also clears its provenance.
+    assert record['updates'] == {'image_url': '', 'image_credit': None, 'image_source': None}
 
 
 @pytest.mark.parametrize('bad', [

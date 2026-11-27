@@ -274,26 +274,47 @@ async def seed_extraction(extraction: Dict[str, Any] = Body(...), user: dict = D
         # Ignore production_db.id — always look up fresh to avoid stale references
         restaurant_id = None
 
+        # Canonical mention link: an explicit, reviewer-verified restaurant id
+        # attaches this review to the existing canonical card instead of
+        # creating a duplicate venue. The canonical row itself is not modified.
+        canonical_id = r.get('canonical_restaurant_id')
+        if canonical_id:
+            with db.get_connection() as conn:
+                cursor = conn.cursor()
+                cursor.execute("SELECT id FROM restaurants WHERE id = ?", (canonical_id,))
+                row = cursor.fetchone()
+            if row:
+                restaurant_id = row['id']
+            else:
+                failed_mentions.append({
+                    'name_hebrew': r.get('name_hebrew', '?'),
+                    'stage': 'canonical_lookup',
+                    'canonical_restaurant_id': str(canonical_id),
+                    'error': 'Canonical restaurant not found',
+                })
+                continue
+
         # Find or create the restaurant (for both add_to_page and reference_only).
         # Lookup excludes is_hidden rows: when duplicates exist (same place_id, one
         # visible + one hidden orphan), the hidden one would otherwise win at random.
-        with db.get_connection() as conn:
-            cursor = conn.cursor()
-            if gp.get('place_id'):
-                cursor.execute(
-                    "SELECT id FROM restaurants WHERE google_place_id = ? "
-                    "AND (is_hidden = 0 OR is_hidden IS NULL)",
-                    (gp['place_id'],),
-                )
-            else:
-                cursor.execute(
-                    "SELECT id FROM restaurants WHERE name_hebrew = ? AND video_id = ? "
-                    "AND (is_hidden = 0 OR is_hidden IS NULL)",
-                    (r.get('name_hebrew', ''), video_id),
-                )
-            row = cursor.fetchone()
-            if row:
-                restaurant_id = row['id']
+        if not restaurant_id:
+            with db.get_connection() as conn:
+                cursor = conn.cursor()
+                if gp.get('place_id'):
+                    cursor.execute(
+                        "SELECT id FROM restaurants WHERE google_place_id = ? "
+                        "AND (is_hidden = 0 OR is_hidden IS NULL)",
+                        (gp['place_id'],),
+                    )
+                else:
+                    cursor.execute(
+                        "SELECT id FROM restaurants WHERE name_hebrew = ? AND video_id = ? "
+                        "AND (is_hidden = 0 OR is_hidden IS NULL)",
+                        (r.get('name_hebrew', ''), video_id),
+                    )
+                row = cursor.fetchone()
+                if row:
+                    restaurant_id = row['id']
 
         # Create restaurant if not found
         if not restaurant_id:
@@ -307,6 +328,10 @@ async def seed_extraction(extraction: Dict[str, Any] = Body(...), user: dict = D
 
                 import json as _json
                 is_hidden = verdict == 'reference_only'
+                # Truthful photo provenance travels with the curated image, so
+                # the site can label who the photo actually belongs to.
+                photo_review = (r.get('publication_review') or {}).get('photo') or {}
+                photo_verified = isinstance(photo_review, dict) and photo_review.get('status') == 'verified'
                 restaurant_id = db.create_restaurant(
                     name_hebrew=r.get('name_hebrew', ''),
                     episode_id=episode_id,
@@ -343,6 +368,8 @@ async def seed_extraction(extraction: Dict[str, Any] = Body(...), user: dict = D
                     mention_level=r.get('sub_tag'),
                     published_at=ep.get('published_at'),
                     is_hidden=is_hidden,
+                    image_credit=photo_review.get('credit') if photo_verified else None,
+                    image_source=photo_review.get('source_kind') if photo_verified else None,
                 )
             except Exception as e:
                 logger.exception(

@@ -14,6 +14,19 @@ from urllib.parse import urlparse
 ASSET_PATH = re.compile(r'^/api/venue-images/([0-9a-f]{64})\.jpg$')
 ASSET_HOST = 'where2eat-production.up.railway.app'
 
+# Photo provenance kinds. The venue kinds say the image comes from the venue's
+# own channels or its own booking/delivery listings. The curated kinds record a
+# truthful non-venue source instead of forcing curators to relabel a creator,
+# editorial or directory image as venue-owned to pass review. Every kind keeps
+# the same match controls: HTTPS source, credit, identity and pixel checks.
+VENUE_PHOTO_KINDS = ('venue_owned', 'venue_booking_listing', 'venue_delivery_listing')
+CURATED_PHOTO_KINDS = VENUE_PHOTO_KINDS + ('creator_owned', 'editorial', 'directory')
+
+# Optional link from an extraction row to an existing canonical restaurant,
+# so a new review attaches to it instead of creating a duplicate card.
+CANONICAL_ID = re.compile(
+    r'^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$')
+
 
 def _https(value):
     try:
@@ -61,6 +74,10 @@ def publication_issues(restaurants, segments, video_id, asset_root=None):
                 or not isinstance(clues, dict) or not any(clues.get(k) for k in ('city', 'address', 'chef', 'branch'))
                 or not identity.get('source_name') or not identity.get('transcript_name')):
             errors.append('identity_context_unverified')
+        canonical_id = row.get('canonical_restaurant_id')
+        if canonical_id is not None and (
+                not isinstance(canonical_id, str) or not CANONICAL_ID.fullmatch(canonical_id)):
+            errors.append('canonical_restaurant_id_invalid')
         time = review.get('discussion') or {}
         if not isinstance(time, dict):
             time = {}
@@ -91,7 +108,7 @@ def publication_issues(restaurants, segments, video_id, asset_root=None):
                 errors.append('missing_photo_requires_empty_image_and_reason')
         elif photo.get('status') == 'verified':
             source_kind = photo.get('source_kind')
-            if (source_kind not in ('venue_owned', 'venue_booking_listing', 'venue_delivery_listing')
+            if (source_kind not in CURATED_PHOTO_KINDS
                     or not _https(photo.get('source_url')) or not photo.get('credit')
                     or photo.get('identity_checked') is not True or photo.get('pixels_checked') is not True
                     or photo.get('content_kind') not in ('food', 'interior')):
