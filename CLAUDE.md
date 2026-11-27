@@ -403,6 +403,6 @@ pip install -r .claude/mcp-servers/requirements.txt
 - **RTL Layout**: Frontend uses RTL direction for Hebrew support
 - **Component library**: shadcn/ui with Radix primitives - add new components via shadcn CLI
 - **Styling**: Tailwind CSS 4 with `tw-animate-css` for animations
-- **API proxy**: Frontend has a Next.js API route at `web/src/app/api/restaurants/route.ts`
+- **API access**: The frontend has no Next.js API routes (no `web/src/app/api/` directory). It calls the FastAPI backend directly at `NEXT_PUBLIC_API_URL` (see `web/src/lib/config.ts`)
 - **Module system**: API uses CommonJS (`"type": "commonjs"` in api/package.json)
 - **Python path**: Docker sets `PYTHONPATH="/app/src"` for imports from `src/`
