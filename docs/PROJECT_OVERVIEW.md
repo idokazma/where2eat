@@ -28,6 +28,8 @@ A restaurant discovery site built from Hebrew food podcasts and shows on YouTube
 7. Ingestion is manual: new episodes are added only when the owner asks for a backfill; an automatic proxy-plus-cron setup was offered and declined on 2026-11-01. The scheduler code (`pipeline_scheduler.py`) exists, but on 2026-11-27 the production service had `PIPELINE_SCHEDULER_ENABLED=false` and `PIPELINE_POLL_INTERVAL_HOURS=9999` (read from the Railway service variables). `docs/episode-publication-quality.md` also states processing is manual and enables no scheduler or paid lookup.
 8. `.github/workflows/scraper.yml` has a daily schedule (`0 6 * * *`) but its run step only executes `python scripts/cli.py health` and then commits `data/`. It does not ingest episodes. Whether GitHub Actions currently runs it was not verified.
 
+Who runs episodes: the Instinct agent runs its own episode analysis pipeline, as the runbook below describes. Episode procedure (English and Hebrew): `docs/operations/EPISODE_CONTINUITY_RUNBOOK.md` / `.he.md`; transcript and timestamp guide: `docs/operations/TRANSCRIPTS_AND_TIMESTAMPS_GUIDE.md` / `.he.md`; per-episode record: `docs/operations/episode-records/TEMPLATE.md` / `.he.md`.
+
 ## 3a. Three layers: server pipeline, repository agents, and manual preparation
 
 Do not treat these as one path. They differ in where they run, which keys they use and what has been shown to run.
@@ -45,7 +47,7 @@ Shared enforcement: `src/publication_quality.py` (`publication_issues`) is calle
 Required versus actual:
 - Required (owner): transcript from the audio, not auto-captions; quotes checked against the recording; manual ingestion; no new paid calls without approval.
 - Actual for episodes 179-180: speech-to-text on the audio, then review. It is automatic recognition, not direct listening, so it contains errors and has no speaker labels. Quote checks used short re-transcribed clips. Start times for episode 180 are approximate (about 5-10 seconds).
-- Layer B step 1 (`episode-processor`) fetches YouTube captions through `youtube_transcript_collector`. That conflicts with the owner's requirement, and the requirement is not written in the agent files.
+- Historical: layer B step 1 (`episode-processor`) fetched YouTube captions through `youtube_transcript_collector`, which conflicted with the owner's requirement. The aligned agent instructions in PR 360 replace it with the audio route.
 
 Drift between the agent files and the code, recorded here and not changed:
 - Output paths: `episode-processor` and `extraction-verifier` use `analyses/<id>/` and `data/restaurants/` (the `analyses/` folder is not in the tree), while `episode-deployer` reads `agentic_extractor/`.
@@ -95,7 +97,7 @@ Durable record and backups (section 4a below).
 
 ## 8. Operational constraints
 
-- Paid calls: Google Places (search, details, photos) and LLM calls cost money. `src/cost_ledger.py` keeps a local gross estimate, not the provider balance. Monthly budget default is $10. It does not cover other keys, replicas or external usage. Set provider-side billing alerts too.
+- Paid calls: Google Places (search, details, photos) and LLM calls cost money. `src/cost_ledger.py` keeps a local gross estimate, not the provider balance. The code default budget is $10; the owner's monthly cap is a firm $10. It does not cover other keys, replicas or external usage. Set provider-side billing alerts too.
 - Hebrew spelling in transcripts is preserved as heard; venue identity needs more than a name match.
 - Persistent files must live on the volume (`DATABASE_DIR`): `cost_estimates.db`, `venue_images/`, `photo_cache/`, and the main database `where2eat.db`.
 - Episode seed, mention deletion and reset need admin or super_admin auth.

@@ -110,7 +110,7 @@ python scripts/cli.py analytics trends --period 3months
 ```
 Episode → audio-based transcript (committed as `agentic_extractor/<video_id>/transcript.json`) → AI extraction + source-backed review → seed → database (SQLite on the Railway volume in production, `data/where2eat.db` locally) → FastAPI → Next.js frontend
 
-Episode ingestion is manual: new episodes are added when the owner asks. The scheduler exists in code but is disabled in production. See `docs/PROJECT_OVERVIEW.md`.
+Episode ingestion is manual: new episodes are added when the owner asks. Episode analysis is done by the Instinct agent, which runs its own episode analysis pipeline as described in `docs/operations/EPISODE_CONTINUITY_RUNBOOK.md`. The scheduler exists in code but is disabled in production. See `docs/PROJECT_OVERVIEW.md`.
 ```
 
 ### Python Backend (src/)
