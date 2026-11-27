@@ -128,15 +128,14 @@ export function getRestaurantImages(restaurant: Restaurant): string[] {
   const own = ownVenueImageUrl(restaurant);
   if (own) images.push(own);
 
-  // Add Google Places photos
+  // Direct photo URLs only. A Google photo reference goes through the paid
+  // /api/photos proxy, and a gallery would fire one paid request per thumbnail on
+  // every uncached view, so references never enter the gallery (the hero image
+  // still may use one, a single request).
   const photos = validPhotos(restaurant);
-  if (photos.length > 0) {
-    for (const photo of photos) {
-      if (photo.photo_reference) {
-        images.push(getPhotoProxyUrl(photo.photo_reference));
-      } else if (photo.photo_url) {
-        images.push(photo.photo_url);
-      }
+  for (const photo of photos) {
+    if (!photo.photo_reference && photo.photo_url) {
+      images.push(photo.photo_url);
     }
   }
 

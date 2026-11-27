@@ -6,6 +6,9 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: true,
   },
   images: {
+    // Serve images as-is. The Vercel optimizer's monthly quota is exhausted on the
+    // Hobby plan and answers 402 for any image without a cached copy.
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: 'https',
