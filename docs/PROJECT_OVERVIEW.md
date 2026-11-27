@@ -56,7 +56,7 @@ Drift between the agent files and the code, recorded here and not changed:
 
 ## 4. Data entities
 
-Defined in `src/database.py` (SQLite, the live database) and `src/models/` (SQLAlchemy; tried only as a fallback, or first by `/api/restaurants/search` when `DATABASE_URL` or `USE_SQLALCHEMY=true` is set, see `api/routers/restaurants.py`). Verified 27.11.2026 that production answers from SQLite on both endpoints.
+Defined in `src/database.py` (SQLite, the live database; per-route map in the storage map below) and `src/models/` (SQLAlchemy; tried only as a fallback, or first by `/api/restaurants/search` when `DATABASE_URL` or `USE_SQLALCHEMY=true` is set, see `api/routers/restaurants.py`). Verified 27.11.2026 that production answers from SQLite on both endpoints.
 - `episodes`: `video_id`, channel (`channel_id`, `channel_name`), title, language, transcript, `episode_summary`, `published_at`.
 - `restaurants`: Hebrew/English names, city, neighborhood, address, coordinates, cuisine, `status`, price range, `host_opinion`, `host_comments`, menu items, contact (hours, phone, website, social), `mention_context`, `mention_timestamp`, Google fields (`google_place_id`, rating), `photos`, `image_url`, `og_image_url`, plus provenance `image_credit` and `image_source` for installed photos.
 - `episode_mentions`: links a restaurant to an episode with the timed mention (this is what the stories and the episode page use). The maintenance API repoints mentions when duplicate restaurants are merged.
@@ -64,6 +64,19 @@ Defined in `src/database.py` (SQLite, the live database) and `src/models/` (SQLA
 - Attribution: each mention carries its episode, channel/creator and, from the quality gate, a `publication_review` (identity source, quote, selected second, photo source). The episode `source label` and summary can be edited through the maintenance API with preview and revision checks.
 
 Durable record and backups (section 4a below).
+
+### Storage map (ACTUAL from code at this commit; deployed settings partly unverified)
+
+| Data | Where | Used by |
+|---|---|---|
+| Episodes, restaurants, mentions, pipeline and admin tables (primary) | SQLite file `where2eat.db` in `DATABASE_DIR` (`/app/persistent` on Railway, a path in the repo `data/` locally) | `GET /api/restaurants`, `GET /api/restaurants/{id}`, `GET /api/episodes` and the episode detail, `POST /api/episodes/seed`, admin patch and maintenance routes, the pipeline. The restaurant list, the search fallback and the detail page read it first. |
+| Postgres tables (`DATABASE_URL`), secondary | Railway `postgres` service (not re-checked) | `GET /api/restaurants/search` tries it first when `DATABASE_URL` is set and falls back to SQLite if it errors. Create, update and delete in `api/routers/restaurants.py` write SQLite first, then Postgres. The pipeline writes Postgres through at the end of `process_video`. `POST /api/episodes/seed` and the admin patch route write SQLite only. The startup SQLite to Postgres sync is commented out in `api/main.py` ("SQLite is primary"). |
+| Venue image bytes | `<DATABASE_DIR>/venue_images/<sha256>.jpg` on the volume (the database holds only the link) | `GET /api/venue-images/<sha>.jpg`, upload route |
+| Google photo cache | `<DATABASE_DIR>/photo_cache/` on the volume | photo proxy |
+| Cost estimates | SQLite file `cost_estimates.db` in `DATABASE_DIR` (a local estimate, not Google's balance) | `src/cost_ledger.py` |
+| Local developer SQLite | `data/where2eat.db` in a checkout | local runs only; not the live site |
+
+Verified on 2026-11-27 by calling the public read routes with an allowed Origin (no writes): the restaurant list returned 411 and the search returned 411 with filter counts and a timeline filled in. That response shape comes from the SQLite or fallback branch, not the Postgres branch (which returns empty filter counts), so the live search was served from SQLite. Why the Postgres branch was not used (`DATABASE_URL` unset, or a session or query error) is NOT verified. Not verified: whether `DATABASE_URL` is set on the service, what Postgres holds, how stale it is, and any backup. Do not state that "the live site reads Postgres".
 
 ## 4a. Backup and recovery status
 

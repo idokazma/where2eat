@@ -198,7 +198,7 @@ See `docs/operations/episode-records/2026-11-27-handoff-rehearsal-wlCpj1zPzEA.md
 
 ## 8. Backup and recovery (not solved here)
 
-Git alone does not rebuild the live site. Postgres data and venue images on the Railway volume are outside Git. A scheduled Postgres dump, a volume copy including `venue_images/` and a tested restore are not verified to exist (`docs/PROJECT_OVERVIEW.md` section 4a). Before any seed, take the snapshot in step 9 and keep it.
+Git alone does not rebuild the live site. The live database file `where2eat.db` and the venue images are on the Railway volume, outside Git; Postgres is only a secondary, partial copy and a seed reaches SQLite only (storage map in `docs/PROJECT_OVERVIEW.md`). A copy of `where2eat.db`, a volume copy including `venue_images/` and a tested restore are not verified to exist (`docs/PROJECT_OVERVIEW.md` section 4a). Before any seed, take the snapshot in step 9 and keep it.
 
 ## 9. Residual gaps
 
