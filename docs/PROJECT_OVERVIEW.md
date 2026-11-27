@@ -56,7 +56,7 @@ Drift between the agent files and the code, recorded here and not changed:
 
 ## 4. Data entities
 
-Defined in `src/database.py` (SQLite, the live database) and `src/models/` (SQLAlchemy; tried only as a fallback, or first by `/api/restaurants/search` when `DATABASE_URL` or `USE_SQLALCHEMY=true` is set, see `api/routers/restaurants.py`). Verified 27.11.2026 that production answers from SQLite on both endpoints.
+Defined in `src/database.py` (SQLite, the live database; per-route map in the storage map below) and `src/models/` (SQLAlchemy; tried only as a fallback, or first by `/api/restaurants/search` when `DATABASE_URL` or `USE_SQLALCHEMY=true` is set, see `api/routers/restaurants.py`). Verified 27.11.2026 that production answers from SQLite on both endpoints.
 - `episodes`: `video_id`, channel (`channel_id`, `channel_name`), title, language, transcript, `episode_summary`, `published_at`.
 - `restaurants`: Hebrew/English names, city, neighborhood, address, coordinates, cuisine, `status`, price range, `host_opinion`, `host_comments`, menu items, contact (hours, phone, website, social), `mention_context`, `mention_timestamp`, Google fields (`google_place_id`, rating), `photos`, `image_url`, `og_image_url`, plus provenance `image_credit` and `image_source` for installed photos.
 - `episode_mentions`: links a restaurant to an episode with the timed mention (this is what the stories and the episode page use). The maintenance API repoints mentions when duplicate restaurants are merged.
@@ -65,12 +65,30 @@ Defined in `src/database.py` (SQLite, the live database) and `src/models/` (SQLA
 
 Durable record and backups (section 4a below).
 
+### Storage map (ACTUAL from code at this commit; deployed settings partly unverified)
+
+| Data | Where | Used by |
+|---|---|---|
+| Episodes, restaurants, mentions, pipeline and admin tables (primary) | SQLite file `where2eat.db` in `DATABASE_DIR` (`/app/persistent` on Railway, a path in the repo `data/` locally) | `GET /api/restaurants`, `GET /api/restaurants/{id}`, `GET /api/episodes` and the episode detail, `POST /api/episodes/seed`, admin patch and maintenance routes, the pipeline. The restaurant list, the search fallback and the detail page read it first. |
+| Postgres tables (`DATABASE_URL`), secondary | Railway `postgres` service (not re-checked) | `GET /api/restaurants/search` tries it first when `DATABASE_URL` is set and falls back to SQLite if it errors. Create, update and delete in `api/routers/restaurants.py` write SQLite first, then Postgres. The pipeline writes Postgres through at the end of `process_video`. `POST /api/episodes/seed` and the admin patch route write SQLite only. The startup SQLite to Postgres sync is commented out in `api/main.py` ("SQLite is primary"). |
+| Venue image bytes | `<DATABASE_DIR>/venue_images/<sha256>.jpg` on the volume (the database holds only the link) | `GET /api/venue-images/<sha>.jpg`, upload route |
+| Google photo cache | `<DATABASE_DIR>/photo_cache/` on the volume | photo proxy |
+| Cost estimates | SQLite file `cost_estimates.db` in `DATABASE_DIR` (a local estimate, not Google's balance) | `src/cost_ledger.py` |
+| Local developer SQLite | `data/where2eat.db` in a checkout | local runs only; not the live site |
+
+Verified on 2026-11-27 (read-only: public GET routes with an allowed Origin, Railway project metadata, variable names and the latest `where2eat` deployment log; no values copied, no writes):
+- `DATABASE_URL` is set on the `where2eat` service (a Postgres URL on Railway's private network). `DATABASE_DIR` and `RAILWAY_VOLUME_MOUNT_PATH` are `/app/persistent`; the volume `where2eat-volume` is mounted there, state READY, about 244 MB used of 500 MB.
+- The latest deployment log shows `Database init failed: No module named 'psycopg'` at startup and `SQLAlchemy error, falling back: No module named 'psycopg'` on a search request. So in the deployment checked, the app could not open Postgres at startup, and that search request fell back to SQLite. Verified separately: the public list and search reads were answered from SQLite (response shape, see below). Code write order: create, update and delete write SQLite first and then try Postgres; seed and the admin patch write SQLite only. Write behavior was not tested in production. The startup log shows `Database path: /app/persistent/where2eat.db` with 820 restaurant rows in that file (411 are visible to the public API; the rest are hidden or filtered).
+- Live responses agree: the restaurant list returned 411 and search returned 411 with filled filter counts and a timeline (the SQLite or fallback shape).
+- Backups: the volume has no backups and no backup schedule listed. The `postgres` service has no volume of its own in the project, last deployed 2026-04-12; its contents, freshness and durability were not read and are NOT verified.
+- Not verified: whether this missing-driver error is the same on every deployment, what Postgres holds, and any off-Railway copy. Do not state that "the live site reads Postgres".
+
 ## 4a. Backup and recovery status
 
 - Git holds transcripts, extraction files and `data/snapshots/*`. This is the intended durable text record. It is not proven sufficient to rebuild the live site.
 - The live data is the SQLite file on the Railway volume (`/app/persistent/where2eat.db`, under `DATABASE_DIR`). The API reads it first; Postgres (`DATABASE_URL`) is only a fallback and a partial copy (write-through from some paths, the SQLite-to-Postgres sync is disabled in `api/main.py`). Uploaded venue image bytes, `photo_cache/` and `cost_estimates.db` are on the same volume, outside Git.
 - Snapshot freshness: `data/snapshots/manifest.json` on main records `exported_at` 2026-04-24, 141 restaurants and 25 episodes, with `schema_sql_included: false`. The live site showed 411 visible restaurants on 2026-11-27, so the committed snapshot is much older than the live data. The photo repair of 2026-11-27 (37 records, owned images) is recorded in `docs/operations/2026-11-27-photo-repair-changes.csv` but the image files themselves exist only on the volume.
-- Needed: a scheduled copy of the volume, above all `where2eat.db` (plus `venue_images/`, `photo_cache/`, `cost_estimates.db`), snapshot refresh checks, and a tested restore. A Postgres dump is only a secondary copy. None of these is verified to exist. Backup and restore status of the Railway volume and Postgres was not checked.
+- Needed: a scheduled copy of the volume, above all `where2eat.db` (plus `venue_images/`, `photo_cache/`, `cost_estimates.db`), snapshot refresh checks, and a tested restore. A Postgres dump is only a secondary copy. None of these is verified to exist. On 2026-11-27 the Railway volume showed no backups and no backup schedule; Postgres backups were not checked.
 
 ## 5. Public pages (web/src/app)
 
