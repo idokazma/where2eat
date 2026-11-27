@@ -39,7 +39,7 @@ Do not treat these as one path. They differ in where they run, which keys they u
 | What | Python in `src/` and `api/`: `pipeline_scheduler.py`, `youtube_transcript_collector.py`, `unified_restaurant_analyzer.py` (prompt in `_create_analysis_prompt`), enrichment, `BackendService.process_video(save_to_db=True)` | Claude Code subagent definitions: `episode-processor` (opus), `extraction-verifier` (sonnet), `episode-deployer` (sonnet), `production-manager` (opus), `site-checker` (sonnet), plus six development agents; also `CLAUDE.md`, `.claude/skills/*`, `.claude/mcp.json` | Transcript made from the episode audio with automatic speech-to-text, mention list prepared and checked by hand, then uploaded through the site API |
 | Runs where | Railway, when enabled. Production scheduler is off (`PIPELINE_SCHEDULER_ENABLED=false`). | On the developer's machine inside Claude Code (paths in the files are local) | Outside the repository and outside the site |
 | Model and keys | Provider from `LLM_PROVIDER` (default `gemini`, model `gemini-2.5-flash`), `GEMINI_API_KEY` set on the Railway service; Claude and OpenAI supported in code. Whether `ANTHROPIC_API_KEY` or `OPENAI_API_KEY` exist in production is not verified. The production `LLM_PROVIDER` value is not verified. | Model access through the user's Claude Code (account or key not known). Place checks use `GOOGLE_PLACES_API_KEY` from a local `.env` (whether it is the same key as on Railway is not known). Admin login uses `WHERE2EAT_ADMIN_EMAIL` / `WHERE2EAT_ADMIN_PASSWORD` from the local environment. | No Gemini or Claude key of the project. Site writes use the site's own admin authorization. |
-| Output | Episode, restaurants and mentions in Postgres, or `needs_review` with nothing saved | `agentic_extractor/episode_<id>_extraction.json` and `.md`, a verification report, upload-ready JSON, and (after approval) uploads to the API | A seed file, owned venue images, API writes |
+| Output | Episode, restaurants and mentions in the live database (SQLite on the Railway volume), or `needs_review` with nothing saved | `agentic_extractor/episode_<id>_extraction.json` and `.md`, a verification report, upload-ready JSON, and (after approval) uploads to the API | A seed file, owned venue images, API writes |
 | Shown to have run | Yes for episodes 174-176 on 2026-11-03 (Gemini in the server, after a payment error was fixed), per the maintenance record. Later runs not verified. | Definitions exist and were edited 2026-03, 2026-11-06, 2026-11-07 and 2026-11-22. The repo holds 26 extraction files, latest commit 2026-05-16. Episode 180 has no extraction or transcript in Git. For the preparation of episodes 179 and 180 no evidence was found that these agent files were loaded or that `check_episode_publication.py` was run. Episodes 174-178 were not inspected. Use of layer B for recent episodes is therefore not proven. | Yes for episodes 179 and 180. Episodes 177-178 were seeded through the data API after the Gemini payment error; who produced their transcripts was not verified. |
 
 Shared enforcement: `src/publication_quality.py` (`publication_issues`) is called from `POST /api/episodes/seed` and from `process_video(save_to_db=True)`. A code search found no call to it from `POST /api/restaurants`, so uploads through that route (still described in the older body of `episode-deployer.md`) do not pass through it. Whether layer B used `seed` in practice is not proven.
@@ -56,7 +56,7 @@ Drift between the agent files and the code, recorded here and not changed:
 
 ## 4. Data entities
 
-Defined in `src/database.py` (SQLite) and `src/models/` (SQLAlchemy; used when `DATABASE_URL` or `USE_SQLALCHEMY=true`, see `api/routers/restaurants.py`).
+Defined in `src/database.py` (SQLite, the live database) and `src/models/` (SQLAlchemy; tried only as a fallback, or first by `/api/restaurants/search` when `DATABASE_URL` or `USE_SQLALCHEMY=true` is set, see `api/routers/restaurants.py`). Verified 27.11.2026 that production answers from SQLite on both endpoints.
 - `episodes`: `video_id`, channel (`channel_id`, `channel_name`), title, language, transcript, `episode_summary`, `published_at`.
 - `restaurants`: Hebrew/English names, city, neighborhood, address, coordinates, cuisine, `status`, price range, `host_opinion`, `host_comments`, menu items, contact (hours, phone, website, social), `mention_context`, `mention_timestamp`, Google fields (`google_place_id`, rating), `photos`, `image_url`, `og_image_url`, plus provenance `image_credit` and `image_source` for installed photos.
 - `episode_mentions`: links a restaurant to an episode with the timed mention (this is what the stories and the episode page use). The maintenance API repoints mentions when duplicate restaurants are merged.
@@ -68,9 +68,9 @@ Durable record and backups (section 4a below).
 ## 4a. Backup and recovery status
 
 - Git holds transcripts, extraction files and `data/snapshots/*`. This is the intended durable text record. It is not proven sufficient to rebuild the live site.
-- The live data is in Postgres (Railway `postgres` service). Uploaded venue image bytes, `photo_cache/` and `cost_estimates.db` are on the Railway volume (`/app/persistent`), outside Git.
+- The live data is the SQLite file on the Railway volume (`/app/persistent/where2eat.db`, under `DATABASE_DIR`). The API reads it first; Postgres (`DATABASE_URL`) is only a fallback and a partial copy (write-through from some paths, the SQLite-to-Postgres sync is disabled in `api/main.py`). Uploaded venue image bytes, `photo_cache/` and `cost_estimates.db` are on the same volume, outside Git.
 - Snapshot freshness: `data/snapshots/manifest.json` on main records `exported_at` 2026-04-24, 141 restaurants and 25 episodes, with `schema_sql_included: false`. The live site showed 411 visible restaurants on 2026-11-27, so the committed snapshot is much older than the live data. The photo repair of 2026-11-27 (37 records, owned images) is recorded in `docs/operations/2026-11-27-photo-repair-changes.csv` but the image files themselves exist only on the volume.
-- Needed: a scheduled Postgres dump, a volume copy that includes `venue_images/`, snapshot refresh checks, and a tested restore. None of these is verified to exist. Backup and restore status of the Railway Postgres and volume was not checked.
+- Needed: a scheduled copy of the volume, above all `where2eat.db` (plus `venue_images/`, `photo_cache/`, `cost_estimates.db`), snapshot refresh checks, and a tested restore. A Postgres dump is only a secondary copy. None of these is verified to exist. Backup and restore status of the Railway volume and Postgres was not checked.
 
 ## 5. Public pages (web/src/app)
 
@@ -99,7 +99,7 @@ Durable record and backups (section 4a below).
 
 - Paid calls: Google Places (search, details, photos) and LLM calls cost money. `src/cost_ledger.py` keeps a local gross estimate, not the provider balance. The code default budget is $10; the owner's monthly cap is a firm $10. It does not cover other keys, replicas or external usage. Set provider-side billing alerts too.
 - Hebrew spelling in transcripts is preserved as heard; venue identity needs more than a name match.
-- Persistent files must live on the volume (`DATABASE_DIR`): `cost_estimates.db`, `venue_images/`, `photo_cache/` (the main data is in Postgres).
+- Persistent files must live on the volume (`DATABASE_DIR`): `cost_estimates.db`, `venue_images/`, `photo_cache/`, and the main database `where2eat.db`.
 - Episode seed, mention deletion and reset need admin or super_admin auth.
 
 ## 9. Testing
