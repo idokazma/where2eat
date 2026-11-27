@@ -39,7 +39,7 @@ Census of 411 visible restaurant records before repair (by how the hero image re
 
 Method for each record: take the record, find an image on the venue's own site, Ontopo/Wolt/getmood page or similar venue page, look at the pixels (right venue, real photo, not a logo or banner, food-forward where possible), upload an owned copy, `PUT` the new `image_url`, read the record back, fetch the asset, then render the live restaurant page on a phone-sized viewport with `/api/photos` aborted. 37 records changed this way (33 dead-fallback, 4 no-image).
 
-After: 294 owned, 26 direct, 69 Google-ref (53 with dead fallback, 16 alive), 22 no image. Total 411. Of 112 targets (86 dead fallback plus 26 none), 75 remain.
+After: 294 owned, 26 direct, 22 no image, and 69 records whose hero is a Google reference that was not verified (their fallback URLs: 53 dead, 16 alive; these are not verified hero photos). Total 411. Of 112 targets (86 dead fallback plus 26 none), 75 remain.
 
 Rejected on purpose: logos, banners, site screenshots, portraits, promo photos of staff, empty interiors when no food image existed, and any case where the venue's identity could not be confirmed (generic names, wrong city, directory-only results). Mona keeps its venue-profile image (chef team) because no better venue-owned food photo was found.
 
@@ -63,6 +63,6 @@ Duplicate records noticed and left unmerged (same venue, two rows): Wine House (
 
 - Gallery and thumbnail proxy exposure (section 4).
 - Verify the cost ledger against the provider console and enter the opening spend; find the cause of the five extra photo attempts.
-- The 22 no-image and 53 dead-fallback records, and the 69 Google-ref heroes that cannot be checked without a paid request.
+- The 22 no-image and 53 dead-fallback records, and the 69 Google-reference heroes, whose current state is unverified and cannot be checked without a paid request (53 have a dead fallback URL, 16 an alive one).
 - Backups: the owned images exist only on the Railway volume, not in Git; confirm the volume and Postgres are backed up (see `docs/PROJECT_OVERVIEW.md` section 4a).
 - Duplicate records (Wine House, Petrozilia, Mantiz, Dilek, Waffle House).
