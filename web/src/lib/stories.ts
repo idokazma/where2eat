@@ -245,6 +245,24 @@ export function samePlace(a: Restaurant, b: Restaurant): boolean {
 
 const DISCLAIMER_RE = /דיסקליימר|disclaimer/i;
 
+/**
+ * What a review mention shows as its words: a reviewed quote (shown in quotation marks),
+ * else the first transcript line that is not only a disclaimer, else the summary (both
+ * shown plainly, they are not verified).
+ */
+export function mentionQuote(m: {
+  verified_quote?: { text?: string | null } | null;
+  host_quotes?: string[] | null;
+  host_comments?: string | null;
+}): StoryQuote | null {
+  const verified = m.verified_quote?.text?.trim();
+  if (verified) return { text: verified, verified: true };
+  const own = (m.host_quotes ?? []).find((q) => q && q.trim() && !DISCLAIMER_RE.test(q));
+  if (own) return { text: own.trim(), verified: false };
+  const summary = m.host_comments?.trim();
+  return summary ? { text: summary, verified: false } : null;
+}
+
 /** The quote the episode page shows for this restaurant: verified first, else the transcript. */
 export function quoteFromEpisode(detail: EpisodeDetail, restaurantId: string): StoryQuote | null {
   const groups = detail?.mentions ?? {};

@@ -116,6 +116,8 @@ export interface RestaurantMention {
   /** Review content of this mention, kept per creator. */
   host_quotes?: string[] | null;
   host_comments?: string | null;
+  /** A quote a reviewer checked against the recording (reviewer identity never served). */
+  verified_quote?: { text?: string | null } | null;
   dishes_mentioned?: string[] | null;
   published_at?: string | null;
 }

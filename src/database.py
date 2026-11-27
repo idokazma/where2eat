@@ -785,12 +785,13 @@ class Database:
             cursor.execute('''\
                 SELECT em.video_id, em.timestamp_seconds, em.timestamp_display,
                        em.mention_level, em.speaker, em.host_quotes, em.host_comments,
-                       em.dishes_mentioned, em.verdict,
+                       em.dishes_mentioned, em.verdict, em.verified_quote,
                        e.title AS episode_title, e.video_url AS ep_video_url,
                        e.channel_name AS channel_name, e.published_at AS published_at
                 FROM episode_mentions em
                 LEFT JOIN episodes e ON em.episode_id = e.id
                 WHERE em.restaurant_id = ?
+                  AND COALESCE(em.verdict, '') != 'rejected'
                 ORDER BY e.published_at ASC, em.created_at ASC
             ''', (restaurant_id,))
             mentions = []
@@ -812,7 +813,9 @@ class Database:
                             md[field] = json.loads(raw)
                         except (TypeError, ValueError):
                             md[field] = [raw] if raw.strip() else None
-                mentions.append(md)
+                # Public rows: a reviewed quote replaces the transcript, and the
+                # reviewer's admin id is never served.
+                mentions.append(self._apply_verified_quote(md))
             return mentions
 
     def _attach_stored_photos(self, cursor, restaurants: List[Dict]) -> None:

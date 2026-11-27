@@ -27,6 +27,7 @@ import { getRestaurantImage, getRestaurantImages, getCuisineGradient } from '@/l
 import { PhotoGallery } from '@/components/restaurant/PhotoGallery';
 import { normalizeStatus, getPriceDisplay, normalizeMenuItems } from '@/lib/data-normalizer';
 import { YouTubeEmbed } from '@/components/restaurant/YouTubeEmbed';
+import { mentionQuote } from '@/lib/stories';
 
 // Removed: now using getPriceDisplay from data-normalizer
 
@@ -408,7 +409,7 @@ export default function RestaurantDetailPage() {
           <div className="space-y-3">
             <h2 className="text-lg font-bold text-[var(--color-ink)]">ביקורות נוספות</h2>
             {additionalReviews.map((mention, index) => {
-              const quote = mention.host_quotes?.[0] || mention.host_comments;
+              const quote = mentionQuote(mention);
               return (
                 <div
                   key={`${mention.video_id}-${index}`}
@@ -436,7 +437,7 @@ export default function RestaurantDetailPage() {
                   </div>
                   {quote && (
                     <p className="text-[var(--color-ink)] leading-relaxed text-[15px]">
-                      &ldquo;{quote}&rdquo;
+                      {quote.verified ? <>&ldquo;{quote.text}&rdquo;</> : quote.text}
                     </p>
                   )}
                 </div>

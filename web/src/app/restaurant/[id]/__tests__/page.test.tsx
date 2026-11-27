@@ -95,3 +95,38 @@ describe('RestaurantDetailPage provenance and additional reviews', () => {
     expect(screen.queryByText('ביקורות נוספות')).not.toBeInTheDocument();
   });
 });
+
+describe('additional reviews quote the creators as the rest of the site does', () => {
+  const card = (name: string) =>
+    within(screen.getByText('ביקורות נוספות').parentElement as HTMLElement)
+      .getByText(name).closest('div[class*="rounded-xl"]') as HTMLElement;
+
+  it('puts only a verified quote in quotation marks; transcript text is shown plainly', async () => {
+    mockRestaurant({
+      mentions: [
+        { video_id: 'v2', channel_name: 'מאומת', host_quotes: ['המנה הייתה מעולה'], verified_quote: { text: 'המנה הייתה מעולה' } },
+        { video_id: 'v3', channel_name: 'תמלול', host_quotes: ['שמעתי שזה טוב'] },
+      ],
+    });
+    render(<RestaurantDetailPage />);
+    await screen.findByText('ביקורות נוספות');
+    expect(card('מאומת').textContent).toContain('“המנה הייתה מעולה”');
+    expect(card('תמלול').textContent).toContain('שמעתי שזה טוב');
+    expect(card('תמלול').textContent).not.toMatch(/[“”"״]/);
+  });
+
+  it('skips a quote that is only a disclaimer', async () => {
+    mockRestaurant({
+      mentions: [
+        { video_id: 'v2', channel_name: 'יוצר', host_quotes: ['יש דיסקליימר שאני חבר של השף', 'הבשר היה עשוי מעולה'] },
+        { video_id: 'v3', channel_name: 'אחר', host_quotes: ['Disclaimer: I know the owner'], host_comments: 'סיכום קצר' },
+      ],
+    });
+    render(<RestaurantDetailPage />);
+    await screen.findByText('ביקורות נוספות');
+    expect(card('יוצר').textContent).toContain('הבשר היה עשוי מעולה');
+    expect(card('יוצר').textContent).not.toContain('דיסקליימר');
+    expect(card('אחר').textContent).toContain('סיכום קצר');
+    expect(card('אחר').textContent).not.toContain('Disclaimer');
+  });
+});

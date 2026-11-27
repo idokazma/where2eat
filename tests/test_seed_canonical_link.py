@@ -223,3 +223,36 @@ def test_review_links_use_valid_timestamp_separator(seed_client):
     url = db.get_restaurant_reviews(canonical_id)[0]['youtube_url']
     # A Shorts URL has no query string yet, so the timestamp starts one with "?".
     assert url == 'https://www.youtube.com/shorts/shorts1?t=10s'
+
+
+# ── what the public "additional reviews" may show
+
+def _mention_row(db, rid, mid, verdict, **kw):
+    import json as _json
+    with db.get_connection() as conn:
+        conn.execute('INSERT INTO episodes (id, video_id, video_url, channel_name, published_at) VALUES (?,?,?,?,?)',
+                     (f'e-{mid}', f'v-{mid}', f'https://www.youtube.com/watch?v=v-{mid}', 'יוצר', '2026-11-01'))
+        conn.execute('INSERT INTO episode_mentions (id, episode_id, video_id, restaurant_id, name_hebrew, verdict, '
+                     'timestamp_seconds, host_quotes, verified_quote) VALUES (?,?,?,?,?,?,?,?,?)',
+                     (mid, f'e-{mid}', f'v-{mid}', rid, 'x', verdict, 30,
+                      _json.dumps(kw.get('quotes', ['שמעתי שזה טוב'])),
+                      _json.dumps(kw['verified']) if kw.get('verified') else None))
+
+
+def test_get_restaurant_reviews_never_returns_rejected_mentions(seed_client):
+    _, db = seed_client
+    rid = db.create_restaurant(name_hebrew='מקום', city='תל אביב')
+    _mention_row(db, rid, 'ok', 'add_to_page')
+    _mention_row(db, rid, 'no', 'rejected')
+    assert [m['video_id'] for m in db.get_restaurant_reviews(rid)] == ['v-ok']
+
+
+def test_get_restaurant_reviews_serves_the_verified_quote_without_the_reviewer(seed_client):
+    _, db = seed_client
+    rid = db.create_restaurant(name_hebrew='מקום', city='תל אביב')
+    _mention_row(db, rid, 'vq', 'add_to_page', quotes=['טקסט אוטומטי'],
+                 verified={'text': 'המנה הייתה מעולה', 'reviewed_by': 'ADMIN-ID', 'start_seconds': 28})
+    [review] = db.get_restaurant_reviews(rid)
+    assert review['verified_quote']['text'] == 'המנה הייתה מעולה'
+    assert 'reviewed_by' not in review['verified_quote']
+    assert review['host_quotes'] == ['המנה הייתה מעולה']
