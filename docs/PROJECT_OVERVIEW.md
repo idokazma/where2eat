@@ -1,0 +1,93 @@
+# where2eat: project overview and how it works
+
+Status: written 2026-11-27 from the repository at main 3132300 and read-only checks of the Railway and Vercel configuration that day. Statements come from the code and existing docs unless marked "not verified". Where this file and older docs disagree, check the code. See also `CLAUDE.md`, `docs/ARCHITECTURE.md`, `docs/ADMIN_MAINTENANCE.md`, `docs/episode-publication-quality.md`, `docs/plans/location-stories-design.md`.
+
+## 1. What it is
+
+A restaurant discovery site built from Hebrew food podcasts and shows on YouTube. Episodes are transcribed, restaurant mentions are extracted and reviewed, venues are enriched (location, contact details, photos), and the public site shows them in a feed, on a map, and as location-ordered stories with the moment in the video where the host talks about the place. The UI is Hebrew first (RTL) with English available.
+
+## 2. Components
+
+| Part | Path | Notes |
+|---|---|---|
+| Public web app | `web/` | Next.js 16, React 19, TypeScript, Tailwind 4. Deployed on Vercel. Jest tests. |
+| API | `api/` | FastAPI (`api/main.py`, routers in `api/routers/`) is what the Docker image runs on Railway. `api/index.js` (Express) and `api/routes/` are an older/alternative server still in the tree. |
+| Python backend | `src/` | Transcript collection, LLM analyzers, enrichment, DB layer, scheduler, cost ledger, publication quality checks. |
+| Admin UI | `web/src/app/admin/` (and a separate `admin/` Next.js app) | The Vercel account has one project, `where2eat` (root `web`, aliases where2eat.rest, www.where2eat.rest, where2eat-delta.vercel.app). The separate `admin/` app has no Vercel project there, so the deployed admin UI is the one inside `web/`. |
+| Scripts | `scripts/` | CLI, backfills, data cleanup, exports, publication check (`check_episode_publication.py`), story place builder. |
+| Tests | `tests/` (pytest), `web/src/**/__tests__` (Jest) | CI in `.github/workflows/ci.yml`. |
+
+## 3. Ingestion and extraction workflow
+
+1. Source: YouTube channels/playlists (subscriptions) or single videos (`src/subscription_manager.py`, `src/video_queue_manager.py`, `src/pipeline_scheduler.py`, `scripts/cli.py`, `scripts/process_queue.py`).
+2. Transcript: the code has a collector (`src/youtube_transcript_collector.py`) that can fetch and cache YouTube captions. That is a code capability, not the approved workflow. The owner's standing requirement is a full transcript made from the episode audio, not auto-captions, and quotes that are checked against the recording and edited before publishing (raw auto-caption snippets are not acceptable). The canonical transcript is committed as `agentic_extractor/<video_id>/transcript.json`. Railway's IP is blocked by YouTube, so the server does not fetch transcripts itself.
+3. Extraction: LLM analyzers (`claude_restaurant_analyzer.py`, `openai_restaurant_analyzer.py`, `unified_restaurant_analyzer.py`) produce restaurant mentions with host opinion, quotes and timestamps. Production variables include `LLM_PROVIDER` and `GEMINI_API_KEY`, and the cost ledger prices only Gemini 2.5 Flash. Output is `agentic_extractor/episode_<video_id>_extraction.json` (and a `.md` report).
+4. Quality gate: `docs/episode-publication-quality.md` and `src/publication_quality.py`. An analysis is a draft, not permission to publish. The same offline validator runs in `POST /api/episodes/seed` and in `BackendService.process_video(save_to_db=True)`. It requires source-backed identity (the venue is confirmed with city/branch/address/chef context from a venue or other authoritative source), the discussion (exact quote, all occurrences reviewed, selected start second), and a photo decision. Without evidence, seed returns 422 and automatic processing returns `needs_review` without saving an episode or restaurant. Check locally with `PYTHONPATH=src python scripts/check_episode_publication.py extraction.json --data-dir <dir>`.
+5. Enrichment: Google Places (`google_places_enricher.py`, `restaurant_location_collector.py`), website og:image (`website_image_scraper.py`), Instagram (`instagram_enricher.py`). Google calls cost money; see section 8.
+6. Seeding: `POST /api/episodes/seed` (admin bearer auth required). A new review of a venue that already exists can be attached to the existing card with `canonical_restaurant_id`.
+7. Ingestion is manual: new episodes are added only when the owner asks for a backfill; an automatic proxy-plus-cron setup was offered and declined on 2026-11-01. The scheduler code (`pipeline_scheduler.py`) exists, but on 2026-11-27 the production service had `PIPELINE_SCHEDULER_ENABLED=false` and `PIPELINE_POLL_INTERVAL_HOURS=9999` (read from the Railway service variables). `docs/episode-publication-quality.md` also states processing is manual and enables no scheduler or paid lookup.
+8. `.github/workflows/scraper.yml` has a daily schedule (`0 6 * * *`) but its run step only executes `python scripts/cli.py health` and then commits `data/`. It does not ingest episodes. Whether GitHub Actions currently runs it was not verified.
+
+## 4. Data entities
+
+Defined in `src/database.py` (SQLite) and `src/models/` (SQLAlchemy; used when `DATABASE_URL` or `USE_SQLALCHEMY=true`, see `api/routers/restaurants.py`).
+- `episodes`: `video_id`, channel (`channel_id`, `channel_name`), title, language, transcript, `episode_summary`, `published_at`.
+- `restaurants`: Hebrew/English names, city, neighborhood, address, coordinates, cuisine, `status`, price range, `host_opinion`, `host_comments`, menu items, contact (hours, phone, website, social), `mention_context`, `mention_timestamp`, Google fields (`google_place_id`, rating), `photos`, `image_url`, `og_image_url`, plus provenance `image_credit` and `image_source` for installed photos.
+- `episode_mentions`: links a restaurant to an episode with the timed mention (this is what the stories and the episode page use). The maintenance API repoints mentions when duplicate restaurants are merged.
+- Operations: `jobs`, `subscriptions`, `monitored_channels`, `video_queue`, `pipeline_logs`, `restaurant_edits` / `restaurant_history`, `admin_users`, `articles`, `settings`, `error_logs`, `system_metrics`, `place_photos`.
+- Attribution: each mention carries its episode, channel/creator and, from the quality gate, a `publication_review` (identity source, quote, selected second, photo source). The episode `source label` and summary can be edited through the maintenance API with preview and revision checks.
+
+Durable record and backups (section 4a below).
+
+## 4a. Backup and recovery status
+
+- Git holds transcripts, extraction files and `data/snapshots/*`. This is the intended durable text record. It is not proven sufficient to rebuild the live site.
+- The live data is in Postgres (Railway `postgres` service). Uploaded venue image bytes, `photo_cache/` and `cost_estimates.db` are on the Railway volume (`/app/persistent`), outside Git.
+- Snapshot freshness: `data/snapshots/manifest.json` on main records `exported_at` 2026-04-24, 141 restaurants and 25 episodes, with `schema_sql_included: false`. The live site showed 411 visible restaurants on 2026-11-27, so the committed snapshot is much older than the live data. The photo repair of 2026-11-27 (37 records, owned images) is recorded in `docs/operations/2026-11-27-photo-repair-changes.csv` but the image files themselves exist only on the volume.
+- Needed: a scheduled Postgres dump, a volume copy that includes `venue_images/`, snapshot refresh checks, and a tested restore. None of these is verified to exist. Backup and restore status of the Railway Postgres and volume was not checked.
+
+## 5. Public pages (web/src/app)
+
+`/` and `/home` discovery feed; `/restaurant/[id]` detail; `/episode/[videoId]` and `/episodes`; `/map`; `/stories`; `/trending`; `/saved`; `/settings`, `/more`, `/about`, `/privacy`, `/data-sources`; `/admin/*` dashboard routes.
+- Stories (`web/src/app/stories`, `web/src/components/stories`, `web/src/lib/stories.ts`, design in `docs/plans/location-stories-design.md`): a vertical feed of restaurants ordered by straight-line distance from the viewer, sideways pages for photos and for each mention of the place, and a map sheet. Everything is computed in the browser from data the site already loaded. The first photo of a story is a stored or direct image; further photos may use the Google proxy and load only when the viewer moves to them.
+- Map: `web/src/components/map`, `web/src/lib/geo-utils.ts`.
+- Image choice: see `docs/operations/2026-11-27-image-402-and-photo-repair.md` (section "How an image is chosen").
+
+## 6. Admin and data operations
+
+- Auth: JWT admin login (`/api/admin/auth/login`); roles editor, admin, super_admin.
+- Maintenance API (`api/routers/admin_maintenance.py`, `docs/ADMIN_MAINTENANCE.md`): merge duplicates with preview and revision, mention repair, source label and summary edits, delete preview, an operations log with undo, and `GET /api/admin/maintenance/costs`.
+- Restaurant edits: `PUT /api/restaurants/{id}` (editor or admin).
+- Venue images: authenticated upload to the volume and public GET. Details in the operations note.
+- Snapshots and backups: see section 4 and `docs/ADMIN_MAINTENANCE.md` (back up the persistent DB before deploys).
+
+## 7. Deployment and configuration
+
+- Railway runs the `Dockerfile` (Python 3.11, uvicorn on 8080). Persistent volume: set `DATABASE_DIR` inside the mounted volume. The venue image store refuses to work in Railway if it is not.
+- Vercel hosts `web/`. `NEXT_PUBLIC_API_URL` points at the API.
+- Both Vercel and Railway deploy from GitHub `main` through their native integrations (Railway deployment on 2026-11-27 17:17 UTC was commit 3132300 from `idokazma/where2eat` branch `main`). `.github/workflows/deploy.yml` has supplementary jobs that skip without secrets; its Railway job targets `--service where2eat-api`, while the actual Railway service is named `where2eat`, so that job would not match.
+- Origin gate: the API rejects requests whose `Origin` is not in `ALLOWED_ORIGINS` plus defaults (exceptions: health, docs, photos, venue image GET and upload). Preview deployments on other origins can't load data unless allowed.
+- Main env vars: `GOOGLE_PLACES_API_KEY`, `ANTHROPIC_API_KEY`, `OPENAI_API_KEY` (optional), `API_SECRET_KEY` (venue image upload bearer, at least 32 chars), `ALLOWED_ORIGINS`, `DATABASE_DIR`, `DATABASE_URL`, cost variables (`COST_MONTHLY_BUDGET_USD`, `COST_OPENING_MONTH`, `COST_OPENING_SPEND_USD`, `COST_REQUIRE_VERIFIED_OPENING`, `COST_PUBLIC_PHOTOS_REQUIRE_VERIFIED`), scheduler variables. Never commit secret values.
+
+## 8. Operational constraints
+
+- Paid calls: Google Places (search, details, photos) and LLM calls cost money. `src/cost_ledger.py` keeps a local gross estimate, not the provider balance. Monthly budget default is $10. It does not cover other keys, replicas or external usage. Set provider-side billing alerts too.
+- Hebrew spelling in transcripts is preserved as heard; venue identity needs more than a name match.
+- Persistent files must live on the volume (`DATABASE_DIR`): `cost_estimates.db`, `venue_images/`, `photo_cache/` (the main data is in Postgres).
+- Episode seed, mention deletion and reset need admin or super_admin auth.
+
+## 9. Testing
+
+- Python: `python -m pytest tests/`; CI runs path-resolution tests first, then the Python suite, frontend lint and build, and an API syntax check. `CLAUDE.md` asks for TDD and over 90% coverage on new code.
+- Frontend: `cd web && npm run test` (Jest), `npm run lint`, `npm run build`.
+- Visual or network checks of pages that show Google photos should block `/api/photos` requests so tests do not spend money.
+
+## 10. Known open issues (as of 2026-11-27)
+
+- Google photo proxy exposure: thumbnails and gallery slides can still call the paid `/api/photos` proxy. A guard that stopped this was prepared on a branch but is not in the merged code. The risk is unresolved. See the operations note.
+- Missing or dead hero images remain for some records (counts in the operations note).
+- Duplicate restaurant records exist (examples in the operations note) and are not merged.
+- `CLAUDE.md` and this file were updated together to match the code (FastAPI as the production API, pages, deployment). When code changes, update both.
+- Backup and recovery are unproven (section 4a).
+- `.github/workflows/scraper.yml` runs a placeholder health check and commits `data/`; whether it is enabled in GitHub is not verified.
+- No `COST_*` variables are set in production, so the ledger runs on defaults with an unverified opening spend.

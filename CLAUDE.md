@@ -6,12 +6,18 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Before analysis/upload work, follow `docs/episode-publication-quality.md`. The seed and automatic-save paths now require source-backed identity/discussion/photo review before writing. Incomplete analysis is a saved review draft, not a live episode. Existing extraction files need review evidence before reseeding. No scheduler or paid-call expansion is authorized by this quality check.
 
+## Documentation map
+
+- `docs/PROJECT_OVERVIEW.md`: how the whole project works (ingestion, data, pages, admin, deployment, constraints, open issues).
+- `docs/operations/2026-11-27-image-402-and-photo-repair.md`: image selection order, owned venue images, Google photo proxy and cost ledger, the 402 incident, photo repair record and lessons.
+- `docs/ADMIN_MAINTENANCE.md`, `docs/episode-publication-quality.md`, `docs/plans/location-stories-design.md`.
+
 ## Project Overview
 
 Where2Eat is a restaurant discovery system that scrapes YouTube podcasts (primarily Hebrew food content), extracts restaurant mentions using AI analysis, and presents location-based recommendations. The system consists of four main components:
 
 1. **Python backend** (`src/`) - Scrapers, AI analyzers, database, and service layer
-2. **Express.js / FastAPI API** (`api/`) - REST API with admin routes
+2. **FastAPI API** (`api/main.py`, routers in `api/routers/`) - REST API with admin routes. This is what production runs. A legacy Express server (`api/index.js`, `api/routes/`) is still in the tree.
 3. **Next.js frontend** (`web/`) - Mobile-first Hebrew UI for restaurant discovery
 4. **Admin dashboard** (`admin/`) - Separate Next.js app for content management
 
@@ -20,7 +26,7 @@ Where2Eat is a restaurant discovery system that scrapes YouTube podcasts (primar
 ```
 where2eat/
 ├── src/                    # Python backend modules
-├── api/                    # Express.js + FastAPI API server
+├── api/                    # FastAPI API server (production); legacy Express server
 ├── web/                    # Next.js 16 frontend (React 19)
 ├── admin/                  # Admin dashboard (Next.js)
 ├── tests/                  # Python test suite (14 test files)
@@ -74,7 +80,9 @@ npm run test:watch   # Jest watch mode
 npm run test:coverage # Jest with coverage
 ```
 
-### Express API (api/)
+### Legacy Express API (api/index.js)
+
+Production runs FastAPI (see Deployment). These commands start the older Express server or a local FastAPI.
 
 ```bash
 cd api
@@ -100,7 +108,9 @@ python scripts/cli.py analytics trends --period 3months
 ### Data Flow
 
 ```
-YouTube URL → Transcript Collector → AI Analyzer → SQLite Database → Express/FastAPI API → Next.js Frontend
+Episode → audio-based transcript (committed as `agentic_extractor/<video_id>/transcript.json`) → AI extraction + source-backed review → seed → database (Postgres in production, SQLite locally) → FastAPI → Next.js frontend
+
+Episode ingestion is manual: new episodes are added when the owner asks. The scheduler exists in code but is disabled in production. See `docs/PROJECT_OVERVIEW.md`.
 ```
 
 ### Python Backend (src/)
@@ -153,6 +163,11 @@ YouTube URL → Transcript Collector → AI Analyzer → SQLite Database → Exp
 | `/privacy` | `app/privacy/page.tsx` | Privacy policy |
 | `/admin` | `app/admin/page.tsx` | Admin interface |
 | `/more` | `app/more/page.tsx` | More options |
+| `/home` | `app/home/page.tsx` | Home feed |
+| `/stories` | `app/stories/page.tsx` | Location-ordered stories feed |
+| `/episodes`, `/episode/[videoId]` | `app/episodes`, `app/episode/[videoId]` | Episode list and detail |
+| `/data-sources` | `app/data-sources/page.tsx` | Data sources |
+| `/admin/dashboard/*` | `app/admin/dashboard/` | Admin dashboard pages (the admin UI that is deployed) |
 
 **Key component directories:**
 - `components/layout/` - Header, BottomNav, PageLayout
@@ -166,8 +181,8 @@ YouTube URL → Transcript Collector → AI Analyzer → SQLite Database → Exp
 
 ### API (api/)
 
-- **Primary**: Express.js 5.2.1 with CORS, Helmet, Morgan logging, Swagger docs
-- **Alternative**: FastAPI (Python) in `api/main.py` - used in Docker/Railway deployment
+- **Primary**: FastAPI (Python) in `api/main.py` with routers in `api/routers/` - used in Docker/Railway deployment
+- **Legacy**: Express.js 5.2.1 in `api/index.js` with `api/routes/` (not what production runs)
 - **Auth**: JWT-based admin authentication with bcrypt
 
 **Key Endpoints:**
@@ -213,7 +228,7 @@ Separate Next.js app for content management:
 
 ### Data Storage
 
-Git is the durable record. Railway Postgres serves the live site but is not authoritative — if it's lost, the repo is enough to rebuild.
+Git is intended to hold the durable text and extraction record (transcripts, extraction files, snapshots). It is NOT proven to be enough to rebuild the live site: Railway Postgres (a `postgres` service next to `where2eat`, `DATABASE_URL`) is what serves the site, and uploaded venue image bytes, the photo cache and the cost ledger live on the Railway volume at `/app/persistent`, outside Git. Do not assume full recovery from Git alone until a restore has been tested. Required backups: a Postgres dump, a copy of the volume (`venue_images/`, `photo_cache/`, `cost_estimates.db`), and a check of snapshot freshness (see `data/snapshots/manifest.json` `exported_at` and counts against the live API). A restore procedure has not been tested.
 
 | Path | Tracked? | Contents |
 |------|----------|----------|
@@ -246,6 +261,8 @@ Additional workflows: `deploy.yml`, `pages.yml`, `scraper.yml`
 ## Deployment
 
 ### Railway (API)
+- Deploys from GitHub `main` through Railway's native integration; the service is named `where2eat`. `deploy.yml`'s Railway job targets `where2eat-api` and does not match.
+- Persistent volume mounted at `/app/persistent` (`DATABASE_DIR`): venue images, photo cache, cost ledger.
 - Docker-based deployment using `Dockerfile` (Python 3.11 slim)
 - Runs FastAPI via uvicorn on port 8080
 - Config in `railway.json`: restart on failure, max 10 retries
@@ -253,7 +270,7 @@ Additional workflows: `deploy.yml`, `pages.yml`, `scraper.yml`
 - Optional: `OPENAI_API_KEY`, `ALLOWED_ORIGINS`
 
 ### Vercel (Frontend)
-- Next.js frontend deployed to Vercel
+- Next.js frontend (`web/`, which also contains the admin UI) deployed to Vercel project `where2eat` from GitHub `main`
 - Required env var: `NEXT_PUBLIC_API_URL` (points to Railway API)
 - Optional: `NEXT_PUBLIC_GOOGLE_PLACES_API_KEY`
 
