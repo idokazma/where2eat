@@ -199,7 +199,7 @@ PYTHONPATH=src python3 scripts/check_episode_publication.py PAYLOAD.json --data-
 
 ## 8. גיבוי ושחזור (לא נפתר כאן)
 
-גיט לבדו לא משחזר את האתר החי. קובץ מסד הנתונים החי `where2eat.db` ותמונות העסקים על כרך Railway נמצאים מחוץ לגיט; Postgres הוא רק עותק משני וחלקי, ו-seed מגיע ל-SQLite בלבד (מפת אחסון ב-`docs/PROJECT_OVERVIEW.md`). עותק של `where2eat.db`, עותק כרך כולל `venue_images/` ושחזור שנבדק לא מאומתים כקיימים (`docs/PROJECT_OVERVIEW.md` סעיף 4a). לפני כל seed לוקחים את תמונת המצב מצעד 9 ושומרים אותה.
+גיט לבדו לא משחזר את האתר החי. קובץ מסד הנתונים החי `where2eat.db` ותמונות העסקים על כרך Railway נמצאים מחוץ לגיט; Postgres הוא רק עותק משני וחלקי, ו-seed מגיע ל-SQLite בלבד (מפת אחסון ב-`docs/PROJECT_OVERVIEW.md`). ב-27.11.2026 לא היו לכרך גיבויים או לוח גיבויים ב-Railway, והאפליקציה לא הצליחה לפתוח את Postgres (דרייבר חסר בלוג הפריסה). עותק של `where2eat.db`, עותק כרך כולל `venue_images/` ושחזור שנבדק לא מאומתים כקיימים (`docs/PROJECT_OVERVIEW.md` סעיף 4a). לפני כל seed לוקחים את תמונת המצב מצעד 9 ושומרים אותה.
 
 ## 9. פערים שנותרו
 
