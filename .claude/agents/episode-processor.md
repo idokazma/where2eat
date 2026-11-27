@@ -24,6 +24,19 @@ Run `PYTHONPATH=src python scripts/check_episode_publication.py EXTRACTION.json 
 
 After upload, verify the exact live card image and video playback at the selected discussion time, not merely an API200. Existing single-mention corrections use snapshot-backed maintenance, never destructive full-episode reseeding. The quality checker verifies evidence completeness, nearby original quote and local image bytes; it cannot replace a reviewer's semantic identity or image judgments.
 
+## Owner requirements for episode work (aligned 2026-11-27)
+
+The step-by-step procedure is `docs/operations/EPISODE_CONTINUITY_RUNBOOK.md`. Background on transcripts and timestamps: `docs/operations/TRANSCRIPTS_AND_TIMESTAMPS_GUIDE.md`. Record each episode with `docs/operations/episode-records/TEMPLATE.md`. Where older text below disagrees with these requirements, the requirements win.
+
+- Transcript source: the episode audio (publisher RSS MP3), not YouTube auto-captions. Captions may be used only to compare timing, never as the quote source. Automatic speech-to-text makes errors; keep uncertain words uncertain and say so.
+- Quotes: contiguous spans of what the transcription returned, checked with a second pass. Do not clean up wording or stitch two places. A venue not clearly identified stays out of the feed.
+- Timestamps: never write one as exact. Record raw source, clip start and duration, alignment method, verification method, uncertainty, speaker confidence and gate evidence as separate facts. Build `transcript_segments` only from real clips or original timed source; never invent a start second to satisfy the gate; a clip boundary is not a quote boundary.
+- Identity: city, branch, address or chef clues from the transcript, plus the venue's own page. A name match is not identity. Same-name venues exist.
+- Photos: food-forward and representative of the correct venue; never a logo, banner, portrait or duplicate; keep an owned copy via `POST /api/admin/venue-images`; if none is found, mark it unavailable with a reason. Photos are advertising for the venue; do not raise rights questions.
+- Budget and cost: the monthly cap is about $10 including spend the ledger cannot see. Do not make paid Google or model calls without approval. Never request `/api/photos` in a test browser.
+- Folders: the committed layout is `agentic_extractor/<VIDEO_ID>/transcript.json` and `agentic_extractor/episode_<VIDEO_ID>_extraction.json`. Older mentions of `analyses/` and `data/restaurants/` are legacy.
+- Publishing: use `POST /api/episodes/seed` after the local gate, never `POST /api/restaurants` for new episode venues. No merge, no deploy, no scheduler, no secrets in files.
+
 ## Invocation Modes
 
 This agent can be invoked in three modes:
@@ -133,52 +146,11 @@ Called back with a verification report from the `extraction-verifier` agent. The
 
 When given a YouTube video URL or ID, follow these steps:
 
-### Step 1: Fetch Transcript with Segments
+### Step 1: Get the transcript from the audio
 
-```bash
-python3 -c "
-import sys
-sys.path.insert(0, 'src')
-from youtube_transcript_collector import YouTubeTranscriptCollector
-collector = YouTubeTranscriptCollector()
-result = collector.get_transcript('VIDEO_URL_OR_ID')
-if result:
-    import json, os
-    os.makedirs('analyses/VIDEO_ID', exist_ok=True)
-    with open('analyses/VIDEO_ID/transcript.json', 'w') as f:
-        json.dump(result, f, ensure_ascii=False, indent=2)
-    print(f'Transcript fetched: {len(result[\"transcript\"])} chars, language: {result[\"language\"]}')
-    print(f'Segments: {result[\"segment_count\"]}')
-else:
-    print('ERROR: Could not fetch transcript')
-"
-```
+Follow runbook steps 1 to 3 (`docs/operations/EPISODE_CONTINUITY_RUNBOOK.md`): find the episode in the public RSS feed, download the MP3, split it into chunks, transcribe each chunk, and save the text under `agentic_extractor/VIDEO_ID/`. The audio text has no timestamps and no speakers; get timing and quotes by cutting and transcribing short clips (runbook step 6).
 
-If the Python collector fails, try fetching directly using the v1+ API:
-```bash
-pip install youtube-transcript-api 2>/dev/null
-python3 -c "
-from youtube_transcript_api import YouTubeTranscriptApi
-api = YouTubeTranscriptApi()
-transcript_list = api.fetch('VIDEO_ID', languages=['iw', 'he', 'en'])
-transcript = [{'text': s.text, 'start': s.start, 'duration': s.duration} for s in transcript_list]
-import json, os
-result = {
-    'video_id': 'VIDEO_ID',
-    'transcript': ' '.join(s['text'] for s in transcript),
-    'segments': transcript,
-    'language': 'he'
-}
-os.makedirs('analyses/VIDEO_ID', exist_ok=True)
-with open('analyses/VIDEO_ID/transcript.json', 'w') as f:
-    json.dump(result, f, ensure_ascii=False, indent=2)
-print(f'OK: {len(result[\"transcript\"])} chars, {len(transcript)} segments')
-"
-```
-
-**IMPORTANT**: Always save segments. They contain `start` (seconds) and `text` fields needed for timestamp extraction.
-
-Read the transcript from `analyses/VIDEO_ID/transcript.json`.
+Captions are NOT the approved source. `youtube_transcript_collector` may be used only to compare timing against the player, and its output must not become a quote. Old instructions that fetched captions and saved `analyses/VIDEO_ID/transcript.json` were removed on 2026-11-27 because they conflict with the owner's requirement.
 
 ### Step 2: Read and Analyze the Transcript
 

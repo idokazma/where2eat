@@ -22,6 +22,19 @@ Run `PYTHONPATH=src python scripts/check_episode_publication.py EXTRACTION.json 
 
 After upload, verify the exact live card image and video playback at the selected discussion time, not merely an API200. Existing single-mention corrections use snapshot-backed maintenance, never destructive full-episode reseeding. The quality checker verifies evidence completeness, nearby original quote and local image bytes; it cannot replace a reviewer's semantic identity or image judgments.
 
+## Owner requirements for episode work (aligned 2026-11-27)
+
+The step-by-step procedure is `docs/operations/EPISODE_CONTINUITY_RUNBOOK.md`. Background on transcripts and timestamps: `docs/operations/TRANSCRIPTS_AND_TIMESTAMPS_GUIDE.md`. Record each episode with `docs/operations/episode-records/TEMPLATE.md`. Where older text below disagrees with these requirements, the requirements win.
+
+- Transcript source: the episode audio (publisher RSS MP3), not YouTube auto-captions. Captions may be used only to compare timing, never as the quote source. Automatic speech-to-text makes errors; keep uncertain words uncertain and say so.
+- Quotes: contiguous spans of what the transcription returned, checked with a second pass. Do not clean up wording or stitch two places. A venue not clearly identified stays out of the feed.
+- Timestamps: never write one as exact. Record raw source, clip start and duration, alignment method, verification method, uncertainty, speaker confidence and gate evidence as separate facts. Build `transcript_segments` only from real clips or original timed source; never invent a start second to satisfy the gate; a clip boundary is not a quote boundary.
+- Identity: city, branch, address or chef clues from the transcript, plus the venue's own page. A name match is not identity. Same-name venues exist.
+- Photos: food-forward and representative of the correct venue; never a logo, banner, portrait or duplicate; keep an owned copy via `POST /api/admin/venue-images`; if none is found, mark it unavailable with a reason. Photos are advertising for the venue; do not raise rights questions.
+- Budget and cost: the monthly cap is about $10 including spend the ledger cannot see. Do not make paid Google or model calls without approval. Never request `/api/photos` in a test browser.
+- Folders: the committed layout is `agentic_extractor/<VIDEO_ID>/transcript.json` and `agentic_extractor/episode_<VIDEO_ID>_extraction.json`. Older mentions of `analyses/` and `data/restaurants/` are legacy.
+- Publishing: use `POST /api/episodes/seed` after the local gate, never `POST /api/restaurants` for new episode venues. No merge, no deploy, no scheduler, no secrets in files.
+
 ## When to Run
 
 Run this agent after the episode-processor finishes, pointing it at a specific episode:
