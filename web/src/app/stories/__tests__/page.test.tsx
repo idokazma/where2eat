@@ -1,5 +1,3 @@
-// These tests exercise the opt-in paid Google photo behaviour (NEXT_PUBLIC_PAID_GOOGLE_PHOTOS=true).
-process.env.NEXT_PUBLIC_PAID_GOOGLE_PHOTOS = 'true';
 import "@testing-library/jest-dom";
 import { render, screen, fireEvent, waitFor, within, act } from "@testing-library/react";
 import StoriesPage from "../page";

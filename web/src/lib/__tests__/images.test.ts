@@ -1,5 +1,3 @@
-// Opt-in paid Google photo behaviour; the default (off) is covered by no-paid-photo-requests.test.ts.
-process.env.NEXT_PUBLIC_PAID_GOOGLE_PHOTOS = 'true';
 import {
   getRestaurantImage,
   getRestaurantImages,
@@ -88,7 +86,7 @@ describe('getRestaurantImage', () => {
 });
 
 describe('getRestaurantImages', () => {
-  it('never puts paid Google proxy URLs in the gallery', () => {
+  it('returns all photo URLs from photos array', () => {
     const r = makeRestaurant({
       photos: [
         { photo_reference: 'ref1', photo_url: '', width: 400, height: 300 },
@@ -96,23 +94,23 @@ describe('getRestaurantImages', () => {
         { photo_reference: 'ref3', photo_url: '', width: 400, height: 300 },
       ],
     });
-    expect(getRestaurantImages(r)).toEqual(['https://direct.com/2.jpg']);
+    const urls = getRestaurantImages(r);
+    expect(urls).toHaveLength(3);
+    expect(urls[0]).toBe('/api/photos/ref1?maxwidth=800');
+    expect(urls[1]).toBe('https://direct.com/2.jpg');
+    expect(urls[2]).toBe('/api/photos/ref3?maxwidth=800');
   });
 
-  it('keeps our own venue image first and omits Google proxy photos', () => {
+  it('does not include og:image when Google photos exist', () => {
     const r = makeRestaurant({
-      image_url: '/api/venue-images/abc.jpg',
-      photos: [{ photo_reference: 'ref1', photo_url: '', width: 400, height: 300 }],
-    });
-    expect(getRestaurantImages(r)).toEqual(['/api/venue-images/abc.jpg']);
-  });
-
-  it('falls back to og:image when only Google references exist', () => {
-    const r = makeRestaurant({
-      photos: [{ photo_reference: 'ref1', photo_url: '', width: 400, height: 300 }],
+      photos: [
+        { photo_reference: 'ref1', photo_url: '', width: 400, height: 300 },
+      ],
       og_image_url: 'https://restaurant.com/hero.jpg',
     });
-    expect(getRestaurantImages(r)).toEqual(['https://restaurant.com/hero.jpg']);
+    const urls = getRestaurantImages(r);
+    expect(urls).toHaveLength(1);
+    expect(urls[0]).toBe('/api/photos/ref1?maxwidth=800');
   });
 
   it('returns og:image alone when no Google photos', () => {
@@ -262,11 +260,11 @@ describe('our own uploaded venue image', () => {
     expect(getRestaurantImage(r)).toBe(own);
   });
 
-  it('leads the gallery; paid Google proxy photos are left out', () => {
+  it('leads the gallery, with the Google photos after it', () => {
     const r = makeRestaurant({ image_url: own, photos: gallery as never, google_place_id: 'PLACE1' });
     const images = getRestaurantImages(r);
     expect(images[0]).toBe(own);
-    expect(images).toHaveLength(1);
+    expect(images).toHaveLength(3);
   });
 
   it('does not treat other image_url values as our own', () => {

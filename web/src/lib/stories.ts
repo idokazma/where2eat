@@ -10,7 +10,7 @@ import { getCoordinates } from "@/types/restaurant";
 import { isListed } from "@/lib/restaurant-visibility";
 import { getMapPreviewImage } from "@/lib/map-discovery";
 import { haversineDistance, type GeoCoords } from "@/lib/geo-utils";
-import { getPhotoProxyUrl, paidGooglePhotosEnabled, getStoredPhotoUrls, looksLikeLogo, validPhotos } from "@/lib/images";
+import { getPhotoProxyUrl, getStoredPhotoUrls, looksLikeLogo, validPhotos } from "@/lib/images";
 import { config } from "@/lib/config";
 
 export interface StorySlide {
@@ -359,13 +359,7 @@ export function storyPhotos(story: Story, { extraPhotos = true, placePhotoCount 
     for (const url of stored) if (!photos.some((p) => p.url === url)) photos.push({ url, paid: false });
     return uniqueStoryPhotos(photos, story.restaurant);
   }
-  if (!extraPhotos || !paidGooglePhotosEnabled()) {
-    // Free direct photo links of the place still count; paid references never do.
-    for (const p of validPhotos(story.restaurant)) {
-      if (!p.photo_reference && p.photo_url && directImageUrl(p.photo_url) && !looksLikeLogo(p.photo_url) && !photos.some((x) => x.url === p.photo_url)) photos.push({ url: p.photo_url, paid: false });
-    }
-    return uniqueStoryPhotos(photos, story.restaurant);
-  }
+  if (!extraPhotos) return uniqueStoryPhotos(photos, story.restaurant);
   for (const p of validPhotos(story.restaurant)) {
     const photo: StoryPhoto | null = p.photo_reference
       ? { url: getPhotoProxyUrl(p.photo_reference, STORY_PHOTO_WIDTH), paid: true }
@@ -391,7 +385,7 @@ const MAX_PLACE_PHOTOS = 10;
 
 /** A place whose Google photo count must be asked before its photos can be shown. */
 export function needsPlacePhotoCount(r: Restaurant): boolean {
-  return paidGooglePhotosEnabled() && !!r.google_place_id && validPhotos(r).length === 0 && getStoredPhotoUrls(r).length === 0;
+  return !!r.google_place_id && validPhotos(r).length === 0 && getStoredPhotoUrls(r).length === 0;
 }
 
 /** Where to ask how many Google photos a place has. */
@@ -450,7 +444,6 @@ export function storyFrames(story: Story, opts: StoryPhotoOptions = {}): StoryFr
  * (and recovers expired references). Paid once per photo, not per view.
  */
 export function storyGoogleFallback(story: Story): string[] {
-  if (!paidGooglePhotosEnabled()) return [];
   const ref = validPhotos(story.restaurant).find((p) => p.photo_reference)?.photo_reference;
   return ref ? [getPhotoProxyUrl(ref, STORY_PHOTO_WIDTH)] : [];
 }

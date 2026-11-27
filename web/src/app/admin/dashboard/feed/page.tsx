@@ -24,7 +24,7 @@ import {
 } from 'lucide-react';
 import { apiFetch } from '@/lib/admin/api';
 
-// (API_URL no longer needed: thumbnails never use the paid photo proxy)
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
 interface RestaurantLocation {
   address?: string;
@@ -113,8 +113,7 @@ function getImageUrl(r: FeedRestaurant): string | null {
   if (r.photos?.length && r.photos[0].photo_reference) {
     const ref = r.photos[0].photo_reference;
     if (ref.startsWith('http')) return ref;
-    // Paid Google photo proxy: not used for thumbnails (no gradient fallback needed here).
-    return null;
+    return `${API_URL}/api/photos/${ref}?maxwidth=400`;
   }
   return null;
 }
