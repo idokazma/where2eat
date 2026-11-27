@@ -28,6 +28,15 @@ export function looksLikeLogo(url: string): boolean {
   }
 }
 
+/**
+ * Paid Google Places photo proxy (/api/photos/...). Off unless the deployment sets
+ * NEXT_PUBLIC_PAID_GOOGLE_PHOTOS=true: a cache miss there is a paid Google call, and no
+ * page view may start one by default. Photos we store ourselves are never affected.
+ */
+export function paidGooglePhotosEnabled(): boolean {
+  return process.env.NEXT_PUBLIC_PAID_GOOGLE_PHOTOS === 'true';
+}
+
 function isGoogleCdnUrl(url: string): boolean {
   try {
     return new URL(url).hostname === 'lh3.googleusercontent.com';
@@ -74,20 +83,21 @@ export function getRestaurantImage(restaurant: Restaurant): string | null {
   const photos = validPhotos(restaurant);
 
   // Priority 1: Owner-attributed Google Places photo (highest quality)
-  if (photos.length > 0) {
+  if (paidGooglePhotosEnabled() && photos.length > 0) {
     const ownerPhoto = photos.find((p) => p.is_owner_photo);
     if (ownerPhoto?.photo_reference) {
       return getPhotoProxyUrl(ownerPhoto.photo_reference);
     }
   }
 
-  // Priority 2: First Google Places photo (any)
+  // Priority 2: First Google Places photo (any). A reference is a paid proxy call, so
+  // without the switch only a direct photo_url (free) is used.
   if (photos.length > 0) {
-    const photo = photos[0];
-    if (photo.photo_reference) {
+    const photo = photos.find((p) => (p.photo_reference && paidGooglePhotosEnabled()) || (!p.photo_reference && p.photo_url));
+    if (photo?.photo_reference) {
       return getPhotoProxyUrl(photo.photo_reference);
     }
-    if (photo.photo_url) {
+    if (photo?.photo_url) {
       return photo.photo_url;
     }
   }
@@ -100,7 +110,10 @@ export function getRestaurantImage(restaurant: Restaurant): string | null {
   }
   if (restaurant.image_url) {
     if (!restaurant.image_url.startsWith('http')) {
-      return getPhotoProxyUrl(restaurant.image_url);
+      // A bare Google reference, not a URL: only through the paid proxy. Our own
+      // relative paths (/api/venue-images/...) are handled above.
+      if (restaurant.image_url.startsWith('/')) return restaurant.image_url;
+      return paidGooglePhotosEnabled() ? getPhotoProxyUrl(restaurant.image_url) : (restaurant.og_image_url ?? null);
     }
     return restaurant.image_url;
   }
@@ -138,6 +151,9 @@ export function getRestaurantImages(restaurant: Restaurant): string[] {
       images.push(photo.photo_url);
     }
   }
+  const gallery = images.filter((u) => !isPaidProxyUrl(u));
+  images.length = 0;
+  images.push(...gallery);
 
   // Fallback: og:image or image_url when no Google Places photos
   if (images.length === 0) {
@@ -161,6 +177,11 @@ export function getStoredPhotoUrls(restaurant: Restaurant): string[] {
  * Build a proxy URL for a Google Places photo reference.
  * This keeps the API key server-side.
  */
+/** True for a URL that would reach the paid Google photo routes. */
+export function isPaidProxyUrl(url: string): boolean {
+  return /\/api\/photos(\/|\?|$)/.test(url);
+}
+
 export function getPhotoProxyUrl(
   photoReference: string,
   maxWidth: number = 800

@@ -1,3 +1,5 @@
+// Opt-in paid Google photo behaviour; the default (off) is covered by no-paid-photo-requests.test.ts.
+process.env.NEXT_PUBLIC_PAID_GOOGLE_PHOTOS = 'true';
 import type { EpisodeDetail, Restaurant } from "@/types/restaurant";
 import {
   buildStories,
