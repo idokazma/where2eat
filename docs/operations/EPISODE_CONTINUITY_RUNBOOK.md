@@ -2,6 +2,8 @@
 
 [עברית: EPISODE_CONTINUITY_RUNBOOK.he.md](EPISODE_CONTINUITY_RUNBOOK.he.md). Same content in Hebrew; file names, fields, endpoints and commands are identical.
 
+Who runs this: the Instinct agent runs its own episode analysis pipeline as this runbook describes. Other operators use it to take over, check or repeat that work.
+
 Purpose: let any competent operator (human or assistant) add a podcast episode to where2eat from this repository alone, without the chat history of whoever did the previous episodes.
 
 How to read this file. Every statement is one of:

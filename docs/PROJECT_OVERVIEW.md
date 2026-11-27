@@ -28,7 +28,7 @@ A restaurant discovery site built from Hebrew food podcasts and shows on YouTube
 7. Ingestion is manual: new episodes are added only when the owner asks for a backfill; an automatic proxy-plus-cron setup was offered and declined on 2026-11-01. The scheduler code (`pipeline_scheduler.py`) exists, but on 2026-11-27 the production service had `PIPELINE_SCHEDULER_ENABLED=false` and `PIPELINE_POLL_INTERVAL_HOURS=9999` (read from the Railway service variables). `docs/episode-publication-quality.md` also states processing is manual and enables no scheduler or paid lookup.
 8. `.github/workflows/scraper.yml` has a daily schedule (`0 6 * * *`) but its run step only executes `python scripts/cli.py health` and then commits `data/`. It does not ingest episodes. Whether GitHub Actions currently runs it was not verified.
 
-Episode procedure (English and Hebrew): `docs/operations/EPISODE_CONTINUITY_RUNBOOK.md` / `.he.md`; transcript and timestamp guide: `docs/operations/TRANSCRIPTS_AND_TIMESTAMPS_GUIDE.md` / `.he.md`; per-episode record: `docs/operations/episode-records/TEMPLATE.md` / `.he.md`.
+Who runs episodes: the Instinct agent runs its own episode analysis pipeline, as the runbook below describes. Episode procedure (English and Hebrew): `docs/operations/EPISODE_CONTINUITY_RUNBOOK.md` / `.he.md`; transcript and timestamp guide: `docs/operations/TRANSCRIPTS_AND_TIMESTAMPS_GUIDE.md` / `.he.md`; per-episode record: `docs/operations/episode-records/TEMPLATE.md` / `.he.md`.
 
 ## 3a. Three layers: server pipeline, repository agents, and manual preparation
 
