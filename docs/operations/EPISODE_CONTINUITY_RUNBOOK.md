@@ -9,7 +9,7 @@ How to read this file. Every statement is one of:
 - **Historical evidence**: what the runs for episodes 179 and 180 actually did, with the source. Where history differs from the recommendation, the difference is stated.
 - **Unproven**: not run, not verified, or depends on access this repository cannot show.
 
-Status of this document: written 2026-11-27, based on the code at `main` 3132300, the 179 and 180 run records, and an offline rehearsal on episode 142 (see `docs/operations/episode-records/2026-11-27-handoff-rehearsal-wlCpj1zPzEA.md`). A full live episode run from this file alone has NOT been done.
+Status of this document: written 2026-11-27, based on the code at `main` 3132300, the 179 and 180 run records, and a partial rehearsal on episode 142 (local tooling only; not a full handoff success) (see `docs/operations/episode-records/2026-11-27-handoff-rehearsal-wlCpj1zPzEA.md`). A full live episode run from this file alone has NOT been done.
 
 Companion documents:
 - `docs/operations/TRANSCRIPTS_AND_TIMESTAMPS_GUIDE.md`: all transcript sources, formats, timestamp provenance, verification limits, real cases.
@@ -200,6 +200,8 @@ Git alone does not rebuild the live site. Postgres data and venue images on the 
 ## 9. Residual gaps
 
 - No live end-to-end run from this document. First live use should be on the next real episode with the owner reviewing the result.
+- Local tests need the repository requirements installed: `pip install -r requirements.txt -r api/requirements.txt` in a fresh virtual environment (with only pytest, fastapi and httpx, 2 of 32 gate tests fail on a missing `jose`). With them, 32 of 32 passed on Python 3.10 (CI uses 3.11, not tested here).
+- In the legacy episode 142 extraction, stored venue seconds and stored quotes can be far apart (up to about 131 s for one venue); the cause was not verified against audio. Record the clip start and each quote time separately.
 - Credential variable names differ between the agent files and the 179/180 scripts.
 - No documented speech-to-text tool is pinned; error rate was never measured against a human reference.
 - Speaker identification is manual and uncertain.
