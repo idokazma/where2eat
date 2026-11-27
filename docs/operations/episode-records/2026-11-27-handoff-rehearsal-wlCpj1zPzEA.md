@@ -22,7 +22,7 @@ Environment: Python 3.10 on the rehearsal machine (CI uses 3.11), ffmpeg and ffp
 ## What this shows
 - The offline parts of the procedure run from the repository alone: feed listing, the local gate, chunk and clip commands, the gate unit tests (30 of 32 ran).
 - An older extraction cannot be published without new review evidence. The gate says so per venue.
-- Captions give timing that is well formatted. They do not prove the stored quotes are verbatim: 3 of 5 first quotes were not found in the caption window.
+- Captions give timing that is well formatted. They do not prove the stored quotes are verbatim: the crude exact-substring check did not find 3 of 5 first quotes in the caption window (see the follow-up section for the better check).
 
 ## What this does not show (unproven)
 - Downloading a real episode's audio and transcribing it. No speech-to-text was run.
@@ -34,7 +34,7 @@ Environment: Python 3.10 on the rehearsal machine (CI uses 3.11), ffmpeg and ffp
 - Two sets of admin credential variable names exist (agent files vs the 179/180 scripts).
 - The agent files used folder names (`analyses/`, `data/restaurants/`) that do not match the committed layout (`agentic_extractor/`).
 - The deployer instructions uploaded restaurants through `POST /api/restaurants`, which does not run the gate.
-- The captions step in the processor instructions conflicts with the audio requirement.
+- The captions step in the processor instructions conflicted with the audio requirement (historical; changed in this PR).
 
 ## Follow-up run (same day): dependencies and quote check
 

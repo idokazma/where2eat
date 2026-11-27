@@ -8,10 +8,10 @@ Companion to `docs/operations/EPISODE_CONTINUITY_RUNBOOK.md`. This file explains
 
 | Source | How | Output | Used for | Limits |
 |---|---|---|---|---|
-| YouTube captions through project code | `src/youtube_transcript_collector.py`: DB cache, then `youtube-transcript-api` list/fetch, then `yt-dlp` fallback; 30 s rate limit | JSON with `segments` of `text`, `start`, `duration` | Server pipeline (layer A); `.claude` `episode-processor` step 1 (layer B); older assisted episodes | Automatic captions (ep 142 file says `youtube-transcript-api-generated`, language `iw`). Not the owner's approved source. Memory records say YouTube blocks Railway; not retested. Timing is rolling and overlapping (see 2). |
+| YouTube captions through project code (historical path; not the approved workflow) | `src/youtube_transcript_collector.py`: DB cache, then `youtube-transcript-api` list/fetch, then `yt-dlp` fallback; 30 s rate limit | JSON with `segments` of `text`, `start`, `duration` | Server pipeline (layer A); `.claude` `episode-processor` step 1 (layer B); older assisted episodes | Automatic captions (ep 142 file says `youtube-transcript-api-generated`, language `iw`). Not the owner's approved source. Reported earlier: YouTube blocks Railway; not retested. Timing is rolling and overlapping (see 2). |
 | Publisher audio (RSS MP3) plus speech-to-text | Feed `https://feeds.megaphone.fm/POLTD3242143576`, MP3 from the item's `enclosure` | Text per audio chunk. No timestamps, no speaker names | Episodes 179 and 180 (Evidence) | Automatic recognition: wrong words, loops, cut words, no speakers. Timing must be rebuilt. |
 | Human transcription | none recorded | | | |
-| Third-party transcript service | proposed and rejected by the owner (memory: analysis-engine-and-transcript-source.md) | | | |
+| Third-party transcript service | proposed and rejected by the owner (owner decision) | | | |
 
 Evidence for the audio route: ep 179 audio 65:35 split into 5 chunks; ep 180 MP3 about 82 MB, 4095.756 s, 5 chunks. The YouTube video for 180 (`HFfKdElnvuM`) is 4095.6 s long, so MP3 and video agree within 0.2 s on total length.
 
@@ -52,7 +52,7 @@ A clip boundary is not a quote boundary. The clip is where you cut. The quote is
 - Assisted route (Evidence, ep 180): read all chunks; list venues; find each venue's own pages; re-transcribe short windows to fix quotes and times; choose photos from the venue's own pages; upload through the admin API; check the live page and YouTube player.
 - Cannot do: replace listening to the recording; measure the error rate of speech-to-text (never measured against a human reference); assign speakers without labels; prove a venue identity from a name.
 
-## 5. Real cases (Evidence from the 179 and 180 run records)
+## 5. Real cases (summarized historical evidence from episodes 179 and 180; the original run logs are not in this repository, so unknowns are marked)
 
 1. Speech-to-text loop (ep 180): chunk 3 came back with repeated zeros and a chunk edge cut a word mid-way (`אבוקדו ירוק חמאה כ`). The run judged times after about 3000 s untrustworthy and re-transcribed 2550 to 3650 s in 90 s windows (about 18 reads).
 2. Estimated timing replaced (ep 180): the first seed used one synthetic segment per venue: start at an estimated second (270, 540, 2490, 2940, 3210), duration 90 s times the number of windows, text the concatenation of the 90 s window transcripts, and an assertion that the quote was inside that text. The gate passed on this. A later QA with 20 s clips set starts of Gettó Gulyás 290, Love Story 485, Café Keshet 2475, Hamudi Plus 2930, Skô 3240 with quote spans 362-380, 652-685, 2664-2682, 3122-3148, 3338-3364 (about ±5 to 10 s). Whether the saved server-side review copy was updated afterwards was not recovered.
@@ -63,7 +63,7 @@ A clip boundary is not a quote boundary. The clip is where you cut. The quote is
 7. Identity before photo: for Hamudi an Instagram handle with 17 images was found, but the page was read first because a similar handle might be another business.
 8. Speaker attribution: no labels; the Prague "Love Story" lines could be either of two hosts from gendered Hebrew forms alone. Some attributions were left open.
 9. Photos: 3 of 5 venues in ep 180 got a venue-owned photo (two official sites, one Instagram), 2 were marked unavailable with a reason.
-10. Earlier episodes (ep 179 briefing): a previous worker had copied short caption fragments and misidentified speakers, branches, and tasted versus mentioned. This led to the audio requirement.
+10. Earlier episodes (ep 179 briefing): a previous operator had copied short caption fragments and misidentified speakers, branches, and tasted versus mentioned. This led to the audio requirement.
 11. Cloudflare error 1010 from Railway (ep 177-178 and 179): fixed by an identifying `User-Agent`.
 12. Cost (ep 180): the ledger read about 9.17 of 10 (estimate, opening spend unverified), so only free sources were used for identity and photos.
 

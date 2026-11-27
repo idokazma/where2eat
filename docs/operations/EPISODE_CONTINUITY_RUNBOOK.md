@@ -9,7 +9,7 @@ How to read this file. Every statement is one of:
 - **Historical evidence**: what the runs for episodes 179 and 180 actually did, with the source. Where history differs from the recommendation, the difference is stated.
 - **Unproven**: not run, not verified, or depends on access this repository cannot show.
 
-Status of this document: written 2026-11-27, based on the code at `main` 3132300, the 179 and 180 run records, and a partial rehearsal on episode 142 (local tooling only; not a full handoff success) (see `docs/operations/episode-records/2026-11-27-handoff-rehearsal-wlCpj1zPzEA.md`). A full live episode run from this file alone has NOT been done.
+Status of this document: written 2026-11-27, based on the code at `main` 3132300, the run scripts and QA notes of episodes 179 and 180 (summarized in section 5; the original logs are not in this repository), and a partial rehearsal on episode 142 (local tooling only; not a full handoff success) (see `docs/operations/episode-records/2026-11-27-handoff-rehearsal-wlCpj1zPzEA.md`). A full live episode run from this file alone has NOT been done.
 
 Companion documents:
 - `docs/operations/TRANSCRIPTS_AND_TIMESTAMPS_GUIDE.md`: all transcript sources, formats, timestamp provenance, verification limits, real cases.
@@ -21,11 +21,12 @@ Companion documents:
 
 1. Ingestion is manual. Do not enable a scheduler, cron, polling or a proxy. (Declined by the owner on 2026-11-01; production had `PIPELINE_SCHEDULER_ENABLED=false` on 2026-11-27.)
 2. The transcript for a published episode comes from the audio, not from YouTube auto-captions. Quotes are checked against the recording. Automatic speech-to-text is not listening: it makes errors, so uncertain words stay uncertain.
-3. Do not spend money without approval. Monthly budget is about $10 including spend the ledger cannot see. `GET /api/admin/maintenance/costs` is a local estimate, not the provider balance. Never request `/api/photos` (Google photo proxy, paid) in a test or verification browser.
+3. Do not spend money without approval. The owner's monthly budget is a firm $10 cap, counting spend the ledger cannot see. This runbook grants no spending permission and adds no blanket approval; the rehearsal in section 7 made no paid calls. `GET /api/admin/maintenance/costs` is a local estimate, not the provider balance. Never request `/api/photos` (Google photo proxy, paid) in a test or verification browser.
 4. No merge and no deploy without the owner's explicit approval. Never commit secrets.
 5. A gate pass is not proof. The gate checks that evidence fields exist and that a quote appears inside the timed text you supplied. It does not prove who spoke, where in the audio a quote is, or that a venue is the right one.
 6. Never invent segment start times to make the gate pass. See section 6.
 7. Photos are advertising for the venue. Do not start rights discussions. Do pick food-forward photos of the correct venue; never a logo, banner, portrait or duplicate; keep an owned copy (Instagram links expire).
+8. Publication actions (image upload, seed, maintenance writes, merge, deploy) are conditional. Each needs the owner's approval for that episode or action. This runbook says how to do them, not that they are approved.
 
 ## 1. Access and credentials (locations only, never values)
 
@@ -34,9 +35,9 @@ Companion documents:
 | Public site and API | `https://www.where2eat.rest` (web), `https://where2eat-production.up.railway.app` (API) | Requests need an `Origin` header the API allows. The run scripts used `https://www.where2eat.rest`; the agent files say `https://where2eat-delta.vercel.app`. Both appear in the record. |
 | Admin API login | `POST /api/admin/auth/login` with an admin account | Historical: the 179/180 scripts read `ADMIN_EMAIL` and `ADMIN_PASSWORD` from the Railway service variables. The agent files use `WHERE2EAT_ADMIN_EMAIL` / `WHERE2EAT_ADMIN_PASSWORD` instead. Which one is current was not verified; check Railway variables. |
 | Image upload bearer | Railway variable `API_SECRET_KEY` (at least 32 chars) | Used on `POST /api/admin/venue-images`. The 180 script also sent it as header `x-api-key`; whether that header is needed was not verified. |
-| Reading Railway variables | An account-level Railway token held in the owner's secret store | Historical: used with the GraphQL API at `https://backboard.railway.com/graphql/v2`. Access from the owner's side; not in this repo. |
+| Reading Railway variables | An account-level Railway token granted by the project owner | Historical: used with the GraphQL API at `https://backboard.railway.com/graphql/v2`. Access from the owner's side; not in this repo. |
 | Railway edge block | Cloudflare error 1010 on the default Python user agent | Historical (2026-11-13, 2026-11-19): send an identifying `User-Agent` such as `where2eat-admin/1.0`. |
-| GitHub | PAT in the owner's secret store, pushes only; a PAT could not open PRs on 2026-11-27 | A PR was opened through a separate GitHub integration. |
+| GitHub | Push and pull-request access to the repository, granted by the project owner | Not in this repo. Ask the owner to grant it. |
 | Google Places | `GOOGLE_PLACES_API_KEY` on Railway (name verified). Local `.env` copy: unknown | Paid. See rule 3. |
 | Model keys | `GEMINI_API_KEY` set on Railway (name verified). `ANTHROPIC_API_KEY` and `OPENAI_API_KEY` in production: unknown | Only the server pipeline uses these. The assisted route for 179/180 used none of them. |
 
@@ -44,7 +45,7 @@ Unproven: whether a new operator can obtain each of these. The owner must hand o
 
 ## 2. Roles and the three layers (short)
 
-- A. Server pipeline (`src/`, `api/`): captions only, then analysis, then the same publication gate. Stops at `needs_review` for automatic output. Manual entrypoint: `POST /api/analyze` (editor role). It was not used for 179/180. First blocker for a new episode, by memory records only: YouTube blocks Railway (not retested).
+- A. Server pipeline (`src/`, `api/`): captions only, then analysis, then the same publication gate. Stops at `needs_review` for automatic output. Manual entrypoint: `POST /api/analyze` (editor role). It was not used for 179/180. First blocker for a new episode, reported earlier, not retested: YouTube blocks Railway.
 - B. `.claude/agents`: instructions for Claude Code on a developer machine. Aligned with this runbook in the same PR. No evidence they were loaded for 179/180.
 - C. Assisted manual preparation: what 179/180 used: audio, speech-to-text, manual review, admin API.
 
@@ -56,7 +57,7 @@ Each step lists: input, action, output, check, and failure handling. Keep the pe
 
 ### Step 1. Pick the episode and prevent duplicates
 
-- Input: the owner's request (or nothing: the newest RSS item).
+- Input: the owner's request naming the episode. If there is none, stop and ask; do not pick the newest RSS item on your own.
 - Action: read the public RSS feed `https://feeds.megaphone.fm/POLTD3242143576` (181 items, 0 to 180 on 2026-11-27). Each item has `title`, `pubDate` and an `enclosure` MP3 URL. Then find the YouTube video id (title match; for 180 it is `HFfKdElnvuM`). Then check the site: `GET /api/episodes?limit=200` (the default page returns only 50, which caused a wrong count in one run) and look for the `video_id`.
 - Command (read-only, free; run on 2026-11-27 and printed 181 items):
 ```bash
@@ -99,7 +100,7 @@ ffmpeg -i ep.mp3 -f segment -segment_time 900 -c copy chunk%02d.mp3
 
 - Action: from the full transcript, list every restaurant, cafe, bar or stall mentioned. For each: tasted by a presenter vs mentioned by someone else or reported from news; which presenter (no labels in the text: use content, gendered Hebrew forms and the hosts list as clues, and mark uncertainty); all occurrences (trailers repeat names; recaps and comparisons come later).
 - Output: the candidate table in the episode record, with `speaker confidence` as its own column (known, likely, unknown).
-- Historical: in 180 the worker could not tell from the text alone who spoke the Prague lines of Love Story and left some attributions open. Do not fill a speaker because it is convenient.
+- Historical: in 180 the operator could not tell from the text alone who spoke the Prague lines of Love Story and left some attributions open. Do not fill a speaker because it is convenient.
 
 ### Step 5. Identify each venue
 
@@ -122,8 +123,8 @@ Read `docs/operations/TRANSCRIPTS_AND_TIMESTAMPS_GUIDE.md` first. In short:
 - Search the venue's own site and social pages (Hebrew and English). Prefer food; real interior is acceptable and labeled. Look at pixels. Reject logos, posters, banners, portraits, curtains, other branches, duplicates.
 - Upload an owned copy: `POST /api/admin/venue-images?restaurant_id=<uuid>&source_url=<https page>&credit=<text>` with the image bytes and `Authorization: Bearer <API_SECRET_KEY>`. Max 5 MiB, JPEG, PNG or WEBP. It returns `asset_path` and `sha256`; it does not change any restaurant. The restaurant's `image_url` is then `https://where2eat-production.up.railway.app/api/venue-images/<sha256>.jpg`.
 - If no suitable photo exists, record `photo.status: unavailable` with a reason and leave the image fields empty (historical: 2 of 5 venues in 180).
-- Do not use Google Places photos as the hero. They need paid proxy calls and are not stored.
-- Check after publish that the photo renders on the live page. Vercel image optimization returned 402 on 2026-11-27, so thumbnails may show alt text there even when the stored image is correct (see `docs/operations/2026-11-27-image-402-and-photo-repair.md`).
+- Do not use Google Places photos as the hero. They go through the project photo proxy, which can cost money per request. The proxy has a cache, so do not assume such photos are never stored; check what the stored URL actually serves.
+- Check after publish that the photo renders on the live page. If a thumbnail shows alt text, check in this order: the actual HTTP status of the optimized-image URL on the live site, whether the stored image URL loads directly and is the correct image, then source or Google fetch failures. Historical: the 2026-11-27 incident was Vercel image optimization returning 402, fixed by PR 358 (see `docs/operations/2026-11-27-image-402-and-photo-repair.md`). A missing thumbnail does not mean 402 by itself.
 
 ### Step 8. Build the payload and check it offline
 
@@ -139,7 +140,7 @@ Exit 0 means the evidence is complete, exit 1 prints every blocker. On a legacy 
 ### Step 9. Snapshot, then seed
 
 - Snapshot first (read-only): `GET /api/episodes?limit=200` and `GET /api/restaurants?limit=1000` into files with the date. `scripts/export_production_snapshot.py` writes the same into `data/snapshots/` (its last committed run was 2026-04-24; it has not been run in this rehearsal).
-- Seed: `POST /api/episodes/seed` with an admin bearer token and the payload. Seed validates again, saves a review copy under `DATABASE_DIR/publication_reviews/`, creates the episode, then DELETES all existing mentions for that `video_id` and re-inserts. Never reseed an episode just to fix one timestamp or quote.
+- Seed: only with the owner's explicit approval for this episode (this document is not that approval). `POST /api/episodes/seed` with an admin bearer token and the payload. Seed validates again, saves a review copy under `DATABASE_DIR/publication_reviews/`, creates the episode, then DELETES all existing mentions for that `video_id` and re-inserts. Reseeding an existing episode replaces its mentions, which is destructive, and needs explicit approval that says so. Never reseed just to fix one timestamp or quote.
 - Corrections to existing data go through the audited maintenance API (`api/routers/admin_maintenance.py`, `docs/ADMIN_MAINTENANCE.md`): snapshot first, apply, read back.
 - A 422 from seed lists the blockers and writes nothing. Fix and resend.
 
@@ -165,9 +166,9 @@ Commit the episode record, payload and transcript text to a branch and open a PR
 | Seed 422 `durable_photo_bytes_missing_or_changed` | Upload not on the server volume | Re-upload with the bearer; check `DATABASE_DIR` is the volume. |
 | Transcript chunk is repeated characters | Speech-to-text loop | Re-transcribe in shorter windows; distrust the region until re-done. |
 | Transcript cut mid-word at a boundary | Chunk edge | Overlap the next transcription, or re-read the edge as a short clip. |
-| Thumbnails show alt text on the live site | Vercel 402 (image optimization) | Not a data error. Verify the stored URL directly. |
+| Thumbnails show alt text on the live site | Several possible causes | Check the status of the optimized-image URL, then the stored URL directly, then the source. A 402 from image optimization was the cause on 2026-11-27 (historical, fixed by PR 358); do not assume it. |
 | Budget message or ledger near 10 | Cost guard | Use free sources only; ask the owner before any paid call. |
-| YouTube blocks transcript fetch from Railway | Memory record, not retested | Not needed for the audio route. |
+| YouTube blocks transcript fetch from Railway | Reported earlier, not retested | Not needed for the audio route. |
 
 ## 5. Historical evidence from episodes 179 and 180 (not a template to copy blindly)
 
@@ -183,13 +184,13 @@ The gate needs timed segments. Without original timed source segments the tempta
 
 1. If an original timed source exists for those seconds (for example captions), supply it as is. Note that captions are precisely formatted but not necessarily accurate: their words can be wrong.
 2. If you built segments from clips you transcribed, each segment is a record of a real clip: `start` is the clip's actual start second in the audio, `duration` its real length, `text` the full text returned for that clip, unchanged. Do not set a start just to land near the quote, do not merge several clips into one segment with a start that fits only one of them, do not trim or extend text so the quote fits.
-3. The selected discussion second must be an actual clip or window start you cut. A quote span inside the clip is recorded separately in the episode record (`quote span estimate`), as an estimate, not as a segment start.
+3. Current gate constraint (`src/publication_quality.py`): the selected discussion second must equal the start of a supplied segment, so it becomes a clip start. A clip start is not necessarily where the discussion starts in meaning. Choose the discussion start independently first (listen or compare), then cut a real clip at that second. If you cannot, stop and ask the owner. Do not move the public time to a different second just to satisfy the gate. A quote span inside the clip is recorded separately in the episode record (`quote span estimate`) as an estimate, not as a segment start.
 4. Record in the episode record that the gate passed on self-made clip segments. That is the honest label for 179 and 180: internal consistency, not independent timing proof.
 5. Never describe any timestamp as exact. The best recovered accuracy is about ±5 to 10 s.
 
 The independent axes recorded per timestamp are in the template: raw source, clip start and duration, alignment method, verification method, uncertainty, speaker confidence, gate evidence. They are separate facts, not a ranking.
 
-## 7. Offline rehearsal, 2026-11-27
+## 7. Partial rehearsal, 2026-11-27
 
 See `docs/operations/episode-records/2026-11-27-handoff-rehearsal-wlCpj1zPzEA.md`. What it demonstrates: the repository-only steps that are free and read-only (feed listing, local gate on a real episode, ffmpeg chunk and clip commands on synthetic audio, existing test suite). What it does not demonstrate: audio download and speech-to-text of a real episode, venue identification, photo choice and upload, seed, live verification, restore from backup.
 
