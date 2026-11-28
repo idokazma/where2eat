@@ -4,7 +4,7 @@
 import { useMemo, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import type { Restaurant } from "@/types/restaurant";
-import { buildEpisodeCircles, HOME_CIRCLE_MIN_RESTAURANTS, markEpisodeSeen, readSeenEpisodes } from "@/lib/stories";
+import { buildEpisodeCircles, markEpisodeSeen, readSeenEpisodes } from "@/lib/stories";
 
 const subscribeNothing = () => () => {};
 const seenSnapshot = () => [...readSeenEpisodes(window.localStorage)].join("|");
@@ -15,7 +15,7 @@ const seenSnapshot = () => [...readSeenEpisodes(window.localStorage)].join("|");
  * not opened yet in this browser.
  */
 export function EpisodeCircles({ restaurants }: { restaurants: Restaurant[] }) {
-  const circles = useMemo(() => buildEpisodeCircles(restaurants, { minRestaurants: HOME_CIRCLE_MIN_RESTAURANTS }), [restaurants]);
+  const circles = useMemo(() => buildEpisodeCircles(restaurants), [restaurants]);
   // Read from this browser after hydration; the server render has nothing seen.
   const seenRaw = useSyncExternalStore(subscribeNothing, () => seenSnapshot(), () => "");
   const seen = useMemo(() => new Set<string>(seenRaw ? seenRaw.split("|") : []), [seenRaw]);
@@ -33,7 +33,7 @@ export function EpisodeCircles({ restaurants }: { restaurants: Restaurant[] }) {
                 href={`/stories?episode=${encodeURIComponent(c.videoId)}`}
                 className={`episode-circle${isSeen ? " seen" : ""}`}
                 onClick={() => markEpisodeSeen(window.localStorage, c.videoId)}
-                aria-label={`${c.title}, ${c.count} מסעדות${isSeen ? "" : ", חדש"}`}
+                aria-label={`${c.title}, ${c.count === 1 ? "מסעדה אחת" : `${c.count} מסעדות`}${isSeen ? "" : ", חדש"}`}
               >
                 <span className="episode-circle-ring">
                   {!src ? (

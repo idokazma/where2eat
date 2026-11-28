@@ -545,10 +545,15 @@ export function buildEpisodeCircles(restaurants: Restaurant[], { minRestaurants 
       if (!Number.isNaN(t)) publishedAt = Math.max(publishedAt, t);
     }
     if (!publishedAt) publishedAt = Math.max(...entries.map((e) => e.story.publishedAt));
-    // Signed Google links expire, so they come last; ours and other direct links first.
+    // Our own stored copies come first (they were picked and kept for the place), then other
+    // direct links. Signed Google links expire, so they come last. Site preview screenshots
+    // are not food photos and never serve as a cover.
     const isGoogle = (u: string) => { try { return new URL(u).hostname === "lh3.googleusercontent.com"; } catch { return false; } };
-    const all = [...new Set(entries.flatMap(({ story }) => [story.image, ...story.alternates]))];
-    const pool = [...all.filter((u) => !isGoogle(u)), ...all.filter(isGoogle)];
+    const isOurs = (u: string) => /\/api\/(?:venue-images|place-photos)\/[a-f0-9]{64}\.jpg$/.test(u);
+    const isPreview = (u: string) => /lovable|id-preview|screenshot/i.test(u);
+    const all = [...new Set(entries.flatMap(({ story }) => [story.image, ...story.alternates]))].filter((u) => !isPreview(u));
+    const pool = [...all.filter(isOurs), ...all.filter((u) => !isOurs(u) && !isGoogle(u)), ...all.filter(isGoogle)];
+    if (pool.length === 0) continue;
     circles.push({
       videoId,
       title: title || (channel ?? "").replace(/\s*-\s*הפודיום$/, "") || "פרק",
@@ -593,9 +598,3 @@ export function markEpisodeSeen(storage: Pick<Storage, "getItem" | "setItem"> | 
     /* Private mode: the circle just stays unmarked. */
   }
 }
-
-/**
- * The home row shows episodes with at least this many restaurants. Single-restaurant
- * videos (Shorts) would turn the row into a hundred circles with one place each.
- */
-export const HOME_CIRCLE_MIN_RESTAURANTS = 2;

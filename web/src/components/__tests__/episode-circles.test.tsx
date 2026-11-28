@@ -27,9 +27,9 @@ it("marks an opened episode as seen", () => {
   expect(JSON.parse(localStorage.getItem("w2e-seen-episode-stories")!)).toEqual(["e1"]);
 });
 
-it("leaves out a video with a single restaurant", () => {
-  const { container } = render(<EpisodeCircles restaurants={[r("a", "short", "שורט", "2026-11-01")]} />);
-  expect(container).toBeEmptyDOMElement();
+it("keeps a video with a single restaurant: every episode gets a circle", () => {
+  render(<EpisodeCircles restaurants={[r("a", "short", "שורט", "2026-11-01")]} />);
+  expect(screen.getByRole("link", { name: /שורט, מסעדה אחת/ })).toHaveAttribute("href", "/stories?episode=short");
 });
 
 it("renders nothing when no episode has a story-able restaurant", () => {

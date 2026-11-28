@@ -11,7 +11,10 @@ jest.mock("@/lib/stories", () => {
   return { ...actual, buildStories: jest.fn(actual.buildStories) };
 });
 const mockBack = jest.fn();
-jest.mock("next/navigation", () => ({ useRouter: () => ({ back: mockBack, push: jest.fn() }) }));
+jest.mock("next/navigation", () => ({
+  useRouter: () => ({ back: mockBack, push: jest.fn() }),
+  useSearchParams: () => new URLSearchParams(window.location.search),
+}));
 const mockLocate = jest.fn();
 jest.mock("@/hooks/useGeolocation", () => ({
   useGeolocation: () => ({ coords: null, accuracy: null, loading: false, error: null, getCurrentPosition: mockLocate }),
@@ -1265,6 +1268,7 @@ describe("one episode from a home page circle", () => {
     expect(mockLocate).not.toHaveBeenCalled();
     expect(stories.map((a) => within(a).getByRole("heading").textContent)).toEqual(["שנייה", "ראשונה"]);
     expect(screen.queryByRole("button", { name: "בחירת מיקום" })).not.toBeInTheDocument();
+    expect(screen.getByTestId("episode-label")).toHaveTextContent("פרק");
   });
 
   it("closing goes back to the home page it came from", async () => {

@@ -3,7 +3,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Heart, MapPin, Navigation, Play, Share2, X, Loader2, UtensilsCrossed, Instagram } from "lucide-react";
 import { endpoints } from "@/lib/config";
 import { fetchEpisodeDetail } from "@/lib/api/episodes";
@@ -119,9 +119,9 @@ export function StoriesView({
   const router = useRouter();
   // A circle on the home page opens /stories?episode=<video id>: only that episode's
   // restaurants, in episode order. No location is needed, so there is no locating step.
-  const [episodeId] = useState(() =>
-    typeof window === "undefined" ? null : new URLSearchParams(window.location.search).get("episode"),
-  );
+  // Read through the router: on an in-app navigation window.location still shows the
+  // previous page while this first renders.
+  const episodeId = useSearchParams()?.get("episode") || null;
   const [origin, setOrigin] = useState<{ coords: GeoCoords | null; fromDevice: boolean } | null>(() =>
     episodeId ? { coords: null, fromDevice: false } : null,
   );
@@ -223,6 +223,13 @@ export function StoriesView({
     if (episodeId) return { near: episodeStories(built.near, episodeId), far: [] };
     return sharedId ? pinStory(built, sharedId) : built;
   }, [origin, restaurants, source, sharedId, episodeId]);
+
+  // Name of the opened episode, shown at the top so the viewer knows what the stories belong to.
+  const episodeLabel = useMemo(() => {
+    const slide = feed?.near[0]?.slides[0];
+    if (!episodeId || !slide) return "";
+    return (slide.episodeTitle || "").replace(/\s*\|.*$/, "").trim() || sourceLabel(slide);
+  }, [feed, episodeId]);
 
   const items: Item[] = useMemo(() => {
     if (!feed) return [];
@@ -609,6 +616,11 @@ export function StoriesView({
   return (
     <main className="stories-app">
       <div className="stories-top">
+        {episodeId && episodeLabel && (
+          <span className="stories-pill stories-episode" data-testid="episode-label">
+            {episodeLabel}
+          </span>
+        )}
         {!episodeId && (
           <button className="stories-pill" onClick={() => setOrigin(null)} aria-label="בחירת מיקום">
             <MapPin size={16} aria-hidden="true" />
