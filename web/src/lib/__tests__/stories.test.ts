@@ -606,3 +606,20 @@ describe("episode circles", () => {
     expect(() => markEpisodeSeen({ getItem: () => { throw new Error("x"); }, setItem: () => { throw new Error("x"); } }, "v")).not.toThrow();
   });
 });
+
+describe("home position", () => {
+  const mem = () => { const m = new Map<string, string>(); return { setItem: (k: string, v: string) => void m.set(k, v), getItem: (k: string) => m.get(k) ?? null, removeItem: (k: string) => void m.delete(k) }; };
+  it("returns the saved position once", () => {
+    const st = mem();
+    const { saveHomePosition, takeHomePosition } = jest.requireActual("@/lib/stories");
+    saveHomePosition(st, { y: 640, x: 210 }, 1000);
+    expect(takeHomePosition(st, 2000)).toEqual({ y: 640, x: 210 });
+    expect(takeHomePosition(st, 2000)).toBeNull();
+  });
+  it("ignores a position older than 30 minutes", () => {
+    const st = mem();
+    const { saveHomePosition, takeHomePosition } = jest.requireActual("@/lib/stories");
+    saveHomePosition(st, { y: 640, x: 210 }, 0);
+    expect(takeHomePosition(st, 31 * 60 * 1000)).toBeNull();
+  });
+});

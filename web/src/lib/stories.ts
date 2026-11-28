@@ -598,3 +598,29 @@ export function markEpisodeSeen(storage: Pick<Storage, "getItem" | "setItem"> | 
     /* Private mode: the circle just stays unmarked. */
   }
 }
+
+const HOME_POS_KEY = "w2e-home-position";
+const HOME_POS_MAX_AGE_MS = 30 * 60 * 1000;
+
+/** Where the home page was (page scroll and circle row scroll) when a circle was opened. */
+export function saveHomePosition(storage: Pick<Storage, "setItem"> | null, pos: { y: number; x: number }, now = Date.now()): void {
+  try {
+    storage?.setItem(HOME_POS_KEY, JSON.stringify({ ...pos, at: now }));
+  } catch {
+    /* Private mode: the home page just opens at the top. */
+  }
+}
+
+/** The saved home position, once: it is removed on read, and ignored when old. */
+export function takeHomePosition(storage: Pick<Storage, "getItem" | "removeItem"> | null, now = Date.now()): { y: number; x: number } | null {
+  try {
+    const raw = storage?.getItem(HOME_POS_KEY);
+    if (!raw) return null;
+    storage?.removeItem(HOME_POS_KEY);
+    const v = JSON.parse(raw);
+    if (typeof v?.y !== "number" || typeof v?.x !== "number" || typeof v?.at !== "number" || now - v.at > HOME_POS_MAX_AGE_MS) return null;
+    return { y: v.y, x: v.x };
+  } catch {
+    return null;
+  }
+}
