@@ -1,6 +1,10 @@
 import type { EpisodeDetail, Restaurant } from "@/types/restaurant";
 import {
   buildStories,
+  buildEpisodeCircles,
+  episodeStories,
+  markEpisodeSeen,
+  readSeenEpisodes,
   distanceBand,
   publishedAtMs,
   DISTANCE_BANDS_KM,
@@ -472,7 +476,7 @@ it("never classifies a direct Google API or logo as a free gallery photo", () =>
 
 describe("sharing a story", () => {
   it("links to the stories with that place first", () => {
-    expect(storyShareUrl("https://www.where2eat.rest", "abc 1")).toBe("https://www.where2eat.rest/?story=abc%201");
+    expect(storyShareUrl("https://www.where2eat.rest", "abc 1")).toBe("https://www.where2eat.rest/stories?story=abc%201");
   });
 
   it("writes a short message with the name, city and a short quote", () => {
@@ -539,5 +543,66 @@ describe("explicit resolved photo aliases", () => {
     const r = rest("a", { image_url: direct, google_places: { place_id: "P1" },
       photos: [{ ...google("ref0", ""), photo_url: direct }] });
     expect(storyFrames(buildStories([r], TLV).near[0])).toHaveLength(1);
+  });
+});
+
+
+describe("episode circles", () => {
+  const inEp = (id: string, video: string, over: Partial<Record<keyof Restaurant, unknown>> = {}) =>
+    rest(id, {
+      episode_info: { video_id: video, video_url: "", channel_name: "מקור", title: `כותרת ${video} | ערוץ`, published_at: video === "v2" ? "2026-11-20" : "2026-11-01" },
+      ...over,
+    });
+
+  it("makes one circle per episode, newest first, with a count and the first restaurant's photo", () => {
+    const list = [inEp("a", "v1", { mention_timestamp_seconds: 500 }), inEp("b", "v2"), inEp("c", "v1", { mention_timestamp_seconds: 20 })];
+    const circles = buildEpisodeCircles(list);
+    expect(circles.map((c) => c.videoId)).toEqual(["v2", "v1"]);
+    expect(circles[1]).toMatchObject({ count: 2, title: "כותרת v1", image: photo("c") });
+  });
+
+  it("leaves out hidden places and places without a photo; an episode with none gets no circle", () => {
+    const list = [inEp("a", "v1", { image_url: null }), inEp("b", "v2", { is_hidden: true }), inEp("c", "v3")];
+    expect(buildEpisodeCircles(list).map((c) => c.videoId)).toEqual(["v3"]);
+  });
+
+  it("puts a restaurant mentioned in two episodes in both, showing each episode's own review", () => {
+    const both = rest("x", { mentions: [
+      { video_id: "vA", timestamp_seconds: 5, mention_level: "נטעם", episode_title: "A", published_at: "2026-11-02" },
+      { video_id: "vB", timestamp_seconds: 9, mention_level: "הוזכר", episode_title: "B", published_at: "2026-11-09" },
+    ] });
+    expect(buildEpisodeCircles([both]).map((c) => c.videoId)).toEqual(["vB", "vA"]);
+    const { near } = buildStories([both], null);
+    const only = episodeStories(near, "vB");
+    expect(only).toHaveLength(1);
+    expect(only[0].slides.map((s) => s.videoId)).toEqual(["vB"]);
+  });
+
+  it("orders an episode's stories by the moment they come up", () => {
+    const { near } = buildStories([inEp("a", "v1", { mention_timestamp_seconds: 500 }), inEp("c", "v1", { mention_timestamp_seconds: 20 })], null);
+    expect(episodeStories(near, "v1").map((s) => s.restaurant.id)).toEqual(["c", "a"]);
+  });
+
+  it("prefers our own photos over expiring Google links, and keeps the rest as fallbacks", () => {
+    const google = "https://lh3.googleusercontent.com/place-photos/abc=s800";
+    const circles = buildEpisodeCircles([inEp("a", "v1", { image_url: google, mention_timestamp_seconds: 1 }), inEp("b", "v1", { mention_timestamp_seconds: 9 })]);
+    expect(circles[0].image).toBe(photo("b"));
+    expect(circles[0].alternates).toContain(google);
+  });
+
+  it("can leave out episodes with fewer restaurants than a minimum (single-place Shorts)", () => {
+    const list = [inEp("a", "v1"), inEp("b", "v1", { mention_timestamp_seconds: 5 }), inEp("c", "v2")];
+    expect(buildEpisodeCircles(list, { minRestaurants: 2 }).map((c) => c.videoId)).toEqual(["v1"]);
+  });
+
+  it("remembers opened episodes and survives broken storage", () => {
+    const data: Record<string, string> = {};
+    const store = { getItem: (k: string) => data[k] ?? null, setItem: (k: string, v: string) => { data[k] = v; } };
+    markEpisodeSeen(store, "v1");
+    markEpisodeSeen(store, "v2");
+    expect([...readSeenEpisodes(store)]).toEqual(["v1", "v2"]);
+    data["w2e-seen-episode-stories"] = "{not json";
+    expect(readSeenEpisodes(store).size).toBe(0);
+    expect(() => markEpisodeSeen({ getItem: () => { throw new Error("x"); }, setItem: () => { throw new Error("x"); } }, "v")).not.toThrow();
   });
 });

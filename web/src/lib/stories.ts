@@ -468,7 +468,7 @@ export function storyGoogleFallback(story: Story): string[] {
 
 /** Link that opens the stories with this place first. */
 export function storyShareUrl(origin: string, restaurantId: string): string {
-  return `${origin}/?story=${encodeURIComponent(restaurantId)}`;
+  return `${origin}/stories?story=${encodeURIComponent(restaurantId)}`;
 }
 
 /** Message sent with a shared story: name and city, a short quote, the site name. */
@@ -493,3 +493,109 @@ export function pinStory(feed: StoryFeed, restaurantId: string): StoryFeed {
     far: feed.far.filter((s) => s !== story),
   };
 }
+
+/** One circle on the home page: an episode and the restaurants it has stories for. */
+export interface EpisodeCircle {
+  videoId: string;
+  /** Episode title without a trailing "| channel" part; falls back to the channel name. */
+  title: string;
+  channel: string | null;
+  /** Episode upload time (ms since epoch), 0 when unknown. */
+  publishedAt: number;
+  /** Photo of the first restaurant (in episode order) that has a free image. */
+  image: string;
+  /** Other free photos from the episode's restaurants, tried in order when `image` fails to load. */
+  alternates: string[];
+  /** Restaurants in the episode that open as stories. */
+  count: number;
+}
+
+/**
+ * Episode circles, newest episode first. Uses the same stories the stories screen
+ * builds, so a circle never opens an empty screen: only places with a photo and a
+ * review in that episode count. A restaurant mentioned in two episodes is in both.
+ * Episodes with no story-able restaurant, or fewer than `minRestaurants`, get no circle.
+ */
+export function buildEpisodeCircles(restaurants: Restaurant[], { minRestaurants = 1 }: { minRestaurants?: number } = {}): EpisodeCircle[] {
+  const { near } = buildStories(restaurants, null);
+  const groups = new Map<string, { story: Story; seconds: number }[]>();
+  for (const story of near) {
+    for (const slide of story.slides) {
+      const list = groups.get(slide.videoId) ?? [];
+      if (list.some((x) => x.story === story)) continue;
+      list.push({ story, seconds: slide.seconds ?? Number.MAX_SAFE_INTEGER });
+      groups.set(slide.videoId, list);
+    }
+  }
+  const circles: EpisodeCircle[] = [];
+  for (const [videoId, entries] of groups) {
+    if (entries.length < minRestaurants) continue;
+    entries.sort((a, b) => a.seconds - b.seconds);
+    let title = "";
+    let channel: string | null = null;
+    let publishedAt = 0;
+    for (const { story } of entries) {
+      const r = story.restaurant;
+      const slide = story.slides.find((s) => s.videoId === videoId);
+      const own = r.episode_info?.video_id === videoId;
+      if (!title) title = ((own ? r.episode_info?.title : slide?.episodeTitle) || "").replace(/\s*\|.*$/, "").trim();
+      channel = channel ?? slide?.channel ?? null;
+      const mention = (r.mentions ?? []).find((m) => m.video_id === videoId);
+      const t = Date.parse((own ? r.episode_info?.published_at : mention?.published_at) || "");
+      if (!Number.isNaN(t)) publishedAt = Math.max(publishedAt, t);
+    }
+    if (!publishedAt) publishedAt = Math.max(...entries.map((e) => e.story.publishedAt));
+    // Signed Google links expire, so they come last; ours and other direct links first.
+    const isGoogle = (u: string) => { try { return new URL(u).hostname === "lh3.googleusercontent.com"; } catch { return false; } };
+    const all = [...new Set(entries.flatMap(({ story }) => [story.image, ...story.alternates]))];
+    const pool = [...all.filter((u) => !isGoogle(u)), ...all.filter(isGoogle)];
+    circles.push({
+      videoId,
+      title: title || (channel ?? "").replace(/\s*-\s*הפודיום$/, "") || "פרק",
+      channel,
+      publishedAt,
+      image: pool[0],
+      alternates: pool.slice(1, 8),
+      count: entries.length,
+    });
+  }
+  return circles.sort((a, b) => b.publishedAt - a.publishedAt);
+}
+
+/** The stories of one episode: only its restaurants, each showing that episode's review, in episode order. */
+export function episodeStories(stories: Story[], videoId: string): Story[] {
+  const first = (s: Story) => s.slides.find((x) => x.videoId === videoId)?.seconds ?? Number.MAX_SAFE_INTEGER;
+  return stories
+    .filter((s) => s.slides.some((x) => x.videoId === videoId))
+    .map((s) => ({ ...s, slides: s.slides.filter((x) => x.videoId === videoId) }))
+    .sort((a, b) => first(a) - first(b));
+}
+
+const SEEN_KEY = "w2e-seen-episode-stories";
+
+/** Episodes whose circle the viewer opened, as kept in this browser. */
+export function readSeenEpisodes(storage: Pick<Storage, "getItem"> | null): Set<string> {
+  try {
+    const raw = storage?.getItem(SEEN_KEY);
+    const list = raw ? JSON.parse(raw) : [];
+    return new Set(Array.isArray(list) ? list.filter((x) => typeof x === "string") : []);
+  } catch {
+    return new Set();
+  }
+}
+
+export function markEpisodeSeen(storage: Pick<Storage, "getItem" | "setItem"> | null, videoId: string): void {
+  try {
+    const seen = readSeenEpisodes(storage);
+    seen.add(videoId);
+    storage?.setItem(SEEN_KEY, JSON.stringify([...seen].slice(-200)));
+  } catch {
+    /* Private mode: the circle just stays unmarked. */
+  }
+}
+
+/**
+ * The home row shows episodes with at least this many restaurants. Single-restaurant
+ * videos (Shorts) would turn the row into a hundred circles with one place each.
+ */
+export const HOME_CIRCLE_MIN_RESTAURANTS = 2;

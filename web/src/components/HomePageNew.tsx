@@ -8,6 +8,7 @@ import { PageLayout } from '@/components/layout';
 import { FilterBar, LocationFilter, CreatorFilter } from '@/components/filters';
 import { DiscoveryFeed } from '@/components/feed';
 import { HomeHero } from '@/components/HomeHero';
+import { EpisodeCircles } from '@/components/stories/EpisodeCircles';
 import { PageLoadingSkeleton } from '@/components/ui/skeleton';
 import { useLocationFilter } from '@/contexts/location-filter-context';
 import { isListed, listedCount } from '@/lib/restaurant-visibility';
@@ -276,6 +277,9 @@ export function HomePageNew() {
 
       {/* Hero */}
       <HomeHero />
+
+      {/* Episode story circles */}
+      <EpisodeCircles restaurants={allRestaurants} />
 
       {/* Search + Filters */}
       <div className="animate-fade-up stagger-section-1">
