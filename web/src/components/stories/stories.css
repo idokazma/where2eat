@@ -411,6 +411,16 @@
   width: 44px;
   padding: 0;
 }
+.stories-top .stories-pill.stories-episode {
+  width: auto;
+  max-width: calc(100% - 64px);
+  padding: 6px 14px;
+  font-size: 13px;
+  cursor: default;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 /* Location button at the start, exit at the far end. */
 .stories-top > :last-child {
   margin-inline-start: auto;

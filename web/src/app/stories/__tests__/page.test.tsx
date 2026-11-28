@@ -10,6 +10,11 @@ jest.mock("@/lib/stories", () => {
   const actual = jest.requireActual("@/lib/stories");
   return { ...actual, buildStories: jest.fn(actual.buildStories) };
 });
+const mockBack = jest.fn();
+jest.mock("next/navigation", () => ({
+  useRouter: () => ({ back: mockBack, push: jest.fn() }),
+  useSearchParams: () => new URLSearchParams(window.location.search),
+}));
 const mockLocate = jest.fn();
 jest.mock("@/hooks/useGeolocation", () => ({
   useGeolocation: () => ({ coords: null, accuracy: null, loading: false, error: null, getCurrentPosition: mockLocate }),
@@ -835,9 +840,13 @@ describe("opening the site starts with the stories", () => {
   const headings = async () =>
     (await screen.findAllByRole("article")).map((a) => within(a).getByRole("heading").textContent);
 
-  it("is the site's front page", async () => {
+  it("is no longer the site's front page: the home page with episode circles is", async () => {
     const { default: FrontPage } = await import("../../page");
-    expect(FrontPage).toBe(StoriesPage);
+    const { default: HomePage } = await import("../../home/page");
+    // The front page renders the home page (see src/app/__tests__/front-page.test.tsx).
+    const page = await FrontPage({ searchParams: Promise.resolve({}) });
+    expect(page.type).toBe(HomePage);
+    expect(FrontPage).not.toBe(StoriesPage);
   });
 
   it("asks for the location on open and orders by distance when it is allowed", async () => {
@@ -880,7 +889,7 @@ describe("opening the site starts with the stories", () => {
     mockLocate.mockRejectedValueOnce(new Error("denied"));
     openSite();
     await headings();
-    expect(screen.getByRole("link", { name: "יציאה" })).toHaveAttribute("href", "/home");
+    expect(screen.getByRole("link", { name: "יציאה" })).toHaveAttribute("href", "/");
   });
 });
 
@@ -962,7 +971,7 @@ describe("sharing a story", () => {
     fireEvent.click(within(near).getByRole("button", { name: /שיתוף/ }));
     await waitFor(() => expect(share).toHaveBeenCalledTimes(1));
     const arg = share.mock.calls[0][0];
-    expect(arg.url).toBe(`${window.location.origin}/?story=near`);
+    expect(arg.url).toBe(`${window.location.origin}/stories?story=near`);
     expect(arg.text).toContain("קרובה");
     expect(arg.text).toContain("מצאתי ב-Where2Eat");
   });
@@ -973,12 +982,12 @@ describe("sharing a story", () => {
     await startFromTelAviv();
     const [near] = await screen.findAllByRole("article");
     fireEvent.click(within(near).getByRole("button", { name: /שיתוף/ }));
-    await waitFor(() => expect(writeText).toHaveBeenCalledWith(`${window.location.origin}/?story=near`));
+    await waitFor(() => expect(writeText).toHaveBeenCalledWith(`${window.location.origin}/stories?story=near`));
     expect(await screen.findByText("הקישור הועתק")).toBeInTheDocument();
   });
 
   it("a shared link opens with that place first", async () => {
-    window.history.replaceState({}, "", "/?story=far");
+    window.history.replaceState({}, "", "/stories?story=far");
     mockLocate.mockResolvedValueOnce({ lat: 32.081, lng: 34.775 });
     render(<FavoritesProvider><StoriesPage /></FavoritesProvider>);
     const stories = await screen.findAllByRole("article");
@@ -986,7 +995,7 @@ describe("sharing a story", () => {
   });
 
   it.each(["device", "preset", "newest"])("an explicit %s choice releases the shared restaurant priority", async (choice) => {
-    window.history.replaceState({}, "", "/?story=far");
+    window.history.replaceState({}, "", "/stories?story=far");
     mockLocate.mockResolvedValue({ lat: 32.081, lng: 34.775 });
     render(<FavoritesProvider><StoriesPage /></FavoritesProvider>);
     await screen.findByRole("article", { name: "רחוקה בחיפה" });
@@ -1238,5 +1247,40 @@ describe("stories from my current location", () => {
     render(<FavoritesProvider><StoriesPage /></FavoritesProvider>);
     await screen.findAllByRole("article");
     expect(mockLocate.mock.calls[0][0].maximumAge).toBeLessThanOrEqual(60_000);
+  });
+});
+
+
+describe("one episode from a home page circle", () => {
+  const ep = [
+    { id: "a", name_hebrew: "ראשונה", image_url: photo("a"), published_at: "2026-11-20", location: { city: "חיפה", lat: 32.8, lng: 34.98 },
+      episode_info: { video_id: "vidEP", channel_name: "מקור", title: "פרק", published_at: "2026-11-20" }, mention_timestamp_seconds: 900 },
+    { id: "b", name_hebrew: "שנייה", image_url: photo("b"), published_at: "2026-11-20", location: { city: "אילת", lat: 29.55, lng: 34.95 },
+      episode_info: { video_id: "vidEP", channel_name: "מקור", title: "פרק", published_at: "2026-11-20" }, mention_timestamp_seconds: 60 },
+    { id: "c", name_hebrew: "מפרק אחר", image_url: photo("c"), published_at: "2026-11-10", location: { city: "תל אביב", lat: 32.08, lng: 34.78 },
+      episode_info: { video_id: "vidOTHER2", channel_name: "מקור", title: "אחר" }, mention_timestamp_seconds: 10 },
+  ];
+  afterEach(() => window.history.replaceState({}, "", "/"));
+
+  it("opens without asking for a location, shows only that episode, in episode order", async () => {
+    window.history.replaceState({}, "", "/stories?episode=vidEP");
+    global.fetch = jest.fn(() => Promise.resolve({ ok: true, json: async () => ({ restaurants: ep }) })) as jest.Mock;
+    render(<FavoritesProvider><StoriesPage /></FavoritesProvider>);
+    const stories = await screen.findAllByRole("article");
+    expect(mockLocate).not.toHaveBeenCalled();
+    expect(stories.map((a) => within(a).getByRole("heading").textContent)).toEqual(["שנייה", "ראשונה"]);
+    expect(screen.queryByRole("button", { name: "בחירת מיקום" })).not.toBeInTheDocument();
+    expect(screen.getByTestId("episode-label")).toHaveTextContent("פרק");
+  });
+
+  it("closing goes back to the home page it came from", async () => {
+    window.history.replaceState({}, "", "/stories?episode=vidEP");
+    Object.defineProperty(document, "referrer", { value: window.location.origin + "/", configurable: true });
+    window.history.pushState({}, "", "/stories?episode=vidEP");
+    global.fetch = jest.fn(() => Promise.resolve({ ok: true, json: async () => ({ restaurants: ep }) })) as jest.Mock;
+    render(<FavoritesProvider><StoriesPage /></FavoritesProvider>);
+    await screen.findAllByRole("article");
+    fireEvent.click(screen.getByRole("link", { name: "יציאה" }));
+    expect(mockBack).toHaveBeenCalledTimes(1);
   });
 });

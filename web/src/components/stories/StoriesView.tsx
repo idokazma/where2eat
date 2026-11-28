@@ -3,6 +3,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Heart, MapPin, Navigation, Play, Share2, X, Loader2, UtensilsCrossed, Instagram } from "lucide-react";
 import { endpoints } from "@/lib/config";
 import { fetchEpisodeDetail } from "@/lib/api/episodes";
@@ -13,6 +14,7 @@ import { formatDistance, type GeoCoords } from "@/lib/geo-utils";
 import { getCoordinates, type EpisodeDetail, type Restaurant } from "@/types/restaurant";
 import {
   buildStories,
+  episodeStories,
   excerpt,
   formatClock,
   momentStart,
@@ -114,8 +116,16 @@ export function StoriesView({
   const [restaurants, setRestaurants] = useState<Restaurant[] | null>(null);
   const [loadError, setLoadError] = useState(false);
   // coords null: no location, newest first.
-  const [origin, setOrigin] = useState<{ coords: GeoCoords | null; fromDevice: boolean } | null>(null);
-  const [autoLocating, setAutoLocating] = useState(autoStart);
+  const router = useRouter();
+  // A circle on the home page opens /stories?episode=<video id>: only that episode's
+  // restaurants, in episode order. No location is needed, so there is no locating step.
+  // Read through the router: on an in-app navigation window.location still shows the
+  // previous page while this first renders.
+  const episodeId = useSearchParams()?.get("episode") || null;
+  const [origin, setOrigin] = useState<{ coords: GeoCoords | null; fromDevice: boolean } | null>(() =>
+    episodeId ? { coords: null, fromDevice: false } : null,
+  );
+  const [autoLocating, setAutoLocating] = useState(autoStart && !episodeId);
   const [source, setSource] = useState("");
   const [locError, setLocError] = useState<string | null>(null);
   const [current, setCurrent] = useState(0);
@@ -209,9 +219,17 @@ export function StoriesView({
 
   const feed = useMemo(() => {
     if (!origin || !restaurants) return null;
-    const built = buildStories(restaurants, origin.coords, { radiusKm: RADIUS_KM, source });
+    const built = buildStories(restaurants, episodeId ? null : origin.coords, { radiusKm: RADIUS_KM, source });
+    if (episodeId) return { near: episodeStories(built.near, episodeId), far: [] };
     return sharedId ? pinStory(built, sharedId) : built;
-  }, [origin, restaurants, source, sharedId]);
+  }, [origin, restaurants, source, sharedId, episodeId]);
+
+  // Name of the opened episode, shown at the top so the viewer knows what the stories belong to.
+  const episodeLabel = useMemo(() => {
+    const slide = feed?.near[0]?.slides[0];
+    if (!episodeId || !slide) return "";
+    return (slide.episodeTitle || "").replace(/\s*\|.*$/, "").trim() || sourceLabel(slide);
+  }, [feed, episodeId]);
 
   const items: Item[] = useMemo(() => {
     if (!feed) return [];
@@ -312,7 +330,7 @@ export function StoriesView({
   // so the feed does not reorder under the viewer (the pin button changes it).
   const autoStarted = useRef(false);
   useEffect(() => {
-    if (!autoStart || autoStarted.current) return;
+    if (!autoStart || episodeId || autoStarted.current) return;
     autoStarted.current = true;
     let settled = false;
     const settle = (coords: GeoCoords | null) => {
@@ -328,6 +346,14 @@ export function StoriesView({
     // begin and getCurrentPosition are stable enough for a one-time start.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [autoStart]);
+
+  // Closing returns to the home page where it was left (scroll position and filters)
+  // when the viewer came from there; a direct visit goes to the home page.
+  const exitStories = (e: React.MouseEvent) => {
+    if (typeof window === "undefined" || window.history.length <= 1 || !document.referrer.startsWith(window.location.origin)) return;
+    e.preventDefault();
+    router.back();
+  };
 
   useEffect(() => {
     if (!hint) return;
@@ -508,7 +534,7 @@ export function StoriesView({
               דלגו: הכי חדשות
             </button>
           )}
-          <Link href="/home" className="stories-pill" aria-label="יציאה">
+          <Link href="/" className="stories-pill" aria-label="יציאה">
             <X size={16} aria-hidden="true" /> לעמוד הראשי
           </Link>
         </section>
@@ -520,7 +546,7 @@ export function StoriesView({
     return (
       <main className="stories-app">
         <section className="stories-start">
-          <Link href="/home" className="stories-logo">
+          <Link href="/" className="stories-logo">
             Where2Eat
           </Link>
           <h1>
@@ -590,10 +616,17 @@ export function StoriesView({
   return (
     <main className="stories-app">
       <div className="stories-top">
-        <button className="stories-pill" onClick={() => setOrigin(null)} aria-label="בחירת מיקום">
-          <MapPin size={16} aria-hidden="true" />
-        </button>
-        <Link href="/home" className="stories-pill" aria-label="יציאה">
+        {episodeId && episodeLabel && (
+          <span className="stories-pill stories-episode" data-testid="episode-label">
+            {episodeLabel}
+          </span>
+        )}
+        {!episodeId && (
+          <button className="stories-pill" onClick={() => setOrigin(null)} aria-label="בחירת מיקום">
+            <MapPin size={16} aria-hidden="true" />
+          </button>
+        )}
+        <Link href="/" className="stories-pill" aria-label="יציאה" onClick={exitStories}>
           <X size={16} aria-hidden="true" />
         </Link>
       </div>
