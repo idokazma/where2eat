@@ -11,7 +11,7 @@ import { HomeHero } from '@/components/HomeHero';
 import { EpisodeCircles } from '@/components/stories/EpisodeCircles';
 import { PageLoadingSkeleton } from '@/components/ui/skeleton';
 import { useLocationFilter } from '@/contexts/location-filter-context';
-import { isListed, listedCount } from '@/lib/restaurant-visibility';
+import { isListed } from '@/lib/restaurant-visibility';
 import { useSettings } from '@/contexts/settings-context';
 import { useFavorites } from '@/contexts/favorites-context';
 import { endpoints } from '@/lib/config';
@@ -264,22 +264,11 @@ export function HomePageNew() {
 
   return (
     <PageLayout showHeader showBottomNav showSearch={false}>
-      {/* Street-pop marquee */}
-      <div className="marquee-strip" aria-hidden="true">
-        <div className="marquee-inner">
-          {[0, 1].map((n) => (
-            <span key={n} className="marquee-chunk">
-              אוכלים ✦ מדברים ✦ מדרגים ✦ <b>{listedCount(allRestaurants)} מסעדות</b> ✦ אפס פספוסים ✦
-            </span>
-          ))}
-        </div>
-      </div>
+      {/* Episode story circles: the top of the main screen, Instagram-style */}
+      <EpisodeCircles restaurants={allRestaurants} />
 
       {/* Hero */}
       <HomeHero />
-
-      {/* Episode story circles */}
-      <EpisodeCircles restaurants={allRestaurants} />
 
       {/* Search + Filters */}
       <div className="animate-fade-up stagger-section-1">

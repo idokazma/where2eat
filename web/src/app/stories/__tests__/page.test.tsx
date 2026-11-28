@@ -843,7 +843,9 @@ describe("opening the site starts with the stories", () => {
   it("is no longer the site's front page: the home page with episode circles is", async () => {
     const { default: FrontPage } = await import("../../page");
     const { default: HomePage } = await import("../../home/page");
-    expect(FrontPage).toBe(HomePage);
+    // The front page renders the home page (see src/app/__tests__/front-page.test.tsx).
+    const page = await FrontPage({ searchParams: Promise.resolve({}) });
+    expect(page.type).toBe(HomePage);
     expect(FrontPage).not.toBe(StoriesPage);
   });
 
